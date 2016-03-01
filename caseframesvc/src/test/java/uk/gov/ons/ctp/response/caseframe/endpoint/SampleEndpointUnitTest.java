@@ -25,8 +25,9 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
 import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
+import uk.gov.ons.ctp.response.caseframe.CaseFrameBeanMapper;
 import uk.gov.ons.ctp.response.caseframe.service.SampleService;
-import uk.gov.ons.ctp.response.caseframe.utility.CTPJerseyTest;
 import uk.gov.ons.ctp.response.caseframe.utility.MockSampleServiceFactory;
 
 /**
@@ -35,7 +36,7 @@ import uk.gov.ons.ctp.response.caseframe.utility.MockSampleServiceFactory;
 public class SampleEndpointUnitTest extends CTPJerseyTest  {
   @Override
   public Application configure() {
-    return super.init(SampleEndpoint.class, SampleService.class, MockSampleServiceFactory.class); 
+    return super.init(SampleEndpoint.class, SampleService.class, MockSampleServiceFactory.class, new CaseFrameBeanMapper()); 
     
   }
 

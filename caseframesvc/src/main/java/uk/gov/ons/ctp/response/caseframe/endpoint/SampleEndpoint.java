@@ -1,7 +1,6 @@
 package uk.gov.ons.ctp.response.caseframe.endpoint;
 
 import java.util.List;
-import java.util.concurrent.Future;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -11,8 +10,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.util.CollectionUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -65,6 +62,6 @@ public class SampleEndpoint implements CTPEndpoint {
   @Path("/{sampleId}")
   public void createCases(@PathParam("sampleId") int sampleId, GeographyDTO geography) {
     log.debug("Creating cases ");       
-    sampleService.generate_cases(sampleId, geography.getGeographyType(), geography.getGeographyCode());
+    sampleService.generateCases(sampleId, geography.getGeographyType(), geography.getGeographyCode());
   } 
 }

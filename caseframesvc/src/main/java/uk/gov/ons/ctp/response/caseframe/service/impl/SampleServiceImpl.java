@@ -37,7 +37,7 @@ public class SampleServiceImpl implements SampleService {
    * Generate new cases for given sample ID, geography type and geography code
   */
   @Async
-  public Boolean generate_cases(Integer sampleId, String goegraphyType, String geographyCode) {
+  public Boolean generateCases(Integer sampleId, String goegraphyType, String geographyCode) {
     log.debug("Entering generateCases with sampleId {} - goegraphyType {} - geographyCode {}", sampleId, goegraphyType, geographyCode);
     return sampleRepo.generateCases(sampleId, goegraphyType, geographyCode);
   }
