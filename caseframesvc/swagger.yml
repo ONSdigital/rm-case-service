@@ -1,0 +1,1110 @@
+swagger: '2.0'
+info:
+  title: Case Frame Service API
+  description: Provide access to Address Frame and Response Management information
+  version: 8.11.0
+schemes:
+  - http
+basePath: /frameservice
+produces:
+  - application/json
+tags:
+  - name: Frame
+    description: Navigation of address frame information
+  - name: Response
+    description: Management of response information
+paths:
+  /regions:
+    get:
+      summary: Get all regions
+      description: >
+        Return the Nine GSS Regional and Geography Committee Regions of England
+        (formerly GOR) plus region for Wales.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+      tags:
+        - Frame
+      responses:
+        '200':
+          description: An array of regions
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Region'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /regions/{regionid}:
+    get:
+      summary: Get information for the specified region.
+      description: |
+        Return information for the supplied Region code.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: regionid
+          in: path
+          description: Nine character Region code, E12000001 to E12000009 or W92000004.
+          required: true
+          type: string
+      tags:
+        - Frame
+      responses:
+        '200':
+          description: A single region
+          schema:
+              $ref: '#/definitions/Region'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /regions/{regionid}/lads:
+    get:
+      summary: Get all LADs for the specified region.
+      description: |
+        Return the Local Authority Districts (LADs) for the supplied Region code.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: regionid
+          in: path
+          description: Nine character region code, E12000001 to E12000009 or W92000004.
+          required: true
+          type: string
+      tags:
+        - Frame
+      responses:
+        '200':
+          description: An array of LADs
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/LocalAuthDist'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /lads/{ladid}:
+    get:
+      summary: Get information for the specified LAD.
+      description: |
+        Return information for the supplied Local Authority District (LAD) code.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: ladid
+          in: path
+          description: Nine character LAD code e.g. E06000001, E09000033, W06000024.
+          required: true
+          type: string
+      tags:
+        - Frame
+      responses:
+        '200':
+          description: A single LAD.
+          schema:
+              $ref: '#/definitions/LocalAuthDist'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /lads/{ladid}/msoas:
+    get:
+      summary: Get all MSOAs for the specified LAD.
+      description: |
+        Return the Mid Layer Super Output Area (MSOA) codes for the supplied Local Authority District (LAD).
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: ladid
+          in: path
+          description: Nine character LAD code.
+          required: true
+          type: string
+      tags:
+        - Frame
+      responses:
+        '200':
+          description: An array of MSOAs for the supplied LAD code.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/MSOA'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /msoas/{msoaid}:
+    get:
+      summary: Get information for the specified MSOA.
+      description: |
+        Return information for the supplied Mid Layer Super Output Area (MSOA) code.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: msoaid
+          in: path
+          description: Nine character MSOA code.
+          required: true
+          type: string
+      tags:
+        - Frame
+      responses:
+        '200':
+          description: A single MSOA.
+          schema:
+              $ref: '#/definitions/MSOA'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /msoas/{msoaid}/addresssummaries:
+    get:
+      summary: Get address summaries for the specified MSOA.
+      description: |
+        Return address summaries for the supplied Mid Layer Super Output Area (MSOA) code.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: msoaid
+          in: path
+          description: Nine character MSOA code.
+          required: true
+          type: string
+      tags:
+        - Frame
+      responses:
+        '200':
+          description: An array of address summaries for the supplied MSOA code.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/AddressSummary'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /addresses/{uprn}:
+    get:
+      summary:  Get the address information for the specified UPRN.
+      description: Return the full address details for the supplied Unique Property Reference Number (UPRN).
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: uprn
+          description: Unique Property Reference Number for which to return address details.
+          in: path
+          required: true
+          type: integer
+      tags:
+        - Frame
+      responses:
+        '200':
+          description: Address details for supplied UPRN.
+          schema:
+            $ref: '#/definitions/Address'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /addresses/postcode/{postcode}:
+    get:
+      summary:  Get address information for a postcode.
+      description: Return all address details for the supplied postcode.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: postcode
+          description: Postal code.
+          in: path
+          required: true
+          type: string
+      tags:
+        - Frame
+      responses:
+        '200':
+          description: Address details for supplied postcode.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Address'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /cases/uprn/{uprn}:
+    get:
+      summary:  Get the case information for the specified UPRN.
+      description: Return details of cases for the supplied Unique Property Reference Number (UPRN).
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: uprn
+          description: Unique Property Reference Number for which to return details of cases.
+          in: path
+          required: true
+          type: integer
+      tags:
+        - Response
+      responses:
+        '200':
+          description: Case details for supplied UPRN.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Case'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /cases/questionnaire/{questionnaireid}:
+    get:
+      summary:  Get the case information for the specified questionnaire.
+      description: Return details of a case for the supplied questionnaireid.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: questionnaireid
+          description: Unique questionnaire Id.
+          in: path
+          required: true
+          type: integer
+      tags:
+        - Response
+      responses:
+        '200':
+          description: Case details for supplied questionnaireid.
+          schema:
+              $ref: '#/definitions/Case'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /cases/{caseid}:
+    get:
+      summary:  Get the case information for the specified case.
+      description: Return details of a case for the supplied caseid.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: caseid
+          description: Unique case Id.
+          in: path
+          required: true
+          type: integer
+      tags:
+        - Response
+      responses:
+        '200':
+          description: Case details for supplied caseid.
+          schema:
+              $ref: '#/definitions/Case'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /cases/{caseid}/events:
+    get:
+      summary:  Get the events that occurred on a specified case.
+      description: Return all events for the supplied caseid.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: caseid
+          description: Unique case Id.
+          in: path
+          required: true
+          type: integer
+      tags:
+        - Response
+      responses:
+        '200':
+          description: All event details for supplied caseid.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Event'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /questionnaires/iac/{iac}:
+    get:
+      summary:  Get the questionnaire details for a specified IAC.
+      description: |
+        Return the questionnaire details for the supplied Internet Access Code (IAC).
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: iac
+          description: Unique Internet Access Code (token).
+          in: path
+          required: true
+          type: string
+      tags:
+        - Response
+      responses:
+        '200':
+          description: Details for a single questionnaire.
+          schema:
+            $ref: '#/definitions/Questionnaire'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /questionnaires/case/{caseid}:
+    get:
+      summary:  Get all questionnaire details for a specified case.
+      description: |
+        Return all questionnaire details for the supplied caseid.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: caseid
+          description: Unique case Id.
+          in: path
+          required: true
+          type: string
+      tags:
+        - Response
+      responses:
+        '200':
+          description: All questionnaire details for a supplied caseid.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Questionnaire'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /questionnaires/{questionnaireid}/response:
+                put:
+                  summary:  Confirms a response has been received in the Survey Data Exchange.
+                  description: |
+                    For the given Questionnaire, it populates the response_datetime. It also populates case_status for the related Case.
+                  parameters:
+                    - name: Accept
+                      in: header
+                      description: Response type, application/json.
+                      required: false
+                      type: string
+                    - name: questionnaireid
+                      description: Unique questionnaire Id.
+                      in: path
+                      required: true
+                      type: string
+                  tags:
+                    - Response
+                  responses:
+                    '200':
+                      description: The response mechanism was completed successfully.
+                    default:
+                      description: Unexpected error
+                      schema:
+                        $ref: '#/definitions/Error'
+  /actions/{actionid}:
+    get:
+      summary:  Get the action details for a specified action.
+      description: |
+        Return the action details for the supplied actionid.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: actionid
+          description: Unique action Id.
+          in: path
+          required: true
+          type: integer
+      tags:
+        - Response
+      responses:
+        '200':
+          description: Details for a single action.
+          schema:
+              $ref: '#/definitions/Action'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /actions/case/{caseid}:
+    get:
+      summary:  Get all action details for a specified case.
+      description: |
+        Return all action details for the supplied caseid.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: caseid
+          description: Unique case Id.
+          in: path
+          required: true
+          type: integer
+      tags:
+        - Response
+      responses:
+        '200':
+          description: All action details for a supplied caseid.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Action'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /questionsets:
+    get:
+      summary: Get all question set types.
+      description: >
+        Return all question set types and their description.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+      tags:
+        - Response
+      responses:
+        '200':
+          description: An array of question sets
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/QuestionSet'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /questionsets/{questionset}:
+    get:
+      summary: Get information for the specified question set.
+      description: Return information for the supplied question set.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: questionset
+          in: path
+          description: Unique question set code.
+          required: true
+          type: string
+      tags:
+        - Response
+      responses:
+        '200':
+          description: A single question set.
+          schema:
+              $ref: '#/definitions/QuestionSet'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /casetypes:
+    get:
+      summary: Get all case types
+      description: Return all case types.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+      tags:
+        - Response
+      responses:
+        '200':
+          description: An array of case types
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CaseType'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /casetypes/{casetypeid}:
+    get:
+      summary: Get information for the specified case type.
+      description: Return information for the supplied case type code.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: casetypeid
+          in: path
+          description: Unique case type Id.
+          required: true
+          type: integer
+      tags:
+        - Response
+      responses:
+        '200':
+          description: A single case type.
+          schema:
+              $ref: '#/definitions/CaseType'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /samples:
+    get:
+      summary: Get all samples
+      description: Return details of all samples.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+      tags:
+        - Response
+      responses:
+        '200':
+          description: An array of samples
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Sample'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /samples/{sampleid}:
+    get:
+      summary: Get information for the specified sample.
+      description: Return information for the supplied sample code.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: sampleid
+          in: path
+          description: Unique sample Id.
+          required: true
+          type: integer
+      tags:
+        - Response
+      responses:
+        '200':
+          description: A single sample.
+          schema:
+              $ref: '#/definitions/Sample'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /samples/{sampleid}:
+    put:
+      summary: Create cases for the specified sample.
+      description: |
+        Update the supplied sample by creating the cases for the provided geography type and code.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: sampleid
+          in: path
+          description: Unique sample Id.
+          required: true
+          type: integer
+        - name: geographyDetails
+          in: body
+          description: Geography for which to create cases.
+          required: true
+          schema:
+            $ref: '#/definitions/GeographyDetails'
+      tags:
+        - Response
+      responses:
+        '200':
+          description: Cases created.
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /surveys:
+    get:
+      summary: Get all surveys.
+      description: Return details of all surveys.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+      tags:
+        - Response
+      responses:
+        '200':
+          description: An array of surveys.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Survey'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /surveys/{surveyid}:
+    get:
+      summary: Get information for the specified survey.
+      description: Return information for the supplied survey code.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: surveyid
+          in: path
+          description: Unique survey Id.
+          required: true
+          type: integer
+      tags:
+        - Response
+      responses:
+        '200':
+          description: A single survey.
+          schema:
+              $ref: '#/definitions/Survey'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /actionplans:
+    get:
+      summary: Get all action plans.
+      description: Return details of all action plans.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+      tags:
+        - Response
+      responses:
+        '200':
+          description: An array of action plans.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ActionPlan'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /actionplans/{actionplanid}:
+    get:
+      summary: Get information for the specified action plan.
+      description: Return information for the supplied action plan code.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: actionplanid
+          in: path
+          description: Unique action plan Id.
+          required: true
+          type: integer
+      tags:
+        - Response
+      responses:
+        '200':
+          description: A single action plan.
+          schema:
+              $ref: '#/definitions/ActionPlan'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  Region:
+    type: object
+    properties:
+      regionCode:
+        type: string
+        description: GSS nine character Region geography code.
+      regionName:
+        type: string
+        description: Region name.
+  LocalAuthDist:
+    type: object
+    properties:
+      regionCode:
+        type: string
+        description: GSS nine character Region geography code.
+      ladCode:
+        type: string
+        description: GSS nine character LAD code.
+      ladName:
+        type: string
+        description: Local Authority Distict name.
+  MSOA:
+    type: object
+    properties:
+      msoaCode:
+        type: string
+        description: GSS nine character MSOA geography code.
+      msoaName:
+        type: string
+        description: MSOA name.
+  AddressSummary:
+    type: object
+    properties:
+      uprn:
+        type: integer
+        description: Unique Property Reference Number.
+      addressType:
+        type: string
+        description: Address type CE, HH, I.
+      estabType:
+        type: string
+        description: Communal Establishment type.
+      addressLine1:
+        type: string
+        description: Address details.
+      addressLine2:
+        type: string
+        description: Address details.
+      townName:
+        type: string
+        description: Postal town name.
+      postcode:
+        type: string
+        description: Postal Code.
+  Address:
+    type: object
+    properties:
+      uprn:
+        type: integer
+        description: Unique Property Reference Number.
+      addressType:
+        type: string
+        description: Address type CE, HH, I.
+      estabType:
+        type: string
+        description: Communal Establishment type.
+      addressLine1:
+        type: string
+        description: Address details.
+      addressLine2:
+        type: string
+        description: Address details.
+      townName:
+        type: string
+        description: Postal town name.
+      postcode:
+        type: string
+        description: Postal Code.
+      outputArea:
+        type: string
+        description: Census Geography Output Area code.
+      lsoaArea:
+        type: string
+        description: Lower Layer Super Output Area code.
+      msoaArea:
+        type: string
+        description: Middle layer Super Output Area code.
+      ladCode:
+        type: string
+        description: GSS nine character LAD code.
+      regionCode:
+        type: string
+        description: GSS nine character Region geography code.
+      eastings:
+        type: integer
+        description: Easting or x-coordinate.
+      northings:
+        type: integer
+        description: Northing or y-coordinate.
+      htc:
+        type: integer
+        description: Hard to count code.
+      latitude:
+        type: number
+        description: Position North or South of Equator.
+      longitude:
+        type: number
+        description: Position East or West of Greenwich Meridian.
+      ladName:
+        type: string
+        description: Local Authority Distict name.
+  Case:
+    type: object
+    properties:
+      caseId:
+        type: integer
+        description: Unique case identifier.
+      uprn:
+        type: integer
+        description: Unique Property Reference Number.
+      caseStatus:
+        type: string
+        description: Status of case.
+      caseTypeId:
+        type: integer
+        description: Case Type Id
+      createdDateTime:
+        type: string
+        format: date-time
+        description: Creation date-time.
+      createdBy:
+        type: string
+        description: Creator of case.
+      sampleId:
+        type: integer
+        description: Sample Id.
+      actionPlanId:
+        type: integer
+        description: Action plan for case.
+      surveyId:
+        type: integer
+        description:  Survey instrument.
+      parentCaseId:
+        type: integer
+        description: Linked parent case.
+      questionSet:
+        type: string
+        description: Type of questionnaire set.
+  Event:
+    type: object
+    properties:
+      caseEventId:
+        type: integer
+        description: Unique case event identifier.
+      caseId:
+        type: integer
+        description: Unique case identifier.
+      description:
+        type: string
+        description: Case event note.
+      createdDateTime:
+        type: string
+        format: date-time
+        description: Creation date-time.
+      createdBy:
+        type: string
+        description: Creator of event note.
+      category:
+        type: string
+        description: Category.
+  Questionnaire:
+    type: object
+    properties:
+      questionnaireId:
+        type: integer
+        description: Unique questionnaire ID.
+      caseId:
+        type: integer
+        description: Unique case identifier.
+      questionnaireStatus:
+        type: string
+        description: Questionnaire status.
+      dispatchDateTime:
+        type: string
+        format: date-time
+        description: Date and time the questionnaire was dispatched.
+      responseDateTime:
+        type: string
+        format: date-time
+        description: Date and time the questionnaire was sent for return.
+      receiptDateTime:
+        type: string
+        format: date-time
+        description: Date and time the questionnaire was recieved.
+      questionSet:
+        type: string
+        description: Type of questionnaire set.
+      iac:
+        type: string
+        description: Internet Access Code.
+  Action:
+    type: object
+    properties:
+      actionId:
+        type: integer
+        description: Unique action ID.
+      caseId:
+        type: integer
+        description: Unique case identifier.
+      actionPlanId:
+        type: integer
+        description: Unique action plan Id.
+      actionStatus:
+        type: string
+        description: Action status.
+      actionType:
+        type: string
+        description: Type of action.
+      priority:
+        type: string
+        description: The priority of the Action
+      situation:
+        type: string
+        description: Field status, e.g. allocated, unallocated.
+      createdDateTime:
+        type: string
+        format: date-time
+        description: Date and time the action was created.
+      createdBy:
+        type: string
+        description: Creator of action.
+  QuestionSet:
+    type: object
+    properties:
+      questionSet:
+        type: string
+        description: Type of question set.
+      description:
+        type: string
+        description: Description of question set.
+  CaseType:
+    type: object
+    properties:
+      caseTypeId:
+        type: integer
+        description: Unique Id of case type.
+      caseTypeName:
+        type: string
+        description: Name of case type.
+      description:
+        type: string
+        description: Description of case type.
+      actionPlanId:
+        type: integer
+        description: Unique action plan Id.
+      questionSet:
+        type: string
+        description: Type of questionnaire set.
+  Sample:
+    type: object
+    properties:
+      sampleId:
+        type: integer
+        description: Unique Id of sample.
+      sampleName:
+        type: string
+        description: Name of sample.
+      sampleDescription:
+        type: string
+        description: Description of sample.
+      addressCriteria:
+        type: string
+        description: Address selection criteria.
+      caseTypeId:
+        type: integer
+        description: Unique Id of case type.
+      surveyId:
+        type: integer
+        description: Survey instrument.
+  Survey:
+    type: object
+    properties:
+      surveyId:
+        type: integer
+        description: Unique Id of survey.
+      surveyName:
+        type: string
+        description: Name of survey.
+      description:
+        type: string
+        description: Description of survey.
+  ActionPlan:
+    type: object
+    properties:
+      actionPlanId:
+        type: integer
+        description: Unique Id of action plan.
+      actionPlanName:
+        type: string
+        description: Name of action plan.
+      description:
+        type: string
+        description: Description of action plan.
+      rules:
+        type: string
+        description: Action plan steps.
+  GeographyDetails:
+    type: object
+    properties:
+      geographyType:
+        description: Type of geography area for which to create cases e.g. REGION, LA, MSOA, LSOA, OA.
+        type: string
+      geographyCode:
+        description: Geography area code value for which to create cases.
+        type: string
+  Error:
+    type: object
+    properties:
+      code:
+        type: string
+      timestamp:
+        type: string
+      message:
+        type: string

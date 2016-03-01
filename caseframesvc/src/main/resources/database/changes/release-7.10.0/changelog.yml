@@ -1,0 +1,48 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 7.10.0-1
+      author: whilep1
+      changes:
+          - sqlFile:
+              comment: initial table creation
+              path: initial-table-creation.sql
+              relativeToChangelogFile: true
+
+  - changeSet:
+      id: 7.10.0-2
+      author: whilep1
+      changes:
+          - sqlFile:
+              comment: initial sequence creation
+              path: create-sequences.sql
+              relativeToChangelogFile: true
+
+  - changeSet:
+      id: 7.10.0-3
+      author: whilep1
+      changes:
+          - sqlFile:
+              comment: insert metadata
+              path: insert-metadata.sql
+              relativeToChangelogFile: true
+
+  - changeSet:
+      id: 7.10.0-4
+      author: whilep1
+      changes:
+          - sqlFile:
+              comment: setup the generate cases functions
+              path: generate-cases.sql
+              splitStatements: false
+              relativeToChangelogFile: true
+
+  - changeSet:
+      id: 7.10.0-5
+      author: whilep1
+      changes:
+          - sqlFile:
+              comment: setup the generate questionnaires functions
+              path: generate-questionnaires.sql
+              splitStatements: false
+              relativeToChangelogFile: true
