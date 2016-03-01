@@ -1,9 +1,0 @@
-databaseChangeLog:
-
-  - preConditions:
-    - runningAs:
-        username: postgres
-
-
-  - include:
-      file: database/changes/release-7.10.0/changelog.yml
