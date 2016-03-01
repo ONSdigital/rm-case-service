@@ -11,5 +11,4 @@ import uk.gov.ons.ctp.response.caseframe.domain.model.ActionPlan;
 @Repository
 public interface ActionPlanRepository extends JpaRepository<ActionPlan, Integer> {
 
-
 }

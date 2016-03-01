@@ -56,8 +56,8 @@ public class CaseEndpoint implements CTPEndpoint {
 
   @GET
   @Path("/{caseId}")
-  public CaseDTO findCasesByCaseId(@PathParam("caseId") Integer caseId) throws CTPException {
-    log.debug("Entering findCasesByCaseId with {}", caseId);
+  public CaseDTO findCaseByCaseId(@PathParam("caseId") Integer caseId) throws CTPException {
+    log.debug("Entering findCaseByCaseId with {}", caseId);
     Case caseObj = caseService.findCaseByCaseId(caseId);
     if (caseObj == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Case not found for id %s", caseId);
@@ -67,7 +67,7 @@ public class CaseEndpoint implements CTPEndpoint {
 
   @GET
   @Path("/{caseId}/events")
-  public List<CaseEventDTO> findCasesEventsByCaseId(@PathParam("caseId") Integer caseId) {
+  public List<CaseEventDTO> findCaseEventsByCaseId(@PathParam("caseId") Integer caseId) {
     log.debug("Entering findCaseEventsByCaseId with {}", caseId);
     List<CaseEvent> caseEvents = caseService.findCaseEventsByCaseId(caseId);
     List<CaseEventDTO> caseEventDTOs = mapperFacade.mapAsList(caseEvents, CaseEventDTO.class);

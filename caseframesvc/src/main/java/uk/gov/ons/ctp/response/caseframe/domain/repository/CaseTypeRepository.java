@@ -11,5 +11,4 @@ import uk.gov.ons.ctp.response.caseframe.domain.model.CaseType;
 @Repository
 public interface CaseTypeRepository extends JpaRepository<CaseType, Integer> {
 
-
 }

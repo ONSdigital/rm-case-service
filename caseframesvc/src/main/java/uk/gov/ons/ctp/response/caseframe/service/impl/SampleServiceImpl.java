@@ -27,15 +27,15 @@ public class SampleServiceImpl implements SampleService {
   }
 
   public Sample findSampleBySampleId(Integer sampleId) {
-    log.debug("Entering findSampleBySampleId");
+    log.debug("Entering findSampleBySampleId with {}", sampleId);
     return sampleRepo.findOne(sampleId);
   }
   
   /**
    * Generate new cases for given sample ID, geography type and geography code
   */
-  public Boolean generate_cases(Integer sampleId, String goegraphyType, String geographyCode) {
-    log.debug("Entering generateCases");
+  public Boolean generateCases(Integer sampleId, String goegraphyType, String geographyCode) {
+    log.debug("Entering generateCases with sampleId {} - goegraphyType {} - geographyCode {}", sampleId, goegraphyType, geographyCode);
     return sampleRepo.generateCases(sampleId, goegraphyType, geographyCode);
   }
   
