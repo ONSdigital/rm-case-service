@@ -1,17 +1,26 @@
 package uk.gov.ons.ctp.response.caseframe.endpoint;
 
-import org.junit.Test;
-import org.springframework.http.HttpStatus;
-import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.response.caseframe.service.QuestionnaireService;
-import uk.gov.ons.ctp.response.caseframe.utility.CTPJerseyTest;
-import uk.gov.ons.ctp.response.caseframe.utility.MockQuestionnaireServiceFactory;
-import uk.gov.ons.ctp.response.caseframe.utility.QuestionnaireBuilder;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockQuestionnaireServiceFactory.QUESTIONNAIRE_CASEID;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockQuestionnaireServiceFactory.QUESTIONNAIRE_CASEID_NOT_FOUND;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockQuestionnaireServiceFactory.QUESTIONNAIRE_IAC;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockQuestionnaireServiceFactory.QUESTIONNAIRE_IAC_NOT_FOUND;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockQuestionnaireServiceFactory.QUESTIONNAIRE_ID_1;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockQuestionnaireServiceFactory.QUESTIONNAIRE_ID_2;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockQuestionnaireServiceFactory.QUESTIONNAIRE_ID_SERVER_SIDE_ERROR;
+import static uk.gov.ons.ctp.response.caseframe.utility.QuestionnaireBuilder.QUESTIONNAIRE_SET;
+import static uk.gov.ons.ctp.response.caseframe.utility.QuestionnaireBuilder.QUESTIONNAIRE_STATUS;
 
 import javax.ws.rs.core.Application;
 
-import static uk.gov.ons.ctp.response.caseframe.utility.MockQuestionnaireServiceFactory.*;
-import static uk.gov.ons.ctp.response.caseframe.utility.QuestionnaireBuilder.*;
+import org.junit.Test;
+import org.springframework.http.HttpStatus;
+
+import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
+import uk.gov.ons.ctp.response.caseframe.CaseFrameBeanMapper;
+import uk.gov.ons.ctp.response.caseframe.service.QuestionnaireService;
+import uk.gov.ons.ctp.response.caseframe.utility.MockQuestionnaireServiceFactory;
+import uk.gov.ons.ctp.response.caseframe.utility.QuestionnaireBuilder;
 /**
  * Created by philippe.brossier on 2/26/16.
  */
@@ -19,7 +28,7 @@ public class QuestionnaireEndpointTest extends CTPJerseyTest {
 
   @Override
   public Application configure() {
-    return super.init(QuestionnaireEndpoint.class, QuestionnaireService.class, MockQuestionnaireServiceFactory.class);
+    return super.init(QuestionnaireEndpoint.class, QuestionnaireService.class, MockQuestionnaireServiceFactory.class, new CaseFrameBeanMapper());
   }
 
   @Test

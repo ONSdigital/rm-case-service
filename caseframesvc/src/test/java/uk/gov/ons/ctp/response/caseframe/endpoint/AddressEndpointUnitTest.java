@@ -1,16 +1,37 @@
 package uk.gov.ons.ctp.response.caseframe.endpoint;
 
-import static uk.gov.ons.ctp.response.caseframe.utility.AddressBuilder.*;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockAddressServiceFactory.*;
+import static uk.gov.ons.ctp.response.caseframe.utility.AddressBuilder.ADDRESS_EASTINGS;
+import static uk.gov.ons.ctp.response.caseframe.utility.AddressBuilder.ADDRESS_ESTABLISH_TYPE;
+import static uk.gov.ons.ctp.response.caseframe.utility.AddressBuilder.ADDRESS_HTC;
+import static uk.gov.ons.ctp.response.caseframe.utility.AddressBuilder.ADDRESS_LAD;
+import static uk.gov.ons.ctp.response.caseframe.utility.AddressBuilder.ADDRESS_LATITUDE;
+import static uk.gov.ons.ctp.response.caseframe.utility.AddressBuilder.ADDRESS_LINE1;
+import static uk.gov.ons.ctp.response.caseframe.utility.AddressBuilder.ADDRESS_LINE2;
+import static uk.gov.ons.ctp.response.caseframe.utility.AddressBuilder.ADDRESS_LONGITUDE;
+import static uk.gov.ons.ctp.response.caseframe.utility.AddressBuilder.ADDRESS_LSOA;
+import static uk.gov.ons.ctp.response.caseframe.utility.AddressBuilder.ADDRESS_MSOA;
+import static uk.gov.ons.ctp.response.caseframe.utility.AddressBuilder.ADDRESS_NORTHINGS;
+import static uk.gov.ons.ctp.response.caseframe.utility.AddressBuilder.ADDRESS_OUTPUT_AREA;
+import static uk.gov.ons.ctp.response.caseframe.utility.AddressBuilder.ADDRESS_REGION_CODE;
+import static uk.gov.ons.ctp.response.caseframe.utility.AddressBuilder.ADDRESS_TOWN_NAME;
+import static uk.gov.ons.ctp.response.caseframe.utility.AddressBuilder.ADDRESS_TYPE;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockAddressServiceFactory.ADDRESS_NON_EXISTING_POSTCODE;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockAddressServiceFactory.ADDRESS_NON_EXISTING_UPRN;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockAddressServiceFactory.ADDRESS_POSTCODE;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockAddressServiceFactory.ADDRESS_UPRN;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockAddressServiceFactory.ADDRESS_WITH_UPRN_CHECKED_EXCEPTION;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockAddressServiceFactory.OUR_EXCEPTION_MESSAGE;
 
 import javax.ws.rs.core.Application;
 
 import org.junit.Test;
-
 import org.springframework.http.HttpStatus;
+
 import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
+import uk.gov.ons.ctp.response.caseframe.CaseFrameBeanMapper;
 import uk.gov.ons.ctp.response.caseframe.service.AddressService;
-import uk.gov.ons.ctp.response.caseframe.utility.*;
+import uk.gov.ons.ctp.response.caseframe.utility.MockAddressServiceFactory;
 
 /**
  * Unit Tests for the Address Endpoint
@@ -19,7 +40,7 @@ public class AddressEndpointUnitTest extends CTPJerseyTest {
 
   @Override
   public Application configure() {
-    return super.init(AddressEndpoint.class, AddressService.class, MockAddressServiceFactory.class);
+    return super.init(AddressEndpoint.class, AddressService.class, MockAddressServiceFactory.class, new CaseFrameBeanMapper());
   }
 
   @Test

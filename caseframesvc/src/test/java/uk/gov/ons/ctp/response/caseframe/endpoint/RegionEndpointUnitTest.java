@@ -18,11 +18,12 @@ import static uk.gov.ons.ctp.response.caseframe.utility.MockRegionServiceFactory
 import javax.ws.rs.core.Application;
 
 import org.junit.Test;
-
 import org.springframework.http.HttpStatus;
+
 import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
+import uk.gov.ons.ctp.response.caseframe.CaseFrameBeanMapper;
 import uk.gov.ons.ctp.response.caseframe.service.RegionService;
-import uk.gov.ons.ctp.response.caseframe.utility.CTPJerseyTest;
 import uk.gov.ons.ctp.response.caseframe.utility.MockRegionServiceFactory;
 
 /**
@@ -32,7 +33,7 @@ public class RegionEndpointUnitTest extends CTPJerseyTest {
 
   @Override
   public Application configure() {
-    return super.init(RegionEndpoint.class, RegionService.class, MockRegionServiceFactory.class);
+    return super.init(RegionEndpoint.class, RegionService.class, MockRegionServiceFactory.class, new CaseFrameBeanMapper());
   }
 
   @Test

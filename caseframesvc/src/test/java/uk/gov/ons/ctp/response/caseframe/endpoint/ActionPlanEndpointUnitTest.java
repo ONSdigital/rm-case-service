@@ -20,8 +20,9 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
 import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
+import uk.gov.ons.ctp.response.caseframe.CaseFrameBeanMapper;
 import uk.gov.ons.ctp.response.caseframe.service.ActionPlanService;
-import uk.gov.ons.ctp.response.caseframe.utility.CTPJerseyTest;
 import uk.gov.ons.ctp.response.caseframe.utility.MockActionPlanServiceFactory;
 
 /**
@@ -31,7 +32,7 @@ public class ActionPlanEndpointUnitTest extends CTPJerseyTest {
 
   @Override
   public Application configure() {
-    return super.init(ActionPlanEndpoint.class, ActionPlanService.class, MockActionPlanServiceFactory.class); 
+    return super.init(ActionPlanEndpoint.class, ActionPlanService.class, MockActionPlanServiceFactory.class, new CaseFrameBeanMapper()); 
   }
 
   @Test

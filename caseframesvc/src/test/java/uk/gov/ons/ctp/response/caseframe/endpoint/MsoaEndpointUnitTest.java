@@ -14,11 +14,13 @@ import static uk.gov.ons.ctp.response.caseframe.utility.MockMsoaServiceFactory.N
 import javax.ws.rs.core.Application;
 
 import org.junit.Test;
-
 import org.springframework.http.HttpStatus;
+
 import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
+import uk.gov.ons.ctp.response.caseframe.CaseFrameBeanMapper;
 import uk.gov.ons.ctp.response.caseframe.service.MsoaService;
-import uk.gov.ons.ctp.response.caseframe.utility.*;
+import uk.gov.ons.ctp.response.caseframe.utility.MockMsoaServiceFactory;
 
 /**
  * Created by philippe.brossier on 2/23/16.
@@ -27,7 +29,7 @@ public class MsoaEndpointUnitTest extends CTPJerseyTest {
 
   @Override
   public Application configure() {
-    return super.init(MsoaEndpoint.class, MsoaService.class, MockMsoaServiceFactory.class);
+    return super.init(MsoaEndpoint.class, MsoaService.class, MockMsoaServiceFactory.class, new CaseFrameBeanMapper());
   }
 
   @Test

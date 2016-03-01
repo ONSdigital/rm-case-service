@@ -1,14 +1,24 @@
 package uk.gov.ons.ctp.response.caseframe.endpoint;
 
-import static uk.gov.ons.ctp.response.caseframe.utility.MockLocalAuthorityServiceFactory.*;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockLocalAuthorityServiceFactory.LAD_WITH_CODE_204;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockLocalAuthorityServiceFactory.LAD_WITH_CODE_CHECKED_EXCEPTION;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockLocalAuthorityServiceFactory.LAD_WITH_CODE_LAD123;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockLocalAuthorityServiceFactory.LAD_WITH_NON_EXISTING_CODE;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockLocalAuthorityServiceFactory.MSOA1_CODE;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockLocalAuthorityServiceFactory.MSOA1_NAME;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockLocalAuthorityServiceFactory.MSOA2_CODE;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockLocalAuthorityServiceFactory.MSOA2_NAME;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockLocalAuthorityServiceFactory.REGION_CODE_FOR_LAD123;
+
 import javax.ws.rs.core.Application;
 
 import org.junit.Test;
-
 import org.springframework.http.HttpStatus;
+
 import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
+import uk.gov.ons.ctp.response.caseframe.CaseFrameBeanMapper;
 import uk.gov.ons.ctp.response.caseframe.service.LocalAuthorityService;
-import uk.gov.ons.ctp.response.caseframe.utility.CTPJerseyTest;
 import uk.gov.ons.ctp.response.caseframe.utility.MockLocalAuthorityServiceFactory;
 
 /**
@@ -18,7 +28,7 @@ public class LocalAuthorityEndpointUnitTest extends CTPJerseyTest {
 
   @Override
   public Application configure() {
-    return super.init(LocalAuthorityEndpoint.class, LocalAuthorityService.class, MockLocalAuthorityServiceFactory.class);
+    return super.init(LocalAuthorityEndpoint.class, LocalAuthorityService.class, MockLocalAuthorityServiceFactory.class, new CaseFrameBeanMapper());
   }
 
   @Test
