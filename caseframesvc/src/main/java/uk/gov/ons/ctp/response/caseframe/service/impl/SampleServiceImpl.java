@@ -5,6 +5,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.springframework.scheduling.annotation.Async;
+
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Sample;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.SampleRepository;
@@ -34,7 +36,8 @@ public class SampleServiceImpl implements SampleService {
   /**
    * Generate new cases for given sample ID, geography type and geography code
   */
-  public Boolean generateCases(Integer sampleId, String goegraphyType, String geographyCode) {
+  @Async
+  public Boolean generate_cases(Integer sampleId, String goegraphyType, String geographyCode) {
     log.debug("Entering generateCases with sampleId {} - goegraphyType {} - geographyCode {}", sampleId, goegraphyType, geographyCode);
     return sampleRepo.generateCases(sampleId, goegraphyType, geographyCode);
   }

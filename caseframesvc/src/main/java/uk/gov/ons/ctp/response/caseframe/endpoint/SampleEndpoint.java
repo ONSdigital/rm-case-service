@@ -62,11 +62,9 @@ public class SampleEndpoint implements CTPEndpoint {
   }
 
   @PUT
-  @Async
   @Path("/{sampleId}")
-  public Future<Boolean> createCases(@PathParam("sampleId") Integer sampleId, GeographyDTO geography) {
-  	log.debug("Creating cases for sample {}", sampleId);
-  	boolean success = sampleService.generateCases(sampleId, geography.getGeographyType(), geography.getGeographyCode());
-  	return new AsyncResult<>(success);
+  public void createCases(@PathParam("sampleId") int sampleId, GeographyDTO geography) {
+    log.debug("Creating cases ");       
+    sampleService.generate_cases(sampleId, geography.getGeographyType(), geography.getGeographyCode());
   } 
 }

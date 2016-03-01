@@ -1,141 +1,109 @@
 package uk.gov.ons.ctp.response.caseframe.endpoint;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.everyItem;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockSampleServiceFactory.NON_EXISTING_SAMPLEID;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockSampleServiceFactory.OUR_EXCEPTION_MESSAGE;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockSampleServiceFactory.SAMPLE1_CASETYPEID;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockSampleServiceFactory.SAMPLE1_CRITERIA;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockSampleServiceFactory.SAMPLE1_DESC;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockSampleServiceFactory.SAMPLE1_NAME;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockSampleServiceFactory.SAMPLE2_CASETYPEID;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockSampleServiceFactory.SAMPLE2_CRITERIA;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockSampleServiceFactory.SAMPLE2_DESC;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockSampleServiceFactory.SAMPLE2_NAME;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockSampleServiceFactory.SAMPLE3_CASETYPEID;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockSampleServiceFactory.SAMPLE3_CRITERIA;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockSampleServiceFactory.SAMPLE3_DESC;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockSampleServiceFactory.SAMPLE3_NAME;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockSampleServiceFactory.SAMPLEID;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockSampleServiceFactory.SURVEYID;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockSampleServiceFactory.UNCHECKED_EXCEPTION;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockSurveyServiceFactory.NON_EXISTING_SURVEYID;
 
-import java.util.List;
-
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Application;
-import javax.ws.rs.core.Response;
 
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.test.JerseyTest;
-import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.http.HttpStatus;
 
-import com.jayway.jsonpath.JsonPath;
-
-import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.common.jaxrs.CTPExceptionMapper;
-import uk.gov.ons.ctp.common.jaxrs.GeneralExceptionMapper;
-import uk.gov.ons.ctp.response.caseframe.CaseFrameBeanMapper;
 import uk.gov.ons.ctp.response.caseframe.service.SampleService;
+import uk.gov.ons.ctp.response.caseframe.utility.CTPJerseyTest;
 import uk.gov.ons.ctp.response.caseframe.utility.MockSampleServiceFactory;
-import uk.gov.ons.ctp.response.caseframe.utility.MockSurveyServiceFactory;
 
 /**
  * Created by Martin.Humphrey on 23/2/2016.
  */
-public class SampleEndpointUnitTest extends JerseyTest  {
+public class SampleEndpointUnitTest extends CTPJerseyTest  {
   @Override
   public Application configure() {
-    ResourceConfig config = new ResourceConfig(SampleEndpoint.class);
-
-    AbstractBinder binder = new AbstractBinder() {
-      @Override
-      protected void configure() {
-        bindFactory(MockSampleServiceFactory.class).to(SampleService.class);
-        bind(new CaseFrameBeanMapper()).to(MapperFacade.class);
-      }
-    };
-    config.register(binder);
-
-    config.register(CTPExceptionMapper.class);
-    config.register(GeneralExceptionMapper.class);
-    return config;
+    return super.init(SampleEndpoint.class, SampleService.class, MockSampleServiceFactory.class); 
+    
   }
 
   @Test
   public void findSamplesFound() {
+    
+    with("http://localhost:9998/samples")
+    .assertResponseCodeIs(HttpStatus.OK)
+    .assertArrayLengthInBodyIs(3)
+    .assertStringListInBody("$..sampleName", SAMPLE1_NAME, SAMPLE2_NAME, SAMPLE3_NAME)
+    .assertStringListInBody("$..description", SAMPLE1_DESC, SAMPLE2_DESC, SAMPLE3_DESC)
+    .assertStringListInBody("$..addressCriteria", SAMPLE1_CRITERIA, SAMPLE2_CRITERIA, SAMPLE3_CRITERIA)
+    .assertIntegerListInBody("$..caseTypeId", SAMPLE1_CASETYPEID, SAMPLE2_CASETYPEID,SAMPLE3_CASETYPEID)
+    .assertIntegerListInBody("$..surveyId", SURVEYID,  SURVEYID, SURVEYID)
+    .andClose();
 
-    Client client = ClientBuilder.newClient();
-    Response response = client.target("http://localhost:9998/samples").request().get();
-
-    Assert.assertEquals(200, response.getStatus());
-    String json = response.readEntity(String.class);
- 
-    assertEquals(new Integer(3), JsonPath.parse(json).read("$.length()", Integer.class));
- 
-    List<String> nameList = JsonPath.parse(json).read("$..sampleName");
-    assertThat(nameList, containsInAnyOrder(MockSampleServiceFactory.SAMPLE1_NAME, MockSampleServiceFactory.SAMPLE2_NAME,
-        MockSampleServiceFactory.SAMPLE3_NAME));
- 
-    List<String> descList = JsonPath.parse(json).read("$..description");
-    assertThat(descList, containsInAnyOrder(MockSampleServiceFactory.SAMPLE1_DESC, MockSampleServiceFactory.SAMPLE2_DESC,
-        MockSampleServiceFactory.SAMPLE3_DESC));
-
-    List<String> criteriaList = JsonPath.parse(json).read("$..addressCriteria");
-    assertThat(criteriaList, containsInAnyOrder(MockSampleServiceFactory.SAMPLE1_CRITERIA, MockSampleServiceFactory.SAMPLE2_CRITERIA,
-        MockSampleServiceFactory.SAMPLE3_CRITERIA));
-
-    List<Integer> caseTypeList = JsonPath.parse(json).read("$..caseTypeId");
-    assertThat(caseTypeList, containsInAnyOrder(MockSampleServiceFactory.SAMPLE1_CASETYPEID, MockSampleServiceFactory.SAMPLE2_CASETYPEID,
-        MockSampleServiceFactory.SAMPLE3_CASETYPEID));
-
-    List<Integer> surveyList = JsonPath.parse(json).read("$..surveyId");
-    assertThat(surveyList, everyItem(equalTo(MockSampleServiceFactory.SURVEYID)));
-
-    response.close();
-    client.close();
   }
   
   @Test
   public void findSampleBySampleIdFound() {
+    
+    with("http://localhost:9998/samples/%s", SAMPLEID)
+    .assertResponseCodeIs(HttpStatus.OK)
+    .assertArrayLengthInBodyIs(6)
+    .assertStringListInBody("$..sampleName", SAMPLE3_NAME)
+    .assertStringListInBody("$..description", SAMPLE3_DESC)
+    .assertStringListInBody("$..addressCriteria", SAMPLE3_CRITERIA)
+    .assertIntegerListInBody("$..caseTypeId", SAMPLE3_CASETYPEID)
+    .assertIntegerListInBody("$..surveyId", SURVEYID)    
+    .andClose();
 
-    Client client = ClientBuilder.newClient();
-    Response response = client.target(String.format("http://localhost:9998/samples/%s",MockSampleServiceFactory.SAMPLEID)).request().get();
-
-    Assert.assertEquals(200, response.getStatus());
-    String json = response.readEntity(String.class);
-
-    assertEquals(new Integer(3), JsonPath.parse(json).read("$.sampleId", Integer.class));
-    assertEquals(MockSampleServiceFactory.SAMPLE3_NAME,JsonPath.parse(json).read("$.sampleName", String.class));
-    assertEquals(MockSampleServiceFactory.SAMPLE3_DESC,JsonPath.parse(json).read("$.description", String.class));
-    assertEquals(MockSampleServiceFactory.SAMPLE3_CRITERIA,JsonPath.parse(json).read("$.addressCriteria", String.class));
-    assertEquals(MockSampleServiceFactory.SAMPLE3_CASETYPEID,JsonPath.parse(json).read("$.caseTypeId", Integer.class));
-    assertEquals(MockSampleServiceFactory.SURVEYID,JsonPath.parse(json).read("$.surveyId", Integer.class));
-
-    response.close();
-    client.close();
   }
+  
   
   @Test
   public void findSampleBySampleIdNotFound() {
-
-    Client client = ClientBuilder.newClient();
-    Response response = client.target(String.format("http://localhost:9998/samples/%s",MockSampleServiceFactory.NON_EXISTING_SAMPLEID)).request().get();
     
-    Assert.assertEquals(404, response.getStatus());
-    String responseStrg = response.readEntity(String.class);
-    Assert.assertEquals(CTPException.Fault.RESOURCE_NOT_FOUND.toString(), JsonPath.read(responseStrg, "$.error.code"));
-    Assert.assertNotNull(JsonPath.read(responseStrg, "$.error.timestamp"));
-    Assert.assertEquals(String.format("Sample not found for id %s", MockSampleServiceFactory.NON_EXISTING_SAMPLEID), JsonPath.read(responseStrg, "$.error.message"));
-
-    response.close();
-    client.close();
+    with("http://localhost:9998/samples/%s", NON_EXISTING_SAMPLEID)
+    .assertResponseCodeIs(HttpStatus.NOT_FOUND)
+    .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
+    .assertTimestampExists()
+    .assertMessageEquals("Sample not found for id %s", NON_EXISTING_SURVEYID)
+    .andClose();
+    
   }
 
   @Test
   public void findSampleBysampleIdUnCheckedException() {
 
-    Client client = ClientBuilder.newClient();
-    Response response = client.target(String.format("http://localhost:9998/samples/%s", MockSampleServiceFactory.UNCHECKED_EXCEPTION)).request().get();
-
-    Assert.assertEquals(500, response.getStatus());
-    String responseStrg = response.readEntity(String.class);
+    with("http://localhost:9998/samples/%s", UNCHECKED_EXCEPTION)
+    .assertResponseCodeIs(HttpStatus.INTERNAL_SERVER_ERROR)
+    .assertFaultIs(CTPException.Fault.SYSTEM_ERROR)
+    .assertTimestampExists()
+    .assertMessageEquals(OUR_EXCEPTION_MESSAGE)
+    .andClose();
     
-    Assert.assertEquals(CTPException.Fault.SYSTEM_ERROR.toString(), JsonPath.read(responseStrg, "$.error.code"));
-    Assert.assertNotNull(JsonPath.read(responseStrg, "$.error.timestamp"));
-    Assert.assertEquals(MockSurveyServiceFactory.OUR_EXCEPTION_MESSAGE, JsonPath.read(responseStrg, "$.error.message"));
-
-    response.close();
-    client.close();
   }
+  
+  @Test
+  public void createCases() {    
+    
+    String putBody = "{\"geographyType\":\"LA\",\"geographyCode\":\"E07000163\"}";
+    
+    with("http://localhost:9998/samples/%s", SAMPLEID)
+    .put(putBody)
+    .assertResponseCodeIs(HttpStatus.NO_CONTENT)
+    .assertEmptyResponse()
+    .andClose();
+  }  
+  
 }

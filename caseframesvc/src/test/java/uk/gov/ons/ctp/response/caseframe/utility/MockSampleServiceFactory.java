@@ -33,6 +33,8 @@ public class MockSampleServiceFactory implements Factory<SampleService> {
   public static final Integer NON_EXISTING_SAMPLEID = 998;
   public static final Integer UNCHECKED_EXCEPTION = 999;
   public static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
+  public static final String GEOGRAPHY_TYPE = "LA";
+  public static final String GEOGRAPHY_CODE = "E07000163";
 
   public SampleService provide() {
 
@@ -65,6 +67,8 @@ public class MockSampleServiceFactory implements Factory<SampleService> {
       }
     });
 
+    Mockito.when(mockedService.generate_cases(SAMPLEID, GEOGRAPHY_TYPE, GEOGRAPHY_CODE)).thenReturn(true);
+    
     return mockedService;
   }
 
