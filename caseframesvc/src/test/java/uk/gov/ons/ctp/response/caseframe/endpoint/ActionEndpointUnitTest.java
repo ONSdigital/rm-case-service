@@ -69,7 +69,7 @@ public class ActionEndpointUnitTest extends CTPJerseyTest {
   }
 
   @Test
-  public void findActionsByCaseIdNotFound() {
+  public void findActionByCaseIdNotFound() {
     with("http://localhost:9998/actions/case/%s", NON_EXISTING_ID)
       .assertResponseCodeIs(HttpStatus.NO_CONTENT)
       .assertResponseLengthIs(-1)
