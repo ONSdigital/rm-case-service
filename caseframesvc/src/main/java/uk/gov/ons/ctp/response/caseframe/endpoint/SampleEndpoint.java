@@ -30,8 +30,8 @@ import uk.gov.ons.ctp.response.caseframe.service.SampleService;
  */
 
 @Path("/samples")
-@Produces({"application/json"})
 @Consumes({"application/json"})
+@Produces({"application/json"})
 @Slf4j
 public class SampleEndpoint implements CTPEndpoint {
 
@@ -64,10 +64,9 @@ public class SampleEndpoint implements CTPEndpoint {
   @PUT
   @Async
   @Path("/{sampleId}")
-  public Future<Boolean> createCases(@PathParam("sampleId") int sampleId, GeographyDTO geography) {
-  	log.debug("Creating cases ");  	
-  	boolean success = sampleService.generate_cases(sampleId, geography.getGeographyType(), geography.getGeographyCode());
-  	
-  	return new AsyncResult<Boolean>(success);
+  public Future<Boolean> createCases(@PathParam("sampleId") Integer sampleId, GeographyDTO geography) {
+  	log.debug("Creating cases for sample {}", sampleId);
+  	boolean success = sampleService.generateCases(sampleId, geography.getGeographyType(), geography.getGeographyCode());
+  	return new AsyncResult<>(success);
   } 
 }

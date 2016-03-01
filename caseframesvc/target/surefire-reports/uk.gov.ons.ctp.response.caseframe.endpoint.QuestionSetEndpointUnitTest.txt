@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: uk.gov.ons.ctp.response.caseframe.endpoint.QuestionSetEndpointUnitTest
+-------------------------------------------------------------------------------
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.784 sec - in uk.gov.ons.ctp.response.caseframe.endpoint.QuestionSetEndpointUnitTest

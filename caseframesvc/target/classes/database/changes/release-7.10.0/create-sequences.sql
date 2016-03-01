@@ -1,0 +1,22 @@
+
+DROP SEQUENCE IF EXISTS caseframe.qid_seq;
+CREATE SEQUENCE caseframe.qid_seq
+  INCREMENT 1
+  MINVALUE 1234567890
+  MAXVALUE 9999999999
+  START 1234567890
+  CACHE 1;
+ALTER TABLE caseframe.qid_seq
+  OWNER TO postgres;
+
+
+
+DROP SEQUENCE IF EXISTS caseframe.caseid_seq;
+CREATE SEQUENCE caseframe.caseid_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 999999999999
+  START 1
+  CACHE 1;
+ALTER TABLE caseframe.caseid_seq
+  OWNER TO postgres;

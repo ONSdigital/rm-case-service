@@ -14,6 +14,6 @@ public interface SampleService extends CTPService {
 
   Sample findSampleBySampleId(Integer sampleId);
   
-  Boolean generate_cases(Integer sampleId, String goegraphyType, String geographyCode);
+  Boolean generateCases(Integer sampleId, String goegraphyType, String geographyCode);
 
 }

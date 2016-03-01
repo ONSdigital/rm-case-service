@@ -29,7 +29,7 @@ public class SurveyServiceImpl implements SurveyService {
   }
 
   public Survey findSurveyBySurveyId(Integer surveyId) {
-    log.debug("Entering findSurveyBySurveyId");
+    log.debug("Entering findSurveyBySurveyId with {}", surveyId);
     return surveyRepo.findOne(surveyId);
   }
 
