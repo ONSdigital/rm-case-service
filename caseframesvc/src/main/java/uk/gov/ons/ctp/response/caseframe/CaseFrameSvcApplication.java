@@ -8,8 +8,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import uk.gov.ons.ctp.response.caseframe.endpoint.ActionEndpoint;
-import uk.gov.ons.ctp.response.caseframe.endpoint.ActionPlanEndpoint;
 import uk.gov.ons.ctp.response.caseframe.endpoint.AddressEndpoint;
 import uk.gov.ons.ctp.response.caseframe.endpoint.CaseEndpoint;
 import uk.gov.ons.ctp.response.caseframe.endpoint.CaseTypeEndpoint;
@@ -44,12 +42,10 @@ public class CaseFrameSvcApplication {
       // Response
       register(CaseEndpoint.class);
       register(QuestionnaireEndpoint.class);
-      register(ActionEndpoint.class);
       register(QuestionSetEndpoint.class);
       register(CaseTypeEndpoint.class);
       register(SampleEndpoint.class);
       register(SurveyEndpoint.class);
-      register(ActionPlanEndpoint.class);
     }
   }
 

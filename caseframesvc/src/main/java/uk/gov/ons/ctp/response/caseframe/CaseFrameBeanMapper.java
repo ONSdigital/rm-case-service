@@ -4,8 +4,6 @@ import javax.inject.Named;
 
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.ConfigurableMapper;
-import uk.gov.ons.ctp.response.caseframe.domain.model.Action;
-import uk.gov.ons.ctp.response.caseframe.domain.model.ActionPlan;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Address;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Case;
 import uk.gov.ons.ctp.response.caseframe.domain.model.CaseType;
@@ -16,8 +14,6 @@ import uk.gov.ons.ctp.response.caseframe.domain.model.Questionnaire;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Region;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Sample;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Survey;
-import uk.gov.ons.ctp.response.caseframe.representation.ActionDTO;
-import uk.gov.ons.ctp.response.caseframe.representation.ActionPlanDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.AddressDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseTypeDTO;
@@ -32,16 +28,6 @@ import uk.gov.ons.ctp.response.caseframe.representation.SurveyDTO;
 @Named
 public class CaseFrameBeanMapper extends ConfigurableMapper {
   protected void configure(MapperFactory factory) {
-
-    factory
-      .classMap(Action.class, ActionDTO.class)
-      .byDefault()
-      .register();
-
-    factory
-      .classMap(ActionPlan.class, ActionPlanDTO.class)
-      .byDefault()
-      .register();
 
     factory
       .classMap(Address.class, AddressDTO.class)

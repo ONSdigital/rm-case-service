@@ -450,62 +450,6 @@ paths:
                       description: Unexpected error
                       schema:
                         $ref: '#/definitions/Error'
-  /actions/{actionid}:
-    get:
-      summary:  Get the action details for a specified action.
-      description: |
-        Return the action details for the supplied actionid.
-      parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-        - name: actionid
-          description: Unique action Id.
-          in: path
-          required: true
-          type: integer
-      tags:
-        - Response
-      responses:
-        '200':
-          description: Details for a single action.
-          schema:
-              $ref: '#/definitions/Action'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
-  /actions/case/{caseid}:
-    get:
-      summary:  Get all action details for a specified case.
-      description: |
-        Return all action details for the supplied caseid.
-      parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-        - name: caseid
-          description: Unique case Id.
-          in: path
-          required: true
-          type: integer
-      tags:
-        - Response
-      responses:
-        '200':
-          description: All action details for a supplied caseid.
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Action'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
   /questionsets:
     get:
       summary: Get all question set types.
@@ -734,55 +678,6 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /actionplans:
-    get:
-      summary: Get all action plans.
-      description: Return details of all action plans.
-      parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-      tags:
-        - Response
-      responses:
-        '200':
-          description: An array of action plans.
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/ActionPlan'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
-  /actionplans/{actionplanid}:
-    get:
-      summary: Get information for the specified action plan.
-      description: Return information for the supplied action plan code.
-      parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-        - name: actionplanid
-          in: path
-          description: Unique action plan Id.
-          required: true
-          type: integer
-      tags:
-        - Response
-      responses:
-        '200':
-          description: A single action plan.
-          schema:
-              $ref: '#/definitions/ActionPlan'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
 definitions:
   Region:
     type: object
@@ -984,37 +879,6 @@ definitions:
       iac:
         type: string
         description: Internet Access Code.
-  Action:
-    type: object
-    properties:
-      actionId:
-        type: integer
-        description: Unique action ID.
-      caseId:
-        type: integer
-        description: Unique case identifier.
-      actionPlanId:
-        type: integer
-        description: Unique action plan Id.
-      actionStatus:
-        type: string
-        description: Action status.
-      actionType:
-        type: string
-        description: Type of action.
-      priority:
-        type: string
-        description: The priority of the Action
-      situation:
-        type: string
-        description: Field status, e.g. allocated, unallocated.
-      createdDateTime:
-        type: string
-        format: date-time
-        description: Date and time the action was created.
-      createdBy:
-        type: string
-        description: Creator of action.
   QuestionSet:
     type: object
     properties:
@@ -1075,21 +939,6 @@ definitions:
       description:
         type: string
         description: Description of survey.
-  ActionPlan:
-    type: object
-    properties:
-      actionPlanId:
-        type: integer
-        description: Unique Id of action plan.
-      actionPlanName:
-        type: string
-        description: Name of action plan.
-      description:
-        type: string
-        description: Description of action plan.
-      rules:
-        type: string
-        description: Action plan steps.
   GeographyDetails:
     type: object
     properties:
