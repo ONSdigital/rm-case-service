@@ -40,9 +40,9 @@ public class SampleServiceImpl implements SampleService {
   */
   @Async
   @Override
-  public Boolean generateCases(Integer sampleId, String goegraphyType, String geographyCode) {
-    log.debug("Entering generateCases with sampleId {} - goegraphyType {} - geographyCode {}", sampleId, goegraphyType, geographyCode);
-    return sampleRepo.generateCases(sampleId, goegraphyType, geographyCode);
+  public Boolean generateCases(Integer sampleId, String geographyType, String geographyCode) {
+    log.debug("Entering generateCases with sampleId {} - geographyType {} - geographyCode {}", sampleId, geographyType, geographyCode);
+    return sampleRepo.generateCases(sampleId, geographyType, geographyCode);
   }
   
 }
