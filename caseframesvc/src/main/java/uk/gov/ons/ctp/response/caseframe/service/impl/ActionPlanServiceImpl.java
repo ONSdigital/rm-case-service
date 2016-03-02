@@ -21,11 +21,13 @@ public class ActionPlanServiceImpl implements ActionPlanService {
   @Inject
   private ActionPlanRepository actionPlanRepo;
 
+  @Override
   public List<ActionPlan> findActionPlans() {
     log.debug("Entering findByUprn");
     return actionPlanRepo.findAll();
   }
 
+  @Override
   public ActionPlan findActionPlan(Integer actionPlanId) {
     log.debug("Entering findActionPlan with {}", actionPlanId);
     return actionPlanRepo.findOne(actionPlanId);

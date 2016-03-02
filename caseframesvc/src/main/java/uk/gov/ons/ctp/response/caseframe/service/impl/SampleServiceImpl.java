@@ -23,11 +23,13 @@ public class SampleServiceImpl implements SampleService {
   @Inject
   private SampleRepository sampleRepo;
   
+  @Override
   public List<Sample> findSamples() {
     log.debug("Entering findSamples");
     return sampleRepo.findAll();
   }
 
+  @Override
   public Sample findSampleBySampleId(Integer sampleId) {
     log.debug("Entering findSampleBySampleId with {}", sampleId);
     return sampleRepo.findOne(sampleId);
@@ -37,6 +39,7 @@ public class SampleServiceImpl implements SampleService {
    * Generate new cases for given sample ID, geography type and geography code
   */
   @Async
+  @Override
   public Boolean generateCases(Integer sampleId, String goegraphyType, String geographyCode) {
     log.debug("Entering generateCases with sampleId {} - goegraphyType {} - geographyCode {}", sampleId, goegraphyType, geographyCode);
     return sampleRepo.generateCases(sampleId, goegraphyType, geographyCode);

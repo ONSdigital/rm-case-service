@@ -7,7 +7,7 @@ import javax.inject.Named;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Survey;
 
 /**
- * JPA Data Respository
+ * JPA Data Repository
  */
 @Named
 public interface SurveyRepository extends JpaRepository<Survey, Integer> {

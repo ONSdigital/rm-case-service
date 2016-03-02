@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import uk.gov.ons.ctp.response.caseframe.domain.model.CaseType;
 
 /**
- * JPA Data Respository
+ * JPA Data Repository
  */
 @Repository
 public interface CaseTypeRepository extends JpaRepository<CaseType, Integer> {

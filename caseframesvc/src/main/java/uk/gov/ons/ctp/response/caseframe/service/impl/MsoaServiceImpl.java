@@ -30,11 +30,13 @@ public class MsoaServiceImpl implements MsoaService {
   @Inject
   AddressSummaryRepository addressSummaryRepository;
   
+  @Override
   public Msoa findById(String msoaid) {
     log.debug("Entering findById with {}", msoaid);
     return msoaRepository.findOne(msoaid);
   }
 
+  @Override
   public List<AddressSummary> findAllAddressSummariesByMsoaid(String msoaid) {
     log.debug("Entering findAllAddressSummariesByMsoaid with {}", msoaid);
     return addressSummaryRepository.findByMsoa11cd(msoaid);

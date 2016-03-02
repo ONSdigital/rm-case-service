@@ -21,11 +21,13 @@ public class CaseTypeServiceImpl implements CaseTypeService {
   @Inject
   private CaseTypeRepository caseTypeRepo;
 
+  @Override
   public List<CaseType> findCaseTypes() {
     log.debug("Entering findCaseTypes");
     return caseTypeRepo.findAll();
   }
 
+  @Override
   public CaseType findCaseTypeByCaseTypeId(Integer caseTypeId) {
     log.debug("Entering findCaseTypeByCaseTypeId with {}", caseTypeId);
     return caseTypeRepo.findOne(caseTypeId);

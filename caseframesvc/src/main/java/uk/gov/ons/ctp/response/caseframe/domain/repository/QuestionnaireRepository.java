@@ -13,7 +13,7 @@ import org.springframework.data.jpa.repository.Query;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Questionnaire;
 
 /**
- * JPA Data Respository
+ * JPA Data Repository
  */
 @Named
 @Transactional

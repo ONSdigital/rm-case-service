@@ -21,11 +21,13 @@ public class QuestionSetServiceImpl implements QuestionSetService {
   @Inject
   private QuestionSetRepository questionSetRepo;
   
+  @Override
   public List<QuestionSet> findQuestionSets() {
     log.debug("Entering findQuestionSets");
     return questionSetRepo.findAll();
   }
 
+  @Override
   public QuestionSet findQuestionSetByQuestionSet(String questionSet) {
     log.debug("Entering findQuestionSetByQuestionSet with {}", questionSet);
     return questionSetRepo.findByQuestionSet(questionSet);

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import uk.gov.ons.ctp.response.caseframe.domain.model.ActionPlan;
 
 /**
- * JPA Data Respository
+ * JPA Data Repository
  */
 @Repository
 public interface ActionPlanRepository extends JpaRepository<ActionPlan, Integer> {

@@ -26,16 +26,19 @@ public class RegionServiceImpl implements RegionService {
   @Inject
   private LocalAuthorityRepository localAuthorityRepository;
 
+  @Override
   public List<Region> findAll() {
     log.debug("Entering findAll");
     return regionRepository.findAllByOrderByRgn11cd();
   }
 
+  @Override
   public Region findById(String regionid) {
     log.debug("Entering findById with {}", regionid);
     return regionRepository.findOne(regionid);
   }
 
+  @Override
   public List<LocalAuthority> findAllLadsByRegionid(String regionid) {
     log.debug("Entering findAllLadsByRegionid with {}", regionid);
     return localAuthorityRepository.findByRgn11cdOrderByLad12nm(regionid);

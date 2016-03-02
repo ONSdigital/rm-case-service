@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Msoa;
 
 /**
- * JPA Data Respository
+ * JPA Data Repository
  */
 @Repository
 public interface MsoaRepository extends JpaRepository<Msoa, String> {

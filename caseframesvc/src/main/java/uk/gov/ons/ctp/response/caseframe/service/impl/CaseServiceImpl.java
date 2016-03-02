@@ -31,11 +31,13 @@ public class CaseServiceImpl implements CaseService {
   @Inject
   private CaseEventRepository eventRepo;
 
+  @Override
   public List<Case> findCasesByUprn(Integer uprn) {
     log.debug("Entering findCasesByUprn with uprn {}", uprn);
     return caseRepo.findByUprn(uprn);
   }
 
+  @Override
   public Case findCaseByQuestionnaireId(Integer qid) {
     log.debug("Entering findCaseByQuestionnaireId");
     Questionnaire questionnaire = questionnaireRepo.findByQuestionnaireId(qid);
@@ -45,11 +47,13 @@ public class CaseServiceImpl implements CaseService {
     return caseRepo.findOne(questionnaire.getCaseId());
   }
 
+  @Override
   public Case findCaseByCaseId(Integer caseId) {
     log.debug("Entering findCaseByCaseId");
     return caseRepo.findOne(caseId);
   }
 
+  @Override
   public List<CaseEvent> findCaseEventsByCaseId(Integer caseId) {
     log.debug("Entering findCaseEventsByCaseId");
     return eventRepo.findByCaseId(caseId);

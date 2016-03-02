@@ -29,22 +29,25 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
   @Inject
   private QuestionnaireRepository questionnaireRepo;
 
+  @Override
   public Questionnaire findQuestionnaireByIac(String iac) {
     log.debug("Entering findQuestionnaireByIac with {}", iac);
     return questionnaireRepo.findByIac(iac);
   }
 
+  @Override
   public List<Questionnaire> findQuestionnairesByCaseId(Integer caseId) {
     log.debug("Entering findQuestionnairesByCaseId with {}", caseId);
     return questionnaireRepo.findByCaseId(caseId);
   }
 
-
+  @Override
   public int updateResponseTime(Integer questionnaireid) {
     Timestamp currentTime = new Timestamp(System.currentTimeMillis());
     return questionnaireRepo.setResponseDatetimeFor(currentTime, questionnaireid);
   }
 
+  @Override
   public int closeParentCase(Integer questionnaireid) {
     Questionnaire questionnaire = questionnaireRepo.findOne(questionnaireid);
     return caseRepo.setStatusFor(CLOSED, questionnaire.getCaseId());

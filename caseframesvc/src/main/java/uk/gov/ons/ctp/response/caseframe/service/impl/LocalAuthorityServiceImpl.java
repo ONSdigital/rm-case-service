@@ -26,11 +26,13 @@ public class LocalAuthorityServiceImpl implements LocalAuthorityService {
   @Inject
   private MsoaRepository msoaRepository;
 
+  @Override
   public LocalAuthority findById(String ladid) {
     log.debug("entering findById with {}", ladid);
     return localAuthorityRepository.findOne(ladid);
   }
 
+  @Override
   public List<Msoa> findAllMsoasByLadid(String ladid){
     log.debug("entering findAllMsoasByLadid with {}", ladid);
     return msoaRepository.findByLad12cdOrderByMsoa11nm(ladid);

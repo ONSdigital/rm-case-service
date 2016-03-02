@@ -11,7 +11,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 /**
- * JPA Data Respository
+ * JPA Data Repository
  */
 @Named
 @Transactional

@@ -8,7 +8,7 @@ import javax.inject.Named;
 import java.util.List;
 
 /**
- * JPA Data Respository
+ * JPA Data Repository
  */
 @Named
 public interface RegionRepository extends JpaRepository<Region, String> {

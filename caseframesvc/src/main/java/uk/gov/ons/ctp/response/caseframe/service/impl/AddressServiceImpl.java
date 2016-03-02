@@ -20,11 +20,13 @@ public class AddressServiceImpl implements AddressService {
   @Inject
   AddressRepository addressRepository;
 
+  @Override
   public Address findByUprn(Long uprn) {
     log.debug("Entering findByUprn with {}", uprn);
     return addressRepository.findByUprn(uprn);
   }
 
+  @Override
   public List<Address> findByPostcode(String postcode) {
     log.debug("Entering findByPostcode with {}", postcode);
     return addressRepository.findByPostcode(postcode);

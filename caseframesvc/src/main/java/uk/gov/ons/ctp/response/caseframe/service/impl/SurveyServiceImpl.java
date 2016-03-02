@@ -23,11 +23,13 @@ public class SurveyServiceImpl implements SurveyService {
   @Inject
   private SurveyRepository surveyRepo;
 
+  @Override
   public List<Survey> findSurveys() {
     log.debug("Entering findSurveys");
     return surveyRepo.findAll();
   }
 
+  @Override
   public Survey findSurveyBySurveyId(Integer surveyId) {
     log.debug("Entering findSurveyBySurveyId with {}", surveyId);
     return surveyRepo.findOne(surveyId);

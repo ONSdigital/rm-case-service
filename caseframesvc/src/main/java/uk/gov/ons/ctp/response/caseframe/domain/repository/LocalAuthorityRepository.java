@@ -9,7 +9,7 @@ import uk.gov.ons.ctp.response.caseframe.domain.model.LocalAuthority;
 import javax.inject.Named;
 
 /**
- * JPA Data Respository
+ * JPA Data Repository
  */
 @Named
 public interface LocalAuthorityRepository extends JpaRepository<LocalAuthority, String> {

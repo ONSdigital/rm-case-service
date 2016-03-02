@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import uk.gov.ons.ctp.response.caseframe.domain.model.AddressSummary;
 
 /**
- * JPA Data Respository
+ * JPA Data Repository
  */
 @Repository
 public interface AddressSummaryRepository extends JpaRepository<AddressSummary, String> {
