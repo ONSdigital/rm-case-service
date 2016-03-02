@@ -22,8 +22,11 @@ import static uk.gov.ons.ctp.response.caseframe.utility.MockAddressServiceFactor
 import static uk.gov.ons.ctp.response.caseframe.utility.MockAddressServiceFactory.ADDRESS_WITH_UPRN_CHECKED_EXCEPTION;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockAddressServiceFactory.OUR_EXCEPTION_MESSAGE;
 
+import java.lang.reflect.Method;
+
 import javax.ws.rs.core.Application;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
@@ -37,6 +40,10 @@ import uk.gov.ons.ctp.response.caseframe.utility.MockAddressServiceFactory;
  * Unit Tests for the Address Endpoint
  */
 public class AddressEndpointUnitTest extends CTPJerseyTest {
+
+  private static final String FORMAT_POSTCODE = "formatPostcode";
+  private static final String POSTCODE_WITH_SPACE = "PO15 5RR";
+  private static final String POSTCODE_WITH_NO_SPACE = "PO155RR";
 
   @Override
   public Application configure() {
@@ -118,5 +125,37 @@ public class AddressEndpointUnitTest extends CTPJerseyTest {
             .assertTimestampExists()
             .assertStringInBody("$.error.message", String.format("No addresses found for postcode %s", ADDRESS_NON_EXISTING_POSTCODE))
             .andClose();
+  }
+
+  @Test
+  public void testFormatPostcodeWithSpace() throws Exception {
+    AddressEndpoint addressEndpoint = new AddressEndpoint();
+
+    Class[] parameterTypes = new Class[1];
+    parameterTypes[0] = String.class;
+    Method methodUnderTest = addressEndpoint.getClass().getDeclaredMethod(FORMAT_POSTCODE, parameterTypes);
+    methodUnderTest.setAccessible(true);
+
+    Object[] parameters = new Object[1];
+    parameters[0] = POSTCODE_WITH_SPACE;
+
+    String result = (String)methodUnderTest.invoke(addressEndpoint, parameters);
+    Assert.assertEquals(POSTCODE_WITH_SPACE, result);
+  }
+
+  @Test
+  public void testFormatPostcodeWithNoSpace() throws Exception {
+    AddressEndpoint addressEndpoint = new AddressEndpoint();
+
+    Class[] parameterTypes = new Class[1];
+    parameterTypes[0] = String.class;
+    Method methodUnderTest = addressEndpoint.getClass().getDeclaredMethod(FORMAT_POSTCODE, parameterTypes);
+    methodUnderTest.setAccessible(true);
+
+    Object[] parameters = new Object[1];
+    parameters[0] = POSTCODE_WITH_NO_SPACE;
+
+    String result = (String)methodUnderTest.invoke(addressEndpoint, parameters);
+    Assert.assertEquals(POSTCODE_WITH_SPACE, result);
   }
 }
