@@ -29,6 +29,25 @@ public class AddressServiceImpl implements AddressService {
   @Override
   public List<Address> findByPostcode(String postcode) {
     log.debug("Entering findByPostcode with {}", postcode);
-    return addressRepository.findByPostcode(postcode);
+    return addressRepository.findByPostcode(formatPostcode(postcode));
   }
-}
+
+  private String formatPostcode(String postcode) {
+    StringBuilder fullPostcode = null;
+
+    String trimmedPostcode = postcode.trim();
+    int trimmedPostcodeLength = trimmedPostcode.length();
+    if (trimmedPostcodeLength < 8) {
+      // case where the space was forgotten in the middle of the postcode
+      String postcodeStart = trimmedPostcode.substring(0, trimmedPostcodeLength - 3);
+      fullPostcode = new StringBuilder(postcodeStart);
+      fullPostcode.append(" ");
+      String lastThreeChracters = trimmedPostcode.substring(trimmedPostcodeLength - 3, trimmedPostcodeLength);
+      fullPostcode.append(lastThreeChracters);
+    } else {
+      fullPostcode = new StringBuilder(trimmedPostcode);
+    }
+
+    log.debug("fullPostcode = {}", fullPostcode);
+    return fullPostcode.toString();
+  }}

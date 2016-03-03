@@ -24,13 +24,11 @@ import static uk.gov.ons.ctp.response.caseframe.utility.MockAddressServiceFactor
 
 import javax.ws.rs.core.Application;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
-import uk.gov.ons.ctp.common.jersey.TestHelper;
 import uk.gov.ons.ctp.response.caseframe.CaseFrameBeanMapper;
 import uk.gov.ons.ctp.response.caseframe.service.AddressService;
 import uk.gov.ons.ctp.response.caseframe.utility.MockAddressServiceFactory;
@@ -39,10 +37,6 @@ import uk.gov.ons.ctp.response.caseframe.utility.MockAddressServiceFactory;
  * Unit Tests for the Address Endpoint
  */
 public class AddressEndpointUnitTest extends CTPJerseyTest {
-
-  private static final String FORMAT_POSTCODE = "formatPostcode";
-  private static final String POSTCODE_WITH_SPACE = "PO15 5RR";
-  private static final String POSTCODE_WITH_NO_SPACE = "PO155RR";
 
   @Override
   public Application configure() {
@@ -126,16 +120,5 @@ public class AddressEndpointUnitTest extends CTPJerseyTest {
             .andClose();
   }
 
-  @Test
-  public void testFormatPostcodeWithSpace() throws Exception {
-    String result = (String) TestHelper.callPrivateMethodOfDefaultConstructableClass(AddressEndpoint.class, FORMAT_POSTCODE, POSTCODE_WITH_SPACE);
-    Assert.assertEquals(POSTCODE_WITH_SPACE, result);
-  }
-
-  @Test
-  public void testFormatPostcodeWithNoSpace() throws Exception {
-    String result = (String) TestHelper.callPrivateMethodOfDefaultConstructableClass(AddressEndpoint.class, FORMAT_POSTCODE, POSTCODE_WITH_NO_SPACE);
-    Assert.assertEquals(POSTCODE_WITH_SPACE, result);
-  }
   
 }
