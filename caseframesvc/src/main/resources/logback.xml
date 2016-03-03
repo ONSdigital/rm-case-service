@@ -8,10 +8,10 @@
     </appender>
 
     <appender name="FILE-AUDIT" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/var/log/ctp/responsemanagement-caseframesvc/debug.log</file>
+        <file>/var/log/ctp/responsemanagement/caseframesvc/debug.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover daily -->
-            <fileNamePattern>/var/log/ctp/responsemanagement-caseframesvc/debug.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>/var/log/ctp/responsemanagement/caseframesvc/debug.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy
                     class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>10MB</maxFileSize>
@@ -23,10 +23,10 @@
     </appender>
 
     <appender name="FILE-ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/var/log/ctp/responsemanagement-caseframesvc/error.log</file>
+        <file>/var/log/ctp/responsemanagement/caseframesvc/error.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <fileNamePattern>responsemanagement-caseframesvc/error.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>/var/log/ctp/responsemanagement/caseframesvc/error.%d{yyyy-MM-dd}.log</fileNamePattern>
             <!-- keep 30 days' worth of history -->
             <maxHistory>30</maxHistory>
         </rollingPolicy>

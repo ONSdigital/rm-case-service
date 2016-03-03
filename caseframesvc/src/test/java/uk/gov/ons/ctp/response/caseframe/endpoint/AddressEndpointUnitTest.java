@@ -22,8 +22,6 @@ import static uk.gov.ons.ctp.response.caseframe.utility.MockAddressServiceFactor
 import static uk.gov.ons.ctp.response.caseframe.utility.MockAddressServiceFactory.ADDRESS_WITH_UPRN_CHECKED_EXCEPTION;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockAddressServiceFactory.OUR_EXCEPTION_MESSAGE;
 
-import java.lang.reflect.Method;
-
 import javax.ws.rs.core.Application;
 
 import org.junit.Assert;
@@ -32,6 +30,7 @@ import org.springframework.http.HttpStatus;
 
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
+import uk.gov.ons.ctp.common.jersey.TestHelper;
 import uk.gov.ons.ctp.response.caseframe.CaseFrameBeanMapper;
 import uk.gov.ons.ctp.response.caseframe.service.AddressService;
 import uk.gov.ons.ctp.response.caseframe.utility.MockAddressServiceFactory;
@@ -129,33 +128,14 @@ public class AddressEndpointUnitTest extends CTPJerseyTest {
 
   @Test
   public void testFormatPostcodeWithSpace() throws Exception {
-    AddressEndpoint addressEndpoint = new AddressEndpoint();
-
-    Class[] parameterTypes = new Class[1];
-    parameterTypes[0] = String.class;
-    Method methodUnderTest = addressEndpoint.getClass().getDeclaredMethod(FORMAT_POSTCODE, parameterTypes);
-    methodUnderTest.setAccessible(true);
-
-    Object[] parameters = new Object[1];
-    parameters[0] = POSTCODE_WITH_SPACE;
-
-    String result = (String)methodUnderTest.invoke(addressEndpoint, parameters);
+    String result = (String) TestHelper.callPrivateMethodOfDefaultConstructableClass(AddressEndpoint.class, FORMAT_POSTCODE, POSTCODE_WITH_SPACE);
     Assert.assertEquals(POSTCODE_WITH_SPACE, result);
   }
 
   @Test
   public void testFormatPostcodeWithNoSpace() throws Exception {
-    AddressEndpoint addressEndpoint = new AddressEndpoint();
-
-    Class[] parameterTypes = new Class[1];
-    parameterTypes[0] = String.class;
-    Method methodUnderTest = addressEndpoint.getClass().getDeclaredMethod(FORMAT_POSTCODE, parameterTypes);
-    methodUnderTest.setAccessible(true);
-
-    Object[] parameters = new Object[1];
-    parameters[0] = POSTCODE_WITH_NO_SPACE;
-
-    String result = (String)methodUnderTest.invoke(addressEndpoint, parameters);
+    String result = (String) TestHelper.callPrivateMethodOfDefaultConstructableClass(AddressEndpoint.class, FORMAT_POSTCODE, POSTCODE_WITH_NO_SPACE);
     Assert.assertEquals(POSTCODE_WITH_SPACE, result);
   }
+  
 }
