@@ -19,6 +19,7 @@ import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
 import uk.gov.ons.ctp.response.caseframe.CaseFrameBeanMapper;
 import uk.gov.ons.ctp.response.caseframe.service.QuestionnaireService;
+import uk.gov.ons.ctp.response.caseframe.service.impl.QuestionnaireServiceImpl;
 import uk.gov.ons.ctp.response.caseframe.utility.MockQuestionnaireServiceFactory;
 import uk.gov.ons.ctp.response.caseframe.utility.QuestionnaireBuilder;
 /**
@@ -83,7 +84,7 @@ public class QuestionnaireEndpointTest extends CTPJerseyTest {
   @Test
   public void responseOperation() {
     with("http://localhost:9998/questionnaires/%d/response", QUESTIONNAIRE_ID_1).put("")
-            .assertResponseCodeIs(HttpStatus.OK)
+            .assertResponseCodeIs(HttpStatus.NO_CONTENT)
             .andClose();
   }
 
@@ -93,7 +94,7 @@ public class QuestionnaireEndpointTest extends CTPJerseyTest {
             .assertResponseCodeIs(HttpStatus.INTERNAL_SERVER_ERROR)
             .assertStringInBody("$.error.code", CTPException.Fault.SYSTEM_ERROR.toString())
             .assertTimestampExists()
-            .assertStringInBody("$.error.message", String.format("%s %s", QuestionnaireEndpoint.OPERATION_FAILED, QUESTIONNAIRE_ID_SERVER_SIDE_ERROR))
+            .assertStringInBody("$.error.message", String.format("%s %s", QuestionnaireServiceImpl.OPERATION_FAILED, QUESTIONNAIRE_ID_SERVER_SIDE_ERROR))
             .andClose();
   }
 

@@ -64,7 +64,7 @@ public class MockQuestionnaireServiceFactory implements Factory<QuestionnaireSer
         return list;
       }
     });
-
+    
     Mockito.when(mockedService.findQuestionnairesByCaseId(QUESTIONNAIRE_CASEID_NOT_FOUND)).thenAnswer(new Answer<List<Questionnaire>>() {
       public List<Questionnaire> answer(InvocationOnMock invocation)
               throws Throwable {
@@ -72,12 +72,24 @@ public class MockQuestionnaireServiceFactory implements Factory<QuestionnaireSer
       }
     });
 
-    Mockito.when(mockedService.updateResponseTime(QUESTIONNAIRE_ID_1)).thenReturn(1);
-    Mockito.when(mockedService.closeParentCase(QUESTIONNAIRE_ID_1)).thenReturn(1);
+    Mockito.when(mockedService.recordResponse(QUESTIONNAIRE_ID_1)).thenAnswer(new Answer<Questionnaire>() {
+      public Questionnaire answer(InvocationOnMock invocation)
+              throws Throwable {
+        Integer questCode = (Integer) invocation.getArguments()[0];
+        return QuestionnaireBuilder.questionnaire()
+                .iac(QUESTIONNAIRE_IAC)
+                .id(questCode)
+                .caseid(QUESTIONNAIRE_CASEID)
+                .buildQuestionnaire();
+      }
+    });
 
-    Mockito.when(mockedService.updateResponseTime(QUESTIONNAIRE_ID_SERVER_SIDE_ERROR)).thenReturn(0);
-    Mockito.when(mockedService.closeParentCase(QUESTIONNAIRE_ID_SERVER_SIDE_ERROR)).thenReturn(0);
-
+    Mockito.when(mockedService.recordResponse(QUESTIONNAIRE_ID_SERVER_SIDE_ERROR)).thenAnswer(new Answer<Questionnaire>() {
+      public Questionnaire answer(InvocationOnMock invocation)
+              throws Throwable {
+        return null;
+      }
+    });
     return mockedService;
   }
 
