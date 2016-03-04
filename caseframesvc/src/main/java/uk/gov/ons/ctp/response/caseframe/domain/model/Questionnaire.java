@@ -36,10 +36,13 @@ public class Questionnaire implements Serializable {
 
   private String questionnaireStatus;
 
+  @Column(name="dispatch_datetime")
   private Timestamp dispatchDateTime;
 
+  @Column(name="response_datetime")
   private Timestamp responseDateTime;
 
+  @Column(name="receipt_datetime")
   private Timestamp receiptDateTime;
   
   @Column(name="questionset")
