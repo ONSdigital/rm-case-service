@@ -12,5 +12,5 @@ import uk.gov.ons.ctp.response.caseframe.domain.model.AddressSummary;
  */
 @Repository
 public interface AddressSummaryRepository extends JpaRepository<AddressSummary, String> {
-    List<AddressSummary> findByMsoa11cd(String msoaid);
+  List<AddressSummary> findByMsoa11cd(String msoaid);
 }

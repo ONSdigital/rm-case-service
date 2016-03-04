@@ -19,13 +19,14 @@ import uk.gov.ons.ctp.response.caseframe.domain.model.Questionnaire;
 @Transactional
 public interface QuestionnaireRepository extends JpaRepository<Questionnaire, Integer> {
 
-    Questionnaire findByIac(String iac);
-    List<Questionnaire> findByCaseId(Integer caseId);
-    Questionnaire findByQuestionnaireId(Integer qid);
+  Questionnaire findByIac(String iac);
 
+  List<Questionnaire> findByCaseId(Integer caseId);
 
-    @Modifying
-    @Query(value = "UPDATE caseframe.questionnaire SET response_datetime = ?1 WHERE questionnaireid = ?2", nativeQuery = true)
-    int setResponseDatetimeFor(Timestamp responseDatetime, Integer questionnaireid);
+  Questionnaire findByQuestionnaireId(Integer qid);
+
+  @Modifying
+  @Query(value = "UPDATE caseframe.questionnaire SET response_datetime = ?1 WHERE questionnaireid = ?2", nativeQuery = true)
+  int setResponseDatetimeFor(Timestamp responseDatetime, Integer questionnaireid);
 
 }

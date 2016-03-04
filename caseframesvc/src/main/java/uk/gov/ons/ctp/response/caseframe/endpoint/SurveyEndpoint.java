@@ -18,12 +18,11 @@ import uk.gov.ons.ctp.response.caseframe.domain.model.Survey;
 import uk.gov.ons.ctp.response.caseframe.representation.SurveyDTO;
 import uk.gov.ons.ctp.response.caseframe.service.SurveyService;
 
-
 /**
  * The REST endpoint controller for CaseFrame Surveys
  */
 @Path("/surveys")
-@Produces({"application/json"})
+@Produces({ "application/json" })
 @Slf4j
 public class SurveyEndpoint implements CTPEndpoint {
 
@@ -32,7 +31,7 @@ public class SurveyEndpoint implements CTPEndpoint {
 
   @Inject
   private MapperFacade mapperFacade;
-  
+
   @GET
   @Path("/")
   public List<SurveyDTO> findSurveys() {
@@ -51,5 +50,5 @@ public class SurveyEndpoint implements CTPEndpoint {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Survey not found for id %s", surveyId);
     }
     return mapperFacade.map(survey, SurveyDTO.class);
-  } 
+  }
 }

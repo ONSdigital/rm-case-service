@@ -20,14 +20,14 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name="survey", schema="caseframe")
+@Table(name = "survey", schema = "caseframe")
 public class Survey implements Serializable {
 
   private static final long serialVersionUID = -256606660399234997L;
 
   @Id
   @GeneratedValue
-  @Column(name="surveyid")
+  @Column(name = "surveyid")
   private Integer surveyid;
 
   private String surveyName;

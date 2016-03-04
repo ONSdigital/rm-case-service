@@ -22,7 +22,7 @@ import uk.gov.ons.ctp.response.caseframe.service.CaseTypeService;
  * The REST endpoint controller for CaseType
  */
 @Path("/casetypes")
-@Produces({"application/json"})
+@Produces({ "application/json" })
 @Slf4j
 public class CaseTypeEndpoint implements CTPEndpoint {
 
@@ -31,7 +31,7 @@ public class CaseTypeEndpoint implements CTPEndpoint {
 
   @Inject
   private MapperFacade mapperFacade;
-  
+
   @GET
   @Path("/")
   public List<CaseTypeDTO> findCaseTypes() {
@@ -45,7 +45,7 @@ public class CaseTypeEndpoint implements CTPEndpoint {
   @Path("/{casetypeid}")
   public CaseTypeDTO findCaseTypeByCaseTypeId(@PathParam("casetypeid") Integer caseTypeId) throws CTPException {
     log.debug("Entering findCaseTypeByCaseTypeId with {}", caseTypeId);
-    CaseType caseType = caseTypeService.findCaseTypeByCaseTypeId(caseTypeId); 
+    CaseType caseType = caseTypeService.findCaseTypeByCaseTypeId(caseTypeId);
     if (caseType == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "CaseType not found for id %s", caseTypeId);
     }

@@ -13,7 +13,7 @@ public interface SampleService extends CTPService {
   List<Sample> findSamples();
 
   Sample findSampleBySampleId(Integer sampleId);
-  
+
   Boolean generateCases(Integer sampleId, String goegraphyType, String geographyCode);
 
 }

@@ -41,5 +41,4 @@ public class AddressDTO {
 
   private Double longitude;
 
-
 }

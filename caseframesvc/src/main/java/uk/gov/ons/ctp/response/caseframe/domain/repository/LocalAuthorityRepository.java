@@ -13,5 +13,5 @@ import javax.inject.Named;
  */
 @Named
 public interface LocalAuthorityRepository extends JpaRepository<LocalAuthority, String> {
-    List<LocalAuthority> findByRgn11cdOrderByLad12nm(String regionId);
+  List<LocalAuthority> findByRgn11cdOrderByLad12nm(String regionId);
 }

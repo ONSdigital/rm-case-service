@@ -20,27 +20,25 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name="casetype", schema="caseframe")
+@Table(name = "casetype", schema = "caseframe")
 public class CaseType implements Serializable {
 
   private static final long serialVersionUID = -2974430124226920391L;
 
   @Id
   @GeneratedValue
-  @Column(name="casetypeid")
+  @Column(name = "casetypeid")
   private Integer caseTypeId;
 
-  @Column(name="casetype_name")
+  @Column(name = "casetype_name")
   private String caseTypeName;
 
   private String description;
 
-  @Column(name="actionplanid")
+  @Column(name = "actionplanid")
   private Integer actionPlanId;
 
-  @Column(name="questionset")
+  @Column(name = "questionset")
   private String questionSet;
 
 }
-
-

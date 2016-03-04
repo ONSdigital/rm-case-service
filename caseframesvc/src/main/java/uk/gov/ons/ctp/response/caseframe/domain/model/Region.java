@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-@Table(name="region", schema="refdata")
+@Table(name = "region", schema = "refdata")
 public class Region implements Serializable {
 
   private static final long serialVersionUID = 3552687869535168637L;

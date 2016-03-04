@@ -22,9 +22,9 @@ import uk.gov.ons.ctp.response.caseframe.service.QuestionnaireService;
 
 /**
  * The REST endpoint controller for CaseFrame Questionnaires
-*/
+ */
 @Path("/questionnaires")
-@Produces({"application/json"})
+@Produces({ "application/json" })
 @Slf4j
 public class QuestionnaireEndpoint implements CTPEndpoint {
 
@@ -35,7 +35,7 @@ public class QuestionnaireEndpoint implements CTPEndpoint {
 
   @Inject
   private MapperFacade mapperFacade;
-  
+
   @GET
   @Path("/iac/{iac}")
   public QuestionnaireDTO findByIac(@PathParam("iac") String iac) throws CTPException {
@@ -65,7 +65,8 @@ public class QuestionnaireEndpoint implements CTPEndpoint {
     int nbOfUpdatedQuestionnaires = questionnaireService.updateResponseTime(questionnaireid);
     int nbOfUpdatedCases = questionnaireService.closeParentCase(questionnaireid);
     if (!(nbOfUpdatedQuestionnaires == 1 && nbOfUpdatedCases == 1)) {
-      log.error("{} {} - nbOfUpdatedQuestionnaires = {} - nbOfUpdatedCases = {}", OPERATION_FAILED, questionnaireid, nbOfUpdatedQuestionnaires, nbOfUpdatedCases);
+      log.error("{} {} - nbOfUpdatedQuestionnaires = {} - nbOfUpdatedCases = {}", OPERATION_FAILED, questionnaireid,
+          nbOfUpdatedQuestionnaires, nbOfUpdatedCases);
       throw new CTPException(CTPException.Fault.SYSTEM_ERROR, "%s %s", OPERATION_FAILED, questionnaireid);
     }
     return Response.status(Response.Status.OK).build();

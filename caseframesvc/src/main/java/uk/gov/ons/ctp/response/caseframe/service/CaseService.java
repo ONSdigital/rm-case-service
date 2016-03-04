@@ -7,16 +7,16 @@ import uk.gov.ons.ctp.response.caseframe.domain.model.Case;
 import uk.gov.ons.ctp.response.caseframe.domain.model.CaseEvent;
 
 /**
- * The interface defining the function of the Case service.
- * The application business logic should reside in it's implementation
+ * The interface defining the function of the Case service. The application
+ * business logic should reside in it's implementation
  */
 public interface CaseService extends CTPService {
 
-    List<Case> findCasesByUprn(Integer uprn);
+  List<Case> findCasesByUprn(Integer uprn);
 
-    Case findCaseByQuestionnaireId(Integer qid);
+  Case findCaseByQuestionnaireId(Integer qid);
 
-    Case findCaseByCaseId(Integer caseId);
+  Case findCaseByCaseId(Integer caseId);
 
-    List<CaseEvent> findCaseEventsByCaseId(Integer caseId);
+  List<CaseEvent> findCaseEventsByCaseId(Integer caseId);
 }

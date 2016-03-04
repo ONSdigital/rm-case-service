@@ -22,7 +22,7 @@ import uk.gov.ons.ctp.response.caseframe.service.QuestionSetService;
  * The REST endpoint controller for CaseFrame QuestionSets
  */
 @Path("/questionsets")
-@Produces({"application/json"})
+@Produces({ "application/json" })
 @Slf4j
 public class QuestionSetEndpoint implements CTPEndpoint {
 
@@ -43,9 +43,10 @@ public class QuestionSetEndpoint implements CTPEndpoint {
 
   @GET
   @Path("/{questionset}")
-  public QuestionSetDTO findQuestionSetByQuestionSet(@PathParam("questionset") String questionSetName) throws CTPException {
+  public QuestionSetDTO findQuestionSetByQuestionSet(@PathParam("questionset") String questionSetName)
+      throws CTPException {
     log.debug("Entering findQuestionSetByQuestionSet with {}", questionSetName);
-    QuestionSet questionSet = questionSetService.findQuestionSetByQuestionSet(questionSetName); 
+    QuestionSet questionSet = questionSetService.findQuestionSetByQuestionSet(questionSetName);
     if (questionSet == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "QuestionSet not found for id %s", questionSetName);
     }

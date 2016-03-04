@@ -14,10 +14,10 @@ import uk.gov.ons.ctp.response.caseframe.domain.model.Sample;
 public interface SampleRepository extends JpaRepository<Sample, Integer> {
 
   /**
-   * Stored procedure to generate new cases for given sample ID, geography type and geography code
+   * Stored procedure to generate new cases for given sample ID, geography type
+   * and geography code
    */
   @Procedure(name = "generate_cases")
-  boolean generateCases(@Param("p_sampleid") Integer sampleid,
-        @Param("p_geog_area_type") String geographyType, 
-        @Param("p_geog_area_code") String geographyCode);
+  boolean generateCases(@Param("p_sampleid") Integer sampleid, @Param("p_geog_area_type") String geographyType,
+      @Param("p_geog_area_code") String geographyCode);
 }

@@ -24,7 +24,7 @@ import uk.gov.ons.ctp.response.caseframe.service.CaseService;
  * The REST endpoint controller for CaseFrame Cases
  */
 @Path("/cases")
-@Produces({"application/json"})
+@Produces({ "application/json" })
 @Slf4j
 public class CaseEndpoint implements CTPEndpoint {
 
@@ -33,7 +33,7 @@ public class CaseEndpoint implements CTPEndpoint {
 
   @Inject
   private MapperFacade mapperFacade;
-  
+
   @GET
   @Path("/uprn/{uprn}")
   public List<CaseDTO> findCasesByUprn(@PathParam("uprn") Integer uprn) {

@@ -17,9 +17,9 @@ import java.util.List;
 @Transactional
 public interface CaseRepository extends JpaRepository<Case, Integer> {
 
-    List<Case> findByUprn(Integer uprn);
+  List<Case> findByUprn(Integer uprn);
 
-    @Modifying
-    @Query(value = "UPDATE caseframe.case SET case_status = ?1 WHERE caseid = ?2", nativeQuery = true)
-    int setStatusFor(String status, Integer caseid);
+  @Modifying
+  @Query(value = "UPDATE caseframe.case SET case_status = ?1 WHERE caseid = ?2", nativeQuery = true)
+  int setStatusFor(String status, Integer caseid);
 }

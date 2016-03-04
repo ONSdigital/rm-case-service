@@ -22,13 +22,13 @@ import uk.gov.ons.ctp.response.caseframe.representation.SampleDTO;
 import uk.gov.ons.ctp.response.caseframe.service.SampleService;
 
 /**
- * Sample endpoint including functionality to create cases for a given sample ID, geography type
- * and geography code
+ * Sample endpoint including functionality to create cases for a given sample
+ * ID, geography type and geography code
  */
 
 @Path("/samples")
-@Consumes({"application/json"})
-@Produces({"application/json"})
+@Consumes({ "application/json" })
+@Produces({ "application/json" })
 @Slf4j
 public class SampleEndpoint implements CTPEndpoint {
 
@@ -37,7 +37,7 @@ public class SampleEndpoint implements CTPEndpoint {
 
   @Inject
   private MapperFacade mapperFacade;
-  
+
   @GET
   @Path("/")
   public List<SampleDTO> findSamples() {
@@ -55,13 +55,13 @@ public class SampleEndpoint implements CTPEndpoint {
     if (sample == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Sample not found for id %s", sampleId);
     }
-    return mapperFacade.map(sample, SampleDTO.class); 
+    return mapperFacade.map(sample, SampleDTO.class);
   }
 
   @PUT
   @Path("/{sampleId}")
   public void createCases(@PathParam("sampleId") int sampleId, GeographyDTO geography) {
-    log.debug("Creating cases ");       
+    log.debug("Creating cases ");
     sampleService.generateCases(sampleId, geography.getGeographyType(), geography.getGeographyCode());
-  } 
+  }
 }

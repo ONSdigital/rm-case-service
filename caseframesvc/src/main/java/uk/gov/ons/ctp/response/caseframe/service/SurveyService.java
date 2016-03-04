@@ -14,5 +14,4 @@ public interface SurveyService extends CTPService {
 
   Survey findSurveyBySurveyId(Integer surveyId);
 
-
 }

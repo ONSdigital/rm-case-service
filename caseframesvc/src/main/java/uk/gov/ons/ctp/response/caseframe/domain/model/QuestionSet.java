@@ -19,13 +19,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name="questionset", schema="caseframe")
+@Table(name = "questionset", schema = "caseframe")
 public class QuestionSet implements Serializable {
 
   private static final long serialVersionUID = -8939812032922335421L;
 
   @Id
-  @Column(name="questionset")
+  @Column(name = "questionset")
   private String questionSet;
 
   private String description;

@@ -12,5 +12,5 @@ import uk.gov.ons.ctp.response.caseframe.domain.model.Msoa;
  */
 @Repository
 public interface MsoaRepository extends JpaRepository<Msoa, String> {
-    public List<Msoa> findByLad12cdOrderByMsoa11nm(String ladid);
+  public List<Msoa> findByLad12cdOrderByMsoa11nm(String ladid);
 }

@@ -36,7 +36,7 @@ public class MsoaEndpoint implements CTPEndpoint {
 
   @GET
   @Path("/{msoaid}")
-  public MsoaDTO findMsoaById(@PathParam("msoaid") //@Pattern(regexp = "[EW]\\d{8}", message="arse")
+  public MsoaDTO findMsoaById(@PathParam("msoaid") 
   String msoaid) throws CTPException {
     log.debug("Entering findMsoaById with {}", msoaid);
     Msoa msoa = msoaService.findById(msoaid);

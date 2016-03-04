@@ -18,16 +18,16 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-@Table(name="msoa", schema="refdata")
+@Table(name = "msoa", schema = "refdata")
 public class Msoa implements Serializable {
 
   private static final long serialVersionUID = -7880051861582046804L;
 
-    @Id
-    private String msoa11cd;
+  @Id
+  private String msoa11cd;
 
-    private String msoa11nm;
+  private String msoa11nm;
 
-    private String lad12cd;
+  private String lad12cd;
 
 }

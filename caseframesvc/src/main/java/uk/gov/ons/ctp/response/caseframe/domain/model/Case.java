@@ -21,37 +21,37 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name="case", schema="caseframe")
+@Table(name = "case", schema = "caseframe")
 public class Case implements Serializable {
 
   private static final long serialVersionUID = -3769020357396562359L;
 
   @Id
   @GeneratedValue
-  @Column(name="caseid")
+  @Column(name = "caseid")
   private Integer caseId;
 
   private Integer uprn;
 
   private String caseStatus;
 
-  @Column(name="casetypeid")
+  @Column(name = "casetypeid")
   private Integer caseTypeId;
 
   private Timestamp createdDatetime;
 
   private String createdBy;
 
-  @Column(name="sampleid")
+  @Column(name = "sampleid")
   private Integer sampleId;
 
-  @Column(name="actionplanid")
+  @Column(name = "actionplanid")
   private Integer actionPlanId;
 
-  @Column(name="surveyid")
+  @Column(name = "surveyid")
   private Integer surveyId;
 
-  @Column(name="questionset")
+  @Column(name = "questionset")
   private String questionSet;
 
 }

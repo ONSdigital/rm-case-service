@@ -20,7 +20,7 @@ public class QuestionSetServiceImpl implements QuestionSetService {
 
   @Inject
   private QuestionSetRepository questionSetRepo;
-  
+
   @Override
   public List<QuestionSet> findQuestionSets() {
     log.debug("Entering findQuestionSets");
@@ -31,6 +31,6 @@ public class QuestionSetServiceImpl implements QuestionSetService {
   public QuestionSet findQuestionSetByQuestionSet(String questionSet) {
     log.debug("Entering findQuestionSetByQuestionSet with {}", questionSet);
     return questionSetRepo.findByQuestionSet(questionSet);
-   }
+  }
 
 }

@@ -12,5 +12,4 @@ import uk.gov.ons.ctp.response.caseframe.domain.model.Survey;
 @Named
 public interface SurveyRepository extends JpaRepository<Survey, Integer> {
 
-
 }

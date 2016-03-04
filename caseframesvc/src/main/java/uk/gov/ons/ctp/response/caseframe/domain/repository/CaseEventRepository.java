@@ -13,6 +13,6 @@ import uk.gov.ons.ctp.response.caseframe.domain.model.CaseEvent;
 @Repository
 public interface CaseEventRepository extends JpaRepository<CaseEvent, Integer> {
 
-    List<CaseEvent> findByCaseId(Integer caseId);
+  List<CaseEvent> findByCaseId(Integer caseId);
 
 }

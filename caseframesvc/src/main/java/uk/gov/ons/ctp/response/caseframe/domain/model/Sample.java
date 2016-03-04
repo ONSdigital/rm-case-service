@@ -23,19 +23,19 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name="sample", schema="caseframe")
+@Table(name = "sample", schema = "caseframe")
 @NamedStoredProcedureQuery(name = "generate_cases", procedureName = "caseframe.generate_cases", parameters = {
-	  @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_sampleid", type = Integer.class),
-	  @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_geog_area_type", type = String.class),
-	  @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_geog_area_code", type = String.class),
-	  @StoredProcedureParameter(mode = ParameterMode.OUT, name = "success", type = Boolean.class)})
+    @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_sampleid", type = Integer.class),
+    @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_geog_area_type", type = String.class),
+    @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_geog_area_code", type = String.class),
+    @StoredProcedureParameter(mode = ParameterMode.OUT, name = "success", type = Boolean.class) })
 public class Sample implements Serializable {
 
   private static final long serialVersionUID = -7537916260549107271L;
 
   @Id
   @GeneratedValue
-  @Column(name="sampleid")
+  @Column(name = "sampleid")
   private Integer sampleId;
 
   private String sampleName;
@@ -44,10 +44,10 @@ public class Sample implements Serializable {
 
   private String addressCriteria;
 
-  @Column(name="casetypeid")
+  @Column(name = "casetypeid")
   private Integer caseTypeId;
 
-  @Column(name="surveyid")
+  @Column(name = "surveyid")
   private Integer surveyId;
 
 }

@@ -19,6 +19,7 @@ import uk.gov.ons.ctp.response.caseframe.domain.model.Region;
 import uk.gov.ons.ctp.response.caseframe.representation.LocalAuthorityDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.RegionDTO;
 import uk.gov.ons.ctp.response.caseframe.service.RegionService;
+
 /**
  * The REST endpoint controller for CaseFrame Regions
  */
@@ -32,7 +33,7 @@ public class RegionEndpoint implements CTPEndpoint {
 
   @Inject
   private MapperFacade mapperFacade;
-  
+
   @GET
   @Path("/")
   public List<RegionDTO> findAllRegions() {

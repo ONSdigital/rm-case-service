@@ -58,5 +58,4 @@ public class AddressEndpoint implements CTPEndpoint {
     return mapperFacade.mapAsList(addresses, AddressDTO.class);
   }
 
-
 }

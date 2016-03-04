@@ -21,17 +21,17 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name="caseevent", schema="caseframe")
+@Table(name = "caseevent", schema = "caseframe")
 public class CaseEvent implements Serializable {
 
   private static final long serialVersionUID = 6034836141646834386L;
 
   @Id
   @GeneratedValue
-  @Column(name="caseeventid")
+  @Column(name = "caseeventid")
   private Integer caseEventId;
 
-  @Column(name="caseid")
+  @Column(name = "caseid")
   private Integer caseId;
 
   private String description;

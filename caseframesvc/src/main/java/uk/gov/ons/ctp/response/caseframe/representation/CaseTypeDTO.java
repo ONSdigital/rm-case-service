@@ -7,7 +7,6 @@ import lombok.Data;
 @Data
 public class CaseTypeDTO {
 
-
   private Integer caseTypeId;
 
   private String caseTypeName;
@@ -19,5 +18,3 @@ public class CaseTypeDTO {
   private String questionSet;
 
 }
-
-

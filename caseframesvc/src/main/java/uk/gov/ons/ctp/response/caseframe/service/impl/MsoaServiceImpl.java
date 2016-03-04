@@ -29,7 +29,7 @@ public class MsoaServiceImpl implements MsoaService {
 
   @Inject
   AddressSummaryRepository addressSummaryRepository;
-  
+
   @Override
   public Msoa findById(String msoaid) {
     log.debug("Entering findById with {}", msoaid);

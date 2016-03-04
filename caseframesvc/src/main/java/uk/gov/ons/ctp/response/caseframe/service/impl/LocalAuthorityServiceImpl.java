@@ -13,8 +13,8 @@ import uk.gov.ons.ctp.response.caseframe.domain.repository.MsoaRepository;
 import uk.gov.ons.ctp.response.caseframe.service.LocalAuthorityService;
 
 /**
- * An implementation of the AddressService using JPA Repository class(es)
- * The business logic for the application should reside here.
+ * An implementation of the AddressService using JPA Repository class(es) The
+ * business logic for the application should reside here.
  */
 @Named
 @Slf4j
@@ -33,7 +33,7 @@ public class LocalAuthorityServiceImpl implements LocalAuthorityService {
   }
 
   @Override
-  public List<Msoa> findAllMsoasByLadid(String ladid){
+  public List<Msoa> findAllMsoasByLadid(String ladid) {
     log.debug("entering findAllMsoasByLadid with {}", ladid);
     return msoaRepository.findByLad12cdOrderByMsoa11nm(ladid);
   }

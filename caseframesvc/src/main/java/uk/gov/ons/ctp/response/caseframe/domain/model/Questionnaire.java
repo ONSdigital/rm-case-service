@@ -20,18 +20,18 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-@Table(name="questionnaire", schema="caseframe")
+@Table(name = "questionnaire", schema = "caseframe")
 public class Questionnaire implements Serializable {
 
   private static final long serialVersionUID = -2070377259761460200L;
 
   @Id
-  @Column(name="questionnaireid")
+  @Column(name = "questionnaireid")
   private Integer questionnaireId;
 
   private String iac;
 
-  @Column(name="caseid")
+  @Column(name = "caseid")
   private Integer caseId;
 
   private String questionnaireStatus;
@@ -41,8 +41,8 @@ public class Questionnaire implements Serializable {
   private Timestamp responseDateTime;
 
   private Timestamp receiptDateTime;
-  
-  @Column(name="questionset")
+
+  @Column(name = "questionset")
   private String questionSet;
 
 }
