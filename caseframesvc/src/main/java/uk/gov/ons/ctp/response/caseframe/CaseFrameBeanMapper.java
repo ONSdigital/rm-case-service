@@ -25,72 +25,82 @@ import uk.gov.ons.ctp.response.caseframe.representation.RegionDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.SampleDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.SurveyDTO;
 
+/**
+ * The bean mapper that maps to/from DTOs and JPA entity types.
+ *
+ */
 @Named
 public class CaseFrameBeanMapper extends ConfigurableMapper {
-  protected void configure(MapperFactory factory) {
+
+  /**
+   * Setup the mapper for all of our beans. Only fields having non  identical names need
+   * mapping if we also use byDefault() following.
+   * @param factory the factory to which we add our mappings
+   */
+  protected final void configure(final MapperFactory factory) {
 
     factory
-      .classMap(Address.class, AddressDTO.class)
-      .field("oa11cd", "outputArea")
-      .field("lsoa11cd", "lsoaArea")
-      .field("msoa11cd", "msoaArea")
-      .field("lad12cd", "ladCode")
-      .field("region11cd", "regionCode")
-      .byDefault()
-      .register();
+        .classMap(Address.class, AddressDTO.class)
+        .field("oa11cd", "outputArea")
+        .field("lsoa11cd", "lsoaArea")
+        .field("msoa11cd", "msoaArea")
+        .field("lad12cd", "ladCode")
+        .field("region11cd", "regionCode")
+        .byDefault()
+        .register();
 
     factory
-      .classMap(Case.class, CaseDTO.class)
-      .byDefault()
-      .register();
+        .classMap(Case.class, CaseDTO.class)
+        .byDefault()
+        .register();
 
     factory
-      .classMap(CaseType.class, CaseTypeDTO.class)
-      .byDefault()
-      .register();
+        .classMap(CaseType.class, CaseTypeDTO.class)
+        .byDefault()
+        .register();
 
     factory
-      .classMap(LocalAuthority.class, LocalAuthorityDTO.class)
-      .field("lad12cd", "ladCode")
-      .field("lad12nm", "ladName")
-      .field("rgn11cd", "regionCode")
-      .byDefault()
-      .register();
+        .classMap(LocalAuthority.class, LocalAuthorityDTO.class)
+        .field("lad12cd", "ladCode")
+        .field("lad12nm", "ladName")
+        .field("rgn11cd", "regionCode")
+        .byDefault()
+        .register();
 
     factory
-      .classMap(Msoa.class, MsoaDTO.class)
-      .field("msoa11cd", "msoaCode")
-      .field("msoa11nm", "msoaName")
-      .field("lad12cd", "ladCode")
-      .byDefault()
-      .register();
+        .classMap(Msoa.class, MsoaDTO.class)
+        .field("msoa11cd", "msoaCode")
+        .field("msoa11nm", "msoaName")
+        .field("lad12cd", "ladCode")
+        .byDefault()
+        .register();
 
     factory
-      .classMap(Questionnaire.class, QuestionnaireDTO.class)
-      .byDefault()
-      .register();
+        .classMap(Questionnaire.class, QuestionnaireDTO.class)
+        .byDefault()
+        .register();
 
     factory
-      .classMap(QuestionSet.class, QuestionSetDTO.class)
-      .byDefault()
-      .register();
+        .classMap(QuestionSet.class, QuestionSetDTO.class)
+        .byDefault()
+        .register();
 
     factory
-      .classMap(Region.class, RegionDTO.class)
-      .field("rgn11cd", "regionCode")
-      .field("rgn11nm", "regionName")
-      .byDefault()
-      .register();
+        .classMap(Region.class, RegionDTO.class)
+        .field("rgn11cd", "regionCode")
+        .field("rgn11nm", "regionName")
+        .byDefault()
+        .register();
 
     factory
-      .classMap(Sample.class, SampleDTO.class)
-      .byDefault()
-      .register();
+        .classMap(Sample.class, SampleDTO.class)
+        .byDefault()
+        .register();
 
     factory
-      .classMap(Survey.class, SurveyDTO.class)
-      .byDefault()
-      .register();
+        .classMap(Survey.class, SurveyDTO.class)
+        .byDefault()
+        .register();
 
   }
 }

@@ -20,16 +20,22 @@ import uk.gov.ons.ctp.response.caseframe.endpoint.SampleEndpoint;
 import uk.gov.ons.ctp.response.caseframe.endpoint.SurveyEndpoint;
 
 /**
- * The 'main' entry point for the CaseFrame SpringBoot Application
+ * The 'main' entry point for the CaseFrame SpringBoot Application.
  */
 @SpringBootApplication
 @EnableTransactionManagement
 @EnableAsync
 public class CaseFrameSvcApplication {
-  
+
+  /**
+   * The JerseyConfig class used to config the JAX RS implementation.
+   */
   @Named
   public static class JerseyConfig extends ResourceConfig {
 
+    /**
+     * Required default constructor.
+     */
     public JerseyConfig() {
       packages("uk.gov.ons.ctp");
 
@@ -49,7 +55,13 @@ public class CaseFrameSvcApplication {
     }
   }
 
-  public static void main(String[] args) {
+  /**
+   * The main entry point for this applicaion.
+   * 
+   * @param args
+   *          runtime command line args
+   */
+  public static void main(final String[] args) {
     SpringApplication.run(CaseFrameSvcApplication.class, args);
   }
 }
