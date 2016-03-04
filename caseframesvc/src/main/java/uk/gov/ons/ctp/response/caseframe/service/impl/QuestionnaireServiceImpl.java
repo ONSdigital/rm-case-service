@@ -26,6 +26,7 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 
   public static final String OPERATION_FAILED = "Response operation failed for questionnaireid";
   public static final String CLOSED = "CLOSED";
+  static final int TRANSACTION_TIMEOUT = 30;
 
   /**
    * Spring Data Repository for Case entities.
@@ -70,7 +71,7 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
    * @param Questionnaire Id
    * @return Updated Questionnaire object or null
    */
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout=30)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout=TRANSACTION_TIMEOUT)
   public Questionnaire recordResponse(Integer questionnaireid) {
     Timestamp currentTime = new Timestamp(System.currentTimeMillis());
     Questionnaire questionnaire = questionnaireRepo.findOne(questionnaireid);
