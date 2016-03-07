@@ -57,7 +57,7 @@ public final class RegionEndpoint implements CTPEndpoint {
   @Path("/{regionid}")
   public RegionDTO findRegionById(@PathParam("regionid") final String regionId) throws CTPException {
     log.debug("Entering findRegionById with {}", regionId);
-    Region region = regionService.findById(regionId);
+    Region region = regionService.findByRegionId(regionId);
     if (region == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Region not found for id %s", regionId);
     }

@@ -28,7 +28,7 @@ public final class CaseTypeServiceImpl implements CaseTypeService {
   }
 
   @Override
-  public CaseType findCaseTypeByCaseTypeId(Integer caseTypeId) {
+  public CaseType findCaseTypeByCaseTypeId(final Integer caseTypeId) {
     log.debug("Entering findCaseTypeByCaseTypeId with {}", caseTypeId);
     return caseTypeRepo.findOne(caseTypeId);
   }

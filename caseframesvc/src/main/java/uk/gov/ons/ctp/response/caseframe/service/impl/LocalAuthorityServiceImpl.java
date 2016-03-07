@@ -27,13 +27,13 @@ public final class LocalAuthorityServiceImpl implements LocalAuthorityService {
   private MsoaRepository msoaRepository;
 
   @Override
-  public LocalAuthority findById(String ladid) {
+  public LocalAuthority findById(final String ladid) {
     log.debug("entering findById with {}", ladid);
     return localAuthorityRepository.findOne(ladid);
   }
 
   @Override
-  public List<Msoa> findAllMsoasByLadid(String ladid) {
+  public List<Msoa> findAllMsoasByLadid(final String ladid) {
     log.debug("entering findAllMsoasByLadid with {}", ladid);
     return msoaRepository.findByLad12cdOrderByMsoa11nm(ladid);
   }

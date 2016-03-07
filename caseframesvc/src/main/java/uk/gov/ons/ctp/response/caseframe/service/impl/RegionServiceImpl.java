@@ -33,13 +33,13 @@ public final class RegionServiceImpl implements RegionService {
   }
 
   @Override
-  public Region findById(String regionid) {
+  public Region findByRegionId(final String regionid) {
     log.debug("Entering findById with {}", regionid);
     return regionRepository.findOne(regionid);
   }
 
   @Override
-  public List<LocalAuthority> findAllLadsByRegionid(String regionid) {
+  public List<LocalAuthority> findAllLadsByRegionid(final String regionid) {
     log.debug("Entering findAllLadsByRegionid with {}", regionid);
     return localAuthorityRepository.findByRgn11cdOrderByLad12nm(regionid);
   }

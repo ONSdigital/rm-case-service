@@ -6,12 +6,24 @@ import uk.gov.ons.ctp.common.service.CTPService;
 import uk.gov.ons.ctp.response.caseframe.domain.model.CaseType;
 
 /**
- * Created by Martin.Humphrey on 17/2/2016.
+ * The CaseTypr Service interface defines all business behaviours for operations
+ * on the CaseType entity model.
  */
 public interface CaseTypeService extends CTPService {
 
+  /**
+   * Return all CaseTypes.
+   *
+   * @return List of CaseType entities or empty List
+   */
   List<CaseType> findCaseTypes();
 
+  /**
+   * Find CaseType by unique Id.
+   *
+   * @param caseTypeId CaseType Id Integer
+   * @return CaseType entity or null
+   */
   CaseType findCaseTypeByCaseTypeId(Integer caseTypeId);
 
 }

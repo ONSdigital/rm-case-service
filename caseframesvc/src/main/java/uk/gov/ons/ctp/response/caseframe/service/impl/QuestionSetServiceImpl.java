@@ -28,7 +28,7 @@ public final class QuestionSetServiceImpl implements QuestionSetService {
   }
 
   @Override
-  public QuestionSet findQuestionSetByQuestionSet(String questionSet) {
+  public QuestionSet findQuestionSetByQuestionSet(final String questionSet) {
     log.debug("Entering findQuestionSetByQuestionSet with {}", questionSet);
     return questionSetRepo.findByQuestionSet(questionSet);
   }
