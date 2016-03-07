@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import uk.gov.ons.ctp.response.caseframe.domain.model.QuestionSet;
 
 /**
- * JPA Data Repository
+ * JPA Data Repository.
  */
 @Repository
 public interface QuestionSetRepository extends JpaRepository<QuestionSet, Integer> {

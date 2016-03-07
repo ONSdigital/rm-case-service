@@ -26,7 +26,7 @@ import uk.gov.ons.ctp.response.caseframe.service.RegionService;
 @Path("/regions")
 @Produces({ "application/json" })
 @Slf4j
-public class RegionEndpoint implements CTPEndpoint {
+public final class RegionEndpoint implements CTPEndpoint {
 
   @Inject
   private RegionService regionService;

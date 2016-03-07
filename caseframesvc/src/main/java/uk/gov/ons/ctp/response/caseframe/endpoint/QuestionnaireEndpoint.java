@@ -31,7 +31,7 @@ import uk.gov.ons.ctp.response.caseframe.service.QuestionnaireService;
 @Path("/questionnaires")
 @Produces({ "application/json" })
 @Slf4j
-public class QuestionnaireEndpoint implements CTPEndpoint {
+public final class QuestionnaireEndpoint implements CTPEndpoint {
 
   /**
    * The Questionnaire business service.

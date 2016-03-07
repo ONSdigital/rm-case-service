@@ -26,7 +26,7 @@ import uk.gov.ons.ctp.response.caseframe.service.CaseService;
 @Path("/cases")
 @Produces({ "application/json" })
 @Slf4j
-public class CaseEndpoint implements CTPEndpoint {
+public final class CaseEndpoint implements CTPEndpoint {
 
   @Inject
   private CaseService caseService;

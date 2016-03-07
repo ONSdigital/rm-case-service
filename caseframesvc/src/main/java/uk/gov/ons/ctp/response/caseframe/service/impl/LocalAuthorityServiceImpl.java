@@ -18,7 +18,7 @@ import uk.gov.ons.ctp.response.caseframe.service.LocalAuthorityService;
  */
 @Named
 @Slf4j
-public class LocalAuthorityServiceImpl implements LocalAuthorityService {
+public final class LocalAuthorityServiceImpl implements LocalAuthorityService {
 
   @Inject
   private LocalAuthorityRepository localAuthorityRepository;

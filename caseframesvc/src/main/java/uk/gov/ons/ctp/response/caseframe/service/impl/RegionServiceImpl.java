@@ -18,7 +18,7 @@ import uk.gov.ons.ctp.response.caseframe.service.RegionService;
  */
 @Named
 @Slf4j
-public class RegionServiceImpl implements RegionService {
+public final class RegionServiceImpl implements RegionService {
 
   @Inject
   private RegionRepository regionRepository;

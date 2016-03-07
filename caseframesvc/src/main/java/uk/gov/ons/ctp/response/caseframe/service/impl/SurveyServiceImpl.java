@@ -18,7 +18,7 @@ import uk.gov.ons.ctp.response.caseframe.service.SurveyService;
 @Named
 @Slf4j
 @Data
-public class SurveyServiceImpl implements SurveyService {
+public final class SurveyServiceImpl implements SurveyService {
 
   @Inject
   private SurveyRepository surveyRepo;

@@ -26,7 +26,7 @@ import uk.gov.ons.ctp.response.caseframe.service.MsoaService;
 @Path("/msoas")
 @Produces({ "application/json" })
 @Slf4j
-public class MsoaEndpoint implements CTPEndpoint {
+public final class MsoaEndpoint implements CTPEndpoint {
 
   @Inject
   private MsoaService msoaService;

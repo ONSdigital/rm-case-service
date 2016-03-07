@@ -24,7 +24,7 @@ import uk.gov.ons.ctp.response.caseframe.service.SurveyService;
 @Path("/surveys")
 @Produces({ "application/json" })
 @Slf4j
-public class SurveyEndpoint implements CTPEndpoint {
+public final class SurveyEndpoint implements CTPEndpoint {
 
   @Inject
   private SurveyService surveyService;

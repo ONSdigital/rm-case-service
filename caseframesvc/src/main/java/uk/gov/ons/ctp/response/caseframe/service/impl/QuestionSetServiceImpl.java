@@ -16,7 +16,7 @@ import uk.gov.ons.ctp.response.caseframe.service.QuestionSetService;
  */
 @Named
 @Slf4j
-public class QuestionSetServiceImpl implements QuestionSetService {
+public final class QuestionSetServiceImpl implements QuestionSetService {
 
   @Inject
   private QuestionSetRepository questionSetRepo;

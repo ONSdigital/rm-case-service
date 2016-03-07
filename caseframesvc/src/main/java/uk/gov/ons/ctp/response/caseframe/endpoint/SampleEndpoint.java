@@ -30,7 +30,7 @@ import uk.gov.ons.ctp.response.caseframe.service.SampleService;
 @Consumes({ "application/json" })
 @Produces({ "application/json" })
 @Slf4j
-public class SampleEndpoint implements CTPEndpoint {
+public final class SampleEndpoint implements CTPEndpoint {
 
   @Inject
   private SampleService sampleService;

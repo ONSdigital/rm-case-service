@@ -24,7 +24,7 @@ import uk.gov.ons.ctp.response.caseframe.service.QuestionSetService;
 @Path("/questionsets")
 @Produces({ "application/json" })
 @Slf4j
-public class QuestionSetEndpoint implements CTPEndpoint {
+public final class QuestionSetEndpoint implements CTPEndpoint {
 
   @Inject
   private QuestionSetService questionSetService;

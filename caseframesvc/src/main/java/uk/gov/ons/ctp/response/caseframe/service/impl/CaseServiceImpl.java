@@ -20,7 +20,7 @@ import uk.gov.ons.ctp.response.caseframe.service.CaseService;
  */
 @Named
 @Slf4j
-public class CaseServiceImpl implements CaseService {
+public final class CaseServiceImpl implements CaseService {
 
   @Inject
   private CaseRepository caseRepo;

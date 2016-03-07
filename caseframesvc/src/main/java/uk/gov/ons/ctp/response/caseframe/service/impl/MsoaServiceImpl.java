@@ -19,7 +19,7 @@ import uk.gov.ons.ctp.response.caseframe.service.MsoaService;
  */
 @Named
 @Slf4j
-public class MsoaServiceImpl implements MsoaService {
+public final class MsoaServiceImpl implements MsoaService {
 
   @Inject
   MsoaRepository msoaRepository;

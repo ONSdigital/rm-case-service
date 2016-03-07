@@ -22,7 +22,7 @@ import uk.gov.ons.ctp.response.caseframe.service.QuestionnaireService;
 @Named
 @Slf4j
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-public class QuestionnaireServiceImpl implements QuestionnaireService {
+public final class QuestionnaireServiceImpl implements QuestionnaireService {
 
   public static final String OPERATION_FAILED = "Response operation failed for questionnaireid";
   public static final String CLOSED = "CLOSED";
@@ -67,11 +67,11 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
   /**
    * Update a Questionnaire and Case object to record a response has been
    * received in the Survey Data Exchange.
-   * 
+   *
    * @param Questionnaire Id
    * @return Updated Questionnaire object or null
    */
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout=TRANSACTION_TIMEOUT)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   public Questionnaire recordResponse(Integer questionnaireid) {
     Timestamp currentTime = new Timestamp(System.currentTimeMillis());
     Questionnaire questionnaire = questionnaireRepo.findOne(questionnaireid);

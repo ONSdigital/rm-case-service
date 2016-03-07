@@ -18,7 +18,7 @@ import uk.gov.ons.ctp.response.caseframe.service.SampleService;
  */
 @Named
 @Slf4j
-public class SampleServiceImpl implements SampleService {
+public final class SampleServiceImpl implements SampleService {
 
   @Inject
   private SampleRepository sampleRepo;

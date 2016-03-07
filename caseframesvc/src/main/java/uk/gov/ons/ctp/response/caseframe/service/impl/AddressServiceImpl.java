@@ -16,7 +16,7 @@ import uk.gov.ons.ctp.response.caseframe.service.AddressService;
  */
 @Named
 @Slf4j
-public class AddressServiceImpl implements AddressService {
+public final class AddressServiceImpl implements AddressService {
 
   @Inject
   AddressRepository addressRepository;

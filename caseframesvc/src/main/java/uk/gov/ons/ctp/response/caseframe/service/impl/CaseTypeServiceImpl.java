@@ -16,7 +16,7 @@ import uk.gov.ons.ctp.response.caseframe.service.CaseTypeService;
  */
 @Named
 @Slf4j
-public class CaseTypeServiceImpl implements CaseTypeService {
+public final class CaseTypeServiceImpl implements CaseTypeService {
 
   @Inject
   private CaseTypeRepository caseTypeRepo;

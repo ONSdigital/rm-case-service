@@ -13,5 +13,10 @@ import javax.inject.Named;
  */
 @Named
 public interface LocalAuthorityRepository extends JpaRepository<LocalAuthority, String> {
+  /**
+   * find the LocalAuthorities for a given region, ordered by the LA name.
+   * @param regionId identity of the region whose LAs we want
+   * @return the list of local authorities found ordered by name
+   */
   List<LocalAuthority> findByRgn11cdOrderByLad12nm(String regionId);
 }

@@ -26,7 +26,7 @@ import uk.gov.ons.ctp.response.caseframe.service.LocalAuthorityService;
 @Path("/lads")
 @Produces({ "application/json" })
 @Slf4j
-public class LocalAuthorityEndpoint implements CTPEndpoint {
+public final class LocalAuthorityEndpoint implements CTPEndpoint {
 
   @Inject
   private LocalAuthorityService localAuthorityService;

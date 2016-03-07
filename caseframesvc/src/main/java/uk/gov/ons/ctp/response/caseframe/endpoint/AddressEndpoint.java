@@ -22,7 +22,7 @@ import uk.gov.ons.ctp.response.caseframe.service.AddressService;
 @Path("/addresses")
 @Produces({ "application/json" })
 @Slf4j
-public class AddressEndpoint implements CTPEndpoint {
+public final class AddressEndpoint implements CTPEndpoint {
 
   @Inject
   private AddressService addressService;
