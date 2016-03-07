@@ -57,7 +57,7 @@ public class CaseFrameSvcApplication {
 
   /**
    * The main entry point for this applicaion.
-   * 
+   *
    * @param args
    *          runtime command line args
    */
