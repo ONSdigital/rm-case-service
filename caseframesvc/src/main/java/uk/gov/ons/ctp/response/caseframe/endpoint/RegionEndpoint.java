@@ -34,6 +34,10 @@ public final class RegionEndpoint implements CTPEndpoint {
   @Inject
   private MapperFacade mapperFacade;
 
+  /**
+   * the GET endpoint to retrievea all regions
+   * @return the list of all regions
+   */
   @GET
   @Path("/")
   public List<RegionDTO> findAllRegions() {
@@ -43,9 +47,15 @@ public final class RegionEndpoint implements CTPEndpoint {
     return CollectionUtils.isEmpty(regionDTOs) ? null : regionDTOs;
   }
 
+  /**
+   * the GET endpoint to retrieve a region by id
+   * @param regionId the id of the region to fetch
+   * @return the region found
+   * @throws CTPException something went wrong
+   */
   @GET
   @Path("/{regionid}")
-  public RegionDTO findRegionById(@PathParam("regionid") String regionId) throws CTPException {
+  public RegionDTO findRegionById(@PathParam("regionid") final String regionId) throws CTPException {
     log.debug("Entering findRegionById with {}", regionId);
     Region region = regionService.findById(regionId);
     if (region == null) {
@@ -54,9 +64,15 @@ public final class RegionEndpoint implements CTPEndpoint {
     return mapperFacade.map(region, RegionDTO.class);
   }
 
+
+  /**
+   * the GET endpoint to retrieve all Local Authorities for a given region
+   * @param regionId the region
+   * @return the list of Local Authority representations
+   */
   @GET
   @Path("/{regionid}/lads")
-  public List<LocalAuthorityDTO> findAllLadsForRegionId(@PathParam("regionid") String regionId) {
+  public List<LocalAuthorityDTO> findAllLadsForRegionId(@PathParam("regionid") final String regionId) {
     log.debug("Entering findAllLadsByRegionid with {}", regionId);
     List<LocalAuthority> localAuthorities = regionService.findAllLadsByRegionid(regionId);
     List<LocalAuthorityDTO> localAuthorityDTOs = mapperFacade.mapAsList(localAuthorities, LocalAuthorityDTO.class);

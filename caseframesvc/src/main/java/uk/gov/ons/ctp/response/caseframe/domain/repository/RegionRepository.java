@@ -12,5 +12,9 @@ import java.util.List;
  */
 @Named
 public interface RegionRepository extends JpaRepository<Region, String> {
+  /**
+   * find all regions ordered by region code
+   * @return the list of regions ordered by code
+   */
   List<Region> findAllByOrderByRgn11cd();
 }

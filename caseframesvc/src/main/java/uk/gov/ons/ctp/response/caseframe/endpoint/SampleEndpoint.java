@@ -38,6 +38,10 @@ public final class SampleEndpoint implements CTPEndpoint {
   @Inject
   private MapperFacade mapperFacade;
 
+  /**
+   * the GET endpoint to retrieve all samples
+   * @return the list of samples
+   */
   @GET
   @Path("/")
   public List<SampleDTO> findSamples() {
@@ -47,9 +51,15 @@ public final class SampleEndpoint implements CTPEndpoint {
     return CollectionUtils.isEmpty(sampleDTOs) ? null : sampleDTOs;
   }
 
+  /**
+   * the GET endpoint to retrieve a sample by its id
+   * @param sampleId the id of the sample
+   * @return the sample representation
+   * @throws CTPException something went wrong
+   */
   @GET
   @Path("/{sampleid}")
-  public SampleDTO findSampleBySampleId(@PathParam("sampleid") Integer sampleId) throws CTPException {
+  public SampleDTO findSampleBySampleId(@PathParam("sampleid") final Integer sampleId) throws CTPException {
     log.debug("Entering findSampleBySampleId with {}", sampleId);
     Sample sample = sampleService.findSampleBySampleId(sampleId);
     if (sample == null) {
@@ -58,9 +68,14 @@ public final class SampleEndpoint implements CTPEndpoint {
     return mapperFacade.map(sample, SampleDTO.class);
   }
 
+  /**
+   * the PUT endpoint to create cases
+   * @param sampleId the id of the smaple
+   * @param geography the geography
+   */
   @PUT
   @Path("/{sampleId}")
-  public void createCases(@PathParam("sampleId") int sampleId, GeographyDTO geography) {
+  public void createCases(@PathParam("sampleId") final int sampleId, final GeographyDTO geography) {
     log.debug("Creating cases ");
     sampleService.generateCases(sampleId, geography.getGeographyType(), geography.getGeographyCode());
   }

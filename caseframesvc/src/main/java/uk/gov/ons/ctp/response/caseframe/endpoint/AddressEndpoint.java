@@ -30,9 +30,15 @@ public final class AddressEndpoint implements CTPEndpoint {
   @Inject
   private MapperFacade mapperFacade;
 
+  /**
+   * the GET endpoint to find addresses by UPRN
+   * @param uprn the uprn to find by
+   * @return the DTO representation
+   * @throws CTPException something went wrong
+   */
   @GET
   @Path("/{uprn}")
-  public AddressDTO findAddressesByUprn(@PathParam("uprn") Long uprn) throws CTPException {
+  public AddressDTO findAddressesByUprn(@PathParam("uprn") final Long uprn) throws CTPException {
     log.debug("Entering findAddressesByUprn with {}", uprn);
 
     Address address = addressService.findByUprn(uprn);
@@ -44,9 +50,15 @@ public final class AddressEndpoint implements CTPEndpoint {
     return mapperFacade.map(address, AddressDTO.class);
   }
 
+  /**
+   * the GET endpoint to find addresses by postcode
+   * @param postcode to find by
+   * @return the addresses found
+   * @throws CTPException something went wrong
+   */
   @GET
   @Path("/postcode/{postcode}")
-  public List<AddressDTO> findAddressesByPostcode(@PathParam("postcode") String postcode) throws CTPException {
+  public List<AddressDTO> findAddressesByPostcode(@PathParam("postcode") final String postcode) throws CTPException {
     log.debug("Entering findAddressesByPostcode with {}", postcode);
 
     List<Address> addresses = addressService.findByPostcode(postcode);

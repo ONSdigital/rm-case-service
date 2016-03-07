@@ -25,7 +25,6 @@ import uk.gov.ons.ctp.response.caseframe.service.QuestionnaireService;
 /**
  * A RESTFul Endpoint controller for the CaseFrame product for all actions
  * relating to Questionnaires.
- * 
  */
 
 @Path("/questionnaires")
@@ -50,16 +49,14 @@ public final class QuestionnaireEndpoint implements CTPEndpoint {
   /**
    * Web Service to return a Questionnaire object for the supplied Internet
    * Access Code.
-   * 
-   * @param IAC
+   * @param iac the IAC to find by
    * @return QuestionnaireDTO object or CTPException fault code
    *         RESOURCE_NOT_FOUND
-   * @throws CTPException
+   * @throws CTPException something went wrong
    */
-
   @GET
   @Path("/iac/{iac}")
-  public QuestionnaireDTO findByIac(@PathParam("iac") String iac) throws CTPException {
+  public QuestionnaireDTO findByIac(@PathParam("iac") final String iac) throws CTPException {
     log.debug("Entering findByIac with {}", iac);
     Questionnaire questionnaire = questionnaireService.findQuestionnaireByIac(iac);
     if (questionnaire == null) {
@@ -72,14 +69,14 @@ public final class QuestionnaireEndpoint implements CTPEndpoint {
 
   /**
    * Web Service to return List of Questionnaire objects for the specified Case.
-   * 
-   * @param Case Id
+   *
+   * @param caseId to find
    * @return List of Questionnaire objects or null
-   * @throws CTPException
+   * @throws CTPException something went wrong
    */
   @GET
   @Path("/case/{caseid}")
-  public List<QuestionnaireDTO> findByCaseId(@PathParam("caseid") Integer caseId) throws CTPException {
+  public List<QuestionnaireDTO> findByCaseId(@PathParam("caseid") final Integer caseId) throws CTPException {
     log.debug("Entering findByCaseId with {}", caseId);
     List<Questionnaire> questionnaires = questionnaireService.findQuestionnairesByCaseId(caseId);
     List<QuestionnaireDTO> questionnaireDTOs = mapperFacade.mapAsList(questionnaires, QuestionnaireDTO.class);
@@ -89,18 +86,18 @@ public final class QuestionnaireEndpoint implements CTPEndpoint {
   /**
    * Web service to update a Questionnaire and Case object to record a response
    * has been received in the Survey Data Exchange.
-   * 
-   * @param Questionnaire Id of response received
+   *
+   * @param questionnaireId id of response received
    * @return javax.ws.rs.core.Response with 200 OK on success
    * @throws CTPException on operation failure
    */
   @PUT
   @Path("/{questionnaireid}/response")
-  public Response responseOperation(@PathParam("questionnaireid") Integer questionnaireid) throws CTPException {
-    log.debug("Entering responseOperation with {}", questionnaireid);
-    Questionnaire questionnaire = questionnaireService.recordResponse(questionnaireid);
+  public Response responseOperation(@PathParam("questionnaireid") final Integer questionnaireId) throws CTPException {
+    log.debug("Entering responseOperation with {}", questionnaireId);
+    Questionnaire questionnaire = questionnaireService.recordResponse(questionnaireId);
     if (questionnaire == null) {
-      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, "%s %s", OPERATION_FAILED, questionnaireid);
+      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, "%s %s", OPERATION_FAILED, questionnaireId);
     }
     return Response.status(Response.Status.NO_CONTENT).build();
   }

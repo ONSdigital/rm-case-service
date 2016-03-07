@@ -34,18 +34,29 @@ public final class CaseEndpoint implements CTPEndpoint {
   @Inject
   private MapperFacade mapperFacade;
 
+  /**
+   * the GET endpoint to find Cases by postcode
+   * @param uprn to find by
+   * @return the cases found
+   * @throws CTPException something went wrong
+   */
   @GET
   @Path("/uprn/{uprn}")
-  public List<CaseDTO> findCasesByUprn(@PathParam("uprn") Integer uprn) {
+  public List<CaseDTO> findCasesByUprn(@PathParam("uprn") final Integer uprn) {
     log.debug("Entering findCasesByUprn with {}", uprn);
     List<Case> cases = caseService.findCasesByUprn(uprn);
     List<CaseDTO> caseDTOs = mapperFacade.mapAsList(cases, CaseDTO.class);
     return CollectionUtils.isEmpty(caseDTOs) ? null : caseDTOs;
   }
-
+  /**
+   * the GET endpoint to find a Case by questionnaire id
+   * @param qid to find by
+   * @return the case found
+   * @throws CTPException something went wrong
+   */
   @GET
   @Path("/questionnaire/{qid}")
-  public CaseDTO findCaseByQuestionnaireId(@PathParam("qid") Integer qid) throws CTPException {
+  public CaseDTO findCaseByQuestionnaireId(@PathParam("qid") final Integer qid) throws CTPException {
     log.debug("Entering findCaseByQuestionnaireId with {}", qid);
     Case caseObj = caseService.findCaseByQuestionnaireId(qid);
     if (caseObj == null) {
@@ -54,9 +65,15 @@ public final class CaseEndpoint implements CTPEndpoint {
     return mapperFacade.map(caseObj, CaseDTO.class);
   }
 
+  /**
+   * the GET endpoint to find a Case by id
+   * @param caseId to find by
+   * @return the case found
+   * @throws CTPException something went wrong
+   */
   @GET
   @Path("/{caseId}")
-  public CaseDTO findCaseByCaseId(@PathParam("caseId") Integer caseId) throws CTPException {
+  public CaseDTO findCaseByCaseId(@PathParam("caseId") final Integer caseId) throws CTPException {
     log.debug("Entering findCaseByCaseId with {}", caseId);
     Case caseObj = caseService.findCaseByCaseId(caseId);
     if (caseObj == null) {
@@ -65,9 +82,15 @@ public final class CaseEndpoint implements CTPEndpoint {
     return mapperFacade.map(caseObj, CaseDTO.class);
   }
 
+  /**
+   * the GET endpoint to find addresses by postcode
+   * @param caseId to find by
+   * @return the addresses found
+   * @throws CTPException something went wrong
+   */
   @GET
   @Path("/{caseId}/events")
-  public List<CaseEventDTO> findCaseEventsByCaseId(@PathParam("caseId") Integer caseId) {
+  public List<CaseEventDTO> findCaseEventsByCaseId(@PathParam("caseId") final Integer caseId) {
     log.debug("Entering findCaseEventsByCaseId with {}", caseId);
     List<CaseEvent> caseEvents = caseService.findCaseEventsByCaseId(caseId);
     List<CaseEventDTO> caseEventDTOs = mapperFacade.mapAsList(caseEvents, CaseEventDTO.class);

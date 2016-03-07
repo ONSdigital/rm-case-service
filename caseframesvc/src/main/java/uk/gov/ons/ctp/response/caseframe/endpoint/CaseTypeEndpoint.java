@@ -32,18 +32,28 @@ public final class CaseTypeEndpoint implements CTPEndpoint {
   @Inject
   private MapperFacade mapperFacade;
 
+  /**
+   * the GET endpoint to retrieve all casetypes
+   * @return the list of case types
+   */
   @GET
   @Path("/")
   public List<CaseTypeDTO> findCaseTypes() {
     log.debug("Entering findCaseTypes...");
     List<CaseType> caseTypes = caseTypeService.findCaseTypes();
-    List<CaseTypeDTO> CaseTypeDTOs = mapperFacade.mapAsList(caseTypes, CaseTypeDTO.class);
-    return CollectionUtils.isEmpty(CaseTypeDTOs) ? null : CaseTypeDTOs;
+    List<CaseTypeDTO> caseTypeDTOs = mapperFacade.mapAsList(caseTypes, CaseTypeDTO.class);
+    return CollectionUtils.isEmpty(caseTypeDTOs) ? null : caseTypeDTOs;
   }
 
+  /**
+   * the GET endpoint to find a casetype by id
+   * @param caseTypeId to find by
+   * @return the casetype or null if not found
+   * @throws CTPException something went wrong
+   */
   @GET
   @Path("/{casetypeid}")
-  public CaseTypeDTO findCaseTypeByCaseTypeId(@PathParam("casetypeid") Integer caseTypeId) throws CTPException {
+  public CaseTypeDTO findCaseTypeByCaseTypeId(@PathParam("casetypeid") final Integer caseTypeId) throws CTPException {
     log.debug("Entering findCaseTypeByCaseTypeId with {}", caseTypeId);
     CaseType caseType = caseTypeService.findCaseTypeByCaseTypeId(caseTypeId);
     if (caseType == null) {

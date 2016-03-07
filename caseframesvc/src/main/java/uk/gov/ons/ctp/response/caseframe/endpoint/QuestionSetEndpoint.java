@@ -32,6 +32,10 @@ public final class QuestionSetEndpoint implements CTPEndpoint {
   @Inject
   private MapperFacade mapperFacade;
 
+  /**
+   * the GET endpoint to retrieve the list of all question sets
+   * @return the list of all question sets
+   */
   @GET
   @Path("/")
   public List<QuestionSetDTO> findQuestionSets() {
@@ -41,9 +45,15 @@ public final class QuestionSetEndpoint implements CTPEndpoint {
     return CollectionUtils.isEmpty(questionSetDTOs) ? null : questionSetDTOs;
   }
 
+  /**
+   * the GET endpoint to retrieve a question set by name
+   * @param questionSetName the name of eth question set to fetch
+   * @return the question set representation
+   * @throws CTPException something went wrong
+   */
   @GET
   @Path("/{questionset}")
-  public QuestionSetDTO findQuestionSetByQuestionSet(@PathParam("questionset") String questionSetName)
+  public QuestionSetDTO findQuestionSetByQuestionSet(@PathParam("questionset") final String questionSetName)
       throws CTPException {
     log.debug("Entering findQuestionSetByQuestionSet with {}", questionSetName);
     QuestionSet questionSet = questionSetService.findQuestionSetByQuestionSet(questionSetName);

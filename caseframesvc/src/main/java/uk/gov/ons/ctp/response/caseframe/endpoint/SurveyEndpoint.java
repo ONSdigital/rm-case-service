@@ -32,6 +32,10 @@ public final class SurveyEndpoint implements CTPEndpoint {
   @Inject
   private MapperFacade mapperFacade;
 
+  /**
+   * the GET endpoint to retrieve all surveys
+   * @return the list of surveys
+   */
   @GET
   @Path("/")
   public List<SurveyDTO> findSurveys() {
@@ -41,9 +45,15 @@ public final class SurveyEndpoint implements CTPEndpoint {
     return CollectionUtils.isEmpty(surveyDTOs) ? null : surveyDTOs;
   }
 
+  /**
+   * the GET endpoint to retrieve a survey by its id
+   * @param surveyId the id of the survey to fetch
+   * @return the survey representation found
+   * @throws CTPException something went wrong
+   */
   @GET
   @Path("/{surveyid}")
-  public SurveyDTO findSurveyBySurveyId(@PathParam("surveyid") Integer surveyId) throws CTPException {
+  public SurveyDTO findSurveyBySurveyId(@PathParam("surveyid") final Integer surveyId) throws CTPException {
     log.debug("Entering findSurveyBySurveyId with {}", surveyId);
     Survey survey = surveyService.findSurveyBySurveyId(surveyId);
     if (survey == null) {

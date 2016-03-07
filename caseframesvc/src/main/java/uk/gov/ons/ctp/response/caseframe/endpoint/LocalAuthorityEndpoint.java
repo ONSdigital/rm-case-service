@@ -34,9 +34,15 @@ public final class LocalAuthorityEndpoint implements CTPEndpoint {
   @Inject
   private MapperFacade mapperFacade;
 
+  /**
+   * the GET endpoint to retrieve a LocalAuthority by id
+   * @param ladId the id of the LAD to retrieve
+   * @return the LAD representation or null if not found
+   * @throws CTPException something went wrong
+   */
   @GET
   @Path("/{ladid}")
-  public LocalAuthorityDTO findLadById(@PathParam("ladid") String ladId) throws CTPException {
+  public LocalAuthorityDTO findLadById(@PathParam("ladid") final String ladId) throws CTPException {
     log.debug("Entering findLadById with {}", ladId);
     LocalAuthority localAuthority = localAuthorityService.findById(ladId);
     if (localAuthority == null) {
@@ -45,9 +51,14 @@ public final class LocalAuthorityEndpoint implements CTPEndpoint {
     return mapperFacade.map(localAuthority, LocalAuthorityDTO.class);
   }
 
+  /**
+   * the GET endpoint to retrieve all MSOA for a given LAD
+   * @param ladId the LAD id to fetch by
+   * @return the list of MSOA
+   */
   @GET
   @Path("/{ladid}/msoas")
-  public List<MsoaDTO> findAllMsoasForLadid(@PathParam("ladid") String ladId) {
+  public List<MsoaDTO> findAllMsoasForLadid(@PathParam("ladid") final String ladId) {
     log.debug("Entering findAllMsoasForLadid with {}", ladId);
     List<Msoa> msoas = localAuthorityService.findAllMsoasByLadid(ladId);
     List<MsoaDTO> msoaDTOs = mapperFacade.mapAsList(msoas, MsoaDTO.class);
