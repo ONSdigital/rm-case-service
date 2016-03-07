@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.caseframe.endpoint;
 
+import static uk.gov.ons.ctp.response.caseframe.service.impl.QuestionnaireServiceImpl.OPERATION_FAILED;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -19,11 +21,10 @@ import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Questionnaire;
 import uk.gov.ons.ctp.response.caseframe.representation.QuestionnaireDTO;
 import uk.gov.ons.ctp.response.caseframe.service.QuestionnaireService;
-import static uk.gov.ons.ctp.response.caseframe.service.impl.QuestionnaireServiceImpl.OPERATION_FAILED;
 
 /**
- * A RESTFul Endpoint controller for the CaseFrame product for 
- * all actions relating to Questionnaires
+ * A RESTFul Endpoint controller for the CaseFrame product for all actions
+ * relating to Questionnaires.
  * 
  */
 
@@ -33,23 +34,26 @@ import static uk.gov.ons.ctp.response.caseframe.service.impl.QuestionnaireServic
 public class QuestionnaireEndpoint implements CTPEndpoint {
 
   /**
-   * The Questionnaire business service
+   * The Questionnaire business service.
    */
   @Inject
   private QuestionnaireService questionnaireService;
 
   /**
-   * Orika service translating domain Entity objects
-   * to DTO representation passed to view
+   * Orika service translating domain Entity objects to DTO representation
+   * passed to view.
    */
 
   @Inject
   private MapperFacade mapperFacade;
-  
+
   /**
-   * Web Service to return a Questionnaire object for the supplied Internet Access Code.
+   * Web Service to return a Questionnaire object for the supplied Internet
+   * Access Code.
+   * 
    * @param IAC
-   * @return QuestionnaireDTO object or CTPException fault code RESOURCE_NOT_FOUND
+   * @return QuestionnaireDTO object or CTPException fault code
+   *         RESOURCE_NOT_FOUND
    * @throws CTPException
    */
 
@@ -67,7 +71,8 @@ public class QuestionnaireEndpoint implements CTPEndpoint {
   }
 
   /**
-   * Web Service to return List of Questionnaire objects for the specified Case 
+   * Web Service to return List of Questionnaire objects for the specified Case.
+   * 
    * @param Case Id
    * @return List of Questionnaire objects or null
    * @throws CTPException
@@ -80,12 +85,13 @@ public class QuestionnaireEndpoint implements CTPEndpoint {
     List<QuestionnaireDTO> questionnaireDTOs = mapperFacade.mapAsList(questionnaires, QuestionnaireDTO.class);
     return CollectionUtils.isEmpty(questionnaireDTOs) ? null : questionnaireDTOs;
   }
-  
+
   /**
-   * Web service to update a Questionnaire and Case object to record a response has been
-   * received in the Survey Data Exchange.
+   * Web service to update a Questionnaire and Case object to record a response
+   * has been received in the Survey Data Exchange.
+   * 
    * @param Questionnaire Id of response received
-   * @return javax.ws.rs.core.Response with 200 OK on success 
+   * @return javax.ws.rs.core.Response with 200 OK on success
    * @throws CTPException on operation failure
    */
   @PUT

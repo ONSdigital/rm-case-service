@@ -21,28 +21,28 @@ import uk.gov.ons.ctp.response.caseframe.service.QuestionnaireService;
  */
 @Named
 @Slf4j
-@Transactional(
-    propagation = Propagation.SUPPORTS,
-    readOnly = true)
+@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class QuestionnaireServiceImpl implements QuestionnaireService {
 
   public static final String OPERATION_FAILED = "Response operation failed for questionnaireid";
   public static final String CLOSED = "CLOSED";
+  static final int TRANSACTION_TIMEOUT = 30;
 
   /**
-   * Spring Data Repository for Case entities
+   * Spring Data Repository for Case entities.
    */
   @Inject
   private CaseRepository caseRepo;
 
   /**
-   * Spring Data Repository for Questionnaire Entities
+   * Spring Data Repository for Questionnaire Entities.
    */
   @Inject
   private QuestionnaireRepository questionnaireRepo;
 
   /**
-   * Find Questionnaire entity by Internet Access Code
+   * Find Questionnaire entity by Internet Access Code.
+   * 
    * @param IAC
    * @return Questionnaire object or null
    */
@@ -54,6 +54,7 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
 
   /**
    * Find Questionnaire entities associated with a Case.
+   * 
    * @param Case Id
    * @return List of Questionnaire entities or empty List
    */
@@ -66,12 +67,11 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
   /**
    * Update a Questionnaire and Case object to record a response has been
    * received in the Survey Data Exchange.
+   * 
    * @param Questionnaire Id
-   * @return Updated Questionnaire object
+   * @return Updated Questionnaire object or null
    */
-  @Transactional(
-      propagation = Propagation.REQUIRED,
-      readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout=TRANSACTION_TIMEOUT)
   public Questionnaire recordResponse(Integer questionnaireid) {
     Timestamp currentTime = new Timestamp(System.currentTimeMillis());
     Questionnaire questionnaire = questionnaireRepo.findOne(questionnaireid);
@@ -82,7 +82,8 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
     int nbOfUpdatedQuestionnaires = questionnaireRepo.setResponseDatetimeFor(currentTime, questionnaireid);
     int nbOfUpdatedCases = caseRepo.setStatusFor(CLOSED, questionnaire.getCaseId());
     if (!(nbOfUpdatedQuestionnaires == 1 && nbOfUpdatedCases == 1)) {
-      log.error("{} {} - nbOfUpdatedQuestionnaires = {} - nbOfUpdatedCases = {}", OPERATION_FAILED, questionnaireid, nbOfUpdatedQuestionnaires, nbOfUpdatedCases);
+      log.error("{} {} - nbOfUpdatedQuestionnaires = {} - nbOfUpdatedCases = {}", OPERATION_FAILED, questionnaireid,
+          nbOfUpdatedQuestionnaires, nbOfUpdatedCases);
       return null;
     }
     return questionnaire;
