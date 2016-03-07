@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 /**
  * Created by philippe.brossier on 2/26/16.
  */
-public class QuestionnaireBuilder {
+public final class QuestionnaireBuilder {
 
   public static final String QUESTIONNAIRE_SET = "set";
   public static final String QUESTIONNAIRE_STATUS = "status";
@@ -22,23 +22,46 @@ public class QuestionnaireBuilder {
   private Integer id;
   private String iac;
 
-  private QuestionnaireBuilder(){}
+  /**
+   * hidden constructor
+   */
+  private QuestionnaireBuilder() {
+  }
 
-  public QuestionnaireBuilder caseid(Integer caseid) {
-    this.caseid = caseid;
+  /**
+   * builder method taking postcode
+   * @param theCaseId caseId
+   * @return the builder
+   */
+  public QuestionnaireBuilder caseid(final Integer theCaseId) {
+    this.caseid = theCaseId;
     return this;
   }
 
-  public QuestionnaireBuilder id(Integer id) {
-    this.id = id;
+  /**
+   * builder method taking id
+   * @param theId id
+   * @return the builder
+   */
+  public QuestionnaireBuilder id(final Integer theId) {
+    this.id = theId;
     return this;
   }
 
-  public QuestionnaireBuilder iac(String iac) {
-    this.iac = iac;
+  /**
+   * builder method taking iac
+   * @param theIac iac
+   * @return the builder
+   */
+  public QuestionnaireBuilder iac(final String theIac) {
+    this.iac = theIac;
     return this;
   }
 
+  /**
+   * builder
+   * @return a Questionnaire
+   */
   public Questionnaire buildQuestionnaire() {
     Questionnaire questionnaire = new Questionnaire();
     questionnaire.setQuestionnaireId(this.id);
@@ -52,6 +75,10 @@ public class QuestionnaireBuilder {
     return questionnaire;
   }
 
+  /**
+   * builder
+   * @return the questionnaire built
+   */
   public static QuestionnaireBuilder questionnaire() {
     return new QuestionnaireBuilder();
   }

@@ -23,51 +23,66 @@ import uk.gov.ons.ctp.response.caseframe.utility.MockQuestionSetServiceFactory;
 /**
  * QuestionSet Endpoint Unit Tests using CTPJerseyTest DSL framework
  */
-public class QuestionSetEndpointUnitTest extends CTPJerseyTest {
+public final class QuestionSetEndpointUnitTest extends CTPJerseyTest {
 
+  /**
+   * configure the test
+   */
   @Override
   public Application configure() {
-    return super.init(QuestionSetEndpoint.class, QuestionSetService.class, MockQuestionSetServiceFactory.class, new CaseFrameBeanMapper()); 
+    return super.init(QuestionSetEndpoint.class, QuestionSetService.class, MockQuestionSetServiceFactory.class,
+        new CaseFrameBeanMapper());
   }
 
+  /**
+   * a test
+   */
   @Test
   public void findQuestionSetsFound() {
     with("http://localhost:9998/questionsets")
-      .assertResponseCodeIs(HttpStatus.OK)
-      .assertArrayLengthInBodyIs(2)
-      .assertStringListInBody("$..questionSet", QUESTIONSET1_NAME, QUESTIONSET2_NAME)
-      .assertStringListInBody("$..description", QUESTIONSET1_DESC, QUESTIONSET2_DESC)
-      .andClose();
+        .assertResponseCodeIs(HttpStatus.OK)
+        .assertArrayLengthInBodyIs(2)
+        .assertStringListInBody("$..questionSet", QUESTIONSET1_NAME, QUESTIONSET2_NAME)
+        .assertStringListInBody("$..description", QUESTIONSET1_DESC, QUESTIONSET2_DESC)
+        .andClose();
   }
 
+  /**
+   * a test
+   */
   @Test
   public void findQuestionSetByQuestionSetFound() {
     with("http://localhost:9998/questionsets/%s", QUESTIONSETNAME)
-      .assertResponseCodeIs(HttpStatus.OK)
-      .assertArrayLengthInBodyIs(2)
-      .assertStringInBody("$.questionSet", QUESTIONSET1_NAME)
-      .assertStringInBody("$.description", QUESTIONSET1_DESC)
-      .andClose();
+        .assertResponseCodeIs(HttpStatus.OK)
+        .assertArrayLengthInBodyIs(2)
+        .assertStringInBody("$.questionSet", QUESTIONSET1_NAME)
+        .assertStringInBody("$.description", QUESTIONSET1_DESC)
+        .andClose();
   }
 
+  /**
+   * a test
+   */
   @Test
   public void findQuestionSetByQuestionSetNotFound() {
     with("http://localhost:9998/questionsets/%s", NON_EXISTING_QUESTIONSETNAME)
-      .assertResponseCodeIs(HttpStatus.NOT_FOUND)
-      .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
-      .assertTimestampExists()
-      .assertMessageEquals("QuestionSet not found for id %s", NON_EXISTING_QUESTIONSETNAME)
-      .andClose();
+        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
+        .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
+        .assertTimestampExists()
+        .assertMessageEquals("QuestionSet not found for id %s", NON_EXISTING_QUESTIONSETNAME)
+        .andClose();
   }
 
+  /**
+   * a test
+   */
   @Test
   public void findQuestionSetBQuestionSetUnCheckedException() {
     with("http://localhost:9998/questionsets/%s", UNCHECKED_EXCEPTION)
-      .assertResponseCodeIs(HttpStatus.INTERNAL_SERVER_ERROR)
-      .assertFaultIs(CTPException.Fault.SYSTEM_ERROR)
-      .assertTimestampExists()
-      .assertMessageEquals(OUR_EXCEPTION_MESSAGE)
-      .andClose();
-  } 
-
+        .assertResponseCodeIs(HttpStatus.INTERNAL_SERVER_ERROR)
+        .assertFaultIs(CTPException.Fault.SYSTEM_ERROR)
+        .assertTimestampExists()
+        .assertMessageEquals(OUR_EXCEPTION_MESSAGE)
+        .andClose();
+  }
 }

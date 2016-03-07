@@ -27,51 +27,67 @@ import uk.gov.ons.ctp.response.caseframe.utility.MockSurveyServiceFactory;
 /**
  * Unit tests for the SurveyEndpoint
  */
-public class SurveyEndpointUnitTest extends CTPJerseyTest {
+public final class SurveyEndpointUnitTest extends CTPJerseyTest {
 
+  /**
+   * configure the test
+   */
   @Override
   public Application configure() {
-    return super.init(SurveyEndpoint.class, SurveyService.class, MockSurveyServiceFactory.class, new CaseFrameBeanMapper()); 
+    return super.init(SurveyEndpoint.class, SurveyService.class, MockSurveyServiceFactory.class,
+        new CaseFrameBeanMapper());
   }
 
+  /**
+   * a test
+   */
   @Test
   public void findSurveysFound() {
     with("http://localhost:9998/surveys")
-      .assertResponseCodeIs(HttpStatus.OK)
-      .assertArrayLengthInBodyIs(4)
-      .assertStringListInBody("$..surveyName", SURVEY1_NAME, SURVEY2_NAME, SURVEY3_NAME, SURVEY4_NAME)
-      .assertStringListInBody("$..description", SURVEY1_DESC, SURVEY2_DESC, SURVEY3_DESC, SURVEY4_DESC)
-      .andClose();
+        .assertResponseCodeIs(HttpStatus.OK)
+        .assertArrayLengthInBodyIs(4)
+        .assertStringListInBody("$..surveyName", SURVEY1_NAME, SURVEY2_NAME, SURVEY3_NAME, SURVEY4_NAME)
+        .assertStringListInBody("$..description", SURVEY1_DESC, SURVEY2_DESC, SURVEY3_DESC, SURVEY4_DESC)
+        .andClose();
   }
 
+  /**
+   * a test
+   */
   @Test
   public void findSurveyBySurveyIdFound() {
     with("http://localhost:9998/surveys/%s", SURVEYID)
-      .assertResponseCodeIs(HttpStatus.OK)
-      .assertIntegerInBody("$.surveyid", 4)
-      .assertStringInBody("$.surveyName", SURVEY4_NAME)
-      .assertStringInBody("$.description", SURVEY4_DESC)
-      .andClose();
+        .assertResponseCodeIs(HttpStatus.OK)
+        .assertIntegerInBody("$.surveyid", 4)
+        .assertStringInBody("$.surveyName", SURVEY4_NAME)
+        .assertStringInBody("$.description", SURVEY4_DESC)
+        .andClose();
   }
 
+  /**
+   * a test
+   */
   @Test
   public void findSurveyBySurveyIdNotFound() {
     with("http://localhost:9998/surveys/%s", NON_EXISTING_SURVEYID)
-      .assertResponseCodeIs(HttpStatus.NOT_FOUND)
-      .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
-      .assertTimestampExists()
-      .assertMessageEquals("Survey not found for id %s", NON_EXISTING_SURVEYID)
-      .andClose();
+        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
+        .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
+        .assertTimestampExists()
+        .assertMessageEquals("Survey not found for id %s", NON_EXISTING_SURVEYID)
+        .andClose();
   }
 
+  /**
+   * a test
+   */
   @Test
   public void findSurveyBySurveyIdUnCheckedException() {
     with("http://localhost:9998/surveys/%s", UNCHECKED_EXCEPTION)
-      .assertResponseCodeIs(HttpStatus.INTERNAL_SERVER_ERROR)
-      .assertFaultIs(CTPException.Fault.SYSTEM_ERROR)
-      .assertTimestampExists()
-      .assertMessageEquals(OUR_EXCEPTION_MESSAGE)
-      .andClose();
+        .assertResponseCodeIs(HttpStatus.INTERNAL_SERVER_ERROR)
+        .assertFaultIs(CTPException.Fault.SYSTEM_ERROR)
+        .assertTimestampExists()
+        .assertMessageEquals(OUR_EXCEPTION_MESSAGE)
+        .andClose();
   }
 
 }

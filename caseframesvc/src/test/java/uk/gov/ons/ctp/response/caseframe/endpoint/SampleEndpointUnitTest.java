@@ -31,80 +31,98 @@ import uk.gov.ons.ctp.response.caseframe.service.SampleService;
 import uk.gov.ons.ctp.response.caseframe.utility.MockSampleServiceFactory;
 
 /**
- * Created by Martin.Humphrey on 23/2/2016.
+ * A set of tests for the Sample Endpoint
  */
-public class SampleEndpointUnitTest extends CTPJerseyTest  {
+public final class SampleEndpointUnitTest extends CTPJerseyTest {
+
+  /**
+   * configure the test
+   */
   @Override
   public Application configure() {
-    return super.init(SampleEndpoint.class, SampleService.class, MockSampleServiceFactory.class, new CaseFrameBeanMapper()); 
-    
+    return super.init(SampleEndpoint.class, SampleService.class, MockSampleServiceFactory.class,
+        new CaseFrameBeanMapper());
+
   }
 
+  /**
+   * a test
+   */
   @Test
   public void findSamplesFound() {
-    
+
     with("http://localhost:9998/samples")
-    .assertResponseCodeIs(HttpStatus.OK)
-    .assertArrayLengthInBodyIs(3)
-    .assertStringListInBody("$..sampleName", SAMPLE1_NAME, SAMPLE2_NAME, SAMPLE3_NAME)
-    .assertStringListInBody("$..description", SAMPLE1_DESC, SAMPLE2_DESC, SAMPLE3_DESC)
-    .assertStringListInBody("$..addressCriteria", SAMPLE1_CRITERIA, SAMPLE2_CRITERIA, SAMPLE3_CRITERIA)
-    .assertIntegerListInBody("$..caseTypeId", SAMPLE1_CASETYPEID, SAMPLE2_CASETYPEID,SAMPLE3_CASETYPEID)
-    .assertIntegerListInBody("$..surveyId", SURVEYID,  SURVEYID, SURVEYID)
-    .andClose();
+        .assertResponseCodeIs(HttpStatus.OK)
+        .assertArrayLengthInBodyIs(3)
+        .assertStringListInBody("$..sampleName", SAMPLE1_NAME, SAMPLE2_NAME, SAMPLE3_NAME)
+        .assertStringListInBody("$..description", SAMPLE1_DESC, SAMPLE2_DESC, SAMPLE3_DESC)
+        .assertStringListInBody("$..addressCriteria", SAMPLE1_CRITERIA, SAMPLE2_CRITERIA, SAMPLE3_CRITERIA)
+        .assertIntegerListInBody("$..caseTypeId", SAMPLE1_CASETYPEID, SAMPLE2_CASETYPEID, SAMPLE3_CASETYPEID)
+        .assertIntegerListInBody("$..surveyId", SURVEYID, SURVEYID, SURVEYID)
+        .andClose();
 
   }
-  
+
+  /**
+   * a test
+   */
   @Test
   public void findSampleBySampleIdFound() {
-    
+
     with("http://localhost:9998/samples/%s", SAMPLEID)
-    .assertResponseCodeIs(HttpStatus.OK)
-    .assertArrayLengthInBodyIs(6)
-    .assertStringListInBody("$..sampleName", SAMPLE3_NAME)
-    .assertStringListInBody("$..description", SAMPLE3_DESC)
-    .assertStringListInBody("$..addressCriteria", SAMPLE3_CRITERIA)
-    .assertIntegerListInBody("$..caseTypeId", SAMPLE3_CASETYPEID)
-    .assertIntegerListInBody("$..surveyId", SURVEYID)    
-    .andClose();
+        .assertResponseCodeIs(HttpStatus.OK)
+        .assertArrayLengthInBodyIs(6)
+        .assertStringListInBody("$..sampleName", SAMPLE3_NAME)
+        .assertStringListInBody("$..description", SAMPLE3_DESC)
+        .assertStringListInBody("$..addressCriteria", SAMPLE3_CRITERIA)
+        .assertIntegerListInBody("$..caseTypeId", SAMPLE3_CASETYPEID)
+        .assertIntegerListInBody("$..surveyId", SURVEYID)
+        .andClose();
 
   }
-  
-  
+
+  /**
+   * a test
+   */
   @Test
   public void findSampleBySampleIdNotFound() {
-    
+
     with("http://localhost:9998/samples/%s", NON_EXISTING_SAMPLEID)
-    .assertResponseCodeIs(HttpStatus.NOT_FOUND)
-    .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
-    .assertTimestampExists()
-    .assertMessageEquals("Sample not found for id %s", NON_EXISTING_SURVEYID)
-    .andClose();
-    
+        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
+        .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
+        .assertTimestampExists()
+        .assertMessageEquals("Sample not found for id %s", NON_EXISTING_SURVEYID)
+        .andClose();
+
   }
 
+  /**
+   * a test
+   */
   @Test
   public void findSampleBysampleIdUnCheckedException() {
 
     with("http://localhost:9998/samples/%s", UNCHECKED_EXCEPTION)
-    .assertResponseCodeIs(HttpStatus.INTERNAL_SERVER_ERROR)
-    .assertFaultIs(CTPException.Fault.SYSTEM_ERROR)
-    .assertTimestampExists()
-    .assertMessageEquals(OUR_EXCEPTION_MESSAGE)
-    .andClose();
-    
+        .assertResponseCodeIs(HttpStatus.INTERNAL_SERVER_ERROR)
+        .assertFaultIs(CTPException.Fault.SYSTEM_ERROR)
+        .assertTimestampExists()
+        .assertMessageEquals(OUR_EXCEPTION_MESSAGE)
+        .andClose();
+
   }
-  
+
+  /**
+   * a test
+   */
   @Test
-  public void createCases() {    
-    
+  public void createCases() {
+
     String putBody = "{\"geographyType\":\"LA\",\"geographyCode\":\"E07000163\"}";
-    
+
     with("http://localhost:9998/samples/%s", SAMPLEID)
-    .put(putBody)
-    .assertResponseCodeIs(HttpStatus.NO_CONTENT)
-    .assertEmptyResponse()
-    .andClose();
-  }  
-  
+        .put(putBody)
+        .assertResponseCodeIs(HttpStatus.NO_CONTENT)
+        .assertEmptyResponse()
+        .andClose();
+  }
 }

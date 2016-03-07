@@ -14,7 +14,7 @@ import uk.gov.ons.ctp.response.caseframe.service.CaseTypeService;
 /**
  * Created by Martin.Humphrey on 26/2/2016.
  */
-public class MockCaseTypeServiceFactory implements Factory<CaseTypeService> {
+public final class MockCaseTypeServiceFactory implements Factory<CaseTypeService> {
   public static final String CASETYPE1_NAME = "HH";
   public static final String CASETYPE2_NAME = "CH";
   public static final String CASETYPE3_NAME = "HGH";
@@ -32,33 +32,38 @@ public class MockCaseTypeServiceFactory implements Factory<CaseTypeService> {
   public static final Integer UNCHECKED_EXCEPTION = 999;
   public static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
 
+  /**
+   * provide method
+   * @return mocked service
+   */
   public CaseTypeService provide() {
 
     final CaseTypeService mockedService = Mockito.mock(CaseTypeService.class);
 
     Mockito.when(mockedService.findCaseTypes()).thenAnswer(new Answer<List<CaseType>>() {
-      public List<CaseType> answer(InvocationOnMock invocation)
+      public List<CaseType> answer(final InvocationOnMock invocation)
           throws Throwable {
-        List <CaseType> result = new ArrayList<CaseType>();
+        List<CaseType> result = new ArrayList<CaseType>();
         result.add(new CaseType(1, CASETYPE1_NAME, CASETYPE1_DESC, CASETYPE1_ACTIONPLANID, CASETYPE1_QUESTIONSET));
         result.add(new CaseType(2, CASETYPE2_NAME, CASETYPE2_DESC, CASETYPE2_ACTIONPLANID, CASETYPE2_QUESTIONSET));
         result.add(new CaseType(3, CASETYPE3_NAME, CASETYPE3_DESC, CASETYPE3_ACTIONPLANID, CASETYPE3_QUESTIONSET));
-      return result;
+        return result;
       }
     });
 
     Mockito.when(mockedService.findCaseTypeByCaseTypeId(CASETYPEID)).thenAnswer(new Answer<CaseType>() {
-      public CaseType answer(InvocationOnMock invocation)
+      public CaseType answer(final InvocationOnMock invocation)
           throws Throwable {
-      return new CaseType(3, CASETYPE3_NAME, CASETYPE3_DESC, CASETYPE3_ACTIONPLANID, CASETYPE3_QUESTIONSET);
+        return new CaseType(3, CASETYPE3_NAME, CASETYPE3_DESC, CASETYPE3_ACTIONPLANID, CASETYPE3_QUESTIONSET);
       }
     });
 
-    Mockito.when(mockedService.findCaseTypeByCaseTypeId(UNCHECKED_EXCEPTION)).thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
+    Mockito.when(mockedService.findCaseTypeByCaseTypeId(UNCHECKED_EXCEPTION))
+        .thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
 
     Mockito.when(mockedService.findCaseTypeByCaseTypeId(NON_EXISTING_CASETYPEID)).thenAnswer(new Answer<CaseType>() {
-      public CaseType answer(InvocationOnMock invocation)
-              throws Throwable {
+      public CaseType answer(final InvocationOnMock invocation)
+          throws Throwable {
         return null;
       }
     });
@@ -66,6 +71,10 @@ public class MockCaseTypeServiceFactory implements Factory<CaseTypeService> {
     return mockedService;
   }
 
-  public void dispose(CaseTypeService t) {
+  /**
+   * dispose method
+   * @param t service to dispose
+   */
+  public void dispose(final CaseTypeService t) {
   }
 }

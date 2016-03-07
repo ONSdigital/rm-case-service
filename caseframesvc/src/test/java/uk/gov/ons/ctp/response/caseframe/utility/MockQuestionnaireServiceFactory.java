@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by philippe.brossier on 2/26/16.
  */
-public class MockQuestionnaireServiceFactory implements Factory<QuestionnaireService> {
+public final class MockQuestionnaireServiceFactory implements Factory<QuestionnaireService> {
 
   public static final String QUESTIONNAIRE_IAC = "iac";
   public static final String QUESTIONNAIRE_IAC_NOT_FOUND = "iacnotfound";
@@ -23,75 +23,88 @@ public class MockQuestionnaireServiceFactory implements Factory<QuestionnaireSer
   public static final Integer QUESTIONNAIRE_ID_2 = 2;
   public static final Integer QUESTIONNAIRE_ID_SERVER_SIDE_ERROR = 666;
 
+  /**
+   * provide method
+   * @return mocked service
+   */
   public QuestionnaireService provide() {
     final QuestionnaireService mockedService = Mockito.mock(QuestionnaireService.class);
     Mockito.when(mockedService.findQuestionnaireByIac(QUESTIONNAIRE_IAC)).thenAnswer(new Answer<Questionnaire>() {
-      public Questionnaire answer(InvocationOnMock invocation)
-              throws Throwable {
-        String iacCode = (String)invocation.getArguments()[0];
+      public Questionnaire answer(final InvocationOnMock invocation)
+          throws Throwable {
+        String iacCode = (String) invocation.getArguments()[0];
         return QuestionnaireBuilder.questionnaire()
-                .iac(iacCode)
-                .id(QUESTIONNAIRE_ID_1)
-                .caseid(QUESTIONNAIRE_CASEID)
-                .buildQuestionnaire();
+            .iac(iacCode)
+            .id(QUESTIONNAIRE_ID_1)
+            .caseid(QUESTIONNAIRE_CASEID)
+            .buildQuestionnaire();
       }
     });
 
-    Mockito.when(mockedService.findQuestionnaireByIac(QUESTIONNAIRE_IAC_NOT_FOUND)).thenAnswer(new Answer<Questionnaire>() {
-      public Questionnaire answer(InvocationOnMock invocation)
+    Mockito.when(mockedService.findQuestionnaireByIac(QUESTIONNAIRE_IAC_NOT_FOUND))
+        .thenAnswer(new Answer<Questionnaire>() {
+          public Questionnaire answer(final InvocationOnMock invocation)
               throws Throwable {
-        return null;
-      }
-    });
+            return null;
+          }
+        });
 
-    Mockito.when(mockedService.findQuestionnairesByCaseId(QUESTIONNAIRE_CASEID)).thenAnswer(new Answer<List<Questionnaire>>() {
-      public List<Questionnaire> answer(InvocationOnMock invocation)
+    Mockito.when(mockedService.findQuestionnairesByCaseId(QUESTIONNAIRE_CASEID))
+        .thenAnswer(new Answer<List<Questionnaire>>() {
+          public List<Questionnaire> answer(final InvocationOnMock invocation)
               throws Throwable {
-        Integer caseid = (Integer)invocation.getArguments()[0];
-        Questionnaire questionnaire1 = QuestionnaireBuilder.questionnaire()
+            Integer caseid = (Integer) invocation.getArguments()[0];
+            Questionnaire questionnaire1 = QuestionnaireBuilder.questionnaire()
                 .iac(QUESTIONNAIRE_IAC)
                 .id(QUESTIONNAIRE_ID_1)
                 .caseid(caseid)
                 .buildQuestionnaire();
-        Questionnaire questionnaire2 = QuestionnaireBuilder.questionnaire()
+            Questionnaire questionnaire2 = QuestionnaireBuilder.questionnaire()
                 .iac(QUESTIONNAIRE_IAC)
                 .id(QUESTIONNAIRE_ID_2)
                 .caseid(caseid)
                 .buildQuestionnaire();
-        List<Questionnaire> list = new ArrayList<>();
-        list.add(questionnaire1);
-        list.add(questionnaire2);
-        return list;
-      }
-    });
-    
-    Mockito.when(mockedService.findQuestionnairesByCaseId(QUESTIONNAIRE_CASEID_NOT_FOUND)).thenAnswer(new Answer<List<Questionnaire>>() {
-      public List<Questionnaire> answer(InvocationOnMock invocation)
+            List<Questionnaire> list = new ArrayList<>();
+            list.add(questionnaire1);
+            list.add(questionnaire2);
+            return list;
+          }
+        });
+
+    Mockito.when(mockedService.findQuestionnairesByCaseId(QUESTIONNAIRE_CASEID_NOT_FOUND))
+        .thenAnswer(new Answer<List<Questionnaire>>() {
+          public List<Questionnaire> answer(final InvocationOnMock invocation)
               throws Throwable {
-        return new ArrayList<>();
-      }
-    });
+            return new ArrayList<>();
+          }
+        });
 
     Mockito.when(mockedService.recordResponse(QUESTIONNAIRE_ID_1)).thenAnswer(new Answer<Questionnaire>() {
-      public Questionnaire answer(InvocationOnMock invocation)
-              throws Throwable {
+      public Questionnaire answer(final InvocationOnMock invocation)
+          throws Throwable {
         Integer questCode = (Integer) invocation.getArguments()[0];
         return QuestionnaireBuilder.questionnaire()
-                .iac(QUESTIONNAIRE_IAC)
-                .id(questCode)
-                .caseid(QUESTIONNAIRE_CASEID)
-                .buildQuestionnaire();
+            .iac(QUESTIONNAIRE_IAC)
+            .id(questCode)
+            .caseid(QUESTIONNAIRE_CASEID)
+            .buildQuestionnaire();
       }
     });
 
-    Mockito.when(mockedService.recordResponse(QUESTIONNAIRE_ID_SERVER_SIDE_ERROR)).thenAnswer(new Answer<Questionnaire>() {
-      public Questionnaire answer(InvocationOnMock invocation)
+    Mockito.when(mockedService.recordResponse(QUESTIONNAIRE_ID_SERVER_SIDE_ERROR))
+        .thenAnswer(new Answer<Questionnaire>() {
+          public Questionnaire answer(final InvocationOnMock invocation)
               throws Throwable {
-        return null;
-      }
-    });
+            return null;
+          }
+        });
     return mockedService;
   }
 
-  public void dispose(QuestionnaireService t) {}
+  /**
+   * dispose method
+   * @param t service to dispose
+   */
+  public void dispose(final QuestionnaireService t) {
+  }
 }

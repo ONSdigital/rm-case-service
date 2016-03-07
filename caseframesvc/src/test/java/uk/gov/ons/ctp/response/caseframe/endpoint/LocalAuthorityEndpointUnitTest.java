@@ -24,58 +24,78 @@ import uk.gov.ons.ctp.response.caseframe.utility.MockLocalAuthorityServiceFactor
 /**
  * Created by philippe.brossier on 2/22/16.
  */
-public class LocalAuthorityEndpointUnitTest extends CTPJerseyTest {
+public final class LocalAuthorityEndpointUnitTest extends CTPJerseyTest {
 
+  /**
+   * configure the test
+   */
   @Override
   public Application configure() {
-    return super.init(LocalAuthorityEndpoint.class, LocalAuthorityService.class, MockLocalAuthorityServiceFactory.class, new CaseFrameBeanMapper());
+    return super.init(LocalAuthorityEndpoint.class, LocalAuthorityService.class, MockLocalAuthorityServiceFactory.class,
+        new CaseFrameBeanMapper());
   }
 
+  /**
+   * a test
+   */
   @Test
   public void findByIdPositiveScenario() {
     with("http://localhost:9998/lads/%s", LAD_WITH_CODE_LAD123)
-            .assertResponseCodeIs(HttpStatus.OK)
-            .assertStringInBody("$.regionCode", REGION_CODE_FOR_LAD123)
-            .assertStringInBody("$.ladCode", LAD_WITH_CODE_LAD123)
-            .assertStringInBody("$.ladName", String.format("%s%s", LAD_WITH_CODE_LAD123, MockLocalAuthorityServiceFactory.NAME))
-            .andClose();
+        .assertResponseCodeIs(HttpStatus.OK)
+        .assertStringInBody("$.regionCode", REGION_CODE_FOR_LAD123)
+        .assertStringInBody("$.ladCode", LAD_WITH_CODE_LAD123)
+        .assertStringInBody("$.ladName",
+            String.format("%s%s", LAD_WITH_CODE_LAD123, MockLocalAuthorityServiceFactory.NAME))
+        .andClose();
   }
 
+  /**
+   * a test
+   */
   @Test
   public void findByIdScenarioNotFound() {
     with("http://localhost:9998/lads/%s", LAD_WITH_NON_EXISTING_CODE)
-            .assertResponseCodeIs(HttpStatus.NOT_FOUND)
-            .assertStringInBody("$.error.code", CTPException.Fault.RESOURCE_NOT_FOUND.toString())
-            .assertTimestampExists()
-            .assertStringInBody("$.error.message", String.format("LAD not found for id %s", LAD_WITH_NON_EXISTING_CODE))
-            .andClose();
+        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
+        .assertStringInBody("$.error.code", CTPException.Fault.RESOURCE_NOT_FOUND.toString())
+        .assertTimestampExists()
+        .assertStringInBody("$.error.message", String.format("LAD not found for id %s", LAD_WITH_NON_EXISTING_CODE))
+        .andClose();
   }
 
+  /**
+   * a test
+   */
   @Test
   public void findByIdScenarioThrowCheckedException() {
     with("http://localhost:9998/lads/%s", LAD_WITH_CODE_CHECKED_EXCEPTION)
-            .assertResponseCodeIs(HttpStatus.INTERNAL_SERVER_ERROR)
-            .assertStringInBody("$.error.code", CTPException.Fault.SYSTEM_ERROR.toString())
-            .assertTimestampExists()
-            .assertStringInBody("$.error.message", MockLocalAuthorityServiceFactory.OUR_EXCEPTION_MESSAGE)
-            .andClose();
+        .assertResponseCodeIs(HttpStatus.INTERNAL_SERVER_ERROR)
+        .assertStringInBody("$.error.code", CTPException.Fault.SYSTEM_ERROR.toString())
+        .assertTimestampExists()
+        .assertStringInBody("$.error.message", MockLocalAuthorityServiceFactory.OUR_EXCEPTION_MESSAGE)
+        .andClose();
   }
 
+  /**
+   * a test
+   */
   @Test
   public void findAllMsoasForLadIdPositiveScenario() {
     with("http://localhost:9998/lads/%s/msoas", LAD_WITH_CODE_LAD123)
-            .assertResponseCodeIs(HttpStatus.OK)
-            .assertArrayLengthInBodyIs(2)
-            .assertStringListInBody("$..msoaCode", MSOA1_CODE, MSOA2_CODE)
-            .assertStringListInBody("$..msoaName", MSOA1_NAME, MSOA2_NAME)
-            .assertStringListInBody("$..ladCode", LAD_WITH_CODE_LAD123, LAD_WITH_CODE_LAD123)
-            .andClose();
+        .assertResponseCodeIs(HttpStatus.OK)
+        .assertArrayLengthInBodyIs(2)
+        .assertStringListInBody("$..msoaCode", MSOA1_CODE, MSOA2_CODE)
+        .assertStringListInBody("$..msoaName", MSOA1_NAME, MSOA2_NAME)
+        .assertStringListInBody("$..ladCode", LAD_WITH_CODE_LAD123, LAD_WITH_CODE_LAD123)
+        .andClose();
   }
 
+  /**
+   * a test
+   */
   @Test
   public void findAllMsoasForLadIdScenario204() {
     with("http://localhost:9998/lads/%s/msoas", LAD_WITH_CODE_204)
-            .assertResponseCodeIs(HttpStatus.NO_CONTENT)
-            .andClose();
+        .assertResponseCodeIs(HttpStatus.NO_CONTENT)
+        .andClose();
   }
 }

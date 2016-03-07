@@ -5,7 +5,7 @@ import uk.gov.ons.ctp.response.caseframe.domain.model.Address;
 /**
  * Created by philippe.brossier on 2/29/16.
  */
-public class AddressBuilder {
+public final class AddressBuilder {
 
   public static final Integer ADDRESS_EASTINGS = 123456;
   public static final Integer ADDRESS_HTC = 11;
@@ -26,18 +26,36 @@ public class AddressBuilder {
   private Long uprn;
   private String postcode;
 
-  private AddressBuilder(){}
+  /**
+   * hidden constructor
+   */
+  private AddressBuilder() {
+  }
 
-  public AddressBuilder uprn(Long uprn) {
-    this.uprn = uprn;
+  /**
+   * builder method taking postcode
+   * @param theUprn uprn
+   * @return the builder
+   */
+  public AddressBuilder uprn(final Long theUprn) {
+    this.uprn = theUprn;
     return this;
   }
 
-  public AddressBuilder postcode(String postcode) {
-    this.postcode = postcode;
+  /**
+   * builder method taking postcode
+   * @param thePostcode the postcode
+   * @return the builder
+   */
+  public AddressBuilder postcode(final String thePostcode) {
+    this.postcode = thePostcode;
     return this;
   }
 
+  /**
+   * builder
+   * @return the builder
+   */
   public Address buildAddress() {
     Address address = new Address();
     address.setUprn(this.uprn);
@@ -60,6 +78,10 @@ public class AddressBuilder {
     return address;
   }
 
+  /**
+   * builder method
+   * @return the builder
+   */
   public static AddressBuilder address() {
     return new AddressBuilder();
   }

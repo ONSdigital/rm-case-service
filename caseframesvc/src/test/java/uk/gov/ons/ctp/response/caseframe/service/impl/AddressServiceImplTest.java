@@ -5,21 +5,35 @@ import org.junit.Test;
 
 import uk.gov.ons.ctp.common.jersey.TestHelper;
 
-public class AddressServiceImplTest {
+/**
+ * tests for the address service postcode formatting method
+ *
+ */
+public final class AddressServiceImplTest {
 
   private static final String FORMAT_POSTCODE = "formatPostcode";
   private static final String POSTCODE_WITH_SPACE = "PO15 5RR";
   private static final String POSTCODE_WITH_NO_SPACE = "PO155RR";
 
+  /**
+   * a test
+   * @throws Exception something failed
+   */
   @Test
   public void testFormatPostcodeWithSpace() throws Exception {
-    String result = (String) TestHelper.callPrivateMethodOfDefaultConstructableClass(AddressServiceImpl.class, FORMAT_POSTCODE, POSTCODE_WITH_SPACE);
+    String result = (String) TestHelper.callPrivateMethodOfDefaultConstructableClass(AddressServiceImpl.class,
+        FORMAT_POSTCODE, POSTCODE_WITH_SPACE);
     Assert.assertEquals(POSTCODE_WITH_SPACE, result);
   }
 
+  /**
+   * a test
+   * @throws Exception something failed
+   */
   @Test
   public void testFormatPostcodeWithNoSpace() throws Exception {
-    String result = (String) TestHelper.callPrivateMethodOfDefaultConstructableClass(AddressServiceImpl.class, FORMAT_POSTCODE, POSTCODE_WITH_NO_SPACE);
+    String result = (String) TestHelper.callPrivateMethodOfDefaultConstructableClass(AddressServiceImpl.class,
+        FORMAT_POSTCODE, POSTCODE_WITH_NO_SPACE);
     Assert.assertEquals(POSTCODE_WITH_SPACE, result);
   }
 }

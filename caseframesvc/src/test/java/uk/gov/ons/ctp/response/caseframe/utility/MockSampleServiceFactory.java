@@ -14,7 +14,7 @@ import uk.gov.ons.ctp.response.caseframe.service.SampleService;
 /**
  * Created by Martin.Humphrey on 23/2/2016.
  */
-public class MockSampleServiceFactory implements Factory<SampleService> {
+public final class MockSampleServiceFactory implements Factory<SampleService> {
 
   public static final String SAMPLE1_NAME = "Residential";
   public static final String SAMPLE2_NAME = "Hotels_Guest_Houses";
@@ -36,42 +36,51 @@ public class MockSampleServiceFactory implements Factory<SampleService> {
   public static final String GEOGRAPHY_TYPE = "LA";
   public static final String GEOGRAPHY_CODE = "E07000163";
 
+  /**
+   * provide method
+   * @return mocked service
+   */
   public SampleService provide() {
 
     final SampleService mockedService = Mockito.mock(SampleService.class);
 
     Mockito.when(mockedService.findSamples()).thenAnswer(new Answer<List<Sample>>() {
-      public List<Sample> answer(InvocationOnMock invocation)
+      public List<Sample> answer(final InvocationOnMock invocation)
           throws Throwable {
-        List <Sample> result = new ArrayList<Sample>();
+        List<Sample> result = new ArrayList<Sample>();
         result.add(new Sample(1, SAMPLE1_NAME, SAMPLE1_DESC, SAMPLE1_CRITERIA, SAMPLE1_CASETYPEID, SURVEYID));
         result.add(new Sample(2, SAMPLE2_NAME, SAMPLE2_DESC, SAMPLE2_CRITERIA, SAMPLE2_CASETYPEID, SURVEYID));
         result.add(new Sample(3, SAMPLE3_NAME, SAMPLE3_DESC, SAMPLE3_CRITERIA, SAMPLE3_CASETYPEID, SURVEYID));
-      return result;
+        return result;
       }
     });
 
     Mockito.when(mockedService.findSampleBySampleId(SAMPLEID)).thenAnswer(new Answer<Sample>() {
-      public Sample answer(InvocationOnMock invocation)
+      public Sample answer(final InvocationOnMock invocation)
           throws Throwable {
-      return new Sample(3, SAMPLE3_NAME, SAMPLE3_DESC, SAMPLE3_CRITERIA, SAMPLE3_CASETYPEID, SURVEYID);
+        return new Sample(3, SAMPLE3_NAME, SAMPLE3_DESC, SAMPLE3_CRITERIA, SAMPLE3_CASETYPEID, SURVEYID);
       }
     });
 
-    Mockito.when(mockedService.findSampleBySampleId(UNCHECKED_EXCEPTION)).thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
+    Mockito.when(mockedService.findSampleBySampleId(UNCHECKED_EXCEPTION))
+        .thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
 
     Mockito.when(mockedService.findSampleBySampleId(NON_EXISTING_SAMPLEID)).thenAnswer(new Answer<Sample>() {
-      public Sample answer(InvocationOnMock invocation)
-              throws Throwable {
+      public Sample answer(final InvocationOnMock invocation)
+          throws Throwable {
         return null;
       }
     });
 
     Mockito.when(mockedService.generateCases(SAMPLEID, GEOGRAPHY_TYPE, GEOGRAPHY_CODE)).thenReturn(true);
-    
+
     return mockedService;
   }
 
-  public void dispose(SampleService t) {
+  /**
+   * dispose method
+   * @param t service to dispose
+   */
+  public void dispose(final SampleService t) {
   }
 }

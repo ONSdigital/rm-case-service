@@ -15,9 +15,8 @@ import uk.gov.ons.ctp.response.caseframe.service.CaseService;
 
 /**
  * Mock CaseService response HK2 JSE JSR-330 dependency injection factory
- * @author martin.humphrey
  */
-public class MockCaseServiceFactory implements Factory<CaseService> {
+public final class MockCaseServiceFactory implements Factory<CaseService> {
 
   public static final Integer UPRN = 2000062760;
   public static final String CASE_STATUS = "INIT";
@@ -46,63 +45,67 @@ public class MockCaseServiceFactory implements Factory<CaseService> {
   public static final String CASEEVENT_DESC3 = "Test Event 3";
   public static final String CASEEVENT_CATEGORY = "Visit";
 
+  /**
+   * provide method
+   * @return mocked service
+   */
   public CaseService provide() {
 
     final CaseService mockedService = Mockito.mock(CaseService.class);
 
     Mockito.when(mockedService.findCasesByUprn(UPRN)).thenAnswer(new Answer<List<Case>>() {
-      public List<Case> answer(InvocationOnMock invocation)
+      public List<Case> answer(final InvocationOnMock invocation)
           throws Throwable {
-        List <Case> result = new ArrayList<Case>();
-        result.add(new Case(1, UPRN, CASE_STATUS, CASE1_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY, 
+        List<Case> result = new ArrayList<Case>();
+        result.add(new Case(1, UPRN, CASE_STATUS, CASE1_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY,
             CASE1_SAMPLEID, CASE1_ACTIONPLANID, CASE_SURVEYID, CASE_QUESTIONSET));
-        result.add(new Case(2, UPRN, CASE_STATUS, CASE2_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY, 
+        result.add(new Case(2, UPRN, CASE_STATUS, CASE2_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY,
             CASE2_SAMPLEID, CASE2_ACTIONPLANID, CASE_SURVEYID, CASE_QUESTIONSET));
-        result.add(new Case(3, UPRN, CASE_STATUS, CASE3_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY, 
+        result.add(new Case(3, UPRN, CASE_STATUS, CASE3_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY,
             CASE3_SAMPLEID, CASE3_ACTIONPLANID, CASE_SURVEYID, CASE_QUESTIONSET));
-      return result;
+        return result;
       }
     });
 
     Mockito.when(mockedService.findCasesByUprn(NON_EXISTING_ID)).thenAnswer(new Answer<List<Case>>() {
-      public List<Case> answer(InvocationOnMock invocation)
-              throws Throwable {
+      public List<Case> answer(final InvocationOnMock invocation)
+          throws Throwable {
         return new ArrayList<Case>();
       }
     });
 
     Mockito.when(mockedService.findCaseByQuestionnaireId(QUESTIONNAIREID)).thenAnswer(new Answer<Case>() {
-      public Case answer(InvocationOnMock invocation)
+      public Case answer(final InvocationOnMock invocation)
           throws Throwable {
-        return new Case(CASEID, UPRN, CASE_STATUS, CASE1_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY, 
+        return new Case(CASEID, UPRN, CASE_STATUS, CASE1_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY,
             CASE1_SAMPLEID, CASE1_ACTIONPLANID, CASE_SURVEYID, CASE_QUESTIONSET);
       }
     });
 
     Mockito.when(mockedService.findCaseByQuestionnaireId(NON_EXISTING_ID)).thenAnswer(new Answer<Case>() {
-      public Case answer(InvocationOnMock invocation)
+      public Case answer(final InvocationOnMock invocation)
           throws Throwable {
         return null;
       }
     });
 
     Mockito.when(mockedService.findCaseByCaseId(CASEID)).thenAnswer(new Answer<Case>() {
-      public Case answer(InvocationOnMock invocation)
+      public Case answer(final InvocationOnMock invocation)
           throws Throwable {
-      return new Case(CASEID, UPRN, CASE_STATUS, CASE1_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY, 
-          CASE1_SAMPLEID, CASE1_ACTIONPLANID, CASE_SURVEYID, CASE_QUESTIONSET);
+        return new Case(CASEID, UPRN, CASE_STATUS, CASE1_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY,
+            CASE1_SAMPLEID, CASE1_ACTIONPLANID, CASE_SURVEYID, CASE_QUESTIONSET);
       }
     });
 
     Mockito.when(mockedService.findCaseByCaseId(NON_EXISTING_ID)).thenAnswer(new Answer<Case>() {
-      public Case answer(InvocationOnMock invocation)
-              throws Throwable {
+      public Case answer(final InvocationOnMock invocation)
+          throws Throwable {
         return null;
       }
     });
 
     Mockito.when(mockedService.findCaseEventsByCaseId(CASEID)).thenAnswer(new Answer<List<CaseEvent>>() {
-      public List<CaseEvent> answer(InvocationOnMock invocation)
+      public List<CaseEvent> answer(final InvocationOnMock invocation)
           throws Throwable {
         List<CaseEvent> result = new ArrayList<CaseEvent>();
         result.add(new CaseEvent(1, CASEID, CASEEVENT_DESC1, CREATEDBY, CREATEDDATE_TIMESTAMP, CASEEVENT_CATEGORY));
@@ -113,17 +116,22 @@ public class MockCaseServiceFactory implements Factory<CaseService> {
     });
 
     Mockito.when(mockedService.findCaseEventsByCaseId(NON_EXISTING_ID)).thenAnswer(new Answer<List<CaseEvent>>() {
-      public List<CaseEvent> answer(InvocationOnMock invocation)
-              throws Throwable {
+      public List<CaseEvent> answer(final InvocationOnMock invocation)
+          throws Throwable {
         return new ArrayList<CaseEvent>();
       }
     });
 
-    Mockito.when(mockedService.findCaseByCaseId(UNCHECKED_EXCEPTION)).thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
+    Mockito.when(mockedService.findCaseByCaseId(UNCHECKED_EXCEPTION))
+        .thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
 
     return mockedService;
   }
 
-  public void dispose(CaseService t) {
+  /**
+   * dispose method
+   * @param t service to dispose
+   */
+  public void dispose(final CaseService t) {
   }
 }

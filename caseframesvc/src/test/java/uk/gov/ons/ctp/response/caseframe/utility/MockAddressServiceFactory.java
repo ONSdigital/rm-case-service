@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by philippe.brossier on 2/23/16.
  */
-public class MockAddressServiceFactory implements Factory<AddressService> {
+public final class MockAddressServiceFactory implements Factory<AddressService> {
 
   public static final Long ADDRESS_NON_EXISTING_UPRN = 999L;
   public static final Long ADDRESS_UPRN = 123L;
@@ -23,19 +23,23 @@ public class MockAddressServiceFactory implements Factory<AddressService> {
   public static final String ADDRESS_POSTCODE = "PO15 5RR";
   public static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
 
+  /**
+   * provide method
+   * @return mocked service
+   */
   public AddressService provide() {
     final AddressService mockedService = Mockito.mock(AddressService.class);
     Mockito.when(mockedService.findByUprn(ADDRESS_UPRN)).thenAnswer(new Answer<Address>() {
-      public Address answer(InvocationOnMock invocation)
-              throws Throwable {
+      public Address answer(final InvocationOnMock invocation)
+          throws Throwable {
         Long addressUprn = (Long) invocation.getArguments()[0];
         Address address = AddressBuilder.address().uprn(addressUprn).buildAddress();
         return address;
       }
     });
     Mockito.when(mockedService.findByPostcode(ADDRESS_POSTCODE)).thenAnswer(new Answer<List<Address>>() {
-      public List<Address> answer(InvocationOnMock invocation)
-              throws Throwable {
+      public List<Address> answer(final InvocationOnMock invocation)
+          throws Throwable {
         String addressPostcode = (String) invocation.getArguments()[0];
         Address address = AddressBuilder.address().postcode(addressPostcode).buildAddress();
 
@@ -45,16 +49,21 @@ public class MockAddressServiceFactory implements Factory<AddressService> {
       }
     });
     Mockito.when(mockedService.findByUprn(ADDRESS_NON_EXISTING_UPRN)).thenAnswer(new Answer<List<Address>>() {
-      public List<Address> answer(InvocationOnMock invocation)
-              throws Throwable {
+      public List<Address> answer(final InvocationOnMock invocation)
+          throws Throwable {
         return null;
       }
     });
-    Mockito.when(mockedService.findByUprn(ADDRESS_WITH_UPRN_CHECKED_EXCEPTION)).thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
+    Mockito.when(mockedService.findByUprn(ADDRESS_WITH_UPRN_CHECKED_EXCEPTION))
+        .thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
 
     return mockedService;
   }
 
-  public void dispose(AddressService t) {
+  /**
+   * dispose method
+   * @param t service to dispose
+   */
+  public void dispose(final AddressService t) {
   }
 }

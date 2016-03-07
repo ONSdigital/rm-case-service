@@ -15,7 +15,7 @@ import uk.gov.ons.ctp.response.caseframe.service.LocalAuthorityService;
 /**
  * Created by philippe.brossier on 2/22/16.
  */
-public class MockLocalAuthorityServiceFactory implements Factory<LocalAuthorityService> {
+public final class MockLocalAuthorityServiceFactory implements Factory<LocalAuthorityService> {
 
   public static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
   public static final String MSOA1_CODE = "msoa1code";
@@ -29,11 +29,15 @@ public class MockLocalAuthorityServiceFactory implements Factory<LocalAuthorityS
   public static final String REGION_CODE_FOR_LAD123 = "reg123";
   public static final String NAME = "_name";
 
+  /**
+   * provide method
+   * @return mocked service
+   */
   public LocalAuthorityService provide() {
     final LocalAuthorityService mockedService = Mockito.mock(LocalAuthorityService.class);
     Mockito.when(mockedService.findById(LAD_WITH_CODE_LAD123)).thenAnswer(new Answer<LocalAuthority>() {
-      public LocalAuthority answer(InvocationOnMock invocation)
-              throws Throwable {
+      public LocalAuthority answer(final InvocationOnMock invocation)
+          throws Throwable {
         String ladCode = (String) invocation.getArguments()[0];
         LocalAuthority lad = new LocalAuthority();
         lad.setLad12cd(ladCode);
@@ -44,18 +48,19 @@ public class MockLocalAuthorityServiceFactory implements Factory<LocalAuthorityS
     });
 
     Mockito.when(mockedService.findById(LAD_WITH_NON_EXISTING_CODE)).thenAnswer(new Answer<LocalAuthority>() {
-      public LocalAuthority answer(InvocationOnMock invocation)
-              throws Throwable {
+      public LocalAuthority answer(final InvocationOnMock invocation)
+          throws Throwable {
         return null;
       }
     });
 
-    Mockito.when(mockedService.findById(LAD_WITH_CODE_CHECKED_EXCEPTION)).thenThrow(new IllegalArgumentException(MockRegionServiceFactory.OUR_EXCEPTION_MESSAGE));
+    Mockito.when(mockedService.findById(LAD_WITH_CODE_CHECKED_EXCEPTION))
+        .thenThrow(new IllegalArgumentException(MockRegionServiceFactory.OUR_EXCEPTION_MESSAGE));
 
     Mockito.when(mockedService.findAllMsoasByLadid(LAD_WITH_CODE_LAD123)).thenAnswer(new Answer<List<Msoa>>() {
-      public List<Msoa> answer(InvocationOnMock invocation)
-              throws Throwable {
-        String ladCode = (String)invocation.getArguments()[0];
+      public List<Msoa> answer(final InvocationOnMock invocation)
+          throws Throwable {
+        String ladCode = (String) invocation.getArguments()[0];
         Msoa msoa1 = new Msoa();
         msoa1.setLad12cd(ladCode);
         msoa1.setMsoa11cd(MSOA1_CODE);
@@ -72,15 +77,20 @@ public class MockLocalAuthorityServiceFactory implements Factory<LocalAuthorityS
     });
 
     Mockito.when(mockedService.findAllMsoasByLadid(LAD_WITH_CODE_204)).thenAnswer(new Answer<List<Msoa>>() {
-      public List<Msoa> answer(InvocationOnMock invocation)
-              throws Throwable {
-        return new ArrayList<Msoa> ();
+      public List<Msoa> answer(final InvocationOnMock invocation)
+          throws Throwable {
+        return new ArrayList<Msoa>();
       }
     });
 
     return mockedService;
   }
 
-  public void dispose(LocalAuthorityService t) {}
+  /**
+   * dispose method
+   * @param t service to dispose
+   */
+  public void dispose(final LocalAuthorityService t) {
+  }
 
 }
