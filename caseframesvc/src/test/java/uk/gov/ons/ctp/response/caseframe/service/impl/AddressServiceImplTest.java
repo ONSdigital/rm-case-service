@@ -25,7 +25,7 @@ public final class AddressServiceImplTest {
 
   /**
    * a test
-   * 
+   *
    * @throws Exception something failed
    */
   @Test
@@ -37,7 +37,7 @@ public final class AddressServiceImplTest {
 
   /**
    * a test
-   * 
+   *
    * @throws Exception something failed
    */
   @Test
@@ -47,6 +47,11 @@ public final class AddressServiceImplTest {
     Assert.assertEquals(POSTCODE_FORMAT1_RESULT, result);
   }
 
+  /**
+   * a test
+   *
+   * @throws Exception something failed
+   */
   @Test
   public void testFormat1PostcodeTrailingSpaceMixedCase() throws Exception {
     String result = (String) TestHelper.callPrivateMethodOfDefaultConstructableClass(AddressServiceImpl.class,
@@ -54,6 +59,11 @@ public final class AddressServiceImplTest {
     Assert.assertEquals(POSTCODE_FORMAT1_RESULT, result);
   }
 
+  /**
+   * a test
+   *
+   * @throws Exception something failed
+   */
   @Test
   public void testFormat2PostcodeLeadMidTrailingSpace() throws Exception {
     String result = (String) TestHelper.callPrivateMethodOfDefaultConstructableClass(AddressServiceImpl.class,
@@ -61,6 +71,11 @@ public final class AddressServiceImplTest {
     Assert.assertEquals(POSTCODE_FORMAT2_RESULT, result);
   }
 
+  /**
+   * a test
+   *
+   * @throws Exception something failed
+   */
   @Test
   public void testFormat2PostcodeNoSpace() throws Exception {
     String result = (String) TestHelper.callPrivateMethodOfDefaultConstructableClass(AddressServiceImpl.class,
@@ -68,6 +83,11 @@ public final class AddressServiceImplTest {
     Assert.assertEquals(POSTCODE_FORMAT2_RESULT, result);
   }
 
+  /**
+   * a test
+   *
+   * @throws Exception something failed
+   */
   @Test
   public void testFormat3PostcodeSpace() throws Exception {
     String result = (String) TestHelper.callPrivateMethodOfDefaultConstructableClass(AddressServiceImpl.class,
@@ -75,6 +95,11 @@ public final class AddressServiceImplTest {
     Assert.assertEquals(POSTCODE_FORMAT3_RESULT, result);
   }
 
+  /**
+   * a test
+   *
+   * @throws Exception something failed
+   */
   @Test
   public void testFormat3PostcodeNoSpace() throws Exception {
     String result = (String) TestHelper.callPrivateMethodOfDefaultConstructableClass(AddressServiceImpl.class,
