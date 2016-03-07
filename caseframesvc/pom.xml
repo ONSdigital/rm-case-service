@@ -59,6 +59,12 @@
         <artifactId>spring-boot-maven-plugin</artifactId>
         <version>${springboot.version}</version>
         <configuration>
+          <requiresUnpack>
+            <dependency>
+              <groupId>uk.gov.ons.ctp.common</groupId>
+              <artifactId>framework</artifactId>
+            </dependency>
+          </requiresUnpack>
           <mainClass>uk.gov.ons.ctp.response.caseframe.CaseFrameSvcApplication</mainClass>
         </configuration>
         <executions>
