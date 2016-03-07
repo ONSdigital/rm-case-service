@@ -24,6 +24,12 @@ public interface QuestionnaireRepository extends JpaRepository<Questionnaire, In
 
   Questionnaire findByQuestionnaireId(Integer qid);
 
+  /**
+   * set the response datetime for a given questionnaire.
+   * @param responseDatetime the time to set
+   * @param questionnaireid identity of the questionnaire to update
+   * @return  the number of questionnaires updated
+   */
   @Modifying
   @Query(value = "UPDATE caseframe.questionnaire SET response_datetime = ?1 WHERE questionnaireid = ?2", nativeQuery = true)
   int setResponseDatetimeFor(Timestamp responseDatetime, Integer questionnaireid);
