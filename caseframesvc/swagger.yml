@@ -598,7 +598,6 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /samples/{sampleid}:
     put:
       summary: Create cases for the specified sample.
       description: |
@@ -787,9 +786,6 @@ definitions:
       longitude:
         type: number
         description: Position East or West of Greenwich Meridian.
-      ladName:
-        type: string
-        description: Local Authority Distict name.
   Case:
     type: object
     properties:
