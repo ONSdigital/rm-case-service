@@ -1,0 +1,29 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 8.12.0-1
+      author: whilep1
+      changes:
+          - sqlFile:
+              comment: drop action tables
+              path: drop-action-tables.sql
+              relativeToChangelogFile: true
+
+  - changeSet:
+      id: 8.12.0-2
+      author: whilep1
+      changes:
+          - sqlFile:
+              comment: drop and recreate address table
+              path: change-address-table.sql
+              relativeToChangelogFile: true
+
+  - changeSet:
+      id: 8.12.0-3
+      author: whilep1
+      changes:
+          - sqlFile:
+              comment: change metadat for 2016 test
+              path: insert-metadata-2016.sql
+              relativeToChangelogFile: true
+
