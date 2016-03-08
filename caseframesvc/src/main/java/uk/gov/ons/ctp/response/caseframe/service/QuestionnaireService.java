@@ -13,16 +13,16 @@ public interface QuestionnaireService extends CTPService {
 
   /**
    * Find Questionnaire entity by Internet Access Code.
-   * 
-   * @param IAC
+   *
+   * @param iac Unique IAC String
    * @return Questionnaire object or null
    */
   Questionnaire findQuestionnaireByIac(String iac);
 
   /**
    * Find Questionnaire entities associated with a Case.
-   * 
-   * @param Case Id
+   *
+   * @param caseId Case Id Integer
    * @return List of Questionnaire entities or empty List
    */
   List<Questionnaire> findQuestionnairesByCaseId(Integer caseId);
@@ -30,8 +30,8 @@ public interface QuestionnaireService extends CTPService {
   /**
    * Update a Questionnaire and Case object to record a response has been
    * received in the Survey Data Exchange.
-   * 
-   * @param Questionnaire Id
+   *
+   * @param questionnaireid Unique Questionnaire Id
    * @return Updated Questionnaire object
    */
   Questionnaire recordResponse(Integer questionnaireid);

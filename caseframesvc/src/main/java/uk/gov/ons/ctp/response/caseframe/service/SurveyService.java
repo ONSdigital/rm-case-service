@@ -6,12 +6,24 @@ import uk.gov.ons.ctp.common.service.CTPService;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Survey;
 
 /**
- * Created by Martin.Humphrey on 17/2/2016.
+ * The Survey Service interface defines all business behaviours for operations
+ * on the Survey entity model.
  */
 public interface SurveyService extends CTPService {
 
+  /**
+   * Returns all Surveys.
+   *
+   * @return List of Survey entities or empty List
+   */
   List<Survey> findSurveys();
 
+  /**
+   * Find Survey entity by Survey Id.
+   *
+   * @param surveyId Survey Id Integer
+   * @return Survey entity or null
+   */
   Survey findSurveyBySurveyId(Integer surveyId);
 
 }

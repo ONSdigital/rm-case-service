@@ -31,13 +31,13 @@ public final class MsoaServiceImpl implements MsoaService {
   AddressSummaryRepository addressSummaryRepository;
 
   @Override
-  public Msoa findById(String msoaid) {
+  public Msoa findById(final String msoaid) {
     log.debug("Entering findById with {}", msoaid);
     return msoaRepository.findOne(msoaid);
   }
 
   @Override
-  public List<AddressSummary> findAllAddressSummariesByMsoaid(String msoaid) {
+  public List<AddressSummary> findAllAddressSummariesByMsoaid(final String msoaid) {
     log.debug("Entering findAllAddressSummariesByMsoaid with {}", msoaid);
     return addressSummaryRepository.findByMsoa11cd(msoaid);
   }

@@ -30,7 +30,7 @@ public final class SampleServiceImpl implements SampleService {
   }
 
   @Override
-  public Sample findSampleBySampleId(Integer sampleId) {
+  public Sample findSampleBySampleId(final Integer sampleId) {
     log.debug("Entering findSampleBySampleId with {}", sampleId);
     return sampleRepo.findOne(sampleId);
   }
@@ -40,7 +40,7 @@ public final class SampleServiceImpl implements SampleService {
    */
   @Async
   @Override
-  public Boolean generateCases(Integer sampleId, String geographyType, String geographyCode) {
+  public Boolean generateCases(final Integer sampleId, final String geographyType, final String geographyCode) {
     log.debug("Entering generateCases with sampleId {} - geographyType {} - geographyCode {}", sampleId, geographyType,
         geographyCode);
     return sampleRepo.generateCases(sampleId, geographyType, geographyCode);

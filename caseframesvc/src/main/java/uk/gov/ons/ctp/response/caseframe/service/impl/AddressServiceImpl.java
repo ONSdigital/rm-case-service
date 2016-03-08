@@ -11,40 +11,64 @@ import uk.gov.ons.ctp.response.caseframe.domain.repository.AddressRepository;
 import uk.gov.ons.ctp.response.caseframe.service.AddressService;
 
 /**
- * An implementation of the AddressService using JPA Repository class(es) The
- * business logic for the application should reside here.
+ * An AddressService implementation which encapsulates all business logic
+ * operating on the Address entity model.
  */
 @Named
 @Slf4j
 public final class AddressServiceImpl implements AddressService {
 
-  @Inject
-  AddressRepository addressRepository;
+  private static final int INWARD_POSTCODE = 3;
+  private static final int POSTCODE_LENGTH = 8;
 
+  /**
+   * Spring Data Repository for Address entities.
+   */
+  @Inject
+  private AddressRepository addressRepository;
+
+  /**
+   * Find Address entity by Unique Property Reference No.
+   *
+   * @param uprn A UPRN Long
+   * @return Address object or null
+   */
   @Override
-  public Address findByUprn(Long uprn) {
+  public Address findByUprn(final Long uprn) {
     log.debug("Entering findByUprn with {}", uprn);
     return addressRepository.findByUprn(uprn);
   }
 
+  /**
+   * Find Address entities by postcode.
+   *
+   * @param postcode A Postcode string
+   * @return List of Questionnaire entities or empty List
+   */
   @Override
-  public List<Address> findByPostcode(String postcode) {
+  public List<Address> findByPostcode(final String postcode) {
     log.debug("Entering findByPostcode with {}", postcode);
     return addressRepository.findByPostcode(formatPostcode(postcode));
   }
 
-  private String formatPostcode(String postcode) {
+  /**
+   * Format a postcode, uppercase, pad to 8 characters allowing for different
+   * postcode formats.
+   *
+   * @param postcode A Postcode string
+   * @return Formatted postcode or null
+   */
+  private String formatPostcode(final String postcode) {
     StringBuilder fullPostcode = null;
 
-    String trimmedPostcode = postcode.trim();
+    String trimmedPostcode = postcode.trim().toUpperCase();
     int trimmedPostcodeLength = trimmedPostcode.length();
-    if (trimmedPostcodeLength < 8) {
-      // case where the space was forgotten in the middle of the postcode
-      String postcodeStart = trimmedPostcode.substring(0, trimmedPostcodeLength - 3);
-      fullPostcode = new StringBuilder(postcodeStart);
-      fullPostcode.append(" ");
-      String lastThreeChracters = trimmedPostcode.substring(trimmedPostcodeLength - 3, trimmedPostcodeLength);
-      fullPostcode.append(lastThreeChracters);
+    if (trimmedPostcodeLength < POSTCODE_LENGTH) {
+      // Pad spaces in centre of postcode
+      String outwardPostCode = trimmedPostcode.substring(0, trimmedPostcodeLength - INWARD_POSTCODE);
+      String inwardPostCode = trimmedPostcode.substring(trimmedPostcodeLength - INWARD_POSTCODE, trimmedPostcodeLength);
+      fullPostcode = new StringBuilder(outwardPostCode);
+      fullPostcode.append(String.format("%1$" + (POSTCODE_LENGTH - outwardPostCode.length()) + "s", inwardPostCode));
     } else {
       fullPostcode = new StringBuilder(trimmedPostcode);
     }

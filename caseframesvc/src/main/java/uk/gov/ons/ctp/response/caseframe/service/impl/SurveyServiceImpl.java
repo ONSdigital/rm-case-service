@@ -30,7 +30,7 @@ public final class SurveyServiceImpl implements SurveyService {
   }
 
   @Override
-  public Survey findSurveyBySurveyId(Integer surveyId) {
+  public Survey findSurveyBySurveyId(final Integer surveyId) {
     log.debug("Entering findSurveyBySurveyId with {}", surveyId);
     return surveyRepo.findOne(surveyId);
   }

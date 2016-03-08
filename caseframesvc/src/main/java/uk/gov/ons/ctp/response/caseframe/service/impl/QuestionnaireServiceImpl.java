@@ -47,7 +47,7 @@ public final class QuestionnaireServiceImpl implements QuestionnaireService {
    * @return Questionnaire object or null
    */
   @Override
-  public Questionnaire findQuestionnaireByIac(String iac) {
+  public Questionnaire findQuestionnaireByIac(final String iac) {
     log.debug("Entering findQuestionnaireByIac with {}", iac);
     return questionnaireRepo.findByIac(iac);
   }
@@ -59,7 +59,7 @@ public final class QuestionnaireServiceImpl implements QuestionnaireService {
    * @return List of Questionnaire entities or empty List
    */
   @Override
-  public List<Questionnaire> findQuestionnairesByCaseId(Integer caseId) {
+  public List<Questionnaire> findQuestionnairesByCaseId(final Integer caseId) {
     log.debug("Entering findQuestionnairesByCaseId with {}", caseId);
     return questionnaireRepo.findByCaseId(caseId);
   }
@@ -72,7 +72,7 @@ public final class QuestionnaireServiceImpl implements QuestionnaireService {
    * @return Updated Questionnaire object or null
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
-  public Questionnaire recordResponse(Integer questionnaireid) {
+  public Questionnaire recordResponse(final Integer questionnaireid) {
     Timestamp currentTime = new Timestamp(System.currentTimeMillis());
     Questionnaire questionnaire = questionnaireRepo.findOne(questionnaireid);
     if (questionnaire == null) {
