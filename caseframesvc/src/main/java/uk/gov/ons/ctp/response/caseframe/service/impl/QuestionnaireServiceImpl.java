@@ -42,7 +42,7 @@ public final class QuestionnaireServiceImpl implements QuestionnaireService {
 
   /**
    * Find Questionnaire entity by Internet Access Code.
-   * 
+   *
    * @param IAC
    * @return Questionnaire object or null
    */
@@ -54,7 +54,7 @@ public final class QuestionnaireServiceImpl implements QuestionnaireService {
 
   /**
    * Find Questionnaire entities associated with a Case.
-   * 
+   *
    * @param Case Id
    * @return List of Questionnaire entities or empty List
    */
@@ -68,21 +68,21 @@ public final class QuestionnaireServiceImpl implements QuestionnaireService {
    * Update a Questionnaire and Case object to record a response has been
    * received in the Survey Data Exchange.
    *
-   * @param Questionnaire Id
+   * @param questionnaireId id of questionnaire
    * @return Updated Questionnaire object or null
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
-  public Questionnaire recordResponse(final Integer questionnaireid) {
+  public Questionnaire recordResponse(final Integer questionnaireId) {
     Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-    Questionnaire questionnaire = questionnaireRepo.findOne(questionnaireid);
+    Questionnaire questionnaire = questionnaireRepo.findOne(questionnaireId);
     if (questionnaire == null) {
       // Questionnaire does not exist to record response
       return null;
     }
-    int nbOfUpdatedQuestionnaires = questionnaireRepo.setResponseDatetimeFor(currentTime, questionnaireid);
+    int nbOfUpdatedQuestionnaires = questionnaireRepo.setResponseDatetimeFor(currentTime, questionnaireId);
     int nbOfUpdatedCases = caseRepo.setStatusFor(CLOSED, questionnaire.getCaseId());
     if (!(nbOfUpdatedQuestionnaires == 1 && nbOfUpdatedCases == 1)) {
-      log.error("{} {} - nbOfUpdatedQuestionnaires = {} - nbOfUpdatedCases = {}", OPERATION_FAILED, questionnaireid,
+      log.error("{} {} - nbOfUpdatedQuestionnaires = {} - nbOfUpdatedCases = {}", OPERATION_FAILED, questionnaireId,
           nbOfUpdatedQuestionnaires, nbOfUpdatedCases);
       return null;
     }

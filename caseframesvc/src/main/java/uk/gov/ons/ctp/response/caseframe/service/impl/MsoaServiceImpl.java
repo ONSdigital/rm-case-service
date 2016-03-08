@@ -8,7 +8,6 @@ import javax.inject.Named;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.response.caseframe.domain.model.AddressSummary;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Msoa;
-import uk.gov.ons.ctp.response.caseframe.domain.repository.AddressRepository;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.AddressSummaryRepository;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.MsoaRepository;
 import uk.gov.ons.ctp.response.caseframe.service.MsoaService;
@@ -22,13 +21,10 @@ import uk.gov.ons.ctp.response.caseframe.service.MsoaService;
 public final class MsoaServiceImpl implements MsoaService {
 
   @Inject
-  MsoaRepository msoaRepository;
+  private MsoaRepository msoaRepository;
 
   @Inject
-  AddressRepository addressRepository;
-
-  @Inject
-  AddressSummaryRepository addressSummaryRepository;
+  private AddressSummaryRepository addressSummaryRepository;
 
   @Override
   public Msoa findById(final String msoaid) {

@@ -33,13 +33,12 @@ public final class MockRegionServiceFactory implements Factory<RegionService> {
 
   /**
    * provide method
-   * 
    * @return mocked service
    */
   public RegionService provide() {
     final RegionService mockedService = Mockito.mock(RegionService.class);
     Mockito.when(mockedService.findByRegionId(REGION_WITH_CODE_REG123)).thenAnswer(new Answer<Region>() {
-      public Region answer(InvocationOnMock invocation)
+      public Region answer(final InvocationOnMock invocation)
           throws Throwable {
         String regionCode = (String) invocation.getArguments()[0];
         Region region = new Region();
@@ -49,7 +48,7 @@ public final class MockRegionServiceFactory implements Factory<RegionService> {
       }
     });
     Mockito.when(mockedService.findByRegionId(REGION_WITH_NON_EXISTING_CODE)).thenAnswer(new Answer<Region>() {
-      public Region answer(InvocationOnMock invocation)
+      public Region answer(final InvocationOnMock invocation)
           throws Throwable {
         return null;
       }
@@ -106,7 +105,6 @@ public final class MockRegionServiceFactory implements Factory<RegionService> {
 
   /**
    * dispose method
-   * 
    * @param t service to dispose
    */
   public void dispose(final RegionService t) {

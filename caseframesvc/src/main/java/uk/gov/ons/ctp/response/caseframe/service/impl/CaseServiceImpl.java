@@ -32,13 +32,13 @@ public final class CaseServiceImpl implements CaseService {
   private CaseEventRepository eventRepo;
 
   @Override
-  public final List<Case> findCasesByUprn(final Integer uprn) {
+  public  List<Case> findCasesByUprn(final Integer uprn) {
     log.debug("Entering findCasesByUprn with uprn {}", uprn);
     return caseRepo.findByUprn(uprn);
   }
 
   @Override
-  public final Case findCaseByQuestionnaireId(final Integer qid) {
+  public  Case findCaseByQuestionnaireId(final Integer qid) {
     log.debug("Entering findCaseByQuestionnaireId");
     Questionnaire questionnaire = questionnaireRepo.findByQuestionnaireId(qid);
     if (questionnaire == null) {
@@ -48,13 +48,13 @@ public final class CaseServiceImpl implements CaseService {
   }
 
   @Override
-  public final Case findCaseByCaseId(final Integer caseId) {
+  public  Case findCaseByCaseId(final Integer caseId) {
     log.debug("Entering findCaseByCaseId");
     return caseRepo.findOne(caseId);
   }
 
   @Override
-  public final List<CaseEvent> findCaseEventsByCaseId(final Integer caseId) {
+  public  List<CaseEvent> findCaseEventsByCaseId(final Integer caseId) {
     log.debug("Entering findCaseEventsByCaseId");
     return eventRepo.findByCaseId(caseId);
   }
