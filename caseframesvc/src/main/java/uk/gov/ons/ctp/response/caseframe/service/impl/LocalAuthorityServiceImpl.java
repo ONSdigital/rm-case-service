@@ -13,25 +13,43 @@ import uk.gov.ons.ctp.response.caseframe.domain.repository.MsoaRepository;
 import uk.gov.ons.ctp.response.caseframe.service.LocalAuthorityService;
 
 /**
- * An implementation of the AddressService using JPA Repository class(es) The
- * business logic for the application should reside here.
+ * A LocalAuthorityService implementation which encapsulates all business logic
+ * operating on the LocalAuthority entity model.
  */
 @Named
 @Slf4j
 public final class LocalAuthorityServiceImpl implements LocalAuthorityService {
 
+  /**
+   * Spring Data Repository for LocalAuthoritye entities.
+   */
   @Inject
   private LocalAuthorityRepository localAuthorityRepository;
 
+  /**
+   * Spring Data Repository for MSOA entities.
+   */
   @Inject
   private MsoaRepository msoaRepository;
 
+  /**
+   * Find Local Authority entity by unique Id.
+   *
+   * @param ladid Unique LAD Id
+   * @return LocalAuthority entity or null
+   */
   @Override
   public LocalAuthority findById(final String ladid) {
     log.debug("entering findById with {}", ladid);
     return localAuthorityRepository.findOne(ladid);
   }
 
+  /**
+   * Returns all MSOAs for a given LAD Id sorted by MSOA name ascending.
+   *
+   * @param ladid Unique LAD Id
+   * @return List of MSOA entities or empty List
+   */
   @Override
   public List<Msoa> findAllMsoasByLadid(final String ladid) {
     log.debug("entering findAllMsoasByLadid with {}", ladid);
