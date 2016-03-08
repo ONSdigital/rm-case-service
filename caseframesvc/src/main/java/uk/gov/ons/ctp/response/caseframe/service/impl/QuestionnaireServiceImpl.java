@@ -24,9 +24,15 @@ import uk.gov.ons.ctp.response.caseframe.service.QuestionnaireService;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public final class QuestionnaireServiceImpl implements QuestionnaireService {
 
+  /**
+   * Text associated with failure of Response data received operation
+   */
   public static final String OPERATION_FAILED = "Response operation failed for questionnaireid";
+  /**
+   * Case status set on Response data being received
+   */
   public static final String CLOSED = "CLOSED";
-  static final int TRANSACTION_TIMEOUT = 30;
+  private static final int TRANSACTION_TIMEOUT = 30;
 
   /**
    * Spring Data Repository for Case entities.
@@ -43,7 +49,7 @@ public final class QuestionnaireServiceImpl implements QuestionnaireService {
   /**
    * Find Questionnaire entity by Internet Access Code.
    *
-   * @param IAC
+   * @param iac Unique Internet Access Code
    * @return Questionnaire object or null
    */
   @Override
@@ -55,7 +61,7 @@ public final class QuestionnaireServiceImpl implements QuestionnaireService {
   /**
    * Find Questionnaire entities associated with a Case.
    *
-   * @param Case Id
+   * @param caseId Unique Case Id
    * @return List of Questionnaire entities or empty List
    */
   @Override
@@ -68,7 +74,7 @@ public final class QuestionnaireServiceImpl implements QuestionnaireService {
    * Update a Questionnaire and Case object to record a response has been
    * received in the Survey Data Exchange.
    *
-   * @param questionnaireId id of questionnaire
+   * @param questionnaireId Unique Id of questionnaire
    * @return Updated Questionnaire object or null
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
