@@ -39,5 +39,4 @@ public class AddressSummary implements Serializable {
 
   private String postcode;
 
-  private String msoa11cd;
 }

@@ -5,6 +5,7 @@ import javax.inject.Named;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.ConfigurableMapper;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Address;
+import uk.gov.ons.ctp.response.caseframe.domain.model.AddressSummary;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Case;
 import uk.gov.ons.ctp.response.caseframe.domain.model.CaseType;
 import uk.gov.ons.ctp.response.caseframe.domain.model.LocalAuthority;
@@ -15,6 +16,7 @@ import uk.gov.ons.ctp.response.caseframe.domain.model.Region;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Sample;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Survey;
 import uk.gov.ons.ctp.response.caseframe.representation.AddressDTO;
+import uk.gov.ons.ctp.response.caseframe.representation.AddressSummaryDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseTypeDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.LocalAuthorityDTO;
@@ -46,6 +48,11 @@ public class CaseFrameBeanMapper extends ConfigurableMapper {
         .field("msoa11cd", "msoaArea")
         .field("lad12cd", "ladCode")
         .field("region11cd", "regionCode")
+        .byDefault()
+        .register();
+
+    factory
+        .classMap(AddressSummary.class, AddressSummaryDTO.class)
         .byDefault()
         .register();
 
