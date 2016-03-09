@@ -7,4 +7,3 @@ databaseChangeLog:
 
   - include:
       file: database/changes/release-7.10.0/changelog.yml
-      file: database/changes/release-8.12.0/changelog.yml
