@@ -1,6 +1,8 @@
 info:
   contactEmail: philip.whiles@ons.gov.uk
 
+# logging config here as a reminder as to how to override logback from cmd line
+# ie -Dlogging.level.org.springframework=DEBUG
 logging:
   level:
     org.springframework: INFO
