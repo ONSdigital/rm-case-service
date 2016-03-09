@@ -1,6 +1,11 @@
 info:
   contactEmail: philip.whiles@ons.gov.uk
 
+logging:
+  level:
+    org.springframework: INFO
+    uk.gov.ons.ctp: DEBUG
+
 liquibase:
   user: postgres
   password: postgres
