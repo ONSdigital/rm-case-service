@@ -59,6 +59,7 @@
         <artifactId>spring-boot-maven-plugin</artifactId>
         <version>${springboot.version}</version>
         <configuration>
+          <executable>true</executable>
           <requiresUnpack>
             <dependency>
               <groupId>uk.gov.ons.ctp.common</groupId>

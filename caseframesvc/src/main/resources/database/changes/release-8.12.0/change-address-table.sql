@@ -2,6 +2,10 @@
 
 set schema 'caseframe';
 
+DELETE FROM questionnaire;
+DELETE FROM "case";
+DELETE FROM address;
+
 
 DROP TABLE address CASCADE;
 
