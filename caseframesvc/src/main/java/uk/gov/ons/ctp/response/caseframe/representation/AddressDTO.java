@@ -13,6 +13,10 @@ public class AddressDTO {
 
   private String estabType;
 
+  private String locality;
+
+  private String organisationName;
+
   private String addressLine1;
 
   private String addressLine2;

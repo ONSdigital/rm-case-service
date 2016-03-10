@@ -3,6 +3,8 @@ package uk.gov.ons.ctp.response.caseframe.endpoint;
 import static uk.gov.ons.ctp.response.caseframe.utility.AddressBuilder.ADDRESS_EASTINGS;
 import static uk.gov.ons.ctp.response.caseframe.utility.AddressBuilder.ADDRESS_ESTABLISH_TYPE;
 import static uk.gov.ons.ctp.response.caseframe.utility.AddressBuilder.ADDRESS_HTC;
+import static uk.gov.ons.ctp.response.caseframe.utility.AddressBuilder.ADDRESS_ORG_NAME;
+import static uk.gov.ons.ctp.response.caseframe.utility.AddressBuilder.ADDRESS_LOCALITY;
 import static uk.gov.ons.ctp.response.caseframe.utility.AddressBuilder.ADDRESS_LAD;
 import static uk.gov.ons.ctp.response.caseframe.utility.AddressBuilder.ADDRESS_LATITUDE;
 import static uk.gov.ons.ctp.response.caseframe.utility.AddressBuilder.ADDRESS_LINE1;
@@ -56,6 +58,8 @@ public final class AddressEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerInBody("$.uprn", ADDRESS_UPRN.intValue())
         .assertStringInBody("$.addressType", ADDRESS_TYPE)
+        .assertStringInBody("$.organisationName", ADDRESS_ORG_NAME)
+        .assertStringInBody("$.locality", ADDRESS_LOCALITY)
         .assertStringInBody("$.estabType", ADDRESS_ESTABLISH_TYPE)
         .assertStringInBody("$.addressLine1", ADDRESS_LINE1)
         .assertStringInBody("$.addressLine2", ADDRESS_LINE2)
