@@ -13,6 +13,8 @@ public final class AddressBuilder {
   public static final Double ADDRESS_LATITUDE = 100000d;
   public static final Double ADDRESS_LONGITUDE = 300000d;
   public static final String ADDRESS_ESTABLISH_TYPE = "EX";
+  public static final String ADDRESS_ORG_NAME = "Tescos";
+  public static final String ADDRESS_LOCALITY = "Somewhere";
   public static final String ADDRESS_LINE1 = "Segensworth Road";
   public static final String ADDRESS_LINE2 = "Business Park";
   public static final String ADDRESS_TOWN_NAME = "Fareham";
@@ -63,6 +65,8 @@ public final class AddressBuilder {
     address.setMsoa11cd(ADDRESS_MSOA);
     address.setLad12cd(ADDRESS_LAD);
     address.setRegion11cd(ADDRESS_REGION_CODE);
+    address.setOrganisationName(ADDRESS_ORG_NAME);
+    address.setLocality(ADDRESS_LOCALITY);
     address.setEstabType(ADDRESS_ESTABLISH_TYPE);
     address.setAddressLine1(ADDRESS_LINE1);
     address.setAddressLine2(ADDRESS_LINE2);

@@ -31,6 +31,10 @@ public class AddressSummary implements Serializable {
   @Column(name = "estabtype")
   private String estabType;
 
+  private String locality;
+
+  private String organisationName;
+
   private String addressLine1;
 
   private String addressLine2;
