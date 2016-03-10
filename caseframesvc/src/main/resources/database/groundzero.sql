@@ -10,7 +10,7 @@ GRANT role_connect TO caseframesvc;
 
 
 DROP SCHEMA caseframe cascade;
-create schema CASEFRAME;
+create schema CASEFRAME AUTHORIZATION role_connect;
 
 REVOKE CONNECT ON DATABASE postgres FROM PUBLIC;
 GRANT CONNECT

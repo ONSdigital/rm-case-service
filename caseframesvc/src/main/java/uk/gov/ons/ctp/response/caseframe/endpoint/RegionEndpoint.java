@@ -35,7 +35,7 @@ public final class RegionEndpoint implements CTPEndpoint {
   private MapperFacade mapperFacade;
 
   /**
-   * the GET endpoint to retrievea all regions
+   * the GET endpoint to retrieve all regions
    * @return the list of all regions
    */
   @GET

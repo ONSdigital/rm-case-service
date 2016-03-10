@@ -14,7 +14,7 @@ CREATE TABLE action (
 );
 
 
-ALTER TABLE caseframe.action OWNER TO postgres;
+ALTER TABLE caseframe.action OWNER TO role_connect;
 
 
 CREATE TABLE actionplan (
@@ -25,7 +25,7 @@ CREATE TABLE actionplan (
 );
 
 
-ALTER TABLE caseframe.actionplan OWNER TO postgres;
+ALTER TABLE caseframe.actionplan OWNER TO role_connect;
 
 
 CREATE TABLE address (
@@ -49,7 +49,7 @@ CREATE TABLE address (
 );
 
 
-ALTER TABLE caseframe.address OWNER TO postgres;
+ALTER TABLE caseframe.address OWNER TO role_connect;
 
 
 CREATE TABLE "case" (
@@ -66,7 +66,7 @@ CREATE TABLE "case" (
 );
 
 
-ALTER TABLE caseframe."case" OWNER TO postgres;
+ALTER TABLE caseframe."case" OWNER TO role_connect;
 
 
 CREATE TABLE caseevent (
@@ -79,7 +79,7 @@ CREATE TABLE caseevent (
 );
 
 
-ALTER TABLE caseframe.caseevent OWNER TO postgres;
+ALTER TABLE caseframe.caseevent OWNER TO role_connect;
 
 
 CREATE TABLE casetype (
@@ -91,7 +91,7 @@ CREATE TABLE casetype (
 );
 
 
-ALTER TABLE caseframe.casetype OWNER TO postgres;
+ALTER TABLE caseframe.casetype OWNER TO role_connect;
 
 
 CREATE TABLE questionnaire (
@@ -106,7 +106,7 @@ CREATE TABLE questionnaire (
 );
 
 
-ALTER TABLE caseframe.questionnaire OWNER TO postgres;
+ALTER TABLE caseframe.questionnaire OWNER TO role_connect;
 
 
 CREATE TABLE questionset (
@@ -115,7 +115,7 @@ CREATE TABLE questionset (
 );
 
 
-ALTER TABLE caseframe.questionset OWNER TO postgres;
+ALTER TABLE caseframe.questionset OWNER TO role_connect;
 
 
 CREATE TABLE sample (
@@ -128,7 +128,7 @@ CREATE TABLE sample (
 );
 
 
-ALTER TABLE caseframe.sample OWNER TO postgres;
+ALTER TABLE caseframe.sample OWNER TO role_connect;
 
 
 CREATE TABLE survey (
@@ -138,7 +138,7 @@ CREATE TABLE survey (
 );
 
 
-ALTER TABLE caseframe.survey OWNER TO postgres;
+ALTER TABLE caseframe.survey OWNER TO role_connect;
 
 
 ALTER TABLE ONLY action
