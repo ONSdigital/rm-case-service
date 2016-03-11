@@ -1,7 +1,7 @@
 --ALTER USER caseframesvc SET search_path to 'caseframe,refdata';
 
-DROP USER caseframesvc;
 DROP OWNED BY caseframesvc;
+DROP USER caseframesvc;
 
 CREATE USER caseframesvc LOGIN
   PASSWORD 'caseframesvc'
@@ -43,20 +43,4 @@ GRANT ALL ON SCHEMA refdata TO caseframesvc;
 GRANT SELECT ON ALL TABLES IN SCHEMA refdata TO caseframesvc;
 
 
-
-
-
-
-drop table caseframe.address cascade;
-drop table caseframe.action cascade;
-drop table caseframe.actionplan cascade;
-drop table caseframe.case cascade;
-drop table caseframe.casetype cascade;
-drop table caseframe.caseevent cascade;
-drop table caseframe.questionnaire cascade;
-drop table caseframe.questionset cascade;
-drop table caseframe.survey cascade;
-drop table caseframe.sample cascade;
-drop table caseframe.databasechangelog cascade;
-drop table caseframe.databasechangeloglock cascade;
 
