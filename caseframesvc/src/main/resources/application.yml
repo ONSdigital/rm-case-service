@@ -74,6 +74,9 @@ spring:
     username: caseframesvc
     password: caseframesvc
     driverClassName: org.postgresql.Driver
+    test-on-borrow: true
+    remov-abandoned: true
+    validation-query: SELECT 1;
 
     jpa:
       database-platform: org.hibernate.dialect.PostgreSQLDialect
