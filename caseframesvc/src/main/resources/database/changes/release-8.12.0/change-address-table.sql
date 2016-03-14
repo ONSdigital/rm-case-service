@@ -33,7 +33,7 @@ CREATE TABLE address
 );
 
 ALTER TABLE caseframe.address
-  OWNER TO postgres;
+  OWNER TO role_connect;
 
 ALTER TABLE ONLY caseframe.address
     ADD CONSTRAINT address_pkey PRIMARY KEY (uprn);

@@ -1,7 +1,7 @@
 --ALTER USER caseframesvc SET search_path to 'caseframe,refdata';
 
 DROP OWNED BY caseframesvc;
-DROP USER caseframesvc;
+DROP ROLE caseframesvc;
 
 CREATE USER caseframesvc LOGIN
   PASSWORD 'caseframesvc'
