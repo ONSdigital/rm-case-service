@@ -93,7 +93,7 @@
             <id>test</id>
             <phase>test</phase>
             <configuration>
-              <configLocation>../../ons_checks_sun_checks.xml</configLocation>
+              <configLocation>http://192.168.11.11:8001/misc/checkstyle/ons_checks_sun_checks.xml</configLocation>
               <encoding>UTF-8</encoding>
               <consoleOutput>true</consoleOutput>
               <failsOnError>true</failsOnError>
