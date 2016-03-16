@@ -425,6 +425,45 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+    post:
+      summary: Create Case Event
+      description: Creates a case event from the mandatory description, category and createdBy properties.
+      consumes:
+        - application/json
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json
+          required: false
+          type: string
+        - name: caseid
+          description: Unique case Id.
+          in: path
+          required: true
+          type: integer
+        - in: body
+          name: caseEvent
+          description: Case event to create
+          required: true
+          schema:
+            $ref: '#/definitions/CaseEventCreationRequest'
+      tags:
+        - Response
+      responses:
+        201:
+          description: Case event created
+          schema:
+            $ref: '#/definitions/CaseEvent'
+        400:
+          description: Invalid input
+        404:
+          description: Case not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
   /questionnaires/iac/{iac}:
     get:
       summary:  Get the questionnaire details for a specified IAC.
@@ -911,6 +950,53 @@ definitions:
       questionSet:
         type: string
         description: Type of questionnaire set.
+  CaseEvent:
+    type: object
+    required:
+      - caseEventId
+      - description
+      - category
+      - createdDateTime
+      - createdBy
+    properties:
+      caseEventId:
+        type: integer
+        description: Unique case event identifier.
+      description:
+        type: string
+        description: Case event description.
+      category:
+        type: string
+        description: Identifies what has triggered the case event.
+      subCategory:
+        type: string
+        description: Optional free text for use by automatically-created case events.
+      createdDateTime:
+        type: string
+        format: date-time
+        description: Creation date-time.
+      createdBy:
+        type: string
+        description: Creator of case event.
+  CaseEventCreationRequest:
+    type: object
+    required:
+      - description
+      - category
+      - createdBy
+    properties:
+      description:
+        type: string
+        description: Case event description.
+      category:
+        type: string
+        description: Identifies what has triggered the case event.
+      subCategory:
+        type: string
+        description: Optional free text for use by automatically-created case events.
+      createdBy:
+        type: string
+        description: Creator of case event.
   Event:
     type: object
     properties:
