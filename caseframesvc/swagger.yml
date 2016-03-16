@@ -511,7 +511,7 @@ paths:
         200:
           description: The response mechanism was completed successfully.
           schema:
-            $ref: '#/definitions/Quesionnaire'
+            $ref: '#/definitions/Questionnaire'
         404:
           description: Questionnaire not found
           schema:
