@@ -2,10 +2,10 @@ swagger: '2.0'
 info:
   title: Case Frame Service API
   description: Provide access to Address Frame and Response Management information
-  version: 8.11.0
+  version: 8.13.0
 schemes:
   - http
-basePath: /frameservice
+basePath: /
 produces:
   - application/json
 tags:
@@ -29,7 +29,7 @@ paths:
       tags:
         - Frame
       responses:
-        '200':
+        200:
           description: An array of regions
           schema:
             type: array
@@ -58,10 +58,14 @@ paths:
       tags:
         - Frame
       responses:
-        '200':
+        200:
           description: A single region
           schema:
-              $ref: '#/definitions/Region'
+            $ref: '#/definitions/Region'
+        404:
+          description: Region not found
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
@@ -85,12 +89,18 @@ paths:
       tags:
         - Frame
       responses:
-        '200':
+        200:
           description: An array of LADs
           schema:
             type: array
             items:
               $ref: '#/definitions/LocalAuthDist'
+        204:
+          description: No LADs
+        404:
+          description: Region not found
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
@@ -114,10 +124,14 @@ paths:
       tags:
         - Frame
       responses:
-        '200':
+        200:
           description: A single LAD.
           schema:
               $ref: '#/definitions/LocalAuthDist'
+        404:
+          description: LAD not found
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
@@ -141,12 +155,18 @@ paths:
       tags:
         - Frame
       responses:
-        '200':
+        200:
           description: An array of MSOAs for the supplied LAD code.
           schema:
             type: array
             items:
               $ref: '#/definitions/MSOA'
+        204:
+          description: No MSOAs
+        404:
+          description: LAD not found
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
@@ -170,10 +190,14 @@ paths:
       tags:
         - Frame
       responses:
-        '200':
+        200:
           description: A single MSOA.
           schema:
               $ref: '#/definitions/MSOA'
+        404:
+          description: MSOA not found
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
@@ -197,12 +221,18 @@ paths:
       tags:
         - Frame
       responses:
-        '200':
+        200:
           description: An array of address summaries for the supplied MSOA code.
           schema:
             type: array
             items:
               $ref: '#/definitions/AddressSummary'
+        204:
+          description: No address summaries
+        404:
+          description: MSOA not found
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
@@ -225,10 +255,14 @@ paths:
       tags:
         - Frame
       responses:
-        '200':
+        200:
           description: Address details for supplied UPRN.
           schema:
             $ref: '#/definitions/Address'
+        404:
+          description: UPRN not found
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
@@ -251,12 +285,16 @@ paths:
       tags:
         - Frame
       responses:
-        '200':
+        200:
           description: Address details for supplied postcode.
           schema:
             type: array
             items:
               $ref: '#/definitions/Address'
+        404:
+          description: Postcode not found
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
@@ -279,12 +317,16 @@ paths:
       tags:
         - Response
       responses:
-        '200':
+        200:
           description: Case details for supplied UPRN.
           schema:
             type: array
             items:
               $ref: '#/definitions/Case'
+        404:
+          description: UPRN not found
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
@@ -307,10 +349,14 @@ paths:
       tags:
         - Response
       responses:
-        '200':
+        200:
           description: Case details for supplied questionnaireid.
           schema:
               $ref: '#/definitions/Case'
+        404:
+          description: Questionnaire not found
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
@@ -333,10 +379,14 @@ paths:
       tags:
         - Response
       responses:
-        '200':
+        200:
           description: Case details for supplied caseid.
           schema:
               $ref: '#/definitions/Case'
+        404:
+          description: Case not found
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
@@ -359,12 +409,57 @@ paths:
       tags:
         - Response
       responses:
-        '200':
+        200:
           description: All event details for supplied caseid.
           schema:
             type: array
             items:
               $ref: '#/definitions/Event'
+        204:
+          description: No case events
+        404:
+          description: Case not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Create Case Event
+      description: Creates a case event from the mandatory description, category and createdBy properties.
+      consumes:
+        - application/json
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json
+          required: false
+          type: string
+        - name: caseid
+          description: Unique case Id.
+          in: path
+          required: true
+          type: integer
+        - in: body
+          name: caseEvent
+          description: Case event to create
+          required: true
+          schema:
+            $ref: '#/definitions/CaseEventCreationRequest'
+      tags:
+        - Response
+      responses:
+        201:
+          description: Case event created
+          schema:
+            $ref: '#/definitions/CaseEvent'
+        400:
+          description: Invalid input
+        404:
+          description: Case not found
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
@@ -388,10 +483,14 @@ paths:
       tags:
         - Response
       responses:
-        '200':
+        200:
           description: Details for a single questionnaire.
           schema:
             $ref: '#/definitions/Questionnaire'
+        404:
+          description: Internet Access Code not found
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
@@ -415,41 +514,51 @@ paths:
       tags:
         - Response
       responses:
-        '200':
+        200:
           description: All questionnaire details for a supplied caseid.
           schema:
             type: array
             items:
               $ref: '#/definitions/Questionnaire'
+        404:
+          description: Case not found
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
   /questionnaires/{questionnaireid}/response:
-                put:
-                  summary:  Confirms a response has been received in the Survey Data Exchange.
-                  description: |
-                    For the given Questionnaire, it populates the response_datetime. It also populates case_status for the related Case.
-                  parameters:
-                    - name: Accept
-                      in: header
-                      description: Response type, application/json.
-                      required: false
-                      type: string
-                    - name: questionnaireid
-                      description: Unique questionnaire Id.
-                      in: path
-                      required: true
-                      type: string
-                  tags:
-                    - Response
-                  responses:
-                    '200':
-                      description: The response mechanism was completed successfully.
-                    default:
-                      description: Unexpected error
-                      schema:
-                        $ref: '#/definitions/Error'
+    put:
+      summary:  Confirms a response has been received in the Survey Data Exchange.
+      description: |
+        For the given Questionnaire, it populates the response_datetime. It also populates case_status for the related Case.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: questionnaireid
+          description: Unique questionnaire Id.
+          in: path
+          required: true
+          type: string
+      tags:
+        - Response
+      responses:
+        200:
+          description: The response mechanism was completed successfully.
+          schema:
+            $ref: '#/definitions/Questionnaire'
+        404:
+          description: Questionnaire not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
   /questionsets:
     get:
       summary: Get all question set types.
@@ -464,7 +573,7 @@ paths:
       tags:
         - Response
       responses:
-        '200':
+        200:
           description: An array of question sets
           schema:
             type: array
@@ -492,10 +601,14 @@ paths:
       tags:
         - Response
       responses:
-        '200':
+        200:
           description: A single question set.
           schema:
               $ref: '#/definitions/QuestionSet'
+        404:
+          description: Question set not found
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
@@ -513,7 +626,7 @@ paths:
       tags:
         - Response
       responses:
-        '200':
+        200:
           description: An array of case types
           schema:
             type: array
@@ -541,10 +654,37 @@ paths:
       tags:
         - Response
       responses:
-        '200':
+        200:
           description: A single case type.
           schema:
               $ref: '#/definitions/CaseType'
+        404:
+          description: Case type not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /categories:
+    get:
+      summary: Get all case event categories
+      description: Return all case event categories.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+      tags:
+        - Response
+      responses:
+        200:
+          description: An array of case event categories
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Category'
         default:
           description: Unexpected error
           schema:
@@ -562,7 +702,7 @@ paths:
       tags:
         - Response
       responses:
-        '200':
+        200:
           description: An array of samples
           schema:
             type: array
@@ -590,10 +730,14 @@ paths:
       tags:
         - Response
       responses:
-        '200':
+        200:
           description: A single sample.
           schema:
               $ref: '#/definitions/Sample'
+        404:
+          description: Sample not found
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
@@ -622,8 +766,10 @@ paths:
       tags:
         - Response
       responses:
-        '200':
+        200:
           description: Cases created.
+          schema:
+            $ref: '#/definitions/Sample'
         default:
           description: Unexpected error
           schema:
@@ -641,7 +787,7 @@ paths:
       tags:
         - Response
       responses:
-        '200':
+        200:
           description: An array of surveys.
           schema:
             type: array
@@ -669,10 +815,14 @@ paths:
       tags:
         - Response
       responses:
-        '200':
+        200:
           description: A single survey.
           schema:
               $ref: '#/definitions/Survey'
+        404:
+          description: Survey not found
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
@@ -823,6 +973,53 @@ definitions:
       questionSet:
         type: string
         description: Type of questionnaire set.
+  CaseEvent:
+    type: object
+    required:
+      - caseEventId
+      - description
+      - category
+      - createdDateTime
+      - createdBy
+    properties:
+      caseEventId:
+        type: integer
+        description: Unique case event identifier.
+      description:
+        type: string
+        description: Case event description.
+      category:
+        type: string
+        description: Identifies what has triggered the case event.
+      subCategory:
+        type: string
+        description: Optional free text for use by automatically-created case events.
+      createdDateTime:
+        type: string
+        format: date-time
+        description: Creation date-time.
+      createdBy:
+        type: string
+        description: Creator of case event.
+  CaseEventCreationRequest:
+    type: object
+    required:
+      - description
+      - category
+      - createdBy
+    properties:
+      description:
+        type: string
+        description: Case event description.
+      category:
+        type: string
+        description: Identifies what has triggered the case event.
+      subCategory:
+        type: string
+        description: Optional free text for use by automatically-created case events.
+      createdBy:
+        type: string
+        description: Creator of case event.
   Event:
     type: object
     properties:
@@ -902,6 +1099,14 @@ definitions:
       questionSet:
         type: string
         description: Type of questionnaire set.
+  Category:
+    type: object
+    required:
+    - name
+    properties:
+      name:
+        type: string
+        description: Category name.
   Sample:
     type: object
     properties:
@@ -948,8 +1153,11 @@ definitions:
     type: object
     properties:
       code:
+        description: Error code
         type: string
       timestamp:
-        type: string
+        description:  Unique error timestamp that can be searched for in logs
+        type: integer
       message:
+        description: Error message
         type: string
