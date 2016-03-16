@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Case Frame Service API
   description: Provide access to Address Frame and Response Management information
-  version: 8.11.0
+  version: 8.13.0
 schemes:
   - http
 basePath: /
