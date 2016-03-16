@@ -5,7 +5,7 @@ info:
   version: 8.11.0
 schemes:
   - http
-basePath: /frameservice
+basePath: /
 produces:
   - application/json
 tags:
