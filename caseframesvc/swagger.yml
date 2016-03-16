@@ -426,7 +426,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     post:
-      summary: Create Case Event
+      summary: Creates a case event.
       description: Creates a case event from the mandatory description, category and createdBy properties.
       consumes:
         - application/json
@@ -668,7 +668,7 @@ paths:
             $ref: '#/definitions/Error'
   /categories:
     get:
-      summary: Get all case event categories
+      summary: Get all case event categories.
       description: Return all case event categories.
       parameters:
         - name: Accept
