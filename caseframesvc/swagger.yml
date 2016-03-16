@@ -948,8 +948,11 @@ definitions:
     type: object
     properties:
       code:
+        description: Error code
         type: string
       timestamp:
-        type: string
+        description:  Unique error timestamp that can be searched for in logs
+        type: integer
       message:
+        description: Error message
         type: string
