@@ -666,6 +666,29 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  /categories:
+    get:
+      summary: Get all case event categories
+      description: Return all case event categories.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+      tags:
+        - Response
+      responses:
+        200:
+          description: An array of case event categories
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Category'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
   /samples:
     get:
       summary: Get all samples
@@ -1076,6 +1099,14 @@ definitions:
       questionSet:
         type: string
         description: Type of questionnaire set.
+  Category:
+    type: object
+    required:
+    - name
+    properties:
+      name:
+        type: string
+        description: Category name.
   Sample:
     type: object
     properties:
