@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import uk.gov.ons.ctp.common.utility.CTPMessageBodyReader;
+import uk.gov.ons.ctp.common.jaxrs.CTPMessageBodyReader;
 import uk.gov.ons.ctp.response.caseframe.endpoint.AddressEndpoint;
 import uk.gov.ons.ctp.response.caseframe.endpoint.CaseEndpoint;
 import uk.gov.ons.ctp.response.caseframe.endpoint.CaseTypeEndpoint;
