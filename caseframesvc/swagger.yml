@@ -414,7 +414,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/Event'
+              $ref: '#/definitions/CaseEvent'
         204:
           description: No case events
         404:
@@ -977,6 +977,7 @@ definitions:
     type: object
     required:
       - caseEventId
+      - caseId
       - description
       - category
       - createdDateTime
@@ -985,6 +986,9 @@ definitions:
       caseEventId:
         type: integer
         description: Unique case event identifier.
+      caseId:
+        type: integer
+        description: Unique case identifier.
       description:
         type: string
         description: Case event description.
@@ -1020,28 +1024,6 @@ definitions:
       createdBy:
         type: string
         description: Creator of case event.
-  Event:
-    type: object
-    properties:
-      caseEventId:
-        type: integer
-        description: Unique case event identifier.
-      caseId:
-        type: integer
-        description: Unique case identifier.
-      description:
-        type: string
-        description: Case event note.
-      createdDateTime:
-        type: string
-        format: date-time
-        description: Creation date-time.
-      createdBy:
-        type: string
-        description: Creator of event note.
-      category:
-        type: string
-        description: Category.
   Questionnaire:
     type: object
     properties:
