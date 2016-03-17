@@ -83,6 +83,13 @@ public final class MockLocalAuthorityServiceFactory implements Factory<LocalAuth
       }
     });
 
+    Mockito.when(mockedService.findAllMsoasByLadid(LAD_WITH_NON_EXISTING_CODE)).thenAnswer(new Answer<List<Msoa>>() {
+      public List<Msoa> answer(final InvocationOnMock invocation)
+          throws Throwable {
+        return null;
+      }
+    });
+
     return mockedService;
   }
 

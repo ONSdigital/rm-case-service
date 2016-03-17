@@ -98,4 +98,17 @@ public final class LocalAuthorityEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.NO_CONTENT)
         .andClose();
   }
+
+  /**
+   * a test
+   */
+  @Test
+  public void findAllMsoasForNonExistingLadId() {
+    with("http://localhost:9998/lads/%s/msoas", LAD_WITH_NON_EXISTING_CODE)
+        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
+        .assertStringInBody("$.error.code", CTPException.Fault.RESOURCE_NOT_FOUND.toString())
+        .assertTimestampExists()
+        .assertStringInBody("$.error.message", String.format("LAD not found for id %s", LAD_WITH_NON_EXISTING_CODE))
+        .andClose();
+  }
 }

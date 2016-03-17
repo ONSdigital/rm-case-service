@@ -58,10 +58,14 @@ public final class LocalAuthorityEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/{ladid}/msoas")
-  public List<MsoaDTO> findAllMsoasForLadid(@PathParam("ladid") final String ladId) {
+  public List<MsoaDTO> findAllMsoasForLadid(@PathParam("ladid") final String ladId) throws CTPException {
     log.debug("Entering findAllMsoasForLadid with {}", ladId);
     List<Msoa> msoas = localAuthorityService.findAllMsoasByLadid(ladId);
-    List<MsoaDTO> msoaDTOs = mapperFacade.mapAsList(msoas, MsoaDTO.class);
-    return CollectionUtils.isEmpty(msoaDTOs) ? null : msoaDTOs;
+    if (msoas == null) {
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "LAD not found for id %s", ladId);
+    } else {
+      List<MsoaDTO> msoaDTOs = mapperFacade.mapAsList(msoas, MsoaDTO.class);
+      return CollectionUtils.isEmpty(msoaDTOs) ? null : msoaDTOs;
+    }
   }
 }

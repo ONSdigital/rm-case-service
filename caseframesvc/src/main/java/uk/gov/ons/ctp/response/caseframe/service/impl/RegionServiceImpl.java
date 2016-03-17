@@ -41,6 +41,11 @@ public final class RegionServiceImpl implements RegionService {
   @Override
   public List<LocalAuthority> findAllLadsByRegionid(final String regionid) {
     log.debug("Entering findAllLadsByRegionid with {}", regionid);
-    return localAuthorityRepository.findByRgn11cdOrderByLad12nm(regionid);
+    Region region = regionRepository.findOne(regionid);
+    if (region != null) {
+      return localAuthorityRepository.findByRgn11cdOrderByLad12nm(regionid);
+    } else {
+      return null;
+    }
   }
 }

@@ -53,6 +53,11 @@ public final class LocalAuthorityServiceImpl implements LocalAuthorityService {
   @Override
   public List<Msoa> findAllMsoasByLadid(final String ladid) {
     log.debug("entering findAllMsoasByLadid with {}", ladid);
-    return msoaRepository.findByLad12cdOrderByMsoa11nm(ladid);
+    LocalAuthority lad = localAuthorityRepository.findOne(ladid);
+    if (lad != null) {
+      return msoaRepository.findByLad12cdOrderByMsoa11nm(ladid);
+    } else {
+      return null;
+    }
   }
 }
