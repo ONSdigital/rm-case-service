@@ -116,4 +116,14 @@ public final class RegionEndpointUnitTest extends CTPJerseyTest {
         .andClose();
   }
 
+  @Test
+  public void findAllLadsForNonExistingRegionId() {
+    with("http://localhost:9998/regions/%s/lads", REGION_WITH_NON_EXISTING_CODE)
+        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
+        .assertStringInBody("$.error.code", CTPException.Fault.RESOURCE_NOT_FOUND.toString())
+        .assertTimestampExists()
+        .assertStringInBody("$.error.message",
+            String.format("Region not found for id %s", REGION_WITH_NON_EXISTING_CODE))
+        .andClose();
+  }
 }

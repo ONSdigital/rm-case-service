@@ -69,12 +69,17 @@ public final class RegionEndpoint implements CTPEndpoint {
    * the GET endpoint to retrieve all Local Authorities for a given region
    * @param regionId the region
    * @return the list of Local Authority representations
+   * @throws CTPException something went wrong
    */
   @GET
   @Path("/{regionid}/lads")
-  public List<LocalAuthorityDTO> findAllLadsForRegionId(@PathParam("regionid") final String regionId) {
+  public List<LocalAuthorityDTO> findAllLadsForRegionId(@PathParam("regionid") final String regionId)
+      throws CTPException {
     log.debug("Entering findAllLadsByRegionid with {}", regionId);
     List<LocalAuthority> localAuthorities = regionService.findAllLadsByRegionid(regionId);
+    if (localAuthorities == null) {
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Region not found for id %s", regionId);
+    }
     List<LocalAuthorityDTO> localAuthorityDTOs = mapperFacade.mapAsList(localAuthorities, LocalAuthorityDTO.class);
     return CollectionUtils.isEmpty(localAuthorityDTOs) ? null : localAuthorityDTOs;
   }

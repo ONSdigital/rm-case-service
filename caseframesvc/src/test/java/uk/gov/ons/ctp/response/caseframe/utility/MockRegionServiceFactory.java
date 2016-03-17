@@ -100,6 +100,14 @@ public final class MockRegionServiceFactory implements Factory<RegionService> {
           }
         });
 
+    Mockito.when(mockedService.findAllLadsByRegionid(REGION_WITH_NON_EXISTING_CODE))
+        .thenAnswer(new Answer<List<LocalAuthority>>() {
+          public List<LocalAuthority> answer(final InvocationOnMock invocation)
+              throws Throwable {
+            return null;
+          }
+        });
+
     return mockedService;
   }
 
