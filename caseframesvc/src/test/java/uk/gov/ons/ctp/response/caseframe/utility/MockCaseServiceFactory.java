@@ -13,6 +13,8 @@ import uk.gov.ons.ctp.response.caseframe.domain.model.Case;
 import uk.gov.ons.ctp.response.caseframe.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.caseframe.service.CaseService;
 
+import static org.mockito.Matchers.any;
+
 /**
  * Mock CaseService response HK2 JSE JSR-330 dependency injection factory
  */
@@ -125,6 +127,13 @@ public final class MockCaseServiceFactory implements Factory<CaseService> {
 
     Mockito.when(mockedService.findCaseByCaseId(UNCHECKED_EXCEPTION))
         .thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
+
+    Mockito.when(mockedService.createCaseEvent(any(Integer.class), any(CaseEvent.class))).thenAnswer(new Answer<CaseEvent>() {
+      public CaseEvent answer(final InvocationOnMock invocation)
+          throws Throwable {
+        return new CaseEvent(1, CASEID, CASEEVENT_DESC1, CREATEDBY, CREATEDDATE_TIMESTAMP, CASEEVENT_CATEGORY);
+      }
+    });
 
     return mockedService;
   }

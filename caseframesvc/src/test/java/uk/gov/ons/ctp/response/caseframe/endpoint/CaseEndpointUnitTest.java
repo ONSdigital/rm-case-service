@@ -45,6 +45,8 @@ import uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory;
 public final class CaseEndpointUnitTest extends CTPJerseyTest {
 
   private static final String CASEEVENT_INVALIDJSON = "{\"some\":\"joke\"}";
+  private static final String CASEEVENT_VALIDJSON =
+      "{\"description\":\"sometest\",\"category\":\"abc\",\"createdBy\":\"unittest\"}";
 
   /**
    * configure the test
@@ -194,11 +196,27 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void createCaseEventBadJson() {
-//    with("http://localhost:9998/cases/%s/events", CASEID).post(CASEEVENT_INVALIDJSON)
-//        .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
-//        .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
-//        .assertTimestampExists()
-//        .assertMessageEquals(PROVIDED_JSON_INCORRECT)
-//        .andClose();
+    with("http://localhost:9998/cases/%s/events", CASEID).post(CASEEVENT_INVALIDJSON)
+        .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
+        .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
+        .assertTimestampExists()
+        .assertMessageEquals(PROVIDED_JSON_INCORRECT)
+        .andClose();
+  }
+
+  /**
+   * a test
+   */
+  @Test
+  public void createCaseEventGoodJson() {
+    with("http://localhost:9998/cases/%s/events", CASEID).post(CASEEVENT_VALIDJSON)
+        .assertResponseCodeIs(HttpStatus.OK)
+        .assertIntegerInBody("$.caseEventId", 1)
+        .assertIntegerInBody("$.caseId", CASEID)
+        .assertStringInBody("$.description", CASEEVENT_DESC1)
+        .assertStringInBody("$.createdBy", CREATEDBY)
+        .assertStringInBody("$.createdDatetime", CREATEDDATE_VALUE)
+        .assertStringInBody("$.category", CASEEVENT_CATEGORY)
+        .andClose();
   }
 }

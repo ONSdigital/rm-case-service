@@ -96,14 +96,14 @@ public final class CaseEndpoint implements CTPEndpoint {
 
   @POST
   @Path("/{caseId}/events")
-  public CaseEventDTO createCaseEvent(@PathParam("caseId") final Integer caseId, CaseEvent requestObject)
+  public CaseEventDTO createCaseEvent(@PathParam("caseId") final Integer caseId, CaseEventDTO requestObject)
       throws CTPException {
     log.debug("Entering createCaseEvent with caseId {} and requestObject {}", caseId, requestObject);
     if (requestObject == null) {
       throw new CTPException(CTPException.Fault.VALIDATION_FAILED, "Provided json is incorrect.");
     }
 
-    CaseEvent createdCaseEvent = caseService.createCaseEvent(caseId, requestObject);
+    CaseEvent createdCaseEvent = caseService.createCaseEvent(caseId, mapperFacade.map(requestObject, CaseEvent.class));
     if (createdCaseEvent == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Case not found for id %s", caseId);
     }
