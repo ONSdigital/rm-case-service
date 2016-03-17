@@ -97,4 +97,17 @@ public final class MsoaEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.NO_CONTENT)
         .andClose();
   }
+
+  /**
+   * a test
+   */
+  @Test
+  public void findAllAddressSummariesForNonExistingMsoa() {
+    with("http://localhost:9998/msoas/%s/addresssummaries", MSOA_WITH_NON_EXISTING_CODE)
+        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
+        .assertStringInBody("$.error.code", CTPException.Fault.RESOURCE_NOT_FOUND.toString())
+        .assertTimestampExists()
+        .assertStringInBody("$.error.message", String.format("MSOA not found for id %s", MSOA_WITH_NON_EXISTING_CODE))
+        .andClose();
+  }
 }

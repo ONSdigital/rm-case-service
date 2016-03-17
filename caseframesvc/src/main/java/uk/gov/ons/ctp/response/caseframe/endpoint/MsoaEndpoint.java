@@ -42,8 +42,7 @@ public final class MsoaEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/{msoaid}")
-  public MsoaDTO findMsoaById(@PathParam("msoaid")
-  final String msoaid) throws CTPException {
+  public MsoaDTO findMsoaById(@PathParam("msoaid") final String msoaid) throws CTPException {
     log.debug("Entering findMsoaById with {}", msoaid);
     Msoa msoa = msoaService.findById(msoaid);
     if (msoa == null) {
@@ -59,9 +58,12 @@ public final class MsoaEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/{msoaid}/addresssummaries")
-  public List<AddressSummaryDTO> findAllAddressSummariesForMsoaId(@PathParam("msoaid") final String msoaid) {
+  public List<AddressSummaryDTO> findAllAddressSummariesForMsoaId(@PathParam("msoaid") final String msoaid) throws CTPException {
     log.debug("Entering findAllAddressSummariesForMsoaId with {}", msoaid);
     List<AddressSummary> addresseSummaries = msoaService.findAllAddressSummariesByMsoaid(msoaid);
+    if (addresseSummaries == null) {
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "MSOA not found for id %s", msoaid);
+    }
     List<AddressSummaryDTO> addresseSummaryDTOs = mapperFacade.mapAsList(addresseSummaries, AddressSummaryDTO.class);
     return CollectionUtils.isEmpty(addresseSummaryDTOs) ? null : addresseSummaryDTOs;
   }

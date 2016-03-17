@@ -89,6 +89,14 @@ public final class MockMsoaServiceFactory implements Factory<MsoaService> {
           }
         });
 
+    Mockito.when(mockedService.findAllAddressSummariesByMsoaid(MSOA_WITH_NON_EXISTING_CODE))
+        .thenAnswer(new Answer<List<Address>>() {
+          public List<Address> answer(final InvocationOnMock invocation)
+              throws Throwable {
+            return null;
+          }
+        });
+
     return mockedService;
   }
 

@@ -53,6 +53,11 @@ public final class MsoaServiceImpl implements MsoaService {
   @Override
   public List<AddressSummary> findAllAddressSummariesByMsoaid(final String msoaid) {
     log.debug("Entering findAllAddressSummariesByMsoaid with {}", msoaid);
-    return addressSummaryRepository.findByMsoa11cd(msoaid);
+    Msoa msoa = msoaRepository.findOne(msoaid);
+    if (msoa != null) {
+      return addressSummaryRepository.findByMsoa11cd(msoaid);
+    } else {
+      return null;
+    }
   }
 }
