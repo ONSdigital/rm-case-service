@@ -22,6 +22,7 @@ import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.C
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CREATEDBY;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CREATEDDATE_VALUE;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.NON_EXISTING_ID;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.PROVIDED_JSON_INCORRECT;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.QUESTIONNAIREID;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.UPRN;
 
@@ -32,25 +33,25 @@ import org.springframework.http.HttpStatus;
 
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
+import uk.gov.ons.ctp.common.utility.CTPMessageBodyReader;
 import uk.gov.ons.ctp.response.caseframe.CaseFrameBeanMapper;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseEventDTO;
 import uk.gov.ons.ctp.response.caseframe.service.CaseService;
 import uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory;
-
-import uk.gov.ons.ctp.response.action.utility.GenericMessageBodyReader;
 
 /**
  * Case Endpoint Unit tests
  */
 public final class CaseEndpointUnitTest extends CTPJerseyTest {
 
+  private static final String CASEEVENT_INVALIDJSON = "{\"some\":\"joke\"}";
 
   /**
    * configure the test
    */
   @Override
   public Application configure() {
-    return super.init(CaseEndpoint.class, CaseService.class, MockCaseServiceFactory.class, new CaseFrameBeanMapper(), new GenericMessageBodyReader<CaseEventDTO>(CaseEventDTO.class) {});
+    return super.init(CaseEndpoint.class, CaseService.class, MockCaseServiceFactory.class, new CaseFrameBeanMapper(), new CTPMessageBodyReader<CaseEventDTO>(CaseEventDTO.class) {});
   }
 
   /**
@@ -186,5 +187,18 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
         .assertTimestampExists()
         .assertMessageEquals(OUR_EXCEPTION_MESSAGE)
         .andClose();
+  }
+
+  /**
+   * a test
+   */
+  @Test
+  public void createCaseEventBadJson() {
+//    with("http://localhost:9998/cases/%s/events", CASEID).post(CASEEVENT_INVALIDJSON)
+//        .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
+//        .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
+//        .assertTimestampExists()
+//        .assertMessageEquals(PROVIDED_JSON_INCORRECT)
+//        .andClose();
   }
 }
