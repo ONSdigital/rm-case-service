@@ -36,10 +36,15 @@ public class CaseEvent implements Serializable {
 
   private String description;
 
+  @Column(name = "created_by")
   private String createdBy;
 
+  @Column(name = "created_datetime")
   private Timestamp createdDatetime;
 
   private String category;
+
+  // TODO Uncoment once the db scripts have been amended. Field is required: I checked with John.
+  //private String subCategory;
 
 }

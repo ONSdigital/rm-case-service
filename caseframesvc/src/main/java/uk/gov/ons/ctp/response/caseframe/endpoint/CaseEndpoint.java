@@ -3,10 +3,7 @@ package uk.gov.ons.ctp.response.caseframe.endpoint;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 
 import org.springframework.util.CollectionUtils;
 
@@ -95,5 +92,21 @@ public final class CaseEndpoint implements CTPEndpoint {
     List<CaseEvent> caseEvents = caseService.findCaseEventsByCaseId(caseId);
     List<CaseEventDTO> caseEventDTOs = mapperFacade.mapAsList(caseEvents, CaseEventDTO.class);
     return CollectionUtils.isEmpty(caseEventDTOs) ? null : caseEventDTOs;
+  }
+
+  @POST
+  @Path("/{caseId}/events")
+  public CaseEventDTO createCaseEvent(@PathParam("caseId") final Integer caseId, CaseEvent requestObject)
+      throws CTPException {
+    log.debug("Entering createCaseEvent with caseId {} and requestObject {}", caseId, requestObject);
+    if (requestObject == null) {
+      throw new CTPException(CTPException.Fault.VALIDATION_FAILED, "Provided json is incorrect.");
+    }
+
+    CaseEvent createdCaseEvent = caseService.createCaseEvent(caseId, requestObject);
+    if (createdCaseEvent == null) {
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Case not found for id %s", caseId);
+    }
+    return mapperFacade.map(createdCaseEvent, CaseEventDTO.class);
   }
 }

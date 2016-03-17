@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import uk.gov.ons.ctp.common.utility.CTPMessageBodyReader;
 import uk.gov.ons.ctp.response.caseframe.endpoint.AddressEndpoint;
 import uk.gov.ons.ctp.response.caseframe.endpoint.CaseEndpoint;
 import uk.gov.ons.ctp.response.caseframe.endpoint.CaseTypeEndpoint;
@@ -18,6 +19,7 @@ import uk.gov.ons.ctp.response.caseframe.endpoint.QuestionnaireEndpoint;
 import uk.gov.ons.ctp.response.caseframe.endpoint.RegionEndpoint;
 import uk.gov.ons.ctp.response.caseframe.endpoint.SampleEndpoint;
 import uk.gov.ons.ctp.response.caseframe.endpoint.SurveyEndpoint;
+import uk.gov.ons.ctp.response.caseframe.representation.CaseEventDTO;
 
 /**
  * The 'main' entry point for the CaseFrame SpringBoot Application.
@@ -46,6 +48,7 @@ public class CaseFrameSvcApplication {
       register(AddressEndpoint.class);
 
       // Response
+      register(new CTPMessageBodyReader<CaseEventDTO>(CaseEventDTO.class) {});
       register(CaseEndpoint.class);
       register(QuestionnaireEndpoint.class);
       register(QuestionSetEndpoint.class);

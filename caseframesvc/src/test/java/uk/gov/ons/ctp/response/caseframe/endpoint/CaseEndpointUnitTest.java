@@ -33,8 +33,11 @@ import org.springframework.http.HttpStatus;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
 import uk.gov.ons.ctp.response.caseframe.CaseFrameBeanMapper;
+import uk.gov.ons.ctp.response.caseframe.representation.CaseEventDTO;
 import uk.gov.ons.ctp.response.caseframe.service.CaseService;
 import uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory;
+
+import uk.gov.ons.ctp.response.action.utility.GenericMessageBodyReader;
 
 /**
  * Case Endpoint Unit tests
@@ -47,7 +50,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
    */
   @Override
   public Application configure() {
-    return super.init(CaseEndpoint.class, CaseService.class, MockCaseServiceFactory.class, new CaseFrameBeanMapper());
+    return super.init(CaseEndpoint.class, CaseService.class, MockCaseServiceFactory.class, new CaseFrameBeanMapper(), new GenericMessageBodyReader<CaseEventDTO>(CaseEventDTO.class) {});
   }
 
   /**
