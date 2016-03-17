@@ -39,7 +39,7 @@ public final class CaseEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/uprn/{uprn}")
-  public List<CaseDTO> findCasesByUprn(@PathParam("uprn") final Integer uprn) {
+  public final List<CaseDTO> findCasesByUprn(@PathParam("uprn") final Integer uprn) {
     log.debug("Entering findCasesByUprn with {}", uprn);
     List<Case> cases = caseService.findCasesByUprn(uprn);
     List<CaseDTO> caseDTOs = mapperFacade.mapAsList(cases, CaseDTO.class);
@@ -53,7 +53,7 @@ public final class CaseEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/questionnaire/{qid}")
-  public CaseDTO findCaseByQuestionnaireId(@PathParam("qid") final Integer qid) throws CTPException {
+  public final CaseDTO findCaseByQuestionnaireId(@PathParam("qid") final Integer qid) throws CTPException {
     log.debug("Entering findCaseByQuestionnaireId with {}", qid);
     Case caseObj = caseService.findCaseByQuestionnaireId(qid);
     if (caseObj == null) {
@@ -70,7 +70,7 @@ public final class CaseEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/{caseId}")
-  public CaseDTO findCaseByCaseId(@PathParam("caseId") final Integer caseId) throws CTPException {
+  public final CaseDTO findCaseByCaseId(@PathParam("caseId") final Integer caseId) throws CTPException {
     log.debug("Entering findCaseByCaseId with {}", caseId);
     Case caseObj = caseService.findCaseByCaseId(caseId);
     if (caseObj == null) {
@@ -87,16 +87,23 @@ public final class CaseEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/{caseId}/events")
-  public List<CaseEventDTO> findCaseEventsByCaseId(@PathParam("caseId") final Integer caseId) {
+  public final List<CaseEventDTO> findCaseEventsByCaseId(@PathParam("caseId") final Integer caseId) {
     log.debug("Entering findCaseEventsByCaseId with {}", caseId);
     List<CaseEvent> caseEvents = caseService.findCaseEventsByCaseId(caseId);
     List<CaseEventDTO> caseEventDTOs = mapperFacade.mapAsList(caseEvents, CaseEventDTO.class);
     return CollectionUtils.isEmpty(caseEventDTOs) ? null : caseEventDTOs;
   }
 
+  /**
+   * To create a case event being given a parent case and json to describe the case event to be created
+   * @param caseId the parent case
+   * @param requestObject the CaseEventDTO describing the case event to be created
+   * @return the created CaseEventDTO
+   * @throws CTPException
+   */
   @POST
   @Path("/{caseId}/events")
-  public CaseEventDTO createCaseEvent(@PathParam("caseId") final Integer caseId, CaseEventDTO requestObject)
+  public final CaseEventDTO createCaseEvent(@PathParam("caseId") final Integer caseId, final CaseEventDTO requestObject)
       throws CTPException {
     log.debug("Entering createCaseEvent with caseId {} and requestObject {}", caseId, requestObject);
     if (requestObject == null) {

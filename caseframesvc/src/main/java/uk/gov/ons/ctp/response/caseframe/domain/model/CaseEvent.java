@@ -3,11 +3,7 @@ package uk.gov.ons.ctp.response.caseframe.domain.model;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -27,7 +23,8 @@ public class CaseEvent implements Serializable {
   private static final long serialVersionUID = 6034836141646834386L;
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy= GenerationType.AUTO, generator="caseeventseq_gen")
+  @SequenceGenerator(name="caseeventseq_gen", sequenceName="caseframe.caseeventidseq")
   @Column(name = "caseeventid")
   private Integer caseEventId;
 

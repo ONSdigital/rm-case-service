@@ -51,7 +51,7 @@ public final class CaseServiceImpl implements CaseService {
    * @return List of Case entities or empty List
    */
   @Override
-  public List<Case> findCasesByUprn(final Integer uprn) {
+  public final List<Case> findCasesByUprn(final Integer uprn) {
     log.debug("Entering findCasesByUprn with uprn {}", uprn);
     return caseRepo.findByUprn(uprn);
   }
@@ -63,7 +63,7 @@ public final class CaseServiceImpl implements CaseService {
    * @return Case object or null
    */
   @Override
-  public Case findCaseByQuestionnaireId(final Integer qid) {
+  public final Case findCaseByQuestionnaireId(final Integer qid) {
     log.debug("Entering findCaseByQuestionnaireId");
     Questionnaire questionnaire = questionnaireRepo.findByQuestionnaireId(qid);
     if (questionnaire == null) {
@@ -79,7 +79,7 @@ public final class CaseServiceImpl implements CaseService {
    * @return Case object or null
    */
   @Override
-  public Case findCaseByCaseId(final Integer caseId) {
+  public final Case findCaseByCaseId(final Integer caseId) {
     log.debug("Entering findCaseByCaseId");
     return caseRepo.findOne(caseId);
   }
@@ -91,14 +91,14 @@ public final class CaseServiceImpl implements CaseService {
    * @return List of CaseEvent entities or empty List
    */
   @Override
-  public List<CaseEvent> findCaseEventsByCaseId(final Integer caseId) {
+  public final List<CaseEvent> findCaseEventsByCaseId(final Integer caseId) {
     log.debug("Entering findCaseEventsByCaseId");
     return caseEventRepository.findByCaseId(caseId);
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
-  public CaseEvent createCaseEvent(final Integer caseId, final CaseEvent caseEvent) {
+  public final CaseEvent createCaseEvent(final Integer caseId, final CaseEvent caseEvent) {
     Case parentCase = caseRepo.findOne(caseId);
     if (parentCase != null) {
       return caseEventRepository.save(caseEvent);
