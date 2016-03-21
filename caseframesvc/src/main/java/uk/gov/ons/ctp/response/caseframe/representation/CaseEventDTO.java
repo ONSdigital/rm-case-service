@@ -17,8 +17,10 @@ public class CaseEventDTO {
 
   private Integer caseId;
 
-  @NotNull @Size(min=1, max=20)
+  @NotNull @Size(min=1, max=40)
   private String category;
+  
+  private String subCategory;
 
   @NotNull @Size(min=2, max=20)
   private String createdBy;

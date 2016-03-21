@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.caseframe.service.impl;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -44,26 +45,14 @@ public final class CaseServiceImpl implements CaseService {
   @Inject
   private CaseEventRepository caseEventRepository;
 
-  /**
-   * Find Case entities associated with an Address.
-   *
-   * @param uprn UPRN for an address
-   * @return List of Case entities or empty List
-   */
   @Override
-  public final List<Case> findCasesByUprn(final Integer uprn) {
+  public List<Case> findCasesByUprn(final Integer uprn) {
     log.debug("Entering findCasesByUprn with uprn {}", uprn);
     return caseRepo.findByUprn(uprn);
   }
 
-  /**
-   * Find Case entity by Questionnaire Id.
-   *
-   * @param qid Unique Questionnaire Id
-   * @return Case object or null
-   */
   @Override
-  public final Case findCaseByQuestionnaireId(final Integer qid) {
+  public Case findCaseByQuestionnaireId(final Integer qid) {
     log.debug("Entering findCaseByQuestionnaireId");
     Questionnaire questionnaire = questionnaireRepo.findByQuestionnaireId(qid);
     if (questionnaire == null) {
@@ -72,35 +61,24 @@ public final class CaseServiceImpl implements CaseService {
     return caseRepo.findOne(questionnaire.getCaseId());
   }
 
-  /**
-   * Find Case entity by unique Id.
-   *
-   * @param caseId Unique Case Id
-   * @return Case object or null
-   */
   @Override
-  public final Case findCaseByCaseId(final Integer caseId) {
+  public Case findCaseByCaseId(final Integer caseId) {
     log.debug("Entering findCaseByCaseId");
     return caseRepo.findOne(caseId);
   }
 
-  /**
-   * Find CaseEvent entities associated with a Case.
-   *
-   * @param caseId Case Id
-   * @return List of CaseEvent entities or empty List
-   */
   @Override
-  public final List<CaseEvent> findCaseEventsByCaseId(final Integer caseId) {
+  public List<CaseEvent> findCaseEventsByCaseId(final Integer caseId) {
     log.debug("Entering findCaseEventsByCaseId");
     return caseEventRepository.findByCaseId(caseId);
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
-  public final CaseEvent createCaseEvent(final Integer caseId, final CaseEvent caseEvent) {
-    Case parentCase = caseRepo.findOne(caseId);
+  public CaseEvent createCaseEvent(final CaseEvent caseEvent) {
+    Case parentCase = caseRepo.findOne(caseEvent.getCaseId());
     if (parentCase != null) {
+      caseEvent.setCreatedDatetime(new Timestamp(System.currentTimeMillis()));
       return caseEventRepository.save(caseEvent);
     } else {
       return null;

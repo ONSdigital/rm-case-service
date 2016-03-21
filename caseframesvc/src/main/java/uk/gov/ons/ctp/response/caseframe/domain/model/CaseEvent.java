@@ -41,7 +41,7 @@ public class CaseEvent implements Serializable {
 
   private String category;
 
-  // TODO Uncoment once the db scripts have been amended. Field is required: I checked with John.
-  //private String subCategory;
+  @Column(name = "subcategory")  
+  private String subCategory;
 
 }

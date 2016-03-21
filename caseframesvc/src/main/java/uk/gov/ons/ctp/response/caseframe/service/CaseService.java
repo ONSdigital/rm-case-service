@@ -46,9 +46,8 @@ public interface CaseService extends CTPService {
 
   /**
    * Create a CaseEvent being given the parent CaseId and the CaseEvent to create
-   * @param caseId the parent CaseId
    * @param caseEvent CaseEvent to be created
    * @return the created CaseEvent
    */
-  CaseEvent createCaseEvent(Integer caseId, CaseEvent caseEvent);
+  CaseEvent createCaseEvent(CaseEvent caseEvent);
 }

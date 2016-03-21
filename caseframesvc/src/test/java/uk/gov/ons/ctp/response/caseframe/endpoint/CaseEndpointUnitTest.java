@@ -12,6 +12,7 @@ import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.C
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CASE3_SAMPLEID;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CASE3_TYPEID;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CASEEVENT_CATEGORY;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CASEEVENT_SUBCATEGORY;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CASEEVENT_DESC1;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CASEEVENT_DESC2;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CASEEVENT_DESC3;
@@ -53,7 +54,8 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
    */
   @Override
   public Application configure() {
-    return super.init(CaseEndpoint.class, CaseService.class, MockCaseServiceFactory.class, new CaseFrameBeanMapper(), new CTPMessageBodyReader<CaseEventDTO>(CaseEventDTO.class) {});
+    return super.init(CaseEndpoint.class, CaseService.class, MockCaseServiceFactory.class, new CaseFrameBeanMapper(),
+        new CTPMessageBodyReader<CaseEventDTO>(CaseEventDTO.class));
   }
 
   /**
@@ -164,6 +166,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
         .assertStringOccursThroughoutListInBody("$..createdBy", CREATEDBY)
         .assertStringOccursThroughoutListInBody("$..createdDatetime", CREATEDDATE_VALUE)
         .assertStringOccursThroughoutListInBody("$..category", CASEEVENT_CATEGORY)
+        .assertStringOccursThroughoutListInBody("$..subcategory", CASEEVENT_SUBCATEGORY)
         .andClose();
   }
 
@@ -217,6 +220,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
         .assertStringInBody("$.createdBy", CREATEDBY)
         .assertStringInBody("$.createdDatetime", CREATEDDATE_VALUE)
         .assertStringInBody("$.category", CASEEVENT_CATEGORY)
+        .assertStringInBody("$.subCategory", CASEEVENT_SUBCATEGORY)
         .andClose();
   }
 }

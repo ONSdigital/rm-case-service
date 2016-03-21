@@ -45,11 +45,13 @@ public final class MockCaseServiceFactory implements Factory<CaseService> {
   public static final String CASEEVENT_DESC1 = "Test Event 1";
   public static final String CASEEVENT_DESC2 = "Test Event 2";
   public static final String CASEEVENT_DESC3 = "Test Event 3";
-  public static final String CASEEVENT_CATEGORY = "Visit";
+  public static final String CASEEVENT_CATEGORY = "General Enquiry";
+  public static final String CASEEVENT_SUBCATEGORY = "Action Type Name";
   public static final String PROVIDED_JSON_INCORRECT = "Provided json is incorrect.";
 
   /**
    * provide method
+   *
    * @return mocked service
    */
   public CaseService provide() {
@@ -111,9 +113,12 @@ public final class MockCaseServiceFactory implements Factory<CaseService> {
       public List<CaseEvent> answer(final InvocationOnMock invocation)
           throws Throwable {
         List<CaseEvent> result = new ArrayList<CaseEvent>();
-        result.add(new CaseEvent(1, CASEID, CASEEVENT_DESC1, CREATEDBY, CREATEDDATE_TIMESTAMP, CASEEVENT_CATEGORY));
-        result.add(new CaseEvent(2, CASEID, CASEEVENT_DESC2, CREATEDBY, CREATEDDATE_TIMESTAMP, CASEEVENT_CATEGORY));
-        result.add(new CaseEvent(3, CASEID, CASEEVENT_DESC3, CREATEDBY, CREATEDDATE_TIMESTAMP, CASEEVENT_CATEGORY));
+        result.add(new CaseEvent(1, CASEID, CASEEVENT_DESC1, CREATEDBY, CREATEDDATE_TIMESTAMP, CASEEVENT_CATEGORY,
+            CASEEVENT_SUBCATEGORY));
+        result.add(new CaseEvent(2, CASEID, CASEEVENT_DESC2, CREATEDBY, CREATEDDATE_TIMESTAMP, CASEEVENT_CATEGORY,
+            CASEEVENT_SUBCATEGORY));
+        result.add(new CaseEvent(3, CASEID, CASEEVENT_DESC3, CREATEDBY, CREATEDDATE_TIMESTAMP, CASEEVENT_CATEGORY,
+            CASEEVENT_SUBCATEGORY));
         return result;
       }
     });
@@ -128,10 +133,11 @@ public final class MockCaseServiceFactory implements Factory<CaseService> {
     Mockito.when(mockedService.findCaseByCaseId(UNCHECKED_EXCEPTION))
         .thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
 
-    Mockito.when(mockedService.createCaseEvent(any(Integer.class), any(CaseEvent.class))).thenAnswer(new Answer<CaseEvent>() {
+    Mockito.when(mockedService.createCaseEvent(any(CaseEvent.class))).thenAnswer(new Answer<CaseEvent>() {
       public CaseEvent answer(final InvocationOnMock invocation)
           throws Throwable {
-        return new CaseEvent(1, CASEID, CASEEVENT_DESC1, CREATEDBY, CREATEDDATE_TIMESTAMP, CASEEVENT_CATEGORY);
+        return new CaseEvent(1, CASEID, CASEEVENT_DESC1, CREATEDBY, CREATEDDATE_TIMESTAMP, CASEEVENT_CATEGORY,
+            CASEEVENT_SUBCATEGORY);
       }
     });
 
@@ -140,6 +146,7 @@ public final class MockCaseServiceFactory implements Factory<CaseService> {
 
   /**
    * dispose method
+   *
    * @param t service to dispose
    */
   public void dispose(final CaseService t) {
