@@ -1085,10 +1085,18 @@ definitions:
     type: object
     required:
     - name
+    - description
+    - manual
     properties:
       name:
         type: string
         description: Category name.
+      description:
+        type: string
+        description: Description of category.
+      manual:
+        type: boolean
+        description: Whether the associated case event was created by a user or by a system event.
   Sample:
     type: object
     properties:
