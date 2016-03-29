@@ -176,8 +176,10 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
   @Test
   public void findCaseEventsByCaseIdNotFound() {
     with("http://localhost:9998/cases/%s/events", NON_EXISTING_ID)
-        .assertResponseCodeIs(HttpStatus.NO_CONTENT)
-        .assertResponseLengthIs(-1)
+        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
+        .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
+        .assertTimestampExists()
+        .assertMessageEquals("Case not found for id %s", NON_EXISTING_ID)
         .andClose();
   }
 
