@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 8.14.0-1
+      author: pbrossier
+      changes:
+          - sqlFile:
+              comment: Required as Escalated has been changed into ESC_GENERAL, ESC_SURVEY, ESC_COMPLAINT
+              path: update_category_data.sql
+              relativeToChangelogFile: true
+
