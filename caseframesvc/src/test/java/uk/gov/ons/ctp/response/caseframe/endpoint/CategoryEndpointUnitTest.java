@@ -1,15 +1,5 @@
 package uk.gov.ons.ctp.response.caseframe.endpoint;
 
-import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.CATEGORY1_DESC;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.CATEGORY1_MANUAL;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.CATEGORY1_NAME;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.CATEGORY2_DESC;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.CATEGORY2_MANUAL;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.CATEGORY2_NAME;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.CATEGORY3_DESC;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.CATEGORY3_MANUAL;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.CATEGORY3_NAME;
-
 import javax.ws.rs.core.Application;
 
 import org.junit.Test;
@@ -20,9 +10,8 @@ import uk.gov.ons.ctp.response.caseframe.CaseFrameBeanMapper;
 import uk.gov.ons.ctp.response.caseframe.service.CategoryService;
 import uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory;
 
-/**
- * Created by Chris Parker 23.3.2016
- */
+import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.*;
+
 public final class CategoryEndpointUnitTest extends CTPJerseyTest {
 
   /**
@@ -43,8 +32,12 @@ public final class CategoryEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.OK)
         .assertArrayLengthInBodyIs(3)
         .assertStringListInBody("$..name", CATEGORY1_NAME, CATEGORY2_NAME, CATEGORY3_NAME)
-        .assertStringListInBody("$..description", CATEGORY1_DESC, CATEGORY2_DESC, CATEGORY3_DESC)     
+        .assertStringListInBody("$..description", CATEGORY1_DESC, CATEGORY2_DESC, CATEGORY3_DESC)
+        .assertStringListInBody("$..role", CATEGORY1_ROLE, CATEGORY2_ROLE, CATEGORY3_ROLE)
+        .assertStringListInBody("$..generatedActionType",
+            CATEGORY1_ACTIONTYPE, CATEGORY2_ACTIONTYPE, CATEGORY3_ACTIONTYPE)
         .assertBooleanListInBody("$..manual", CATEGORY1_MANUAL, CATEGORY2_MANUAL, CATEGORY3_MANUAL)
+        .assertBooleanListInBody("$..closeCase", CATEGORY1_CLOSECASE, CATEGORY2_CLOSECASE, CATEGORY3_CLOSECASE)
         .andClose();
   }
 

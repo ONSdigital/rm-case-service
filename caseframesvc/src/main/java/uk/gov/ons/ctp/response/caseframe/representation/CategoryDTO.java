@@ -11,6 +11,12 @@ public class CategoryDTO {
 
   private String description;
 
+  private String role;
+
+  private String generatedActionType;
+
+  private boolean closeCase;
+
   private boolean manual;
 
 }

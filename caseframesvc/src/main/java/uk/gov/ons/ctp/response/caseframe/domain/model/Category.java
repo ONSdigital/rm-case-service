@@ -25,10 +25,17 @@ public class Category implements Serializable {
 	private static final long serialVersionUID = 2310849817220604095L;
 
   @Id
-  @Column(name = "name")
   private String name;
 
   private String description;
+
+  private String role;
+
+  @Column(name = "generatedactiontype")
+  private String generatedActionType;
+
+  @Column(name = "closecase")
+  private boolean closeCase;
 
   private boolean manual;
 

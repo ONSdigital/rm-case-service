@@ -9,12 +9,16 @@ import javax.inject.Named;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Case;
 import uk.gov.ons.ctp.response.caseframe.domain.model.CaseEvent;
+import uk.gov.ons.ctp.response.caseframe.domain.model.Category;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Questionnaire;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.CaseRepository;
+import uk.gov.ons.ctp.response.caseframe.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.QuestionnaireRepository;
+import uk.gov.ons.ctp.response.caseframe.representation.ActionDTO;
 import uk.gov.ons.ctp.response.caseframe.service.CaseService;
 
 /**
@@ -46,6 +50,12 @@ public final class CaseServiceImpl implements CaseService {
    */
   @Inject
   private CaseEventRepository caseEventRepository;
+
+  /**
+   * Spring Data Repository for Category Entities.
+   */
+  @Inject
+  private CategoryRepository categoryRepo;
 
   @Override
   public List<Case> findCasesByUprn(final Integer uprn) {
@@ -82,18 +92,29 @@ public final class CaseServiceImpl implements CaseService {
     Case parentCase = caseRepo.findOne(parentCaseId);
     if (parentCase != null) {
       Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-      String category = caseEvent.getCategory();
-      switch (category) {
-        case CASECLOSED:
-          caseRepo.setStatusFor(QuestionnaireServiceImpl.CLOSED, parentCaseId);
-          List<Questionnaire> associatedQuestionnaires = questionnaireRepo.findByCaseId(parentCaseId);
-          for (Questionnaire questionnaire : associatedQuestionnaires) {
-            questionnaireRepo.setResponseDatetimeFor(currentTime, questionnaire.getQuestionnaireId());
-          }
-          break;
-        default:
-          // TODO Throw exception as it should not happen?
+      String categoryName = caseEvent.getCategory();
+      Category category = categoryRepo.findByName(categoryName);
+      if (category.isCloseCase()) {
+        caseRepo.setStatusFor(QuestionnaireServiceImpl.CLOSED, parentCaseId);
+        List<Questionnaire> associatedQuestionnaires = questionnaireRepo.findByCaseId(parentCaseId);
+        for (Questionnaire questionnaire : associatedQuestionnaires) {
+          questionnaireRepo.setResponseDatetimeFor(currentTime, questionnaire.getQuestionnaireId());
+        }
       }
+
+      String actionType = category.getGeneratedActionType();
+      if (actionType != null && !actionType.isEmpty()) {
+        ActionDTO actionDTO = new ActionDTO();
+        actionDTO.setCaseId(parentCaseId);
+        actionDTO.setActionTypeName(actionType);
+        actionDTO.setCreatedBy(caseEvent.getCreatedBy());
+
+        RestTemplate restTemplate = new RestTemplate();
+        // TODO remove hardcoded url into props
+        // TODO do we need to do anything with the result object
+        restTemplate.postForObject("http://localhost:8161/actions", actionDTO, ActionDTO.class);
+      }
+
 
       caseEvent.setCreatedDatetime(currentTime);
       return caseEventRepository.save(caseEvent);
