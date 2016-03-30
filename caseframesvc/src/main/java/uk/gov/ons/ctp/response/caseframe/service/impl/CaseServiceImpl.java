@@ -27,6 +27,8 @@ public final class CaseServiceImpl implements CaseService {
 
   private static final int TRANSACTION_TIMEOUT = 30;
 
+  public static final String CASECLOSED = "CaseClosed";
+
   /**
    * Spring Data Repository for Case entities.
    */
@@ -76,9 +78,24 @@ public final class CaseServiceImpl implements CaseService {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
   public CaseEvent createCaseEvent(final CaseEvent caseEvent) {
-    Case parentCase = caseRepo.findOne(caseEvent.getCaseId());
+    Integer parentCaseId = caseEvent.getCaseId();
+    Case parentCase = caseRepo.findOne(parentCaseId);
     if (parentCase != null) {
-      caseEvent.setCreatedDatetime(new Timestamp(System.currentTimeMillis()));
+      Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+      String category = caseEvent.getCategory();
+      switch (category) {
+        case CASECLOSED:
+          caseRepo.setStatusFor(QuestionnaireServiceImpl.CLOSED, parentCaseId);
+          List<Questionnaire> associatedQuestionnaires = questionnaireRepo.findByCaseId(parentCaseId);
+          for (Questionnaire questionnaire : associatedQuestionnaires) {
+            questionnaireRepo.setResponseDatetimeFor(currentTime, questionnaire.getQuestionnaireId());
+          }
+          break;
+        default:
+          // TODO Throw exception as it should not happen?
+      }
+
+      caseEvent.setCreatedDatetime(currentTime);
       return caseEventRepository.save(caseEvent);
     } else {
       return null;
