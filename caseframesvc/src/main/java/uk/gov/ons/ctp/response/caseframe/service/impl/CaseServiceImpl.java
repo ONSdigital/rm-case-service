@@ -90,22 +90,28 @@ public final class CaseServiceImpl implements CaseService {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
   public CaseEvent createCaseEvent(final CaseEvent caseEvent) {
+    log.debug("Entering createCaseEvent");
     Integer parentCaseId = caseEvent.getCaseId();
     Case parentCase = caseRepo.findOne(parentCaseId);
+    log.debug("parentCase = {}", parentCase);
     if (parentCase != null) {
       Timestamp currentTime = new Timestamp(System.currentTimeMillis());
       String categoryName = caseEvent.getCategory();
       Category category = categoryRepo.findByName(categoryName);
       Boolean closeCase = category.getCloseCase();
+      log.debug("closeCase = {}", closeCase);
       if (closeCase != null && closeCase.booleanValue()) {
         caseRepo.setStatusFor(QuestionnaireServiceImpl.CLOSED, parentCaseId);
+        log.debug("parent case marked closed");
         List<Questionnaire> associatedQuestionnaires = questionnaireRepo.findByCaseId(parentCaseId);
         for (Questionnaire questionnaire : associatedQuestionnaires) {
           questionnaireRepo.setResponseDatetimeFor(currentTime, questionnaire.getQuestionnaireId());
         }
+        log.debug("all associatedQuestionnaires marked closed");
       }
 
       String actionType = category.getGeneratedActionType();
+      log.debug("actionType = {}", actionType);
       if (actionType != null && !actionType.isEmpty()) {
         ActionDTO actionDTO = new ActionDTO();
         actionDTO.setCaseId(parentCaseId);
@@ -113,12 +119,13 @@ public final class CaseServiceImpl implements CaseService {
         actionDTO.setCreatedBy(caseEvent.getCreatedBy());
 
         RestTemplate restTemplate = new RestTemplate();
-        // TODO do we need to do anything with the result object
+        log.debug("about to post to the Action SVC with {}", actionDTO);
         restTemplate.postForObject(actionSvcUrl, actionDTO, ActionDTO.class);
+        log.debug("returned successfully from the post to the Action SVC");
       }
 
-
       caseEvent.setCreatedDatetime(currentTime);
+      log.debug("about to create the caseEvent for {}", caseEvent);
       return caseEventRepository.save(caseEvent);
     } else {
       return null;
