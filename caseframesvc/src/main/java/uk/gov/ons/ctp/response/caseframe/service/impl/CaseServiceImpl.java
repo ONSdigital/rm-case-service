@@ -94,7 +94,8 @@ public final class CaseServiceImpl implements CaseService {
       Timestamp currentTime = new Timestamp(System.currentTimeMillis());
       String categoryName = caseEvent.getCategory();
       Category category = categoryRepo.findByName(categoryName);
-      if (category.isCloseCase()) {
+      Boolean closeCase = category.getCloseCase();
+      if (closeCase != null && closeCase.booleanValue()) {
         caseRepo.setStatusFor(QuestionnaireServiceImpl.CLOSED, parentCaseId);
         List<Questionnaire> associatedQuestionnaires = questionnaireRepo.findByCaseId(parentCaseId);
         for (Questionnaire questionnaire : associatedQuestionnaires) {
@@ -112,7 +113,7 @@ public final class CaseServiceImpl implements CaseService {
         RestTemplate restTemplate = new RestTemplate();
         // TODO remove hardcoded url into props
         // TODO do we need to do anything with the result object
-        restTemplate.postForObject("http://localhost:8161/actions", actionDTO, ActionDTO.class);
+        restTemplate.postForObject("http://localhost:8151/actions", actionDTO, ActionDTO.class);
       }
 
 

@@ -35,8 +35,8 @@ public class Category implements Serializable {
   private String generatedActionType;
 
   @Column(name = "closecase")
-  private boolean closeCase;
+  private Boolean closeCase;
 
-  private boolean manual;
+  private Boolean manual;
 
 }

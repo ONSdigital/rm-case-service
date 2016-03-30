@@ -17,3 +17,8 @@ curl http://localhost:8171/regions/ -v -X GET
 200 [{"regionCode":"E12000001","regionName":"North East"}...
 
 
+## To test case events
+curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/cases/1/events -v -X POST -d "{\"category\":\"General Enquiry - Escalated\", \"description\":\"manualcurltest\", \"createdBy\":\"philippeb\"}"
+TODO 500 because of content in action.actiontype: we need to add a valid action type.
+
+
