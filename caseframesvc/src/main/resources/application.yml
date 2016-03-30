@@ -85,3 +85,5 @@ spring:
         hibernate:
           ddl-auto: update
 
+actionsvc:
+  actionsurl: http://localhost:8151/actions

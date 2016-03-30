@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -31,7 +32,8 @@ public final class CaseServiceImpl implements CaseService {
 
   private static final int TRANSACTION_TIMEOUT = 30;
 
-  public static final String CASECLOSED = "CaseClosed";
+  @Value("${actionsvc.actionsurl}")
+  private String actionSvcUrl;
 
   /**
    * Spring Data Repository for Case entities.
@@ -111,9 +113,8 @@ public final class CaseServiceImpl implements CaseService {
         actionDTO.setCreatedBy(caseEvent.getCreatedBy());
 
         RestTemplate restTemplate = new RestTemplate();
-        // TODO remove hardcoded url into props
         // TODO do we need to do anything with the result object
-        restTemplate.postForObject("http://localhost:8151/actions", actionDTO, ActionDTO.class);
+        restTemplate.postForObject(actionSvcUrl, actionDTO, ActionDTO.class);
       }
 
 
