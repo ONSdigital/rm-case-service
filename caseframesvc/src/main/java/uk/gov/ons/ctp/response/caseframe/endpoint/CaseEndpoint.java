@@ -3,6 +3,7 @@ package uk.gov.ons.ctp.response.caseframe.endpoint;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -88,16 +89,20 @@ public final class CaseEndpoint implements CTPEndpoint {
   }
 
   /**
-   * the GET endpoint to find addresses by postcode
+   * the GET endpoint to find case events by case id
    *
    * @param caseId to find by
-   * @return the addresses found
+   * @return the case events found
    * @throws CTPException something went wrong
    */
   @GET
   @Path("/{caseId}/events")
-  public List<CaseEventDTO> findCaseEventsByCaseId(@PathParam("caseId") final Integer caseId) {
+  public List<CaseEventDTO> findCaseEventsByCaseId(@PathParam("caseId") final Integer caseId) throws CTPException {
     log.debug("Entering findCaseEventsByCaseId with {}", caseId);
+    Case caseObj = caseService.findCaseByCaseId(caseId);
+    if (caseObj == null) {
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Case not found for id %s", caseId);
+    }
     List<CaseEvent> caseEvents = caseService.findCaseEventsByCaseId(caseId);
     List<CaseEventDTO> caseEventDTOs = mapperFacade.mapAsList(caseEvents, CaseEventDTO.class);
     return CollectionUtils.isEmpty(caseEventDTOs) ? null : caseEventDTOs;
@@ -115,8 +120,8 @@ public final class CaseEndpoint implements CTPEndpoint {
    */
   @POST
   @Path("/{caseId}/events")
-  public CaseEventDTO createCaseEvent(@PathParam("caseId") final Integer caseId, final CaseEventDTO requestObject)
-      throws CTPException {
+  public CaseEventDTO createCaseEvent(@PathParam("caseId") final Integer caseId,
+      @Valid final CaseEventDTO requestObject) throws CTPException {
     log.debug("Entering createCaseEvent with caseId {} and requestObject {}", caseId, requestObject);
     requestObject.setCaseId(caseId);
     CaseEvent createdCaseEvent = caseService.createCaseEvent(mapperFacade.map(requestObject, CaseEvent.class));

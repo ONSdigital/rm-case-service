@@ -23,7 +23,7 @@ import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.C
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CREATEDBY;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CREATEDDATE_VALUE;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.NON_EXISTING_ID;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.PROVIDED_JSON_INCORRECT;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.PROVIDED_JSON_FAILS_VALIDATION;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.QUESTIONNAIREID;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.UPRN;
 
@@ -45,7 +45,8 @@ import uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory;
  */
 public final class CaseEndpointUnitTest extends CTPJerseyTest {
 
-  private static final String CASEEVENT_INVALIDJSON = "{\"some\":\"joke\"}";
+  private static final String CASEEVENT_INVALIDJSON =
+      "{\"description\":\"a\",\"category\":\"\",\"createdBy\":\"u\"}";
   private static final String CASEEVENT_VALIDJSON =
       "{\"description\":\"sometest\",\"category\":\"abc\",\"createdBy\":\"unittest\"}";
 
@@ -176,8 +177,10 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
   @Test
   public void findCaseEventsByCaseIdNotFound() {
     with("http://localhost:9998/cases/%s/events", NON_EXISTING_ID)
-        .assertResponseCodeIs(HttpStatus.NO_CONTENT)
-        .assertResponseLengthIs(-1)
+        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
+        .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
+        .assertTimestampExists()
+        .assertMessageEquals("Case not found for id %s", NON_EXISTING_ID)
         .andClose();
   }
 
@@ -203,7 +206,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
         .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
         .assertTimestampExists()
-        .assertMessageEquals(PROVIDED_JSON_INCORRECT)
+        .assertMessageEquals(PROVIDED_JSON_FAILS_VALIDATION)
         .andClose();
   }
 
