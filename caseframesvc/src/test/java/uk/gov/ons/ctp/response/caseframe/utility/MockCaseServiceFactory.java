@@ -47,7 +47,7 @@ public final class MockCaseServiceFactory implements Factory<CaseService> {
   public static final String CASEEVENT_DESC3 = "Test Event 3";
   public static final String CASEEVENT_CATEGORY = "General Enquiry";
   public static final String CASEEVENT_SUBCATEGORY = "Action Type Name";
-  public static final String PROVIDED_JSON_INCORRECT = "Provided json is incorrect.";
+  public static final String PROVIDED_JSON_FAILS_VALIDATION = "Provided json fails validation.";
 
   /**
    * provide method

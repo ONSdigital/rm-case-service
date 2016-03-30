@@ -3,6 +3,7 @@ package uk.gov.ons.ctp.response.caseframe.endpoint;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -119,8 +120,8 @@ public final class CaseEndpoint implements CTPEndpoint {
    */
   @POST
   @Path("/{caseId}/events")
-  public CaseEventDTO createCaseEvent(@PathParam("caseId") final Integer caseId, final CaseEventDTO requestObject)
-      throws CTPException {
+  public CaseEventDTO createCaseEvent(@PathParam("caseId") final Integer caseId,
+      @Valid final CaseEventDTO requestObject) throws CTPException {
     log.debug("Entering createCaseEvent with caseId {} and requestObject {}", caseId, requestObject);
     requestObject.setCaseId(caseId);
     CaseEvent createdCaseEvent = caseService.createCaseEvent(mapperFacade.map(requestObject, CaseEvent.class));
