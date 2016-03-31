@@ -20,6 +20,6 @@ curl http://localhost:8171/regions/ -v -X GET
 ## To test case events
 curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/cases/1/events -v -X POST -d "{\"category\":\"General Enquiry - Escalated\", \"description\":\"manualcurltest\", \"createdBy\":\"philippeb\"}"
 200 {"createdDatetime":"2016-03-30T17:27:03.661+0000","caseEventId":762,"caseId":1,"category":"General Enquiry - Escalated","subCategory":null,"createdBy":"philippeb","description":"manualcurltest"}
-TODO Check the db tp verify all expected elements are there.
+
 
 
