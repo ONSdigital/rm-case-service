@@ -84,7 +84,7 @@ public final class CaseServiceImpl implements CaseService {
   @Override
   public List<CaseEvent> findCaseEventsByCaseId(final Integer caseId) {
     log.debug("Entering findCaseEventsByCaseId");
-    return caseEventRepository.findByCaseId(caseId);
+    return caseEventRepository.findByCaseIdOrderByCreatedDateTimeDesc(caseId);
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
@@ -124,7 +124,7 @@ public final class CaseServiceImpl implements CaseService {
         log.debug("returned successfully from the post to the Action SVC");
       }
 
-      caseEvent.setCreatedDatetime(currentTime);
+      caseEvent.setCreatedDateTime(currentTime);
       log.debug("about to create the caseEvent for {}", caseEvent);
       return caseEventRepository.save(caseEvent);
     } else {
