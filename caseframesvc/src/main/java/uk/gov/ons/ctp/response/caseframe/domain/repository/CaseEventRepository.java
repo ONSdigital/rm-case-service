@@ -18,6 +18,6 @@ public interface CaseEventRepository extends JpaRepository<CaseEvent, Integer> {
    * @param caseId to find by
    * @return the case event or null if not found
    */
-  List<CaseEvent> findByCaseId(Integer caseId);
+  List<CaseEvent> findByCaseIdOrderByCreatedDateTimeDesc(Integer caseId);
 
 }
