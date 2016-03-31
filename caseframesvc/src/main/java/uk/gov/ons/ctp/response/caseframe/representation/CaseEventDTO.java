@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
  */
 @Data
 public class CaseEventDTO {
-  private Date createdDatetime;
+  private Date createdDateTime;
 
   private Integer caseEventId;
 

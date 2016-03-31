@@ -2,8 +2,6 @@ package uk.gov.ons.ctp.response.caseframe.representation;
 
 import lombok.Data;
 
-/**
- */
 @Data
 public class CategoryDTO {
 
@@ -11,6 +9,12 @@ public class CategoryDTO {
 
   private String description;
 
-  private boolean manual;
+  private String role;
+
+  private String generatedActionType;
+
+  private Boolean closeCase;
+
+  private Boolean manual;
 
 }

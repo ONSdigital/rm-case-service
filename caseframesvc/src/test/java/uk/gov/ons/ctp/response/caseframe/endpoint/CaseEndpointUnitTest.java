@@ -165,7 +165,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
         .assertIntegerOccursThroughoutListInBody("$..caseId", CASEID)
         .assertStringListInBody("$..description", CASEEVENT_DESC1, CASEEVENT_DESC2, CASEEVENT_DESC3)
         .assertStringOccursThroughoutListInBody("$..createdBy", CREATEDBY)
-        .assertStringOccursThroughoutListInBody("$..createdDatetime", CREATEDDATE_VALUE)
+        .assertStringOccursThroughoutListInBody("$..createdDateTime", CREATEDDATE_VALUE)
         .assertStringOccursThroughoutListInBody("$..category", CASEEVENT_CATEGORY)
         .assertStringOccursThroughoutListInBody("$..subcategory", CASEEVENT_SUBCATEGORY)
         .andClose();
@@ -221,7 +221,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
         .assertIntegerInBody("$.caseId", CASEID)
         .assertStringInBody("$.description", CASEEVENT_DESC1)
         .assertStringInBody("$.createdBy", CREATEDBY)
-        .assertStringInBody("$.createdDatetime", CREATEDDATE_VALUE)
+        .assertStringInBody("$.createdDateTime", CREATEDDATE_VALUE)
         .assertStringInBody("$.category", CASEEVENT_CATEGORY)
         .assertStringInBody("$.subCategory", CASEEVENT_SUBCATEGORY)
         .andClose();

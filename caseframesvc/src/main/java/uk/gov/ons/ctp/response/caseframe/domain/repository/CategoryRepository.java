@@ -10,5 +10,5 @@ import uk.gov.ons.ctp.response.caseframe.domain.model.Category;
  */
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, String> {
-
+  Category findByName(String name);
 }

@@ -7,14 +7,19 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Case;
 import uk.gov.ons.ctp.response.caseframe.domain.model.CaseEvent;
+import uk.gov.ons.ctp.response.caseframe.domain.model.Category;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Questionnaire;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.CaseRepository;
+import uk.gov.ons.ctp.response.caseframe.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.QuestionnaireRepository;
+import uk.gov.ons.ctp.response.caseframe.representation.ActionDTO;
 import uk.gov.ons.ctp.response.caseframe.service.CaseService;
 
 /**
@@ -27,7 +32,8 @@ public final class CaseServiceImpl implements CaseService {
 
   private static final int TRANSACTION_TIMEOUT = 30;
 
-  public static final String CASECLOSED = "CaseClosed";
+  @Value("${actionsvc.actionsurl}")
+  private String actionSvcUrl;
 
   /**
    * Spring Data Repository for Case entities.
@@ -46,6 +52,12 @@ public final class CaseServiceImpl implements CaseService {
    */
   @Inject
   private CaseEventRepository caseEventRepository;
+
+  /**
+   * Spring Data Repository for Category Entities.
+   */
+  @Inject
+  private CategoryRepository categoryRepo;
 
   @Override
   public List<Case> findCasesByUprn(final Integer uprn) {
@@ -72,30 +84,48 @@ public final class CaseServiceImpl implements CaseService {
   @Override
   public List<CaseEvent> findCaseEventsByCaseId(final Integer caseId) {
     log.debug("Entering findCaseEventsByCaseId");
-    return caseEventRepository.findByCaseId(caseId);
+    return caseEventRepository.findByCaseIdOrderByCreatedDateTimeDesc(caseId);
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
   public CaseEvent createCaseEvent(final CaseEvent caseEvent) {
+    log.debug("Entering createCaseEvent");
     Integer parentCaseId = caseEvent.getCaseId();
     Case parentCase = caseRepo.findOne(parentCaseId);
+    log.debug("parentCase = {}", parentCase);
     if (parentCase != null) {
       Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-      String category = caseEvent.getCategory();
-      switch (category) {
-        case CASECLOSED:
-          caseRepo.setStatusFor(QuestionnaireServiceImpl.CLOSED, parentCaseId);
-          List<Questionnaire> associatedQuestionnaires = questionnaireRepo.findByCaseId(parentCaseId);
-          for (Questionnaire questionnaire : associatedQuestionnaires) {
-            questionnaireRepo.setResponseDatetimeFor(currentTime, questionnaire.getQuestionnaireId());
-          }
-          break;
-        default:
-          // TODO Throw exception as it should not happen?
+      String categoryName = caseEvent.getCategory();
+      Category category = categoryRepo.findByName(categoryName);
+      Boolean closeCase = category.getCloseCase();
+      log.debug("closeCase = {}", closeCase);
+      if (closeCase != null && closeCase.booleanValue()) {
+        caseRepo.setStatusFor(QuestionnaireServiceImpl.CLOSED, parentCaseId);
+        log.debug("parent case marked closed");
+        List<Questionnaire> associatedQuestionnaires = questionnaireRepo.findByCaseId(parentCaseId);
+        for (Questionnaire questionnaire : associatedQuestionnaires) {
+          questionnaireRepo.setResponseDatetimeFor(currentTime, questionnaire.getQuestionnaireId());
+        }
+        log.debug("all associatedQuestionnaires marked closed");
       }
 
-      caseEvent.setCreatedDatetime(currentTime);
+      String actionType = category.getGeneratedActionType();
+      log.debug("actionType = {}", actionType);
+      if (actionType != null && !actionType.isEmpty()) {
+        ActionDTO actionDTO = new ActionDTO();
+        actionDTO.setCaseId(parentCaseId);
+        actionDTO.setActionTypeName(actionType);
+        actionDTO.setCreatedBy(caseEvent.getCreatedBy());
+
+        RestTemplate restTemplate = new RestTemplate();
+        log.debug("about to post to the Action SVC with {}", actionDTO);
+        restTemplate.postForObject(actionSvcUrl, actionDTO, ActionDTO.class);
+        log.debug("returned successfully from the post to the Action SVC");
+      }
+
+      caseEvent.setCreatedDateTime(currentTime);
+      log.debug("about to create the caseEvent for {}", caseEvent);
       return caseEventRepository.save(caseEvent);
     } else {
       return null;
