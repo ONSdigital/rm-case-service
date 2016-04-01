@@ -17,7 +17,7 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "SOAP", targetNamespace = "com.xmbrace.OTWebServiceApi.5.2.0.16", wsdlLocation = "file:/nfshome/philippe.brossier/code_ctp/kirona/soap_1.wsdl")
+@WebServiceClient(name = "SOAP", targetNamespace = "com.xmbrace.OTWebServiceApi.5.2.0.16", wsdlLocation = "file:/nfshome/philippe.brossier/code_ctp/responsemanagement-service/kirona-drs-gateway/soap_1.wsdl")
 public class SOAP_Service
     extends Service
 {
@@ -30,7 +30,7 @@ public class SOAP_Service
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("file:/nfshome/philippe.brossier/code_ctp/kirona/soap_1.wsdl");
+            url = new URL("file:/nfshome/philippe.brossier/code_ctp/responsemanagement-service/kirona-drs-gateway/soap_1.wsdl");
         } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
         }
