@@ -4,3 +4,8 @@
 - create the directory structure target\classes under \kirona-drs-gateway if it does not exist
 - create the directory structure \src\main\java under \kirona-drs-gateway if it does not exist
 - open a terminal to \kirona-drs-gateway and: ant gen.kirona_drs
+
+
+# To build the project
+mvn clean install
+
