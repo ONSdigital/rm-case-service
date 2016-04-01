@@ -5,9 +5,15 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
+/**
+ * The object to represent an Action
+ */
 @Data
 public class ActionDTO {
 
+  /**
+   * The enum for all possible action states
+   */
   public enum ActionState {
     ACTIVE, CANCELLED, CANCELSUBMITTED, COMPLETED, FAILED, PENDING, SUBMITTED;
   }

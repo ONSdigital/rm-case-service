@@ -55,10 +55,12 @@ public final class MsoaEndpoint implements CTPEndpoint {
    * the GET endpont to retrieve all address summaries for an MSOA
    * @param msoaid id of the MSOA whose summaries we want
    * @return the list empty or otherwise of retrieved address summaries
+   * @throws CTPException something went wrong
    */
   @GET
   @Path("/{msoaid}/addresssummaries")
-  public List<AddressSummaryDTO> findAllAddressSummariesForMsoaId(@PathParam("msoaid") final String msoaid) throws CTPException {
+  public List<AddressSummaryDTO> findAllAddressSummariesForMsoaId(@PathParam("msoaid") final String msoaid)
+      throws CTPException {
     log.debug("Entering findAllAddressSummariesForMsoaId with {}", msoaid);
     List<AddressSummary> addresseSummaries = msoaService.findAllAddressSummariesByMsoaid(msoaid);
     if (addresseSummaries == null) {

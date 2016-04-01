@@ -59,21 +59,23 @@ public final class CaseServiceImpl implements CaseService {
   @Inject
   private CategoryRepository categoryRepo;
 
-  // TODO finish off refactoring
   private final RestTemplate restTemplate;
 
+  /**
+   * The public constructor
+   */
   public CaseServiceImpl() {
     restTemplate = new RestTemplate();
   }
 
   @Override
-  public final List<Case> findCasesByUprn(final Integer uprn) {
+  public List<Case> findCasesByUprn(final Integer uprn) {
     log.debug("Entering findCasesByUprn with uprn {}", uprn);
     return caseRepo.findByUprn(uprn);
   }
 
   @Override
-  public final Case findCaseByQuestionnaireId(final Integer qid) {
+  public Case findCaseByQuestionnaireId(final Integer qid) {
     log.debug("Entering findCaseByQuestionnaireId");
     Questionnaire questionnaire = questionnaireRepo.findByQuestionnaireId(qid);
     if (questionnaire == null) {
@@ -83,20 +85,20 @@ public final class CaseServiceImpl implements CaseService {
   }
 
   @Override
-  public final Case findCaseByCaseId(final Integer caseId) {
+  public Case findCaseByCaseId(final Integer caseId) {
     log.debug("Entering findCaseByCaseId");
     return caseRepo.findOne(caseId);
   }
 
   @Override
-  public final List<CaseEvent> findCaseEventsByCaseId(final Integer caseId) {
+  public List<CaseEvent> findCaseEventsByCaseId(final Integer caseId) {
     log.debug("Entering findCaseEventsByCaseId");
     return caseEventRepository.findByCaseIdOrderByCreatedDateTimeDesc(caseId);
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
-  public final CaseEvent createCaseEvent(final CaseEvent caseEvent) {
+  public CaseEvent createCaseEvent(final CaseEvent caseEvent) {
     log.debug("Entering createCaseEvent");
     Integer parentCaseId = caseEvent.getCaseId();
     Case parentCase = caseRepo.findOne(parentCaseId);

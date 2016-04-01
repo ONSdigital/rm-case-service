@@ -55,6 +55,7 @@ public final class LocalAuthorityEndpoint implements CTPEndpoint {
    * the GET endpoint to retrieve all MSOA for a given LAD
    * @param ladId the LAD id to fetch by
    * @return the list of MSOA
+   * @throws CTPException something went wrong
    */
   @GET
   @Path("/{ladid}/msoas")
