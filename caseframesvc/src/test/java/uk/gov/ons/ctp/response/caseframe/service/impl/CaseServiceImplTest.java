@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
@@ -86,6 +85,7 @@ public class CaseServiceImplTest {
         currentTime, CASEEVENT_CATEGORY, CASEEVENT_SUBCATEGORY);
 
     CaseEvent result = caseService.createCaseEvent(caseEvent);
+
     verify(caseRepo).findOne(NON_EXISTING_PARENT_CASE_ID);
     assertNull(result);
   }
