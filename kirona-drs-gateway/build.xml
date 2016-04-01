@@ -21,7 +21,7 @@
 			<arg line="uk.gov.ons.ctp.response.kirona.drs" />
 			<!-- Output folder for compiled classes -->
 			<arg line="-d" />
-			<arg line="./bin" />
+			<arg line="./target/classes" />
 			<!-- WSDL of the service -->
 			<arg line="${kirona_drs.wsdl}" />
 		</exec>
