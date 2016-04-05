@@ -23,7 +23,10 @@ curl http://localhost:8171/categories/ -v -X GET
 
 ## To test case events
 curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/cases/1/events -v -X POST -d "{\"category\":\"General Enquiry - Escalated\", \"description\":\"manualcurltest\", \"createdBy\":\"philippeb\"}"
-200 {"createdDatetime":"2016-03-30T17:27:03.661+0000","caseEventId":762,"caseId":1,"category":"General Enquiry - Escalated","subCategory":null,"createdBy":"philippeb","description":"manualcurltest"}
+Submitted at 12:26 and got:
+200 {"createdDateTime":"2016-04-04T11:26:06.961+0000","caseEventId":766,"caseId":1,"category":"General Enquiry - Escalated","subCategory":null,"createdBy":"philippeb","description":"manualcurltest"}
 
-
+In DB: we have stored:
+    - select * from caseframe.caseevent where caseeventid = 766;
+    - 766;1;"manualcurltest";"philippeb";"2016-04-04 11:26:06.961+00";"General Enquiry - Escalated";""
 
