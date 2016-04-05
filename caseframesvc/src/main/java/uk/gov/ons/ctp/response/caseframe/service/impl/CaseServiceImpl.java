@@ -100,11 +100,17 @@ public final class CaseServiceImpl implements CaseService {
   @Override
   public CaseEvent createCaseEvent(final CaseEvent caseEvent) {
     log.debug("Entering createCaseEvent");
+    CaseEvent result = null;
+
     Integer parentCaseId = caseEvent.getCaseId();
     Case parentCase = caseRepo.findOne(parentCaseId);
     log.debug("parentCase = {}", parentCase);
     if (parentCase != null) {
       Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+      caseEvent.setCreatedDateTime(currentTime);
+      log.debug("about to create the caseEvent for {}", caseEvent);
+      result =  caseEventRepository.save(caseEvent);
+
       String categoryName = caseEvent.getCategory();
       Category category = categoryRepo.findByName(categoryName);
       Boolean closeCase = category.getCloseCase();
@@ -131,12 +137,8 @@ public final class CaseServiceImpl implements CaseService {
         restTemplate.postForObject(actionSvcUrl, actionDTO, ActionDTO.class);
         log.debug("returned successfully from the post to the Action SVC");
       }
-
-      caseEvent.setCreatedDateTime(currentTime);
-      log.debug("about to create the caseEvent for {}", caseEvent);
-      return caseEventRepository.save(caseEvent);
-    } else {
-      return null;
     }
+
+    return result;
   }
 }
