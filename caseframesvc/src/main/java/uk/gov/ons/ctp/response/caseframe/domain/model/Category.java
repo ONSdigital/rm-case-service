@@ -21,8 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "category", schema = "caseframe")
 public class Category implements Serializable {
-
-	private static final long serialVersionUID = 2310849817220604095L;
+  private static final long serialVersionUID = 2310849817220604095L;
 
   @Id
   private String name;

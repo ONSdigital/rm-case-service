@@ -2,6 +2,9 @@ package uk.gov.ons.ctp.response.caseframe.representation;
 
 import lombok.Data;
 
+/**
+ * The object to represent a Category
+ */
 @Data
 public class CategoryDTO {
 

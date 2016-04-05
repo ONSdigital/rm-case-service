@@ -20,7 +20,7 @@ public final class CategoryServiceImpl implements CategoryService {
 
 	/**
 	 * Spring Data Repository for CaseType entities.
-	 */
+	 **/
 	@Inject
 	private CategoryRepository categoryRepo;
 

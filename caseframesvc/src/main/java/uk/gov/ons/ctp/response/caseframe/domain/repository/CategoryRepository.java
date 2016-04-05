@@ -10,5 +10,10 @@ import uk.gov.ons.ctp.response.caseframe.domain.model.Category;
  */
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, String> {
+  /**
+   * To find a category by name
+   * @param name the name of the category
+   * @return the found category
+   */
   Category findByName(String name);
 }

@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 8.15.0-1
+      author: pbrossier
+      changes:
+          - sqlFile:
+              comment: Constraint required on table caseeevnt to restrict values for column category
+              path: category_constraints.sql
+              relativeToChangelogFile: true
+

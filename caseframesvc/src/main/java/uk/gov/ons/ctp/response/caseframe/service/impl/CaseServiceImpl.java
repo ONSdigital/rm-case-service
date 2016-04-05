@@ -59,6 +59,15 @@ public final class CaseServiceImpl implements CaseService {
   @Inject
   private CategoryRepository categoryRepo;
 
+  private final RestTemplate restTemplate;
+
+  /**
+   * The public constructor
+   */
+  public CaseServiceImpl() {
+    restTemplate = new RestTemplate();
+  }
+
   @Override
   public List<Case> findCasesByUprn(final Integer uprn) {
     log.debug("Entering findCasesByUprn with uprn {}", uprn);
@@ -118,7 +127,6 @@ public final class CaseServiceImpl implements CaseService {
         actionDTO.setActionTypeName(actionType);
         actionDTO.setCreatedBy(caseEvent.getCreatedBy());
 
-        RestTemplate restTemplate = new RestTemplate();
         log.debug("about to post to the Action SVC with {}", actionDTO);
         restTemplate.postForObject(actionSvcUrl, actionDTO, ActionDTO.class);
         log.debug("returned successfully from the post to the Action SVC");

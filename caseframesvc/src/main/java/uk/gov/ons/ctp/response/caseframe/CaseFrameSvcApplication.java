@@ -48,7 +48,7 @@ public class CaseFrameSvcApplication {
       register(AddressEndpoint.class);
 
       // Response
-      register(new CTPMessageBodyReader<CaseEventDTO>(CaseEventDTO.class) {});
+      register(new CTPMessageBodyReader<CaseEventDTO>(CaseEventDTO.class) { });
       register(CaseEndpoint.class);
       register(QuestionnaireEndpoint.class);
       register(QuestionSetEndpoint.class);
