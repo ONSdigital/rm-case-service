@@ -44,8 +44,7 @@
     <bean id="instructionMessageListenerContainer"
           class="org.springframework.jms.listener.DefaultMessageListenerContainer">
         <property name="connectionFactory" ref="connectionFactory" />
-        <!-- TODO Is this the right queue name - check with the naming used in the ActionSvc? -->
-        <property name="destinationName" value="fieldInstructionQueue" />
+        <property name="destinationName" value="Action.Field" />
         <property name="maxConcurrentConsumers" value="1" />
         <property name="concurrentConsumers" value="1" />
         <property name="receiveTimeout" value="5000" />
@@ -66,7 +65,7 @@
 
     <!-- First the SI message provided by the channel adapter is validated against the inbound schema -->
     <int-xml:validating-filter id="instructionValidator" input-channel="instructionXml"
-                               output-channel="instructionXmlValid" schema-location="classpath:xsd/actionSvcOutboundMessage.xsd" discard-channel="instructionXmlInvalid"/>
+                               output-channel="instructionXmlValid" schema-location="classpath:xsd/actionInstruction.xsd" discard-channel="instructionXmlInvalid"/>
 
     <!-- Secondly the now validated xml is transformed into the jaxb generated object model -->
     <int-xml:unmarshalling-transformer
@@ -99,7 +98,7 @@
     <bean id="hotelSurveyInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
         <constructor-arg value="Action.HotelSurvey"/>
     </bean>
-    
+
     <int:annotation-config/>
     <!--  setup the outbound channels - note each queue needs a channel -->
     <int:channel id="instructionOutbound" />
