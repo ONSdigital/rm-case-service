@@ -12,10 +12,8 @@ import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 @Slf4j
 public class FeedbackService {
   @Publisher(channel="actionFeedbackOutbound")
-  public ActionFeedback sendFeedback() {
+  public ActionFeedback sendFeedback(ActionFeedback actionFeedback) {
     log.debug("Entering sendFeedback...");
-    ActionFeedback actionFeedback = new ActionFeedback();
-    // TODO Define attributes
     return actionFeedback;
   }
 }
