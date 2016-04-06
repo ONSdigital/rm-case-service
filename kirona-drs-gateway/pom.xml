@@ -176,10 +176,10 @@
                         <configuration>
                             <bindingDirectory>src/main/resources/xsd</bindingDirectory>
                             <bindingIncludes>
-                                <include>actionInstructionBindings.xjb</include>
+                                <include>actionInstruction.xjb</include>
                             </bindingIncludes>
                             <bindingExcludes>
-                                <include>actionFeedbackBindings.xjb</include>
+                                <include>actionFeedback.xjb</include>
                             </bindingExcludes>
                             <schemaDirectory>src/main/resources/xsd</schemaDirectory>
                             <schemaIncludes>
@@ -198,10 +198,10 @@
                         <configuration>
                             <bindingDirectory>src/main/resources/xsd</bindingDirectory>
                             <bindingIncludes>
-                                <include>actionFeedbackBindings.xjb</include>
+                                <include>actionFeedback.xjb</include>
                             </bindingIncludes>
                             <bindingExcludes>
-                                <include>actionInstructionBindings.xjb</include>
+                                <include>actionInstruction.xjb</include>
                             </bindingExcludes>
                             <schemaDirectory>src/main/resources/xsd</schemaDirectory>
                             <schemaIncludes>

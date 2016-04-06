@@ -89,7 +89,7 @@
     <!--  setup the outbound channels - note each queue needs a channel -->
     <int:channel id="actionFeedbackOutbound" />
     <int:channel id="actionFeedbackXml" />
-    <int:channel id="actionFeedbackField" />
+    <int:channel id="actionFeedback" />
 
     <!--  the @Publisher sends to the marshalling-transformers input channel -->
     <int-xml:marshalling-transformer
@@ -104,9 +104,9 @@
     <bean id="actionFeedbackTransformer" class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
 
     <!-- define the channel name to send our xml string to -->
-    <int:router input-channel="actionFeedbackXml" expression="actionFeedbackField" />
+    <int:router input-channel="actionFeedbackXml" default-output-channel="actionFeedback" />
 
     <!--  each channel adapter listens to one of our routed channels and adapts the SI message to a JMS message -->
-    <int-jms:outbound-channel-adapter id="jmsout.Field" channel="actionFeedbackField" destination="actionFeedbackQueue"/>
+    <int-jms:outbound-channel-adapter id="jmsout" channel="actionFeedback" destination="actionFeedbackQueue"/>
 </beans>
 
