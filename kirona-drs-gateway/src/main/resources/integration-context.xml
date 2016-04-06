@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jms="http://www.springframework.org/schema/jms" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:int-jme="http://www.springframework.org/schema/integration"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+       xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
+       xmlns:int-file="http://www.springframework.org/schema/integration/file"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+  http://www.springframework.org/schema/context
+  http://www.springframework.org/schema/context/spring-context-4.2.xsd
+  http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+  http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
+  http://www.springframework.org/schema/jms
+  http://www.springframework.org/schema/jms/spring-jms-4.2.xsd
+  http://www.springframework.org/schema/integration/file
+  http://www.springframework.org/schema/integration/file/spring-integration-file.xsd
+  http://www.springframework.org/schema/integration/xml
+  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
+
+    <!-- The JMS broker -->
+    <!--
+      <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="tcp://localhost:61616" />
+      </bean>
+      -->
+    <bean id="connectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+        <property name="targetConnectionFactory">
+            <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+                <property name="brokerURL" value="tcp://localhost:61616" />
+                <!--  <property name="brokerURL" value="vm://localhost"/> -->
+            </bean>
+        </property>
+        <property name="sessionCacheSize" value="10"/>
+    </bean>
+
+    <!--  First the inbound flow -->
+
+    <!-- The inbound message container config - the inbound queue is defined here
+    We will listen for actionInstructions coming from the ActionSvc.
+    -->
+    <bean id="actionInstructionMessageListenerContainer"
+          class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="connectionFactory" />
+        <property name="destinationName" value="Action.Field" />
+        <property name="maxConcurrentConsumers" value="1" />
+        <property name="concurrentConsumers" value="1" />
+        <property name="receiveTimeout" value="5000" />
+        <property name="recoveryInterval" value="60000" />
+        <property name="autoStartup" value="true" />
+    </bean>
+
+    <!-- need an input channel defined for MQ adapter to input to -->
+    <int:channel id="actionInstructionXml" />
+
+    <!-- anything sent to this channel is written to disk -->
+    <int:channel id="actionInstructionXmlInvalid" />
+    <int-file:outbound-channel-adapter directory ="/var/log/ctp/responsemanagement/kirona-drs-gateway/actionInstruction" channel="actionInstructionXmlInvalid"/>
+
+    <!-- the MQ channel adapter reads from the Action.Field Queue (see the container above) and inputs to actionInstructionXml -->
+    <int-jms:message-driven-channel-adapter
+            id="jmsIn" container="actionInstructionMessageListenerContainer" channel="actionInstructionXml" />
+
+    <!-- First the SI message provided by the channel adapter is validated against the inbound schema -->
+    <int-xml:validating-filter id="actionIinstructionValidator" input-channel="actionInstructionXml"
+                               output-channel="actionInstructionXmlValid" schema-location="classpath:xsd/actionInstruction.xsd" discard-channel="actionInstructionXmlInvalid"/>
+
+    <!-- Secondly the now validated xml is transformed into the jaxb generated object model -->
+    <int-xml:unmarshalling-transformer
+            input-channel="actionInstructionXmlValid" output-channel="actionInstructionTransformed"
+            unmarshaller="actionInstructionUnmarshaller" />
+
+    <!-- The transformer uses this unmarshaller to do the heavy (un)lifting -->
+    <bean id="actionInstructionUnmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.instruction" />
+    </bean>
+
+    <!-- Finally see the @ServiceActivator(inputChannel="actionInstructionTransformed") -->
+
+    <!--  Now configure the outbound flow -->
+    <!-- setup the outbound jms queue -->
+    <bean id="actionFeedbackQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Action.Field"/>
+    </bean>
+
+    <int:annotation-config/>
+    <!--  setup the outbound channels - note each queue needs a channel -->
+    <int:channel id="actionFeedbackOutbound" />
+    <int:channel id="actionFeedbackXml" />
+    <int:channel id="actionFeedback" />
+
+    <!--  the @Publisher sends to the marshalling-transformers input channel -->
+    <int-xml:marshalling-transformer
+            input-channel="actionFeedbackOutbound" output-channel="actionFeedbackXml"
+            marshaller="actionFeedbackMarshaller"
+            result-transformer="actionFeedbackTransformer"/>
+    <!--  the actionFeedbackMarshaller turns java objects into xml dom -->
+    <bean id="actionFeedbackMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.feedback" />
+    </bean>
+    <!--  the actionFeedbackTransformer turns the xml dom into a string -->
+    <bean id="actionFeedbackTransformer" class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
+
+    <!-- define the channel name to send our xml string to -->
+    <int:router input-channel="actionFeedbackXml" default-output-channel="actionFeedback" />
+
+    <!--  each channel adapter listens to one of our routed channels and adapts the SI message to a JMS message -->
+    <int-jms:outbound-channel-adapter id="jmsout" channel="actionFeedback" destination="actionFeedbackQueue"/>
+</beans>
+

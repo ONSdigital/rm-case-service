@@ -176,22 +176,19 @@
                         <configuration>
                             <bindingDirectory>src/main/resources/xsd</bindingDirectory>
                             <bindingIncludes>
-                                <include>actionSvcOutboundBindings.xjb</include>
+                                <include>actionInstruction.xjb</include>
                             </bindingIncludes>
-                            <!-- TODO We'll need this when we have defined our outbound schema for this Kirona GW
                             <bindingExcludes>
-                                <include>outboundBindings.xjb</include>
+                                <include>actionFeedback.xjb</include>
                             </bindingExcludes>
-                            -->
                             <schemaDirectory>src/main/resources/xsd</schemaDirectory>
                             <schemaIncludes>
-                                <include>actionSvcOutboundMessage.xsd</include>
+                                <include>actionInstruction.xsd</include>
                             </schemaIncludes>
                             <generateDirectory>${project.build.directory}/generated-sources/xjc/inbound</generateDirectory>
                         </configuration>
                     </execution>
 
-                    <!-- TODO We'll need this once we have defined our outbound schema for this Kirona GW
                     <execution>
                         <phase>generate-sources</phase>
                         <id>outbound</id>
@@ -201,19 +198,18 @@
                         <configuration>
                             <bindingDirectory>src/main/resources/xsd</bindingDirectory>
                             <bindingIncludes>
-                                <include>outboundBindings.xjb</include>
+                                <include>actionFeedback.xjb</include>
                             </bindingIncludes>
                             <bindingExcludes>
-                                <include>inboundBindings.xjb</include>
+                                <include>actionInstruction.xjb</include>
                             </bindingExcludes>
                             <schemaDirectory>src/main/resources/xsd</schemaDirectory>
                             <schemaIncludes>
-                                <include>outboundMessage.xsd</include>
+                                <include>actionFeedback.xsd</include>
                             </schemaIncludes>
                             <generateDirectory>${project.build.directory}/generated-sources/xjc/outbound</generateDirectory>
                         </configuration>
                     </execution>
-                    -->
                 </executions>
             </plugin>
         </plugins>
