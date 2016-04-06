@@ -1,0 +1,22 @@
+option footer=none
+Action.Field->+Gateway: ActionInstruction
+
+Gateway->+DRS: openSession(login, password)
+DRS-->-Gateway: sessionID
+
+Gateway->+DRS: selectOrder(sessionID, primaryOrderNumber)
+DRS-->-Gateway: selectOrderResponse
+
+ bookingLifeCycleStatus != COMPLETED
+
+loop 1..n orders
+loop 1..n bookings
+Gateway->+DRS: deleteBooking(sessionID, booking)
+DRS-->-Gateway: deleteBookingResponse
+end
+end
+
+Gateway-->Action.Field: ActionFeedback
+
+Gateway->+DRS: closeSession(sessionID)
+DRS-->-Gateway: closeSessionResponse
