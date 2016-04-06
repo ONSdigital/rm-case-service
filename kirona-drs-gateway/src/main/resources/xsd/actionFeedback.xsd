@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns="http://ons.gov.uk/ctp/response/action/message/feedback"
+           targetNamespace="http://ons.gov.uk/ctp/response/action/message/feedback">
+
+    <!-- root element of a feedback message to the action service -->
+    <xs:element name="actionFeedback" type="ActionFeedback"/>
+
+    <xs:complexType name="ActionFeedback">
+        <xs:sequence>
+            <xs:element name="actionId" type="xs:positiveInteger"/>
+            <xs:element name="situation">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:maxLength value="100"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="isComplete" type="xs:boolean"/>
+            <xs:element name="isFailed" type="xs:boolean"/>
+            <xs:element name="notes" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

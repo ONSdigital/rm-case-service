@@ -39,13 +39,12 @@
     <!--  First the inbound flow -->
 
     <!-- The inbound message container config - the inbound queue is defined here
-    We will listen for instructions coming from the ActionSvc.
+    We will listen for actionInstructions coming from the ActionSvc.
     -->
-    <bean id="instructionMessageListenerContainer"
+    <bean id="actionInstructionMessageListenerContainer"
           class="org.springframework.jms.listener.DefaultMessageListenerContainer">
         <property name="connectionFactory" ref="connectionFactory" />
-        <!-- TODO Is this the right queue name - check with the naming used in the ActionSvc? -->
-        <property name="destinationName" value="fieldInstructionQueue" />
+        <property name="destinationName" value="Action.Field" />
         <property name="maxConcurrentConsumers" value="1" />
         <property name="concurrentConsumers" value="1" />
         <property name="receiveTimeout" value="5000" />
@@ -54,83 +53,60 @@
     </bean>
 
     <!-- need an input channel defined for MQ adapter to input to -->
-    <int:channel id="instructionXml" />
+    <int:channel id="actionInstructionXml" />
 
     <!-- anything sent to this channel is written to disk -->
-    <int:channel id="instructionXmlInvalid" />
-    <int-file:outbound-channel-adapter directory ="/var/log/ctp/responsemanagement/kirona-drs-gateway/instruction" channel="instructionXmlInvalid"/>
+    <int:channel id="actionInstructionXmlInvalid" />
+    <int-file:outbound-channel-adapter directory ="/var/log/ctp/responsemanagement/kirona-drs-gateway/actionInstruction" channel="actionInstructionXmlInvalid"/>
 
-    <!-- the MQ channel adapter reads from fieldInstructionQueue (see the container above) and inputs to instructionXml -->
+    <!-- the MQ channel adapter reads from the Action.Field Queue (see the container above) and inputs to actionInstructionXml -->
     <int-jms:message-driven-channel-adapter
-            id="jmsIn" container="instructionMessageListenerContainer" channel="instructionXml" />
+            id="jmsIn" container="actionInstructionMessageListenerContainer" channel="actionInstructionXml" />
 
     <!-- First the SI message provided by the channel adapter is validated against the inbound schema -->
-    <int-xml:validating-filter id="instructionValidator" input-channel="instructionXml"
-                               output-channel="instructionXmlValid" schema-location="classpath:xsd/actionSvcOutboundMessage.xsd" discard-channel="instructionXmlInvalid"/>
+    <int-xml:validating-filter id="actionIinstructionValidator" input-channel="actionInstructionXml"
+                               output-channel="actionInstructionXmlValid" schema-location="classpath:xsd/actionInstruction.xsd" discard-channel="actionInstructionXmlInvalid"/>
 
     <!-- Secondly the now validated xml is transformed into the jaxb generated object model -->
     <int-xml:unmarshalling-transformer
-            input-channel="instructionXmlValid" output-channel="instructionTransformed"
-            unmarshaller="instructionUnmarshaller" />
+            input-channel="actionInstructionXmlValid" output-channel="actionInstructionTransformed"
+            unmarshaller="actionInstructionUnmarshaller" />
 
     <!-- The transformer uses this unmarshaller to do the heavy (un)lifting -->
-    <bean id="instructionUnmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+    <bean id="actionInstructionUnmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.instruction" />
     </bean>
 
-    <!-- Finally see the @ServiceActivator(inputChannel="instructionTransformed") -->
+    <!-- Finally see the @ServiceActivator(inputChannel="actionInstructionTransformed") -->
 
-
-    <!-- TODO section below is copied from the Action Svc -->
     <!--  Now configure the outbound flow -->
-    <!-- setup the outbound jms queues -->
-    <bean id="fieldInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
+    <!-- setup the outbound jms queue -->
+    <bean id="actionFeedbackQueue" class="org.apache.activemq.command.ActiveMQQueue">
         <constructor-arg value="Action.Field"/>
     </bean>
-    <bean id="printerInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Action.Printer"/>
-    </bean>
-    <bean id="supportInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Action.CensusSupport"/>
-    </bean>
-    <bean id="householdSurveyInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Action.HHSurvey"/>
-    </bean>
-    <bean id="hotelSurveyInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Action.HotelSurvey"/>
-    </bean>
-    
+
     <int:annotation-config/>
     <!--  setup the outbound channels - note each queue needs a channel -->
-    <int:channel id="instructionOutbound" />
-    <int:channel id="instructionXml" />
-    <int:channel id="instructionField" />
-    <int:channel id="instructionPrinter" />
-    <int:channel id="instructionCensusSupport" />
-    <int:channel id="instructionHHSurvey" />
-    <int:channel id="instructionHotelSurvey" />
+    <int:channel id="actionFeedbackOutbound" />
+    <int:channel id="actionFeedbackXml" />
+    <int:channel id="actionFeedbackField" />
 
     <!--  the @Publisher sends to the marshalling-transformers input channel -->
     <int-xml:marshalling-transformer
-            input-channel="instructionOutbound" output-channel="instructionXml"
-            marshaller="instructionMarshaller"
-            result-transformer="instructionTransformer"/>
-    <!--  the instructionMarshaller turns java objs into xml dom -->
-    <bean id="instructionMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-        <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.instruction" />
+            input-channel="actionFeedbackOutbound" output-channel="actionFeedbackXml"
+            marshaller="actionFeedbackMarshaller"
+            result-transformer="actionFeedbackTransformer"/>
+    <!--  the actionFeedbackMarshaller turns java objects into xml dom -->
+    <bean id="actionFeedbackMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.feedback" />
     </bean>
-    <!--  the instructionTransformer turns the xml dom into a string -->
-    <bean id="instructionTransformer" class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
+    <!--  the actionFeedbackTransformer turns the xml dom into a string -->
+    <bean id="actionFeedbackTransformer" class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
 
-    <!-- the router ... routes ... using the header 'HANDLER' set by the @Publisher -->
-    <!-- the  SpEL constructs the channel name to send our xml string to -->
-    <int:router input-channel="instructionXml" expression="'instruction'.concat(headers.HANDLER)" />
+    <!-- define the channel name to send our xml string to -->
+    <int:router input-channel="actionFeedbackXml" expression="actionFeedbackField" />
 
     <!--  each channel adapter listens to one of our routed channels and adapts the SI message to a JMS message -->
-    <int-jms:outbound-channel-adapter id="jmsout.Field" channel="instructionField" destination="fieldInstructionQueue"/>
-    <int-jms:outbound-channel-adapter id="jmsout.Printer" channel="instructionPrinter" destination="printerInstructionQueue"/>
-    <int-jms:outbound-channel-adapter id="jmsout.CensusSupport" channel="instructionCensusSupport" destination="supportInstructionQueue"/>
-    <int-jms:outbound-channel-adapter id="jmsout.HHSurvey" channel="instructionHHSurvey" destination="householdSurveyInstructionQueue"/>
-    <int-jms:outbound-channel-adapter id="jmsout.HotelSurvey" channel="instructionHotelSurvey" destination="hotelSurveyInstructionQueue"/>
+    <int-jms:outbound-channel-adapter id="jmsout.Field" channel="actionFeedbackField" destination="actionFeedbackQueue"/>
 </beans>
 
