@@ -9,3 +9,22 @@ databaseChangeLog:
               path: update_category_data.sql
               relativeToChangelogFile: true
 
+ - changeSet:
+      id: 8.14.0-2
+      author: pbrossier
+      changes:
+          - sqlFile:
+              comment: Constraint required on table caseeevnt to restrict values for column category
+              path: category_constraints.sql
+              relativeToChangelogFile: true
+
+  - changeSet:
+        id: 8.14.0-3
+        author: pbrossier
+        changes:
+            - sqlFile:
+                comment: Constraint required on table caseeevnt to restrict values for column category
+                path: category_constraints.sql
+                relativeToChangelogFile: true
+
+

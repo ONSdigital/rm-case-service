@@ -24,15 +24,14 @@ public final class CategoryServiceImpl implements CategoryService {
 	@Inject
 	private CategoryRepository categoryRepo;
 
-	/**
-	 * Return all Categories
-	 *
-	 * @return List of Category entities or empty List
-	 */
 	@Override
-	public List<Category> findCategories() {
-		log.debug("Entering findCategory");
-		return categoryRepo.findAll();
+	public final List<Category> findCategories(String role) {
+		log.debug("Entering findCategories with role {}", role);
+		if (role == null || role.isEmpty()) {
+			return categoryRepo.findAll();
+		} else {
+			return categoryRepo.findByRole(role);
+		}
 	}
 
 }

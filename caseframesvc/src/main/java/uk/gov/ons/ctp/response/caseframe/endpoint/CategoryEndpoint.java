@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 import org.springframework.util.CollectionUtils;
 
@@ -36,9 +37,9 @@ public final class CategoryEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/")
-  public List<CategoryDTO> findCategories() {
-    log.debug("Entering findCategories...");
-    List<Category> categories = categoryService.findCategories();
+  public List<CategoryDTO> findCategories(@QueryParam("role") final String role) {
+    log.debug("Entering findCategories with role {}", role);
+    List<Category> categories = categoryService.findCategories(role);
     List<CategoryDTO> categoryDTOs = mapperFacade.mapAsList(categories, CategoryDTO.class);
     return CollectionUtils.isEmpty(categoryDTOs) ? null : categoryDTOs;
   }

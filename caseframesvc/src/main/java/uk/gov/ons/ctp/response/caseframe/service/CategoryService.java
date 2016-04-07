@@ -14,8 +14,9 @@ public interface CategoryService extends CTPService {
   /**
    * Return all Categories.
    *
+   * @param role The optional security role to filter by
    * @return List of Category entities or empty List
    */
-  List<Category> findCategories();
+  List<Category> findCategories(String role);
 
 }
