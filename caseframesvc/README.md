@@ -19,6 +19,7 @@ curl http://localhost:8171/regions/ -v -X GET
 
 ## To test categories
 curl http://localhost:8171/categories/ -v -X GET
+curl http://localhost:8171/categories/?role=collect-cso,%20collect-admin -v -X GET
 
 
 ## To test case events
