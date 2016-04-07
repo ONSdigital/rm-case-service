@@ -5,11 +5,11 @@ databaseChangeLog:
       author: pbrossier
       changes:
           - sqlFile:
-              comment: Required as Escalated has been changed into ESC_GENERAL, ESC_SURVEY, ESC_COMPLAINT
+              comment: Required as Escalated has been changed into ESC_GENERAL, ESC_SURVEY, ESC_COMPLAINT. Also, data on roles.
               path: update_category_data.sql
               relativeToChangelogFile: true
 
- - changeSet:
+  - changeSet:
       id: 8.14.0-2
       author: pbrossier
       changes:
@@ -18,13 +18,5 @@ databaseChangeLog:
               path: category_constraints.sql
               relativeToChangelogFile: true
 
-  - changeSet:
-        id: 8.14.0-3
-        author: pbrossier
-        changes:
-            - sqlFile:
-                comment: Constraint required on table caseeevnt to restrict values for column category
-                path: category_constraints.sql
-                relativeToChangelogFile: true
 
 
