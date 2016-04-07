@@ -24,6 +24,7 @@ public final class MockCategoryServiceFactory implements Factory<CategoryService
   public static final String CATEGORY1_ROLE = "Cat1 role";
   public static final String CATEGORY2_ROLE = "Cat2 role";
   public static final String CATEGORY3_ROLE = "Cat3 role";
+  public static final String ADMIN_ROLE = "adminrole";
   public static final String CATEGORY1_ACTIONTYPE = "Cat1 actiontype";
   public static final String CATEGORY2_ACTIONTYPE = "Cat2 actiontype";
   public static final String CATEGORY3_ACTIONTYPE = "Cat2 actiontype";
@@ -44,7 +45,7 @@ public final class MockCategoryServiceFactory implements Factory<CategoryService
 
     final CategoryService mockedService = Mockito.mock(CategoryService.class);
 
-    Mockito.when(mockedService.findCategories()).thenAnswer(new Answer<List<Category>>() {
+    Mockito.when(mockedService.findCategories(null)).thenAnswer(new Answer<List<Category>>() {
       public List<Category> answer(final InvocationOnMock invocation)
           throws Throwable {
         List<Category> result = new ArrayList<Category>();
@@ -57,6 +58,17 @@ public final class MockCategoryServiceFactory implements Factory<CategoryService
         return result;
       }
     });
+
+    Mockito.when(mockedService.findCategories(ADMIN_ROLE)).thenAnswer(new Answer<List<Category>>() {
+      public List<Category> answer(final InvocationOnMock invocation)
+          throws Throwable {
+        List<Category> result = new ArrayList<Category>();
+        result.add(new Category(CATEGORY1_NAME, CATEGORY1_DESC, ADMIN_ROLE, CATEGORY1_ACTIONTYPE,
+            CATEGORY1_CLOSECASE, CATEGORY1_MANUAL));
+        return result;
+      }
+    });
+
     return mockedService;
   }
 
