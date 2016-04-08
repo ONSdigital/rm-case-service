@@ -30,7 +30,7 @@ public final class CategoryServiceImpl implements CategoryService {
 		if (role == null || role.isEmpty()) {
 			return categoryRepo.findAll();
 		} else {
-			return categoryRepo.findByRole(role);
+			return categoryRepo.findByRoleContaining(role);
 		}
 	}
 

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Case;
 import uk.gov.ons.ctp.response.caseframe.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Category;
@@ -19,7 +20,6 @@ import uk.gov.ons.ctp.response.caseframe.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.QuestionnaireRepository;
-import uk.gov.ons.ctp.response.caseframe.representation.ActionDTO;
 import uk.gov.ons.ctp.response.caseframe.service.CaseService;
 
 /**

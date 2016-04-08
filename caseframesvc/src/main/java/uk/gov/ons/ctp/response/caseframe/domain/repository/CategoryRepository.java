@@ -24,5 +24,5 @@ public interface CategoryRepository extends JpaRepository<Category, String> {
    * @param role the security role
    * @return the found category
    */
-  List<Category> findByRole(String role);
+  List<Category> findByRoleContaining(String role);
 }
