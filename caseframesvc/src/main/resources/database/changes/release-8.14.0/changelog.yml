@@ -18,5 +18,15 @@ databaseChangeLog:
               path: category_constraints.sql
               relativeToChangelogFile: true
 
+  - changeSet:
+        id: 8.14.0-3
+        author: pbrossier
+        changes:
+            - sqlFile:
+                comment: Role names have to match what is in Ldap
+                path: update_role_names.sql
+                relativeToChangelogFile: true
+
+
 
 
