@@ -9,16 +9,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import uk.gov.ons.ctp.common.jaxrs.CTPMessageBodyReader;
-import uk.gov.ons.ctp.response.caseframe.endpoint.AddressEndpoint;
-import uk.gov.ons.ctp.response.caseframe.endpoint.CaseEndpoint;
-import uk.gov.ons.ctp.response.caseframe.endpoint.CaseTypeEndpoint;
-import uk.gov.ons.ctp.response.caseframe.endpoint.LocalAuthorityEndpoint;
-import uk.gov.ons.ctp.response.caseframe.endpoint.MsoaEndpoint;
-import uk.gov.ons.ctp.response.caseframe.endpoint.QuestionSetEndpoint;
-import uk.gov.ons.ctp.response.caseframe.endpoint.QuestionnaireEndpoint;
-import uk.gov.ons.ctp.response.caseframe.endpoint.RegionEndpoint;
-import uk.gov.ons.ctp.response.caseframe.endpoint.SampleEndpoint;
-import uk.gov.ons.ctp.response.caseframe.endpoint.SurveyEndpoint;
+import uk.gov.ons.ctp.response.caseframe.endpoint.*;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseEventDTO;
 
 /**
@@ -42,17 +33,18 @@ public class CaseFrameSvcApplication {
       packages("uk.gov.ons.ctp");
 
       // AddressFrame
-      register(RegionEndpoint.class);
+      register(AddressEndpoint.class);
       register(LocalAuthorityEndpoint.class);
       register(MsoaEndpoint.class);
-      register(AddressEndpoint.class);
+      register(RegionEndpoint.class);
 
       // Response
       register(new CTPMessageBodyReader<CaseEventDTO>(CaseEventDTO.class) { });
       register(CaseEndpoint.class);
+      register(CaseTypeEndpoint.class);
+      register(CategoryEndpoint.class);
       register(QuestionnaireEndpoint.class);
       register(QuestionSetEndpoint.class);
-      register(CaseTypeEndpoint.class);
       register(SampleEndpoint.class);
       register(SurveyEndpoint.class);
     }
