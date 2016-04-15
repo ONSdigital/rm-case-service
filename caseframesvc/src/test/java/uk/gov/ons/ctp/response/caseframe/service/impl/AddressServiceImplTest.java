@@ -3,7 +3,7 @@ package uk.gov.ons.ctp.response.caseframe.service.impl;
 import org.junit.Assert;
 import org.junit.Test;
 
-import uk.gov.ons.ctp.common.jersey.TestHelper;
+import uk.gov.ons.ctp.common.TestHelper;
 
 /**
  * tests for the address service postcode formatting method
