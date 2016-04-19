@@ -43,10 +43,7 @@ ELSE
    ,ct.questionset
    from caseframe.sample s
   ,caseframe.casetype ct
-  ,caseframe.address a
-   where
-    ' || v_geog_select_text  ||' and s.sampleid = ' || p_sampleid || ' and s.casetypeid = ct.casetypeid
-   and ' || v_addresscriteria
+  ,caseframe.address a where ' || v_geog_select_text  ||' and s.sampleid = ' || p_sampleid || ' and s.casetypeid = ct.casetypeid and ' || v_addresscriteria
    || 'and a.uprn NOT IN (SELECT uprn from caseframe.case )';
 
 
@@ -77,10 +74,10 @@ END IF;
 
  WHEN OTHERS THEN
     PERFORM caseframe.logmessage(p_messagetext := 'GENERATE CASES EXCEPTION TRIGGERED SQLERRM: ' || SQLERRM || ' SQLSTATE : ' || SQLSTATE
-                             ,p_jobid := 0   
+                             ,p_jobid := 0
                              ,p_messagelevel := 'FATAL'
                              ,p_functionname := 'caseframe.generate_cases');
-  RETURN FALSE; 
+  RETURN FALSE;
 
 END;
 $BODY$
