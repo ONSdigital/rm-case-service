@@ -6,12 +6,13 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
+
+import lombok.extern.slf4j.Slf4j;
+import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
+import uk.gov.ons.ctp.response.caseframe.config.AppConfig;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Case;
 import uk.gov.ons.ctp.response.caseframe.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Category;
@@ -32,8 +33,11 @@ public final class CaseServiceImpl implements CaseService {
 
   private static final int TRANSACTION_TIMEOUT = 30;
 
-  @Value("${actionsvc.actionsurl}")
-  private String actionSvcUrl;
+  @Inject
+  private AppConfig appConfig;
+
+  @Inject
+  private RestClient actionSvcRestClient;
 
   /**
    * Spring Data Repository for Case entities.
@@ -59,14 +63,6 @@ public final class CaseServiceImpl implements CaseService {
   @Inject
   private CategoryRepository categoryRepo;
 
-  private final RestTemplate restTemplate;
-
-  /**
-   * The public constructor
-   */
-  public CaseServiceImpl() {
-    restTemplate = new RestTemplate();
-  }
 
   @Override
   public List<Case> findCasesByUprn(final Integer uprn) {
@@ -134,7 +130,7 @@ public final class CaseServiceImpl implements CaseService {
         actionDTO.setCreatedBy(caseEvent.getCreatedBy());
 
         log.debug("about to post to the Action SVC with {}", actionDTO);
-        restTemplate.postForObject(actionSvcUrl, actionDTO, ActionDTO.class);
+        actionSvcRestClient.postResource(appConfig.getActionSvc().getActionsPath(), actionDTO, ActionDTO.class);
         log.debug("returned successfully from the post to the Action SVC");
       }
     }
