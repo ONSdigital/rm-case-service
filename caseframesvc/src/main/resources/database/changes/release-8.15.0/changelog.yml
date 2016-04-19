@@ -1,0 +1,30 @@
+databaseChangeLog:
+
+
+  - changeSet:
+      id: 8.15.0-1
+      author: sarahr
+      changes:
+        - sqlFile:
+            comment: creation of the emssage log table
+            path: create-messagelog-table.sql
+            relativeToChangelogFile: true
+
+  - changeSet:
+      id: 8.15.0-2
+      author: sarahr
+      changes:
+        - sqlFile:
+            comment: modified generate cases to use messagelog
+            path: generate-cases.sql
+            relativeToChangelogFile: true
+
+
+  - changeSet:
+      id: 8.15.0-3
+      author: sarahr
+      changes:
+        - sqlFile:
+            comment: modified create questionnaire to use messagelog
+            path: create-questionnaire.sql
+            relativeToChangelogFile: true

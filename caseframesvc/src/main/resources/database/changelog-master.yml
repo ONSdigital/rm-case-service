@@ -16,3 +16,4 @@ databaseChangeLog:
 
   - include:
       file: database/changes/release-8.14.0/changelog.yml
+
