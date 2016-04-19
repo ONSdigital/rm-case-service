@@ -3,13 +3,27 @@ package uk.gov.ons.ctp.response.caseframe;
 import javax.inject.Named;
 
 import org.glassfish.jersey.server.ResourceConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import uk.gov.ons.ctp.common.jaxrs.CTPMessageBodyReader;
-import uk.gov.ons.ctp.response.caseframe.endpoint.*;
+import uk.gov.ons.ctp.common.rest.RestClient;
+import uk.gov.ons.ctp.response.caseframe.config.AppConfig;
+import uk.gov.ons.ctp.response.caseframe.endpoint.AddressEndpoint;
+import uk.gov.ons.ctp.response.caseframe.endpoint.CaseEndpoint;
+import uk.gov.ons.ctp.response.caseframe.endpoint.CaseTypeEndpoint;
+import uk.gov.ons.ctp.response.caseframe.endpoint.CategoryEndpoint;
+import uk.gov.ons.ctp.response.caseframe.endpoint.LocalAuthorityEndpoint;
+import uk.gov.ons.ctp.response.caseframe.endpoint.MsoaEndpoint;
+import uk.gov.ons.ctp.response.caseframe.endpoint.QuestionSetEndpoint;
+import uk.gov.ons.ctp.response.caseframe.endpoint.QuestionnaireEndpoint;
+import uk.gov.ons.ctp.response.caseframe.endpoint.RegionEndpoint;
+import uk.gov.ons.ctp.response.caseframe.endpoint.SampleEndpoint;
+import uk.gov.ons.ctp.response.caseframe.endpoint.SurveyEndpoint;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseEventDTO;
 
 /**
@@ -20,6 +34,15 @@ import uk.gov.ons.ctp.response.caseframe.representation.CaseEventDTO;
 @EnableAsync
 public class CaseFrameSvcApplication {
 
+  @Autowired
+  private AppConfig appConfig;
+  
+  @Bean
+  public RestClient caseFrameClient () {
+    RestClient restHelper = new RestClient (appConfig.getActionSvc().getScheme(), appConfig.getActionSvc().getHost(), appConfig.getActionSvc().getPort());
+    return restHelper;
+  }
+  
   /**
    * The JerseyConfig class used to config the JAX RS implementation.
    */
