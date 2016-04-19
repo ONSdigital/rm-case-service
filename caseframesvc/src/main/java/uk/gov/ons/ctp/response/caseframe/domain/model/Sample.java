@@ -38,10 +38,11 @@ public class Sample implements Serializable {
   @Column(name = "sampleid")
   private Integer sampleId;
 
-  private String sampleName;
+  private String name;
 
   private String description;
 
+  @Column(name="addresscriteria")
   private String addressCriteria;
 
   @Column(name = "casetypeid")

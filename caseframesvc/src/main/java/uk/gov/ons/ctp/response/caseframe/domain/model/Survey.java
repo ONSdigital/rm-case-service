@@ -30,7 +30,7 @@ public class Survey implements Serializable {
   @Column(name = "surveyid")
   private Integer surveyid;
 
-  private String surveyName;
+  private String name;
 
   private String description;
 

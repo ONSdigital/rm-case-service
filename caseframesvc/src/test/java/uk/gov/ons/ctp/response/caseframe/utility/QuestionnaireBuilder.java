@@ -67,7 +67,7 @@ public final class QuestionnaireBuilder {
     questionnaire.setQuestionnaireId(this.id);
     questionnaire.setIac(this.iac);
     questionnaire.setCaseId(this.caseid);
-    questionnaire.setQuestionnaireStatus(QUESTIONNAIRE_STATUS);
+    questionnaire.setStatus(QUESTIONNAIRE_STATUS);
     questionnaire.setQuestionSet(QUESTIONNAIRE_SET);
     questionnaire.setDispatchDateTime(QUESTIONNAIRE_DISPATCHDATE_TIMESTAMP);
     questionnaire.setReceiptDateTime(QUESTIONNAIRE_RECEIPTDATE_TIMESTAMP);

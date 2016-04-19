@@ -33,13 +33,15 @@ public class Case implements Serializable {
 
   private Integer uprn;
 
-  private String caseStatus;
+  private String status;
 
   @Column(name = "casetypeid")
   private Integer caseTypeId;
 
+  @Column(name = "createddatetime")
   private Timestamp createdDatetime;
 
+  @Column(name="createdby")
   private String createdBy;
 
   @Column(name = "sampleid")
