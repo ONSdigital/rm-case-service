@@ -33,10 +33,10 @@ public class CaseEvent implements Serializable {
 
   private String description;
 
-  @Column(name = "created_by")
+  @Column(name = "createdby")
   private String createdBy;
 
-  @Column(name = "created_datetime")
+  @Column(name = "createddatetime")
   private Timestamp createdDateTime;
 
   private String category;

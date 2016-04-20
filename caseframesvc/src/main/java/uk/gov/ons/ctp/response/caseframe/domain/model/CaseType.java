@@ -30,8 +30,7 @@ public class CaseType implements Serializable {
   @Column(name = "casetypeid")
   private Integer caseTypeId;
 
-  @Column(name = "casetype_name")
-  private String caseTypeName;
+  private String name;
 
   private String description;
 

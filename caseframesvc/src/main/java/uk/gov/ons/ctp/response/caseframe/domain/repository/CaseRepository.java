@@ -31,6 +31,6 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
    * @return the number of cases updated
    */
   @Modifying
-  @Query(value = "UPDATE caseframe.case SET case_status = ?1 WHERE caseid = ?2", nativeQuery = true)
+  @Query(value = "UPDATE caseframe.case SET status = ?1 WHERE caseid = ?2", nativeQuery = true)
   int setStatusFor(String status, Integer caseid);
 }

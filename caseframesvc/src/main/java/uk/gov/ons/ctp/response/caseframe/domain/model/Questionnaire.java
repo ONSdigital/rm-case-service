@@ -34,15 +34,15 @@ public class Questionnaire implements Serializable {
   @Column(name = "caseid")
   private Integer caseId;
 
-  private String questionnaireStatus;
+  private String status;
 
-  @Column(name = "dispatch_datetime")
+  @Column(name = "dispatchdatetime")
   private Timestamp dispatchDateTime;
 
-  @Column(name = "response_datetime")
+  @Column(name = "responsedatetime")
   private Timestamp responseDateTime;
 
-  @Column(name = "receipt_datetime")
+  @Column(name = "receiptdatetime")
   private Timestamp receiptDateTime;
 
   @Column(name = "questionset")

@@ -38,6 +38,7 @@ public class CaseFrameBeanMapper extends ConfigurableMapper {
 
     factory
         .classMap(Case.class, CaseDTO.class)
+        .field("status", "caseStatus")
         .byDefault()
         .register();
 
@@ -48,6 +49,7 @@ public class CaseFrameBeanMapper extends ConfigurableMapper {
 
     factory
         .classMap(CaseType.class, CaseTypeDTO.class)
+        .field("name", "caseTypeName")
         .byDefault()
         .register();
 
@@ -69,6 +71,7 @@ public class CaseFrameBeanMapper extends ConfigurableMapper {
 
     factory
         .classMap(Questionnaire.class, QuestionnaireDTO.class)
+        .field("status", "questionnaireStatus")
         .byDefault()
         .register();
 
@@ -86,11 +89,13 @@ public class CaseFrameBeanMapper extends ConfigurableMapper {
 
     factory
         .classMap(Sample.class, SampleDTO.class)
+        .field("name", "sampleName")
         .byDefault()
         .register();
 
     factory
         .classMap(Survey.class, SurveyDTO.class)
+        .field("name", "surveyName")
         .byDefault()
         .register();
 
