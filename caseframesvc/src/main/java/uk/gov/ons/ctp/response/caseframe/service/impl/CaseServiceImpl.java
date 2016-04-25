@@ -111,14 +111,9 @@ public final class CaseServiceImpl implements CaseService {
       Category category = categoryRepo.findByName(categoryName);
       Boolean closeCase = category.getCloseCase();
       log.debug("closeCase = {}", closeCase);
-      if (closeCase != null && closeCase.booleanValue()) {
-        caseRepo.setStatusFor(QuestionnaireServiceImpl.CLOSED, parentCaseId);
-        log.debug("parent case marked closed");
-        List<Questionnaire> associatedQuestionnaires = questionnaireRepo.findByCaseId(parentCaseId);
-        for (Questionnaire questionnaire : associatedQuestionnaires) {
-          questionnaireRepo.setResponseDatetimeFor(currentTime, questionnaire.getQuestionnaireId());
-        }
-        log.debug("all associatedQuestionnaires marked closed");
+      
+      if (closeCase != null && closeCase.booleanValue()) {  
+    	  closeCase(parentCaseId);
       }
 
       postAction(category, parentCaseId, caseEvent);
@@ -126,6 +121,23 @@ public final class CaseServiceImpl implements CaseService {
     }
 
     return result;
+  }
+  
+  /**
+   * Close the Case
+   * @param caseId Integer case ID
+   */
+  private void closeCase(int caseId) {
+	  
+	  Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+	  
+	  caseRepo.setStatusFor(QuestionnaireServiceImpl.CLOSED, caseId);
+      log.debug("parent case marked closed");
+      List<Questionnaire> associatedQuestionnaires = questionnaireRepo.findByCaseId(caseId);
+      for (Questionnaire questionnaire : associatedQuestionnaires) {
+        questionnaireRepo.setResponseDatetimeFor(currentTime, questionnaire.getQuestionnaireId());
+      }
+      log.debug("all associatedQuestionnaires marked closed");
   }
   
   /**
