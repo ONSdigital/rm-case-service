@@ -121,11 +121,26 @@ public final class CaseServiceImpl implements CaseService {
         log.debug("all associatedQuestionnaires marked closed");
       }
 
-      String actionType = category.getGeneratedActionType();
+      postAction(category, parentCaseId, caseEvent);
+      
+    }
+
+    return result;
+  }
+  
+  /**
+   * Make use of the ActionService to create and post a new Action for a given caseId according to Category actionType and CaseEvent createdBy values
+   * @param category Category containing action type
+   * @param caseId Integer caseId
+   * @param caseEvent CaseEvent containing createdBy detail
+   */
+  private void postAction(Category category, int caseId, CaseEvent caseEvent) {
+	  
+	  String actionType = category.getGeneratedActionType();
       log.debug("actionType = {}", actionType);
       if (actionType != null && !actionType.isEmpty()) {
         ActionDTO actionDTO = new ActionDTO();
-        actionDTO.setCaseId(parentCaseId);
+        actionDTO.setCaseId(caseId);
         actionDTO.setActionTypeName(actionType);
         actionDTO.setCreatedBy(caseEvent.getCreatedBy());
 
@@ -133,8 +148,5 @@ public final class CaseServiceImpl implements CaseService {
         actionSvcRestClient.postResource(appConfig.getActionSvc().getActionsPath(), actionDTO, ActionDTO.class);
         log.debug("returned successfully from the post to the Action SVC");
       }
-    }
-
-    return result;
   }
 }
