@@ -29,6 +29,14 @@ databaseChangeLog:
             path: caseframe_refactor_generate_cases.sql
             relativeToChangelogFile: true
             splitStatements: false
- 
 
+  - changeSet:
+      id: 8.15.1-4
+      author: Narinder
+      changes:
+        - sqlFile:
+            comment: Complete replacement of seed data
+            path: caseframe-seed-data.sql
+            relativeToChangelogFile: true
+            splitStatements: false
   
