@@ -567,7 +567,7 @@ paths:
     put:
       summary:  Confirms a response has been received in the Survey Data Exchange.
       description: |
-        For the given Questionnaire, it populates the response_datetime. It also populates case_status for the related Case.
+        For the given Questionnaire, it populates the response_datetime. It also populates case_state for the related Case.
       parameters:
         - name: Accept
           in: header
@@ -985,9 +985,9 @@ definitions:
       uprn:
         type: integer
         description: Unique Property Reference Number.
-      caseStatus:
+      caseState:
         type: string
-        description: Status of case.
+        description: State of case.
       caseTypeId:
         type: integer
         description: Case Type Id
@@ -1073,9 +1073,9 @@ definitions:
       caseId:
         type: integer
         description: Unique case identifier.
-      questionnaireStatus:
+      questionnaireState:
         type: string
-        description: Questionnaire status.
+        description: Questionnaire state.
       dispatchDateTime:
         type: string
         format: date-time
