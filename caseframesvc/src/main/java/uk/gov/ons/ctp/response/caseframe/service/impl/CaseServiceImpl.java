@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
+import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
+import uk.gov.ons.ctp.response.caseframe.config.ActionSvc;
 import uk.gov.ons.ctp.response.caseframe.config.AppConfig;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Case;
 import uk.gov.ons.ctp.response.caseframe.domain.model.CaseEvent;
@@ -63,7 +65,6 @@ public final class CaseServiceImpl implements CaseService {
   @Inject
   private CategoryRepository categoryRepo;
 
-
   @Override
   public List<Case> findCasesByUprn(final Integer uprn) {
     log.debug("Entering findCasesByUprn with uprn {}", uprn);
@@ -98,67 +99,85 @@ public final class CaseServiceImpl implements CaseService {
     log.debug("Entering createCaseEvent");
     CaseEvent result = null;
 
-    Integer parentCaseId = caseEvent.getCaseId();
-    Case parentCase = caseRepo.findOne(parentCaseId);
-    log.debug("parentCase = {}", parentCase);
-    if (parentCase != null) {
+    Integer caseId = caseEvent.getCaseId();
+    Case existingCase = caseRepo.findOne(caseId);
+    log.debug("existingCase = {}", existingCase);
+    if (existingCase != null) {
       Timestamp currentTime = new Timestamp(System.currentTimeMillis());
       caseEvent.setCreatedDateTime(currentTime);
       log.debug("about to create the caseEvent for {}", caseEvent);
-      result =  caseEventRepository.save(caseEvent);
+      result = caseEventRepository.save(caseEvent);
 
+      // determine if the Category in this CaseEvent indicates we should close
+      // cases
       String categoryName = caseEvent.getCategory();
       Category category = categoryRepo.findByName(categoryName);
       Boolean closeCase = category.getCloseCase();
       log.debug("closeCase = {}", closeCase);
-      
-      if (closeCase != null && closeCase.booleanValue()) {  
-    	  closeCase(parentCaseId);
-      }
 
-      postAction(category, parentCaseId, caseEvent);
-      
+      if (closeCase != null && closeCase.booleanValue()) {
+        closeCase(caseId);
+        cancelActions(caseId);
+      } else {
+        postAction(category, caseId, caseEvent);
+      }
     }
 
     return result;
   }
-  
+
   /**
    * Close the Case
+   * 
    * @param caseId Integer case ID
    */
   private void closeCase(int caseId) {
-	  
-	  Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-	  
-	  caseRepo.setStatusFor(QuestionnaireServiceImpl.CLOSED, caseId);
-      log.debug("parent case marked closed");
-      List<Questionnaire> associatedQuestionnaires = questionnaireRepo.findByCaseId(caseId);
-      for (Questionnaire questionnaire : associatedQuestionnaires) {
-        questionnaireRepo.setResponseDatetimeFor(currentTime, questionnaire.getQuestionnaireId());
-      }
-      log.debug("all associatedQuestionnaires marked closed");
+
+    Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+
+    caseRepo.setStatusFor(QuestionnaireServiceImpl.CLOSED, caseId);
+    log.debug("parent case marked closed");
+    List<Questionnaire> associatedQuestionnaires = questionnaireRepo.findByCaseId(caseId);
+    for (Questionnaire questionnaire : associatedQuestionnaires) {
+      questionnaireRepo.setResponseDatetimeFor(currentTime, questionnaire.getQuestionnaireId());
+    }
+    log.debug("all associatedQuestionnaires marked closed");
   }
-  
+
   /**
-   * Make use of the ActionService to create and post a new Action for a given caseId according to Category actionType and CaseEvent createdBy values
+   * Make use of the ActionService to create and post a new Action for a given
+   * caseId according to Category actionType and CaseEvent createdBy values
+   * 
    * @param category Category containing action type
    * @param caseId Integer caseId
    * @param caseEvent CaseEvent containing createdBy detail
    */
   private void postAction(Category category, int caseId, CaseEvent caseEvent) {
-	  
-	  String actionType = category.getGeneratedActionType();
-      log.debug("actionType = {}", actionType);
-      if (actionType != null && !actionType.isEmpty()) {
-        ActionDTO actionDTO = new ActionDTO();
-        actionDTO.setCaseId(caseId);
-        actionDTO.setActionTypeName(actionType);
-        actionDTO.setCreatedBy(caseEvent.getCreatedBy());
 
-        log.debug("about to post to the Action SVC with {}", actionDTO);
-        actionSvcRestClient.postResource(appConfig.getActionSvc().getActionsPath(), actionDTO, ActionDTO.class);
-        log.debug("returned successfully from the post to the Action SVC");
-      }
+    String actionType = category.getGeneratedActionType();
+    log.debug("actionType = {}", actionType);
+    if (actionType != null && !actionType.isEmpty()) {
+      ActionDTO actionDTO = new ActionDTO();
+      actionDTO.setCaseId(caseId);
+      actionDTO.setActionTypeName(actionType);
+      actionDTO.setCreatedBy(caseEvent.getCreatedBy());
+
+      log.debug("about to post to the Action SVC with {}", actionDTO);
+      actionSvcRestClient.postResource(appConfig.getActionSvc().getActionsPath(), actionDTO, ActionDTO.class);
+      log.debug("returned successfully from the post to the Action SVC");
+    }
+  }
+
+  /**
+   * Make use of the ActionService to cancel any Actions existing for a caseId
+   *
+   * @param caseId Integer caseId
+   */
+  private void cancelActions(int caseId) {
+
+    log.debug("about to post cancel actions to the Action SVC with {}", caseId);
+    actionSvcRestClient.postResource(appConfig.getActionSvc().getCancelActionsPath(), caseId, Integer.class);
+    log.debug("returned successfully from the post to the Action SVC");
+
   }
 }

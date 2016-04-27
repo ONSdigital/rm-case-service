@@ -90,4 +90,5 @@ action-svc:
   host: localhost
   port: 8151
   actions-path: /actions
+  cancel-actions-path: /actions/case/{caseid}/cancel
   

@@ -5,14 +5,19 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.validation.Valid;
 
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.annotation.Propagation;
 
 import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.MapperFacade;
+import uk.gov.ons.ctp.response.caseframe.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Questionnaire;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.QuestionnaireRepository;
+import uk.gov.ons.ctp.response.caseframe.representation.CaseEventDTO;
+import uk.gov.ons.ctp.response.caseframe.service.CaseService;
 import uk.gov.ons.ctp.response.caseframe.service.QuestionnaireService;
 
 /**
@@ -33,6 +38,11 @@ public final class QuestionnaireServiceImpl implements QuestionnaireService {
    */
   public static final String CLOSED = "CLOSED";
   private static final int TRANSACTION_TIMEOUT = 30;
+  
+  /**
+   * Questionnaire category name as expected in the Category table
+   */
+  private static final String QUESTIONNAIRE_CATEGORY = "QuestionnareResponse";
 
   /**
    * Spring Data Repository for Case entities.
@@ -40,6 +50,15 @@ public final class QuestionnaireServiceImpl implements QuestionnaireService {
   @Inject
   private CaseRepository caseRepo;
 
+  /**
+   * Spring Data Repository for Case service.
+   */
+  @Inject
+  private CaseService caseService;
+  
+  @Inject
+  private MapperFacade mapperFacade;
+  
   /**
    * Spring Data Repository for Questionnaire Entities.
    */
@@ -86,12 +105,24 @@ public final class QuestionnaireServiceImpl implements QuestionnaireService {
       return null;
     }
     int nbOfUpdatedQuestionnaires = questionnaireRepo.setResponseDatetimeFor(currentTime, questionnaireId);
-    int nbOfUpdatedCases = caseRepo.setStatusFor(CLOSED, questionnaire.getCaseId());
-    if (!(nbOfUpdatedQuestionnaires == 1 && nbOfUpdatedCases == 1)) {
-      log.error("{} {} - nbOfUpdatedQuestionnaires = {} - nbOfUpdatedCases = {}", OPERATION_FAILED, questionnaireId,
-          nbOfUpdatedQuestionnaires, nbOfUpdatedCases);
-      return null;
-    }
+    
+    // CTPA-295 development  - create CaseEvent for cancelling Action and closing Case
+    int caseId = questionnaire.getCaseId();
+    CaseEventDTO caseEventDTO = new CaseEventDTO();
+    caseEventDTO.setCaseId(caseId);
+    CaseEvent caseEvent = mapperFacade.map(caseEventDTO, CaseEvent.class);
+    caseEvent.setCategory(QUESTIONNAIRE_CATEGORY);
+    caseService.createCaseEvent(caseEvent);
+    //
+    
+//    int nbOfUpdatedCases = caseRepo.setStatusFor(CLOSED, questionnaire.getCaseId());
+//    if (!(nbOfUpdatedQuestionnaires == 1 && nbOfUpdatedCases == 1)) {
+//      log.error("{} {} - nbOfUpdatedQuestionnaires = {} - nbOfUpdatedCases = {}", OPERATION_FAILED, questionnaireId,
+//          nbOfUpdatedQuestionnaires, nbOfUpdatedCases);
+//      return null;
+//    }
+    
+    
     return questionnaire;
   }
 }
