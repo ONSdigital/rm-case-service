@@ -391,6 +391,41 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  /cases/actionplan/{actionPlanId}:
+    get:
+      summary: Get the case IDs for the specified action plan.
+      description: Lists all case IDs for an action plan's cases, optionally filtered by case state.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json
+          required: false
+          type: string
+        - in: path
+          name: actionPlanId
+          description: Unique action plan ID
+          required: true
+          type: integer
+        - name: state
+          in: query
+          description: Case state to filter by
+          required: false
+          type: string
+      tags:
+        - Response
+      responses:
+        200:
+          description: Cases found
+          schema:
+            type: array
+            items:
+              type: integer
+        204:
+          description: No cases
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
   /cases/{caseid}/events:
     get:
       summary:  Get the events that occurred on a specified case.
