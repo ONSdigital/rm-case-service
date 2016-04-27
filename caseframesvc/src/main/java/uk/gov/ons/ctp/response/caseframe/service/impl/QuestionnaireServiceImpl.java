@@ -90,10 +90,11 @@ public final class QuestionnaireServiceImpl implements QuestionnaireService {
   }
 
   /**
-   * Update a Questionnaire and Case object to record a response has been
-   * received in the Survey Data Exchange.
+   * Update a Questionnaire to record a response has been
+   * received in the Survey Data Exchange. 
+   * Process a CaseEvent object for this event.
    *
-   * @param questionnaireId Unique Id of questionnaire
+   * @param questionnaireId Integer Unique Id of questionnaire
    * @return Updated Questionnaire object or null
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
@@ -106,23 +107,22 @@ public final class QuestionnaireServiceImpl implements QuestionnaireService {
     }
     int nbOfUpdatedQuestionnaires = questionnaireRepo.setResponseDatetimeFor(currentTime, questionnaireId);
     
-    // CTPA-295 development  - create CaseEvent for cancelling Action and closing Case
-    int caseId = questionnaire.getCaseId();
-    CaseEventDTO caseEventDTO = new CaseEventDTO();
-    caseEventDTO.setCaseId(caseId);
-    CaseEvent caseEvent = mapperFacade.map(caseEventDTO, CaseEvent.class);
-    caseEvent.setCategory(QUESTIONNAIRE_CATEGORY);
-    caseService.createCaseEvent(caseEvent);
-    //
+    CaseEvent cancelCaseEvent = null;
+    if (nbOfUpdatedQuestionnaires == 1) {
+   // create CaseEvent for cancelling Action and closing Case
+      CaseEventDTO caseEventDTO = new CaseEventDTO();
+      caseEventDTO.setCaseId(questionnaire.getCaseId());
+      CaseEvent caseEvent = mapperFacade.map(caseEventDTO, CaseEvent.class);
+      caseEvent.setCategory(QUESTIONNAIRE_CATEGORY);
+      cancelCaseEvent = caseService.createCaseEvent(caseEvent);  
+    }
     
-//    int nbOfUpdatedCases = caseRepo.setStatusFor(CLOSED, questionnaire.getCaseId());
-//    if (!(nbOfUpdatedQuestionnaires == 1 && nbOfUpdatedCases == 1)) {
-//      log.error("{} {} - nbOfUpdatedQuestionnaires = {} - nbOfUpdatedCases = {}", OPERATION_FAILED, questionnaireId,
-//          nbOfUpdatedQuestionnaires, nbOfUpdatedCases);
-//      return null;
-//    }
-    
-    
-    return questionnaire;
+    if (cancelCaseEvent == null){
+      return null;
+    }
+    else {
+      return questionnaire; 
+    }
+     
   }
 }
