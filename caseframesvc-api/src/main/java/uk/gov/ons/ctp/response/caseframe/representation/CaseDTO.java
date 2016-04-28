@@ -14,12 +14,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class CaseDTO {
+  
+  public enum CaseState {
+    INIT, CLOSED;
+  }
 
   private Integer caseId;
 
   private Integer uprn;
 
-  private String caseStatus;
+  private CaseState caseStatus;
 
   private Integer caseTypeId;
 

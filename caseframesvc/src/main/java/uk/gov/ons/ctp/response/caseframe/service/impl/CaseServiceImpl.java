@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.caseframe.service.impl;
 
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +59,7 @@ public final class CaseServiceImpl implements CaseService {
    * Spring Data Repository for CaseEvent Entities.
    */
   @Inject
-  private CaseEventRepository caseEventRepository;
+  private CaseEventRepository caseEventRepo;
 
   /**
    * Spring Data Repository for Category Entities.
@@ -89,9 +90,16 @@ public final class CaseServiceImpl implements CaseService {
   }
 
   @Override
+  public List<BigInteger> findCaseIdsByStatusAndActionPlanId(final String caseStatus, final Integer actionPlanId) {
+    log.debug("Entering findCaseByStatusAndActionPlanId");
+    String statusParam = (caseStatus == null) ? "%" : caseStatus;
+    return caseRepo.findCaseIdsByStatusAndActionPlanId(statusParam, actionPlanId);
+  }
+  
+  @Override
   public List<CaseEvent> findCaseEventsByCaseId(final Integer caseId) {
     log.debug("Entering findCaseEventsByCaseId");
-    return caseEventRepository.findByCaseIdOrderByCreatedDateTimeDesc(caseId);
+    return caseEventRepo.findByCaseIdOrderByCreatedDateTimeDesc(caseId);
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
@@ -107,8 +115,7 @@ public final class CaseServiceImpl implements CaseService {
       Timestamp currentTime = new Timestamp(System.currentTimeMillis());
       caseEvent.setCreatedDateTime(currentTime);
       log.debug("about to create the caseEvent for {}", caseEvent);
-      result = caseEventRepository.save(caseEvent);
-
+      result =  caseEventRepo.save(caseEvent);
       // determine if the Category in this CaseEvent indicates we should close
       // cases
       String categoryName = caseEvent.getCategory();
