@@ -18,6 +18,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import uk.gov.ons.ctp.common.rest.RestClient;
+import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.caseframe.config.ActionSvc;
 import uk.gov.ons.ctp.response.caseframe.config.AppConfig;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Case;
@@ -155,8 +156,10 @@ public class CaseServiceImplTest {
     actionSvc.setCancelActionsPath(ACTIONSVC_CANCEL_ACTIONS_PATH);
     Mockito.when(appConfig.getActionSvc()).thenReturn(actionSvc);
     
-    Mockito.when(actionSvcRestClient.postResource(ACTIONSVC_CANCEL_ACTIONS_PATH, EXISTING_PARENT_CASE_ID, Integer.class)).thenReturn(1);
-    
+    ActionDTO actionDTO = new ActionDTO();
+    actionDTO.setCaseId(EXISTING_PARENT_CASE_ID);
+    Mockito.when(actionSvcRestClient.putResource(ACTIONSVC_CANCEL_ACTIONS_PATH, null, ActionDTO.class, EXISTING_PARENT_CASE_ID)).thenReturn(actionDTO);
+
     CaseEvent result = caseService.createCaseEvent(caseEvent);
     verify(caseRepo).findOne(EXISTING_PARENT_CASE_ID);
     verify(categoryRepo).findByName(CASEEVENT_CATEGORY);
@@ -165,7 +168,7 @@ public class CaseServiceImplTest {
     verify(questionnaireRepo).setResponseDatetimeFor(any(Timestamp.class), any(Integer.class));
     verify(caseEventRepository).save(caseEvent);
     verify(appConfig).getActionSvc();
-    verify(actionSvcRestClient).postResource(ACTIONSVC_CANCEL_ACTIONS_PATH, EXISTING_PARENT_CASE_ID, Integer.class);
+    verify(actionSvcRestClient).putResource(ACTIONSVC_CANCEL_ACTIONS_PATH, null, ActionDTO.class, EXISTING_PARENT_CASE_ID);
     assertEquals(caseEvent, result);
   }
 }
