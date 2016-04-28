@@ -422,6 +422,10 @@ paths:
               type: integer
         204:
           description: No cases
+        404:
+          description: Action plan not found
+          schema:
+            $ref: '#/definitions/Error'          
         default:
           description: Unexpected error
           schema:
