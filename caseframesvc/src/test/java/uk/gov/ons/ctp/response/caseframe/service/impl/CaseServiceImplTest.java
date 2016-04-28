@@ -17,8 +17,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-<<<<<<< HEAD
-=======
 import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.response.caseframe.config.ActionSvc;
 import uk.gov.ons.ctp.response.caseframe.config.AppConfig;
@@ -31,18 +29,6 @@ import uk.gov.ons.ctp.response.caseframe.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.QuestionnaireRepository;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseDTO;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 
 /**
  * Created by philippe.brossier on 3/31/16.
