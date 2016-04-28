@@ -18,7 +18,7 @@ import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.C
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CASEEVENT_DESC3;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CASEID;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CASE_QUESTIONSET;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CASE_STATUS;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CASE_STATE;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CASE_SURVEYID;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CREATEDBY;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CREATEDDATE_VALUE;
@@ -68,7 +68,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.OK)
         .assertArrayLengthInBodyIs(3)
         .assertIntegerOccursThroughoutListInBody("$..uprn", UPRN)
-        .assertStringOccursThroughoutListInBody("$..caseStatus", CASE_STATUS)
+        .assertStringOccursThroughoutListInBody("$..caseStatus", CASE_STATE.name())
         .assertIntegerListInBody("$..caseTypeId", CASE1_TYPEID, CASE2_TYPEID, CASE3_TYPEID)
         .assertStringOccursThroughoutListInBody("$..createdDatetime", CREATEDDATE_VALUE)
         .assertStringOccursThroughoutListInBody("$..createdBy", CREATEDBY)
@@ -98,7 +98,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
     with("http://localhost:9998/cases/questionnaire/%s", QUESTIONNAIREID)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerInBody("$.uprn", UPRN)
-        .assertStringInBody("$.caseStatus", CASE_STATUS)
+        .assertStringInBody("$.caseStatus", CASE_STATE.name())
         .assertIntegerInBody("$.caseTypeId", CASE1_TYPEID)
         .assertStringInBody("$.createdDatetime", CREATEDDATE_VALUE)
         .assertStringInBody("$.createdBy", CREATEDBY)
@@ -130,7 +130,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
     with("http://localhost:9998/cases/%s", CASEID)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerInBody("$.uprn", UPRN)
-        .assertStringInBody("$.caseStatus", CASE_STATUS)
+        .assertStringInBody("$.caseStatus", CASE_STATE.name())
         .assertIntegerInBody("$.caseTypeId", CASE1_TYPEID)
         .assertStringInBody("$.createdDatetime", CREATEDDATE_VALUE)
         .assertStringInBody("$.createdBy", CREATEDBY)

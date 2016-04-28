@@ -1,14 +1,16 @@
 package uk.gov.ons.ctp.response.caseframe.domain.repository;
 
+import java.math.BigInteger;
+import java.util.List;
+
+import javax.inject.Named;
+import javax.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import uk.gov.ons.ctp.response.caseframe.domain.model.Case;
-
-import javax.inject.Named;
-import javax.transaction.Transactional;
-import java.util.List;
 
 /**
  * JPA Data Repository.
@@ -16,6 +18,15 @@ import java.util.List;
 @Named
 @Transactional
 public interface CaseRepository extends JpaRepository<Case, Integer> {
+
+  /**
+   * find the Cases by Status and ActionPlanId
+   * @param status case status to find by
+   * @param actionPlanId actionPlan id to find by
+   * @return the cases found
+   */
+  @Query(value = "SELECT caseId FROM caseframe.case WHERE status LIKE ?1 AND actionplanid = ?2", nativeQuery = true)
+  List<BigInteger> findCaseIdsByStatusAndActionPlanId(String status, Integer actionPlanId);
 
   /**
    * find the Case by uprn.

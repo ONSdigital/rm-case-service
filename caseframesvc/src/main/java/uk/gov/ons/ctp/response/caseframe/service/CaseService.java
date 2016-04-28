@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.caseframe.service;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import uk.gov.ons.ctp.common.service.CTPService;
@@ -27,6 +28,15 @@ public interface CaseService extends CTPService {
    * @return Case object or null
    */
   Case findCaseByQuestionnaireId(Integer qid);
+
+  /**
+   * Find Case entity by status and actionplanid
+   *
+   * @param status the case status to find by
+   * @param actionPlanId id of the action plan to find by
+   * @return all the matching cases
+   */
+  List<BigInteger> findCaseIdsByStatusAndActionPlanId(String status, Integer actionPlanId);
 
   /**
    * Find Case entity by unique Id.

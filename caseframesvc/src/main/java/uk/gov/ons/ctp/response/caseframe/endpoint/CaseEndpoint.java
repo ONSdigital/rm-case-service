@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.caseframe.endpoint;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -9,6 +10,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 import org.springframework.util.CollectionUtils;
 
@@ -86,6 +88,22 @@ public final class CaseEndpoint implements CTPEndpoint {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Case not found for id %s", caseId);
     }
     return mapperFacade.map(caseObj, CaseDTO.class);
+  }
+
+  /**
+   * the GET endpoint to find case events by status and actionplanid
+   *
+   * @param status the case status to find by
+   * @param actionplanid the id of the action plan to find by
+   * @return the cases found
+   * @throws CTPException something went wrong
+   */
+  @GET
+  @Path("/actionplan/{actionplanid}")
+  public List<BigInteger> findCaseIdsByStatusAndActionPlan(@QueryParam("status") final String status, @PathParam("actionplanid") final Integer actionPlanId) throws CTPException {
+    log.debug("Entering findCasesByStatusAndActionPlan with {} and {}", status, actionPlanId);
+    List<BigInteger> caseIds = caseService.findCaseIdsByStatusAndActionPlanId(status, actionPlanId);
+    return caseIds;
   }
 
   /**

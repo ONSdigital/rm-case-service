@@ -1,11 +1,22 @@
 package uk.gov.ons.ctp.response.caseframe.service.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+
 import uk.gov.ons.ctp.response.caseframe.domain.model.Case;
 import uk.gov.ons.ctp.response.caseframe.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Category;
@@ -14,16 +25,7 @@ import uk.gov.ons.ctp.response.caseframe.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.QuestionnaireRepository;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import uk.gov.ons.ctp.response.caseframe.representation.CaseDTO;
 
 /**
  * Created by philippe.brossier on 3/31/16.
@@ -56,7 +58,7 @@ public class CaseServiceImplTest {
 
   private static final Integer CASE_UPRN = 1;
   private static final Integer CASE_TYPEID = 1;
-  private static final String CASE_STATUS = "caseStatus";
+  private static final CaseDTO.CaseState CASE_STATE = CaseDTO.CaseState.INIT;
   private static final String CASE_CREATEDBY = "unit test";
   private static final String CASE_QUESTIONSET = "case question set";
   private static final Integer CASE_SAMPLEID = 1;
@@ -94,7 +96,7 @@ public class CaseServiceImplTest {
   public void testCreateCaseEventParentCaseFoundAndCloseCaseAtFalseAndEmptyActiontype() {
     Timestamp currentTime = new Timestamp(System.currentTimeMillis());
 
-    Case parentCase = new Case(EXISTING_PARENT_CASE_ID, CASE_UPRN, CASE_STATUS, CASE_TYPEID, currentTime,
+    Case parentCase = new Case(EXISTING_PARENT_CASE_ID, CASE_UPRN, CASE_STATE, CASE_TYPEID, currentTime,
         CASE_CREATEDBY, CASE_SAMPLEID, CASE_ACTIONPLANID, CASE_SURVEYID, CASE_QUESTIONSET);
     Mockito.when(caseRepo.findOne(EXISTING_PARENT_CASE_ID)).thenReturn(parentCase);
 
@@ -119,7 +121,7 @@ public class CaseServiceImplTest {
   public void testCreateCaseEventParentCaseFoundAndCloseCaseAtTrueAndEmptyActiontype() {
     Timestamp currentTime = new Timestamp(System.currentTimeMillis());
 
-    Case parentCase = new Case(EXISTING_PARENT_CASE_ID, CASE_UPRN, CASE_STATUS, CASE_TYPEID, currentTime,
+    Case parentCase = new Case(EXISTING_PARENT_CASE_ID, CASE_UPRN, CASE_STATE, CASE_TYPEID, currentTime,
         CASE_CREATEDBY, CASE_SAMPLEID, CASE_ACTIONPLANID, CASE_SURVEYID, CASE_QUESTIONSET);
     Mockito.when(caseRepo.findOne(EXISTING_PARENT_CASE_ID)).thenReturn(parentCase);
 

@@ -5,6 +5,8 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -13,6 +15,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uk.gov.ons.ctp.response.caseframe.representation.CaseDTO;
 
 /**
  * Domain model object.
@@ -33,7 +36,8 @@ public class Case implements Serializable {
 
   private Integer uprn;
 
-  private String status;
+  @Enumerated(EnumType.STRING)
+  private CaseDTO.CaseState status;
 
   @Column(name = "casetypeid")
   private Integer caseTypeId;

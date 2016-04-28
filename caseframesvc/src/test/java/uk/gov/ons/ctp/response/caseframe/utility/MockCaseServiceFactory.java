@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.caseframe.utility;
 
+import static org.mockito.Matchers.any;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,9 +13,8 @@ import org.mockito.stubbing.Answer;
 
 import uk.gov.ons.ctp.response.caseframe.domain.model.Case;
 import uk.gov.ons.ctp.response.caseframe.domain.model.CaseEvent;
+import uk.gov.ons.ctp.response.caseframe.representation.CaseDTO;
 import uk.gov.ons.ctp.response.caseframe.service.CaseService;
-
-import static org.mockito.Matchers.any;
 
 /**
  * Mock CaseService response HK2 JSE JSR-330 dependency injection factory
@@ -21,7 +22,7 @@ import static org.mockito.Matchers.any;
 public final class MockCaseServiceFactory implements Factory<CaseService> {
 
   public static final Integer UPRN = 2000062760;
-  public static final String CASE_STATUS = "INIT";
+  public static final CaseDTO.CaseState CASE_STATE = CaseDTO.CaseState.INIT;
   public static final Integer CASE1_TYPEID = 1;
   public static final Integer CASE2_TYPEID = 2;
   public static final Integer CASE3_TYPEID = 3;
@@ -62,11 +63,11 @@ public final class MockCaseServiceFactory implements Factory<CaseService> {
       public List<Case> answer(final InvocationOnMock invocation)
           throws Throwable {
         List<Case> result = new ArrayList<Case>();
-        result.add(new Case(1, UPRN, CASE_STATUS, CASE1_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY,
+        result.add(new Case(1, UPRN, CASE_STATE, CASE1_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY,
             CASE1_SAMPLEID, CASE1_ACTIONPLANID, CASE_SURVEYID, CASE_QUESTIONSET));
-        result.add(new Case(2, UPRN, CASE_STATUS, CASE2_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY,
+        result.add(new Case(2, UPRN, CASE_STATE, CASE2_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY,
             CASE2_SAMPLEID, CASE2_ACTIONPLANID, CASE_SURVEYID, CASE_QUESTIONSET));
-        result.add(new Case(3, UPRN, CASE_STATUS, CASE3_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY,
+        result.add(new Case(3, UPRN, CASE_STATE, CASE3_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY,
             CASE3_SAMPLEID, CASE3_ACTIONPLANID, CASE_SURVEYID, CASE_QUESTIONSET));
         return result;
       }
@@ -82,7 +83,7 @@ public final class MockCaseServiceFactory implements Factory<CaseService> {
     Mockito.when(mockedService.findCaseByQuestionnaireId(QUESTIONNAIREID)).thenAnswer(new Answer<Case>() {
       public Case answer(final InvocationOnMock invocation)
           throws Throwable {
-        return new Case(CASEID, UPRN, CASE_STATUS, CASE1_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY,
+        return new Case(CASEID, UPRN, CASE_STATE, CASE1_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY,
             CASE1_SAMPLEID, CASE1_ACTIONPLANID, CASE_SURVEYID, CASE_QUESTIONSET);
       }
     });
@@ -97,7 +98,7 @@ public final class MockCaseServiceFactory implements Factory<CaseService> {
     Mockito.when(mockedService.findCaseByCaseId(CASEID)).thenAnswer(new Answer<Case>() {
       public Case answer(final InvocationOnMock invocation)
           throws Throwable {
-        return new Case(CASEID, UPRN, CASE_STATUS, CASE1_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY,
+        return new Case(CASEID, UPRN, CASE_STATE, CASE1_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY,
             CASE1_SAMPLEID, CASE1_ACTIONPLANID, CASE_SURVEYID, CASE_QUESTIONSET);
       }
     });
