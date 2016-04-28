@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.caseframe.service.impl;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -174,9 +175,9 @@ public final class CaseServiceImpl implements CaseService {
    * @param caseId Integer caseId
    */
   private void cancelActions(int caseId) {
-
-    log.debug("about to post cancel actions to the Action SVC with {}", caseId);
-    actionSvcRestClient.postResource(appConfig.getActionSvc().getCancelActionsPath(), caseId, Integer.class);
+    
+    log.debug("about to put cancel actions to the Action SVC with {}", caseId);
+    actionSvcRestClient.putResource(appConfig.getActionSvc().getCancelActionsPath(), null, ActionDTO.class, caseId);
     log.debug("returned successfully from the post to the Action SVC");
 
   }
