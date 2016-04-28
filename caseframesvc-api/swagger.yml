@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Case Frame Service API
   description: Provide access to Address Frame and Response Management information
-  version: 8.13.0
+  version: 8.16.0
 schemes:
   - http
 basePath: /
@@ -391,6 +391,45 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  /cases/actionplan/{actionPlanId}:
+    get:
+      summary: Get the case IDs for the specified action plan.
+      description: Lists all case IDs for an action plan's cases, optionally filtered by case state.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json
+          required: false
+          type: string
+        - in: path
+          name: actionPlanId
+          description: Unique action plan ID
+          required: true
+          type: integer
+        - name: state
+          in: query
+          description: Case state to filter by
+          required: false
+          type: string
+      tags:
+        - Response
+      responses:
+        200:
+          description: Cases found
+          schema:
+            type: array
+            items:
+              type: integer
+        204:
+          description: No cases
+        404:
+          description: Action plan not found
+          schema:
+            $ref: '#/definitions/Error'          
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
   /cases/{caseid}/events:
     get:
       summary:  Get the events that occurred on a specified case.
@@ -532,7 +571,7 @@ paths:
     put:
       summary:  Confirms a response has been received in the Survey Data Exchange.
       description: |
-        For the given Questionnaire, it populates the response_datetime. It also populates case_status for the related Case.
+        For the given Questionnaire, it populates the response_datetime. It also populates case_state for the related Case.
       parameters:
         - name: Accept
           in: header
@@ -950,9 +989,9 @@ definitions:
       uprn:
         type: integer
         description: Unique Property Reference Number.
-      caseStatus:
+      caseState:
         type: string
-        description: Status of case.
+        description: State of case.
       caseTypeId:
         type: integer
         description: Case Type Id
@@ -1038,9 +1077,9 @@ definitions:
       caseId:
         type: integer
         description: Unique case identifier.
-      questionnaireStatus:
+      questionnaireState:
         type: string
-        description: Questionnaire status.
+        description: Questionnaire state.
       dispatchDateTime:
         type: string
         format: date-time

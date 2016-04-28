@@ -17,6 +17,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+<<<<<<< HEAD
+=======
+import uk.gov.ons.ctp.common.rest.RestClient;
+import uk.gov.ons.ctp.response.caseframe.config.ActionSvc;
+import uk.gov.ons.ctp.response.caseframe.config.AppConfig;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Case;
 import uk.gov.ons.ctp.response.caseframe.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Category;
@@ -26,6 +31,18 @@ import uk.gov.ons.ctp.response.caseframe.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.QuestionnaireRepository;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseDTO;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 /**
  * Created by philippe.brossier on 3/31/16.
@@ -45,6 +62,12 @@ public class CaseServiceImplTest {
   @Mock
   CategoryRepository categoryRepo;
 
+  @Mock
+  AppConfig appConfig;
+  
+  @Mock
+  RestClient actionSvcRestClient;
+  
   @InjectMocks
   CaseServiceImpl caseService;
 
@@ -77,6 +100,8 @@ public class CaseServiceImplTest {
   private static final String QUESTIONNAIRE_IAC = "A1B2C3";
   private static final String QUESTIONNAIRE_STATUS = "quest status";
   private static final String QUESTIONNAIRE_QUESTIONSET = "question set";
+  
+  private static final String ACTIONSVC_CANCEL_ACTIONS_PATH = "actions/case/123/cancel";
 
   @Test
   public void testCreateCaseEventNoParentCase() {
@@ -119,6 +144,7 @@ public class CaseServiceImplTest {
 
   @Test
   public void testCreateCaseEventParentCaseFoundAndCloseCaseAtTrueAndEmptyActiontype() {
+    
     Timestamp currentTime = new Timestamp(System.currentTimeMillis());
 
     Case parentCase = new Case(EXISTING_PARENT_CASE_ID, CASE_UPRN, CASE_STATE, CASE_TYPEID, currentTime,
@@ -139,6 +165,12 @@ public class CaseServiceImplTest {
         currentTime, CASEEVENT_CATEGORY, CASEEVENT_SUBCATEGORY);
     Mockito.when(caseEventRepository.save(caseEvent)).thenReturn(caseEvent);
 
+    ActionSvc actionSvc = new ActionSvc();
+    actionSvc.setCancelActionsPath(ACTIONSVC_CANCEL_ACTIONS_PATH);
+    Mockito.when(appConfig.getActionSvc()).thenReturn(actionSvc);
+    
+    Mockito.when(actionSvcRestClient.postResource(ACTIONSVC_CANCEL_ACTIONS_PATH, EXISTING_PARENT_CASE_ID, Integer.class)).thenReturn(1);
+    
     CaseEvent result = caseService.createCaseEvent(caseEvent);
     verify(caseRepo).findOne(EXISTING_PARENT_CASE_ID);
     verify(categoryRepo).findByName(CASEEVENT_CATEGORY);
@@ -146,6 +178,8 @@ public class CaseServiceImplTest {
     verify(questionnaireRepo).findByCaseId(EXISTING_PARENT_CASE_ID);
     verify(questionnaireRepo).setResponseDatetimeFor(any(Timestamp.class), any(Integer.class));
     verify(caseEventRepository).save(caseEvent);
+    verify(appConfig).getActionSvc();
+    verify(actionSvcRestClient).postResource(ACTIONSVC_CANCEL_ACTIONS_PATH, EXISTING_PARENT_CASE_ID, Integer.class);
     assertEquals(caseEvent, result);
   }
 }
