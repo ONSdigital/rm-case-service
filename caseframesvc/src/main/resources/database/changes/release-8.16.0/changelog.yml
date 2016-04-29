@@ -1,0 +1,20 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 8.16.0-1
+      author: narinderb
+      changes:
+        - sqlFile:
+            comment: rename status on questionnaire and case to state
+            path: rename_status_to_case.sql
+            relativeToChangelogFile: true
+
+  - changeSet:
+      id: 8.16.0-2
+      author: narinderb
+      changes:
+        - sqlFile:
+            comment: new category field for Undeliverable
+            path: append_category_seed_data.sql
+            relativeToChangelogFile: true
+
