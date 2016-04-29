@@ -38,7 +38,7 @@ public class CaseFrameBeanMapper extends ConfigurableMapper {
 
     factory
         .classMap(Case.class, CaseDTO.class)
-        .field("status", "caseStatus")
+        .field("status", "state")
         .byDefault()
         .register();
 
