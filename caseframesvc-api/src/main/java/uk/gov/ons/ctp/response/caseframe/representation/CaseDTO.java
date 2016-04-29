@@ -23,7 +23,7 @@ public class CaseDTO {
 
   private Integer uprn;
 
-  private CaseState caseStatus;
+  private CaseState state;
 
   private Integer caseTypeId;
 
