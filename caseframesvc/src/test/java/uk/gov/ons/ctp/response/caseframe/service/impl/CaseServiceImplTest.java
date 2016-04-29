@@ -158,7 +158,9 @@ public class CaseServiceImplTest {
     
     ActionDTO actionDTO = new ActionDTO();
     actionDTO.setCaseId(EXISTING_PARENT_CASE_ID);
-    Mockito.when(actionSvcRestClient.putResource(ACTIONSVC_CANCEL_ACTIONS_PATH, null, ActionDTO.class, EXISTING_PARENT_CASE_ID)).thenReturn(actionDTO);
+    ActionDTO[] actionDTOList = new ActionDTO[1]; 
+    actionDTOList[0] = actionDTO;  
+    Mockito.when(actionSvcRestClient.putResource(ACTIONSVC_CANCEL_ACTIONS_PATH, null, ActionDTO[].class, EXISTING_PARENT_CASE_ID)).thenReturn(actionDTOList);
 
     CaseEvent result = caseService.createCaseEvent(caseEvent);
     verify(caseRepo).findOne(EXISTING_PARENT_CASE_ID);
@@ -168,7 +170,7 @@ public class CaseServiceImplTest {
     verify(questionnaireRepo).setResponseDatetimeFor(any(Timestamp.class), any(Integer.class));
     verify(caseEventRepository).save(caseEvent);
     verify(appConfig).getActionSvc();
-    verify(actionSvcRestClient).putResource(ACTIONSVC_CANCEL_ACTIONS_PATH, null, ActionDTO.class, EXISTING_PARENT_CASE_ID);
+    verify(actionSvcRestClient).putResource(ACTIONSVC_CANCEL_ACTIONS_PATH, null, ActionDTO[].class, EXISTING_PARENT_CASE_ID);
     assertEquals(caseEvent, result);
   }
 }

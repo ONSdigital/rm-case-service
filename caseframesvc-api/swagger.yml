@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Case Frame Service API
   description: Provide access to Address Frame and Response Management information
-  version: 8.16.0
+  version: 8.16.1
 schemes:
   - http
 basePath: /
@@ -425,7 +425,7 @@ paths:
         404:
           description: Action plan not found
           schema:
-            $ref: '#/definitions/Error'          
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
@@ -989,9 +989,13 @@ definitions:
       uprn:
         type: integer
         description: Unique Property Reference Number.
-      caseState:
+      state:
         type: string
         description: State of case.
+        default: INIT
+        enum:
+          - INIT
+          - CLOSED
       caseTypeId:
         type: integer
         description: Case Type Id
@@ -1077,7 +1081,7 @@ definitions:
       caseId:
         type: integer
         description: Unique case identifier.
-      questionnaireState:
+      state:
         type: string
         description: Questionnaire state.
       dispatchDateTime:
@@ -1113,7 +1117,7 @@ definitions:
       caseTypeId:
         type: integer
         description: Unique Id of case type.
-      caseTypeName:
+      name:
         type: string
         description: Name of case type.
       description:
@@ -1151,10 +1155,10 @@ definitions:
       sampleId:
         type: integer
         description: Unique Id of sample.
-      sampleName:
+      name:
         type: string
         description: Name of sample.
-      sampleDescription:
+      description:
         type: string
         description: Description of sample.
       addressCriteria:
@@ -1172,7 +1176,7 @@ definitions:
       surveyId:
         type: integer
         description: Unique Id of survey.
-      surveyName:
+      name:
         type: string
         description: Name of survey.
       description:

@@ -184,7 +184,7 @@ public final class CaseServiceImpl implements CaseService {
   private void cancelActions(int caseId) {
     
     log.debug("about to put cancel actions to the Action SVC with {}", caseId);
-    actionSvcRestClient.putResource(appConfig.getActionSvc().getCancelActionsPath(), null, ActionDTO.class, caseId);
+    actionSvcRestClient.putResource(appConfig.getActionSvc().getCancelActionsPath(), null, ActionDTO[].class, caseId);
     log.debug("returned successfully from the post to the Action SVC");
 
   }
