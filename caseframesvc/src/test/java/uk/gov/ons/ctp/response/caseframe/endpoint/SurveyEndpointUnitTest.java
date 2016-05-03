@@ -46,7 +46,7 @@ public final class SurveyEndpointUnitTest extends CTPJerseyTest {
     with("http://localhost:9998/surveys")
         .assertResponseCodeIs(HttpStatus.OK)
         .assertArrayLengthInBodyIs(4)
-        .assertStringListInBody("$..surveyName", SURVEY1_NAME, SURVEY2_NAME, SURVEY3_NAME, SURVEY4_NAME)
+        .assertStringListInBody("$..name", SURVEY1_NAME, SURVEY2_NAME, SURVEY3_NAME, SURVEY4_NAME)
         .assertStringListInBody("$..description", SURVEY1_DESC, SURVEY2_DESC, SURVEY3_DESC, SURVEY4_DESC)
         .andClose();
   }
@@ -59,7 +59,7 @@ public final class SurveyEndpointUnitTest extends CTPJerseyTest {
     with("http://localhost:9998/surveys/%s", SURVEYID)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerInBody("$.surveyid", 4)
-        .assertStringInBody("$.surveyName", SURVEY4_NAME)
+        .assertStringInBody("$.name", SURVEY4_NAME)
         .assertStringInBody("$.description", SURVEY4_DESC)
         .andClose();
   }

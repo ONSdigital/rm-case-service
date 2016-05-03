@@ -21,7 +21,7 @@ public class QuestionnaireDTO {
 
   private Integer caseId;
 
-  private String questionnaireStatus;
+  private String state;
 
   private Date dispatchDateTime;
 

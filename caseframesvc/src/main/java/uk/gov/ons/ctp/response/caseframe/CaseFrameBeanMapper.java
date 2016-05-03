@@ -38,7 +38,6 @@ public class CaseFrameBeanMapper extends ConfigurableMapper {
 
     factory
         .classMap(Case.class, CaseDTO.class)
-        .field("status", "state")
         .byDefault()
         .register();
 
@@ -49,29 +48,27 @@ public class CaseFrameBeanMapper extends ConfigurableMapper {
 
     factory
         .classMap(CaseType.class, CaseTypeDTO.class)
-        .field("name", "caseTypeName")
         .byDefault()
         .register();
 
     factory
         .classMap(LocalAuthority.class, LocalAuthorityDTO.class)
-        .field("lad12cd", "ladCode")
-        .field("lad12nm", "ladName")
+        .field("lad12cd", "code")
+        .field("lad12nm", "name")
         .field("rgn11cd", "regionCode")
         .byDefault()
         .register();
 
     factory
         .classMap(Msoa.class, MsoaDTO.class)
-        .field("msoa11cd", "msoaCode")
-        .field("msoa11nm", "msoaName")
+        .field("msoa11cd", "code")
+        .field("msoa11nm", "name")
         .field("lad12cd", "ladCode")
         .byDefault()
         .register();
 
     factory
         .classMap(Questionnaire.class, QuestionnaireDTO.class)
-        .field("status", "questionnaireStatus")
         .byDefault()
         .register();
 
@@ -82,20 +79,18 @@ public class CaseFrameBeanMapper extends ConfigurableMapper {
 
     factory
         .classMap(Region.class, RegionDTO.class)
-        .field("rgn11cd", "regionCode")
-        .field("rgn11nm", "regionName")
+        .field("rgn11cd", "code")
+        .field("rgn11nm", "name")
         .byDefault()
         .register();
 
     factory
         .classMap(Sample.class, SampleDTO.class)
-        .field("name", "sampleName")
         .byDefault()
         .register();
 
     factory
         .classMap(Survey.class, SurveyDTO.class)
-        .field("name", "surveyName")
         .byDefault()
         .register();
 

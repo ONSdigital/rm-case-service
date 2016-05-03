@@ -42,8 +42,8 @@ public final class MsoaEndpointUnitTest extends CTPJerseyTest {
   public void findByIdPositiveScenario() {
     with("http://localhost:9998/msoas/%s", MSOA_WITH_CODE_MSOA123)
         .assertResponseCodeIs(HttpStatus.OK)
-        .assertStringInBody("$.msoaCode", MSOA_WITH_CODE_MSOA123)
-        .assertStringInBody("$.msoaName", String.format("%s%s", MSOA_WITH_CODE_MSOA123, NAME))
+        .assertStringInBody("$.code", MSOA_WITH_CODE_MSOA123)
+        .assertStringInBody("$.name", String.format("%s%s", MSOA_WITH_CODE_MSOA123, NAME))
         .assertStringInBody("$.ladCode", LAD_FOR_MSOA123)
         .andClose();
   }
@@ -82,7 +82,7 @@ public final class MsoaEndpointUnitTest extends CTPJerseyTest {
     with("http://localhost:9998/msoas/%s/addresssummaries", MSOA_WITH_CODE_MSOA123)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertArrayLengthInBodyIs(2)
-        .assertStringListInBody("$..addressType", ADDRESS_SUMMARY1_TYPE, ADDRESS_SUMMARY2_TYPE)
+        .assertStringListInBody("$..type", ADDRESS_SUMMARY1_TYPE, ADDRESS_SUMMARY2_TYPE)
         .assertIntegerListInBody("$..uprn", new Integer(ADDRESS_SUMMARY1_UPRN.intValue()),
             new Integer(ADDRESS_SUMMARY2_UPRN.intValue()))
         .andClose();
@@ -98,7 +98,7 @@ public final class MsoaEndpointUnitTest extends CTPJerseyTest {
         .andClose();
   }
 
-  /**
+  /*ss
    * a test
    */
   @Test

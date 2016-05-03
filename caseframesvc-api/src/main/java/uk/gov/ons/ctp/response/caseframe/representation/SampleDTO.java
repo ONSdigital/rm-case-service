@@ -14,7 +14,7 @@ public class SampleDTO {
 
   private Integer sampleId;
 
-  private String sampleName;
+  private String name;
 
   private String description;
 

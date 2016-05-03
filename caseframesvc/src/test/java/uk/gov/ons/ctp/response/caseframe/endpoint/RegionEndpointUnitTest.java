@@ -48,8 +48,8 @@ public final class RegionEndpointUnitTest extends CTPJerseyTest {
     with("http://localhost:9998/regions")
         .assertResponseCodeIs(HttpStatus.OK)
         .assertArrayLengthInBodyIs(2)
-        .assertStringListInBody("$..regionCode", REGION1_CODE, REGION2_CODE)
-        .assertStringListInBody("$..regionName", REGION1_NAME, REGION2_NAME)
+        .assertStringListInBody("$..code", REGION1_CODE, REGION2_CODE)
+        .assertStringListInBody("$..name", REGION1_NAME, REGION2_NAME)
         .andClose();
   }
 
@@ -60,8 +60,8 @@ public final class RegionEndpointUnitTest extends CTPJerseyTest {
   public void findByIdPositiveScenario() {
     with("http://localhost:9998/regions/%s", REGION_WITH_CODE_REG123)
         .assertResponseCodeIs(HttpStatus.OK)
-        .assertStringInBody("$.regionCode", REGION_WITH_CODE_REG123)
-        .assertStringInBody("$.regionName", String.format("%s%s", REGION_WITH_CODE_REG123, NAME))
+        .assertStringInBody("$.code", REGION_WITH_CODE_REG123)
+        .assertStringInBody("$.name", String.format("%s%s", REGION_WITH_CODE_REG123, NAME))
         .andClose();
   }
 
@@ -100,8 +100,8 @@ public final class RegionEndpointUnitTest extends CTPJerseyTest {
     with("http://localhost:9998/regions/%s/lads", REGION_WITH_CODE_REG123)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertArrayLengthInBodyIs(2)
-        .assertStringListInBody("$..ladCode", LAD1_CODE, LAD2_CODE)
-        .assertStringListInBody("$..ladName", LAD1_NAME, LAD2_NAME)
+        .assertStringListInBody("$..code", LAD1_CODE, LAD2_CODE)
+        .assertStringListInBody("$..name", LAD1_NAME, LAD2_NAME)
         .assertStringListInBody("$..regionCode", REGION_WITH_CODE_REG123, REGION_WITH_CODE_REG123)
         .andClose();
   }

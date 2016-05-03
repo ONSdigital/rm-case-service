@@ -77,6 +77,6 @@ public final class SampleEndpoint implements CTPEndpoint {
   @Path("/{sampleId}")
   public void createCases(@PathParam("sampleId") final int sampleId, final GeographyDTO geography) {
     log.debug("Creating cases ");
-    sampleService.generateCases(sampleId, geography.getGeographyType(), geography.getGeographyCode());
+    sampleService.generateCases(sampleId, geography.getType(), geography.getCode());
   }
 }

@@ -34,7 +34,7 @@ public class Questionnaire implements Serializable {
   @Column(name = "caseid")
   private Integer caseId;
 
-  private String status;
+  private String state;
 
   @Column(name = "dispatchdatetime")
   private Timestamp dispatchDateTime;

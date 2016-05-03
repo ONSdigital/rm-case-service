@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class MsoaDTO {
 
-  private String msoaCode;
+  private String code;
 
-  private String msoaName;
+  private String name;
 
   private String ladCode;
 

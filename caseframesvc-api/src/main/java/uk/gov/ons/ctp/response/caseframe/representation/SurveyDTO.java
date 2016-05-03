@@ -14,7 +14,7 @@ public class SurveyDTO {
 
   private Integer surveyid;
 
-  private String surveyName;
+  private String name;
 
   private String description;
 

@@ -47,7 +47,7 @@ public final class QuestionnaireEndpointTest extends CTPJerseyTest {
         .assertIntegerInBody("$.questionnaireId", QUESTIONNAIRE_ID_1)
         .assertIntegerInBody("$.caseId", QUESTIONNAIRE_CASEID)
         .assertStringInBody("$.iac", QUESTIONNAIRE_IAC)
-        .assertStringInBody("$.questionnaireStatus", QUESTIONNAIRE_STATUS)
+        .assertStringInBody("$.state", QUESTIONNAIRE_STATUS)
         .assertStringInBody("$.questionSet", QUESTIONNAIRE_SET)
         .assertStringInBody("$.dispatchDateTime", QuestionnaireBuilder.QUESTIONNAIRE_DISPATCHDATE_VALUE)
         .assertStringInBody("$.responseDateTime", QuestionnaireBuilder.QUESTIONNAIRE_RESPONSEDATE_VALUE)
@@ -80,7 +80,7 @@ public final class QuestionnaireEndpointTest extends CTPJerseyTest {
         .assertIntegerListInBody("$..questionnaireId", QUESTIONNAIRE_ID_1, QUESTIONNAIRE_ID_2)
         .assertIntegerListInBody("$..caseId", QUESTIONNAIRE_CASEID, QUESTIONNAIRE_CASEID)
         .assertStringListInBody("$..iac", QUESTIONNAIRE_IAC, QUESTIONNAIRE_IAC)
-        .assertStringListInBody("$..questionnaireStatus", QUESTIONNAIRE_STATUS, QUESTIONNAIRE_STATUS)
+        .assertStringListInBody("$..state", QUESTIONNAIRE_STATUS, QUESTIONNAIRE_STATUS)
         .assertStringListInBody("$..questionSet", QUESTIONNAIRE_SET, QUESTIONNAIRE_SET)
         .assertStringListInBody("$..dispatchDateTime", QuestionnaireBuilder.QUESTIONNAIRE_DISPATCHDATE_VALUE,
             QuestionnaireBuilder.QUESTIONNAIRE_DISPATCHDATE_VALUE)

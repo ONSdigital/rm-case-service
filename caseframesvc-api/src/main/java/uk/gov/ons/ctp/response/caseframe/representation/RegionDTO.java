@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class RegionDTO {
 
-  private String regionCode;
+  private String code;
 
-  private String regionName;
+  private String name;
 
 }

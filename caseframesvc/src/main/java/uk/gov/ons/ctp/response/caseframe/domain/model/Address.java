@@ -26,7 +26,7 @@ public class Address implements Serializable {
   private Long uprn;
 
   @Column(name = "addresstype")
-  private String addressType;
+  private String type;
 
   @Column(name = "estabtype")
   private String estabType;
@@ -35,9 +35,11 @@ public class Address implements Serializable {
 
   private String organisationName;
 
-  private String addressLine1;
+  @Column(name = "address_line1")
+  private String line1;
 
-  private String addressLine2;
+  @Column(name = "address_line2")
+  private String line2;
 
   private String townName;
 

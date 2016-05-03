@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class LocalAuthorityDTO {
 
-  private String ladCode;
+  private String code;
 
-  private String ladName;
+  private String name;
 
   private String regionCode;
 

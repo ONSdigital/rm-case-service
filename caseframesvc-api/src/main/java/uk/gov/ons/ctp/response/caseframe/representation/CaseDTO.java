@@ -27,7 +27,7 @@ public class CaseDTO {
 
   private Integer caseTypeId;
 
-  private Date createdDatetime;
+  private Date createdDateTime;
 
   private String createdBy;
 

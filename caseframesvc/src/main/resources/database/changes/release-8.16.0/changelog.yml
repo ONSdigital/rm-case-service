@@ -18,3 +18,12 @@ databaseChangeLog:
             path: append_category_seed_data.sql
             relativeToChangelogFile: true
 
+  - changeSet:
+      id: 8.16.0-3
+      author: PhilW
+      changes:
+        - sqlFile:
+            comment: casestatus now state
+            path: caseframe_refactor_generate_cases.sql
+            relativeToChangelogFile: true
+            splitStatements: false

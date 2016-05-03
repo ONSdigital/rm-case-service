@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class GeographyDTO {
 
-  private String geographyType;
-  private String geographyCode;
+  private String type;
+  private String code;
 
 }

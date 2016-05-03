@@ -37,13 +37,13 @@ public class Case implements Serializable {
   private Integer uprn;
 
   @Enumerated(EnumType.STRING)
-  private CaseDTO.CaseState status;
+  private CaseDTO.CaseState state;
 
   @Column(name = "casetypeid")
   private Integer caseTypeId;
 
   @Column(name = "createddatetime")
-  private Timestamp createdDatetime;
+  private Timestamp createdDateTime;
 
   @Column(name="createdby")
   private String createdBy;

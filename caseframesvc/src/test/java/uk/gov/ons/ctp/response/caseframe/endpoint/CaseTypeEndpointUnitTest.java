@@ -50,7 +50,7 @@ public final class CaseTypeEndpointUnitTest extends CTPJerseyTest {
     with("http://localhost:9998/casetypes")
         .assertResponseCodeIs(HttpStatus.OK)
         .assertArrayLengthInBodyIs(3)
-        .assertStringListInBody("$..caseTypeName", CASETYPE1_NAME, CASETYPE2_NAME, CASETYPE3_NAME)
+        .assertStringListInBody("$..name", CASETYPE1_NAME, CASETYPE2_NAME, CASETYPE3_NAME)
         .assertStringListInBody("$..description", CASETYPE1_DESC, CASETYPE2_DESC, CASETYPE3_DESC)
         .assertIntegerListInBody("$..actionPlanId", CASETYPE1_ACTIONPLANID, CASETYPE2_ACTIONPLANID,
             CASETYPE3_ACTIONPLANID)
@@ -66,7 +66,7 @@ public final class CaseTypeEndpointUnitTest extends CTPJerseyTest {
     with("http://localhost:9998/casetypes/%s", CASETYPEID)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerInBody("$.caseTypeId", 3)
-        .assertStringInBody("$.caseTypeName", CASETYPE3_NAME)
+        .assertStringInBody("$.name", CASETYPE3_NAME)
         .assertStringInBody("$.description", CASETYPE3_DESC)
         .assertIntegerInBody("$.actionPlanId", CASETYPE3_ACTIONPLANID)
         .assertStringInBody("$.questionSet", CASETYPE3_QUESTIONSET)

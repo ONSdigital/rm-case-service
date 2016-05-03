@@ -14,7 +14,7 @@ public class AddressSummaryDTO {
 
   private Long uprn;
 
-  private String addressType;
+  private String type;
 
   private String estabType;
 
@@ -22,9 +22,9 @@ public class AddressSummaryDTO {
 
   private String organisationName;
 
-  private String addressLine1;
+  private String line1;
 
-  private String addressLine2;
+  private String line2;
 
   private String townName;
 

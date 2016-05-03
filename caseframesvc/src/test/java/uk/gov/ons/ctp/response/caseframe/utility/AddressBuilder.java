@@ -68,12 +68,12 @@ public final class AddressBuilder {
     address.setOrganisationName(ADDRESS_ORG_NAME);
     address.setLocality(ADDRESS_LOCALITY);
     address.setEstabType(ADDRESS_ESTABLISH_TYPE);
-    address.setAddressLine1(ADDRESS_LINE1);
-    address.setAddressLine2(ADDRESS_LINE2);
+    address.setLine1(ADDRESS_LINE1);
+    address.setLine2(ADDRESS_LINE2);
     address.setTownName(ADDRESS_TOWN_NAME);
     address.setOa11cd(ADDRESS_OUTPUT_AREA);
     address.setLsoa11cd(ADDRESS_LSOA);
-    address.setAddressType(ADDRESS_TYPE);
+    address.setType(ADDRESS_TYPE);
     address.setEastings(ADDRESS_EASTINGS);
     address.setNorthings(ADDRESS_NORTHINGS);
     address.setHtc(ADDRESS_HTC);

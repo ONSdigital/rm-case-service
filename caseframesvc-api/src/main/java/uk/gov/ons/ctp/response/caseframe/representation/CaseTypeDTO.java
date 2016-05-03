@@ -14,7 +14,7 @@ public class CaseTypeDTO {
 
   private Integer caseTypeId;
 
-  private String caseTypeName;
+  private String name;
 
   private String description;
 

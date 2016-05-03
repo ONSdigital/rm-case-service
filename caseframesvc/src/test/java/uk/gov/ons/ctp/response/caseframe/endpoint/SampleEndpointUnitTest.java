@@ -54,7 +54,7 @@ public final class SampleEndpointUnitTest extends CTPJerseyTest {
     with("http://localhost:9998/samples")
         .assertResponseCodeIs(HttpStatus.OK)
         .assertArrayLengthInBodyIs(3)
-        .assertStringListInBody("$..sampleName", SAMPLE1_NAME, SAMPLE2_NAME, SAMPLE3_NAME)
+        .assertStringListInBody("$..name", SAMPLE1_NAME, SAMPLE2_NAME, SAMPLE3_NAME)
         .assertStringListInBody("$..description", SAMPLE1_DESC, SAMPLE2_DESC, SAMPLE3_DESC)
         .assertStringListInBody("$..addressCriteria", SAMPLE1_CRITERIA, SAMPLE2_CRITERIA, SAMPLE3_CRITERIA)
         .assertIntegerListInBody("$..caseTypeId", SAMPLE1_CASETYPEID, SAMPLE2_CASETYPEID, SAMPLE3_CASETYPEID)
@@ -72,7 +72,7 @@ public final class SampleEndpointUnitTest extends CTPJerseyTest {
     with("http://localhost:9998/samples/%s", SAMPLEID)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertArrayLengthInBodyIs(6)
-        .assertStringListInBody("$..sampleName", SAMPLE3_NAME)
+        .assertStringListInBody("$..name", SAMPLE3_NAME)
         .assertStringListInBody("$..description", SAMPLE3_DESC)
         .assertStringListInBody("$..addressCriteria", SAMPLE3_CRITERIA)
         .assertIntegerListInBody("$..caseTypeId", SAMPLE3_CASETYPEID)
@@ -117,7 +117,7 @@ public final class SampleEndpointUnitTest extends CTPJerseyTest {
   @Test
   public void createCases() {
 
-    String putBody = "{\"geographyType\":\"LA\",\"geographyCode\":\"E07000163\"}";
+    String putBody = "{\"type\":\"LA\",\"code\":\"E07000163\"}";
 
     with("http://localhost:9998/samples/%s", SAMPLEID)
         .put(putBody)

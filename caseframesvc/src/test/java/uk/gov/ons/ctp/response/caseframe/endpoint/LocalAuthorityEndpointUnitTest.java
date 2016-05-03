@@ -43,8 +43,8 @@ public final class LocalAuthorityEndpointUnitTest extends CTPJerseyTest {
     with("http://localhost:9998/lads/%s", LAD_WITH_CODE_LAD123)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertStringInBody("$.regionCode", REGION_CODE_FOR_LAD123)
-        .assertStringInBody("$.ladCode", LAD_WITH_CODE_LAD123)
-        .assertStringInBody("$.ladName",
+        .assertStringInBody("$.code", LAD_WITH_CODE_LAD123)
+        .assertStringInBody("$.name",
             String.format("%s%s", LAD_WITH_CODE_LAD123, MockLocalAuthorityServiceFactory.NAME))
         .andClose();
   }
@@ -83,8 +83,8 @@ public final class LocalAuthorityEndpointUnitTest extends CTPJerseyTest {
     with("http://localhost:9998/lads/%s/msoas", LAD_WITH_CODE_LAD123)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertArrayLengthInBodyIs(2)
-        .assertStringListInBody("$..msoaCode", MSOA1_CODE, MSOA2_CODE)
-        .assertStringListInBody("$..msoaName", MSOA1_NAME, MSOA2_NAME)
+        .assertStringListInBody("$..code", MSOA1_CODE, MSOA2_CODE)
+        .assertStringListInBody("$..name", MSOA1_NAME, MSOA2_NAME)
         .assertStringListInBody("$..ladCode", LAD_WITH_CODE_LAD123, LAD_WITH_CODE_LAD123)
         .andClose();
   }

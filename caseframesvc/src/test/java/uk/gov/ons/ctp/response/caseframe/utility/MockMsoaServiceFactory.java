@@ -67,13 +67,13 @@ public final class MockMsoaServiceFactory implements Factory<MsoaService> {
             address1.setLad12cd(MockLocalAuthorityServiceFactory.LAD_WITH_CODE_LAD123);
             address1.setRegion11cd(MockRegionServiceFactory.REGION_WITH_CODE_REG123);
             address1.setUprn(ADDRESS_SUMMARY1_UPRN);
-            address1.setAddressType(ADDRESS_SUMMARY1_TYPE);
+            address1.setType(ADDRESS_SUMMARY1_TYPE);
             Address address2 = new Address();
             address2.setMsoa11cd(msoaCode);
             address2.setLad12cd(MockLocalAuthorityServiceFactory.LAD_WITH_CODE_LAD123);
             address2.setRegion11cd(MockRegionServiceFactory.REGION_WITH_CODE_REG123);
             address2.setUprn(ADDRESS_SUMMARY2_UPRN);
-            address2.setAddressType(ADDRESS_SUMMARY2_TYPE);
+            address2.setType(ADDRESS_SUMMARY2_TYPE);
             List<Address> result = new ArrayList<>();
             result.add(address1);
             result.add(address2);
