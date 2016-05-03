@@ -67,7 +67,7 @@ public final class AddressBuilder {
     address.setRegion11cd(ADDRESS_REGION_CODE);
     address.setOrganisationName(ADDRESS_ORG_NAME);
     address.setLocality(ADDRESS_LOCALITY);
-    address.setEstabType(ADDRESS_ESTABLISH_TYPE);
+    address.setCategory(ADDRESS_ESTABLISH_TYPE);
     address.setLine1(ADDRESS_LINE1);
     address.setLine2(ADDRESS_LINE2);
     address.setTownName(ADDRESS_TOWN_NAME);
