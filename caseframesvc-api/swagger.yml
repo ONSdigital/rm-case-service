@@ -875,10 +875,10 @@ definitions:
   Region:
     type: object
     properties:
-      regionCode:
+      code:
         type: string
         description: GSS nine character Region geography code.
-      regionName:
+      name:
         type: string
         description: Region name.
   LocalAuthDist:
@@ -887,19 +887,19 @@ definitions:
       regionCode:
         type: string
         description: GSS nine character Region geography code.
-      ladCode:
+      code:
         type: string
         description: GSS nine character LAD code.
-      ladName:
+      name:
         type: string
         description: Local Authority Distict name.
   MSOA:
     type: object
     properties:
-      msoaCode:
+      code:
         type: string
         description: GSS nine character MSOA geography code.
-      msoaName:
+      name:
         type: string
         description: MSOA name.
   AddressSummary:
@@ -908,16 +908,16 @@ definitions:
       uprn:
         type: integer
         description: Unique Property Reference Number.
-      addressType:
+      type:
         type: string
         description: Address type CE, HH, I.
-      estabType:
+      category:
         type: string
-        description: Communal Establishment type.
-      addressLine1:
+        description: Communal Establishment category.
+      line1:
         type: string
         description: Address details.
-      addressLine2:
+      line2:
         type: string
         description: Address details.
       townName:
@@ -932,16 +932,16 @@ definitions:
       uprn:
         type: integer
         description: Unique Property Reference Number.
-      addressType:
+      type:
         type: string
         description: Address type CE, HH, I.
-      estabType:
+      category:
         type: string
-        description: Communal Establishment type.
-      addressLine1:
+        description: Communal Establishment category.
+      line1:
         type: string
         description: Address details.
-      addressLine2:
+      line2:
         type: string
         description: Address details.
       townName:
@@ -962,7 +962,7 @@ definitions:
       ladCode:
         type: string
         description: GSS nine character LAD code.
-      regionCode:
+      code:
         type: string
         description: GSS nine character Region geography code.
       eastings:
@@ -1185,10 +1185,10 @@ definitions:
   GeographyDetails:
     type: object
     properties:
-      geographyType:
+      type:
         description: Type of geography area for which to create cases e.g. REGION, LA, MSOA, LSOA, OA.
         type: string
-      geographyCode:
+      code:
         description: Geography area code value for which to create cases.
         type: string
   Error:
