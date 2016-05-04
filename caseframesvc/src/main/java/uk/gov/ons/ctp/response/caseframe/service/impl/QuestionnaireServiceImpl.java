@@ -15,6 +15,7 @@ import uk.gov.ons.ctp.response.caseframe.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Questionnaire;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.QuestionnaireRepository;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseEventDTO;
+import uk.gov.ons.ctp.response.caseframe.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.caseframe.service.CaseService;
 import uk.gov.ons.ctp.response.caseframe.service.QuestionnaireService;
 
@@ -105,7 +106,7 @@ public final class QuestionnaireServiceImpl implements QuestionnaireService {
       CaseEventDTO caseEventDTO = new CaseEventDTO();
       caseEventDTO.setCaseId(questionnaire.getCaseId());
       CaseEvent caseEvent = mapperFacade.map(caseEventDTO, CaseEvent.class);
-      caseEvent.setCategory(QUESTIONNAIRE_CATEGORY);
+      caseEvent.setCategory(CategoryDTO.CategoryName.QUESTIONNAIRE_RESPONSE.getLabel());
       cancelCaseEvent = caseService.createCaseEvent(caseEvent);  
     }
     

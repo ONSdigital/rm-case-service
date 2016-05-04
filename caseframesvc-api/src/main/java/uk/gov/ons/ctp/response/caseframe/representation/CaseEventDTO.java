@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class CaseEventDTO {
+
+
   private Date createdDateTime;
 
   private Integer caseEventId;
