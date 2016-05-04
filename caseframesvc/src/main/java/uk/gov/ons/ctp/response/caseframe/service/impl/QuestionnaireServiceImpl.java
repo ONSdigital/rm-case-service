@@ -39,11 +39,6 @@ public final class QuestionnaireServiceImpl implements QuestionnaireService {
   private static final int TRANSACTION_TIMEOUT = 30;
   
   /**
-   * Questionnaire category name as expected in the Category table
-   */
-  private static final String QUESTIONNAIRE_CATEGORY = "QuestionnareResponse";
-
-  /**
    * Spring Data Repository for Case service.
    */
   @Inject
