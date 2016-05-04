@@ -29,7 +29,7 @@ public class Address implements Serializable {
   private String type;
 
   @Column(name = "estabtype")
-  private String category;
+  private String estabType;
 
   private String locality;
 

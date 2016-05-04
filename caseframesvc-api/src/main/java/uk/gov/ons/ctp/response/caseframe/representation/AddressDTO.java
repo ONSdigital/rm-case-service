@@ -16,7 +16,7 @@ public class AddressDTO {
 
   private String type;
 
-  private String category;
+  private String estabType;
 
   private String locality;
 
