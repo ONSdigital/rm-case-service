@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Case Frame Service API
   description: Provide access to Address Frame and Response Management information
-  version: 8.16.2
+  version: 8.16.3
 schemes:
   - http
 basePath: /
@@ -911,9 +911,9 @@ definitions:
       type:
         type: string
         description: Address type CE, HH, I.
-      category:
+      estabType:
         type: string
-        description: Communal Establishment category.
+        description: Communal Establishment type.
       line1:
         type: string
         description: Address details.
@@ -935,9 +935,9 @@ definitions:
       type:
         type: string
         description: Address type CE, HH, I.
-      category:
+      estabType:
         type: string
-        description: Communal Establishment category.
+        description: Communal Establishment type.
       line1:
         type: string
         description: Address details.
