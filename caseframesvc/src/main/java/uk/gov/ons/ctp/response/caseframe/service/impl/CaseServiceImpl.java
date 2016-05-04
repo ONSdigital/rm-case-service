@@ -2,7 +2,6 @@ package uk.gov.ons.ctp.response.caseframe.service.impl;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -14,8 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
-import uk.gov.ons.ctp.response.action.representation.ActionDTO.ActionState;
-import uk.gov.ons.ctp.response.caseframe.config.ActionSvc;
 import uk.gov.ons.ctp.response.caseframe.config.AppConfig;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Case;
 import uk.gov.ons.ctp.response.caseframe.domain.model.CaseEvent;
@@ -149,7 +146,7 @@ public final class CaseServiceImpl implements CaseService {
     for (Questionnaire questionnaire : associatedQuestionnaires) {
       questionnaireRepo.setResponseDatetimeFor(currentTime, questionnaire.getQuestionnaireId());
     }
-    log.debug("all associatedQuestionnaires marked closed");
+    log.debug("all associated Questionnaires marked closed");
   }
 
   /**
@@ -177,7 +174,7 @@ public final class CaseServiceImpl implements CaseService {
   }
 
   /**
-   * Make use of the ActionService to cancel any Actions existing for a caseId
+   * Cancel any Actions existing for a caseId
    *
    * @param caseId Integer caseId
    */
@@ -185,7 +182,7 @@ public final class CaseServiceImpl implements CaseService {
     
     log.debug("about to put cancel actions to the Action SVC with {}", caseId);
     actionSvcRestClient.putResource(appConfig.getActionSvc().getCancelActionsPath(), null, ActionDTO[].class, caseId);
-    log.debug("returned successfully from the post to the Action SVC");
+    log.debug("returned successfully from the put to cancel using the the Action SVC");
 
   }
 }
