@@ -5,16 +5,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.validation.Valid;
 
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.response.caseframe.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Questionnaire;
-import uk.gov.ons.ctp.response.caseframe.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.QuestionnaireRepository;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseEventDTO;
 import uk.gov.ons.ctp.response.caseframe.representation.CategoryDTO;
@@ -40,6 +38,11 @@ public final class QuestionnaireServiceImpl implements QuestionnaireService {
   public static final String CLOSED = "CLOSED";
   private static final int TRANSACTION_TIMEOUT = 30;
   
+  /**
+   * Questionnaire category name as expected in the Category table
+   */
+  private static final String QUESTIONNAIRE_CATEGORY = "QuestionnareResponse";
+
   /**
    * Spring Data Repository for Case service.
    */
@@ -99,7 +102,7 @@ public final class QuestionnaireServiceImpl implements QuestionnaireService {
     
     CaseEvent cancelCaseEvent = null;
     if (nbOfUpdatedQuestionnaires == 1) {
-   // create CaseEvent for cancelling Action and closing Case
+      // create a CaseEvent for cancelling Actions and closing a Case
       CaseEventDTO caseEventDTO = new CaseEventDTO();
       caseEventDTO.setCaseId(questionnaire.getCaseId());
       CaseEvent caseEvent = mapperFacade.map(caseEventDTO, CaseEvent.class);
