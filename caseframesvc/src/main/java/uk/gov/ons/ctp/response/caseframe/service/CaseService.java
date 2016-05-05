@@ -36,7 +36,7 @@ public interface CaseService extends CTPService {
    * @param actionPlanId id of the action plan to find by
    * @return all the matching cases
    */
-  List<BigInteger> findCaseIdsByStatusAndActionPlanId(String status, Integer actionPlanId);
+  List<BigInteger> findCaseIdsByStateAndActionPlanId(String state, Integer actionPlanId);
 
   /**
    * Find Case entity by unique Id.

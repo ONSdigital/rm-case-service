@@ -25,8 +25,8 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
    * @param actionPlanId actionPlan id to find by
    * @return the cases found
    */
-  @Query(value = "SELECT caseId FROM caseframe.case WHERE status LIKE ?1 AND actionplanid = ?2", nativeQuery = true)
-  List<BigInteger> findCaseIdsByStatusAndActionPlanId(String status, Integer actionPlanId);
+  @Query(value = "SELECT caseId FROM caseframe.case WHERE state LIKE ?1 AND actionplanid = ?2", nativeQuery = true)
+  List<BigInteger> findCaseIdsByStateAndActionPlanId(String state, Integer actionPlanId);
 
   /**
    * find the Case by uprn.

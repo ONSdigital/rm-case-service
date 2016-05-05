@@ -85,10 +85,10 @@ public final class CaseServiceImpl implements CaseService {
   }
 
   @Override
-  public List<BigInteger> findCaseIdsByStatusAndActionPlanId(final String caseStatus, final Integer actionPlanId) {
-    log.debug("Entering findCaseByStatusAndActionPlanId");
-    String statusParam = (caseStatus == null) ? "%" : caseStatus;
-    return caseRepo.findCaseIdsByStatusAndActionPlanId(statusParam, actionPlanId);
+  public List<BigInteger> findCaseIdsByStateAndActionPlanId(final String caseState, final Integer actionPlanId) {
+    log.debug("Entering findCaseByStateAndActionPlanId");
+    String stateParam = (caseState == null) ? "%" : caseState;
+    return caseRepo.findCaseIdsByStateAndActionPlanId(stateParam, actionPlanId);
   }
   
   @Override

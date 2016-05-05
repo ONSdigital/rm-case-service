@@ -100,9 +100,9 @@ public final class CaseEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/actionplan/{actionplanid}")
-  public List<BigInteger> findCaseIdsByStatusAndActionPlan(@QueryParam("status") final String status, @PathParam("actionplanid") final Integer actionPlanId) throws CTPException {
-    log.debug("Entering findCasesByStatusAndActionPlan with {} and {}", status, actionPlanId);
-    List<BigInteger> caseIds = caseService.findCaseIdsByStatusAndActionPlanId(status, actionPlanId);
+  public List<BigInteger> findCaseIdsByStateAndActionPlan(@QueryParam("state") final String state, @PathParam("actionplanid") final Integer actionPlanId) throws CTPException {
+    log.debug("Entering findCasesByStateAndActionPlan with {} and {}", state, actionPlanId);
+    List<BigInteger> caseIds = caseService.findCaseIdsByStateAndActionPlanId(state, actionPlanId);
     return caseIds;
   }
 

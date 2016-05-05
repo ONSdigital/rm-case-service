@@ -48,7 +48,7 @@ public final class AddressServiceImpl implements AddressService {
   @Override
   public List<Address> findByPostcode(final String postcode) {
     log.debug("Entering findByPostcode with {}", postcode);
-    return addressRepository.findByPostcode(formatPostcode(postcode));
+    return addressRepository.findByPostcodeOrderByLine2Asc(formatPostcode(postcode));
   }
 
   /**
