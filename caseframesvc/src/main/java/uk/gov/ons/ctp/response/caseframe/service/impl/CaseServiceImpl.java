@@ -61,7 +61,7 @@ public final class CaseServiceImpl implements CaseService {
    */
   @Inject
   private ActionSvcClientService actionSvcClientService;
-  
+
   @Override
   public List<Case> findCasesByUprn(final Integer uprn) {
     log.debug("Entering findCasesByUprn with uprn {}", uprn);
@@ -90,7 +90,7 @@ public final class CaseServiceImpl implements CaseService {
     String stateParam = (caseState == null) ? "%" : caseState;
     return caseRepo.findCaseIdsByStateAndActionPlanId(stateParam, actionPlanId);
   }
-  
+
   @Override
   public List<CaseEvent> findCaseEventsByCaseId(final Integer caseId) {
     log.debug("Entering findCaseEventsByCaseId");
@@ -110,15 +110,15 @@ public final class CaseServiceImpl implements CaseService {
       Timestamp currentTime = new Timestamp(System.currentTimeMillis());
       caseEvent.setCreatedDateTime(currentTime);
       log.debug("about to create the caseEvent for {}", caseEvent);
-      createdCaseEvent =  caseEventRepo.save(caseEvent);
+      createdCaseEvent = caseEventRepo.save(caseEvent);
       // determine if the Category in this CaseEvent indicates we should close
       // cases
       String categoryName = caseEvent.getCategory();
       Category category = categoryRepo.findByName(categoryName);
       Boolean closeCase = category.getCloseCase();
       log.debug("closeCase = {}", closeCase);
-      
-      if (closeCase.equals(true)) {
+
+      if (Boolean.TRUE.equals(closeCase)) {
         closeCase(caseId);
         actionSvcClientService.cancelActions(caseId);
       } else {
