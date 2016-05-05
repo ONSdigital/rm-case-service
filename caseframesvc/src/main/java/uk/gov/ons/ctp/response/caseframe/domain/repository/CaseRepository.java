@@ -20,8 +20,8 @@ import uk.gov.ons.ctp.response.caseframe.domain.model.Case;
 public interface CaseRepository extends JpaRepository<Case, Integer> {
 
   /**
-   * find the Cases by Status and ActionPlanId
-   * @param status case status to find by
+   * find the Cases by Statu and ActionPlanId
+   * @param statu case statu to find by
    * @param actionPlanId actionPlan id to find by
    * @return the cases found
    */
@@ -42,6 +42,6 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
    * @return the number of cases updated
    */
   @Modifying
-  @Query(value = "UPDATE caseframe.case SET status = ?1 WHERE caseid = ?2", nativeQuery = true)
+  @Query(value = "UPDATE caseframe.case SET state = ?1 WHERE caseid = ?2", nativeQuery = true)
   int setStatusFor(String status, Integer caseid);
 }
