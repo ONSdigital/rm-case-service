@@ -24,5 +24,5 @@ public interface AddressRepository extends JpaRepository<Address, String> {
    * @param postcode to find by
    * @return the address or null if not found
    */
-  List<Address> findByPostcode(String postcode);
+  List<Address> findByPostcodeOrderByLine2Asc(String postcode);
 }
