@@ -38,4 +38,13 @@ databaseChangeLog:
             relativeToChangelogFile: true
             splitStatements: false
             
+  - changeSet:
+      id: 8.16.0-5
+      author: Chris
+      changes:
+        - sqlFile:
+            comment: set closecase to true for questionnaire response
+            path: category_closecase_for_questionnaire_response.sql
+            relativeToChangelogFile: true
+            splitStatements: false
             
