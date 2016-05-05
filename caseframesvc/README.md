@@ -17,6 +17,11 @@ curl http://localhost:8171/regions/ -v -X GET
 200 [{"regionCode":"E12000001","regionName":"North East"}...
 
 
+## To test addresses
+curl http://localhost:8171/addresses/postcode/PO141DT -v -X GET
+200 long json
+
+
 ## To test categories
 curl http://localhost:8171/categories/ -v -X GET
 curl http://localhost:8171/categories/?role=collect-cso -v -X GET
@@ -30,4 +35,7 @@ Submitted at 12:26 and got:
 In DB: we have stored:
     - select * from caseframe.caseevent where caseeventid = 766;
     - 766;1;"manualcurltest";"philippeb";"2016-04-04 11:26:06.961+00";"General Enquiry - Escalated";""
+
+
+
 
