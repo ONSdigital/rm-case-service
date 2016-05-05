@@ -11,9 +11,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.ons.ctp.common.rest.RestClient;
-import uk.gov.ons.ctp.response.action.representation.ActionDTO;
-import uk.gov.ons.ctp.response.caseframe.config.AppConfig;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Case;
 import uk.gov.ons.ctp.response.caseframe.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Category;
@@ -22,6 +19,7 @@ import uk.gov.ons.ctp.response.caseframe.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.QuestionnaireRepository;
+import uk.gov.ons.ctp.response.caseframe.service.ActionSvcClientService;
 import uk.gov.ons.ctp.response.caseframe.service.CaseService;
 
 /**
@@ -33,12 +31,6 @@ import uk.gov.ons.ctp.response.caseframe.service.CaseService;
 public final class CaseServiceImpl implements CaseService {
 
   private static final int TRANSACTION_TIMEOUT = 30;
-
-  @Inject
-  private AppConfig appConfig;
-
-  @Inject
-  private RestClient actionSvcRestClient;
 
   /**
    * Spring Data Repository for Case entities.
@@ -64,6 +56,12 @@ public final class CaseServiceImpl implements CaseService {
   @Inject
   private CategoryRepository categoryRepo;
 
+  /**
+   * ActionSVC client service
+   */
+  @Inject
+  private ActionSvcClientService actionSvcClientService;
+  
   @Override
   public List<Case> findCasesByUprn(final Integer uprn) {
     log.debug("Entering findCasesByUprn with uprn {}", uprn);
@@ -103,7 +101,7 @@ public final class CaseServiceImpl implements CaseService {
   @Override
   public CaseEvent createCaseEvent(final CaseEvent caseEvent) {
     log.debug("Entering createCaseEvent");
-    CaseEvent result = null;
+    CaseEvent createdCaseEvent = null;
 
     Integer caseId = caseEvent.getCaseId();
     Case existingCase = caseRepo.findOne(caseId);
@@ -112,23 +110,23 @@ public final class CaseServiceImpl implements CaseService {
       Timestamp currentTime = new Timestamp(System.currentTimeMillis());
       caseEvent.setCreatedDateTime(currentTime);
       log.debug("about to create the caseEvent for {}", caseEvent);
-      result =  caseEventRepo.save(caseEvent);
+      createdCaseEvent =  caseEventRepo.save(caseEvent);
       // determine if the Category in this CaseEvent indicates we should close
       // cases
       String categoryName = caseEvent.getCategory();
       Category category = categoryRepo.findByName(categoryName);
       Boolean closeCase = category.getCloseCase();
       log.debug("closeCase = {}", closeCase);
-
-      if (closeCase != null && closeCase.booleanValue()) {
+      
+      if (closeCase.equals(true)) {
         closeCase(caseId);
-        cancelActions(caseId);
+        actionSvcClientService.cancelActions(caseId);
       } else {
-        postAction(category, caseId, caseEvent);
+        actionSvcClientService.createAndPostAction(category, caseId, caseEvent);
       }
     }
 
-    return result;
+    return createdCaseEvent;
   }
 
   /**
@@ -149,40 +147,4 @@ public final class CaseServiceImpl implements CaseService {
     log.debug("all associated Questionnaires marked closed");
   }
 
-  /**
-   * Make use of the ActionService to create and post a new Action for a given
-   * caseId according to Category actionType and CaseEvent createdBy values
-   * 
-   * @param category Category containing action type
-   * @param caseId Integer caseId
-   * @param caseEvent CaseEvent containing createdBy detail
-   */
-  private void postAction(Category category, int caseId, CaseEvent caseEvent) {
-
-    String actionType = category.getGeneratedActionType();
-    log.debug("actionType = {}", actionType);
-    if (actionType != null && !actionType.isEmpty()) {
-      ActionDTO actionDTO = new ActionDTO();
-      actionDTO.setCaseId(caseId);
-      actionDTO.setActionTypeName(actionType);
-      actionDTO.setCreatedBy(caseEvent.getCreatedBy());
-
-      log.debug("about to post to the Action SVC with {}", actionDTO);
-      actionSvcRestClient.postResource(appConfig.getActionSvc().getActionsPath(), actionDTO, ActionDTO.class);
-      log.debug("returned successfully from the post to the Action SVC");
-    }
-  }
-
-  /**
-   * Cancel any Actions existing for a caseId
-   *
-   * @param caseId Integer caseId
-   */
-  private void cancelActions(int caseId) {
-    
-    log.debug("about to put cancel actions to the Action SVC with {}", caseId);
-    actionSvcRestClient.putResource(appConfig.getActionSvc().getCancelActionsPath(), null, ActionDTO[].class, caseId);
-    log.debug("returned successfully from the put to cancel using the the Action SVC");
-
-  }
 }

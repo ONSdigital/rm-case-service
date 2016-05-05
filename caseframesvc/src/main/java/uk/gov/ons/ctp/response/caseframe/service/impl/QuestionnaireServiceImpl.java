@@ -1,6 +1,5 @@
 package uk.gov.ons.ctp.response.caseframe.service.impl;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -87,30 +86,18 @@ public final class QuestionnaireServiceImpl implements QuestionnaireService {
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   public Questionnaire recordResponse(final Integer questionnaireId) {
-    Timestamp currentTime = new Timestamp(System.currentTimeMillis());
     Questionnaire questionnaire = questionnaireRepo.findOne(questionnaireId);
-    if (questionnaire == null) {
-      // Questionnaire does not exist to record response
-      return null;
-    }
-    int nbOfUpdatedQuestionnaires = questionnaireRepo.setResponseDatetimeFor(currentTime, questionnaireId);
-    
-    CaseEvent cancelCaseEvent = null;
-    if (nbOfUpdatedQuestionnaires == 1) {
+    if (questionnaire != null) {      
       // create a CaseEvent for cancelling Actions and closing a Case
       CaseEventDTO caseEventDTO = new CaseEventDTO();
       caseEventDTO.setCaseId(questionnaire.getCaseId());
       CaseEvent caseEvent = mapperFacade.map(caseEventDTO, CaseEvent.class);
       caseEvent.setCategory(CategoryDTO.CategoryName.QUESTIONNAIRE_RESPONSE.getLabel());
-      cancelCaseEvent = caseService.createCaseEvent(caseEvent);  
-    }
-    
-    if (cancelCaseEvent == null){
+      caseService.createCaseEvent(caseEvent);  
+    } else {
+      // Questionnaire does not exist to record response
       return null;
     }
-    else {
-      return questionnaire; 
-    }
-     
+    return questionnaire; 
   }
 }
