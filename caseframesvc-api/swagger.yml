@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Case Frame Service API
   description: Provide access to Address Frame and Response Management information
-  version: 8.16.3
+  version: 8.16.4
 schemes:
   - http
 basePath: /
@@ -962,7 +962,7 @@ definitions:
       ladCode:
         type: string
         description: GSS nine character LAD code.
-      code:
+      regionCode:
         type: string
         description: GSS nine character Region geography code.
       eastings:
