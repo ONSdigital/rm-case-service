@@ -47,4 +47,34 @@ databaseChangeLog:
             path: category_closecase_for_questionnaire_response.sql
             relativeToChangelogFile: true
             splitStatements: false
+
+  - changeSet:
+      id: 8.16.0-6
+      author: Narinder
+      changes:
+        - sqlFile:
+            comment: recreate address table with category column
+            path: address_table_with_category.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+            
+  - changeSet:
+      id: 8.16.0-7
+      author: Narinder
+      changes:
+        - sqlFile:
+            comment: insert new seed data to sample to use category 
+            path: sample_seed_data.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 8.16.0-8
+      author: Narinder
+      changes:
+        - sqlFile:
+            comment: refactor iac_generator to use qidseq instead of qid_seq
+            path: refactor_iac_generator.sql
+            relativeToChangelogFile: true
+            splitStatements: false
             
