@@ -62,6 +62,7 @@ databaseChangeLog:
       id: 8.16.0-7
       author: Narinder
       changes:
+      
         - sqlFile:
             comment: insert new seed data to sample to use category 
             path: sample_seed_data.sql
@@ -77,7 +78,8 @@ databaseChangeLog:
             path: refactor_iac_generator.sql
             relativeToChangelogFile: true
             splitStatements: false
-            
+
+  - changeSet:            
       id: 8.16.0-10
       author: PhilS
       changes:
