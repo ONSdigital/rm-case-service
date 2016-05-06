@@ -138,7 +138,7 @@ public final class CaseServiceImpl implements CaseService {
 
     Timestamp currentTime = new Timestamp(System.currentTimeMillis());
 
-    caseRepo.setStatusFor(QuestionnaireServiceImpl.CLOSED, caseId);
+    caseRepo.setStateFor(QuestionnaireServiceImpl.CLOSED, caseId);
     log.debug("parent case marked closed");
     List<Questionnaire> associatedQuestionnaires = questionnaireRepo.findByCaseId(caseId);
     for (Questionnaire questionnaire : associatedQuestionnaires) {

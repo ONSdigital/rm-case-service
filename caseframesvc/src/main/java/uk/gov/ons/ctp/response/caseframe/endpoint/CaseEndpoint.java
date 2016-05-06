@@ -91,9 +91,9 @@ public final class CaseEndpoint implements CTPEndpoint {
   }
 
   /**
-   * the GET endpoint to find case events by status and actionplanid
+   * the GET endpoint to find case events by state and actionplanid
    *
-   * @param status the case status to find by
+   * @param state the case state to find by
    * @param actionplanid the id of the action plan to find by
    * @return the cases found
    * @throws CTPException something went wrong
