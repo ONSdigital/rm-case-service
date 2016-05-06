@@ -82,7 +82,7 @@ databaseChangeLog:
       author: PhilS
       changes:
         - sqlFile:
-            comment: set closecase to true for close
-            path: category_closecase_for_close.sql
+            comment: set closecase to true for closed
+            path: category_closecase_for_closed.sql
             relativeToChangelogFile: true
             splitStatements: false            
