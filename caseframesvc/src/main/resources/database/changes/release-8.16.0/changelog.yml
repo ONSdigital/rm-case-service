@@ -78,3 +78,11 @@ databaseChangeLog:
             relativeToChangelogFile: true
             splitStatements: false
             
+      id: 8.16.0-10
+      author: PhilS
+      changes:
+        - sqlFile:
+            comment: set closecase to true for close
+            path: category_closecase_for_close.sql
+            relativeToChangelogFile: true
+            splitStatements: false            

@@ -123,7 +123,7 @@ public class CaseServiceImplTest {
     CaseEvent result = caseService.createCaseEvent(caseEvent);
     verify(caseRepo).findOne(EXISTING_PARENT_CASE_ID);
     verify(categoryRepo).findByName(CASEEVENT_CATEGORY);
-    verify(caseRepo, never()).setStatusFor(QuestionnaireServiceImpl.CLOSED, EXISTING_PARENT_CASE_ID);
+    verify(caseRepo, never()).setStateFor(QuestionnaireServiceImpl.CLOSED, EXISTING_PARENT_CASE_ID);
     verify(questionnaireRepo, never()).findByCaseId(EXISTING_PARENT_CASE_ID);
     verify(caseEventRepository).save(caseEvent);
     assertEquals(caseEvent, result);
@@ -166,7 +166,7 @@ public class CaseServiceImplTest {
     CaseEvent result = caseService.createCaseEvent(caseEvent);
     verify(caseRepo).findOne(EXISTING_PARENT_CASE_ID);
     verify(categoryRepo).findByName(CASEEVENT_CATEGORY);
-    verify(caseRepo).setStatusFor(QuestionnaireServiceImpl.CLOSED, EXISTING_PARENT_CASE_ID);
+    verify(caseRepo).setStateFor(QuestionnaireServiceImpl.CLOSED, EXISTING_PARENT_CASE_ID);
     verify(questionnaireRepo).findByCaseId(EXISTING_PARENT_CASE_ID);
     verify(questionnaireRepo).setResponseDatetimeFor(any(Timestamp.class), any(Integer.class));
     verify(caseEventRepository).save(caseEvent);
