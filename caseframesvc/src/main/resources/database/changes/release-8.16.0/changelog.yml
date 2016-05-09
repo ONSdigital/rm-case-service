@@ -27,7 +27,7 @@ databaseChangeLog:
             path: caseframe_refactor_generate_cases.sql
             relativeToChangelogFile: true
             splitStatements: false
-            
+
   - changeSet:
       id: 8.16.0-4
       author: PhilW
@@ -35,6 +35,48 @@ databaseChangeLog:
         - sqlFile:
             comment: fix spelling of questionnareResponse
             path: fix_category_name_questionnaire_response.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+
+  - changeSet:
+      id: 8.16.0-5
+      author: Chris
+      changes:
+        - sqlFile:
+            comment: set closecase to true for questionnaire response
+            path: category_closecase_for_questionnaire_response.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 8.16.0-6
+      author: Narinder
+      changes:
+        - sqlFile:
+            comment: recreate address table with category column
+            path: address_table_with_category.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 8.16.0-7
+      author: Narinder
+      changes:
+
+        - sqlFile:
+            comment: insert new seed data to sample to use category
+            path: sample_seed_data.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 8.16.0-8
+      author: Narinder
+      changes:
+        - sqlFile:
+            comment: refactor iac_generator to use qidseq instead of qid_seq
+            path: refactor_iac_generator.sql
             relativeToChangelogFile: true
             splitStatements: false
 
@@ -46,3 +88,13 @@ databaseChangeLog:
             comment: added two new caseevent category rows for action cancels
             path: add_action_cancel_categories.sql
             relativeToChangelogFile: true
+
+  - changeSet:
+      id: 8.16.0-10
+      author: PhilS
+      changes:
+        - sqlFile:
+            comment: set closecase to true for closed
+            path: category_closecase_for_closed.sql
+            relativeToChangelogFile: true
+            splitStatements: false

@@ -30,9 +30,9 @@ public interface CaseService extends CTPService {
   Case findCaseByQuestionnaireId(Integer qid);
 
   /**
-   * Find Case entity by status and actionplanid
+   * Find Case entity by state and actionplanid
    *
-   * @param status the case status to find by
+   * @param state the case state to find by
    * @param actionPlanId id of the action plan to find by
    * @return all the matching cases
    */
