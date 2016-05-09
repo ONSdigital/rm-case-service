@@ -21,7 +21,7 @@ public class CaseDTO {
 
   private Integer caseId;
 
-  private Integer uprn;
+  private Long uprn;
 
   private CaseState state;
 
