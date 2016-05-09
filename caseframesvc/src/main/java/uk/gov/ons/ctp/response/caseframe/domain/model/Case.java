@@ -34,7 +34,7 @@ public class Case implements Serializable {
   @Column(name = "caseid")
   private Integer caseId;
 
-  private Integer uprn;
+  private Long uprn;
 
   @Enumerated(EnumType.STRING)
   private CaseDTO.CaseState state;

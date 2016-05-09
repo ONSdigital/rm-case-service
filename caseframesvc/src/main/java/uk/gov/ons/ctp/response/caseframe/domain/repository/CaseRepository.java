@@ -25,15 +25,15 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
    * @param actionPlanId actionPlan id to find by
    * @return the cases found
    */
-  @Query(value = "SELECT caseId FROM caseframe.case WHERE state LIKE ?1 AND actionplanid = ?2", nativeQuery = true)
-  List<BigInteger> findCaseIdsByStateAndActionPlanId(String state, Integer actionPlanId);
+  @Query(value = "SELECT caseId FROM caseframe.case WHERE state IN ?1 AND actionplanid = ?2", nativeQuery = true)
+  List<BigInteger> findCaseIdByStateInAndActionPlanId(List<String> states, Integer actionPlanId);
 
   /**
    * find the Case by uprn.
    * @param uprn to find by
    * @return the case or null if not found
    */
-  List<Case> findByUprn(Integer uprn);
+  List<Case> findByUprn(Long uprn);
 
   /**
    * set the case status for a given case.
@@ -42,6 +42,6 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
    * @return the number of cases updated
    */
   @Modifying
-  @Query(value = "UPDATE caseframe.case SET status = ?1 WHERE caseid = ?2", nativeQuery = true)
-  int setStatusFor(String status, Integer caseid);
+  @Query(value = "UPDATE caseframe.case SET state = ?2 WHERE caseid = ?1", nativeQuery = true)
+  int setState(Integer caseid, String state);
 }

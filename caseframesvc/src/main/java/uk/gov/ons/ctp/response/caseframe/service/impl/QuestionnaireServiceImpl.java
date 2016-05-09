@@ -31,10 +31,6 @@ public final class QuestionnaireServiceImpl implements QuestionnaireService {
    * Text associated with failure of Response data received operation
    */
   public static final String OPERATION_FAILED = "Response operation failed for questionnaireid";
-  /**
-   * Case status set on Response data being received
-   */
-  public static final String CLOSED = "CLOSED";
   private static final int TRANSACTION_TIMEOUT = 30;
   
   /**

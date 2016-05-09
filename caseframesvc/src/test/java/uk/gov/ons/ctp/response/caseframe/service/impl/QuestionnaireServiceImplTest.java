@@ -43,10 +43,6 @@ public class QuestionnaireServiceImplTest {
   private static final String CASEEVENT_DESCRIPTION = "a desc";
   private static final String CASEEVENT_SUBCATEGORY = "sub category";
 
-  private static final Boolean CATEGORY_CLOSECASE_FALSE = new Boolean(false);
-  private static final Boolean CATEGORY_CLOSECASE_TRUE = new Boolean(true);
-  private static final Boolean CATEGORY_MANUAL_FALSE = new Boolean(false);
-
   private static final Integer QUESTIONNAIRE_ID = 1;
   private static final String QUESTIONNAIRE_IAC = "A1B2C3";
   private static final String QUESTIONNAIRE_STATUS = "quest status";

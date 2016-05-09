@@ -47,7 +47,7 @@ public final class CaseEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/uprn/{uprn}")
-  public List<CaseDTO> findCasesByUprn(@PathParam("uprn") final Integer uprn) {
+  public List<CaseDTO> findCasesByUprn(@PathParam("uprn") final Long uprn) {
     log.debug("Entering findCasesByUprn with {}", uprn);
     List<Case> cases = caseService.findCasesByUprn(uprn);
     List<CaseDTO> caseDTOs = mapperFacade.mapAsList(cases, CaseDTO.class);
@@ -100,9 +100,9 @@ public final class CaseEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/actionplan/{actionplanid}")
-  public List<BigInteger> findCaseIdsByStateAndActionPlan(@QueryParam("state") final String state, @PathParam("actionplanid") final Integer actionPlanId) throws CTPException {
-    log.debug("Entering findCasesByStateAndActionPlan with {} and {}", state, actionPlanId);
-    List<BigInteger> caseIds = caseService.findCaseIdsByStateAndActionPlanId(state, actionPlanId);
+    public List<BigInteger> findCaseIdsByStateAndActionPlan(@QueryParam("state") final List<String> states, @PathParam("actionplanid") final Integer actionPlanId) throws CTPException {
+    log.debug("Entering findCasesByStateAndActionPlan with {} and {}", states, actionPlanId);
+    List<BigInteger> caseIds = caseService.findCaseIdsByStatesAndActionPlanId(states, actionPlanId);
     return caseIds;
   }
 
@@ -131,7 +131,7 @@ public final class CaseEndpoint implements CTPEndpoint {
    * case event to be created
    *
    * @param caseId the parent case
-   * @param requestObject the CaseEventDTO describing the case event to be
+   * @param caseEventDTO the CaseEventDTO describing the case event to be
    *          created
    * @return the created CaseEventDTO
    * @throws CTPException on failure to create CaseEvent
@@ -139,10 +139,10 @@ public final class CaseEndpoint implements CTPEndpoint {
   @POST
   @Path("/{caseId}/events")
   public CaseEventDTO createCaseEvent(@PathParam("caseId") final Integer caseId,
-      @Valid final CaseEventDTO requestObject) throws CTPException {
-    log.debug("Entering createCaseEvent with caseId {} and requestObject {}", caseId, requestObject);
-    requestObject.setCaseId(caseId);
-    CaseEvent createdCaseEvent = caseService.createCaseEvent(mapperFacade.map(requestObject, CaseEvent.class));
+      @Valid final CaseEventDTO caseEventDTO) throws CTPException {
+    log.debug("Entering createCaseEvent with caseId {} and requestObject {}", caseId, caseEventDTO);
+    caseEventDTO.setCaseId(caseId);
+    CaseEvent createdCaseEvent = caseService.createCaseEvent(mapperFacade.map(caseEventDTO, CaseEvent.class));
     if (createdCaseEvent == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Case not found for id %s", caseId);
     }

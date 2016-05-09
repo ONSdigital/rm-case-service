@@ -37,5 +37,12 @@ databaseChangeLog:
             path: fix_category_name_questionnaire_response.sql
             relativeToChangelogFile: true
             splitStatements: false
-            
-            
+
+  - changeSet:
+      id: 8.16.0-9
+      author: PhilW
+      changes:
+        - sqlFile:
+            comment: added two new caseevent category rows for action cancels
+            path: add_action_cancel_categories.sql
+            relativeToChangelogFile: true

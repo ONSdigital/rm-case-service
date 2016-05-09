@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class CaseDTO {
   
   public enum CaseState {
-    INIT, CLOSED;
+    INIT, RESPONDED, CLOSED;
   }
 
   private Integer caseId;

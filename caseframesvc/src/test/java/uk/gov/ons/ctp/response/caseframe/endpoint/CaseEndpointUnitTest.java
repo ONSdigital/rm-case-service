@@ -67,7 +67,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
     with("http://localhost:9998/cases/uprn/%s", UPRN)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertArrayLengthInBodyIs(3)
-        .assertIntegerOccursThroughoutListInBody("$..uprn", UPRN)
+        .assertLongOccursThroughoutListInBody("$..uprn", UPRN)
         .assertStringOccursThroughoutListInBody("$..state", CASE_STATE.name())
         .assertIntegerListInBody("$..caseTypeId", CASE1_TYPEID, CASE2_TYPEID, CASE3_TYPEID)
         .assertStringOccursThroughoutListInBody("$..createdDateTime", CREATEDDATE_VALUE)
@@ -97,7 +97,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
   public void findCaseByQuestionnaireIdFound() {
     with("http://localhost:9998/cases/questionnaire/%s", QUESTIONNAIREID)
         .assertResponseCodeIs(HttpStatus.OK)
-        .assertIntegerInBody("$.uprn", UPRN)
+        .assertLongInBody("$.uprn", UPRN)
         .assertStringInBody("$.state", CASE_STATE.name())
         .assertIntegerInBody("$.caseTypeId", CASE1_TYPEID)
         .assertStringInBody("$.createdDateTime", CREATEDDATE_VALUE)
@@ -129,7 +129,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
   public void findCaseByCaseIdFound() {
     with("http://localhost:9998/cases/%s", CASEID)
         .assertResponseCodeIs(HttpStatus.OK)
-        .assertIntegerInBody("$.uprn", UPRN)
+        .assertLongInBody("$.uprn", UPRN)
         .assertStringInBody("$.state", CASE_STATE.name())
         .assertIntegerInBody("$.caseTypeId", CASE1_TYPEID)
         .assertStringInBody("$.createdDateTime", CREATEDDATE_VALUE)

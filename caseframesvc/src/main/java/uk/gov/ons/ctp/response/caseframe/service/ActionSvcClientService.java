@@ -18,7 +18,7 @@ public interface ActionSvcClientService {
    * @param caseId Integer caseId
    * @param caseEvent CaseEvent containing createdBy detail
    */
-  void createAndPostAction(Category category, int caseId, CaseEvent caseEvent);
+  void createAndPostAction(String actionType, int caseId, String createdBy);
 
   /**
    * Cancel any Actions existing for a caseId

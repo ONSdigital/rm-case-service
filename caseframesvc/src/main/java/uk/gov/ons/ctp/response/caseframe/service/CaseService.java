@@ -19,7 +19,7 @@ public interface CaseService extends CTPService {
    * @param uprn UPRN for an address
    * @return List of Case entities or empty List
    */
-  List<Case> findCasesByUprn(Integer uprn);
+  List<Case> findCasesByUprn(Long uprn);
 
   /**
    * Find Case entity by Questionnaire Id.
@@ -36,7 +36,7 @@ public interface CaseService extends CTPService {
    * @param actionPlanId id of the action plan to find by
    * @return all the matching cases
    */
-  List<BigInteger> findCaseIdsByStateAndActionPlanId(String state, Integer actionPlanId);
+  List<BigInteger> findCaseIdsByStatesAndActionPlanId(List<String> states, Integer actionPlanId);
 
   /**
    * Find Case entity by unique Id.

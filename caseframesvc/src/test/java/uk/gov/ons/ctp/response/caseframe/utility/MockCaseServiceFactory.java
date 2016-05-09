@@ -21,7 +21,7 @@ import uk.gov.ons.ctp.response.caseframe.service.CaseService;
  */
 public final class MockCaseServiceFactory implements Factory<CaseService> {
 
-  public static final Integer UPRN = 2000062760;
+  public static final Long UPRN = 2000062760L;
   public static final CaseDTO.CaseState CASE_STATE = CaseDTO.CaseState.INIT;
   public static final Integer CASE1_TYPEID = 1;
   public static final Integer CASE2_TYPEID = 2;
@@ -38,6 +38,7 @@ public final class MockCaseServiceFactory implements Factory<CaseService> {
   public static final Integer CASE_SURVEYID = 1;
   public static final Integer CASE_PARENTCASEID = null;
   public static final String CASE_QUESTIONSET = "HH";
+  public static final Long NON_EXISTING_UPRN = 998L;
   public static final Integer NON_EXISTING_ID = 998;
   public static final Integer UNCHECKED_EXCEPTION = 999;
   public static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
@@ -73,7 +74,7 @@ public final class MockCaseServiceFactory implements Factory<CaseService> {
       }
     });
 
-    Mockito.when(mockedService.findCasesByUprn(NON_EXISTING_ID)).thenAnswer(new Answer<List<Case>>() {
+    Mockito.when(mockedService.findCasesByUprn(NON_EXISTING_UPRN)).thenAnswer(new Answer<List<Case>>() {
       public List<Case> answer(final InvocationOnMock invocation)
           throws Throwable {
         return new ArrayList<Case>();

@@ -66,7 +66,7 @@ public class CaseServiceImplTest {
   private static final String CASEEVENT_DESCRIPTION = "a desc";
   private static final String CASEEVENT_SUBCATEGORY = "sub category";
 
-  private static final Integer CASE_UPRN = 1;
+  private static final Long CASE_UPRN = 1L;
   private static final Integer CASE_TYPEID = 1;
   private static final CaseDTO.CaseState CASE_STATE = CaseDTO.CaseState.INIT;
   private static final String CASE_CREATEDBY = "unit test";
@@ -123,7 +123,7 @@ public class CaseServiceImplTest {
     CaseEvent result = caseService.createCaseEvent(caseEvent);
     verify(caseRepo).findOne(EXISTING_PARENT_CASE_ID);
     verify(categoryRepo).findByName(CASEEVENT_CATEGORY);
-    verify(caseRepo, never()).setStatusFor(QuestionnaireServiceImpl.CLOSED, EXISTING_PARENT_CASE_ID);
+    verify(caseRepo, never()).setState(EXISTING_PARENT_CASE_ID, CaseDTO.CaseState.CLOSED.name());
     verify(questionnaireRepo, never()).findByCaseId(EXISTING_PARENT_CASE_ID);
     verify(caseEventRepository).save(caseEvent);
     assertEquals(caseEvent, result);
@@ -166,7 +166,7 @@ public class CaseServiceImplTest {
     CaseEvent result = caseService.createCaseEvent(caseEvent);
     verify(caseRepo).findOne(EXISTING_PARENT_CASE_ID);
     verify(categoryRepo).findByName(CASEEVENT_CATEGORY);
-    verify(caseRepo).setStatusFor(QuestionnaireServiceImpl.CLOSED, EXISTING_PARENT_CASE_ID);
+    verify(caseRepo).setState(EXISTING_PARENT_CASE_ID, CaseDTO.CaseState.CLOSED.name());
     verify(questionnaireRepo).findByCaseId(EXISTING_PARENT_CASE_ID);
     verify(questionnaireRepo).setResponseDatetimeFor(any(Timestamp.class), any(Integer.class));
     verify(caseEventRepository).save(caseEvent);

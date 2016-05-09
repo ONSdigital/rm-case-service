@@ -12,6 +12,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class CaseTypeDTO {
 
+  public enum CaseTypeName {
+    HH, CH, HGH
+  }
+
   private Integer caseTypeId;
 
   private String name;

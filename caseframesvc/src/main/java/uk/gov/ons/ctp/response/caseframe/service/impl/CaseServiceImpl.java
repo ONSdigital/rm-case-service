@@ -2,23 +2,32 @@ package uk.gov.ons.ctp.response.caseframe.service.impl;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Case;
 import uk.gov.ons.ctp.response.caseframe.domain.model.CaseEvent;
+import uk.gov.ons.ctp.response.caseframe.domain.model.CaseType;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Category;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Questionnaire;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.CaseRepository;
+import uk.gov.ons.ctp.response.caseframe.domain.repository.CaseTypeRepository;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.QuestionnaireRepository;
+import uk.gov.ons.ctp.response.caseframe.representation.CaseDTO;
+import uk.gov.ons.ctp.response.caseframe.representation.CaseTypeDTO;
+import uk.gov.ons.ctp.response.caseframe.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.caseframe.service.ActionSvcClientService;
 import uk.gov.ons.ctp.response.caseframe.service.CaseService;
 
@@ -37,6 +46,9 @@ public final class CaseServiceImpl implements CaseService {
    */
   @Inject
   private CaseRepository caseRepo;
+
+  @Inject
+  private CaseTypeRepository caseTypeRepo;
 
   /**
    * Spring Data Repository for Questionnaire Entities.
@@ -63,7 +75,7 @@ public final class CaseServiceImpl implements CaseService {
   private ActionSvcClientService actionSvcClientService;
 
   @Override
-  public List<Case> findCasesByUprn(final Integer uprn) {
+  public List<Case> findCasesByUprn(final Long uprn) {
     log.debug("Entering findCasesByUprn with uprn {}", uprn);
     return caseRepo.findByUprn(uprn);
   }
@@ -85,10 +97,17 @@ public final class CaseServiceImpl implements CaseService {
   }
 
   @Override
-  public List<BigInteger> findCaseIdsByStateAndActionPlanId(final String caseState, final Integer actionPlanId) {
-    log.debug("Entering findCaseByStateAndActionPlanId");
-    String stateParam = (caseState == null) ? "%" : caseState;
-    return caseRepo.findCaseIdsByStateAndActionPlanId(stateParam, actionPlanId);
+  public List<BigInteger> findCaseIdsByStatesAndActionPlanId(final List<String> caseStates, final Integer actionPlanId) {
+    log.debug("Entering findCaseByStatesAndActionPlanId");
+    List<String> stateParams = new ArrayList<>();
+    if (CollectionUtils.isEmpty(caseStates)) {
+      for (CaseDTO.CaseState caseState : CaseDTO.CaseState.values()) {
+       stateParams.add(caseState.name()); 
+      }
+    } else {
+      stateParams = caseStates;
+    }
+    return caseRepo.findCaseIdByStateInAndActionPlanId(stateParams, actionPlanId);
   }
 
   @Override
@@ -105,46 +124,57 @@ public final class CaseServiceImpl implements CaseService {
 
     Integer caseId = caseEvent.getCaseId();
     Case existingCase = caseRepo.findOne(caseId);
-    log.debug("existingCase = {}", existingCase);
+
     if (existingCase != null) {
-      Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-      caseEvent.setCreatedDateTime(currentTime);
-      log.debug("about to create the caseEvent for {}", caseEvent);
+      CaseType caseType = caseTypeRepo.findOne(existingCase.getCaseTypeId());
+      caseEvent.setCreatedDateTime(new Timestamp(System.currentTimeMillis()));
       createdCaseEvent = caseEventRepo.save(caseEvent);
-      // determine if the Category in this CaseEvent indicates we should close
-      // cases
-      String categoryName = caseEvent.getCategory();
-      Category category = categoryRepo.findByName(categoryName);
+
+      Category category = categoryRepo.findByName(caseEvent.getCategory());
       Boolean closeCase = category.getCloseCase();
-      log.debug("closeCase = {}", closeCase);
 
       if (Boolean.TRUE.equals(closeCase)) {
-        closeCase(caseId);
-        actionSvcClientService.cancelActions(caseId);
-      } else {
-        actionSvcClientService.createAndPostAction(category, caseId, caseEvent);
+        if (caseType.getName().equals(CaseTypeDTO.CaseTypeName.HGH.name())) {
+          CategoryDTO.CategoryName reasonForClosure = CategoryDTO.CategoryName.valueOf(caseEvent.getCategory());
+          if (Arrays.asList(
+              CategoryDTO.CategoryName.CLASSIFICATION_INCORRECT,
+              CategoryDTO.CategoryName.REFUSAL,
+              CategoryDTO.CategoryName.UNDELIVERABLE).contains(reasonForClosure)) {
+              closeCase(caseId, CaseDTO.CaseState.CLOSED);
+              actionSvcClientService.cancelActions(caseId);
+          } else {
+              closeCase(caseId, CaseDTO.CaseState.RESPONDED);
+          }
+        } else {
+          closeCase(caseId, CaseDTO.CaseState.CLOSED);
+          actionSvcClientService.cancelActions(caseId);
+        }
+      }
+
+      String actionType = category.getGeneratedActionType();
+      if (!StringUtils.isEmpty(actionType)) {
+        actionSvcClientService.createAndPostAction(actionType, caseId, caseEvent.getCreatedBy());
       }
     }
-
     return createdCaseEvent;
   }
 
   /**
-   * Close the Case
+   * 'Close' the Case and mark all related questionnaires as responded 
    * 
    * @param caseId Integer case ID
+   * @param caseState either CLOSED or RESPONDED
    */
-  private void closeCase(int caseId) {
+  private void closeCase(int caseId, CaseDTO.CaseState caseState) {
 
     Timestamp currentTime = new Timestamp(System.currentTimeMillis());
 
-    caseRepo.setStatusFor(QuestionnaireServiceImpl.CLOSED, caseId);
-    log.debug("parent case marked closed");
+    caseRepo.setState(caseId, caseState.name());
     List<Questionnaire> associatedQuestionnaires = questionnaireRepo.findByCaseId(caseId);
+
     for (Questionnaire questionnaire : associatedQuestionnaires) {
       questionnaireRepo.setResponseDatetimeFor(currentTime, questionnaire.getQuestionnaireId());
     }
-    log.debug("all associated Questionnaires marked closed");
   }
 
 }
