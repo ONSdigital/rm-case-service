@@ -15,10 +15,12 @@ public final class AddressServiceImplTest {
   private static final String POSTCODE_FORMAT1_TEST1 = "M1 1AA";
   private static final String POSTCODE_FORMAT1_TEST2 = " m1  1aa";
   private static final String POSTCODE_FORMAT1_TEST3 = "M11aA ";
-  private static final String POSTCODE_FORMAT1_RESULT = "M1   1AA";
+  private static final String POSTCODE_FORMAT1_RESULT = "M1 1AA";
+
   private static final String POSTCODE_FORMAT2_TEST1 = " M60 6XH ";
   private static final String POSTCODE_FORMAT2_TEST2 = "M606XH";
-  private static final String POSTCODE_FORMAT2_RESULT = "M60  6XH";
+  private static final String POSTCODE_FORMAT2_RESULT = "M60 6XH";
+
   private static final String POSTCODE_FORMAT3_TEST1 = "EC1A 1BB";
   private static final String POSTCODE_FORMAT3_TEST2 = "EC1A1BB";
   private static final String POSTCODE_FORMAT3_RESULT = "EC1A 1BB";

@@ -19,7 +19,6 @@ import uk.gov.ons.ctp.response.caseframe.service.AddressService;
 public final class AddressServiceImpl implements AddressService {
 
   private static final int INWARD_POSTCODE = 3;
-  private static final int POSTCODE_LENGTH = 8;
 
   /**
    * Spring Data Repository for Address entities.
@@ -52,28 +51,27 @@ public final class AddressServiceImpl implements AddressService {
   }
 
   /**
-   * Format a postcode, uppercase, pad to 8 characters allowing for different
-   * postcode formats.
+   * Format a postcode into the format used in the database.
+   * 
+   * - convert the input to uppercase
+   * - strip leading, inner and trailing whitespace from the input
+   * - chop off the last three chars to be used as the inward component
+   * - tack that onto the end of the remainder of the input with a single space between 
    *
    * @param postcode A Postcode string
-   * @return Formatted postcode or null
+   * @return Formatted postcode
    */
   private String formatPostcode(final String postcode) {
-    StringBuilder fullPostcode = null;
+    String formattedPostcode = null;
 
     String trimmedPostcode = postcode.trim().toUpperCase();
+    trimmedPostcode=trimmedPostcode.replaceAll("[ ]*", "");
     int trimmedPostcodeLength = trimmedPostcode.length();
-    if (trimmedPostcodeLength < POSTCODE_LENGTH) {
-      // Pad spaces in centre of postcode
-      String outwardPostCode = trimmedPostcode.substring(0, trimmedPostcodeLength - INWARD_POSTCODE);
-      String inwardPostCode = trimmedPostcode.substring(trimmedPostcodeLength - INWARD_POSTCODE, trimmedPostcodeLength);
-      fullPostcode = new StringBuilder(outwardPostCode);
-      fullPostcode.append(String.format("%1$" + (POSTCODE_LENGTH - outwardPostCode.length()) + "s", inwardPostCode));
-    } else {
-      fullPostcode = new StringBuilder(trimmedPostcode);
-    }
+    String outwardPostCode = trimmedPostcode.substring(0, trimmedPostcodeLength - INWARD_POSTCODE);
+    String inwardPostCode = trimmedPostcode.substring(trimmedPostcodeLength - INWARD_POSTCODE, trimmedPostcodeLength);
+    formattedPostcode = outwardPostCode + " " + inwardPostCode;
 
-    log.debug("fullPostcode = {}", fullPostcode);
-    return fullPostcode.toString();
+    log.debug("fullPostcode = {}", formattedPostcode);
+    return formattedPostcode;
   }
 }
