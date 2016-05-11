@@ -1,0 +1,12 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 8.17.0-1
+      author: phils
+      changes:
+        - sqlFile:
+            comment: update category table
+            path: update_category_table.sql
+            relativeToChangelogFile: true
+
+  
