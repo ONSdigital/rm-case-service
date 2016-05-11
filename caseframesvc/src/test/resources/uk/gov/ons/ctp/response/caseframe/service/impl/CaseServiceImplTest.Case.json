@@ -1,0 +1,26 @@
+[
+{  
+   "caseId":1,
+   "uprn":1234,
+   "state":"INIT",
+   "caseTypeId":1,
+   "createdDateTime":1460732606544,
+   "createdBy":"me",
+   "sampleId":1,
+   "actionPlanId":1,
+   "surveyId":1,
+   "questionSet":"survey01"
+},
+{  
+   "caseId":2,
+   "uprn":1234,
+   "state":"INIT",
+   "caseTypeId":2,
+   "createdDateTime":1460732606544,
+   "createdBy":"me",
+   "sampleId":1,
+   "actionPlanId":1,
+   "surveyId":1,
+   "questionSet":"survey01"
+}
+]

@@ -33,7 +33,6 @@ public class ActionSvcClientServiceImpl implements ActionSvcClientService {
   public void cancelActions(int caseId) {
     log.debug("about to put cancel actions to the Action SVC with {}", caseId);
     caseFrameClient.putResource(appConfig.getActionSvc().getCancelActionsPath(), null, ActionDTO[].class, caseId);
-
   }
 
 }

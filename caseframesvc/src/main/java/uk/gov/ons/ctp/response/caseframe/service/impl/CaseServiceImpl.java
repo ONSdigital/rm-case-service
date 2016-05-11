@@ -97,12 +97,13 @@ public final class CaseServiceImpl implements CaseService {
   }
 
   @Override
-  public List<BigInteger> findCaseIdsByStatesAndActionPlanId(final List<String> caseStates, final Integer actionPlanId) {
+  public List<BigInteger> findCaseIdsByStatesAndActionPlanId(final List<String> caseStates,
+      final Integer actionPlanId) {
     log.debug("Entering findCaseByStatesAndActionPlanId");
     List<String> stateParams = new ArrayList<>();
     if (CollectionUtils.isEmpty(caseStates)) {
       for (CaseDTO.CaseState caseState : CaseDTO.CaseState.values()) {
-       stateParams.add(caseState.name()); 
+        stateParams.add(caseState.name());
       }
     } else {
       stateParams = caseStates;
@@ -135,15 +136,14 @@ public final class CaseServiceImpl implements CaseService {
 
       if (Boolean.TRUE.equals(closeCase)) {
         if (caseType.getName().equals(CaseTypeDTO.CaseTypeName.HGH.name())) {
-          CategoryDTO.CategoryName reasonForClosure = CategoryDTO.CategoryName.valueOf(caseEvent.getCategory());
-          if (Arrays.asList(
-              CategoryDTO.CategoryName.CLASSIFICATION_INCORRECT,
-              CategoryDTO.CategoryName.REFUSAL,
-              CategoryDTO.CategoryName.UNDELIVERABLE).contains(reasonForClosure)) {
-              closeCase(caseId, CaseDTO.CaseState.CLOSED);
-              actionSvcClientService.cancelActions(caseId);
+          CategoryDTO.CategoryName reasonForClosure = CategoryDTO.CategoryName.getEnumByLabel(caseEvent.getCategory());
+          if (Arrays.asList(CategoryDTO.CategoryName.CLASSIFICATION_INCORRECT, CategoryDTO.CategoryName.REFUSAL,
+              CategoryDTO.CategoryName.UNDELIVERABLE)
+              .contains(reasonForClosure)) {
+            closeCase(caseId, CaseDTO.CaseState.CLOSED);
+            actionSvcClientService.cancelActions(caseId);
           } else {
-              closeCase(caseId, CaseDTO.CaseState.RESPONDED);
+            closeCase(caseId, CaseDTO.CaseState.RESPONDED);
           }
         } else {
           closeCase(caseId, CaseDTO.CaseState.CLOSED);
@@ -160,7 +160,7 @@ public final class CaseServiceImpl implements CaseService {
   }
 
   /**
-   * 'Close' the Case and mark all related questionnaires as responded 
+   * 'Close' the Case and mark all related questionnaires as responded
    * 
    * @param caseId Integer case ID
    * @param caseState either CLOSED or RESPONDED

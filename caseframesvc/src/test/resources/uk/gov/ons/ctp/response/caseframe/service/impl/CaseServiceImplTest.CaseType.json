@@ -1,0 +1,23 @@
+[
+{  
+  "caseTypeId":"1",
+  "name":"HH",
+  "description":"Home Sweet Home",
+  "actionPlanId":"1",
+  "questionSet":"HH"
+},
+{  
+  "caseTypeId":"2",
+  "name":"HGH",
+  "description":"Hotel, Slum House, Squat or Cardboard box",
+  "actionPlanId":"2",
+  "questionSet":"CE"
+},
+{  
+  "caseTypeId":"3",
+  "name":"CH",
+  "description":"The Penultimate Residence",
+  "actionPlanId":"3",
+  "questionSet":"CE"
+}
+]

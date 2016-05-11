@@ -1,8 +1,5 @@
 package uk.gov.ons.ctp.response.caseframe.service;
 
-import uk.gov.ons.ctp.response.caseframe.domain.model.CaseEvent;
-import uk.gov.ons.ctp.response.caseframe.domain.model.Category;
-
 /**
  * A Service which utilises the ActionSvc via RESTful client calls
  *

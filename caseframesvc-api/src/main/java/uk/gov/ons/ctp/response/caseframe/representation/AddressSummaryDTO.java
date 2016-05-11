@@ -21,6 +21,8 @@ public class AddressSummaryDTO {
   private String locality;
 
   private String organisationName;
+  
+  private String category;
 
   private String line1;
 

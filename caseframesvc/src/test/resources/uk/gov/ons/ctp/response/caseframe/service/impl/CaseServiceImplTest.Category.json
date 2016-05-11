@@ -1,0 +1,8 @@
+{  
+   "name":"QuestionnaireResponse",
+   "description":"blah blah blah",
+   "role":null,
+   "generatedActionType":null,
+   "closeCase":true,
+   "manual":true
+}

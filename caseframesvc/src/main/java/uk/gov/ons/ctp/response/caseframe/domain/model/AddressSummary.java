@@ -35,6 +35,8 @@ public class AddressSummary implements Serializable {
 
   private String organisationName;
 
+  private String category;
+
   @Column(name = "address_line1")
   private String line1;
 
