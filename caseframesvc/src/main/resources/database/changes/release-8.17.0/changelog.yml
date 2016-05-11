@@ -1,0 +1,22 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 8.17.0-1
+      author: phils
+      changes:
+        - sqlFile:
+            comment: update category table
+            path: update_category_table.sql
+            relativeToChangelogFile: true
+
+  - changeSet:
+      id: 8.17.0-2
+      author: Narinder
+      changes:
+        - sqlFile:
+            comment: iac code changes
+            path: iac_change.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  
