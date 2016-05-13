@@ -29,4 +29,13 @@ databaseChangeLog:
             relativeToChangelogFile: true
             splitStatements: false
 
+  - changeSet:
+      id: 8.17.0-4
+      author: Narinder
+      changes:
+        - sqlFile:
+            comment: create functions to add lat and long to address data
+            path: caseframe_address_functions.sql
+            relativeToChangelogFile: true
+            splitStatements: false
   
