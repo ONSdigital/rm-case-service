@@ -19,4 +19,14 @@ databaseChangeLog:
             relativeToChangelogFile: true
             splitStatements: false
 
+  - changeSet:
+      id: 8.17.0-3
+      author: Narinder
+      changes:
+        - sqlFile:
+            comment: amend casetype to use correct actionplans
+            path: amend_casetype_initial_data.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
   
