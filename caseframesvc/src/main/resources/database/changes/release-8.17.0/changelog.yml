@@ -38,4 +38,14 @@ databaseChangeLog:
             path: caseframe_address_functions.sql
             relativeToChangelogFile: true
             splitStatements: false
-  
+
+  - changeSet:
+      id: 8.17.0-5
+      author: Narinder
+      changes:
+        - sqlFile:
+            comment: change address criteria on sample
+            path: sample_adress_criteria_changes.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
