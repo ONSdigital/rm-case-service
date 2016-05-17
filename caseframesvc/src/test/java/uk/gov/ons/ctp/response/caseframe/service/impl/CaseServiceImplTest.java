@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -33,7 +34,8 @@ import uk.gov.ons.ctp.response.caseframe.representation.CaseDTO;
 import uk.gov.ons.ctp.response.caseframe.service.ActionSvcClientService;
 
 /**
- * Created by philippe.brossier on 3/31/16.
+ * Test the CaseServiceImpl
+ * 
  */
 @RunWith(MockitoJUnitRunner.class)
 public class CaseServiceImplTest {
@@ -70,7 +72,10 @@ public class CaseServiceImplTest {
 
   private static final Integer NON_EXISTING_PARENT_CASE_ID = 1;
 
-  private static final String CASEEVENT_CATEGORY = "QuestionnaireResponse";
+  private static final String CASEEVENT_CATEGORY_QR = "QuestionnaireResponse";
+  private static final String CASEEVENT_CATEGORY_CI = "Classification Incorrect";
+  private static final String CASEEVENT_CATEGORY_R = "Refusal";
+  private static final String CASEEVENT_CATEGORY_U = "Undeliverable";
   private static final String CASEEVENT_CREATEDBY = "unit test";
   private static final String CASEEVENT_DESCRIPTION = "a desc";
   private static final String CASEEVENT_SUBCATEGORY = "sub category";
@@ -83,7 +88,7 @@ public class CaseServiceImplTest {
 
     Timestamp currentTime = new Timestamp(System.currentTimeMillis());
     CaseEvent caseEvent = new CaseEvent(1, NON_EXISTING_PARENT_CASE_ID, CASEEVENT_DESCRIPTION, CASEEVENT_CREATEDBY,
-        currentTime, CASEEVENT_CATEGORY, CASEEVENT_SUBCATEGORY);
+        currentTime, CASEEVENT_CATEGORY_QR, CASEEVENT_SUBCATEGORY);
 
     CaseEvent result = caseService.createCaseEvent(caseEvent);
 
@@ -97,21 +102,90 @@ public class CaseServiceImplTest {
     mockHotelCaseLoadSuccess();
     mockCaseEventCategoryForQuestionnaireResponseLoadSuccess();
     mockCaseTypeHotelLoadSuccess();
-    mockQuestionnairesForCaseLoadSuccess();
+    mockQuestionnairesForHotelCaseLoadSuccess();
+    mockCaseEventSave();
+    mockAppConfigUse();
+
+    // now kick it off
+    CaseEvent caseEvent = caseEventFixtureLoad(0);
+    caseService.createCaseEvent(caseEvent);
+
+    verify(caseRepo).findOne(HOTEL_CASE_ID);
+    verify(categoryRepo).findByName(CASEEVENT_CATEGORY_QR);
+    verify(caseRepo).setState(HOTEL_CASE_ID, CaseDTO.CaseState.RESPONDED.name());
+    verify(questionnaireRepo).findByCaseId(HOTEL_CASE_ID);
+    verify(caseEventRepository).save(caseEvent);
+    // this is key for this test - we do NOT cancel actions
+    verify(actionSvcClientService, times(0)).cancelActions(HOTEL_CASE_ID);
+  }
+
+  @Test
+  public void testCreateCaseEventCloseHotelWithClassificationIncorrect() throws Exception {
+
+    mockHotelCaseLoadSuccess();
+    mockCaseEventCategoryForClassificationIncorrectSuccess();
+    mockCaseTypeHotelLoadSuccess();
+    mockQuestionnairesForHotelCaseLoadSuccess();
     mockCaseEventSave();
     mockAppConfigUse();
 
     // now kick it off
     CaseEvent caseEvent = caseEventFixtureLoad(1);
-    CaseEvent result = caseService.createCaseEvent(caseEvent);
+    caseService.createCaseEvent(caseEvent);
 
     verify(caseRepo).findOne(HOTEL_CASE_ID);
-    verify(categoryRepo).findByName(CASEEVENT_CATEGORY);
-    verify(caseRepo).setState(HOTEL_CASE_ID, CaseDTO.CaseState.RESPONDED.name());
+    verify(categoryRepo).findByName(CASEEVENT_CATEGORY_CI);
+    verify(caseRepo).setState(HOTEL_CASE_ID, CaseDTO.CaseState.CLOSED.name());
     verify(questionnaireRepo).findByCaseId(HOTEL_CASE_ID);
-//    verify(questionnaireRepo).setResponseDatetimeFor(any(Timestamp.class), any(Integer.class));
+    verify(questionnaireRepo).setResponseDatetimeFor(any(Timestamp.class), any(Integer.class));
     verify(caseEventRepository).save(caseEvent);
-//    verify(actionSvcClientService).cancelActions(HOTEL_CASE_ID);
+    verify(actionSvcClientService).cancelActions(HOTEL_CASE_ID);
+  }
+  
+  @Test
+  public void testCreateCaseEventCloseHotelWithRefusal() throws Exception {
+
+    mockHotelCaseLoadSuccess();
+    mockCaseEventCategoryForRefusalSuccess();
+    mockCaseTypeHotelLoadSuccess();
+    mockQuestionnairesForHotelCaseLoadSuccess();
+    mockCaseEventSave();
+    mockAppConfigUse();
+
+    // now kick it off
+    CaseEvent caseEvent = caseEventFixtureLoad(2);
+    caseService.createCaseEvent(caseEvent);
+
+    verify(caseRepo).findOne(HOTEL_CASE_ID);
+    verify(categoryRepo).findByName(CASEEVENT_CATEGORY_R);
+    verify(caseRepo).setState(HOTEL_CASE_ID, CaseDTO.CaseState.CLOSED.name());
+    verify(questionnaireRepo).findByCaseId(HOTEL_CASE_ID);
+    verify(questionnaireRepo).setResponseDatetimeFor(any(Timestamp.class), any(Integer.class));
+    verify(caseEventRepository).save(caseEvent);
+    verify(actionSvcClientService).cancelActions(HOTEL_CASE_ID);
+  }
+  
+  @Test
+  public void testCreateCaseEventCloseHotelWithUndeliverable() throws Exception {
+
+    mockHotelCaseLoadSuccess();
+    mockCaseEventCategoryForUndeliverableSuccess();
+    mockCaseTypeHotelLoadSuccess();
+    mockQuestionnairesForHotelCaseLoadSuccess();
+    mockCaseEventSave();
+    mockAppConfigUse();
+
+    // now kick it off
+    CaseEvent caseEvent = caseEventFixtureLoad(3);
+    caseService.createCaseEvent(caseEvent);
+
+    verify(caseRepo).findOne(HOTEL_CASE_ID);
+    verify(categoryRepo).findByName(CASEEVENT_CATEGORY_U);
+    verify(caseRepo).setState(HOTEL_CASE_ID, CaseDTO.CaseState.CLOSED.name());
+    verify(questionnaireRepo).findByCaseId(HOTEL_CASE_ID);
+    verify(questionnaireRepo).setResponseDatetimeFor(any(Timestamp.class), any(Integer.class));
+    verify(caseEventRepository).save(caseEvent);
+    verify(actionSvcClientService).cancelActions(HOTEL_CASE_ID);
   }
 
   @Test
@@ -120,16 +194,16 @@ public class CaseServiceImplTest {
     mockHouseholdCaseLoadSuccess();
     mockCaseEventCategoryForQuestionnaireResponseLoadSuccess();
     mockCaseTypeHouseholdLoadSuccess();
-    mockQuestionnairesForCaseLoadSuccess();
+    mockQuestionnairesForHouseholdCaseLoadSuccess();
     mockCaseEventSave();
     mockAppConfigUse();
 
     // now kick it off
-    CaseEvent caseEvent = caseEventFixtureLoad(0);
-    CaseEvent result = caseService.createCaseEvent(caseEvent);
+    CaseEvent caseEvent = caseEventFixtureLoad(4);
+    caseService.createCaseEvent(caseEvent);
 
     verify(caseRepo).findOne(HOUSEHOLD_CASE_ID);
-    verify(categoryRepo).findByName(CASEEVENT_CATEGORY);
+    verify(categoryRepo).findByName(CASEEVENT_CATEGORY_QR);
     verify(caseRepo).setState(HOUSEHOLD_CASE_ID, CaseDTO.CaseState.CLOSED.name());
     verify(questionnaireRepo).findByCaseId(HOUSEHOLD_CASE_ID);
     verify(questionnaireRepo).setResponseDatetimeFor(any(Timestamp.class), any(Integer.class));
@@ -149,15 +223,31 @@ public class CaseServiceImplTest {
     Case parentCase = cases.get(0);
     Mockito.when(caseRepo.findOne(HOUSEHOLD_CASE_ID)).thenReturn(parentCase);
     return cases;
-  }
-
+  } 
   private List<Category> mockCaseEventCategoryForQuestionnaireResponseLoadSuccess() throws Exception {
     List<Category> categories = FixtureHelper.loadClassFixtures(Category[].class);
     Category category = categories.get(0);
-    Mockito.when(categoryRepo.findByName(CASEEVENT_CATEGORY)).thenReturn(category);
+    Mockito.when(categoryRepo.findByName(CASEEVENT_CATEGORY_QR)).thenReturn(category);
     return categories;
   }
 
+  private List<Category> mockCaseEventCategoryForClassificationIncorrectSuccess() throws Exception {
+    List<Category> categories = FixtureHelper.loadClassFixtures(Category[].class);
+    Category category = categories.get(1);
+    Mockito.when(categoryRepo.findByName(CASEEVENT_CATEGORY_CI)).thenReturn(category);
+    return categories;
+  }
+  private List<Category> mockCaseEventCategoryForRefusalSuccess() throws Exception {
+    List<Category> categories = FixtureHelper.loadClassFixtures(Category[].class);
+    Category category = categories.get(2);
+    Mockito.when(categoryRepo.findByName(CASEEVENT_CATEGORY_R)).thenReturn(category);
+    return categories;
+  }  private List<Category> mockCaseEventCategoryForUndeliverableSuccess() throws Exception {
+    List<Category> categories = FixtureHelper.loadClassFixtures(Category[].class);
+    Category category = categories.get(3);
+    Mockito.when(categoryRepo.findByName(CASEEVENT_CATEGORY_U)).thenReturn(category);
+    return categories;
+  }
   private List<CaseType> mockCaseTypeHouseholdLoadSuccess() throws Exception {
     List<CaseType> caseTypes = FixtureHelper.loadClassFixtures(CaseType[].class);
     CaseType caseType = caseTypes.get(0);
@@ -172,7 +262,16 @@ public class CaseServiceImplTest {
     return caseTypes;
   }
 
-  private List<Questionnaire> mockQuestionnairesForCaseLoadSuccess() throws Exception {
+  private List<Questionnaire> mockQuestionnairesForHotelCaseLoadSuccess() throws Exception {
+    List<Questionnaire> questionnaires = FixtureHelper.loadClassFixtures(Questionnaire[].class);
+    Questionnaire questionnaire = questionnaires.get(0);
+    List<Questionnaire> associatedQuestionnaires = new ArrayList<>();
+    associatedQuestionnaires.add(questionnaire);
+    Mockito.when(questionnaireRepo.findByCaseId(HOTEL_CASE_ID)).thenReturn(associatedQuestionnaires);
+    return questionnaires;
+  }
+
+  private List<Questionnaire> mockQuestionnairesForHouseholdCaseLoadSuccess() throws Exception {
     List<Questionnaire> questionnaires = FixtureHelper.loadClassFixtures(Questionnaire[].class);
     Questionnaire questionnaire = questionnaires.get(0);
     List<Questionnaire> associatedQuestionnaires = new ArrayList<>();

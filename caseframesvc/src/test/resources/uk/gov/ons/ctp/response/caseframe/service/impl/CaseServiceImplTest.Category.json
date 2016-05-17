@@ -1,8 +1,34 @@
+[
 {  
    "name":"QuestionnaireResponse",
    "description":"blah blah blah",
    "role":null,
    "generatedActionType":null,
    "closeCase":true,
+   "manual":false
+},
+{  
+   "name":"Classification Incorrect",
+   "description":"blah blah blah",
+   "role":null,
+   "generatedActionType":null,
+   "closeCase":true,
+   "manual":true
+},
+{  
+   "name":"Refusal",
+   "description":"blah blah blah",
+   "role":null,
+   "generatedActionType":null,
+   "closeCase":true,
+   "manual":true
+},
+{  
+   "name":"Undeliverable",
+   "description":"blah blah blah",
+   "role":null,
+   "generatedActionType":null,
+   "closeCase":true,
    "manual":true
 }
+]

@@ -2,7 +2,7 @@
 {  
    "createdDateTime":1460736159699,
    "caseEventId":1,
-   "caseId":1,
+   "caseId":2,
    "category":"QuestionnaireResponse",
    "subCategory":"subcat",
    "createdBy":"me",
@@ -12,7 +12,7 @@
    "createdDateTime":1460736159699,
    "caseEventId":2,
    "caseId":2,
-   "category":"QuestionnaireResponse",
+   "category":"Classification Incorrect",
    "subCategory":"subcat",
    "createdBy":"me",
    "description":"desc"
@@ -20,8 +20,8 @@
 {  
    "createdDateTime":1460736159699,
    "caseEventId":3,
-   "caseId":3,
-   "category":"QuestionnaireResponse",
+   "caseId":2,
+   "category":"Refusal",
    "subCategory":"subcat",
    "createdBy":"me",
    "description":"desc"
@@ -29,7 +29,16 @@
 {  
    "createdDateTime":1460736159699,
    "caseEventId":4,
-   "caseId":4,
+   "caseId":2,
+   "category":"Undeliverable",
+   "subCategory":"subcat",
+   "createdBy":"me",
+   "description":"desc"
+},
+{  
+   "createdDateTime":1460736159699,
+   "caseEventId":5,
+   "caseId":1,
    "category":"QuestionnaireResponse",
    "subCategory":"subcat",
    "createdBy":"me",
