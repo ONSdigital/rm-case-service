@@ -31,7 +31,18 @@ public final class QuestionnaireServiceImpl implements QuestionnaireService {
    * Text associated with failure of Response data received operation
    */
   public static final String OPERATION_FAILED = "Response operation failed for questionnaireid";
+  /**
+   * Timeout for response received transaction
+   */
   private static final int TRANSACTION_TIMEOUT = 30;
+  /**
+   * The user that created the CaseEvent for a Questionnaire response received
+   */
+  private static final String QUESTIONNAIRE_RESPONSE_RECEIVED_CREATEDBY = "System";
+  /**
+   * The description of the CaseEvent for a Questionnaire response received
+   */
+  private static final String QUESTIONNAIRE_RESPONSE_RECEIVED_DESCRIPTION = "Questionnaire response received";
   
   /**
    * Spring Data Repository for Case service.
@@ -89,6 +100,8 @@ public final class QuestionnaireServiceImpl implements QuestionnaireService {
       caseEventDTO.setCaseId(questionnaire.getCaseId());
       CaseEvent caseEvent = mapperFacade.map(caseEventDTO, CaseEvent.class);
       caseEvent.setCategory(CategoryDTO.CategoryName.QUESTIONNAIRE_RESPONSE.getLabel());
+      caseEvent.setCreatedBy(QUESTIONNAIRE_RESPONSE_RECEIVED_CREATEDBY);
+      caseEvent.setDescription(QUESTIONNAIRE_RESPONSE_RECEIVED_DESCRIPTION);
       caseService.createCaseEvent(caseEvent);  
     } else {
       // Questionnaire does not exist to record response
