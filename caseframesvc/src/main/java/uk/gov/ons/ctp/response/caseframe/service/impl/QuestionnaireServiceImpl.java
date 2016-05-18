@@ -38,7 +38,7 @@ public final class QuestionnaireServiceImpl implements QuestionnaireService {
   /**
    * The user that created the CaseEvent for a Questionnaire response received
    */
-  private static final String QUESTIONNAIRE_RESPONSE_RECEIVED_CREATEDBY = "System";
+  private static final String QUESTIONNAIRE_RESPONSE_RECEIVED_CREATEDBY = "SYSTEM";
   /**
    * The description of the CaseEvent for a Questionnaire response received
    */
