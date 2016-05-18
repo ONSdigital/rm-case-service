@@ -49,3 +49,23 @@ databaseChangeLog:
             relativeToChangelogFile: true
             splitStatements: false
 
+  - changeSet:
+      id: 8.17.0-6
+      author: Narinder
+      changes:
+        - sqlFile:
+            comment: log generate case to caseevent
+            path: function_generate_cases.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 8.17.0-7
+      author: Narinder
+      changes:
+        - sqlFile:
+            comment: add casestate table to caseframe
+            path: caseframe_casestate.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
