@@ -908,6 +908,12 @@ definitions:
       uprn:
         type: integer
         description: Unique Property Reference Number.
+      category:
+        type: string
+        description: only if care home or hotel
+        enum:
+         - HOTEL
+         - CARE HOME
       type:
         type: string
         description: Address type CE, HH, I.
@@ -932,6 +938,12 @@ definitions:
       uprn:
         type: integer
         description: Unique Property Reference Number.
+      category:
+        type: string
+        description: only if care home or hotel
+        enum:
+         - HOTEL
+         - CARE HOME
       type:
         type: string
         description: Address type CE, HH, I.
