@@ -11,6 +11,7 @@ import static uk.gov.ons.ctp.response.caseframe.utility.QuestionnaireBuilder.QUE
 import static uk.gov.ons.ctp.response.caseframe.utility.QuestionnaireBuilder.QUESTIONNAIRE_STATUS;
 
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.MediaType;
 
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
@@ -106,7 +107,7 @@ public final class QuestionnaireEndpointTest extends CTPJerseyTest {
    */
   @Test
   public void responseOperation() {
-    with("http://localhost:9998/questionnaires/%d/response", QUESTIONNAIRE_ID_1).put("")
+    with("http://localhost:9998/questionnaires/%d/response", QUESTIONNAIRE_ID_1).put(MediaType.APPLICATION_JSON_TYPE, "")
         .assertResponseCodeIs(HttpStatus.NO_CONTENT)
         .andClose();
   }
@@ -116,7 +117,7 @@ public final class QuestionnaireEndpointTest extends CTPJerseyTest {
    */
   @Test
   public void responseOperationServerSideIssue() {
-    with("http://localhost:9998/questionnaires/%d/response", QUESTIONNAIRE_ID_SERVER_SIDE_ERROR).put("")
+    with("http://localhost:9998/questionnaires/%d/response", QUESTIONNAIRE_ID_SERVER_SIDE_ERROR).put(MediaType.APPLICATION_JSON_TYPE, "")
         .assertResponseCodeIs(HttpStatus.INTERNAL_SERVER_ERROR)
         .assertStringInBody("$.error.code", CTPException.Fault.SYSTEM_ERROR.toString())
         .assertTimestampExists()

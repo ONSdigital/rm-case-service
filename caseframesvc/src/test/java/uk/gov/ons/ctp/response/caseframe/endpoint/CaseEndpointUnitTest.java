@@ -1,7 +1,5 @@
 package uk.gov.ons.ctp.response.caseframe.endpoint;
 
-import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.OUR_EXCEPTION_MESSAGE;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.UNCHECKED_EXCEPTION;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CASE1_ACTIONPLANID;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CASE1_SAMPLEID;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CASE1_TYPEID;
@@ -12,10 +10,10 @@ import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.C
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CASE3_SAMPLEID;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CASE3_TYPEID;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CASEEVENT_CATEGORY;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CASEEVENT_SUBCATEGORY;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CASEEVENT_DESC1;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CASEEVENT_DESC2;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CASEEVENT_DESC3;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CASEEVENT_SUBCATEGORY;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CASEID;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CASE_QUESTIONSET;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CASE_STATE;
@@ -23,11 +21,14 @@ import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.C
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CREATEDBY;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CREATEDDATE_VALUE;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.NON_EXISTING_ID;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.OUR_EXCEPTION_MESSAGE;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.PROVIDED_JSON_FAILS_VALIDATION;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.QUESTIONNAIREID;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.UNCHECKED_EXCEPTION;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.UPRN;
 
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.MediaType;
 
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
@@ -202,7 +203,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void createCaseEventBadJson() {
-    with("http://localhost:9998/cases/%s/events", CASEID).post(CASEEVENT_INVALIDJSON)
+    with("http://localhost:9998/cases/%s/events", CASEID).post(MediaType.APPLICATION_JSON_TYPE, CASEEVENT_INVALIDJSON)
         .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
         .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
         .assertTimestampExists()
@@ -215,7 +216,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void createCaseEventGoodJson() {
-    with("http://localhost:9998/cases/%s/events", CASEID).post(CASEEVENT_VALIDJSON)
+    with("http://localhost:9998/cases/%s/events", CASEID).post(MediaType.APPLICATION_JSON_TYPE, CASEEVENT_VALIDJSON)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerInBody("$.caseEventId", 1)
         .assertIntegerInBody("$.caseId", CASEID)

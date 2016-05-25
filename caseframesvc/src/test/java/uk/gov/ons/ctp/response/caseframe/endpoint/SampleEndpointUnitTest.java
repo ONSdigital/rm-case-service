@@ -20,6 +20,7 @@ import static uk.gov.ons.ctp.response.caseframe.utility.MockSampleServiceFactory
 import static uk.gov.ons.ctp.response.caseframe.utility.MockSurveyServiceFactory.NON_EXISTING_SURVEYID;
 
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.MediaType;
 
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
@@ -120,7 +121,7 @@ public final class SampleEndpointUnitTest extends CTPJerseyTest {
     String putBody = "{\"type\":\"LA\",\"code\":\"E07000163\"}";
 
     with("http://localhost:9998/samples/%s", SAMPLEID)
-        .put(putBody)
+        .put(MediaType.APPLICATION_JSON_TYPE, putBody)
         .assertResponseCodeIs(HttpStatus.NO_CONTENT)
         .assertEmptyResponse()
         .andClose();
