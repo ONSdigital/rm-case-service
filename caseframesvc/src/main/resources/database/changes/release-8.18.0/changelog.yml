@@ -1,0 +1,22 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 8.18.0-1
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Birt Dashboard Views
+            path: Birt_Dashboard_Views.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 8.18.0-2
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Birt Dashboard Refresh Views
+            path: Birt_Dashboard_RefreshViews_function.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+ 
