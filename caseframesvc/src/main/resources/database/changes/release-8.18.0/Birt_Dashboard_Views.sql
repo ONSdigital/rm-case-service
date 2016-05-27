@@ -13,7 +13,7 @@ CREATE MATERIALIZED VIEW caseframe.responses_by_day AS
                   WHERE c.state  = 'CLOSED'  AND c.caseid = q.caseid AND q.responsedatetime IS NOT NULL
                   AND a.addresstype = 'HH' AND  a.region11cd = 'E12000005' and c.uprn = a.uprn) r) t
  GROUP BY t.days_from_survey
-  ORDER BY t.days_from_survey;
+  ORDER BY t.days_from_survey WITH NO DATA;
 
 ALTER TABLE caseframe.responses_by_day
   OWNER TO postgres;
@@ -116,7 +116,7 @@ CREATE MATERIALIZED VIEW caseframe.responses_by_perc AS
                           AND (EXISTS (SELECT ce.caseid
                                    FROM caseframe.caseevent ce
                                   WHERE c.caseid = ce.caseid AND UPPER(ce.description) LIKE '%REFUSAL%'))) fc) f,
-            t) fp;
+            t) fp WITH NO DATA;
 
 ALTER TABLE caseframe.responses_by_perc
   OWNER TO postgres;
@@ -157,31 +157,7 @@ AND   q.responsedatetime IS NOT NULL
 AND   a.uprn = c.uprn) r
 GROUP BY sector) r2
 USING (sector)
-)s) d ;
+)s) d WITH NO DATA;
 
 ALTER TABLE caseframe.responses_by_sector
   OWNER TO postgres;
-
-
-
--- Function: caseframe.refresh_materialised_views()
--- DROP FUNCTION caseframe.refresh_materialised_views();
-
-CREATE OR REPLACE FUNCTION caseframe.refresh_materialised_views()
-  RETURNS integer AS
-$BODY$BEGIN
-	/* Add any other materialised views here */
-	REFRESH MATERIALIZED VIEW CASEFRAME.RESPONSES_BY_DAY;
-	REFRESH MATERIALIZED VIEW CASEFRAME.RESPONSES_BY_PERC;
-	REFRESH MATERIALIZED VIEW CASEFRAME.RESPONSES_BY_SECTOR;
-
-	RETURN 1;
-END$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-ALTER FUNCTION caseframe.refresh_materialised_views()
-  OWNER TO postgres;
-COMMENT ON FUNCTION caseframe.refresh_materialised_views() IS 'Refreshs the materialised views that are used in the system. Should be called periodically via a crontab or manually on-demand';
-
-
-
