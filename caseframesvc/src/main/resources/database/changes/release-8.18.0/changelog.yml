@@ -29,4 +29,25 @@ databaseChangeLog:
             path: Birt_View_by_perc.sql
             relativeToChangelogFile: true
             splitStatements: false
+
+  - changeSet:
+      id: 8.18.0-4
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: Helpline MI View
+            path: helpline_mi_view.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 8.18.0-5
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: Helpline MI function
+            path: generate_helpline_mi_reports.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
  
