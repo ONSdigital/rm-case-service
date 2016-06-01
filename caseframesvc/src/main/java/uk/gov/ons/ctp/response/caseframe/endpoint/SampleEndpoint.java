@@ -70,7 +70,7 @@ public final class SampleEndpoint implements CTPEndpoint {
 
   /**
    * the PUT endpoint to create cases
-   * @param sampleId the id of the smaple
+   * @param sampleId the id of the sample
    * @param geography the geography
    */
   @PUT
