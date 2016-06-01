@@ -19,4 +19,14 @@ databaseChangeLog:
             path: Birt_Dashboard_RefreshViews_function.sql
             relativeToChangelogFile: true
             splitStatements: false
+
+  - changeSet:
+      id: 8.18.0-3
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Birt Percentage View
+            path: Birt_View_by_perc.sql
+            relativeToChangelogFile: true
+            splitStatements: false
  
