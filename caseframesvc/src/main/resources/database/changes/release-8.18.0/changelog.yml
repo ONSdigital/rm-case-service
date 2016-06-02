@@ -50,4 +50,13 @@ databaseChangeLog:
             relativeToChangelogFile: true
             splitStatements: false
 
+  - changeSet:
+      id: 8.18.0-6
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Birt Percentage View filter Telford
+            path: Birt_View_by_perc_filter.sql
+            relativeToChangelogFile: true
+            splitStatements: false
  
