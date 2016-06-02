@@ -1,5 +1,25 @@
 package uk.gov.ons.ctp.response.caseframe.endpoint;
 
+import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.ADMIN_ROLE;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.CATEGORY1_ACTIONTYPE;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.CATEGORY1_CLOSECASE;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.CATEGORY1_DESC;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.CATEGORY1_MANUAL;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.CATEGORY1_NAME;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.CATEGORY1_ROLE;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.CATEGORY2_ACTIONTYPE;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.CATEGORY2_CLOSECASE;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.CATEGORY2_DESC;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.CATEGORY2_MANUAL;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.CATEGORY2_NAME;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.CATEGORY2_ROLE;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.CATEGORY3_ACTIONTYPE;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.CATEGORY3_CLOSECASE;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.CATEGORY3_DESC;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.CATEGORY3_MANUAL;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.CATEGORY3_NAME;
+import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.CATEGORY3_ROLE;
+
 import javax.ws.rs.core.Application;
 
 import org.junit.Test;
@@ -10,8 +30,10 @@ import uk.gov.ons.ctp.response.caseframe.CaseFrameBeanMapper;
 import uk.gov.ons.ctp.response.caseframe.service.CategoryService;
 import uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory;
 
-import static uk.gov.ons.ctp.response.caseframe.utility.MockCategoryServiceFactory.*;
-
+/**
+ * A test of the category endpoint
+ *
+ */
 public final class CategoryEndpointUnitTest extends CTPJerseyTest {
 
   /**
@@ -23,6 +45,9 @@ public final class CategoryEndpointUnitTest extends CTPJerseyTest {
         new CaseFrameBeanMapper());
   }
 
+  /**
+   * A test
+   */
   @Test
   public void findCategoriesFoundNoRoleSpecified() {
     with("http://localhost:9998/categories")
@@ -38,6 +63,9 @@ public final class CategoryEndpointUnitTest extends CTPJerseyTest {
         .andClose();
   }
 
+  /**
+   * A test
+   */
   @Test
   public void findCategoriesFoundAdminRoleSpecified() {
     String serviceUrl = String.format("http://localhost:9998/categories?role=%s", ADMIN_ROLE);

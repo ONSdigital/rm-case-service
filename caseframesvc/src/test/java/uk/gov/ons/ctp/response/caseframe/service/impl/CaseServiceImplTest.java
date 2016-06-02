@@ -34,34 +34,34 @@ import uk.gov.ons.ctp.response.caseframe.service.ActionSvcClientService;
 
 /**
  * Test the CaseServiceImpl
- * 
+ *
  */
 @RunWith(MockitoJUnitRunner.class)
 public class CaseServiceImplTest {
 
   @Mock
-  ActionSvcClientService actionSvcClientService;
+  private ActionSvcClientService actionSvcClientService;
 
   @Mock
-  CaseRepository caseRepo;
+  private CaseRepository caseRepo;
 
   @Mock
-  QuestionnaireRepository questionnaireRepo;
+  private QuestionnaireRepository questionnaireRepo;
 
   @Mock
-  CaseEventRepository caseEventRepository;
+  private CaseEventRepository caseEventRepository;
 
   @Mock
-  CategoryRepository categoryRepo;
+  private CategoryRepository categoryRepo;
 
   @Mock
-  CaseTypeRepository caseTypeRepo;
+  private CaseTypeRepository caseTypeRepo;
 
   @Mock
-  AppConfig appConfig;
+  private AppConfig appConfig;
 
   @InjectMocks
-  CaseServiceImpl caseService;
+  private CaseServiceImpl caseService;
 
   private static final Integer HOUSEHOLD_CASE_ID = 1;
   private static final Integer HOUSEHOLD_CASETYPE_ID = 1;
@@ -81,6 +81,9 @@ public class CaseServiceImplTest {
 
   private static final String ACTIONSVC_CANCEL_ACTIONS_PATH = "actions/case/123/cancel";
 
+  /**
+   * A test
+   */
   @Test
   public void testCreateCaseEventNoParentCase() {
     Mockito.when(caseRepo.findOne(NON_EXISTING_PARENT_CASE_ID)).thenReturn(null);
@@ -95,6 +98,10 @@ public class CaseServiceImplTest {
     assertNull(result);
   }
 
+  /**
+   * A test
+   * @throws Exception oops
+   */
   @Test
   public void testCreateCaseEventCloseHotelWithResponse() throws Exception {
 
@@ -118,6 +125,10 @@ public class CaseServiceImplTest {
     verify(actionSvcClientService, times(0)).cancelActions(HOTEL_CASE_ID);
   }
 
+  /**
+   * A test
+   * @throws Exception oops
+   */
   @Test
   public void testCreateCaseEventCloseHotelWithClassificationIncorrect() throws Exception {
 
@@ -140,7 +151,11 @@ public class CaseServiceImplTest {
     verify(caseEventRepository).save(caseEvent);
     verify(actionSvcClientService).cancelActions(HOTEL_CASE_ID);
   }
-  
+
+  /**
+   * A test
+   * @throws Exception oops
+   */
   @Test
   public void testCreateCaseEventCloseHotelWithRefusal() throws Exception {
 
@@ -163,7 +178,11 @@ public class CaseServiceImplTest {
     verify(caseEventRepository).save(caseEvent);
     verify(actionSvcClientService).cancelActions(HOTEL_CASE_ID);
   }
-  
+
+  /**
+   * A test
+   * @throws Exception oops
+   */
   @Test
   public void testCreateCaseEventCloseHotelWithUndeliverable() throws Exception {
 
@@ -187,6 +206,10 @@ public class CaseServiceImplTest {
     verify(actionSvcClientService).cancelActions(HOTEL_CASE_ID);
   }
 
+  /**
+   * A test
+   * @throws Exception oops
+   */
   @Test
   public void testCreateCaseEventCloseHousehold() throws Exception {
 
@@ -210,6 +233,11 @@ public class CaseServiceImplTest {
     verify(actionSvcClientService).cancelActions(HOUSEHOLD_CASE_ID);
   }
 
+  /**
+   * mock loading data
+   * @return list of mock cases
+   * @throws Exception oops
+   */
   private List<Case> mockHotelCaseLoadSuccess() throws Exception {
     List<Case> cases = FixtureHelper.loadClassFixtures(Case[].class);
     Case parentCase = cases.get(1);
@@ -217,12 +245,23 @@ public class CaseServiceImplTest {
     return cases;
   }
 
+  /**
+   * mock loading data
+   * @return list of mock cases
+   * @throws Exception oops
+   */
   private List<Case> mockHouseholdCaseLoadSuccess() throws Exception {
     List<Case> cases = FixtureHelper.loadClassFixtures(Case[].class);
     Case parentCase = cases.get(0);
     Mockito.when(caseRepo.findOne(HOUSEHOLD_CASE_ID)).thenReturn(parentCase);
     return cases;
-  } 
+  }
+
+  /**
+   * mock loading data
+   * @return list of mock cases
+   * @throws Exception oops
+   */
   private List<Category> mockCaseEventCategoryForQuestionnaireResponseLoadSuccess() throws Exception {
     List<Category> categories = FixtureHelper.loadClassFixtures(Category[].class);
     Category category = categories.get(0);
@@ -230,23 +269,47 @@ public class CaseServiceImplTest {
     return categories;
   }
 
+  /**
+   * mock loading data
+   * @return list of mock cases
+   * @throws Exception oops
+   */
   private List<Category> mockCaseEventCategoryForClassificationIncorrectSuccess() throws Exception {
     List<Category> categories = FixtureHelper.loadClassFixtures(Category[].class);
     Category category = categories.get(1);
     Mockito.when(categoryRepo.findByName(CASEEVENT_CATEGORY_CI)).thenReturn(category);
     return categories;
   }
+
+  /**
+   * mock loading data
+   * @return list of mock cases
+   * @throws Exception oops
+   */
   private List<Category> mockCaseEventCategoryForRefusalSuccess() throws Exception {
     List<Category> categories = FixtureHelper.loadClassFixtures(Category[].class);
     Category category = categories.get(2);
     Mockito.when(categoryRepo.findByName(CASEEVENT_CATEGORY_R)).thenReturn(category);
     return categories;
-  }  private List<Category> mockCaseEventCategoryForUndeliverableSuccess() throws Exception {
+  }
+
+  /**
+   * mock loading data
+   * @return list of mock categories
+   * @throws Exception oops
+   */
+  private List<Category> mockCaseEventCategoryForUndeliverableSuccess() throws Exception {
     List<Category> categories = FixtureHelper.loadClassFixtures(Category[].class);
     Category category = categories.get(3);
     Mockito.when(categoryRepo.findByName(CASEEVENT_CATEGORY_U)).thenReturn(category);
     return categories;
   }
+
+  /**
+   * mock loading data
+   * @return list of mock cases types
+   * @throws Exception oops
+   */
   private List<CaseType> mockCaseTypeHouseholdLoadSuccess() throws Exception {
     List<CaseType> caseTypes = FixtureHelper.loadClassFixtures(CaseType[].class);
     CaseType caseType = caseTypes.get(0);
@@ -254,6 +317,11 @@ public class CaseServiceImplTest {
     return caseTypes;
   }
 
+  /**
+   * mock loading data
+   * @return list of mock cases types
+   * @throws Exception oops
+   */
   private List<CaseType> mockCaseTypeHotelLoadSuccess() throws Exception {
     List<CaseType> caseTypes = FixtureHelper.loadClassFixtures(CaseType[].class);
     CaseType caseType = caseTypes.get(1);
@@ -261,6 +329,11 @@ public class CaseServiceImplTest {
     return caseTypes;
   }
 
+  /**
+   * mock loading data
+   * @return list of mock questionnaires
+   * @throws Exception oops
+   */
   private List<Questionnaire> mockQuestionnairesForHotelCaseLoadSuccess() throws Exception {
     List<Questionnaire> questionnaires = FixtureHelper.loadClassFixtures(Questionnaire[].class);
     Questionnaire questionnaire = questionnaires.get(0);
@@ -270,6 +343,11 @@ public class CaseServiceImplTest {
     return questionnaires;
   }
 
+  /**
+   * mock loading data
+   * @return list of mock questionnaires
+   * @throws Exception oops
+   */
   private List<Questionnaire> mockQuestionnairesForHouseholdCaseLoadSuccess() throws Exception {
     List<Questionnaire> questionnaires = FixtureHelper.loadClassFixtures(Questionnaire[].class);
     Questionnaire questionnaire = questionnaires.get(0);
@@ -279,12 +357,23 @@ public class CaseServiceImplTest {
     return questionnaires;
   }
 
+  /**
+   * mock loading data
+   * @param caseEventIndex which case event to load
+   * @return a mock case event
+   * @throws Exception oops
+   */
   private CaseEvent caseEventFixtureLoad(int caseEventIndex) throws Exception {
     List<CaseEvent> caseEvents = FixtureHelper.loadClassFixtures(CaseEvent[].class);
     CaseEvent caseEvent = caseEvents.get(caseEventIndex);
     return caseEvent;
   }
 
+  /**
+   * mock loading data
+   * @return a mock case event
+   * @throws Exception oops
+   */
   private CaseEvent mockCaseEventSave() throws Exception {
     List<CaseEvent> caseEvents = FixtureHelper.loadClassFixtures(CaseEvent[].class);
     CaseEvent caseEvent = caseEvents.get(0);
@@ -292,6 +381,10 @@ public class CaseServiceImplTest {
     return caseEvent;
   }
 
+  /**
+   * mock loading data
+   * @throws Exception oops
+   */
   private void mockAppConfigUse() throws Exception {
     ActionSvc actionSvc = new ActionSvc();
     actionSvc.setCancelActionsPath(ACTIONSVC_CANCEL_ACTIONS_PATH);

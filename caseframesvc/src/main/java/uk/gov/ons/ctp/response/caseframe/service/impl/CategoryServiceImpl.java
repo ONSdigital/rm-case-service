@@ -18,20 +18,25 @@ import uk.gov.ons.ctp.response.caseframe.service.CategoryService;
 @Slf4j
 public final class CategoryServiceImpl implements CategoryService {
 
-	/**
-	 * Spring Data Repository for CaseType entities.
-	 **/
-	@Inject
-	private CategoryRepository categoryRepo;
+  /**
+   * Spring Data Repository for CaseType entities.
+   **/
+  @Inject
+  private CategoryRepository categoryRepo;
 
-	@Override
-	public final List<Category> findCategories(String role) {
-		log.debug("Entering findCategories with role {}", role);
-		if (role == null || role.isEmpty()) {
-			return categoryRepo.findAll();
-		} else {
-			return categoryRepo.findByRoleContaining(role);
-		}
-	}
+  /**
+   * find case event categories by role
+   * @param role the role
+   * @return the list of categories
+   */
+  @Override
+  public List<Category> findCategories(String role) {
+    log.debug("Entering findCategories with role {}", role);
+    if (role == null || role.isEmpty()) {
+      return categoryRepo.findAll();
+    } else {
+      return categoryRepo.findByRoleContaining(role);
+    }
+  }
 
 }

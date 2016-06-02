@@ -52,11 +52,11 @@ public final class AddressServiceImpl implements AddressService {
 
   /**
    * Format a postcode into the format used in the database.
-   * 
+   *
    * - convert the input to uppercase
    * - strip leading, inner and trailing whitespace from the input
    * - chop off the last three chars to be used as the inward component
-   * - tack that onto the end of the remainder of the input with a single space between 
+   * - tack that onto the end of the remainder of the input with a single space between
    *
    * @param postcode A Postcode string
    * @return Formatted postcode
@@ -65,7 +65,7 @@ public final class AddressServiceImpl implements AddressService {
     String formattedPostcode = null;
 
     String trimmedPostcode = postcode.trim().toUpperCase();
-    trimmedPostcode=trimmedPostcode.replaceAll("[ ]*", "");
+    trimmedPostcode = trimmedPostcode.replaceAll("[ ]*", "");
     int trimmedPostcodeLength = trimmedPostcode.length();
     String outwardPostCode = trimmedPostcode.substring(0, trimmedPostcodeLength - INWARD_POSTCODE);
     String inwardPostCode = trimmedPostcode.substring(trimmedPostcodeLength - INWARD_POSTCODE, trimmedPostcodeLength);

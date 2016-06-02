@@ -43,16 +43,16 @@ public final class QuestionnaireServiceImpl implements QuestionnaireService {
    * The description of the CaseEvent for a Questionnaire response received
    */
   private static final String QUESTIONNAIRE_RESPONSE_RECEIVED_DESCRIPTION = "Questionnaire response received";
-  
+
   /**
    * Spring Data Repository for Case service.
    */
   @Inject
   private CaseService caseService;
-  
+
   @Inject
   private MapperFacade mapperFacade;
-  
+
   /**
    * Spring Data Repository for Questionnaire Entities.
    */
@@ -84,9 +84,8 @@ public final class QuestionnaireServiceImpl implements QuestionnaireService {
   }
 
   /**
-   * Update a Questionnaire to record a response has been
-   * received in the Survey Data Exchange. 
-   * Process a CaseEvent object for this event.
+   * Update a Questionnaire to record a response has been received in the Survey
+   * Data Exchange. Process a CaseEvent object for this event.
    *
    * @param questionnaireId Integer Unique Id of questionnaire
    * @return Updated Questionnaire object or null
@@ -94,7 +93,7 @@ public final class QuestionnaireServiceImpl implements QuestionnaireService {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   public Questionnaire recordResponse(final Integer questionnaireId) {
     Questionnaire questionnaire = questionnaireRepo.findOne(questionnaireId);
-    if (questionnaire != null) {      
+    if (questionnaire != null) {
       // create a CaseEvent for cancelling Actions and closing a Case
       CaseEventDTO caseEventDTO = new CaseEventDTO();
       caseEventDTO.setCaseId(questionnaire.getCaseId());
@@ -102,11 +101,11 @@ public final class QuestionnaireServiceImpl implements QuestionnaireService {
       caseEvent.setCategory(CategoryDTO.CategoryName.QUESTIONNAIRE_RESPONSE.getLabel());
       caseEvent.setCreatedBy(QUESTIONNAIRE_RESPONSE_RECEIVED_CREATEDBY);
       caseEvent.setDescription(QUESTIONNAIRE_RESPONSE_RECEIVED_DESCRIPTION);
-      caseService.createCaseEvent(caseEvent);  
+      caseService.createCaseEvent(caseEvent);
     } else {
       // Questionnaire does not exist to record response
       return null;
     }
-    return questionnaire; 
+    return questionnaire;
   }
 }

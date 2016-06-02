@@ -33,6 +33,7 @@ public final class CategoryEndpoint implements CTPEndpoint {
 
   /**
    * the GET endpoint to retrieve all categories
+   * @param role the role
    * @return the list of categories
    */
   @GET

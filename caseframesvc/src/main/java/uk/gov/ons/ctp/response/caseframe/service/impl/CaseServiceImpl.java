@@ -161,7 +161,7 @@ public final class CaseServiceImpl implements CaseService {
 
   /**
    * 'Close' the Case and mark all related questionnaires as responded
-   * 
+   *
    * @param caseId Integer case ID
    * @param caseState either CLOSED or RESPONDED
    */

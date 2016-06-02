@@ -107,7 +107,8 @@ public final class QuestionnaireEndpointTest extends CTPJerseyTest {
    */
   @Test
   public void responseOperation() {
-    with("http://localhost:9998/questionnaires/%d/response", QUESTIONNAIRE_ID_1).put(MediaType.APPLICATION_JSON_TYPE, "")
+    with("http://localhost:9998/questionnaires/%d/response",
+        QUESTIONNAIRE_ID_1).put(MediaType.APPLICATION_JSON_TYPE, "")
         .assertResponseCodeIs(HttpStatus.NO_CONTENT)
         .andClose();
   }
@@ -117,7 +118,8 @@ public final class QuestionnaireEndpointTest extends CTPJerseyTest {
    */
   @Test
   public void responseOperationServerSideIssue() {
-    with("http://localhost:9998/questionnaires/%d/response", QUESTIONNAIRE_ID_SERVER_SIDE_ERROR).put(MediaType.APPLICATION_JSON_TYPE, "")
+    with("http://localhost:9998/questionnaires/%d/response",
+         QUESTIONNAIRE_ID_SERVER_SIDE_ERROR).put(MediaType.APPLICATION_JSON_TYPE, "")
         .assertResponseCodeIs(HttpStatus.INTERNAL_SERVER_ERROR)
         .assertStringInBody("$.error.code", CTPException.Fault.SYSTEM_ERROR.toString())
         .assertTimestampExists()

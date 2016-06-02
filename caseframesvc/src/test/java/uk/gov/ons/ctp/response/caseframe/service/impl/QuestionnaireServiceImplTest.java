@@ -26,16 +26,16 @@ import uk.gov.ons.ctp.response.caseframe.service.CaseService;
 public class QuestionnaireServiceImplTest {
 
   @Mock
-  QuestionnaireRepository questionnaireRepo;
+  private QuestionnaireRepository questionnaireRepo;
 
   @Mock
-  CaseService caseService;
-  
+  private CaseService caseService;
+
   @Mock
   private MapperFacade mapperFacade;
-  
+
   @InjectMocks
-  QuestionnaireServiceImpl questionnaireService;
+  private QuestionnaireServiceImpl questionnaireService;
 
   private static final Integer EXISTING_PARENT_CASE_ID = 2;
   private static final String CASEEVENT_CATEGORY = "category";
@@ -48,6 +48,10 @@ public class QuestionnaireServiceImplTest {
   private static final String QUESTIONNAIRE_STATUS = "quest status";
   private static final String QUESTIONNAIRE_QUESTIONSET = "question set";
 
+
+  /**
+   * A test
+   */
   @Test
   public void testRecordResponseForQuestionWithCase() {
     Timestamp currentTime = new Timestamp(System.currentTimeMillis());
@@ -56,7 +60,7 @@ public class QuestionnaireServiceImplTest {
         QUESTIONNAIRE_STATUS, currentTime, currentTime, currentTime, QUESTIONNAIRE_QUESTIONSET);
 
     Mockito.when(questionnaireRepo.findOne(QUESTIONNAIRE_ID)).thenReturn(questionnaire);
-    
+
     CaseEvent caseEventResult = new CaseEvent(1, EXISTING_PARENT_CASE_ID, CASEEVENT_DESCRIPTION, CASEEVENT_CREATEDBY,
         currentTime, CASEEVENT_CATEGORY, CASEEVENT_SUBCATEGORY);
 
@@ -65,7 +69,7 @@ public class QuestionnaireServiceImplTest {
     Mockito.when(mapperFacade.map(caseEventDTO, CaseEvent.class)).thenReturn(caseEventResult);
 
     Mockito.when(caseService.createCaseEvent(caseEventResult)).thenReturn(caseEventResult);
-    
+
     Questionnaire questionnaire1 = questionnaireService.recordResponse(QUESTIONNAIRE_ID);
 
     verify(questionnaireRepo).findOne(QUESTIONNAIRE_ID);
@@ -74,5 +78,5 @@ public class QuestionnaireServiceImplTest {
 
     assertEquals(questionnaire, questionnaire1);
   }
-  
+
 }

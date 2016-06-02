@@ -36,13 +36,18 @@ public class CaseFrameSvcApplication {
 
   @Autowired
   private AppConfig appConfig;
-  
+
+  /**
+   * The action service client bean
+   * @return the RestClient for the action service
+   */
   @Bean
-  public RestClient caseFrameClient () {
-    RestClient restHelper = new RestClient (appConfig.getActionSvc().getScheme(), appConfig.getActionSvc().getHost(), appConfig.getActionSvc().getPort());
+  public RestClient actionServiceClient() {
+    RestClient restHelper = new RestClient(appConfig.getActionSvc().getScheme(), appConfig.getActionSvc().getHost(),
+        appConfig.getActionSvc().getPort());
     return restHelper;
   }
-  
+
   /**
    * The JerseyConfig class used to config the JAX RS implementation.
    */
@@ -62,7 +67,8 @@ public class CaseFrameSvcApplication {
       register(RegionEndpoint.class);
 
       // Response
-      register(new CTPMessageBodyReader<CaseEventDTO>(CaseEventDTO.class) { });
+      register(new CTPMessageBodyReader<CaseEventDTO>(CaseEventDTO.class) {
+      });
       register(CaseEndpoint.class);
       register(CaseTypeEndpoint.class);
       register(CategoryEndpoint.class);
@@ -76,8 +82,7 @@ public class CaseFrameSvcApplication {
   /**
    * The main entry point for this applicaion.
    *
-   * @param args
-   *          runtime command line args
+   * @param args runtime command line args
    */
   public static void main(final String[] args) {
     SpringApplication.run(CaseFrameSvcApplication.class, args);

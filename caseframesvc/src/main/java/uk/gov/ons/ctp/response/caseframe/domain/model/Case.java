@@ -45,7 +45,7 @@ public class Case implements Serializable {
   @Column(name = "createddatetime")
   private Timestamp createdDateTime;
 
-  @Column(name="createdby")
+  @Column(name = "createdby")
   private String createdBy;
 
   @Column(name = "sampleid")

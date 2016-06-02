@@ -21,7 +21,7 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
 
   /**
    * find the Cases by State and ActionPlanId
-   * @param statu case state to find by
+   * @param states case state to find by
    * @param actionPlanId actionPlan id to find by
    * @return the cases found
    */

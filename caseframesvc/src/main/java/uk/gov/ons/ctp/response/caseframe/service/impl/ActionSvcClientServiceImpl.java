@@ -9,6 +9,10 @@ import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.caseframe.config.AppConfig;
 import uk.gov.ons.ctp.response.caseframe.service.ActionSvcClientService;
 
+/**
+ * The impl of the service which calls the action service via REST
+ *
+ */
 @Slf4j
 @Named
 public class ActionSvcClientServiceImpl implements ActionSvcClientService {
@@ -17,7 +21,7 @@ public class ActionSvcClientServiceImpl implements ActionSvcClientService {
   private AppConfig appConfig;
 
   @Inject
-  private RestClient caseFrameClient;
+  private RestClient actionServiceClient;
 
   @Override
   public void createAndPostAction(String actionType, int caseId, String createdBy) {
@@ -26,13 +30,13 @@ public class ActionSvcClientServiceImpl implements ActionSvcClientService {
       actionDTO.setActionTypeName(actionType);
       actionDTO.setCreatedBy(createdBy);
       log.debug("about to post to the Action SVC with {}", actionDTO);
-      caseFrameClient.postResource(appConfig.getActionSvc().getActionsPath(), actionDTO, ActionDTO.class);
+      actionServiceClient.postResource(appConfig.getActionSvc().getActionsPath(), actionDTO, ActionDTO.class);
   }
 
   @Override
   public void cancelActions(int caseId) {
     log.debug("about to put cancel actions to the Action SVC with {}", caseId);
-    caseFrameClient.putResource(appConfig.getActionSvc().getCancelActionsPath(), null, ActionDTO[].class, caseId);
+    actionServiceClient.putResource(appConfig.getActionSvc().getCancelActionsPath(), null, ActionDTO[].class, caseId);
   }
 
 }

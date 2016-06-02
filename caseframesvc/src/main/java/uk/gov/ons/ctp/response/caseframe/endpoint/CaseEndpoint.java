@@ -93,14 +93,16 @@ public final class CaseEndpoint implements CTPEndpoint {
   /**
    * the GET endpoint to find case events by state and actionplanid
    *
-   * @param state the case state to find by
-   * @param actionplanid the id of the action plan to find by
+   * @param states the case states to find by
+   * @param actionPlanId the id of the action plan to find by
    * @return the cases found
    * @throws CTPException something went wrong
    */
   @GET
   @Path("/actionplan/{actionplanid}")
-    public List<BigInteger> findCaseIdsByStateAndActionPlan(@QueryParam("state") final List<String> states, @PathParam("actionplanid") final Integer actionPlanId) throws CTPException {
+    public List<BigInteger> findCaseIdsByStateAndActionPlan(
+        @QueryParam("state") final List<String> states,
+        @PathParam("actionplanid") final Integer actionPlanId) throws CTPException {
     log.debug("Entering findCasesByStateAndActionPlan with {} and {}", states, actionPlanId);
     List<BigInteger> caseIds = caseService.findCaseIdsByStatesAndActionPlanId(states, actionPlanId);
     return caseIds;

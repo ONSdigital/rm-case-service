@@ -10,10 +10,10 @@ public interface ActionSvcClientService {
   /**
    * Make use of the ActionService to create and post a new Action for a given
    * caseId according to Category actionType and CaseEvent createdBy values
-   * 
-   * @param category Category containing action type
+   *
+   * @param actionType action type
    * @param caseId Integer caseId
-   * @param caseEvent CaseEvent containing createdBy detail
+   * @param createdBy who did this
    */
   void createAndPostAction(String actionType, int caseId, String createdBy);
 

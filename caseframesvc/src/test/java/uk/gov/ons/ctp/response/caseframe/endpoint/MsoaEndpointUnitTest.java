@@ -98,7 +98,7 @@ public final class MsoaEndpointUnitTest extends CTPJerseyTest {
         .andClose();
   }
 
-  /*ss
+  /**
    * a test
    */
   @Test

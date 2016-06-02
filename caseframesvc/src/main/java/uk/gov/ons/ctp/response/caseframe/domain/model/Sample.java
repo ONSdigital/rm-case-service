@@ -42,7 +42,7 @@ public class Sample implements Serializable {
 
   private String description;
 
-  @Column(name="addresscriteria")
+  @Column(name = "addresscriteria")
   private String addressCriteria;
 
   @Column(name = "casetypeid")
