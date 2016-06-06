@@ -14,7 +14,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class CaseDTO {
-  
+
+  /**
+   * enum for case state
+   */
   public enum CaseState {
     INIT, RESPONDED, CLOSED;
   }

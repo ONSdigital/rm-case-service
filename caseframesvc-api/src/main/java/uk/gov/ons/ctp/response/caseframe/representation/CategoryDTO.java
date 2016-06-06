@@ -13,20 +13,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class CategoryDTO {
 
+  /**
+   * enum for category type
+   */
   public enum CategoryName {
     CASE_CREATED("CaseCreated"),
     CASE_CLOSED("CaseClosed"),
     ACTION_UPDATED("ActionUpdated"),
     ACTION_COMPLETED("ActionCompleted"),
     ACTION_CREATED("ActionCreated"),
-    GENERAL_ENQUIRY ("General Enquiry"),
+    GENERAL_ENQUIRY("General Enquiry"),
     COMPLAINT("Complaint"),
-    SURVEY_ENQUIRY ("Survey Enquiry"),
-    ADDRESS_DETAILS_INCORRECT ("Address Details Incorrect"),
-    CLASSIFICATION_INCORRECT ("Classification Incorrect"),
+    SURVEY_ENQUIRY("Survey Enquiry"),
+    ADDRESS_DETAILS_INCORRECT("Address Details Incorrect"),
+    CLASSIFICATION_INCORRECT("Classification Incorrect"),
     REFUSAL("Refusal"),
-    REQUEST_FOR_FULFILLMENT ("Request for Fulfilment"),
-    TECHNICAL_QUERY ("Technical Query"),
+    REQUEST_FOR_FULFILLMENT("Request for Fulfilment"),
+    TECHNICAL_QUERY("Technical Query"),
     MISCELLANEOUS("Miscellaneous"),
     PENDING("Pending"),
     CLOSED("Closed"),
@@ -40,14 +43,27 @@ public class CategoryDTO {
 
     private String label;
 
-    private CategoryName(String label) {
-      this.label = label;
+    /**
+     * constructor
+     * @param theLabel the ... label
+     */
+    CategoryName(String theLabel) {
+      this.label = theLabel;
     }
 
+    /**
+     * get the label
+     * @return the label
+     */
     public String getLabel() {
       return label;
     }
 
+    /**
+     * get the enum for a given label
+     * @param label this is the label
+     * @return this is the enum!
+     */
     public static CategoryName getEnumByLabel(String label) {
       for (CategoryName e : CategoryName.values()) {
         if (label.equals(e.label)) {

@@ -19,7 +19,7 @@ public class AddressDTO {
   private String estabType;
 
   private String category;
-  
+
   private String locality;
 
   private String organisationName;
