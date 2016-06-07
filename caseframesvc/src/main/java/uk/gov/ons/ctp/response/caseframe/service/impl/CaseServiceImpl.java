@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Case;
 import uk.gov.ons.ctp.response.caseframe.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.caseframe.domain.model.CaseType;
@@ -128,7 +129,7 @@ public final class CaseServiceImpl implements CaseService {
 
     if (existingCase != null) {
       CaseType caseType = caseTypeRepo.findOne(existingCase.getCaseTypeId());
-      caseEvent.setCreatedDateTime(new Timestamp(System.currentTimeMillis()));
+      caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
       createdCaseEvent = caseEventRepo.save(caseEvent);
 
       Category category = categoryRepo.findByName(caseEvent.getCategory());
@@ -167,7 +168,7 @@ public final class CaseServiceImpl implements CaseService {
    */
   private void closeCase(int caseId, CaseDTO.CaseState caseState) {
 
-    Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+    Timestamp currentTime = DateTimeUtil.nowUTC();
 
     caseRepo.setState(caseId, caseState.name());
     List<Questionnaire> associatedQuestionnaires = questionnaireRepo.findByCaseId(caseId);

@@ -13,6 +13,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import ma.glasnost.orika.MapperFacade;
+import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.caseframe.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Questionnaire;
 import uk.gov.ons.ctp.response.caseframe.domain.repository.QuestionnaireRepository;
@@ -54,7 +55,7 @@ public class QuestionnaireServiceImplTest {
    */
   @Test
   public void testRecordResponseForQuestionWithCase() {
-    Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+    Timestamp currentTime = DateTimeUtil.nowUTC();
 
     Questionnaire questionnaire = new Questionnaire(QUESTIONNAIRE_ID, QUESTIONNAIRE_IAC, EXISTING_PARENT_CASE_ID,
         QUESTIONNAIRE_STATUS, currentTime, currentTime, currentTime, QUESTIONNAIRE_QUESTIONSET);

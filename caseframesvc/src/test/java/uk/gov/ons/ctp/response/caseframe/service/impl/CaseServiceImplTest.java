@@ -17,6 +17,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import uk.gov.ons.ctp.common.FixtureHelper;
+import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.caseframe.config.ActionSvc;
 import uk.gov.ons.ctp.response.caseframe.config.AppConfig;
 import uk.gov.ons.ctp.response.caseframe.domain.model.Case;
@@ -88,7 +89,7 @@ public class CaseServiceImplTest {
   public void testCreateCaseEventNoParentCase() {
     Mockito.when(caseRepo.findOne(NON_EXISTING_PARENT_CASE_ID)).thenReturn(null);
 
-    Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+    Timestamp currentTime = DateTimeUtil.nowUTC();
     CaseEvent caseEvent = new CaseEvent(1, NON_EXISTING_PARENT_CASE_ID, CASEEVENT_DESCRIPTION, CASEEVENT_CREATEDBY,
         currentTime, CASEEVENT_CATEGORY_QR, CASEEVENT_SUBCATEGORY);
 
