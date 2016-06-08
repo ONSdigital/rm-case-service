@@ -121,6 +121,7 @@ public class CaseServiceImplTest {
     verify(categoryRepo).findByName(CASEEVENT_CATEGORY_QR);
     verify(caseRepo).setState(HOTEL_CASE_ID, CaseDTO.CaseState.RESPONDED.name());
     verify(questionnaireRepo).findByCaseId(HOTEL_CASE_ID);
+    verify(questionnaireRepo).setResponseDatetimeFor(any(Timestamp.class), any(Integer.class));
     verify(caseEventRepository).save(caseEvent);
     // this is key for this test - we do NOT cancel actions
     verify(actionSvcClientService, times(0)).cancelActions(HOTEL_CASE_ID);
@@ -147,8 +148,6 @@ public class CaseServiceImplTest {
     verify(caseRepo).findOne(HOTEL_CASE_ID);
     verify(categoryRepo).findByName(CASEEVENT_CATEGORY_CI);
     verify(caseRepo).setState(HOTEL_CASE_ID, CaseDTO.CaseState.CLOSED.name());
-    verify(questionnaireRepo).findByCaseId(HOTEL_CASE_ID);
-    verify(questionnaireRepo).setResponseDatetimeFor(any(Timestamp.class), any(Integer.class));
     verify(caseEventRepository).save(caseEvent);
     verify(actionSvcClientService).cancelActions(HOTEL_CASE_ID);
   }
@@ -174,8 +173,6 @@ public class CaseServiceImplTest {
     verify(caseRepo).findOne(HOTEL_CASE_ID);
     verify(categoryRepo).findByName(CASEEVENT_CATEGORY_R);
     verify(caseRepo).setState(HOTEL_CASE_ID, CaseDTO.CaseState.CLOSED.name());
-    verify(questionnaireRepo).findByCaseId(HOTEL_CASE_ID);
-    verify(questionnaireRepo).setResponseDatetimeFor(any(Timestamp.class), any(Integer.class));
     verify(caseEventRepository).save(caseEvent);
     verify(actionSvcClientService).cancelActions(HOTEL_CASE_ID);
   }
@@ -201,8 +198,6 @@ public class CaseServiceImplTest {
     verify(caseRepo).findOne(HOTEL_CASE_ID);
     verify(categoryRepo).findByName(CASEEVENT_CATEGORY_U);
     verify(caseRepo).setState(HOTEL_CASE_ID, CaseDTO.CaseState.CLOSED.name());
-    verify(questionnaireRepo).findByCaseId(HOTEL_CASE_ID);
-    verify(questionnaireRepo).setResponseDatetimeFor(any(Timestamp.class), any(Integer.class));
     verify(caseEventRepository).save(caseEvent);
     verify(actionSvcClientService).cancelActions(HOTEL_CASE_ID);
   }
