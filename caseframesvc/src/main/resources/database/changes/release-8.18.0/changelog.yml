@@ -59,4 +59,14 @@ databaseChangeLog:
             path: Birt_View_by_perc_filter.sql
             relativeToChangelogFile: true
             splitStatements: false
+
+  - changeSet:
+      id: 8.18.0-7
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Birt Views chnage for refusals
+            path: Birt_Dashboard_Views_refusals.sql
+            relativeToChangelogFile: true
+            splitStatements: false
  
