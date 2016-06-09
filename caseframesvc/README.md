@@ -36,6 +36,3 @@ curl  -H "Accept: application/json" -H "Content-Type: application/json" http://l
 TODO
 curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/cases/1/events -v -X GET
 curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/cases/1 -v -X GET
-
-
-

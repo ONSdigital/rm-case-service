@@ -48,6 +48,11 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
 
   private static final String CASEEVENT_INVALIDJSON =
       "{\"description\":\"a\",\"category\":\"\",\"createdBy\":\"u\"}";
+  private static final String CASEEVENT_INTEGRATION_SAMPLE_INVALIDJSON =
+          "{\"description\":\"Shaminda Eranga, bowling in this match with a report for a suspect action hanging over his head, also switches to round the wicket to Cook, who wristily nurdles off his pads for four. In the comfy seats, the Duke of Edinburgh peers through a set of b\",\n" +
+                  "   \"category\":\"General Enquiry\",\n" +
+                  "   \"createdBy\":\"collect.cso\"\n" +
+                  "}";
   private static final String CASEEVENT_VALIDJSON =
       "{\"description\":\"sometest\",\"category\":\"abc\",\"createdBy\":\"unittest\"}";
 
@@ -199,7 +204,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
   }
 
   /**
-   * a test
+   * a test providing bad json
    */
   @Test
   public void createCaseEventBadJson() {
@@ -212,7 +217,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
   }
 
   /**
-   * a test
+   * a test providing good json
    */
   @Test
   public void createCaseEventGoodJson() {
@@ -226,5 +231,18 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
         .assertStringInBody("$.category", CASEEVENT_CATEGORY)
         .assertStringInBody("$.subCategory", CASEEVENT_SUBCATEGORY)
         .andClose();
+  }
+
+  /**
+   * a test providing bad json (description has more than 100 characters) replicating scenario from Steve Goddard
+   */
+  @Test
+  public void createCaseEventBadJsonIntegrationTestScenario() {
+    with("http://localhost:9998/cases/%s/events", CASEID).post(MediaType.APPLICATION_JSON_TYPE, CASEEVENT_INTEGRATION_SAMPLE_INVALIDJSON)
+            .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
+            .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
+            .assertTimestampExists()
+            .assertMessageEquals(PROVIDED_JSON_FAILS_VALIDATION)
+            .andClose();
   }
 }
