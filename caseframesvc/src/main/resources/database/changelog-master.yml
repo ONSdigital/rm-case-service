@@ -30,5 +30,8 @@ databaseChangeLog:
       file: database/changes/release-8.17.0/changelog.yml  
       
   - include:
-      file: database/changes/release-8.18.0/changelog.yml   
+      file: database/changes/release-8.18.0/changelog.yml
+      
+  - include:
+      file: database/changes/release-8.19.0/changelog.yml    
 
