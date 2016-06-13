@@ -1,0 +1,12 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 8.19.0-1
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: Helpline MI Reports
+            path: generate_helpline_mi_reports.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
