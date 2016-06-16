@@ -4,6 +4,7 @@
 
 ### Eclipse ###
 *.pydevproject
+.factorypath
 .metadata
 .gradle
 bin/
