@@ -18,6 +18,13 @@
     <relativePath>../</relativePath>
   </parent>
 
+  <scm>
+    <connection>scm:git:git@192.168.11.106:ctp/responsemanagement-service.git</connection>
+    <developerConnection>scm:git:git@192.168.11.106:ctp/responsemanagement-service.git</developerConnection>
+    <url>scm:git:git@192.168.11.106:ctp/responsemanagement-service.git</url>
+  </scm>
+
+
   <dependencies>
     <dependency>
       <groupId>uk.gov.ons.ctp.product</groupId>
@@ -131,7 +138,39 @@
           </execution>
         </executions>
       </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>buildnumber-maven-plugin</artifactId>
+        <version>1.4</version>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>create</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <shortRevisionLength>7</shortRevisionLength>
+          <doCheck>false</doCheck>
+          <doUpdate>false</doUpdate>
+          <timestampFormat>{0,time,long} on {0,date,long}</timestampFormat>
+          <items>
+            <item>timestamp</item>
+          </items>
+        </configuration>
+      </plugin>
+
     </plugins>
+
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+
   </build>
 
 </project>
