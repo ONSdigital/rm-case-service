@@ -1,11 +1,12 @@
 See Case Frame Service in the WIKI : http://192.168.10.11/Case_Frame_Service
 
+
 ## To build
-./mvnw clean install checkstyle:checkstyle
+./mvnw clean install
 
 
 ## To be able to log to file
-sudo mkdir -p /var/log/ctp/responsemanagement-caseframesvc sudo chmod -R 777 /var/log/ctp
+sudo mkdir -p /var/log/ctp/responsemanagement/caseframesvc sudo chmod -R 777 /var/log/ctp
 
 
 ## To run
@@ -36,3 +37,7 @@ curl  -H "Accept: application/json" -H "Content-Type: application/json" http://l
 TODO
 curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/cases/1/events -v -X GET
 curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/cases/1 -v -X GET
+
+
+## For CTPA-446
+Test for SampleEndpoint - createCases
