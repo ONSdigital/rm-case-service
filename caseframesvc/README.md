@@ -29,15 +29,10 @@ curl http://localhost:8171/categories/?role=collect-cso -v -X GET
 
 
 ## To test case events
-# Create a case
+# Create a case - valid json
 curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/samples/1 -v -X PUT -d "{\"type\":\"REGION\", \"code\":\"E12000008\"}"
-TODO
-# Create an event
-curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/cases/1/events -v -X POST -d "{\"category\":\"General Enquiry - Escalated\", \"description\":\"manualcurltest\", \"createdBy\":\"philippeb\"}"
-TODO
-curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/cases/1/events -v -X GET
-curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/cases/1 -v -X GET
+204
 
-
-## For CTPA-446
-Test for SampleEndpoint - createCases
+# Create a case - bad json
+curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/samples/1 -v -X PUT -d "{\"badtype\":\"REGION\", \"code\":\"E12000008\"}"
+400 {"error":{"code":"VALIDATION_FAILED","timestamp":"20160704143808891","message":"Provided json is incorrect."}}

@@ -36,7 +36,6 @@ public final class MockCaseServiceFactory implements Factory<CaseService> {
   public static final Integer CASE2_ACTIONPLANID = 2;
   public static final Integer CASE3_ACTIONPLANID = 3;
   public static final Integer CASE_SURVEYID = 1;
-  public static final Integer CASE_PARENTCASEID = null;
   public static final String CASE_QUESTIONSET = "HH";
   public static final Long NON_EXISTING_UPRN = 998L;
   public static final Integer NON_EXISTING_ID = 998;
@@ -49,7 +48,6 @@ public final class MockCaseServiceFactory implements Factory<CaseService> {
   public static final String CASEEVENT_DESC3 = "Test Event 3";
   public static final String CASEEVENT_CATEGORY = "General Enquiry";
   public static final String CASEEVENT_SUBCATEGORY = "Action Type Name";
-  public static final String PROVIDED_JSON_FAILS_VALIDATION = "Provided json fails validation.";
 
   /**
    * provide method

@@ -25,6 +25,7 @@ import uk.gov.ons.ctp.response.caseframe.endpoint.RegionEndpoint;
 import uk.gov.ons.ctp.response.caseframe.endpoint.SampleEndpoint;
 import uk.gov.ons.ctp.response.caseframe.endpoint.SurveyEndpoint;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseEventDTO;
+import uk.gov.ons.ctp.response.caseframe.representation.GeographyDTO;
 
 /**
  * The 'main' entry point for the CaseFrame SpringBoot Application.
@@ -74,6 +75,8 @@ public class CaseFrameSvcApplication {
       register(CategoryEndpoint.class);
       register(QuestionnaireEndpoint.class);
       register(QuestionSetEndpoint.class);
+      register(new CTPMessageBodyReader<GeographyDTO>(GeographyDTO.class) {
+      });
       register(SampleEndpoint.class);
       register(SurveyEndpoint.class);
     }

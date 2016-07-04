@@ -26,8 +26,11 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
 import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.common.jaxrs.CTPMessageBodyReader;
+import uk.gov.ons.ctp.common.jaxrs.GeneralExceptionMapper;
 import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
 import uk.gov.ons.ctp.response.caseframe.CaseFrameBeanMapper;
+import uk.gov.ons.ctp.response.caseframe.representation.GeographyDTO;
 import uk.gov.ons.ctp.response.caseframe.service.SampleService;
 import uk.gov.ons.ctp.response.caseframe.utility.MockSampleServiceFactory;
 
@@ -42,8 +45,7 @@ public final class SampleEndpointUnitTest extends CTPJerseyTest {
   @Override
   public Application configure() {
     return super.init(SampleEndpoint.class, SampleService.class, MockSampleServiceFactory.class,
-        new CaseFrameBeanMapper());
-
+        new CaseFrameBeanMapper(), new CTPMessageBodyReader<GeographyDTO>(GeographyDTO.class));
   }
 
   /**
@@ -51,7 +53,6 @@ public final class SampleEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findSamplesFound() {
-
     with("http://localhost:9998/samples")
         .assertResponseCodeIs(HttpStatus.OK)
         .assertArrayLengthInBodyIs(3)
@@ -61,7 +62,6 @@ public final class SampleEndpointUnitTest extends CTPJerseyTest {
         .assertIntegerListInBody("$..caseTypeId", SAMPLE1_CASETYPEID, SAMPLE2_CASETYPEID, SAMPLE3_CASETYPEID)
         .assertIntegerListInBody("$..surveyId", SURVEYID, SURVEYID, SURVEYID)
         .andClose();
-
   }
 
   /**
@@ -69,7 +69,6 @@ public final class SampleEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findSampleBySampleIdFound() {
-
     with("http://localhost:9998/samples/%s", SAMPLEID)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertArrayLengthInBodyIs(6)
@@ -79,7 +78,6 @@ public final class SampleEndpointUnitTest extends CTPJerseyTest {
         .assertIntegerListInBody("$..caseTypeId", SAMPLE3_CASETYPEID)
         .assertIntegerListInBody("$..surveyId", SURVEYID)
         .andClose();
-
   }
 
   /**
@@ -87,37 +85,32 @@ public final class SampleEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findSampleBySampleIdNotFound() {
-
     with("http://localhost:9998/samples/%s", NON_EXISTING_SAMPLEID)
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
         .assertMessageEquals("Sample not found for id %s", NON_EXISTING_SURVEYID)
         .andClose();
-
   }
 
   /**
    * a test
    */
   @Test
-  public void findSampleBysampleIdUnCheckedException() {
-
+  public void findSampleBySampleIdUnCheckedException() {
     with("http://localhost:9998/samples/%s", UNCHECKED_EXCEPTION)
         .assertResponseCodeIs(HttpStatus.INTERNAL_SERVER_ERROR)
         .assertFaultIs(CTPException.Fault.SYSTEM_ERROR)
         .assertTimestampExists()
         .assertMessageEquals(OUR_EXCEPTION_MESSAGE)
         .andClose();
-
   }
 
   /**
    * a test
    */
   @Test
-  public void createCases() {
-
+  public void createCasesValidJson() {
     String putBody = "{\"type\":\"LA\",\"code\":\"E07000163\"}";
 
     with("http://localhost:9998/samples/%s", SAMPLEID)
@@ -125,5 +118,18 @@ public final class SampleEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.NO_CONTENT)
         .assertEmptyResponse()
         .andClose();
+  }
+
+  @Test
+  public void createCasesBadJson() {
+    String putBody = "{\"badtype\":\"LA\",\"code\":\"E07000163\"}";
+
+    with("http://localhost:9998/samples/%s", SAMPLEID)
+            .put(MediaType.APPLICATION_JSON_TYPE, putBody)
+            .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
+            .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
+            .assertTimestampExists()
+            .assertMessageEquals(GeneralExceptionMapper.BAD_JSON)
+            .andClose();
   }
 }

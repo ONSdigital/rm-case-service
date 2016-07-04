@@ -22,7 +22,6 @@ import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.C
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.CREATEDDATE_VALUE;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.NON_EXISTING_ID;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.OUR_EXCEPTION_MESSAGE;
-import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.PROVIDED_JSON_FAILS_VALIDATION;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.QUESTIONNAIREID;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.UNCHECKED_EXCEPTION;
 import static uk.gov.ons.ctp.response.caseframe.utility.MockCaseServiceFactory.UPRN;
@@ -35,6 +34,7 @@ import org.springframework.http.HttpStatus;
 
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.jaxrs.CTPMessageBodyReader;
+import uk.gov.ons.ctp.common.jaxrs.GeneralExceptionMapper;
 import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
 import uk.gov.ons.ctp.response.caseframe.CaseFrameBeanMapper;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseEventDTO;
@@ -212,7 +212,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
         .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
         .assertTimestampExists()
-        .assertMessageEquals(PROVIDED_JSON_FAILS_VALIDATION)
+        .assertMessageEquals(GeneralExceptionMapper.JSON_FAILS_VALIDATION)
         .andClose();
   }
 
@@ -242,7 +242,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
             .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
             .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
             .assertTimestampExists()
-            .assertMessageEquals(PROVIDED_JSON_FAILS_VALIDATION)
+            .assertMessageEquals(GeneralExceptionMapper.JSON_FAILS_VALIDATION)
             .andClose();
   }
 }
