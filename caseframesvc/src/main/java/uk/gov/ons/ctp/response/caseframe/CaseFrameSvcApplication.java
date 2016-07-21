@@ -17,11 +17,8 @@ import uk.gov.ons.ctp.response.caseframe.endpoint.AddressEndpoint;
 import uk.gov.ons.ctp.response.caseframe.endpoint.CaseEndpoint;
 import uk.gov.ons.ctp.response.caseframe.endpoint.CaseTypeEndpoint;
 import uk.gov.ons.ctp.response.caseframe.endpoint.CategoryEndpoint;
-import uk.gov.ons.ctp.response.caseframe.endpoint.LocalAuthorityEndpoint;
-import uk.gov.ons.ctp.response.caseframe.endpoint.MsoaEndpoint;
 import uk.gov.ons.ctp.response.caseframe.endpoint.QuestionSetEndpoint;
 import uk.gov.ons.ctp.response.caseframe.endpoint.QuestionnaireEndpoint;
-import uk.gov.ons.ctp.response.caseframe.endpoint.RegionEndpoint;
 import uk.gov.ons.ctp.response.caseframe.endpoint.SampleEndpoint;
 import uk.gov.ons.ctp.response.caseframe.endpoint.SurveyEndpoint;
 import uk.gov.ons.ctp.response.caseframe.representation.CaseEventDTO;
@@ -61,13 +58,10 @@ public class CaseFrameSvcApplication {
     public JerseyConfig() {
       packages("uk.gov.ons.ctp");
 
-      // AddressFrame
+      // Register Frame JAX-RS components
       register(AddressEndpoint.class);
-      register(LocalAuthorityEndpoint.class);
-      register(MsoaEndpoint.class);
-      register(RegionEndpoint.class);
 
-      // Response
+      // Register Case JAX-RS components
       register(new CTPMessageBodyReader<CaseEventDTO>(CaseEventDTO.class) {
       });
       register(CaseEndpoint.class);
