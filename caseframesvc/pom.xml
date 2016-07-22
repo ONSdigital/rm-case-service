@@ -34,7 +34,7 @@
     <dependency>
       <groupId>uk.gov.ons.ctp.product</groupId>
       <artifactId>caseframesvc-api</artifactId>
-      <version>9.20.0-SNAPSHOT</version>
+      <version>9.21.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
