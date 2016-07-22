@@ -97,7 +97,7 @@
               <artifactId>caseframesvc-api</artifactId>
             </dependency>
           </requiresUnpack>
-          <mainClass>uk.gov.ons.ctp.response.caseframe.CaseFrameSvcApplication</mainClass>
+          <mainClass>uk.gov.ons.ctp.response.casesvc.CaseFrameSvcApplication</mainClass>
         </configuration>
         <executions>
           <execution>
