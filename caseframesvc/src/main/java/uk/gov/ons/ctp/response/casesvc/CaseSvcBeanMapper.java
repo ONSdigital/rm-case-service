@@ -26,7 +26,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.SurveyDTO;
  *
  */
 @Named
-public class CaseFrameBeanMapper extends ConfigurableMapper {
+public class CaseSvcBeanMapper extends ConfigurableMapper {
 
   /**
    * Setup the mapper for all of our beans. Only fields having non  identical names need

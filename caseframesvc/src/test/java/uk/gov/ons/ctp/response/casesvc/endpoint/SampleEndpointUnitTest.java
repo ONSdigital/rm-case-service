@@ -29,7 +29,7 @@ import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.jaxrs.CTPMessageBodyReader;
 import uk.gov.ons.ctp.common.jaxrs.GeneralExceptionMapper;
 import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
-import uk.gov.ons.ctp.response.casesvc.CaseFrameBeanMapper;
+import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
 import uk.gov.ons.ctp.response.casesvc.representation.GeographyDTO;
 import uk.gov.ons.ctp.response.casesvc.service.SampleService;
 import uk.gov.ons.ctp.response.casesvc.utility.MockSampleServiceFactory;
@@ -45,7 +45,7 @@ public final class SampleEndpointUnitTest extends CTPJerseyTest {
   @Override
   public Application configure() {
     return super.init(SampleEndpoint.class, SampleService.class, MockSampleServiceFactory.class,
-        new CaseFrameBeanMapper(), new CTPMessageBodyReader<GeographyDTO>(GeographyDTO.class));
+        new CaseSvcBeanMapper(), new CTPMessageBodyReader<GeographyDTO>(GeographyDTO.class));
   }
 
   /**

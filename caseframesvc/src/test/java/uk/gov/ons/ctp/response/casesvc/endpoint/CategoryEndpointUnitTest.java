@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 
 import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
-import uk.gov.ons.ctp.response.casesvc.CaseFrameBeanMapper;
+import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
 import uk.gov.ons.ctp.response.casesvc.endpoint.CategoryEndpoint;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
 import uk.gov.ons.ctp.response.casesvc.utility.MockCategoryServiceFactory;
@@ -43,7 +43,7 @@ public final class CategoryEndpointUnitTest extends CTPJerseyTest {
   @Override
   public Application configure() {
     return super.init(CategoryEndpoint.class, CategoryService.class, MockCategoryServiceFactory.class,
-        new CaseFrameBeanMapper());
+        new CaseSvcBeanMapper());
   }
 
   /**

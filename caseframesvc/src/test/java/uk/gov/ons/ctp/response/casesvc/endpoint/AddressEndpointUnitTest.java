@@ -31,7 +31,7 @@ import org.springframework.http.HttpStatus;
 
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
-import uk.gov.ons.ctp.response.casesvc.CaseFrameBeanMapper;
+import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
 import uk.gov.ons.ctp.response.casesvc.endpoint.AddressEndpoint;
 import uk.gov.ons.ctp.response.casesvc.service.AddressService;
 import uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory;
@@ -47,7 +47,7 @@ public final class AddressEndpointUnitTest extends CTPJerseyTest {
   @Override
   public Application configure() {
     return super.init(AddressEndpoint.class, AddressService.class, MockAddressServiceFactory.class,
-        new CaseFrameBeanMapper());
+        new CaseSvcBeanMapper());
   }
 
   /**
