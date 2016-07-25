@@ -25,12 +25,12 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.GeographyDTO;
 
 /**
- * The 'main' entry point for the CaseFrame SpringBoot Application.
+ * The 'main' entry point for the CaseSvc SpringBoot Application.
  */
 @SpringBootApplication
 @EnableTransactionManagement
 @EnableAsync
-public class CaseFrameSvcApplication {
+public class CaseSvcApplication {
 
   @Autowired
   private AppConfig appConfig;
@@ -82,6 +82,6 @@ public class CaseFrameSvcApplication {
    * @param args runtime command line args
    */
   public static void main(final String[] args) {
-    SpringApplication.run(CaseFrameSvcApplication.class, args);
+    SpringApplication.run(CaseSvcApplication.class, args);
   }
 }
