@@ -1,0 +1,40 @@
+databaseChangeLog:
+
+  - preConditions:
+    - runningAs:
+        username: postgres
+
+
+  - include:
+      file: database/changes/release-7.10.0/changelog.yml
+
+  - include:
+      file: database/changes/release-8.12.0/changelog.yml
+
+  - include:
+      file: database/changes/release-8.13.0/changelog.yml
+
+  - include:
+      file: database/changes/release-8.14.0/changelog.yml
+
+  - include:
+      file: database/changes/release-8.15.0/changelog.yml
+      
+  - include:
+      file: database/changes/release-8.15.1/changelog.yml    
+
+  - include:
+      file: database/changes/release-8.16.0/changelog.yml
+      
+  - include:
+      file: database/changes/release-8.17.0/changelog.yml  
+      
+  - include:
+      file: database/changes/release-8.18.0/changelog.yml
+      
+  - include:
+      file: database/changes/release-8.19.0/changelog.yml
+
+  - include:
+      file: database/changes/release-9.21.0/changelog.yml    
+
