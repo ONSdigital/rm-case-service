@@ -511,7 +511,6 @@ $$;
 ALTER FUNCTION caseframe.logmessage(p_messagetext text, p_jobid numeric, p_messagelevel text, p_functionname text) OWNER TO postgres;
 
 --
--- TOC entry 390 (class 1255 OID 28928)
 -- Name: marc(double precision, double precision, double precision, double precision); Type: FUNCTION; Schema: caseframe; Owner: postgres
 --
 
@@ -528,7 +527,6 @@ End$$;
 ALTER FUNCTION caseframe.marc(bfo double precision, n double precision, p1 double precision, p2 double precision) OWNER TO postgres;
 
 --
--- TOC entry 391 (class 1255 OID 28929)
 -- Name: phid(integer, double precision, double precision, double precision, double precision, double precision); Type: FUNCTION; Schema: caseframe; Owner: postgres
 --
 
@@ -558,7 +556,6 @@ End$$;
 ALTER FUNCTION caseframe.phid(north1 integer, n0 double precision, afo double precision, phi0 double precision, n double precision, bfo double precision) OWNER TO postgres;
 
 --
--- TOC entry 393 (class 1255 OID 28959)
 -- Name: refresh_materialised_views(); Type: FUNCTION; Schema: caseframe; Owner: postgres
 --
 
@@ -577,7 +574,6 @@ END$$;
 ALTER FUNCTION caseframe.refresh_materialised_views() OWNER TO postgres;
 
 --
--- Dependencies: 393
 -- Name: FUNCTION refresh_materialised_views(); Type: COMMENT; Schema: caseframe; Owner: postgres
 --
 
@@ -589,7 +585,6 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- TOC entry 279 (class 1259 OID 28905)
 -- Name: address; Type: TABLE; Schema: caseframe; Owner: role_connect; Tablespace: 
 --
 
@@ -620,7 +615,6 @@ CREATE TABLE address (
 ALTER TABLE caseframe.address OWNER TO role_connect;
 
 --
--- TOC entry 266 (class 1259 OID 28658)
 -- Name: case; Type: TABLE; Schema: caseframe; Owner: role_connect; Tablespace: 
 --
 
@@ -655,7 +649,6 @@ CREATE SEQUENCE caseeventidseq
 ALTER TABLE caseframe.caseeventidseq OWNER TO postgres;
 
 --
--- TOC entry 267 (class 1259 OID 28661)
 -- Name: caseevent; Type: TABLE; Schema: caseframe; Owner: role_connect; Tablespace: 
 --
 
@@ -673,7 +666,6 @@ CREATE TABLE caseevent (
 ALTER TABLE caseframe.caseevent OWNER TO role_connect;
 
 --
--- TOC entry 274 (class 1259 OID 28778)
 -- Name: caseidseq; Type: SEQUENCE; Schema: caseframe; Owner: postgres
 --
 
@@ -688,7 +680,6 @@ CREATE SEQUENCE caseidseq
 ALTER TABLE caseframe.caseidseq OWNER TO postgres;
 
 --
--- TOC entry 280 (class 1259 OID 28930)
 -- Name: casestate; Type: TABLE; Schema: caseframe; Owner: postgres; Tablespace: 
 --
 
@@ -701,7 +692,6 @@ CREATE TABLE casestate (
 ALTER TABLE caseframe.casestate OWNER TO postgres;
 
 --
--- TOC entry 268 (class 1259 OID 28664)
 -- Name: casetype; Type: TABLE; Schema: caseframe; Owner: role_connect; Tablespace: 
 --
 
@@ -717,7 +707,6 @@ CREATE TABLE casetype (
 ALTER TABLE caseframe.casetype OWNER TO role_connect;
 
 --
--- TOC entry 276 (class 1259 OID 28806)
 -- Name: category; Type: TABLE; Schema: caseframe; Owner: role_connect; Tablespace: 
 --
 
