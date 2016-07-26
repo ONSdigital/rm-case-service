@@ -23,8 +23,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "sample", schema = "caseframe")
-@NamedStoredProcedureQuery(name = "generate_cases", procedureName = "caseframe.generate_cases", parameters = {
+@Table(name = "sample", schema = "casesvc")
+@NamedStoredProcedureQuery(name = "generate_cases", procedureName = "casesvc.generate_cases", parameters = {
     @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_sampleid", type = Integer.class),
     @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_geog_area_type", type = String.class),
     @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_geog_area_code", type = String.class),

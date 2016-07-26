@@ -1,8 +1,8 @@
---initial data to insert into caseframe
+--initial data to insert into casesvc
 -- tables are casestate, casetype, category, questionset, sample, survey
 --this script populates with the data used for 2016 Census Test.
 
-SET SCHEMA 'caseframe';
+SET SCHEMA 'casesvc';
 
 INSERT INTO casestate (state, description) VALUES ('INIT', 'Initial creation of case');
 INSERT INTO casestate (state, description) VALUES ('CLOSED', 'Case Closed ');
@@ -10,7 +10,7 @@ INSERT INTO casestate (state, description) VALUES ('RESPONDED', '2016 Hotels onl
 
 
 --
--- Data for Name: questionset; Type: TABLE DATA; Schema: caseframe; Owner: role_connect
+-- Data for Name: questionset; Type: TABLE DATA; Schema: casesvc; Owner: role_connect
 --
 
 INSERT INTO questionset (questionset, description) VALUES ('HH', 'Households');
@@ -18,7 +18,7 @@ INSERT INTO questionset (questionset, description) VALUES ('CE', 'Communal Estab
 
 
 --
--- Data for Name: casetype; Type: TABLE DATA; Schema: caseframe; Owner: role_connect
+-- Data for Name: casetype; Type: TABLE DATA; Schema: casesvc; Owner: role_connect
 --
 
 INSERT INTO casetype (casetypeid, name, description, actionplanid, questionset) VALUES (1, 'HH', 'Household', 1, 'HH');
@@ -27,7 +27,7 @@ INSERT INTO casetype (casetypeid, name, description, actionplanid, questionset) 
 
 
 --
--- Data for Name: category; Type: TABLE DATA; Schema: caseframe; Owner: role_connect
+-- Data for Name: category; Type: TABLE DATA; Schema: casesvc; Owner: role_connect
 --
 
 INSERT INTO category (name, description, closecase, manual, role, generatedactiontype) VALUES ('CaseCreated', 'Initial Creation Of Case', NULL, false, NULL, NULL);
@@ -57,14 +57,14 @@ INSERT INTO category (name, description, closecase, manual, role, generatedactio
 
 
 --
--- Data for Name: survey; Type: TABLE DATA; Schema: caseframe; Owner: role_connect
+-- Data for Name: survey; Type: TABLE DATA; Schema: casesvc; Owner: role_connect
 --
 
 INSERT INTO survey (surveyid, name, description) VALUES (1, '2016 Test', '2016 Census Test');
 
 
 --
--- Data for Name: sample; Type: TABLE DATA; Schema: caseframe; Owner: role_connect
+-- Data for Name: sample; Type: TABLE DATA; Schema: casesvc; Owner: role_connect
 --
 
 INSERT INTO sample (sampleid, name, description, addresscriteria, casetypeid, surveyid) VALUES (1, 'Residential', 'Households', 'addresstype = ''HH''', 1, 1);

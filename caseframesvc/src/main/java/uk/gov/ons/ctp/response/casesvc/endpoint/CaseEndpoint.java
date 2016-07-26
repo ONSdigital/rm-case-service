@@ -25,7 +25,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 
 /**
- * The REST endpoint controller for CaseFrame Cases
+ * The REST endpoint controller for CaseSvc Cases
  */
 @Path("/cases")
 @Produces({ "application/json" })

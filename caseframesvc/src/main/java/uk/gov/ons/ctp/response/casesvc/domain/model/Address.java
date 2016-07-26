@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-@Table(name = "address", schema = "caseframe")
+@Table(name = "address", schema = "casesvc")
 public class Address implements Serializable {
 
   private static final long serialVersionUID = 4831221877955672383L;

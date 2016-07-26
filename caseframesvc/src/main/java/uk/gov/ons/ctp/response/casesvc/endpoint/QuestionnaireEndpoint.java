@@ -23,7 +23,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.QuestionnaireDTO;
 import uk.gov.ons.ctp.response.casesvc.service.QuestionnaireService;
 
 /**
- * A RESTFul Endpoint controller for the CaseFrame product for all actions
+ * A RESTFul Endpoint controller for the CaseSvc product for all actions
  * relating to Questionnaires.
  */
 

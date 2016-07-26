@@ -19,7 +19,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.SurveyDTO;
 import uk.gov.ons.ctp.response.casesvc.service.SurveyService;
 
 /**
- * The REST endpoint controller for CaseFrame Surveys
+ * The REST endpoint controller for CaseSvc Surveys
  */
 @Path("/surveys")
 @Produces({ "application/json" })

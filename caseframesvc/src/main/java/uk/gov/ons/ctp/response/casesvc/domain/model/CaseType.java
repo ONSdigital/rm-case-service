@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "casetype", schema = "caseframe")
+@Table(name = "casetype", schema = "casesvc")
 public class CaseType implements Serializable {
 
   private static final long serialVersionUID = -2974430124226920391L;

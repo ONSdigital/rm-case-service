@@ -50,7 +50,7 @@ public interface QuestionnaireRepository extends JpaRepository<Questionnaire, In
    * @return the number of questionnaires updated
    */
   @Modifying
-  @Query(value = "UPDATE caseframe.questionnaire SET responsedatetime = ?1 WHERE questionnaireid = ?2",
+  @Query(value = "UPDATE casesvc.questionnaire SET responsedatetime = ?1 WHERE questionnaireid = ?2",
          nativeQuery = true)
   int setResponseDatetimeFor(Timestamp responseDatetime, Integer questionnaireid);
 

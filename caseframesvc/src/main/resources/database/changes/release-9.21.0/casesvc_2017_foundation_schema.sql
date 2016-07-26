@@ -2,10 +2,10 @@
 --11 tables, 4 sequences, 10 functions, 4 views
 
 
-SET SCHEMA 'caseframe';
+SET SCHEMA 'casesvc';
 
 
--- Name: create_questionnaire(bigint); Type: FUNCTION; Schema: caseframe; Owner: postgres
+-- Name: create_questionnaire(bigint); Type: FUNCTION; Schema: casesvc; Owner: postgres
 --
 
 CREATE FUNCTION create_questionnaire(p_caseid bigint) RETURNS boolean
@@ -21,12 +21,12 @@ BEGIN
 
 -- Get the formtype from the case table for the case id passed in
 SELECT c.questionset INTO v_questionset
-FROM caseframe.case c
+FROM casesvc.case c
 WHERE caseid = p_caseid;
 
 -- Insert a record into the questionnaire table
 
-INSERT INTO caseframe.questionnaire
+INSERT INTO casesvc.questionnaire
 (
  questionnaireid
 ,caseid
@@ -38,14 +38,14 @@ INSERT INTO caseframe.questionnaire
 ,iac 
 ) 
 (SELECT
- NEXTVAL('caseframe.qidseq'::regclass)
+ NEXTVAL('casesvc.qidseq'::regclass)
 ,p_caseid
 --,state
 --,dispatchdatetime
 --,responsedatetime
 --,receiptdatetime
 ,v_questionset
-,SUBSTRING(CURRVAL('caseframe.qidseq'::regclass)::text,6,5) || SUBSTRING(CURRVAL('caseframe.qidseq'::regclass)::text,1,5)
+,SUBSTRING(CURRVAL('casesvc.qidseq'::regclass)::text,6,5) || SUBSTRING(CURRVAL('casesvc.qidseq'::regclass)::text,1,5)
 );
 
   RETURN TRUE;
@@ -53,18 +53,18 @@ INSERT INTO caseframe.questionnaire
 EXCEPTION
 
  WHEN OTHERS THEN
-    PERFORM caseframe.logmessage(p_messagetext := 'CREATE QUESTIONNAIRE EXCEPTION TRIGGERED SQLERRM: ' || SQLERRM || ' SQLSTATE : ' || SQLSTATE
+    PERFORM casesvc.logmessage(p_messagetext := 'CREATE QUESTIONNAIRE EXCEPTION TRIGGERED SQLERRM: ' || SQLERRM || ' SQLSTATE : ' || SQLSTATE
                              ,p_jobid := 0   
                              ,p_messagelevel := 'FATAL'
-                             ,p_functionname := 'caseframe.create_questionnaire');
+                             ,p_functionname := 'casesvc.create_questionnaire');
   RETURN FALSE; 
 END;
 $$;
 
 
-ALTER FUNCTION caseframe.create_questionnaire(p_caseid bigint) OWNER TO postgres;
+ALTER FUNCTION casesvc.create_questionnaire(p_caseid bigint) OWNER TO postgres;
 
--- Name: create_questionnaires(); Type: FUNCTION; Schema: caseframe; Owner: postgres
+-- Name: create_questionnaires(); Type: FUNCTION; Schema: casesvc; Owner: postgres
 --
 
 CREATE FUNCTION create_questionnaires() RETURNS boolean
@@ -79,20 +79,20 @@ BEGIN
 
    -- For each case in the case table call the funtion to create a questionnaire
    FOR r_case IN SELECT c.caseid 
-                  FROM caseframe.case c
+                  FROM casesvc.case c
                   WHERE NOT EXISTS
                         (SELECT q.caseid 
-                         FROM caseframe.questionnaire q 
+                         FROM casesvc.questionnaire q 
                          WHERE q.caseid = c.caseid) LOOP
         
-	EXECUTE 'SELECT * FROM caseframe.create_questionnaire(' || r_case.caseid || ')';
+	EXECUTE 'SELECT * FROM casesvc.create_questionnaire(' || r_case.caseid || ')';
         v_case_count := v_case_count + 1;
    END LOOP;
 
-   PERFORM caseframe.logmessage(p_messagetext := v_case_count || ' NEW QUESTIONNAIRE(S) CREATED FROM CASE TABLE'
+   PERFORM casesvc.logmessage(p_messagetext := v_case_count || ' NEW QUESTIONNAIRE(S) CREATED FROM CASE TABLE'
                             ,p_jobid := 0   
                             ,p_messagelevel := 'INFO'
-                            ,p_functionname := 'caseframe.create_questionnaires');
+                            ,p_functionname := 'casesvc.create_questionnaires');
 
 
 RETURN TRUE;
@@ -103,17 +103,17 @@ EXCEPTION
     PERFORM action.logmessage(p_messagetext := 'CREATE QUESTIONNAIES EXCEPTION TRIGGERED SQLERRM: ' || SQLERRM || ' SQLSTATE : ' || SQLSTATE
                              ,p_jobid := 0   
                              ,p_messagelevel := 'FATAL'
-                             ,p_functionname := 'caseframe.create_questionnaires');
+                             ,p_functionname := 'casesvc.create_questionnaires');
   RETURN FALSE;    
 
 END;
 $$;
 
 
-ALTER FUNCTION caseframe.create_questionnaires() OWNER TO postgres;
+ALTER FUNCTION casesvc.create_questionnaires() OWNER TO postgres;
 
 --
--- Name: eastings_northings_to_lat(numeric, numeric); Type: FUNCTION; Schema: caseframe; Owner: postgres
+-- Name: eastings_northings_to_lat(numeric, numeric); Type: FUNCTION; Schema: casesvc; Owner: postgres
 --
 
 CREATE FUNCTION eastings_northings_to_lat(eastings numeric, northings numeric) RETURNS double precision
@@ -153,11 +153,11 @@ BEGIN
 	e2 := ((aFo ^ 2) - (bFo ^ 2)) / (aFo ^ 2);
 	n := (aFo - bFo) / (aFo + bFo);
 	
-	InitPHI = caseframe.PHId(North1, N0, aFo, PHI0, n, bFo);
+	InitPHI = casesvc.PHId(North1, N0, aFo, PHI0, n, bFo);
 	nuPL := aFo / ((1 - (e2 * (Sin(InitPHI)) ^ 2)) ^ 0.5);
 	rhoPL := (nuPL * (1 - e2)) / (1 - (e2 * (Sin(InitPHI)) ^ 2));
 	eta2PL = (nuPL / rhoPL) - 1;
-	M = caseframe.Marc(bFo, n, PHI0, InitPHI);
+	M = casesvc.Marc(bFo, n, PHI0, InitPHI);
 	Et = East1 - E0;
 	VII = (Tan(InitPHI)) / (2 * nuPL * rhoPL);
 	VIII = ((Tan(InitPHI)) / (24 * rhoPL * nuPL ^ 3)) * (5 + (3 * ((Tan(InitPHI)) ^ 2)) + eta2PL - (9 * ((Tan(InitPHI)) ^ 2) * eta2PL));
@@ -167,10 +167,10 @@ BEGIN
 END;$$;
 
 
-ALTER FUNCTION caseframe.eastings_northings_to_lat(eastings numeric, northings numeric) OWNER TO postgres;
+ALTER FUNCTION casesvc.eastings_northings_to_lat(eastings numeric, northings numeric) OWNER TO postgres;
 
 --
--- Name: eastings_northings_to_long(numeric, numeric); Type: FUNCTION; Schema: caseframe; Owner: postgres
+-- Name: eastings_northings_to_long(numeric, numeric); Type: FUNCTION; Schema: casesvc; Owner: postgres
 --
 
 CREATE FUNCTION eastings_northings_to_long(eastings numeric, northings numeric) RETURNS double precision
@@ -210,11 +210,11 @@ BEGIN
 	bFo = b * F0;
 	e2 = (aFo ^ 2 - bFo ^ 2) / aFo ^ 2;
 	n = (aFo - bFo) / (aFo + bFo);
-	InitPHI = caseframe.PHId(North1, N0, aFo, PHI0, n, bFo);
+	InitPHI = casesvc.PHId(North1, N0, aFo, PHI0, n, bFo);
 	nuPL = aFo / ((1 - (e2 * (Sin(InitPHI)) ^ 2)) ^ 0.5);
 	rhoPL = (nuPL * (1 - e2)) / (1 - (e2 * (Sin(InitPHI)) ^ 2));
 	eta2PL = (nuPL / rhoPL) - 1;
-	M = caseframe.Marc(bFo, n, PHI0, InitPHI);
+	M = casesvc.Marc(bFo, n, PHI0, InitPHI);
 	Et = East1 - E0;
 	X = ((Cos(InitPHI)) ^ -1) / nuPL;
 	XI = (((Cos(InitPHI)) ^ -1) / (6 * nuPL ^ 3)) * ((nuPL / rhoPL) + (2 * ((Tan(InitPHI)) ^ 2)));
@@ -225,10 +225,10 @@ BEGIN
 END;$$;
 
 
-ALTER FUNCTION caseframe.eastings_northings_to_long(eastings numeric, northings numeric) OWNER TO postgres;
+ALTER FUNCTION casesvc.eastings_northings_to_long(eastings numeric, northings numeric) OWNER TO postgres;
 
 --
--- Name: generate_cases(integer, character varying, character varying); Type: FUNCTION; Schema: caseframe; Owner: postgres
+-- Name: generate_cases(integer, character varying, character varying); Type: FUNCTION; Schema: casesvc; Owner: postgres
 --
 
 CREATE FUNCTION generate_cases(p_sampleid integer, p_geog_area_type character varying, p_geog_area_code character varying) RETURNS boolean
@@ -251,20 +251,20 @@ BEGIN
        END INTO v_geog_select_text ;
 
 
- select addresscriteria from caseframe.sample where sampleid = p_sampleid into v_addresscriteria;
+ select addresscriteria from casesvc.sample where sampleid = p_sampleid into v_addresscriteria;
 
 IF v_geog_select_text = '0=1' THEN
-   PERFORM caseframe.logmessage(p_messagetext := '*** 0 CASES CREATED - INVALID Geography Area Type: ' || p_geog_area_type || ' *** SQL NOT created for Generate Cases for Sampleid: ' || p_sampleid || ', Geography Area Type: ' || p_geog_area_type 
+   PERFORM casesvc.logmessage(p_messagetext := '*** 0 CASES CREATED - INVALID Geography Area Type: ' || p_geog_area_type || ' *** SQL NOT created for Generate Cases for Sampleid: ' || p_sampleid || ', Geography Area Type: ' || p_geog_area_type 
                                || ', Geography Area Code: ' || p_geog_area_code || ', Address Criteria: ' || v_addresscriteria
                                ,p_jobid := 0   
                                ,p_messagelevel := 'ERROR'
-                               ,p_functionname := 'caseframe.generate_cases');
+                               ,p_functionname := 'casesvc.generate_cases');
 
 ELSE
 
 
-   v_sql_text := 'INSERT INTO caseframe.case(caseid, uprn, state, casetypeid, createddatetime, createdby, sampleid, actionplanid, surveyid, questionset)
-   select nextval(''caseframe.caseidseq'')
+   v_sql_text := 'INSERT INTO casesvc.case(caseid, uprn, state, casetypeid, createddatetime, createdby, sampleid, actionplanid, surveyid, questionset)
+   select nextval(''casesvc.caseidseq'')
    ,a.uprn
    ,''INIT''
    ,s.casetypeid
@@ -274,51 +274,51 @@ ELSE
    ,ct.actionplanid
    ,s.surveyid
    ,ct.questionset
-   from caseframe.sample s
-  ,caseframe.casetype ct
-  ,caseframe.address a where ' || v_geog_select_text  ||' and s.sampleid = ' || p_sampleid || ' and s.casetypeid = ct.casetypeid and ' || v_addresscriteria
-   || 'and a.uprn NOT IN (SELECT uprn from caseframe.case )';
+   from casesvc.sample s
+  ,casesvc.casetype ct
+  ,casesvc.address a where ' || v_geog_select_text  ||' and s.sampleid = ' || p_sampleid || ' and s.casetypeid = ct.casetypeid and ' || v_addresscriteria
+   || 'and a.uprn NOT IN (SELECT uprn from casesvc.case )';
 
 
-   PERFORM caseframe.logmessage(p_messagetext := 'SQL created for Generate Cases for Sampleid: ' || p_sampleid || ', Geography Area Type: ' || p_geog_area_type 
+   PERFORM casesvc.logmessage(p_messagetext := 'SQL created for Generate Cases for Sampleid: ' || p_sampleid || ', Geography Area Type: ' || p_geog_area_type 
                                || ', Geography Area Code: ' || p_geog_area_code || ', Address Criteria: ' || v_addresscriteria
                                ,p_jobid := 0   
                                ,p_messagelevel := 'INFO'
-                               ,p_functionname := 'caseframe.generate_cases');
+                               ,p_functionname := 'casesvc.generate_cases');
 
    EXECUTE v_sql_text;
 
 
    GET DIAGNOSTICS v_rowcount = ROW_COUNT;  
 
-   PERFORM caseframe.logmessage(p_messagetext := v_rowcount  || ' NEW CASES generated for Sampleid: ' || p_sampleid || ', Geography Area Type: ' || p_geog_area_type 
+   PERFORM casesvc.logmessage(p_messagetext := v_rowcount  || ' NEW CASES generated for Sampleid: ' || p_sampleid || ', Geography Area Type: ' || p_geog_area_type 
                                 || ', Geography Area Code: ' || p_geog_area_code || ', Address Criteria: ' || v_addresscriteria
                                ,p_jobid := 0   
                                ,p_messagelevel := 'INFO'
-                               ,p_functionname := 'caseframe.generate_cases');
+                               ,p_functionname := 'casesvc.generate_cases');
 
    --for each case created log to caseevent that case created
    --this method is only acceptable for 2016 and will need to be revisited later
    --as cases are only created this way.
    --which is why has not been separated out to separate function
 
-INSERT INTO caseframe.caseevent(
+INSERT INTO casesvc.caseevent(
             caseeventid, caseid, description, createdby, createddatetime, 
             category)
-SELECT nextval('caseframe.caseeventidseq'),
+SELECT nextval('casesvc.caseeventidseq'),
    c.caseid,      
    'Initial Creation Of Case',
    c.createdby,
    c.createddatetime,
    'CaseCreated'
-            FROM caseframe.case c
+            FROM casesvc.case c
            WHERE c.caseid NOT IN
-           (SELECT caseid FROM caseframe.caseevent ce
+           (SELECT caseid FROM casesvc.caseevent ce
            WHERE ce.category = 'CaseCreated');
 
 
    --create questionnaires for each case
-  PERFORM caseframe.create_questionnaires();
+  PERFORM casesvc.create_questionnaires();
 END IF;
 
 
@@ -327,20 +327,20 @@ END IF;
   EXCEPTION
 
  WHEN OTHERS THEN
-    PERFORM caseframe.logmessage(p_messagetext := 'GENERATE CASES EXCEPTION TRIGGERED SQLERRM: ' || SQLERRM || ' SQLSTATE : ' || SQLSTATE
+    PERFORM casesvc.logmessage(p_messagetext := 'GENERATE CASES EXCEPTION TRIGGERED SQLERRM: ' || SQLERRM || ' SQLSTATE : ' || SQLSTATE
                              ,p_jobid := 0
                              ,p_messagelevel := 'FATAL'
-                             ,p_functionname := 'caseframe.generate_cases');
+                             ,p_functionname := 'casesvc.generate_cases');
   RETURN FALSE;
 
 END;
 $$;
 
 
-ALTER FUNCTION caseframe.generate_cases(p_sampleid integer, p_geog_area_type character varying, p_geog_area_code character varying) OWNER TO postgres;
+ALTER FUNCTION casesvc.generate_cases(p_sampleid integer, p_geog_area_type character varying, p_geog_area_code character varying) OWNER TO postgres;
 
 --
--- Name: generate_helpline_mi_reports(); Type: FUNCTION; Schema: caseframe; Owner: postgres
+-- Name: generate_helpline_mi_reports(); Type: FUNCTION; Schema: casesvc; Owner: postgres
 --
 
 CREATE FUNCTION generate_helpline_mi_reports() RETURNS boolean
@@ -355,7 +355,7 @@ v_filedatestamp text;
 
 BEGIN
 
- refresh materialized view caseframe.helpline_mi;
+ refresh materialized view casesvc.helpline_mi;
 
  v_directory := '/var/helpline-mi/' ;
 
@@ -365,7 +365,7 @@ BEGIN
 
   v_view_query := '(SELECT to_char(helpline_mi.createddatetime,''DD-MM-YYYY HH24:00'' ) as Hour,
                    count(1) as Call_Total
-                   FROM caseframe.helpline_mi 
+                   FROM casesvc.helpline_mi 
                    WHERE role like ''%cso%''
                    AND subcategory is null
                    AND UPPER(category) <> ''REFUSAL''
@@ -382,7 +382,7 @@ BEGIN
 
  v_view_query := '(SELECT to_char(helpline_mi.createddatetime, ''DD-MM-YYYY'') as Day,
 		   count(1) as Call_Total
-		   FROM caseframe.helpline_mi
+		   FROM casesvc.helpline_mi
 	           WHERE role like ''%cso%''
 	           AND subcategory is null
 	           AND UPPER(category) <> ''REFUSAL''
@@ -398,7 +398,7 @@ BEGIN
 
  v_view_query := '(SELECT to_char(date_trunc(''week''::text, helpline_mi.createddatetime),''DD-MM-YYYY'') as Week,
                    count(1) as Call_Total
-                   FROM caseframe.helpline_mi
+                   FROM casesvc.helpline_mi
                    WHERE role like ''%cso%''
                    AND subcategory is null
                    AND UPPER(category) <> ''REFUSAL''
@@ -414,7 +414,7 @@ BEGIN
 --Calls resolved without escalation
 
  v_view_query := '(SELECT category, count(*) as Call_Total 
-                   FROM caseframe.helpline_mi
+                   FROM casesvc.helpline_mi
                    WHERE role like ''%cso%''
                    AND subcategory is null
                    AND UPPER(category) not like ''%ESCALATED%''
@@ -430,7 +430,7 @@ BEGIN
 
 --escalated calls breakdown
 
-  v_view_query := '(SELECT category, count(*) as Call_Total FROM caseframe.helpline_mi
+  v_view_query := '(SELECT category, count(*) as Call_Total FROM casesvc.helpline_mi
                     WHERE role like ''%cso%''
                     AND subcategory is null
                     AND UPPER(category) like ''%ESCALATED%''
@@ -445,7 +445,7 @@ BEGIN
 
 --escalated calls resolution
 
-  v_view_query := '(SELECT category, count(*) as Call_Total FROM caseframe.helpline_mi 
+  v_view_query := '(SELECT category, count(*) as Call_Total FROM casesvc.helpline_mi 
                     WHERE role like ''%esc%''
                     AND UPPER(category) <> ''REFUSAL''
                     GROUP BY category
@@ -460,7 +460,7 @@ BEGIN
 --refused calls details
 
   v_view_query := '(SELECT DESCRIPTION, CREATEDBY, TO_CHAR(CREATEDDATETIME, ''DD-MM-YYYY HH24:MM:SS'') as time_logged 
-	            FROM CASEFRAME.HELPLINE_MI 
+	            FROM casesvc.HELPLINE_MI 
 	            WHERE UPPER(CATEGORY) = ''REFUSAL''
 		    ORDER BY time_logged)';
 
@@ -474,20 +474,20 @@ BEGIN
 
   EXCEPTION
   WHEN OTHERS THEN
-   PERFORM caseframe.logmessage(p_messagetext := 'generate_helpline_mi_reports' || v_sql_text
+   PERFORM casesvc.logmessage(p_messagetext := 'generate_helpline_mi_reports' || v_sql_text
                                ,p_jobid := 0   
                                ,p_messagelevel := 'INFO'
-                               ,p_functionname := 'caseframe.generate_helpline_mi_reports');
+                               ,p_functionname := 'casesvc.generate_helpline_mi_reports');
   return false;
 
 END;
 $$;
 
 
-ALTER FUNCTION caseframe.generate_helpline_mi_reports() OWNER TO postgres;
+ALTER FUNCTION casesvc.generate_helpline_mi_reports() OWNER TO postgres;
 
 --
--- Name: logmessage(text, numeric, text, text); Type: FUNCTION; Schema: caseframe; Owner: postgres
+-- Name: logmessage(text, numeric, text, text); Type: FUNCTION; Schema: casesvc; Owner: postgres
 --
 
 CREATE FUNCTION logmessage(p_messagetext text DEFAULT NULL::text, p_jobid numeric DEFAULT NULL::numeric, p_messagelevel text DEFAULT NULL::text, p_functionname text DEFAULT NULL::text) RETURNS boolean
@@ -497,7 +497,7 @@ DECLARE
 v_text TEXT ;
 v_function TEXT;
 BEGIN
-INSERT INTO caseframe.messagelog
+INSERT INTO casesvc.messagelog
 (messagetext, jobid, messagelevel, functionname, createddatetime )
 values (p_messagetext, p_jobid, p_messagelevel, p_functionname, current_timestamp);
   RETURN TRUE;
@@ -508,10 +508,10 @@ END;
 $$;
 
 
-ALTER FUNCTION caseframe.logmessage(p_messagetext text, p_jobid numeric, p_messagelevel text, p_functionname text) OWNER TO postgres;
+ALTER FUNCTION casesvc.logmessage(p_messagetext text, p_jobid numeric, p_messagelevel text, p_functionname text) OWNER TO postgres;
 
 --
--- Name: marc(double precision, double precision, double precision, double precision); Type: FUNCTION; Schema: caseframe; Owner: postgres
+-- Name: marc(double precision, double precision, double precision, double precision); Type: FUNCTION; Schema: casesvc; Owner: postgres
 --
 
 CREATE FUNCTION marc(bfo double precision, n double precision, p1 double precision, p2 double precision) RETURNS double precision
@@ -524,10 +524,10 @@ BEGIN
 End$$;
 
 
-ALTER FUNCTION caseframe.marc(bfo double precision, n double precision, p1 double precision, p2 double precision) OWNER TO postgres;
+ALTER FUNCTION casesvc.marc(bfo double precision, n double precision, p1 double precision, p2 double precision) OWNER TO postgres;
 
 --
--- Name: phid(integer, double precision, double precision, double precision, double precision, double precision); Type: FUNCTION; Schema: caseframe; Owner: postgres
+-- Name: phid(integer, double precision, double precision, double precision, double precision, double precision); Type: FUNCTION; Schema: casesvc; Owner: postgres
 --
 
 CREATE FUNCTION phid(north1 integer, n0 double precision, afo double precision, phi0 double precision, n double precision, bfo double precision) RETURNS double precision
@@ -539,42 +539,42 @@ DECLARE
 	m float;
 BEGIN
 	PHI1 = ((North1 - N0) / aFo) + PHI0;
-	M = caseframe.Marc(bFo, n, PHI0, PHI1);
+	M = casesvc.Marc(bFo, n, PHI0, PHI1);
 	PHI2 = ((North1 - N0 - M) / aFo) + PHI1;
 	LOOP
   		IF Abs(North1 - N0 - M) > 0.000000001 THEN
     		EXIT;
   		END IF;
 		PHI2 = ((North1 - N0 - M) / aFo) + PHI1;
-		M = caseframe.Marc(bFo, n, PHI0, PHI2);
+		M = casesvc.Marc(bFo, n, PHI0, PHI2);
 		PHI1 = PHI2;
 	end Loop;
 	return PHI2;
 End$$;
 
 
-ALTER FUNCTION caseframe.phid(north1 integer, n0 double precision, afo double precision, phi0 double precision, n double precision, bfo double precision) OWNER TO postgres;
+ALTER FUNCTION casesvc.phid(north1 integer, n0 double precision, afo double precision, phi0 double precision, n double precision, bfo double precision) OWNER TO postgres;
 
 --
--- Name: refresh_materialised_views(); Type: FUNCTION; Schema: caseframe; Owner: postgres
+-- Name: refresh_materialised_views(); Type: FUNCTION; Schema: casesvc; Owner: postgres
 --
 
 CREATE FUNCTION refresh_materialised_views() RETURNS integer
     LANGUAGE plpgsql
     AS $$BEGIN
 	/* Add any other materialised views here */
-	REFRESH MATERIALIZED VIEW CASEFRAME.RESPONSES_BY_DAY;
-	REFRESH MATERIALIZED VIEW CASEFRAME.RESPONSES_BY_PERC;
-	REFRESH MATERIALIZED VIEW CASEFRAME.RESPONSES_BY_SECTOR;
+	REFRESH MATERIALIZED VIEW casesvc.RESPONSES_BY_DAY;
+	REFRESH MATERIALIZED VIEW casesvc.RESPONSES_BY_PERC;
+	REFRESH MATERIALIZED VIEW casesvc.RESPONSES_BY_SECTOR;
 
 	RETURN 1;
 END$$;
 
 
-ALTER FUNCTION caseframe.refresh_materialised_views() OWNER TO postgres;
+ALTER FUNCTION casesvc.refresh_materialised_views() OWNER TO postgres;
 
 --
--- Name: FUNCTION refresh_materialised_views(); Type: COMMENT; Schema: caseframe; Owner: postgres
+-- Name: FUNCTION refresh_materialised_views(); Type: COMMENT; Schema: casesvc; Owner: postgres
 --
 
 COMMENT ON FUNCTION refresh_materialised_views() IS 'Refreshs the materialised views that are used in the system. Should be called periodically via a crontab or manually on-demand';
@@ -585,7 +585,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: address; Type: TABLE; Schema: caseframe; Owner: role_connect; Tablespace: 
+-- Name: address; Type: TABLE; Schema: casesvc; Owner: role_connect; Tablespace: 
 --
 
 CREATE TABLE address (
@@ -612,10 +612,10 @@ CREATE TABLE address (
 );
 
 
-ALTER TABLE caseframe.address OWNER TO role_connect;
+ALTER TABLE casesvc.address OWNER TO role_connect;
 
 --
--- Name: case; Type: TABLE; Schema: caseframe; Owner: role_connect; Tablespace: 
+-- Name: case; Type: TABLE; Schema: casesvc; Owner: role_connect; Tablespace: 
 --
 
 CREATE TABLE "case" (
@@ -632,10 +632,10 @@ CREATE TABLE "case" (
 );
 
 
-ALTER TABLE caseframe."case" OWNER TO role_connect;
+ALTER TABLE casesvc."case" OWNER TO role_connect;
 
 --
--- Name: caseeventidseq; Type: SEQUENCE; Schema: caseframe; Owner: postgres
+-- Name: caseeventidseq; Type: SEQUENCE; Schema: casesvc; Owner: postgres
 --
 
 CREATE SEQUENCE caseeventidseq
@@ -646,10 +646,10 @@ CREATE SEQUENCE caseeventidseq
     CACHE 1;
 
 
-ALTER TABLE caseframe.caseeventidseq OWNER TO postgres;
+ALTER TABLE casesvc.caseeventidseq OWNER TO postgres;
 
 --
--- Name: caseevent; Type: TABLE; Schema: caseframe; Owner: role_connect; Tablespace: 
+-- Name: caseevent; Type: TABLE; Schema: casesvc; Owner: role_connect; Tablespace: 
 --
 
 CREATE TABLE caseevent (
@@ -663,10 +663,10 @@ CREATE TABLE caseevent (
 );
 
 
-ALTER TABLE caseframe.caseevent OWNER TO role_connect;
+ALTER TABLE casesvc.caseevent OWNER TO role_connect;
 
 --
--- Name: caseidseq; Type: SEQUENCE; Schema: caseframe; Owner: postgres
+-- Name: caseidseq; Type: SEQUENCE; Schema: casesvc; Owner: postgres
 --
 
 CREATE SEQUENCE caseidseq
@@ -677,10 +677,10 @@ CREATE SEQUENCE caseidseq
     CACHE 1;
 
 
-ALTER TABLE caseframe.caseidseq OWNER TO postgres;
+ALTER TABLE casesvc.caseidseq OWNER TO postgres;
 
 --
--- Name: casestate; Type: TABLE; Schema: caseframe; Owner: postgres; Tablespace: 
+-- Name: casestate; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE casestate (
@@ -689,10 +689,10 @@ CREATE TABLE casestate (
 );
 
 
-ALTER TABLE caseframe.casestate OWNER TO postgres;
+ALTER TABLE casesvc.casestate OWNER TO postgres;
 
 --
--- Name: casetype; Type: TABLE; Schema: caseframe; Owner: role_connect; Tablespace: 
+-- Name: casetype; Type: TABLE; Schema: casesvc; Owner: role_connect; Tablespace: 
 --
 
 CREATE TABLE casetype (
@@ -704,10 +704,10 @@ CREATE TABLE casetype (
 );
 
 
-ALTER TABLE caseframe.casetype OWNER TO role_connect;
+ALTER TABLE casesvc.casetype OWNER TO role_connect;
 
 --
--- Name: category; Type: TABLE; Schema: caseframe; Owner: role_connect; Tablespace: 
+-- Name: category; Type: TABLE; Schema: casesvc; Owner: role_connect; Tablespace: 
 --
 
 CREATE TABLE category (
@@ -720,11 +720,11 @@ CREATE TABLE category (
 );
 
 
-ALTER TABLE caseframe.category OWNER TO role_connect;
+ALTER TABLE casesvc.category OWNER TO role_connect;
 
 
 --
--- Name: helpline_mi; Type: MATERIALIZED VIEW; Schema: caseframe; Owner: postgres; Tablespace: 
+-- Name: helpline_mi; Type: MATERIALIZED VIEW; Schema: casesvc; Owner: postgres; Tablespace: 
 --
 
 CREATE MATERIALIZED VIEW helpline_mi AS
@@ -742,10 +742,10 @@ CREATE MATERIALIZED VIEW helpline_mi AS
   WITH NO DATA;
 
 
-ALTER TABLE caseframe.helpline_mi OWNER TO postgres;
+ALTER TABLE casesvc.helpline_mi OWNER TO postgres;
 
 --
--- Name: messageseq; Type: SEQUENCE; Schema: caseframe; Owner: postgres
+-- Name: messageseq; Type: SEQUENCE; Schema: casesvc; Owner: postgres
 --
 
 CREATE SEQUENCE messageseq
@@ -756,10 +756,10 @@ CREATE SEQUENCE messageseq
     CACHE 1;
 
 
-ALTER TABLE caseframe.messageseq OWNER TO postgres;
+ALTER TABLE casesvc.messageseq OWNER TO postgres;
 
 --
--- Name: messagelog; Type: TABLE; Schema: caseframe; Owner: postgres; Tablespace: 
+-- Name: messagelog; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace: 
 --
 
 CREATE TABLE messagelog (
@@ -772,10 +772,10 @@ CREATE TABLE messagelog (
 );
 
 
-ALTER TABLE caseframe.messagelog OWNER TO postgres;
+ALTER TABLE casesvc.messagelog OWNER TO postgres;
 
 --
--- Name: qidseq; Type: SEQUENCE; Schema: caseframe; Owner: postgres
+-- Name: qidseq; Type: SEQUENCE; Schema: casesvc; Owner: postgres
 --
 
 CREATE SEQUENCE qidseq
@@ -786,10 +786,10 @@ CREATE SEQUENCE qidseq
     CACHE 1;
 
 
-ALTER TABLE caseframe.qidseq OWNER TO postgres;
+ALTER TABLE casesvc.qidseq OWNER TO postgres;
 
 --
--- Name: questionnaire; Type: TABLE; Schema: caseframe; Owner: role_connect; Tablespace: 
+-- Name: questionnaire; Type: TABLE; Schema: casesvc; Owner: role_connect; Tablespace: 
 --
 
 CREATE TABLE questionnaire (
@@ -804,10 +804,10 @@ CREATE TABLE questionnaire (
 );
 
 
-ALTER TABLE caseframe.questionnaire OWNER TO role_connect;
+ALTER TABLE casesvc.questionnaire OWNER TO role_connect;
 
 --
--- Name: questionset; Type: TABLE; Schema: caseframe; Owner: role_connect; Tablespace: 
+-- Name: questionset; Type: TABLE; Schema: casesvc; Owner: role_connect; Tablespace: 
 --
 
 CREATE TABLE questionset (
@@ -816,10 +816,10 @@ CREATE TABLE questionset (
 );
 
 
-ALTER TABLE caseframe.questionset OWNER TO role_connect;
+ALTER TABLE casesvc.questionset OWNER TO role_connect;
 
 --
--- Name: responses_by_day; Type: MATERIALIZED VIEW; Schema: caseframe; Owner: postgres; Tablespace: 
+-- Name: responses_by_day; Type: MATERIALIZED VIEW; Schema: casesvc; Owner: postgres; Tablespace: 
 --
 
 CREATE MATERIALIZED VIEW responses_by_day AS
@@ -837,10 +837,10 @@ CREATE MATERIALIZED VIEW responses_by_day AS
   WITH NO DATA;
 
 
-ALTER TABLE caseframe.responses_by_day OWNER TO postgres;
+ALTER TABLE casesvc.responses_by_day OWNER TO postgres;
 
 --
--- Name: responses_by_perc; Type: MATERIALIZED VIEW; Schema: caseframe; Owner: postgres; Tablespace: 
+-- Name: responses_by_perc; Type: MATERIALIZED VIEW; Schema: casesvc; Owner: postgres; Tablespace: 
 --
 
 CREATE MATERIALIZED VIEW responses_by_perc AS
@@ -891,10 +891,10 @@ CREATE MATERIALIZED VIEW responses_by_perc AS
   WITH NO DATA;
 
 
-ALTER TABLE caseframe.responses_by_perc OWNER TO postgres;
+ALTER TABLE casesvc.responses_by_perc OWNER TO postgres;
 
 --
--- Name: responses_by_sector; Type: MATERIALIZED VIEW; Schema: caseframe; Owner: postgres; Tablespace: 
+-- Name: responses_by_sector; Type: MATERIALIZED VIEW; Schema: casesvc; Owner: postgres; Tablespace: 
 --
 
 CREATE MATERIALIZED VIEW responses_by_sector AS
@@ -942,10 +942,10 @@ CREATE MATERIALIZED VIEW responses_by_sector AS
   WITH NO DATA;
 
 
-ALTER TABLE caseframe.responses_by_sector OWNER TO postgres;
+ALTER TABLE casesvc.responses_by_sector OWNER TO postgres;
 
 --
--- Name: sample; Type: TABLE; Schema: caseframe; Owner: role_connect; Tablespace: 
+-- Name: sample; Type: TABLE; Schema: casesvc; Owner: role_connect; Tablespace: 
 --
 
 CREATE TABLE sample (
@@ -958,10 +958,10 @@ CREATE TABLE sample (
 );
 
 
-ALTER TABLE caseframe.sample OWNER TO role_connect;
+ALTER TABLE casesvc.sample OWNER TO role_connect;
 
 --
--- Name: survey; Type: TABLE; Schema: caseframe; Owner: role_connect; Tablespace: 
+-- Name: survey; Type: TABLE; Schema: casesvc; Owner: role_connect; Tablespace: 
 --
 
 CREATE TABLE survey (
@@ -971,10 +971,10 @@ CREATE TABLE survey (
 );
 
 
-ALTER TABLE caseframe.survey OWNER TO role_connect;
+ALTER TABLE casesvc.survey OWNER TO role_connect;
 
 --
--- Name: address_pkey; Type: CONSTRAINT; Schema: caseframe; Owner: role_connect; Tablespace: 
+-- Name: address_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: role_connect; Tablespace: 
 --
 
 ALTER TABLE ONLY address
@@ -982,7 +982,7 @@ ALTER TABLE ONLY address
 
 
 --
--- Name: case_pkey; Type: CONSTRAINT; Schema: caseframe; Owner: role_connect; Tablespace: 
+-- Name: case_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: role_connect; Tablespace: 
 --
 
 ALTER TABLE ONLY "case"
@@ -990,7 +990,7 @@ ALTER TABLE ONLY "case"
 
 
 --
--- Name: caseevent_pkey; Type: CONSTRAINT; Schema: caseframe; Owner: role_connect; Tablespace: 
+-- Name: caseevent_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: role_connect; Tablespace: 
 --
 
 ALTER TABLE ONLY caseevent
@@ -998,7 +998,7 @@ ALTER TABLE ONLY caseevent
 
 
 --
--- Name: casestate_pkey; Type: CONSTRAINT; Schema: caseframe; Owner: postgres; Tablespace: 
+-- Name: casestate_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace: 
 --
 
 ALTER TABLE ONLY casestate
@@ -1006,7 +1006,7 @@ ALTER TABLE ONLY casestate
 
 
 --
--- Name: casetype_pkey1; Type: CONSTRAINT; Schema: caseframe; Owner: role_connect; Tablespace: 
+-- Name: casetype_pkey1; Type: CONSTRAINT; Schema: casesvc; Owner: role_connect; Tablespace: 
 --
 
 ALTER TABLE ONLY casetype
@@ -1014,7 +1014,7 @@ ALTER TABLE ONLY casetype
 
 
 --
--- Name: category_pkey; Type: CONSTRAINT; Schema: caseframe; Owner: role_connect; Tablespace: 
+-- Name: category_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: role_connect; Tablespace: 
 --
 
 ALTER TABLE ONLY category
@@ -1022,7 +1022,7 @@ ALTER TABLE ONLY category
 
 
 --
--- Name: messageid_pkey; Type: CONSTRAINT; Schema: caseframe; Owner: postgres; Tablespace: 
+-- Name: messageid_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace: 
 --
 
 ALTER TABLE ONLY messagelog
@@ -1030,7 +1030,7 @@ ALTER TABLE ONLY messagelog
 
 
 --
--- Name: questionnaire_pkey; Type: CONSTRAINT; Schema: caseframe; Owner: role_connect; Tablespace: 
+-- Name: questionnaire_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: role_connect; Tablespace: 
 --
 
 ALTER TABLE ONLY questionnaire
@@ -1038,7 +1038,7 @@ ALTER TABLE ONLY questionnaire
 
 
 --
--- Name: questionset_pkey; Type: CONSTRAINT; Schema: caseframe; Owner: role_connect; Tablespace: 
+-- Name: questionset_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: role_connect; Tablespace: 
 --
 
 ALTER TABLE ONLY questionset
@@ -1046,7 +1046,7 @@ ALTER TABLE ONLY questionset
 
 
 --
--- Name: sample_pkey; Type: CONSTRAINT; Schema: caseframe; Owner: role_connect; Tablespace: 
+-- Name: sample_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: role_connect; Tablespace: 
 --
 
 ALTER TABLE ONLY sample
@@ -1054,7 +1054,7 @@ ALTER TABLE ONLY sample
 
 
 --
--- Name: survey_pkey; Type: CONSTRAINT; Schema: caseframe; Owner: role_connect; Tablespace: 
+-- Name: survey_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: role_connect; Tablespace: 
 --
 
 ALTER TABLE ONLY survey
@@ -1062,20 +1062,20 @@ ALTER TABLE ONLY survey
 
 
 --
--- Name: address_lad12cd_idx; Type: INDEX; Schema: caseframe; Owner: role_connect; Tablespace: 
+-- Name: address_lad12cd_idx; Type: INDEX; Schema: casesvc; Owner: role_connect; Tablespace: 
 --
 
 CREATE INDEX address_lad12cd_idx ON address USING btree (lad12cd);
 
 
 --
--- Name: address_msoa11cd_idx; Type: INDEX; Schema: caseframe; Owner: role_connect; Tablespace: 
+-- Name: address_msoa11cd_idx; Type: INDEX; Schema: casesvc; Owner: role_connect; Tablespace: 
 --
 
 CREATE INDEX address_msoa11cd_idx ON address USING btree (msoa11cd);
 
 
--- Name: case_uprn_fkey; Type: FK CONSTRAINT; Schema: caseframe; Owner: role_connect
+-- Name: case_uprn_fkey; Type: FK CONSTRAINT; Schema: casesvc; Owner: role_connect
 --
 
 ALTER TABLE ONLY "case"
@@ -1083,7 +1083,7 @@ ALTER TABLE ONLY "case"
 
 
 --
--- Name: case_casetypeid_fkey; Type: FK CONSTRAINT; Schema: caseframe; Owner: role_connect
+-- Name: case_casetypeid_fkey; Type: FK CONSTRAINT; Schema: casesvc; Owner: role_connect
 --
 
 ALTER TABLE ONLY "case"
@@ -1091,7 +1091,7 @@ ALTER TABLE ONLY "case"
 
 
 --
--- Name: case_questionset_fkey; Type: FK CONSTRAINT; Schema: caseframe; Owner: role_connect
+-- Name: case_questionset_fkey; Type: FK CONSTRAINT; Schema: casesvc; Owner: role_connect
 --
 
 ALTER TABLE ONLY "case"
@@ -1099,7 +1099,7 @@ ALTER TABLE ONLY "case"
 
 
 --
--- Name: case_sampleid_fkey; Type: FK CONSTRAINT; Schema: caseframe; Owner: role_connect
+-- Name: case_sampleid_fkey; Type: FK CONSTRAINT; Schema: casesvc; Owner: role_connect
 --
 
 ALTER TABLE ONLY "case"
@@ -1107,7 +1107,7 @@ ALTER TABLE ONLY "case"
 
 
 --
--- Name: case_surveyid_fkey; Type: FK CONSTRAINT; Schema: caseframe; Owner: role_connect
+-- Name: case_surveyid_fkey; Type: FK CONSTRAINT; Schema: casesvc; Owner: role_connect
 --
 
 ALTER TABLE ONLY "case"
@@ -1115,7 +1115,7 @@ ALTER TABLE ONLY "case"
 
 
 --
--- Name: caseevent_caseid_fkey; Type: FK CONSTRAINT; Schema: caseframe; Owner: role_connect
+-- Name: caseevent_caseid_fkey; Type: FK CONSTRAINT; Schema: casesvc; Owner: role_connect
 --
 
 ALTER TABLE ONLY caseevent
@@ -1123,7 +1123,7 @@ ALTER TABLE ONLY caseevent
 
 
 --
--- Name: caseevent_category_fkey; Type: FK CONSTRAINT; Schema: caseframe; Owner: role_connect
+-- Name: caseevent_category_fkey; Type: FK CONSTRAINT; Schema: casesvc; Owner: role_connect
 --
 
 ALTER TABLE ONLY caseevent
@@ -1131,7 +1131,7 @@ ALTER TABLE ONLY caseevent
 
 
 --
--- Name: casetype_questionset_fkey; Type: FK CONSTRAINT; Schema: caseframe; Owner: role_connect
+-- Name: casetype_questionset_fkey; Type: FK CONSTRAINT; Schema: casesvc; Owner: role_connect
 --
 
 ALTER TABLE ONLY casetype
@@ -1139,7 +1139,7 @@ ALTER TABLE ONLY casetype
 
 
 --
--- Name: questionnaire_caseid_fkey; Type: FK CONSTRAINT; Schema: caseframe; Owner: role_connect
+-- Name: questionnaire_caseid_fkey; Type: FK CONSTRAINT; Schema: casesvc; Owner: role_connect
 --
 
 ALTER TABLE ONLY questionnaire
@@ -1147,7 +1147,7 @@ ALTER TABLE ONLY questionnaire
 
 
 --
--- Name: questionnaire_questionset_fkey; Type: FK CONSTRAINT; Schema: caseframe; Owner: role_connect
+-- Name: questionnaire_questionset_fkey; Type: FK CONSTRAINT; Schema: casesvc; Owner: role_connect
 --
 
 ALTER TABLE ONLY questionnaire
@@ -1155,7 +1155,7 @@ ALTER TABLE ONLY questionnaire
 
 
 --
--- Name: sample_casetypeid_fkey; Type: FK CONSTRAINT; Schema: caseframe; Owner: role_connect
+-- Name: sample_casetypeid_fkey; Type: FK CONSTRAINT; Schema: casesvc; Owner: role_connect
 --
 
 ALTER TABLE ONLY sample
@@ -1163,7 +1163,7 @@ ALTER TABLE ONLY sample
 
 
 --
--- Name: sample_surveyid_fkey; Type: FK CONSTRAINT; Schema: caseframe; Owner: role_connect
+-- Name: sample_surveyid_fkey; Type: FK CONSTRAINT; Schema: casesvc; Owner: role_connect
 --
 
 ALTER TABLE ONLY sample
@@ -1171,221 +1171,221 @@ ALTER TABLE ONLY sample
 
 
 --
--- Name: caseframe; Type: ACL; Schema: -; Owner: role_connect
+-- Name: casesvc; Type: ACL; Schema: -; Owner: role_connect
 --
 
-REVOKE ALL ON SCHEMA caseframe FROM PUBLIC;
-REVOKE ALL ON SCHEMA caseframe FROM role_connect;
-GRANT ALL ON SCHEMA caseframe TO role_connect;
-GRANT ALL ON SCHEMA caseframe TO caseframesvc;
+REVOKE ALL ON SCHEMA casesvc FROM PUBLIC;
+REVOKE ALL ON SCHEMA casesvc FROM role_connect;
+GRANT ALL ON SCHEMA casesvc TO role_connect;
+GRANT ALL ON SCHEMA casesvc TO casesvc;
 
 
 --
--- Name: address; Type: ACL; Schema: caseframe; Owner: role_connect
+-- Name: address; Type: ACL; Schema: casesvc; Owner: role_connect
 --
 
 REVOKE ALL ON TABLE address FROM PUBLIC;
 REVOKE ALL ON TABLE address FROM role_connect;
 GRANT ALL ON TABLE address TO role_connect;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE address TO caseframesvc;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE address TO casesvc;
 
 
 --
--- Name: case; Type: ACL; Schema: caseframe; Owner: role_connect
+-- Name: case; Type: ACL; Schema: casesvc; Owner: role_connect
 --
 
 REVOKE ALL ON TABLE "case" FROM PUBLIC;
 REVOKE ALL ON TABLE "case" FROM role_connect;
 GRANT ALL ON TABLE "case" TO role_connect;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "case" TO caseframesvc;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE "case" TO casesvc;
 
 
 --
--- Name: caseeventidseq; Type: ACL; Schema: caseframe; Owner: postgres
+-- Name: caseeventidseq; Type: ACL; Schema: casesvc; Owner: postgres
 --
 
 REVOKE ALL ON SEQUENCE caseeventidseq FROM PUBLIC;
 REVOKE ALL ON SEQUENCE caseeventidseq FROM postgres;
 GRANT ALL ON SEQUENCE caseeventidseq TO postgres;
-GRANT ALL ON SEQUENCE caseeventidseq TO caseframesvc;
+GRANT ALL ON SEQUENCE caseeventidseq TO casesvc;
 
 
 --
--- Name: caseevent; Type: ACL; Schema: caseframe; Owner: role_connect
+-- Name: caseevent; Type: ACL; Schema: casesvc; Owner: role_connect
 --
 
 REVOKE ALL ON TABLE caseevent FROM PUBLIC;
 REVOKE ALL ON TABLE caseevent FROM role_connect;
 GRANT ALL ON TABLE caseevent TO role_connect;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE caseevent TO caseframesvc;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE caseevent TO casesvc;
 
 
 --
--- Name: caseidseq; Type: ACL; Schema: caseframe; Owner: postgres
+-- Name: caseidseq; Type: ACL; Schema: casesvc; Owner: postgres
 --
 
 REVOKE ALL ON SEQUENCE caseidseq FROM PUBLIC;
 REVOKE ALL ON SEQUENCE caseidseq FROM postgres;
 GRANT ALL ON SEQUENCE caseidseq TO postgres;
-GRANT ALL ON SEQUENCE caseidseq TO caseframesvc;
+GRANT ALL ON SEQUENCE caseidseq TO casesvc;
 
 
 --
--- Name: casestate; Type: ACL; Schema: caseframe; Owner: postgres
+-- Name: casestate; Type: ACL; Schema: casesvc; Owner: postgres
 --
 
 REVOKE ALL ON TABLE casestate FROM PUBLIC;
 REVOKE ALL ON TABLE casestate FROM postgres;
 GRANT ALL ON TABLE casestate TO postgres;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE casestate TO caseframesvc;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE casestate TO casesvc;
 
 
 --
--- Name: casetype; Type: ACL; Schema: caseframe; Owner: role_connect
+-- Name: casetype; Type: ACL; Schema: casesvc; Owner: role_connect
 --
 
 REVOKE ALL ON TABLE casetype FROM PUBLIC;
 REVOKE ALL ON TABLE casetype FROM role_connect;
 GRANT ALL ON TABLE casetype TO role_connect;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE casetype TO caseframesvc;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE casetype TO casesvc;
 
 
 --
--- Name: category; Type: ACL; Schema: caseframe; Owner: role_connect
+-- Name: category; Type: ACL; Schema: casesvc; Owner: role_connect
 --
 
 REVOKE ALL ON TABLE category FROM PUBLIC;
 REVOKE ALL ON TABLE category FROM role_connect;
 GRANT ALL ON TABLE category TO role_connect;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE category TO caseframesvc;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE category TO casesvc;
 
 
 --
--- Name: helpline_mi; Type: ACL; Schema: caseframe; Owner: postgres
+-- Name: helpline_mi; Type: ACL; Schema: casesvc; Owner: postgres
 --
 
 REVOKE ALL ON TABLE helpline_mi FROM PUBLIC;
 REVOKE ALL ON TABLE helpline_mi FROM postgres;
 GRANT ALL ON TABLE helpline_mi TO postgres;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE helpline_mi TO caseframesvc;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE helpline_mi TO casesvc;
 
 
 --
--- Name: messageseq; Type: ACL; Schema: caseframe; Owner: postgres
+-- Name: messageseq; Type: ACL; Schema: casesvc; Owner: postgres
 --
 
 REVOKE ALL ON SEQUENCE messageseq FROM PUBLIC;
 REVOKE ALL ON SEQUENCE messageseq FROM postgres;
 GRANT ALL ON SEQUENCE messageseq TO postgres;
-GRANT ALL ON SEQUENCE messageseq TO caseframesvc;
+GRANT ALL ON SEQUENCE messageseq TO casesvc;
 
 
 --
--- Name: messagelog; Type: ACL; Schema: caseframe; Owner: postgres
+-- Name: messagelog; Type: ACL; Schema: casesvc; Owner: postgres
 --
 
 REVOKE ALL ON TABLE messagelog FROM PUBLIC;
 REVOKE ALL ON TABLE messagelog FROM postgres;
 GRANT ALL ON TABLE messagelog TO postgres;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE messagelog TO caseframesvc;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE messagelog TO casesvc;
 
 
 --
--- Name: qidseq; Type: ACL; Schema: caseframe; Owner: postgres
+-- Name: qidseq; Type: ACL; Schema: casesvc; Owner: postgres
 --
 
 REVOKE ALL ON SEQUENCE qidseq FROM PUBLIC;
 REVOKE ALL ON SEQUENCE qidseq FROM postgres;
 GRANT ALL ON SEQUENCE qidseq TO postgres;
-GRANT ALL ON SEQUENCE qidseq TO caseframesvc;
+GRANT ALL ON SEQUENCE qidseq TO casesvc;
 
 
 --
--- Name: questionnaire; Type: ACL; Schema: caseframe; Owner: role_connect
+-- Name: questionnaire; Type: ACL; Schema: casesvc; Owner: role_connect
 --
 
 REVOKE ALL ON TABLE questionnaire FROM PUBLIC;
 REVOKE ALL ON TABLE questionnaire FROM role_connect;
 GRANT ALL ON TABLE questionnaire TO role_connect;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE questionnaire TO caseframesvc;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE questionnaire TO casesvc;
 
 
 --
--- Name: questionset; Type: ACL; Schema: caseframe; Owner: role_connect
+-- Name: questionset; Type: ACL; Schema: casesvc; Owner: role_connect
 --
 
 REVOKE ALL ON TABLE questionset FROM PUBLIC;
 REVOKE ALL ON TABLE questionset FROM role_connect;
 GRANT ALL ON TABLE questionset TO role_connect;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE questionset TO caseframesvc;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE questionset TO casesvc;
 
 
 --
--- Name: responses_by_day; Type: ACL; Schema: caseframe; Owner: postgres
+-- Name: responses_by_day; Type: ACL; Schema: casesvc; Owner: postgres
 --
 
 REVOKE ALL ON TABLE responses_by_day FROM PUBLIC;
 REVOKE ALL ON TABLE responses_by_day FROM postgres;
 GRANT ALL ON TABLE responses_by_day TO postgres;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE responses_by_day TO caseframesvc;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE responses_by_day TO casesvc;
 
 
 --
--- Name: responses_by_perc; Type: ACL; Schema: caseframe; Owner: postgres
+-- Name: responses_by_perc; Type: ACL; Schema: casesvc; Owner: postgres
 --
 
 REVOKE ALL ON TABLE responses_by_perc FROM PUBLIC;
 REVOKE ALL ON TABLE responses_by_perc FROM postgres;
 GRANT ALL ON TABLE responses_by_perc TO postgres;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE responses_by_perc TO caseframesvc;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE responses_by_perc TO casesvc;
 
 
 --
--- Name: responses_by_sector; Type: ACL; Schema: caseframe; Owner: postgres
+-- Name: responses_by_sector; Type: ACL; Schema: casesvc; Owner: postgres
 --
 
 REVOKE ALL ON TABLE responses_by_sector FROM PUBLIC;
 REVOKE ALL ON TABLE responses_by_sector FROM postgres;
 GRANT ALL ON TABLE responses_by_sector TO postgres;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE responses_by_sector TO caseframesvc;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE responses_by_sector TO casesvc;
 
 
 --
--- Name: sample; Type: ACL; Schema: caseframe; Owner: role_connect
+-- Name: sample; Type: ACL; Schema: casesvc; Owner: role_connect
 --
 
 REVOKE ALL ON TABLE sample FROM PUBLIC;
 REVOKE ALL ON TABLE sample FROM role_connect;
 GRANT ALL ON TABLE sample TO role_connect;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE sample TO caseframesvc;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE sample TO casesvc;
 
 
 --
--- Name: survey; Type: ACL; Schema: caseframe; Owner: role_connect
+-- Name: survey; Type: ACL; Schema: casesvc; Owner: role_connect
 --
 
 REVOKE ALL ON TABLE survey FROM PUBLIC;
 REVOKE ALL ON TABLE survey FROM role_connect;
 GRANT ALL ON TABLE survey TO role_connect;
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE survey TO caseframesvc;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE survey TO casesvc;
 
 
 --
--- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: caseframe; Owner: postgres
+-- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: casesvc; Owner: postgres
 --
 
-ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA caseframe REVOKE ALL ON SEQUENCES  FROM PUBLIC;
-ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA caseframe REVOKE ALL ON SEQUENCES  FROM postgres;
-ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA caseframe GRANT ALL ON SEQUENCES  TO caseframesvc;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA casesvc REVOKE ALL ON SEQUENCES  FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA casesvc REVOKE ALL ON SEQUENCES  FROM postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA casesvc GRANT ALL ON SEQUENCES  TO casesvc;
 
 
 --
--- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: caseframe; Owner: postgres
+-- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: casesvc; Owner: postgres
 --
 
-ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA caseframe REVOKE ALL ON TABLES  FROM PUBLIC;
-ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA caseframe REVOKE ALL ON TABLES  FROM postgres;
-ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA caseframe GRANT SELECT,INSERT,DELETE,UPDATE ON TABLES  TO caseframesvc;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA casesvc REVOKE ALL ON TABLES  FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA casesvc REVOKE ALL ON TABLES  FROM postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA casesvc GRANT SELECT,INSERT,DELETE,UPDATE ON TABLES  TO casesvc;
 
 
 

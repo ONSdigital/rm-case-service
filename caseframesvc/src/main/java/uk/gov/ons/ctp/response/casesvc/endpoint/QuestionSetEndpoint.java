@@ -19,7 +19,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.QuestionSetDTO;
 import uk.gov.ons.ctp.response.casesvc.service.QuestionSetService;
 
 /**
- * The REST endpoint controller for CaseFrame QuestionSets
+ * The REST endpoint controller for CaseSvc QuestionSets
  */
 @Path("/questionsets")
 @Produces({ "application/json" })

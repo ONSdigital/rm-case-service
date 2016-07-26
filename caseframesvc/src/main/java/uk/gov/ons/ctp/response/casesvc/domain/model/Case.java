@@ -24,7 +24,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "case", schema = "caseframe")
+@Table(name = "case", schema = "casesvc")
 public class Case implements Serializable {
 
   private static final long serialVersionUID = -3769020357396562359L;
