@@ -6,7 +6,7 @@ See Case Frame Service in the WIKI : http://192.168.10.11/Case_Frame_Service
 
 
 ## To be able to log to file
-sudo mkdir -p /var/log/ctp/responsemanagement/caseframesvc sudo chmod -R 777 /var/log/ctp
+sudo mkdir -p /var/log/ctp/responsemanagement/casesvc sudo chmod -R 777 /var/log/ctp
 
 
 ## To run
