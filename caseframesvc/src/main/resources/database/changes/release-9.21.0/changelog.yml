@@ -1,0 +1,23 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 9.21.0-1
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: casesvc foundation schema for 2017
+            path: casesvc_2017_foundation_schema.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 9.21.0-2
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: casesvc foundation data for 2017
+            path: casesvc_2017_foundation_data.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+

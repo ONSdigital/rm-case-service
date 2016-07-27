@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>caseframesvc</artifactId>
-  <version>9.20.0-SNAPSHOT</version>
+  <version>9.21.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>CTP : ResponseManagement : CaseFrameSvc</name>
@@ -34,7 +34,7 @@
     <dependency>
       <groupId>uk.gov.ons.ctp.product</groupId>
       <artifactId>caseframesvc-api</artifactId>
-      <version>9.20.0-SNAPSHOT</version>
+      <version>9.21.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -97,7 +97,7 @@
               <artifactId>caseframesvc-api</artifactId>
             </dependency>
           </requiresUnpack>
-          <mainClass>uk.gov.ons.ctp.response.caseframe.CaseFrameSvcApplication</mainClass>
+          <mainClass>uk.gov.ons.ctp.response.casesvc.CaseSvcApplication</mainClass>
         </configuration>
         <executions>
           <execution>

@@ -1,1 +1,0 @@
-UPDATE caseframe.category set name='QuestionnaireResponse' where caseframe.category.name LIKE 'QuestionnareResponse';

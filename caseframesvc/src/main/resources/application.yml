@@ -15,7 +15,7 @@ logging:
 liquibase:
   user: postgres
   password: postgres
-  default-schema: caseframe
+  default-schema: casesvc
   url: jdbc:postgresql://localhost:5432/postgres
   changeLog: classpath:/database/changelog-master.yml
 
@@ -71,12 +71,12 @@ endpoints:
 
 spring:
   application:
-    name: ONS CaseFrameService
+    name: ONS CaseService
 
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
-    username: caseframesvc
-    password: caseframesvc
+    username: casesvc
+    password: casesvc
     driverClassName: org.postgresql.Driver
     test-on-borrow: true
     remove-abandoned: true

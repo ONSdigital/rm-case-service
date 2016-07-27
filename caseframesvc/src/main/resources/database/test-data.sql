@@ -1,4 +1,4 @@
-set schema 'caseframe';
+set schema 'casesvc';
 INSERT INTO address (uprn, addresstype, estabtype, organisation_name, address_line1, address_line2, locality, town_name, postcode, oa11cd, lsoa11cd, msoa11cd, lad12cd, region11cd, eastings, northings, htc, latitude, longitude) VALUES (1300764425, 'HH', NULL, NULL, NULL, '16 TRAJAN STREET', NULL, 'SOUTH SHIELDS', 'NE33 2AW', 'E00043642', 'E01008599', 'E02001768', 'E08000023', 'E12000001', 436561, 567750, 3, 55.002881176791902, -1.4283538753302401);
 INSERT INTO address (uprn, addresstype, estabtype, organisation_name, address_line1, address_line2, locality, town_name, postcode, oa11cd, lsoa11cd, msoa11cd, lad12cd, region11cd, eastings, northings, htc, latitude, longitude) VALUES (2000053045, 'CE', 'CH', NULL, NULL, 'ALGARVE GUEST HOUSE 77 OCEAN ROAD', NULL, 'SOUTH SHIELDS', 'NE33 2JJ', 'E00043649', 'E01008596', 'E02001768', 'E08000023', 'E12000001', 436751, 567427, 3, 54.999964467180497, -1.42542479960254);
 INSERT INTO address (uprn, addresstype, estabtype, organisation_name, address_line1, address_line2, locality, town_name, postcode, oa11cd, lsoa11cd, msoa11cd, lad12cd, region11cd, eastings, northings, htc, latitude, longitude) VALUES (1300764380, 'HH', NULL, NULL, NULL, '5 TRAJAN STREET', NULL, 'SOUTH SHIELDS', 'NE33 2AW', 'E00043642', 'E01008599', 'E02001768', 'E08000023', 'E12000001', 436523, 567762, 3, 55.0029918074476, -1.42894645605503);
@@ -191,7 +191,7 @@ INSERT INTO address (uprn, addresstype, estabtype, organisation_name, address_li
 --
 -- TOC entry 2179 (class 0 OID 23418)
 -- Dependencies: 214
--- Data for Name: case; Type: TABLE DATA; Schema: caseframe; Owner: postgres
+-- Data for Name: case; Type: TABLE DATA; Schema: casesvc; Owner: postgres
 --
 
 INSERT INTO "case" (caseid, uprn, state, casetypeid, createddatetime, createdby, sampleid, actionplanid, surveyid, questionset) VALUES (1, 1300764425, 'INIT', 1, '2016-03-08 13:26:52.206+00', 'SYSTEM', 1, 1, 1, 'HH');
@@ -386,7 +386,7 @@ INSERT INTO "case" (caseid, uprn, state, casetypeid, createddatetime, createdby,
 --
 -- TOC entry 2180 (class 0 OID 23427)
 -- Dependencies: 217
--- Data for Name: questionnaire; Type: TABLE DATA; Schema: caseframe; Owner: postgres
+-- Data for Name: questionnaire; Type: TABLE DATA; Schema: casesvc; Owner: postgres
 --
 
 INSERT INTO questionnaire (questionnaireid, caseid, state, dispatchdatetime, responsedatetime, receiptdatetime, questionset, iac) VALUES (1234567890, 1, NULL, NULL, NULL, NULL, 'HH', '12345678900682043671');
