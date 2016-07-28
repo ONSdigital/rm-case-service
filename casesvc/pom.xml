@@ -3,17 +3,17 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>caseframesvc</artifactId>
+  <artifactId>casesvc</artifactId>
   <version>9.21.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>CTP : ResponseManagement : CaseFrameSvc</name>
-  <description>CTP : ResponseManagement : CaseFrameSvc</description>
+  <name>CTP : ResponseManagement : CaseSvc</name>
+  <description>CTP : ResponseManagement : CaseSvc</description>
 
   <parent>
     <groupId>uk.gov.ons.ctp.product</groupId>
     <artifactId>responsemanagement</artifactId>
-    <version>9.20.0-SNAPSHOT</version>
+    <version>9.21.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -33,7 +33,7 @@
 
     <dependency>
       <groupId>uk.gov.ons.ctp.product</groupId>
-      <artifactId>caseframesvc-api</artifactId>
+      <artifactId>casesvc-api</artifactId>
       <version>9.21.0-SNAPSHOT</version>
     </dependency>
 
@@ -94,7 +94,7 @@
             </dependency>
             <dependency>
               <groupId>uk.gov.ons.ctp.product</groupId>
-              <artifactId>caseframesvc-api</artifactId>
+              <artifactId>casesvc-api</artifactId>
             </dependency>
           </requiresUnpack>
           <mainClass>uk.gov.ons.ctp.response.casesvc.CaseSvcApplication</mainClass>
