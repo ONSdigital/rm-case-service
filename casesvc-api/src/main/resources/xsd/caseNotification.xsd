@@ -1,0 +1,23 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns="http://ons.gov.uk/ctp/response/casesvc/message/notification"
+  targetNamespace="http://ons.gov.uk/ctp/response/casesvc/message/notification">
+
+  <!-- root element of a feedback message to the action service -->
+  <xs:element name="caseNotification" type="CaseNotification"/>
+
+  <xs:complexType name="CaseNotification">
+    <xs:all>
+      <xs:element name="caseId" type="xs:positiveInteger"/>
+      <xs:element name="actionPlanId" type="xs:positiveInteger"/>
+      <xs:element name="notificationType" type="Notification" />
+    </xs:all>
+  </xs:complexType>
+  
+  <xs:simpleType name="Notification">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CREATED"/>
+      <xs:enumeration value="CLOSED"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+</xs:schema>
