@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import lombok.Data;
 
 /**
- * Applicaton Config bean
+ * Application Config bean
  *
  */
 @Configuration

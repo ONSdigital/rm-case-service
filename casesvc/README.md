@@ -13,11 +13,6 @@ sudo mkdir -p /var/log/ctp/responsemanagement/casesvc sudo chmod -R 777 /var/log
 The app can be started from the command line using : ./mvnw spring-boot:run
 
 
-## To test regions
-curl http://localhost:8171/regions/ -v -X GET
-200 [{"regionCode":"E12000001","regionName":"North East"}...
-
-
 ## To test addresses
 curl http://localhost:8171/addresses/postcode/PO141DT -v -X GET
 200 long json
@@ -32,6 +27,7 @@ curl http://localhost:8171/categories/?role=collect-cso -v -X GET
 # Create a case - valid json
 curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/samples/1 -v -X PUT -d "{\"type\":\"REGION\", \"code\":\"E12000008\"}"
 204
+
 
 # Create a case - bad json
 curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/samples/1 -v -X PUT -d "{\"badtype\":\"REGION\", \"code\":\"E12000008\"}"
