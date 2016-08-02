@@ -1,8 +1,9 @@
-See Case Frame Service in the WIKI : http://192.168.10.11/Case_Frame_Service
+See Case Service in the WIKI : http://192.168.10.11/Case_Frame_Service
 
 
 ## To build
-./mvnw clean install
+./mvnw clean site
+    - unit test coverage reports at /casesvc/target/site/cobertura/index.html
 
 
 ## To be able to log to file
