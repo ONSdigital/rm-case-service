@@ -2,7 +2,7 @@
   xmlns="http://ons.gov.uk/ctp/response/casesvc/message/notification"
   targetNamespace="http://ons.gov.uk/ctp/response/casesvc/message/notification">
 
-  <!-- root element of a feedback message to the Case service -->
+  <!-- root element for case lifecycle event notification messages -->
   <xs:element name="caseNotification" type="CaseNotification"/>
 
   <xs:complexType name="CaseNotification">
