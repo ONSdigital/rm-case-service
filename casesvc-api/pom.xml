@@ -10,15 +10,20 @@
   <name>CTP : ResponseManagement : CaseSvcApi</name>
   <description>CTP : ResponseManagement : CaseSvcApi</description>
 
+  <dependencies>
+    <dependency>
+      <groupId>net.codesup.util</groupId>
+      <artifactId>jaxb2-rich-contract-plugin</artifactId>
+      <version>1.15.0</version>
+    </dependency>
+  </dependencies>
+
   <parent>
     <groupId>uk.gov.ons.ctp.product</groupId>
     <artifactId>responsemanagement</artifactId>
     <version>9.21.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
-
-  <dependencies>
-  </dependencies>
 
   <build>
     <plugins>
@@ -36,6 +41,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
+          <excludes>**/response/casesvc/message/**/*</excludes>
         </configuration>
         <version>2.17</version>
         <dependencies>
@@ -61,6 +67,51 @@
           </execution>
         </executions>
       </plugin>
+      
+      <plugin>
+        <groupId>org.jvnet.jaxb2.maven2</groupId>
+        <artifactId>maven-jaxb2-plugin</artifactId>
+        <version>0.13.1</version>
+
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <id>outbound</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <bindingDirectory>src/main/resources/xsd</bindingDirectory>
+              <bindingIncludes>
+                <include>caseNotification.xjb</include>
+              </bindingIncludes>
+              <schemaDirectory>src/main/resources/xsd</schemaDirectory>
+              <schemaIncludes>
+                <include>caseNotification.xsd</include>
+              </schemaIncludes>
+              <generateDirectory>${project.build.directory}/generated-sources/xjc/outbound</generateDirectory>
+              <args>
+                <arg>-Xvalue-constructor</arg>
+                <arg>-Xfluent-builder</arg>
+                <arg>-generateTools=n</arg>
+              </args>
+              <plugins>
+                <plugin>
+                  <groupId>net.codesup.util</groupId>
+                  <artifactId>jaxb2-rich-contract-plugin</artifactId>
+                  <version>1.15.0</version>
+                </plugin>
+                <plugin>
+                  <groupId>org.jvnet.jaxb2_commons</groupId>
+                  <artifactId>jaxb2-value-constructor</artifactId>
+                  <version>3.0</version>
+                </plugin>
+              </plugins>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
 
