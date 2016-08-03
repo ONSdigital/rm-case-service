@@ -40,9 +40,9 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <configuration>
+        <!-- <configuration>
           <excludes>**/response/casesvc/message/**/*</excludes>
-        </configuration>
+        </configuration> -->
         <version>2.17</version>
         <dependencies>
           <dependency>
