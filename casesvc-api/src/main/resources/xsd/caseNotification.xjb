@@ -3,6 +3,7 @@
   <jxb:bindings schemaLocation="caseNotification.xsd" node="/xs:schema">
     <jxb:globalBindings>
       <xjc:simple />
+      <jxb:javaType name="java.lang.Integer" xmlType="xs:positiveInteger" />
     </jxb:globalBindings>
   </jxb:bindings>
 </jxb:bindings>
