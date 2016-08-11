@@ -1,0 +1,22 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 9.22.0-1
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: generate cases return table 
+            path: generate_cases.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 9.22.0-2
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: generate questionnaire pass in questionset 
+            path: create_questionnaire.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
