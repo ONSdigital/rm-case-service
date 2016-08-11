@@ -97,4 +97,4 @@ action-svc:
   cancel-actions-path: /actions/case/{caseid}/cancel
 
 notification-publ:
-  notification-max: 50
+  notification-max: 100
