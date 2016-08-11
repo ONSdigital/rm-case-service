@@ -3,17 +3,24 @@
   targetNamespace="http://ons.gov.uk/ctp/response/casesvc/message/notification">
 
   <!-- root element for case lifecycle event notification messages -->
-  <xs:element name="caseNotification" type="CaseNotification"/>
+  <xs:element name="caseNotifications">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="caseNotification" type="CaseNotification"
+          minOccurs="1" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
 
   <xs:complexType name="CaseNotification">
     <xs:all>
       <xs:element name="caseId" type="xs:positiveInteger"/>
       <xs:element name="actionPlanId" type="xs:positiveInteger"/>
-      <xs:element name="notificationType" type="Notification" />
+      <xs:element name="notificationType" type="NotificationType" />
     </xs:all>
   </xs:complexType>
   
-  <xs:simpleType name="Notification">
+  <xs:simpleType name="NotificationType">
     <xs:restriction base="xs:string">
       <xs:enumeration value="CREATED"/>
       <xs:enumeration value="CLOSED"/>

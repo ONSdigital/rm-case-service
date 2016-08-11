@@ -72,7 +72,7 @@ public final class MockSampleServiceFactory implements Factory<SampleService> {
       }
     });
 
-    Mockito.when(mockedService.generateCases(SAMPLEID, GEOGRAPHY_TYPE, GEOGRAPHY_CODE)).thenReturn(true);
+    //Mockito.when(mockedService.generateCases(SAMPLEID, GEOGRAPHY_TYPE, GEOGRAPHY_CODE)).thenReturn(true);
 
     return mockedService;
   }

@@ -1,11 +1,6 @@
-/**
- * 
- */
 package uk.gov.ons.ctp.response.casesvc.message;
 
-import org.springframework.integration.annotation.Publisher;
-
-import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
+import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotifications;
 
 /**
  * Service responsible for publishing case lifecycle events to notification
@@ -14,10 +9,12 @@ import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
  */
 public interface NotificationPublisher {
 
-	  /**
-	   * To put a CaseNotification on the outbound channel caseNotification
-	   * @param caseNotification the CaseNotification to put on the outbound channel
-	   * @return CaseNotification
-	   */
-	  CaseNotification sendNotification(CaseNotification caseNotification);
+  /**
+   * To put CaseNotifications on the outbound channel caseNotificationOutbound
+   * 
+   * @param caseNotifications the CaseNotifications to put on the outbound
+   *          channel
+   * @return CaseNotifications
+   */
+  CaseNotifications sendNotifications(CaseNotifications caseNotifications);
 }
