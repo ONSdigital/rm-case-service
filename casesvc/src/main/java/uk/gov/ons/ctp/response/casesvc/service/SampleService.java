@@ -29,11 +29,11 @@ public interface SampleService extends CTPService {
   /**
    * Create the Cases for the supplied geographyType and associated area code.
    *
-   * @param sampleId Unique Sample Isd for which to craete cases
+   * @param sampleId Unique Sample Id for which to create cases
    * @param goegraphyType Type of Geography area to which code relates
    * @param geographyCode Code for area
-   * @return Boolean result of operation
+   *
    */
-  Boolean generateCases(Integer sampleId, String goegraphyType, String geographyCode);
+  void generateCases(Integer sampleId, String goegraphyType, String geographyCode);
 
 }

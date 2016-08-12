@@ -95,4 +95,6 @@ action-svc:
   port: 8151
   actions-path: /actions
   cancel-actions-path: /actions/case/{caseid}/cancel
-  
+
+notification-publ:
+  notification-max: 100
