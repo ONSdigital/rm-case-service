@@ -11,7 +11,7 @@
 
 
   <!-- Message listener on Case.Notifications queue in VM memory -->
-  <bean id="CaseNotificationListenerContainer"
+  <bean id="caseNotificationListenerContainer"
         class="org.springframework.jms.listener.DefaultMessageListenerContainer">
     <property name="connectionFactory" ref="connectionFactory" />
     <property name="destinationName" value="Case.Notifications" />
@@ -27,7 +27,7 @@
 
   <!-- Adapter listening on JMS queue to create Spring message instance send to input channel -->
   <int-jms:message-driven-channel-adapter
-    id="jmsIn" container="CaseNotificationListenerContainer" channel="notificationXml"/>
+    id="jmsIn" container="caseNotificationListenerContainer" channel="notificationXml"/>
 
   <!-- Bean to publish messages -->
   <bean id="notificationPublisher" class="uk.gov.ons.ctp.response.casesvc.message.impl.NotificationPublisherImpl"/>
