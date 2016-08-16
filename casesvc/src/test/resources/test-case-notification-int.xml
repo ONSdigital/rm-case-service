@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:int="http://www.springframework.org/schema/integration"
+ xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+  http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+  http://www.springframework.org/schema/integration/jms
+  http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd" >
+
+
+  <!-- Message listener on Case.Notifications queue in VM memory -->
+  <bean id="CaseNotificationListenerContainer"
+        class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+    <property name="connectionFactory" ref="connectionFactory" />
+    <property name="destinationName" value="Case.Notifications" />
+    <property name="maxConcurrentConsumers" value="1" />
+    <property name="concurrentConsumers" value="1" />
+    <property name="autoStartup" value="true" />
+  </bean>
+
+  <!-- Setup Input channel to receive test message sent to JMS queue-->
+  <int:channel id="notificationXml">
+    <int:queue capacity="1" />
+  </int:channel>
+
+  <!-- Adapter listening on JMS queue to create Spring message instance send to input channel -->
+  <int-jms:message-driven-channel-adapter
+    id="jmsIn" container="CaseNotificationListenerContainer" channel="notificationXml"/>
+
+  <!-- Bean to publish messages -->
+  <bean id="notificationPublisher" class="uk.gov.ons.ctp.response.casesvc.message.impl.NotificationPublisherImpl"/>
+
+</beans>
