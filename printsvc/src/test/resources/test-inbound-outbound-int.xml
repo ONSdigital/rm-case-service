@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans   
+  http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
+
+  <bean id="printInstructionReceiver" class="uk.gov.ons.ctp.response.print.message.impl.InstructionReceiverImpl"/>
+  <bean id="printService" class="uk.gov.ons.ctp.response.print.service.impl.DummyPrintServiceImpl"/>
+
+  <bean id="actionInstructionMessageListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+    <property name="connectionFactory" ref="connectionFactory"/>
+    <property name="destinationName" value="Action.Printer" />
+    <property name="messageListener" ref="myMessageListener" />
+    <property name="maxConcurrentConsumers" value="1" />
+    <property name="concurrentConsumers" value="1" />
+    <property name="receiveTimeout" value="5000" />
+    <property name="recoveryInterval" value="60000" />
+    <property name="autoStartup" value="true" />
+  </bean>
+
+  <bean id="myMessageListener" class="uk.gov.ons.ctp.response.print.utility.ActionMessageListener"/>
+  
+</beans>
+

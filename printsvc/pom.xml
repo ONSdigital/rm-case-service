@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>printsvc</artifactId>
+  <version>9.23.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>CTP : ResponseManagement : PrintSvc</name>
+  <description>CTP : ResponseManagement : PrintSvc</description>
+
+  <parent>
+    <groupId>uk.gov.ons.ctp.product</groupId>
+    <artifactId>responsemanagement</artifactId>
+    <version>9.23.0-SNAPSHOT</version>
+    <relativePath>../</relativePath>
+  </parent>
+
+  <scm>
+    <connection>scm:git:git@192.168.11.106:ctp/responsemanagement-service.git</connection>
+    <developerConnection>scm:git:git@192.168.11.106:ctp/responsemanagement-service.git</developerConnection>
+    <url>scm:git:git@192.168.11.106:ctp/responsemanagement-service.git</url>
+  </scm>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>uk.gov.ons.ctp.product</groupId>
+      <artifactId>actionsvc-api</artifactId>
+      <version>9.20.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-integration</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>ma.glasnost.orika</groupId>
+      <artifactId>orika-eclipse-tools</artifactId>
+      <version>1.4.6</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jms</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.integration</groupId>
+      <artifactId>spring-integration-jms</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.activemq</groupId>
+      <artifactId>activemq-broker</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.integration</groupId>
+      <artifactId>spring-integration-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.integration</groupId>
+      <artifactId>spring-integration-xml</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.integration</groupId>
+      <artifactId>spring-integration-file</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.integration</groupId>
+      <artifactId>spring-integration-http</artifactId>
+    </dependency>
+
+
+    <dependency>
+      <groupId>org.springframework.integration</groupId>
+      <artifactId>spring-integration-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven.compiler.plugin.version}</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${springboot.version}</version>
+        <configuration>
+          <executable>true</executable>
+          <requiresUnpack>
+            <dependency>
+              <groupId>uk.gov.ons.ctp.common</groupId>
+              <artifactId>framework</artifactId>
+            </dependency>
+            <dependency>
+              <groupId>uk.gov.ons.ctp.product</groupId>
+              <artifactId>actionsvc-api</artifactId>
+            </dependency>
+          </requiresUnpack>
+          <mainClass>uk.gov.ons.ctp.response.action.PrintSvcApplication</mainClass>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+        </configuration>
+        <version>2.17</version>
+        <dependencies>
+          <dependency>
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>6.16.1</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>test</id>
+            <phase>test</phase>
+            <configuration>
+              <configLocation>http://192.168.11.11:8001/misc/checkstyle/ons_checks_sun_checks.xml</configLocation>
+              <encoding>UTF-8</encoding>
+              <consoleOutput>true</consoleOutput>
+              <failsOnError>true</failsOnError>
+            </configuration>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>buildnumber-maven-plugin</artifactId>
+        <version>1.4</version>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>create</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <shortRevisionLength>7</shortRevisionLength>
+          <doCheck>false</doCheck>
+          <doUpdate>false</doUpdate>
+          <timestampFormat>{0,time,long} on {0,date,long}</timestampFormat>
+          <items>
+            <item>timestamp</item>
+          </items>
+        </configuration>
+      </plugin>
+
+    </plugins>
+
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+
+  </build>
+
+</project>

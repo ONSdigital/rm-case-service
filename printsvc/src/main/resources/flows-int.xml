@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+ xmlns:jms="http://www.springframework.org/schema/jms" xmlns:p="http://www.springframework.org/schema/p"
+ xmlns:int-jme="http://www.springframework.org/schema/integration"
+ xmlns:int="http://www.springframework.org/schema/integration"
+ xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+ xmlns:int-http="http://www.springframework.org/schema/integration/http"
+ xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
+ xmlns:int-file="http://www.springframework.org/schema/integration/file"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans   
+  http://www.springframework.org/schema/beans/spring-beans-4.2.xsd  
+  http://www.springframework.org/schema/context  
+  http://www.springframework.org/schema/context/spring-context-4.2.xsd  
+  http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+  http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
+  http://www.springframework.org/schema/jms  
+  http://www.springframework.org/schema/jms/spring-jms-4.2.xsd
+  http://www.springframework.org/schema/integration/file
+  http://www.springframework.org/schema/integration/file/spring-integration-file.xsd
+  http://www.springframework.org/schema/integration/http
+  http://www.springframework.org/schema/integration/http/spring-integration-http.xsd
+  http://www.springframework.org/schema/integration/xml
+  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
+
+
+ <!-- First the inbound flow -->
+
+ <!-- need an input channel defined for MQ adapter to input to -->
+ <int:channel id="instructionXml" />
+
+ <!-- anything sent to this channel is written to disk -->
+ <int:channel id="instructionXmlInvalid" />
+ <int-file:outbound-channel-adapter
+  directory="/var/log/ctp/responsemanagement/printsvc/instruction"
+  channel="instructionXmlInvalid" />
+
+ <!-- the MQ channel adapter reads from testQueue (see the container above) 
+  and inputs to feedback.xml -->
+ <int-jms:message-driven-channel-adapter
+  id="jmsIn" container="instructionListenerContainer" channel="instructionXml" />
+
+ <!-- First the SI message provided by the channel adapter is validated against 
+  the inbound schema -->
+ <int-xml:validating-filter id="instructionValidator"
+  input-channel="instructionXml" output-channel="instructionXmlValid"
+  schema-location="classpath:xsd/actionInstruction.xsd" discard-channel="instructionXmlInvalid" />
+
+ <!-- Secondly the now validated xml is transformed into the jaxb generated 
+  object model -->
+ <int:channel id="printInstructionTransformed" />
+ <int-xml:unmarshalling-transformer
+  input-channel="instructionXmlValid" output-channel="printInstructionTransformed"
+  unmarshaller="instructionUnmarshaller" />
+
+ <!-- The transformer uses this unmarshaller to do the heavy (un)lifting -->
+ <bean id="instructionUnmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+  <property name="contextPath"
+   value="uk.gov.ons.ctp.response.action.message.instruction" />
+ </bean>
+
+
+</beans>
+
