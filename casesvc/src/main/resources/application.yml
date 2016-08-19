@@ -80,6 +80,8 @@ spring:
     driverClassName: org.postgresql.Driver
     test-on-borrow: true
     remove-abandoned: true
+    remove-abandoned-timeout: 120
+    log-abandoned: true
     validation-query: SELECT 1;
 
   jpa:
