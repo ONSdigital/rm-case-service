@@ -82,19 +82,24 @@ spring:
     remove-abandoned: true
     validation-query: SELECT 1;
 
-    jpa:
-      database-platform: org.hibernate.dialect.PostgreSQLDialect
-      show-sql: true
-      properties:
-        hibernate:
-          ddl-auto: update
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    properties:
+      hibernate:
+        ddl-auto: update
 
 action-svc:
-  scheme: http
-  host: localhost
-  port: 8151
-  actions-path: /actions
+  actions-path: /actions 
   cancel-actions-path: /actions/case/{caseid}/cancel
+  connection-config:
+    scheme: http
+    host: localhost
+    port: 8151
+    retry-attempts: 10
+    retry-pause-milli-seconds: 5000
+    connect-timeout-milli-seconds: 5000
+    read-timeout-milli-seconds: 5000
 
 notification-publ:
   notification-max: 100

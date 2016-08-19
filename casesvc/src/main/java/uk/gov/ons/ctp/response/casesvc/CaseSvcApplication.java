@@ -45,8 +45,7 @@ public class CaseSvcApplication {
    */
   @Bean
   public RestClient actionServiceClient() {
-    RestClient restHelper = new RestClient(appConfig.getActionSvc().getScheme(), appConfig.getActionSvc().getHost(),
-        appConfig.getActionSvc().getPort());
+    RestClient restHelper = new RestClient(appConfig.getActionSvc().getConnectionConfig());
     return restHelper;
   }
 
