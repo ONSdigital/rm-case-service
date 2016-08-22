@@ -28,7 +28,7 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseService;
  * The REST endpoint controller for CaseSvc Cases
  */
 @Path("/cases")
-@Produces({ "application/json" })
+@Produces({"application/json"})
 @Slf4j
 public final class CaseEndpoint implements CTPEndpoint {
 
@@ -91,7 +91,11 @@ public final class CaseEndpoint implements CTPEndpoint {
   }
 
   /**
-   * the GET endpoint to find case events by state and actionplanid
+   * The GET endpoint to find case events by state and actionplanid. Note that
+   * this has been replaced by the Case.Notification queue mechanism to notify
+   * the Action service of case life cycle events. Has been left in place
+   * pending implementation of recovery functionality if Case and Action service
+   * state gets out of synchronisation.
    *
    * @param states the case states to find by
    * @param actionPlanId the id of the action plan to find by
@@ -100,9 +104,9 @@ public final class CaseEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/actionplan/{actionplanid}")
-    public List<BigInteger> findCaseIdsByStateAndActionPlan(
-        @QueryParam("state") final List<String> states,
-        @PathParam("actionplanid") final Integer actionPlanId) throws CTPException {
+  public List<BigInteger> findCaseIdsByStateAndActionPlan(
+      @QueryParam("state") final List<String> states,
+      @PathParam("actionplanid") final Integer actionPlanId) throws CTPException {
     log.debug("Entering findCasesByStateAndActionPlan with {} and {}", states, actionPlanId);
     List<BigInteger> caseIds = caseService.findCaseIdsByStatesAndActionPlanId(states, actionPlanId);
     return caseIds;
