@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Case Service API
   description: The Case service manages Cases and associated address frame data and forms part of the Response Management product.
-  version: 9.21.0
+  version: 9.23.0
 schemes:
   - http
 basePath: /
@@ -72,6 +72,37 @@ paths:
           description: Questionnaire not found
           schema:
             $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /cases:
+    post:
+      summary: Creates a case.
+      description: Creates a case from the mandatory uprn, caseTypeId, createdBy, sampleId, actionPlanId, surveyId and questionSet properties.
+      consumes:
+        - application/json
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json
+          required: false
+          type: string
+        - in: body
+          name: case
+          description: Case to create
+          required: true
+          schema:
+            $ref: '#/definitions/CaseCreationRequest'
+      tags:
+        - Case
+      responses:
+        201:
+          description: Case created
+          schema:
+            $ref: '#/definitions/Case'
+        400:
+          description: Invalid input
         default:
           description: Unexpected error
           schema:
@@ -647,7 +678,7 @@ paths:
         default:
           description: Unexpected error
           schema:
-            $ref: '#/definitions/Error'            
+            $ref: '#/definitions/Error'
 definitions:
   Address:
     type: object
@@ -732,6 +763,41 @@ definitions:
         type: string
         format: date-time
         description: Creation date-time.
+      createdBy:
+        type: string
+        description: Creator of case.
+      sampleId:
+        type: integer
+        description: Sample Id.
+      actionPlanId:
+        type: integer
+        description: Action plan for case.
+      surveyId:
+        type: integer
+        description:  Survey instrument.
+      parentCaseId:
+        type: integer
+        description: Linked parent case.
+      questionSet:
+        type: string
+        description: Type of questionnaire set.
+  CaseCreationRequest:
+    type: object
+    required:
+      - uprn
+      - caseTypeId
+      - createdBy
+      - sampleId
+      - actionPlanId
+      - surveyId
+      - questionSet
+    properties:
+      uprn:
+        type: integer
+        description: Unique Property Reference Number.
+      caseTypeId:
+        type: integer
+        description: Case Type Id
       createdBy:
         type: string
         description: Creator of case.
