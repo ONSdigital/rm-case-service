@@ -16,7 +16,7 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseTypeService;
  */
 @Named
 @Slf4j
-public final class CaseTypeServiceImpl implements CaseTypeService {
+public class CaseTypeServiceImpl implements CaseTypeService {
 
   /**
    * Spring Data Repository for CaseType entities.

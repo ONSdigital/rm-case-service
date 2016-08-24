@@ -27,7 +27,7 @@ import uk.gov.ons.ctp.response.casesvc.service.SampleService;
  */
 @Named
 @Slf4j
-public final class SampleServiceImpl implements SampleService {
+public class SampleServiceImpl implements SampleService {
 
   private static final int TRANSACTION_TIMEOUT = 120;
 

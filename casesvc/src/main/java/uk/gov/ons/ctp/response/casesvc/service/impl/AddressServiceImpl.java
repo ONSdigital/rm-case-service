@@ -16,7 +16,7 @@ import uk.gov.ons.ctp.response.casesvc.service.AddressService;
  */
 @Named
 @Slf4j
-public final class AddressServiceImpl implements AddressService {
+public class AddressServiceImpl implements AddressService {
 
   private static final int INWARD_POSTCODE = 3;
 

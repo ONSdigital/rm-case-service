@@ -29,7 +29,7 @@ public class CaseEvent implements Serializable {
   private static final long serialVersionUID = 6034836141646834386L;
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO, generator = "caseeventseq_gen")
+  @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "caseeventseq_gen")
   @SequenceGenerator(name = "caseeventseq_gen", sequenceName = "casesvc.caseeventidseq")
   @Column(name = "caseeventid")
   private Integer caseEventId;

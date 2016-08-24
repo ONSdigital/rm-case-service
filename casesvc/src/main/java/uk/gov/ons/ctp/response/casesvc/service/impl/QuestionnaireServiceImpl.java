@@ -25,7 +25,7 @@ import uk.gov.ons.ctp.response.casesvc.service.QuestionnaireService;
 @Named
 @Slf4j
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-public final class QuestionnaireServiceImpl implements QuestionnaireService {
+public class QuestionnaireServiceImpl implements QuestionnaireService {
 
   /**
    * Text associated with failure of Response data received operation

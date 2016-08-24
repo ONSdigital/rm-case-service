@@ -38,7 +38,7 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseService;
  */
 @Named
 @Slf4j
-public final class CaseServiceImpl implements CaseService {
+public class CaseServiceImpl implements CaseService {
 
   private static final int TRANSACTION_TIMEOUT = 30;
 
