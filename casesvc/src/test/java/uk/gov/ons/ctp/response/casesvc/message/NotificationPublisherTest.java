@@ -3,6 +3,7 @@ package uk.gov.ons.ctp.response.casesvc.message;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasXPath;
 import static org.junit.Assert.assertThat;
+import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.CREATED;
 
 import java.io.ByteArrayInputStream;
 
@@ -22,7 +23,6 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotifications;
-import uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType;
 
 /**
  * Test publication of CaseNotification messages on integration flow to
@@ -49,8 +49,8 @@ public class NotificationPublisherTest {
   @Test
   public void testNotificationPublisher() {
     CaseNotifications caseNotifications = new CaseNotifications();
-    caseNotifications.getCaseNotifications().add(new CaseNotification(1, 3, NotificationType.CREATED));
-    caseNotifications.getCaseNotifications().add(new CaseNotification(2, 3, NotificationType.CREATED));
+    caseNotifications.getCaseNotifications().add(new CaseNotification(1, 3, CREATED));
+    caseNotifications.getCaseNotifications().add(new CaseNotification(2, 3, CREATED));
     notificationPublisher.sendNotifications(caseNotifications);
     Message<?> message = notificationXml.receive(RECEIVE_TIMEOUT);
     String payload = (String) message.getPayload();
