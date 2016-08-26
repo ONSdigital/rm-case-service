@@ -32,7 +32,7 @@
  <!-- anything sent to this channel is written to disk -->
  <int:channel id="instructionXmlInvalid" />
  <int-file:outbound-channel-adapter
-  directory="/var/log/ctp/responsemanagement/printsvc/instruction"
+  directory="file:${deadxml.directory}/instruction"
   channel="instructionXmlInvalid" />
 
  <!-- the MQ channel adapter reads from testQueue (see the container above) 

@@ -19,6 +19,7 @@ import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
@@ -27,6 +28,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  *
  */
 @ContextConfiguration(locations = { "/PrintServiceTest-context.xml" })
+@TestPropertySource("classpath:/application-test.properties")
 @RunWith(SpringJUnit4ClassRunner.class)
 public class InstructionReceiverTest {
 
@@ -39,7 +41,7 @@ public class InstructionReceiverTest {
   private Jaxb2Marshaller instructionUnmarshaller;
 
   private static final String INVALID_ACTION_FEEDBACK_LOG_DIRECTORY_NAME
-    = "/var/log/ctp/responsemanagement/printsvc/instruction";
+    = "/tmp/ctp/logs/printsvc/instruction";
   private static final String PACKAGE_ACTION_INSTRUCTION
      = "uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction";
 

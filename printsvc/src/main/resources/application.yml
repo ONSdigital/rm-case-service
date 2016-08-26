@@ -70,3 +70,6 @@ spring:
     broker-url: tcp://localhost:53445
     pooled: true
 
+
+deadxml:
+  directory: /var/log/ctp/responsemanagement/actionsvc
