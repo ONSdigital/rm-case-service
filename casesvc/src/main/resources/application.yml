@@ -30,7 +30,7 @@ management:
   port: 8271
   context-path: /mgmt
   security:
-    role: SUPERUSER
+    roles: SUPERUSER
     enabled: false
 
 server:
@@ -59,7 +59,7 @@ endpoints:
   metrics:
     enabled: true
     sensitive: true
-  mapping:
+  mappings:
     enabled: true
     sensitive: true
   shutdown:
@@ -78,11 +78,6 @@ spring:
     username: casesvc
     password: casesvc
     driverClassName: org.postgresql.Driver
-    test-on-borrow: true
-    remove-abandoned: true
-    remove-abandoned-timeout: 120
-    log-abandoned: true
-    validation-query: SELECT 1;
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -105,3 +100,6 @@ action-svc:
 
 notification-publ:
   notification-max: 100
+
+deadxml:
+  directory: /var/log/ctp/responsemanagement/actionsvc

@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.PollableChannel;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.w3c.dom.Document;
 
@@ -30,6 +31,7 @@ import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotifications;
  *
  */
 @ContextConfiguration(locations = {"/CaseNotificationPublishTest-context.xml"})
+@TestPropertySource("classpath:/application-test.properties")
 @RunWith(SpringJUnit4ClassRunner.class)
 @Slf4j
 @Data

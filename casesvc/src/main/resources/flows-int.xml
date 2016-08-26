@@ -17,7 +17,7 @@
     <!-- Invalid notification XML written to file-->
     <int:channel id="caseNotificationXmlInvalid" />
     <int-file:outbound-channel-adapter 
-      directory ="/var/log/ctp/responsemanagement/casesvc/notification" 
+      directory ="file:${deadxml.directory}/notification" 
       channel="caseNotificationXmlInvalid"/>
 
     <!-- setup the case notification jms queue -->
