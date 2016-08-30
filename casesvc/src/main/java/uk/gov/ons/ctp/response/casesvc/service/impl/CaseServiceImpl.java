@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
+import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.CLOSED;
+
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -26,6 +28,9 @@ import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseTypeRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.QuestionnaireRepository;
+import uk.gov.ons.ctp.response.casesvc.message.NotificationPublisher;
+import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
+import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotifications;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseTypeDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
@@ -74,6 +79,12 @@ public class CaseServiceImpl implements CaseService {
    */
   @Inject
   private ActionSvcClientService actionSvcClientService;
+
+  /**
+   * Notification publishing service for Case life cycle events
+   */
+  @Inject
+  private NotificationPublisher notificationPublisher;
 
   @Override
   public List<Case> findCasesByUprn(final Long uprn) {
@@ -144,12 +155,20 @@ public class CaseServiceImpl implements CaseService {
               .contains(reasonForClosure)) {
             caseRepo.setState(caseId, CaseDTO.CaseState.CLOSED.name());
             actionSvcClientService.cancelActions(caseId);
+            CaseNotifications caseNotifications = new CaseNotifications();
+            caseNotifications.getCaseNotifications()
+                .add(new CaseNotification(caseId, existingCase.getActionPlanId(), CLOSED));
+            notificationPublisher.sendNotifications(caseNotifications);
           } else {
             caseRepo.setState(caseId, CaseDTO.CaseState.RESPONDED.name());
           }
         } else {
           caseRepo.setState(caseId, CaseDTO.CaseState.CLOSED.name());
           actionSvcClientService.cancelActions(caseId);
+          CaseNotifications caseNotifications = new CaseNotifications();
+          caseNotifications.getCaseNotifications()
+              .add(new CaseNotification(caseId, existingCase.getActionPlanId(), CLOSED));
+          notificationPublisher.sendNotifications(caseNotifications);
         }
       }
 

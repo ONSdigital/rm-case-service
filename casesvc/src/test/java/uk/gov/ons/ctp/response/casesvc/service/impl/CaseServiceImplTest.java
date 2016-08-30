@@ -30,9 +30,9 @@ import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseTypeRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.QuestionnaireRepository;
+import uk.gov.ons.ctp.response.casesvc.message.NotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
-import uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl;
 
 /**
  * Test the CaseServiceImpl
@@ -61,6 +61,9 @@ public class CaseServiceImplTest {
 
   @Mock
   private AppConfig appConfig;
+
+  @Mock
+  private NotificationPublisher notificationPublisher;
 
   @InjectMocks
   private CaseServiceImpl caseService;
@@ -102,6 +105,7 @@ public class CaseServiceImplTest {
 
   /**
    * A test
+   *
    * @throws Exception oops
    */
   @Test
@@ -130,6 +134,7 @@ public class CaseServiceImplTest {
 
   /**
    * A test
+   *
    * @throws Exception oops
    */
   @Test
@@ -155,6 +160,7 @@ public class CaseServiceImplTest {
 
   /**
    * A test
+   *
    * @throws Exception oops
    */
   @Test
@@ -180,6 +186,7 @@ public class CaseServiceImplTest {
 
   /**
    * A test
+   *
    * @throws Exception oops
    */
   @Test
@@ -205,6 +212,7 @@ public class CaseServiceImplTest {
 
   /**
    * A test
+   *
    * @throws Exception oops
    */
   @Test
@@ -232,6 +240,7 @@ public class CaseServiceImplTest {
 
   /**
    * mock loading data
+   *
    * @return list of mock cases
    * @throws Exception oops
    */
@@ -244,6 +253,7 @@ public class CaseServiceImplTest {
 
   /**
    * mock loading data
+   *
    * @return list of mock cases
    * @throws Exception oops
    */
@@ -256,6 +266,7 @@ public class CaseServiceImplTest {
 
   /**
    * mock loading data
+   *
    * @return list of mock cases
    * @throws Exception oops
    */
@@ -268,6 +279,7 @@ public class CaseServiceImplTest {
 
   /**
    * mock loading data
+   *
    * @return list of mock cases
    * @throws Exception oops
    */
@@ -280,6 +292,7 @@ public class CaseServiceImplTest {
 
   /**
    * mock loading data
+   *
    * @return list of mock cases
    * @throws Exception oops
    */
@@ -292,6 +305,7 @@ public class CaseServiceImplTest {
 
   /**
    * mock loading data
+   *
    * @return list of mock categories
    * @throws Exception oops
    */
@@ -304,6 +318,7 @@ public class CaseServiceImplTest {
 
   /**
    * mock loading data
+   *
    * @return list of mock cases types
    * @throws Exception oops
    */
@@ -316,6 +331,7 @@ public class CaseServiceImplTest {
 
   /**
    * mock loading data
+   *
    * @return list of mock cases types
    * @throws Exception oops
    */
@@ -328,6 +344,7 @@ public class CaseServiceImplTest {
 
   /**
    * mock loading data
+   *
    * @return list of mock questionnaires
    * @throws Exception oops
    */
@@ -342,6 +359,7 @@ public class CaseServiceImplTest {
 
   /**
    * mock loading data
+   *
    * @return list of mock questionnaires
    * @throws Exception oops
    */
@@ -356,6 +374,7 @@ public class CaseServiceImplTest {
 
   /**
    * mock loading data
+   *
    * @param caseEventIndex which case event to load
    * @return a mock case event
    * @throws Exception oops
@@ -368,6 +387,7 @@ public class CaseServiceImplTest {
 
   /**
    * mock loading data
+   *
    * @return a mock case event
    * @throws Exception oops
    */
@@ -380,6 +400,7 @@ public class CaseServiceImplTest {
 
   /**
    * mock loading data
+   *
    * @throws Exception oops
    */
   private void mockAppConfigUse() throws Exception {
