@@ -41,7 +41,7 @@ public class InstructionReceiverTest {
   private Jaxb2Marshaller instructionUnmarshaller;
 
   private static final String INVALID_ACTION_FEEDBACK_LOG_DIRECTORY_NAME
-    = "/tmp/ctp/logs/printsvc/instruction";
+    = "/tmp/ctp/logs/actionexporter/instruction";
   private static final String PACKAGE_ACTION_INSTRUCTION
      = "uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction";
 

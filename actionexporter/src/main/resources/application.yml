@@ -64,7 +64,7 @@ endpoints:
 
 spring:
   application:
-    name: ONS PrintService
+    name: ONS ActionExporter
 
   activemq:
     broker-url: tcp://localhost:53445
@@ -72,4 +72,4 @@ spring:
 
 
 deadxml:
-  directory: /var/log/ctp/responsemanagement/actionsvc
+  directory: /var/log/ctp/responsemanagement/actionexporter
