@@ -1,0 +1,13 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 9.24.0-1
+      author: Phil Whiles
+      changes:
+        - sqlFile:
+            comment: change questionnaire.iac column size for 2017
+            path: modify_questionnaire_iac.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+
