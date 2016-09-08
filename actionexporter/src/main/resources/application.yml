@@ -70,6 +70,8 @@ spring:
     broker-url: tcp://localhost:53445
     pooled: true
 
+export-schedule:
+  cron-expression: "0/30 * * * * ?"
 
 deadxml:
   directory: /var/log/ctp/responsemanagement/actionexporter
