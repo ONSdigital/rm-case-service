@@ -72,7 +72,9 @@ endpoints:
 spring:
   application:
     name: ONS CaseService
-
+  sleuth:
+    sampler:
+      percentage: 10
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres
     username: casesvc
@@ -85,6 +87,9 @@ spring:
     properties:
       hibernate:
         ddl-auto: update
+
+  zipkin:
+    enabled: false
 
 action-svc:
   actions-path: /actions 
