@@ -158,9 +158,12 @@ curl http://localhost:8171/questionnaires/case/12345 -v -X GET
 204 TODO Spec says 404 Case not found
 
 
-
-
-
+########################################################################
+## PUT /questionnaires/{questionnaireid}/response
+########################################################################
+curl -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/questionnaires/1234/response -v -X PUT -d "{\"description\":\"mytest\", \"category\":\"Complaint - Escalated\", \"subCategory\":\"ABC\", \"createdBy\":\"philippe\"}"
+500 {"error":{"code":"SYSTEM_ERROR","timestamp":"20160912164155286","message":"Response operation failed for questionnaireid 1234"}}
+TODO Spec says Questionnaire not found - 404
 
 
 ########################################################################
