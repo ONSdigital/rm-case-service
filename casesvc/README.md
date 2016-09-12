@@ -195,12 +195,39 @@ curl http://localhost:8171/casetypes/123 -v -X GET
 
 
 ########################################################################
-## To test PUT /samples/{sampleid}
+## GET /categories
 ########################################################################
+curl http://localhost:8171/categories/ -v -X GET
+200 Long json
+
+
+########################################################################
+## GET /samples
+########################################################################
+curl http://localhost:8171/samples/ -v -X GET
+200 Long json
+
+
+########################################################################
+## GET /samples/{sampleid}
+########################################################################
+curl http://localhost:8171/samples/123 -v -X GET
+404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160912170200153","message":"Sample not found for id 123"}}
+
+
+########################################################################
+## PUT /samples/{sampleid}
+########################################################################
+curl -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/samples/1234 -v -X PUT -d "{\"description\":\"mytest\", \"category\":\"Complaint - Escalated\", \"subCategory\":\"ABC\", \"createdBy\":\"philippe\"}"
+400 {"error":{"code":"VALIDATION_FAILED","timestamp":"20160912170335864","message":"Provided json is incorrect."}}
+
+
+curl -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/samples/1234 -v -X PUT -d "{\"type\":\"LA\", \"code\":\"E07000163\"}"
+TODO Should it not be in this case 404 as the sampleid 1234 does not exist?
+
+
 curl -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/samples/1 -v -X PUT -d "{\"type\":\"LA\", \"code\":\"E07000163\"}"
 204 TODO Spec says 200
 
-select * from casesvc.generate_cases(1, 'LA', 'E07000163')
 
 
-select * from casesvc.generate_cases(1, "REGION", "E12000001")
