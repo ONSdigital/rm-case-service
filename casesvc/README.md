@@ -167,6 +167,20 @@ TODO Spec says Questionnaire not found - 404
 
 
 ########################################################################
+## GET /questionsets
+########################################################################
+curl http://localhost:8171/questionsets/ -v -X GET
+200 [{"questionSet":"HH","description":"Households"},{"questionSet":"CE","description":"Communal Establishments"}]
+
+
+########################################################################
+## GET /questionsets/{questionset}
+########################################################################
+curl http://localhost:8171/questionsets/123 -v -X GET
+404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160912165259103","message":"QuestionSet not found for id 123"}}
+
+
+########################################################################
 ## To test PUT /samples/{sampleid}
 ########################################################################
 curl -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/samples/1 -v -X PUT -d "{\"type\":\"LA\", \"code\":\"E07000163\"}"
