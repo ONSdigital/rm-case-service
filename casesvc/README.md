@@ -126,6 +126,21 @@ curl http://localhost:8171/cases/1/events -v -X GET
 
 
 ########################################################################
+## POST /cases/{caseid}/events
+########################################################################
+curl -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/cases/1/events -v -X POST -d "{\"type\":\"LA\", \"code\":\"E07000163\"}"
+400 {"error":{"code":"VALIDATION_FAILED","timestamp":"20160912160946534","message":"Provided json is incorrect."}}
+
+
+curl -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/cases/1/events -v -X POST -d "{\"description\":\"mytest\", \"category\":\"Complaint - Escalated\", \"subCategory\":\"ABC\", \"createdBy\":\"philippe\"}"
+200 {"createdDateTime":"2016-09-12T15:28:25.681+0000","caseEventId":763,"caseId":1,"category":"Complaint - Escalated","subCategory":"ABC","createdBy":"philippe","description":"mytest"}
+
+
+curl -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/cases/1234/events -v -X POST -d "{\"description\":\"mytest\", \"category\":\"Complaint - Escalated\", \"subCategory\":\"ABC\", \"createdBy\":\"philippe\"}"
+404 curl -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/cases/1234/events -v -X POST -d "{\"description\":\"mytest\", \"category\":\"Complaint - Escalated\", \"subCategory\":\"ABC\", \"createdBy\":\"philippe\"}"
+
+
+########################################################################
 ## To test PUT /samples/{sampleid}
 ########################################################################
 curl -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/samples/1 -v -X PUT -d "{\"type\":\"LA\", \"code\":\"E07000163\"}"
