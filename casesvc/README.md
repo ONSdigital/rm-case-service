@@ -181,6 +181,20 @@ curl http://localhost:8171/questionsets/123 -v -X GET
 
 
 ########################################################################
+## GET /casetypes
+########################################################################
+curl http://localhost:8171/casetypes/ -v -X GET
+200 [{"caseTypeId":1,"name":"HH","description":"Household","actionPlanId":1,"questionSet":"HH"},{"caseTypeId":2,"name":"HGH","description":"Hotel Guest House Bed and Breakfast","actionPlanId":3,"questionSet":"CE"},{"caseTypeId":3,"name":"CH","description":"Care Home","actionPlanId":2,"questionSet":"CE"}]
+
+
+########################################################################
+## GET /casetypes/{casetypeid}
+########################################################################
+curl http://localhost:8171/casetypes/123 -v -X GET
+404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160912165705088","message":"CaseType not found for id 123"}}
+
+
+########################################################################
 ## To test PUT /samples/{sampleid}
 ########################################################################
 curl -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/samples/1 -v -X PUT -d "{\"type\":\"LA\", \"code\":\"E07000163\"}"
