@@ -11,3 +11,13 @@ databaseChangeLog:
             splitStatements: false
 
 
+  - changeSet:
+      id: 9.24.0-2
+      author: Phil Whiles
+      changes:
+        - sqlFile:
+            comment: change questionnaire.iac column size for 2017 again
+            path: modify_questionnaire_iac2.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+

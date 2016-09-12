@@ -115,6 +115,7 @@
         <version>${springboot.version}</version>
         <configuration>
           <executable>true</executable>
+          <!-- 
           <requiresUnpack>
             <dependency>
               <groupId>uk.gov.ons.ctp.common</groupId>
@@ -129,7 +130,8 @@
               <artifactId>casesvc-api</artifactId>
             </dependency>
           </requiresUnpack>
-          <mainClass>uk.gov.ons.ctp.response.casesvc.CaseSvcApplication</mainClass>
+ -->
+           <mainClass>uk.gov.ons.ctp.response.casesvc.CaseSvcApplication</mainClass>
         </configuration>
         <executions>
           <execution>
@@ -138,6 +140,30 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+
+
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${springboot.version}</version>
+        <configuration>
+          <layout>DIR</layout>
+          <requiresUnpack>
+            <dependency>
+              <groupId>uk.gov.ons.ctp.common</groupId>
+              <artifactId>framework</artifactId>
+            </dependency>
+            <dependency>
+              <groupId>uk.gov.ons.ctp.product</groupId>
+              <artifactId>actionsvc-api</artifactId>
+            </dependency>
+            <dependency>
+              <groupId>uk.gov.ons.ctp.product</groupId>
+              <artifactId>casesvc-api</artifactId>
+            </dependency>
+          </requiresUnpack>
+        </configuration>
       </plugin>
 
       <plugin>
