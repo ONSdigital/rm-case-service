@@ -40,17 +40,18 @@ curl http://localhost:8171/addresses/postcode/ -v -X GET
 400 {"error":{"code":"VALIDATION_FAILED","timestamp":"20160912112421853","message":"java.lang.NumberFormatException: For input string: \"postcode\""}}
 
 
-## To test categories
-curl http://localhost:8171/categories/ -v -X GET
-curl http://localhost:8171/categories/?role=collect-cso -v -X GET
+########################################################################
+## To test cases for uprn
+########################################################################
+curl http://localhost:8171/cases/uprn/12345 -v -X GET
+204 No content
+TODO: differ from spec which says 404 UPRN not found
+TODO: Server-side, it does a select by uprn on table casesvc.case.
 
 
-## To test case events
-# Create a case - valid json
-curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/samples/1 -v -X PUT -d "{\"type\":\"REGION\", \"code\":\"E12000008\"}"
-204
+curl http://localhost:8171/cases/uprn/ -v -X GET
+400 {"error":{"code":"VALIDATION_FAILED","timestamp":"20160912113023803","message":"java.lang.NumberFormatException: For input string: \"uprn\""}}
 
 
-# Create a case - bad json
-curl  -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/samples/1 -v -X PUT -d "{\"badtype\":\"REGION\", \"code\":\"E12000008\"}"
-400 {"error":{"code":"VALIDATION_FAILED","timestamp":"20160704143808891","message":"Provided json is incorrect."}}
+curl http://localhost:8171/cases/uprn/abc -v -X GET
+400 {"error":{"code":"VALIDATION_FAILED","timestamp":"20160912113126838","message":"java.lang.NumberFormatException: For input string: \"abc\""}}
