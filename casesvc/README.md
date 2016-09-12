@@ -93,3 +93,45 @@ curl http://localhost:8171/cases/abc -v -X GET
 curl http://localhost:8171/cases/ -v -X GET
 404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160912131107198","message":"HTTP 404 Not Found"}}
 
+
+########################################################################
+## To test GET /cases/actionplan/{actionPlanId}
+########################################################################
+curl http://localhost:8171/cases/actionplan/123 -v -X GET
+200 [] TODO Spec says 204
+
+
+curl http://localhost:8171/cases/actionplan/abc -v -X GET
+400 {"error":{"code":"VALIDATION_FAILED","timestamp":"20160912132229086","message":"java.lang.NumberFormatException: For input string: \"abc\""}}
+
+
+curl http://localhost:8171/cases/actionplan/ -v -X GET
+400 {"error":{"code":"VALIDATION_FAILED","timestamp":"20160912132322589","message":"java.lang.NumberFormatException: For input string: \"actionplan\""}}
+
+
+########################################################################
+## To test GET /cases/{caseid}/events
+## I created cases directly in pgAdmin with: select casesvc.generate_cases(1, 'REGION', 'E12000001')
+########################################################################
+curl http://localhost:8171/cases/123/events -v -X GET
+404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160912153148643","message":"Case not found for id 123"}}
+
+
+curl http://localhost:8171/cases/abc/events -v -X GET
+400 {"error":{"code":"VALIDATION_FAILED","timestamp":"20160912153252321","message":"java.lang.NumberFormatException: For input string: \"abc\""}}
+
+
+curl http://localhost:8171/cases/1/events -v -X GET
+204
+
+
+########################################################################
+## To test PUT /samples/{sampleid}
+########################################################################
+curl -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/samples/1 -v -X PUT -d "{\"type\":\"LA\", \"code\":\"E07000163\"}"
+204 TODO Spec says 200
+
+select * from casesvc.generate_cases(1, 'LA', 'E07000163')
+
+
+select * from casesvc.generate_cases(1, "REGION", "E12000001")
