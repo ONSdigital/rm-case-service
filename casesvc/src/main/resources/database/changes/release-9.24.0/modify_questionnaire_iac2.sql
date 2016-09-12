@@ -1,0 +1,1 @@
+alter table casesvc.questionnaire alter column iac type character(24);
