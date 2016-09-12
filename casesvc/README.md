@@ -141,6 +141,29 @@ curl -H "Accept: application/json" -H "Content-Type: application/json" http://lo
 
 
 ########################################################################
+## GET /questionnaires/iac/{iac}
+########################################################################
+curl http://localhost:8171/questionnaires/iac/123 -v -X GET
+404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160912163255378","message":"Cannot find Questionnaire for iac 123"}}
+
+
+########################################################################
+## GET /questionnaires/case/{caseid}
+########################################################################
+curl http://localhost:8171/questionnaires/case/123 -v -X GET
+204
+
+
+curl http://localhost:8171/questionnaires/case/12345 -v -X GET
+204 TODO Spec says 404 Case not found
+
+
+
+
+
+
+
+########################################################################
 ## To test PUT /samples/{sampleid}
 ########################################################################
 curl -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/samples/1 -v -X PUT -d "{\"type\":\"LA\", \"code\":\"E07000163\"}"
