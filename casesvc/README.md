@@ -230,4 +230,19 @@ curl -H "Accept: application/json" -H "Content-Type: application/json" http://lo
 204 TODO Spec says 200
 
 
+########################################################################
+## GET /surveys
+########################################################################
+curl http://localhost:8171/surveys/ -v -X GET
+200 [{"surveyid":1,"name":"2016 Test","description":"2016 Census Test"}]
 
+
+########################################################################
+## GET /surveys/{surveyid}
+########################################################################
+curl http://localhost:8171/surveys/1 -v -X GET
+200 {"surveyid":1,"name":"2016 Test","description":"2016 Census Test"}
+
+
+curl http://localhost:8171/surveys/10 -v -X GET
+404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160912171344249","message":"Survey not found for id 10"}}
