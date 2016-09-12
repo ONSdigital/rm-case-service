@@ -78,3 +78,18 @@ curl http://localhost:8171/cases/questionnaire/ -v -X GET
 ########################################################################
 TODO In the spec but not in the code?
 
+
+########################################################################
+## To test GET cases for caseid
+########################################################################
+curl http://localhost:8171/cases/123 -v -X GET
+404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160912130955077","message":"Case not found for id 123"}}
+
+
+curl http://localhost:8171/cases/abc -v -X GET
+400 {"error":{"code":"VALIDATION_FAILED","timestamp":"20160912131031021","message":"java.lang.NumberFormatException: For input string: \"abc\""}}
+
+
+curl http://localhost:8171/cases/ -v -X GET
+404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160912131107198","message":"HTTP 404 Not Found"}}
+
