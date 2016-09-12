@@ -55,3 +55,25 @@ curl http://localhost:8171/cases/uprn/ -v -X GET
 
 curl http://localhost:8171/cases/uprn/abc -v -X GET
 400 {"error":{"code":"VALIDATION_FAILED","timestamp":"20160912113126838","message":"java.lang.NumberFormatException: For input string: \"abc\""}}
+
+
+########################################################################
+## To test cases for questionnaire
+########################################################################
+curl http://localhost:8171/cases/questionnaire/123 -v -X GET
+404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160912114223773","message":"Case not found for id 123"}}
+TODO Spec says Questionnaire not found
+
+
+curl http://localhost:8171/cases/questionnaire/abc -v -X GET
+400 {"error":{"code":"VALIDATION_FAILED","timestamp":"20160912114715980","message":"java.lang.NumberFormatException: For input string: \"abc\""}}
+
+
+curl http://localhost:8171/cases/questionnaire/ -v -X GET
+400 {"error":{"code":"VALIDATION_FAILED","timestamp":"20160912114759613","message":"java.lang.NumberFormatException: For input string: \"questionnaire\""}}
+
+
+
+
+
+
