@@ -44,9 +44,7 @@ curl http://localhost:8171/addresses/postcode/ -v -X GET
 ## To test GET cases for uprn
 ########################################################################
 curl http://localhost:8171/cases/uprn/12345 -v -X GET
-204 No content
-TODO: differ from spec which says 404 UPRN not found
-TODO: Server-side, it does a select by uprn on table casesvc.case.
+404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160913110903751","message":"Case not found for UPRN 12345"}}
 
 
 curl http://localhost:8171/cases/uprn/ -v -X GET
@@ -61,8 +59,7 @@ curl http://localhost:8171/cases/uprn/abc -v -X GET
 ## To test GET cases for questionnaire
 ########################################################################
 curl http://localhost:8171/cases/questionnaire/123 -v -X GET
-404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160912114223773","message":"Case not found for id 123"}}
-TODO Spec says Questionnaire not found
+404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160913110957453","message":"Case not found for questionnaire id 123"}}
 
 
 curl http://localhost:8171/cases/questionnaire/abc -v -X GET
@@ -76,7 +73,7 @@ curl http://localhost:8171/cases/questionnaire/ -v -X GET
 ########################################################################
 ## To test POST cases
 ########################################################################
-TODO In the spec but not in the code?
+TODO To be implemented
 
 
 ########################################################################
@@ -151,10 +148,6 @@ curl http://localhost:8171/questionnaires/iac/123 -v -X GET
 ## GET /questionnaires/case/{caseid}
 ########################################################################
 curl http://localhost:8171/questionnaires/case/123 -v -X GET
-204
-
-
-curl http://localhost:8171/questionnaires/case/12345 -v -X GET
 204 TODO Spec says 404 Case not found
 
 
