@@ -52,7 +52,7 @@ public final class CaseEndpoint implements CTPEndpoint {
   public List<CaseDTO> findCasesByUprn(@PathParam("uprn") final Long uprn)  throws CTPException {
     log.debug("Entering findCasesByUprn with {}", uprn);
     List<Case> cases = caseService.findCasesByUprn(uprn);
-    if (cases == null || cases.isEmpty()) {
+    if (org.apache.commons.collections.CollectionUtils.isEmpty(cases)) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
               String.format("%s UPRN %s", ERROR_CASE_NOT_FOUND_MSG, uprn));
     }
@@ -114,10 +114,10 @@ public final class CaseEndpoint implements CTPEndpoint {
   @Path("/actionplan/{actionplanid}")
   public List<BigInteger> findCaseIdsByStateAndActionPlan(
       @QueryParam("state") final List<String> states,
-      @PathParam("actionplanid") final Integer actionPlanId) throws CTPException {
+      @PathParam("actionplanid") final Integer actionPlanId) {
     log.debug("Entering findCasesByStateAndActionPlan with {} and {}", states, actionPlanId);
     List<BigInteger> caseIds = caseService.findCaseIdsByStatesAndActionPlanId(states, actionPlanId);
-    return caseIds;
+    return CollectionUtils.isEmpty(caseIds) ? null : caseIds;
   }
 
   /**

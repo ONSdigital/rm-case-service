@@ -94,8 +94,12 @@ curl http://localhost:8171/cases/ -v -X GET
 ########################################################################
 ## To test GET /cases/actionplan/{actionPlanId}
 ########################################################################
-curl http://localhost:8171/cases/actionplan/123 -v -X GET
-200 [] TODO Spec says 204
+curl http://localhost:8171/cases/actionplan/1 -v -X GET
+200 [1,2,3,4,5,6,7,8,9...
+
+
+curl http://localhost:8171/cases/actionplan/4 -v -X GET
+204
 
 
 curl http://localhost:8171/cases/actionplan/abc -v -X GET

@@ -1,7 +1,10 @@
 package uk.gov.ons.ctp.response.casesvc.utility;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.eq;
 
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +41,7 @@ public final class MockCaseServiceFactory implements Factory<CaseService> {
   public static final Integer CASE_SURVEYID = 1;
   public static final String CASE_QUESTIONSET = "HH";
   public static final Long NON_EXISTING_UPRN = 998L;
+  public static final Integer EXISTING_ID = 991;
   public static final Integer NON_EXISTING_ID = 998;
   public static final Integer UNCHECKED_EXCEPTION = 999;
   public static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
@@ -138,6 +142,22 @@ public final class MockCaseServiceFactory implements Factory<CaseService> {
           throws Throwable {
         return new CaseEvent(1, CASEID, CASEEVENT_DESC1, CREATEDBY, CREATEDDATE_TIMESTAMP, CASEEVENT_CATEGORY,
             CASEEVENT_SUBCATEGORY);
+      }
+    });
+
+    Mockito.when(mockedService.findCaseIdsByStatesAndActionPlanId(anyObject(), eq(NON_EXISTING_ID))).thenAnswer(new Answer<List<BigInteger>>() {
+      public List<BigInteger> answer(final InvocationOnMock invocation)
+              throws Throwable {
+        return new ArrayList<BigInteger>();
+      }
+    });
+
+    Mockito.when(mockedService.findCaseIdsByStatesAndActionPlanId(anyObject(), eq(EXISTING_ID))).thenAnswer(new Answer<List<BigInteger>>() {
+      public List<BigInteger> answer(final InvocationOnMock invocation)
+              throws Throwable {
+        List<BigInteger> result = new ArrayList<>();
+        result.add(new BigInteger("1"));
+        return result;
       }
     });
 
