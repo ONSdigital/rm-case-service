@@ -25,6 +25,9 @@ management:
   security:
     role: SUPERUSER
     enabled: false
+  health:
+    mongo:
+      enabled: true
 
 server:
   port: 8141
@@ -69,6 +72,9 @@ spring:
   activemq:
     broker-url: tcp://localhost:53445
     pooled: true
+
+  data:
+    mongodb.uri: mongodb://localhost:27017/actionExport
 
 export-schedule:
   cron-expression: "0/30 * * * * ?"
