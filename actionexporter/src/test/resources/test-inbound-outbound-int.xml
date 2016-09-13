@@ -4,9 +4,6 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans   
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
 
-  <bean id="printInstructionReceiver" class="uk.gov.ons.ctp.response.action.export.message.impl.InstructionReceiverImpl"/>
-  <bean id="printService" class="uk.gov.ons.ctp.response.action.export.service.impl.DummyPrintServiceImpl"/>
-
   <bean id="actionInstructionMessageListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
     <property name="connectionFactory" ref="connectionFactory"/>
     <property name="destinationName" value="Action.Printer" />

@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
+import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.ERROR_CASE_NOT_FOUND_MSG;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASE1_ACTIONPLANID;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASE1_SAMPLEID;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASE1_TYPEID;
@@ -91,10 +92,11 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findCasesByUprnNotFound() {
-    with("http://localhost:9998/cases/uprn/%s", NON_EXISTING_ID)
-        .assertResponseCodeIs(HttpStatus.NO_CONTENT)
-        .assertResponseLengthIs(-1)
-        .andClose();
+    with("http://localhost:9998/cases/uprn/%s", NON_EXISTING_ID).assertResponseCodeIs(HttpStatus.NOT_FOUND)
+            .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
+            .assertTimestampExists()
+            .assertMessageEquals(String.format("%s UPRN %s", ERROR_CASE_NOT_FOUND_MSG, NON_EXISTING_ID))
+            .andClose();
   }
 
   /**
@@ -125,7 +127,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
-        .assertMessageEquals("Case not found for id %s", NON_EXISTING_ID)
+        .assertMessageEquals(String.format("%s questionnaire id %s", ERROR_CASE_NOT_FOUND_MSG, NON_EXISTING_ID))
         .andClose();
   }
 
@@ -157,7 +159,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
-        .assertMessageEquals("Case not found for id %s", NON_EXISTING_ID)
+        .assertMessageEquals(String.format("%s case id %s", ERROR_CASE_NOT_FOUND_MSG, NON_EXISTING_ID))
         .andClose();
   }
 
@@ -187,7 +189,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
-        .assertMessageEquals("Case not found for id %s", NON_EXISTING_ID)
+        .assertMessageEquals(String.format("%s case id %s", ERROR_CASE_NOT_FOUND_MSG, NON_EXISTING_ID))
         .andClose();
   }
 
