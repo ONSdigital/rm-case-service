@@ -59,23 +59,25 @@ public class CaseSvcApplication {
      * Required default constructor.
      */
     public JerseyConfig() {
-      packages("uk.gov.ons.ctp");
-
       // Register Frame JAX-RS components
       register(AddressEndpoint.class);
 
       // Register Case JAX-RS components
-      register(new CTPMessageBodyReader<CaseEventDTO>(CaseEventDTO.class) {
-      });
       register(CaseEndpoint.class);
       register(CaseTypeEndpoint.class);
       register(CategoryEndpoint.class);
       register(QuestionnaireEndpoint.class);
       register(QuestionSetEndpoint.class);
-      register(new CTPMessageBodyReader<GeographyDTO>(GeographyDTO.class) {
-      });
       register(SampleEndpoint.class);
       register(SurveyEndpoint.class);
+
+      register(new CTPMessageBodyReader<GeographyDTO>(GeographyDTO.class) {
+      });
+      register(new CTPMessageBodyReader<CaseEventDTO>(CaseEventDTO.class) {
+      });
+      
+      
+      
     }
   }
 
