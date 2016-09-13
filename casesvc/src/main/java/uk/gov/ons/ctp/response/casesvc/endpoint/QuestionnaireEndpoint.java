@@ -32,6 +32,8 @@ import uk.gov.ons.ctp.response.casesvc.service.QuestionnaireService;
 @Slf4j
 public final class QuestionnaireEndpoint implements CTPEndpoint {
 
+  public static String ERROR_CQUESTIONNAIRE_NOT_FOUND_MSG = "Questionnaire not found for";
+
   /**
    * The Questionnaire business service.
    */
@@ -60,7 +62,7 @@ public final class QuestionnaireEndpoint implements CTPEndpoint {
     log.debug("Entering findByIac with {}", iac);
     Questionnaire questionnaire = questionnaireService.findQuestionnaireByIac(iac);
     if (questionnaire == null) {
-      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Cannot find Questionnaire for iac %s", iac);
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, String.format("%s iac %s", ERROR_CQUESTIONNAIRE_NOT_FOUND_MSG, iac));
     }
     QuestionnaireDTO result = mapperFacade.map(questionnaire, QuestionnaireDTO.class);
 
@@ -79,8 +81,10 @@ public final class QuestionnaireEndpoint implements CTPEndpoint {
   public List<QuestionnaireDTO> findByCaseId(@PathParam("caseid") final Integer caseId) throws CTPException {
     log.debug("Entering findByCaseId with {}", caseId);
     List<Questionnaire> questionnaires = questionnaireService.findQuestionnairesByCaseId(caseId);
-    List<QuestionnaireDTO> questionnaireDTOs = mapperFacade.mapAsList(questionnaires, QuestionnaireDTO.class);
-    return CollectionUtils.isEmpty(questionnaireDTOs) ? null : questionnaireDTOs;
+    if (CollectionUtils.isEmpty(questionnaires)) {
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, String.format("%s case id %s", ERROR_CQUESTIONNAIRE_NOT_FOUND_MSG, caseId));
+    }
+    return mapperFacade.mapAsList(questionnaires, QuestionnaireDTO.class);
   }
 
   /**
