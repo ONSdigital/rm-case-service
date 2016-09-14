@@ -79,8 +79,9 @@ TODO To be implemented
 ########################################################################
 ## To test GET cases for caseid
 ########################################################################
-curl http://localhost:8171/cases/123 -v -X GET
+curl http://localhost:8171/cases/1234 -v -X GET
 404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160912130955077","message":"Case not found for id 123"}}
+TODO Without the line packages("uk.gov.ons.ctp");: 500 {"timestamp":1473781601810,"status":500,"error":"Internal Server Error","exception":"org.glassfish.jersey.server.ContainerException","message":"org.glassfish.jersey.server.ContainerException: uk.gov.ons.ctp.common.error.CTPException: Case not found for case id 1234","path":"/cases/1234"}
 
 
 curl http://localhost:8171/cases/abc -v -X GET
@@ -94,8 +95,12 @@ curl http://localhost:8171/cases/ -v -X GET
 ########################################################################
 ## To test GET /cases/actionplan/{actionPlanId}
 ########################################################################
-curl http://localhost:8171/cases/actionplan/123 -v -X GET
-200 [] TODO Spec says 204
+curl http://localhost:8171/cases/actionplan/1 -v -X GET
+200 [1,2,3,4,5,6,7,8,9...
+
+
+curl http://localhost:8171/cases/actionplan/4 -v -X GET
+204
 
 
 curl http://localhost:8171/cases/actionplan/abc -v -X GET
@@ -147,16 +152,15 @@ curl http://localhost:8171/questionnaires/iac/123 -v -X GET
 ########################################################################
 ## GET /questionnaires/case/{caseid}
 ########################################################################
-curl http://localhost:8171/questionnaires/case/123 -v -X GET
-204 TODO Spec says 404 Case not found
+curl http://localhost:8171/questionnaires/case/1234 -v -X GET
+404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160914095343962","message":"Questionnaire not found for case id 1234"}}
 
 
 ########################################################################
 ## PUT /questionnaires/{questionnaireid}/response
 ########################################################################
 curl -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/questionnaires/1234/response -v -X PUT -d "{\"description\":\"mytest\", \"category\":\"Complaint - Escalated\", \"subCategory\":\"ABC\", \"createdBy\":\"philippe\"}"
-500 {"error":{"code":"SYSTEM_ERROR","timestamp":"20160912164155286","message":"Response operation failed for questionnaireid 1234"}}
-TODO Spec says Questionnaire not found - 404
+404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160914101955632","message":"Questionnaire not found for questionnaire id 1234"}}
 
 
 ########################################################################
@@ -216,11 +220,11 @@ curl -H "Accept: application/json" -H "Content-Type: application/json" http://lo
 
 
 curl -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/samples/1234 -v -X PUT -d "{\"type\":\"LA\", \"code\":\"E07000163\"}"
-TODO Should it not be in this case 404 as the sampleid 1234 does not exist?
+404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160914110133205","message":"Sample not found for id 1234"}}
 
 
 curl -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/samples/1 -v -X PUT -d "{\"type\":\"LA\", \"code\":\"E07000163\"}"
-204 TODO Spec says 200
+200 {"sampleId":1,"name":"Residential","description":"Households","addressCriteria":"addresstype = 'HH'","caseTypeId":1,"surveyId":1}
 
 
 ########################################################################

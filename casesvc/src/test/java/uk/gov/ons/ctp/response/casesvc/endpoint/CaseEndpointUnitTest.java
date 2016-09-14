@@ -1,31 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
-import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.ERROR_CASE_NOT_FOUND_MSG;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASE1_ACTIONPLANID;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASE1_SAMPLEID;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASE1_TYPEID;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASE2_ACTIONPLANID;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASE2_SAMPLEID;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASE2_TYPEID;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASE3_ACTIONPLANID;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASE3_SAMPLEID;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASE3_TYPEID;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASEEVENT_CATEGORY;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASEEVENT_DESC1;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASEEVENT_DESC2;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASEEVENT_DESC3;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASEEVENT_SUBCATEGORY;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASEID;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASE_QUESTIONSET;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASE_STATE;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASE_SURVEYID;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CREATEDBY;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CREATEDDATE_VALUE;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.NON_EXISTING_ID;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.OUR_EXCEPTION_MESSAGE;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.QUESTIONNAIREID;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.UNCHECKED_EXCEPTION;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.UPRN;
+import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.ERRORMSGCASENOTFOUND;
+import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.*;
 
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
@@ -38,7 +14,6 @@ import uk.gov.ons.ctp.common.jaxrs.CTPMessageBodyReader;
 import uk.gov.ons.ctp.common.jaxrs.GeneralExceptionMapper;
 import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
 import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
-import uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory;
@@ -95,7 +70,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
     with("http://localhost:9998/cases/uprn/%s", NON_EXISTING_ID).assertResponseCodeIs(HttpStatus.NOT_FOUND)
             .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
             .assertTimestampExists()
-            .assertMessageEquals(String.format("%s UPRN %s", ERROR_CASE_NOT_FOUND_MSG, NON_EXISTING_ID))
+            .assertMessageEquals(String.format("%s UPRN %s", ERRORMSGCASENOTFOUND, NON_EXISTING_ID))
             .andClose();
   }
 
@@ -127,7 +102,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
-        .assertMessageEquals(String.format("%s questionnaire id %s", ERROR_CASE_NOT_FOUND_MSG, NON_EXISTING_ID))
+        .assertMessageEquals(String.format("%s questionnaire id %s", ERRORMSGCASENOTFOUND, NON_EXISTING_ID))
         .andClose();
   }
 
@@ -159,7 +134,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
-        .assertMessageEquals(String.format("%s case id %s", ERROR_CASE_NOT_FOUND_MSG, NON_EXISTING_ID))
+        .assertMessageEquals(String.format("%s case id %s", ERRORMSGCASENOTFOUND, NON_EXISTING_ID))
         .andClose();
   }
 
@@ -189,7 +164,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
-        .assertMessageEquals(String.format("%s case id %s", ERROR_CASE_NOT_FOUND_MSG, NON_EXISTING_ID))
+        .assertMessageEquals(String.format("%s case id %s", ERRORMSGCASENOTFOUND, NON_EXISTING_ID))
         .andClose();
   }
 
@@ -246,6 +221,20 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
             .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
             .assertTimestampExists()
             .assertMessageEquals(GeneralExceptionMapper.JSON_FAILS_VALIDATION)
+            .andClose();
+  }
+
+  @Test
+  public void findCasesByActionplanIdNotFound() {
+    with("http://localhost:9998/cases/actionplan/%s", NON_EXISTING_ID).assertResponseCodeIs(HttpStatus.NO_CONTENT)
+            .assertResponseLengthIs(-1)
+            .andClose();
+  }
+
+  @Test
+  public void findCasesByActionplanIdFound() {
+    with("http://localhost:9998/cases/actionplan/%s", EXISTING_ID).assertResponseCodeIs(HttpStatus.OK)
+            .assertArrayLengthInBodyIs(1)
             .andClose();
   }
 }

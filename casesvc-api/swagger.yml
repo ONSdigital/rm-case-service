@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Case Service API
   description: The Case service manages Cases and associated address frame data and forms part of the Response Management product.
-  version: 9.23.0
+  version: 9.25.0
 schemes:
   - http
 basePath: /
@@ -46,18 +46,18 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /cases/questionnaire/{questionnaireid}:
+  /cases/questionnaire/{questionnaireId}:
     get:
       summary:  Get the case information for the specified questionnaire.
-      description: Return details of a case for the supplied questionnaireid.
+      description: Return details of a case for the supplied questionnaire ID.
       parameters:
         - name: Accept
           in: header
           description: Response type, application/json.
           required: false
           type: string
-        - name: questionnaireid
-          description: Unique questionnaire Id.
+        - name: questionnaireId
+          description: Unique questionnaire ID.
           in: path
           required: true
           type: integer
@@ -65,7 +65,7 @@ paths:
         - Case
       responses:
         200:
-          description: Case details for supplied questionnaireid.
+          description: Case details for supplied questionnaire ID.
           schema:
               $ref: '#/definitions/Case'
         404:
@@ -107,18 +107,18 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /cases/{caseid}:
+  /cases/{caseId}:
     get:
       summary:  Get the case information for the specified case.
-      description: Return details of a case for the supplied caseid.
+      description: Return details of a case for the supplied case ID.
       parameters:
         - name: Accept
           in: header
           description: Response type, application/json.
           required: false
           type: string
-        - name: caseid
-          description: Unique case Id.
+        - name: caseId
+          description: Unique case ID.
           in: path
           required: true
           type: integer
@@ -126,7 +126,7 @@ paths:
         - Case
       responses:
         200:
-          description: Case details for supplied caseid.
+          description: Case details for supplied case ID.
           schema:
               $ref: '#/definitions/Case'
         404:
@@ -168,26 +168,22 @@ paths:
               type: integer
         204:
           description: No cases
-        404:
-          description: Action plan not found
-          schema:
-            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /cases/{caseid}/events:
+  /cases/{caseId}/events:
     get:
       summary:  Get the events that occurred on a specified case.
-      description: Return all events for the supplied caseid.
+      description: Return all events for the supplied case ID.
       parameters:
         - name: Accept
           in: header
           description: Response type, application/json.
           required: false
           type: string
-        - name: caseid
-          description: Unique case Id.
+        - name: caseId
+          description: Unique case ID.
           in: path
           required: true
           type: integer
@@ -195,7 +191,7 @@ paths:
         - Case
       responses:
         200:
-          description: All event details for supplied caseid.
+          description: All event details for supplied case ID.
           schema:
             type: array
             items:
@@ -221,8 +217,8 @@ paths:
           description: Response type, application/json
           required: false
           type: string
-        - name: caseid
-          description: Unique case Id.
+        - name: caseId
+          description: Unique case ID.
           in: path
           required: true
           type: integer
@@ -280,19 +276,19 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /questionnaires/case/{caseid}:
+  /questionnaires/case/{caseId}:
     get:
       summary:  Get all questionnaire details for a specified case.
       description: |
-        Return all questionnaire details for the supplied caseid.
+        Return all questionnaire details for the supplied case ID.
       parameters:
         - name: Accept
           in: header
           description: Response type, application/json.
           required: false
           type: string
-        - name: caseid
-          description: Unique case Id.
+        - name: caseId
+          description: Unique case ID.
           in: path
           required: true
           type: string
@@ -300,7 +296,7 @@ paths:
         - Case
       responses:
         200:
-          description: All questionnaire details for a supplied caseid.
+          description: All questionnaire details for a supplied case ID.
           schema:
             type: array
             items:
@@ -313,7 +309,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /questionnaires/{questionnaireid}/response:
+  /questionnaires/{questionnaireId}/response:
     put:
       summary:  Confirms a response has been received in the Survey Data Exchange.
       description: |
@@ -324,8 +320,8 @@ paths:
           description: Response type, application/json.
           required: false
           type: string
-        - name: questionnaireid
-          description: Unique questionnaire Id.
+        - name: questionnaireId
+          description: Unique questionnaire ID.
           in: path
           required: true
           type: string
@@ -421,7 +417,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /casetypes/{casetypeid}:
+  /casetypes/{caseTypeId}:
     get:
       summary: Get information for the specified case type.
       description: Return information for the supplied case type code.
@@ -431,9 +427,9 @@ paths:
           description: Response type, application/json.
           required: false
           type: string
-        - name: casetypeid
+        - name: caseTypeId
           in: path
-          description: Unique case type Id.
+          description: Unique case type ID.
           required: true
           type: integer
       tags:
@@ -502,7 +498,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /samples/{sampleid}:
+  /samples/{sampleId}:
     get:
       summary: Get information for the specified sample.
       description: Return information for the supplied sample code.
@@ -512,9 +508,9 @@ paths:
           description: Response type, application/json.
           required: false
           type: string
-        - name: sampleid
+        - name: sampleId
           in: path
-          description: Unique sample Id.
+          description: Unique sample ID.
           required: true
           type: integer
       tags:
@@ -542,9 +538,9 @@ paths:
           description: Response type, application/json.
           required: false
           type: string
-        - name: sampleid
+        - name: sampleId
           in: path
-          description: Unique sample Id.
+          description: Unique sample ID.
           required: true
           type: integer
         - name: geographyDetails
@@ -560,6 +556,10 @@ paths:
           description: Cases created.
           schema:
             $ref: '#/definitions/Sample'
+        404:
+          description: Sample not found
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
@@ -587,7 +587,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /surveys/{surveyid}:
+  /surveys/{surveyId}:
     get:
       summary: Get information for the specified survey.
       description: Return information for the supplied survey code.
@@ -597,9 +597,9 @@ paths:
           description: Response type, application/json.
           required: false
           type: string
-        - name: surveyid
+        - name: surveyId
           in: path
-          description: Unique survey Id.
+          description: Unique survey ID.
           required: true
           type: integer
       tags:
@@ -758,7 +758,7 @@ definitions:
           - CLOSED
       caseTypeId:
         type: integer
-        description: Case Type Id
+        description: Case Type ID
       createdDateTime:
         type: string
         format: date-time
@@ -768,7 +768,7 @@ definitions:
         description: Creator of case.
       sampleId:
         type: integer
-        description: Sample Id.
+        description: Sample ID.
       actionPlanId:
         type: integer
         description: Action plan for case.
@@ -797,13 +797,13 @@ definitions:
         description: Unique Property Reference Number.
       caseTypeId:
         type: integer
-        description: Case Type Id
+        description: Case Type ID.
       createdBy:
         type: string
         description: Creator of case.
       sampleId:
         type: integer
-        description: Sample Id.
+        description: Sample ID.
       actionPlanId:
         type: integer
         description: Action plan for case.
@@ -911,7 +911,7 @@ definitions:
     properties:
       caseTypeId:
         type: integer
-        description: Unique Id of case type.
+        description: Unique ID of case type.
       name:
         type: string
         description: Name of case type.
@@ -920,7 +920,7 @@ definitions:
         description: Description of case type.
       actionPlanId:
         type: integer
-        description: Unique action plan Id.
+        description: Unique action plan ID.
       questionSet:
         type: string
         description: Type of questionnaire set.
@@ -949,7 +949,7 @@ definitions:
     properties:
       sampleId:
         type: integer
-        description: Unique Id of sample.
+        description: Unique ID of sample.
       name:
         type: string
         description: Name of sample.
@@ -961,7 +961,7 @@ definitions:
         description: Address selection criteria.
       caseTypeId:
         type: integer
-        description: Unique Id of case type.
+        description: Unique ID of case type.
       surveyId:
         type: integer
         description: Survey instrument.
@@ -970,7 +970,7 @@ definitions:
     properties:
       surveyId:
         type: integer
-        description: Unique Id of survey.
+        description: Unique ID of survey.
       name:
         type: string
         description: Name of survey.

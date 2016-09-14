@@ -1,0 +1,12 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 9.25.0-1
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: change questionnaire function to remove creation and assigning of the iac
+            path: create_questionnaire.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+

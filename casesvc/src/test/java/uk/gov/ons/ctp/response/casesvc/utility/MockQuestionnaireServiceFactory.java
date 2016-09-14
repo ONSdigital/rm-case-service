@@ -22,7 +22,7 @@ public final class MockQuestionnaireServiceFactory implements Factory<Questionna
   public static final Integer QUESTIONNAIRE_CASEID_NOT_FOUND = 666;
   public static final Integer QUESTIONNAIRE_ID_1 = 1;
   public static final Integer QUESTIONNAIRE_ID_2 = 2;
-  public static final Integer QUESTIONNAIRE_ID_SERVER_SIDE_ERROR = 666;
+  public static final Integer QUESTIONNAIRE_ID_NOT_FOUND = 666;
 
   /**
    * provide method
@@ -92,7 +92,7 @@ public final class MockQuestionnaireServiceFactory implements Factory<Questionna
       }
     });
 
-    Mockito.when(mockedService.recordResponse(QUESTIONNAIRE_ID_SERVER_SIDE_ERROR))
+    Mockito.when(mockedService.recordResponse(QUESTIONNAIRE_ID_NOT_FOUND))
         .thenAnswer(new Answer<Questionnaire>() {
           public Questionnaire answer(final InvocationOnMock invocation)
               throws Throwable {

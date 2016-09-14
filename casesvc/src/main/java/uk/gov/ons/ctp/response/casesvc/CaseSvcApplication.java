@@ -55,12 +55,10 @@ public class CaseSvcApplication {
    */
   @Named
   public static class JerseyConfig extends ResourceConfig {
-
     /**
      * Required default constructor.
      */
     public JerseyConfig() {
-
       JAXRSRegister.listCommonTypes().forEach(t->register(t));
 
       // Register Frame JAX-RS components
@@ -79,9 +77,6 @@ public class CaseSvcApplication {
       });
       register(new CTPMessageBodyReader<CaseEventDTO>(CaseEventDTO.class) {
       });
-      
-      
-      
     }
   }
 

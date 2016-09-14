@@ -1,7 +1,5 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
-import static uk.gov.ons.ctp.response.casesvc.service.impl.QuestionnaireServiceImpl.OPERATION_FAILED;
-
 import java.util.List;
 
 import javax.inject.Inject;
@@ -32,6 +30,8 @@ import uk.gov.ons.ctp.response.casesvc.service.QuestionnaireService;
 @Slf4j
 public final class QuestionnaireEndpoint implements CTPEndpoint {
 
+  public static String ERRORMSGQUESTIONNAIRENOTFOUND = "Questionnaire not found for";
+
   /**
    * The Questionnaire business service.
    */
@@ -60,7 +60,8 @@ public final class QuestionnaireEndpoint implements CTPEndpoint {
     log.debug("Entering findByIac with {}", iac);
     Questionnaire questionnaire = questionnaireService.findQuestionnaireByIac(iac);
     if (questionnaire == null) {
-      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Cannot find Questionnaire for iac %s", iac);
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
+              String.format("%s iac %s", ERRORMSGQUESTIONNAIRENOTFOUND, iac));
     }
     QuestionnaireDTO result = mapperFacade.map(questionnaire, QuestionnaireDTO.class);
 
@@ -79,8 +80,11 @@ public final class QuestionnaireEndpoint implements CTPEndpoint {
   public List<QuestionnaireDTO> findByCaseId(@PathParam("caseid") final Integer caseId) throws CTPException {
     log.debug("Entering findByCaseId with {}", caseId);
     List<Questionnaire> questionnaires = questionnaireService.findQuestionnairesByCaseId(caseId);
-    List<QuestionnaireDTO> questionnaireDTOs = mapperFacade.mapAsList(questionnaires, QuestionnaireDTO.class);
-    return CollectionUtils.isEmpty(questionnaireDTOs) ? null : questionnaireDTOs;
+    if (CollectionUtils.isEmpty(questionnaires)) {
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
+              String.format("%s case id %s", ERRORMSGQUESTIONNAIRENOTFOUND, caseId));
+    }
+    return mapperFacade.mapAsList(questionnaires, QuestionnaireDTO.class);
   }
 
   /**
@@ -97,7 +101,8 @@ public final class QuestionnaireEndpoint implements CTPEndpoint {
     log.debug("Entering responseOperation with {}", questionnaireId);
     Questionnaire questionnaire = questionnaireService.recordResponse(questionnaireId);
     if (questionnaire == null) {
-      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, "%s %s", OPERATION_FAILED, questionnaireId);
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
+              String.format("%s questionnaire id %s", ERRORMSGQUESTIONNAIRENOTFOUND, questionnaireId));
     }
     return Response.status(Response.Status.NO_CONTENT).build();
   }

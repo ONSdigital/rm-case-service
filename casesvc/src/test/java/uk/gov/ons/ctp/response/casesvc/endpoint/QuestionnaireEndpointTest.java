@@ -1,12 +1,13 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
+import static uk.gov.ons.ctp.response.casesvc.endpoint.QuestionnaireEndpoint.ERRORMSGQUESTIONNAIRENOTFOUND;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockQuestionnaireServiceFactory.QUESTIONNAIRE_CASEID;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockQuestionnaireServiceFactory.QUESTIONNAIRE_CASEID_NOT_FOUND;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockQuestionnaireServiceFactory.QUESTIONNAIRE_IAC;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockQuestionnaireServiceFactory.QUESTIONNAIRE_IAC_NOT_FOUND;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockQuestionnaireServiceFactory.QUESTIONNAIRE_ID_1;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockQuestionnaireServiceFactory.QUESTIONNAIRE_ID_2;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockQuestionnaireServiceFactory.QUESTIONNAIRE_ID_SERVER_SIDE_ERROR;
+import static uk.gov.ons.ctp.response.casesvc.utility.MockQuestionnaireServiceFactory.QUESTIONNAIRE_ID_NOT_FOUND;
 import static uk.gov.ons.ctp.response.casesvc.utility.QuestionnaireBuilder.QUESTIONNAIRE_SET;
 import static uk.gov.ons.ctp.response.casesvc.utility.QuestionnaireBuilder.QUESTIONNAIRE_STATUS;
 
@@ -19,9 +20,7 @@ import org.springframework.http.HttpStatus;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
 import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
-import uk.gov.ons.ctp.response.casesvc.endpoint.QuestionnaireEndpoint;
 import uk.gov.ons.ctp.response.casesvc.service.QuestionnaireService;
-import uk.gov.ons.ctp.response.casesvc.service.impl.QuestionnaireServiceImpl;
 import uk.gov.ons.ctp.response.casesvc.utility.MockQuestionnaireServiceFactory;
 import uk.gov.ons.ctp.response.casesvc.utility.QuestionnaireBuilder;
 
@@ -67,7 +66,7 @@ public final class QuestionnaireEndpointTest extends CTPJerseyTest {
         .assertStringInBody("$.error.code", CTPException.Fault.RESOURCE_NOT_FOUND.toString())
         .assertTimestampExists()
         .assertStringInBody("$.error.message",
-            String.format("Cannot find Questionnaire for iac %s", QUESTIONNAIRE_IAC_NOT_FOUND))
+                String.format("%s iac %s", ERRORMSGQUESTIONNAIRENOTFOUND, QUESTIONNAIRE_IAC_NOT_FOUND))
         .andClose();
   }
 
@@ -99,8 +98,12 @@ public final class QuestionnaireEndpointTest extends CTPJerseyTest {
   @Test
   public void findQuestionnaireByCaseidNotFound() {
     with("http://localhost:9998/questionnaires/case/%s", QUESTIONNAIRE_CASEID_NOT_FOUND)
-        .assertResponseCodeIs(HttpStatus.NO_CONTENT)
-        .andClose();
+            .assertResponseCodeIs(HttpStatus.NOT_FOUND)
+            .assertStringInBody("$.error.code", CTPException.Fault.RESOURCE_NOT_FOUND.toString())
+            .assertTimestampExists()
+            .assertStringInBody("$.error.message",
+                    String.format("%s case id %s", ERRORMSGQUESTIONNAIRENOTFOUND, QUESTIONNAIRE_CASEID_NOT_FOUND))
+            .andClose();
   }
 
   /**
@@ -118,14 +121,14 @@ public final class QuestionnaireEndpointTest extends CTPJerseyTest {
    * a test
    */
   @Test
-  public void responseOperationServerSideIssue() {
+  public void responseOperationQuestionnaireNotFound() {
     with("http://localhost:9998/questionnaires/%d/response",
-         QUESTIONNAIRE_ID_SERVER_SIDE_ERROR).put(MediaType.APPLICATION_JSON_TYPE, "")
-        .assertResponseCodeIs(HttpStatus.INTERNAL_SERVER_ERROR)
-        .assertStringInBody("$.error.code", CTPException.Fault.SYSTEM_ERROR.toString())
-        .assertTimestampExists()
-        .assertStringInBody("$.error.message",
-            String.format("%s %s", QuestionnaireServiceImpl.OPERATION_FAILED, QUESTIONNAIRE_ID_SERVER_SIDE_ERROR))
+            QUESTIONNAIRE_ID_NOT_FOUND).put(MediaType.APPLICATION_JSON_TYPE, "")
+            .assertResponseCodeIs(HttpStatus.NOT_FOUND)
+            .assertStringInBody("$.error.code", CTPException.Fault.RESOURCE_NOT_FOUND.toString())
+            .assertTimestampExists()
+            .assertStringInBody("$.error.message",
+                    String.format("%s questionnaire id %s", ERRORMSGQUESTIONNAIRENOTFOUND, QUESTIONNAIRE_ID_NOT_FOUND))
         .andClose();
   }
 
