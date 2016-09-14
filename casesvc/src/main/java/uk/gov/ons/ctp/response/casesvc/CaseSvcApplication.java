@@ -13,6 +13,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import uk.gov.ons.ctp.common.jaxrs.CTPMessageBodyReader;
+import uk.gov.ons.ctp.common.jaxrs.JAXRSRegister;
 import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.endpoint.AddressEndpoint;
@@ -59,6 +60,9 @@ public class CaseSvcApplication {
      * Required default constructor.
      */
     public JerseyConfig() {
+
+      JAXRSRegister.listCommonTypes().forEach(t->register(t));
+
       // Register Frame JAX-RS components
       register(AddressEndpoint.class);
 

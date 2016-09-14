@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
 
 import lombok.AccessLevel;
@@ -25,6 +26,13 @@ public class Questionnaire implements Serializable {
 
   private static final long serialVersionUID = -2070377259761460200L;
 
+  @PostLoad
+  public void trimIACAfterLoad() {
+    if (iac != null) {
+      iac = iac.trim();
+    }
+  }
+  
   @Id
   @Column(name = "questionnaireid")
   private Integer questionnaireId;
