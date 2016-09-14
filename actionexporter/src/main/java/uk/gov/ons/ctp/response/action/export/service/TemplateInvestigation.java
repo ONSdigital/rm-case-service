@@ -6,10 +6,7 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequest;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +34,11 @@ public class TemplateInvestigation {
     // Build the data-model
     Map<String, Object> data = new HashMap<String, Object>();
     data.put("actionRequests", actionRequestList);
+
+    // Console output
+    Writer out = new OutputStreamWriter(System.out);
+    template.process(data, out);
+    out.flush();
 
     // File output
     Writer file = new FileWriter(new File("actionexporter/src/main/resources/forPrinter.csv"));
