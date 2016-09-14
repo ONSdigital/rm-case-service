@@ -54,7 +54,6 @@ public class CaseSvcApplication {
    */
   @Named
   public static class JerseyConfig extends ResourceConfig {
-
     /**
      * Required default constructor.
      */
@@ -77,9 +76,6 @@ public class CaseSvcApplication {
       });
       register(new CTPMessageBodyReader<CaseEventDTO>(CaseEventDTO.class) {
       });
-      
-      
-      
     }
   }
 

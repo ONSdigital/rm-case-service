@@ -11,9 +11,7 @@ public interface NotificationPublisher {
 
   /**
    * To put CaseNotifications on the outbound channel caseNotificationOutbound
-   * 
-   * @param caseNotifications the CaseNotifications to put on the outbound
-   *          channel
+   * @param caseNotifications the CaseNotifications to put on the outbound channel
    * @return CaseNotifications
    */
   CaseNotifications sendNotifications(CaseNotifications caseNotifications);

@@ -160,8 +160,7 @@ curl http://localhost:8171/questionnaires/case/1234 -v -X GET
 ## PUT /questionnaires/{questionnaireid}/response
 ########################################################################
 curl -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/questionnaires/1234/response -v -X PUT -d "{\"description\":\"mytest\", \"category\":\"Complaint - Escalated\", \"subCategory\":\"ABC\", \"createdBy\":\"philippe\"}"
-500 {"error":{"code":"SYSTEM_ERROR","timestamp":"20160912164155286","message":"Response operation failed for questionnaireid 1234"}}
-TODO Spec says Questionnaire not found - 404
+404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160914101955632","message":"Questionnaire not found for questionnaire id 1234"}}
 
 
 ########################################################################

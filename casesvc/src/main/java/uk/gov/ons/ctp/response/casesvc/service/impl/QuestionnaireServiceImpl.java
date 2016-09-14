@@ -26,11 +26,6 @@ import uk.gov.ons.ctp.response.casesvc.service.QuestionnaireService;
 @Slf4j
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class QuestionnaireServiceImpl implements QuestionnaireService {
-
-  /**
-   * Text associated with failure of Response data received operation
-   */
-  public static final String OPERATION_FAILED = "Response operation failed for questionnaireid";
   /**
    * Timeout for response received transaction
    */
@@ -102,9 +97,6 @@ public class QuestionnaireServiceImpl implements QuestionnaireService {
       caseEvent.setCreatedBy(QUESTIONNAIRE_RESPONSE_RECEIVED_CREATEDBY);
       caseEvent.setDescription(QUESTIONNAIRE_RESPONSE_RECEIVED_DESCRIPTION);
       caseService.createCaseEvent(caseEvent);
-    } else {
-      // Questionnaire does not exist to record response
-      return null;
     }
     return questionnaire;
   }

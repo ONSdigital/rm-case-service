@@ -1,6 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
-import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.ERROR_CASE_NOT_FOUND_MSG;
+import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.ERRORMSGCASENOTFOUND;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.*;
 
 import javax.ws.rs.core.Application;
@@ -14,7 +14,6 @@ import uk.gov.ons.ctp.common.jaxrs.CTPMessageBodyReader;
 import uk.gov.ons.ctp.common.jaxrs.GeneralExceptionMapper;
 import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
 import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
-import uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory;
@@ -71,7 +70,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
     with("http://localhost:9998/cases/uprn/%s", NON_EXISTING_ID).assertResponseCodeIs(HttpStatus.NOT_FOUND)
             .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
             .assertTimestampExists()
-            .assertMessageEquals(String.format("%s UPRN %s", ERROR_CASE_NOT_FOUND_MSG, NON_EXISTING_ID))
+            .assertMessageEquals(String.format("%s UPRN %s", ERRORMSGCASENOTFOUND, NON_EXISTING_ID))
             .andClose();
   }
 
@@ -103,7 +102,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
-        .assertMessageEquals(String.format("%s questionnaire id %s", ERROR_CASE_NOT_FOUND_MSG, NON_EXISTING_ID))
+        .assertMessageEquals(String.format("%s questionnaire id %s", ERRORMSGCASENOTFOUND, NON_EXISTING_ID))
         .andClose();
   }
 
@@ -135,7 +134,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
-        .assertMessageEquals(String.format("%s case id %s", ERROR_CASE_NOT_FOUND_MSG, NON_EXISTING_ID))
+        .assertMessageEquals(String.format("%s case id %s", ERRORMSGCASENOTFOUND, NON_EXISTING_ID))
         .andClose();
   }
 
@@ -165,7 +164,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
-        .assertMessageEquals(String.format("%s case id %s", ERROR_CASE_NOT_FOUND_MSG, NON_EXISTING_ID))
+        .assertMessageEquals(String.format("%s case id %s", ERRORMSGCASENOTFOUND, NON_EXISTING_ID))
         .andClose();
   }
 
