@@ -1,6 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
-import static uk.gov.ons.ctp.response.casesvc.endpoint.QuestionnaireEndpoint.ERRORMSGQUESTIONNAIRENOTFOUND;
+import static uk.gov.ons.ctp.response.casesvc.endpoint.QuestionnaireEndpoint.ERRORMSG_QUESTIONNAIRENOTFOUND;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockQuestionnaireServiceFactory.QUESTIONNAIRE_CASEID;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockQuestionnaireServiceFactory.QUESTIONNAIRE_CASEID_NOT_FOUND;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockQuestionnaireServiceFactory.QUESTIONNAIRE_IAC;
@@ -66,7 +66,7 @@ public final class QuestionnaireEndpointTest extends CTPJerseyTest {
         .assertStringInBody("$.error.code", CTPException.Fault.RESOURCE_NOT_FOUND.toString())
         .assertTimestampExists()
         .assertStringInBody("$.error.message",
-                String.format("%s iac %s", ERRORMSGQUESTIONNAIRENOTFOUND, QUESTIONNAIRE_IAC_NOT_FOUND))
+                String.format("%s iac %s", ERRORMSG_QUESTIONNAIRENOTFOUND, QUESTIONNAIRE_IAC_NOT_FOUND))
         .andClose();
   }
 
@@ -102,7 +102,7 @@ public final class QuestionnaireEndpointTest extends CTPJerseyTest {
             .assertStringInBody("$.error.code", CTPException.Fault.RESOURCE_NOT_FOUND.toString())
             .assertTimestampExists()
             .assertStringInBody("$.error.message",
-                    String.format("%s case id %s", ERRORMSGQUESTIONNAIRENOTFOUND, QUESTIONNAIRE_CASEID_NOT_FOUND))
+                    String.format("%s case id %s", ERRORMSG_QUESTIONNAIRENOTFOUND, QUESTIONNAIRE_CASEID_NOT_FOUND))
             .andClose();
   }
 
@@ -128,7 +128,7 @@ public final class QuestionnaireEndpointTest extends CTPJerseyTest {
             .assertStringInBody("$.error.code", CTPException.Fault.RESOURCE_NOT_FOUND.toString())
             .assertTimestampExists()
             .assertStringInBody("$.error.message",
-                    String.format("%s questionnaire id %s", ERRORMSGQUESTIONNAIRENOTFOUND, QUESTIONNAIRE_ID_NOT_FOUND))
+                    String.format("%s questionnaire id %s", ERRORMSG_QUESTIONNAIRENOTFOUND, QUESTIONNAIRE_ID_NOT_FOUND))
         .andClose();
   }
 

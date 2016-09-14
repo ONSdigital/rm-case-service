@@ -3,7 +3,9 @@
 
 
 ## To run
-./mvnw spring-boot:run
+    - Prerequisite:
+        - sudo mongod --dbpath /var/lib/mongodb
+    - ./mvnw spring-boot:run
 
 
 ## To test

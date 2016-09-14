@@ -32,7 +32,7 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 @Slf4j
 public final class CaseEndpoint implements CTPEndpoint {
 
-  public static String ERRORMSGCASENOTFOUND = "Case not found for";
+  public static final String ERRORMSG_CASENOTFOUND = "Case not found for";
 
   @Inject
   private CaseService caseService;
@@ -54,7 +54,7 @@ public final class CaseEndpoint implements CTPEndpoint {
     List<Case> cases = caseService.findCasesByUprn(uprn);
     if (org.apache.commons.collections.CollectionUtils.isEmpty(cases)) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-              String.format("%s UPRN %s", ERRORMSGCASENOTFOUND, uprn));
+              String.format("%s UPRN %s", ERRORMSG_CASENOTFOUND, uprn));
     }
     List<CaseDTO> caseDTOs = mapperFacade.mapAsList(cases, CaseDTO.class);
     return CollectionUtils.isEmpty(caseDTOs) ? null : caseDTOs;
@@ -74,7 +74,7 @@ public final class CaseEndpoint implements CTPEndpoint {
     Case caseObj = caseService.findCaseByQuestionnaireId(qid);
     if (caseObj == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-              String.format("%s questionnaire id %s", ERRORMSGCASENOTFOUND, qid));
+              String.format("%s questionnaire id %s", ERRORMSG_CASENOTFOUND, qid));
     }
     return mapperFacade.map(caseObj, CaseDTO.class);
   }
@@ -93,7 +93,7 @@ public final class CaseEndpoint implements CTPEndpoint {
     Case caseObj = caseService.findCaseByCaseId(caseId);
     if (caseObj == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-              String.format("%s case id %s", ERRORMSGCASENOTFOUND, caseId));
+              String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseId));
     }
     return mapperFacade.map(caseObj, CaseDTO.class);
   }
@@ -134,7 +134,7 @@ public final class CaseEndpoint implements CTPEndpoint {
     Case caseObj = caseService.findCaseByCaseId(caseId);
     if (caseObj == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-              String.format("%s case id %s", ERRORMSGCASENOTFOUND, caseId));
+              String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseId));
     }
     List<CaseEvent> caseEvents = caseService.findCaseEventsByCaseId(caseId);
     List<CaseEventDTO> caseEventDTOs = mapperFacade.mapAsList(caseEvents, CaseEventDTO.class);
@@ -160,7 +160,7 @@ public final class CaseEndpoint implements CTPEndpoint {
     CaseEvent createdCaseEvent = caseService.createCaseEvent(mapperFacade.map(caseEventDTO, CaseEvent.class));
     if (createdCaseEvent == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-              String.format("%s case id %s", ERRORMSGCASENOTFOUND, caseId));
+              String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseId));
     }
     return mapperFacade.map(createdCaseEvent, CaseEventDTO.class);
   }
