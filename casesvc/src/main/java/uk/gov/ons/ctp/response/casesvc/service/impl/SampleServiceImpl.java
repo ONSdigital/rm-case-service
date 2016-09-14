@@ -66,9 +66,10 @@ public class SampleServiceImpl implements SampleService {
   public void generateCases(final Integer sampleId, final String geographyType, final String geographyCode) {
     log.debug("Entering generateCases with sampleId {} - geographyType {} - geographyCode {}", sampleId, geographyType,
         geographyCode);
-    CaseNotifications caseNotifications = new CaseNotifications();
     List<GeneratedCase> casesGenerated = caseLifeCycleRepo.generateCases(sampleId, geographyType, geographyCode);
     List<CaseNotification> caseNotification = mapperFacade.mapAsList(casesGenerated, CaseNotification.class);
+
+    CaseNotifications caseNotifications = new CaseNotifications();
     caseNotification.forEach((caseMessage) -> {
       caseMessage.setNotificationType(NotificationType.CREATED);
       caseNotifications.getCaseNotifications().add(caseMessage);

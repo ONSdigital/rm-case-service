@@ -72,11 +72,19 @@ public final class SampleEndpoint implements CTPEndpoint {
    * the PUT endpoint to create cases
    * @param sampleId the id of the sample
    * @param geography the geography
+   * @return the sample representation
+   * @throws CTPException something went wrong
    */
   @PUT
   @Path("/{sampleId}")
-  public void createCases(@PathParam("sampleId") final int sampleId, final GeographyDTO geography) {
+  public SampleDTO createCases(@PathParam("sampleId") final int sampleId, final GeographyDTO geography)
+          throws CTPException {
     log.debug("Creating cases ");
+    Sample sample = sampleService.findSampleBySampleId(sampleId);
+    if (sample == null) {
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Sample not found for id %s", sampleId);
+    }
     sampleService.generateCases(sampleId, geography.getType(), geography.getCode());
+    return mapperFacade.map(sample, SampleDTO.class);
   }
 }

@@ -106,18 +106,32 @@ public final class SampleEndpointUnitTest extends CTPJerseyTest {
         .andClose();
   }
 
-  /**
-   * a test
-   */
   @Test
-  public void createCasesValidJson() {
+  public void createCasesValidJsonSampleFound() {
     String putBody = "{\"type\":\"LA\",\"code\":\"E07000163\"}";
 
     with("http://localhost:9998/samples/%s", SAMPLEID)
-        .put(MediaType.APPLICATION_JSON_TYPE, putBody)
-        .assertResponseCodeIs(HttpStatus.NO_CONTENT)
-        .assertEmptyResponse()
-        .andClose();
+            .put(MediaType.APPLICATION_JSON_TYPE, putBody)
+            .assertResponseCodeIs(HttpStatus.OK)
+            .assertArrayLengthInBodyIs(6)
+            .assertStringListInBody("$..name", SAMPLE3_NAME)
+            .assertStringListInBody("$..description", SAMPLE3_DESC)
+            .assertStringListInBody("$..addressCriteria", SAMPLE3_CRITERIA)
+            .assertIntegerListInBody("$..caseTypeId", SAMPLE3_CASETYPEID)
+            .assertIntegerListInBody("$..surveyId", SURVEYID)
+            .andClose();
+  }
+
+  @Test
+  public void createCasesValidJsonSampleNotFound() {
+    String putBody = "{\"type\":\"LA\",\"code\":\"E07000163\"}";
+
+    with("http://localhost:9998/samples/%s", NON_EXISTING_SAMPLEID)
+            .assertResponseCodeIs(HttpStatus.NOT_FOUND)
+            .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
+            .assertTimestampExists()
+            .assertMessageEquals("Sample not found for id %s", NON_EXISTING_SURVEYID)
+            .andClose();
   }
 
   @Test

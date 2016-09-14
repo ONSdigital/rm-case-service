@@ -220,11 +220,11 @@ curl -H "Accept: application/json" -H "Content-Type: application/json" http://lo
 
 
 curl -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/samples/1234 -v -X PUT -d "{\"type\":\"LA\", \"code\":\"E07000163\"}"
-TODO Should it not be in this case 404 as the sampleid 1234 does not exist?
+404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160914110133205","message":"Sample not found for id 1234"}}
 
 
 curl -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/samples/1 -v -X PUT -d "{\"type\":\"LA\", \"code\":\"E07000163\"}"
-204 TODO Spec says 200
+200 {"sampleId":1,"name":"Residential","description":"Households","addressCriteria":"addresstype = 'HH'","caseTypeId":1,"surveyId":1}
 
 
 ########################################################################
