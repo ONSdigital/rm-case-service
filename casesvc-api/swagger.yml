@@ -556,6 +556,10 @@ paths:
           description: Cases created.
           schema:
             $ref: '#/definitions/Sample'
+        404:
+          description: Sample not found
+          schema:
+            $ref: '#/definitions/Error'            
         default:
           description: Unexpected error
           schema:
