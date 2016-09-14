@@ -35,6 +35,21 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-freemarker</artifactId>
     </dependency>
+    <dependency>
+      <groupId>fr.opensagres.xdocreport</groupId>
+      <artifactId>fr.opensagres.xdocreport.document.odt</artifactId>
+      <version>1.0.6</version>
+    </dependency>
+    <dependency>
+      <groupId>fr.opensagres.xdocreport</groupId>
+      <artifactId>fr.opensagres.xdocreport.template.freemarker</artifactId>
+      <version>1.0.6</version>
+    </dependency>
+    <dependency>
+      <groupId>fr.opensagres.xdocreport</groupId>
+      <artifactId>fr.opensagres.xdocreport.converter.odt.odfdom</artifactId>
+      <version>1.0.6</version>
+    </dependency>
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
