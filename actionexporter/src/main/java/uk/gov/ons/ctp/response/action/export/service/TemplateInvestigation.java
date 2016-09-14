@@ -1,17 +1,26 @@
 package uk.gov.ons.ctp.response.action.export.service;
 
 
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequest;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Class to investigate best option for templating - CTPA-700
  */
 public class TemplateInvestigation {
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException, TemplateException {
     /**
      * Step - Get the action requests from the MongoDB
      */
@@ -21,7 +30,19 @@ public class TemplateInvestigation {
     /**
      * Step - Produce a csv file
      */
+    //Freemarker configuration object
+    Configuration cfg = new Configuration();
+    Template template = cfg.getTemplate("actionexporter/src/main/resources/templates/csvExport.ftl");
 
+    // Build the data-model
+    Map<String, Object> data = new HashMap<String, Object>();
+    data.put("actionRequests", actionRequestList);
+
+    // File output
+    Writer file = new FileWriter(new File("actionexporter/src/main/resources/forPrinter.csv"));
+    template.process(data, file);
+    file.flush();
+    file.close();
   }
 
   /**
@@ -38,7 +59,6 @@ public class TemplateInvestigation {
   private static ActionRequest buildAMeActionRequest(int i) {
     ActionRequest result =  new ActionRequest();
     result.setActionId(new BigInteger(new Integer(i).toString()));
-    result.setResponseRequired(true);
     result.setActionType("testActionType");
     result.setIac("testIac");
     return result;
