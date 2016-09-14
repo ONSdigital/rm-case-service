@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
+import static uk.gov.ons.ctp.response.casesvc.endpoint.QuestionnaireEndpoint.ERROR_CQUESTIONNAIRE_NOT_FOUND_MSG;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockQuestionnaireServiceFactory.QUESTIONNAIRE_CASEID;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockQuestionnaireServiceFactory.QUESTIONNAIRE_CASEID_NOT_FOUND;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockQuestionnaireServiceFactory.QUESTIONNAIRE_IAC;
@@ -19,7 +20,6 @@ import org.springframework.http.HttpStatus;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
 import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
-import uk.gov.ons.ctp.response.casesvc.endpoint.QuestionnaireEndpoint;
 import uk.gov.ons.ctp.response.casesvc.service.QuestionnaireService;
 import uk.gov.ons.ctp.response.casesvc.service.impl.QuestionnaireServiceImpl;
 import uk.gov.ons.ctp.response.casesvc.utility.MockQuestionnaireServiceFactory;
@@ -62,14 +62,13 @@ public final class QuestionnaireEndpointTest extends CTPJerseyTest {
    */
   @Test
   public void findQuestionnaireByIacNotFound() {
-    // TODO
-//    with("http://localhost:9998/questionnaires/iac/%s", QUESTIONNAIRE_IAC_NOT_FOUND)
-//        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
-//        .assertStringInBody("$.error.code", CTPException.Fault.RESOURCE_NOT_FOUND.toString())
-//        .assertTimestampExists()
-//        .assertStringInBody("$.error.message",
-//            String.format("Cannot find Questionnaire for iac %s", QUESTIONNAIRE_IAC_NOT_FOUND))
-//        .andClose();
+    with("http://localhost:9998/questionnaires/iac/%s", QUESTIONNAIRE_IAC_NOT_FOUND)
+        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
+        .assertStringInBody("$.error.code", CTPException.Fault.RESOURCE_NOT_FOUND.toString())
+        .assertTimestampExists()
+        .assertStringInBody("$.error.message",
+                String.format("%s iac %s", ERROR_CQUESTIONNAIRE_NOT_FOUND_MSG, QUESTIONNAIRE_IAC_NOT_FOUND))
+        .andClose();
   }
 
   /**
@@ -99,10 +98,13 @@ public final class QuestionnaireEndpointTest extends CTPJerseyTest {
    */
   @Test
   public void findQuestionnaireByCaseidNotFound() {
-    // TODO
-//    with("http://localhost:9998/questionnaires/case/%s", QUESTIONNAIRE_CASEID_NOT_FOUND)
-//        .assertResponseCodeIs(HttpStatus.NO_CONTENT)
-//        .andClose();
+    with("http://localhost:9998/questionnaires/case/%s", QUESTIONNAIRE_CASEID_NOT_FOUND)
+            .assertResponseCodeIs(HttpStatus.NOT_FOUND)
+            .assertStringInBody("$.error.code", CTPException.Fault.RESOURCE_NOT_FOUND.toString())
+            .assertTimestampExists()
+            .assertStringInBody("$.error.message",
+                    String.format("%s case id %s", ERROR_CQUESTIONNAIRE_NOT_FOUND_MSG, QUESTIONNAIRE_CASEID_NOT_FOUND))
+            .andClose();
   }
 
   /**

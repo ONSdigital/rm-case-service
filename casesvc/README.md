@@ -152,8 +152,8 @@ curl http://localhost:8171/questionnaires/iac/123 -v -X GET
 ########################################################################
 ## GET /questionnaires/case/{caseid}
 ########################################################################
-curl http://localhost:8171/questionnaires/case/123 -v -X GET
-204 TODO Spec says 404 Case not found
+curl http://localhost:8171/questionnaires/case/1234 -v -X GET
+404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160914095343962","message":"Questionnaire not found for case id 1234"}}
 
 
 ########################################################################
