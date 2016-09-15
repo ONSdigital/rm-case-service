@@ -5,6 +5,7 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequest;
+import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
 
 import java.io.*;
 import java.math.BigInteger;
@@ -70,6 +71,15 @@ public class TemplateInvestigation {
     result.setActionId(new BigInteger(new Integer(i).toString()));
     result.setActionType("testActionType");
     result.setIac("testIac");
+    result.setAddress(buildActionAddress());
     return result;
+  }
+
+  private static ActionAddress buildActionAddress() {
+    ActionAddress actionAddress = new ActionAddress();
+    actionAddress.setLine1("1 High Street");
+    actionAddress.setTownName("Southampton");
+    actionAddress.setPostcode("SO16 0AS");
+    return actionAddress;
   }
 }
