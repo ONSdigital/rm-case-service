@@ -10,3 +10,13 @@ databaseChangeLog:
             relativeToChangelogFile: true
             splitStatements: false
 
+  - changeSet:
+      id: 9.25.0-2
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: populate tables in casesvc with initial data for sample, casetype, questionset
+            path: 2017_casesvc_data.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
