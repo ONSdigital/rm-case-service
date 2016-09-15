@@ -38,7 +38,7 @@ server:
   servlet-path: /mgmt
 
 endpoints:
-  autoconfig: 
+  autoconfig:
     enabled: true
     sensitive: true
   beans:
@@ -92,7 +92,7 @@ spring:
     enabled: false
 
 action-svc:
-  actions-path: /actions 
+  actions-path: /actions
   cancel-actions-path: /actions/case/{caseid}/cancel
   connection-config:
     scheme: http
@@ -107,4 +107,4 @@ notification-publ:
   notification-max: 100
 
 deadxml:
-  directory: /var/log/ctp/responsemanagement/actionsvc
+  directory: /var/log/ctp/responsemanagement/casesvc
