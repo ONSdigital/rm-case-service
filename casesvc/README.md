@@ -80,8 +80,7 @@ TODO To be implemented
 ## To test GET cases for caseid
 ########################################################################
 curl http://localhost:8171/cases/1234 -v -X GET
-404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160912130955077","message":"Case not found for id 123"}}
-TODO Without the line packages("uk.gov.ons.ctp");: 500 {"timestamp":1473781601810,"status":500,"error":"Internal Server Error","exception":"org.glassfish.jersey.server.ContainerException","message":"org.glassfish.jersey.server.ContainerException: uk.gov.ons.ctp.common.error.CTPException: Case not found for case id 1234","path":"/cases/1234"}
+404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20160912130955077","message":"Case not found for id 1234"}}
 
 
 curl http://localhost:8171/cases/abc -v -X GET
