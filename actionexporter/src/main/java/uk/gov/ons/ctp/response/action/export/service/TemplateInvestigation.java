@@ -3,6 +3,7 @@ package uk.gov.ons.ctp.response.action.export.service;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import freemarker.template.TemplateExceptionHandler;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequest;
 
 import java.io.*;
@@ -24,24 +25,31 @@ public class TemplateInvestigation {
     System.out.println(String.format("We have %d action requests...", actionRequestList.size()));
 
     /**
-     * Step - Produce a csv file
+     * Step - Configure FreeMarker
+     * Configuration instances are meant to be application-level singletons.
      */
-    //Freemarker configuration object
-    Configuration cfg = new Configuration();
-    Template template = cfg.getTemplate("actionexporter/src/main/resources/templates/csvExport.ftl");
+    // Freemarker configuration object - do this only once at the beginning of the application (possibly servlet) life-cycle
+    Configuration cfg = new Configuration(Configuration.VERSION_2_3_25);
+    cfg.setDirectoryForTemplateLoading(new File("actionexporter/src/main/resources/templates"));  // non-file-system sources are possible too
+    cfg.setDefaultEncoding("UTF-8");
+    cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+    // Don't log exceptions inside FreeMarker that it will thrown at you anyway:
+    cfg.setLogTemplateExceptions(false);
 
-    // Build the data-model
-    Map<String, Object> data = new HashMap<String, Object>();
-    data.put("actionRequests", actionRequestList);
+        // Build the data model
+    Map<String, Object> root = new HashMap<String, Object>();
+    root.put("actionRequests", actionRequestList);
+
+    Template template = cfg.getTemplate("csvExport.ftl"); // Configuration caches Template instances
 
     // Console output
     Writer out = new OutputStreamWriter(System.out);
-    template.process(data, out);
+    template.process(root, out);
     out.flush();
 
     // File output
     Writer file = new FileWriter(new File("actionexporter/src/main/resources/forPrinter.csv"));
-    template.process(data, file);
+    template.process(root, file);
     file.flush();
     file.close();
   }
