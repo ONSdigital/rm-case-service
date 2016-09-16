@@ -24,7 +24,6 @@
   </scm>
 
   <dependencies>
-
     <dependency>
       <groupId>uk.gov.ons.ctp.product</groupId>
       <artifactId>actionsvc-api</artifactId>
@@ -110,6 +109,30 @@
       <optional>true</optional>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>dev</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <skip.integration.tests>false</skip.integration.tests>
+      </properties>
+    </profile>
+    <profile>
+      <id>test</id>
+      <properties>
+        <skip.integration.tests>true</skip.integration.tests>
+      </properties>
+    </profile>
+    <profile>
+      <id>prod</id>
+      <properties>
+        <skip.integration.tests>true</skip.integration.tests>
+      </properties>
+    </profile>
+  </profiles>
 
   <build>
     <plugins>
@@ -201,6 +224,32 @@
             <item>timestamp</item>
           </items>
         </configuration>
+      </plugin>
+
+      <!-- required for unit tests -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+      </plugin>
+
+      <!-- required for integration tests -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <!-- IMPORTANT: old version used below because https://github.com/spring-projects/spring-boot/issues/6254
+        Once a newer version than 2.19.1 is developed, try to move to it. -->
+        <version>2.18.1</version>
+        <configuration>
+          <skipTests>${skip.integration.tests}</skipTests>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
     </plugins>
