@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.ons.ctp.response.action.export.GenericTestConfig;
 import uk.gov.ons.ctp.response.action.export.config.FreeMarkerConfiguration;
-import uk.gov.ons.ctp.response.action.export.domain.ActionRequest;
+import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
 import uk.gov.ons.ctp.response.action.export.service.FileService;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
 
@@ -26,21 +26,22 @@ public class FileServiceImplITCase {
 
   @Test
   public void testPositiveScenario() {
-    List<ActionRequest> actionRequestList = buildMeListOfActionRequests();
-    assertEquals(50, actionRequestList.size());
-    fileService.fileMe(actionRequestList);
+    List<ActionRequestDocument> actionRequestDocumentList = buildMeListOfActionRequestDocuments();
+    assertEquals(50, actionRequestDocumentList.size());
+    fileService.fileMe(actionRequestDocumentList);
+    // TODO assert the file is not there initially in a @Before and then that it has been created
   }
 
-  private static List<ActionRequest> buildMeListOfActionRequests() {
-    List<ActionRequest> result = new ArrayList<>();
+  private static List<ActionRequestDocument> buildMeListOfActionRequestDocuments() {
+    List<ActionRequestDocument> result = new ArrayList<>();
     for (int i = 1; i < 51; i++) {
-      result.add(buildAMeActionRequest(i));
+      result.add(buildAMeActionRequestDocument(i));
     }
     return result;
   }
 
-  private static ActionRequest buildAMeActionRequest(int i) {
-    ActionRequest result =  new ActionRequest();
+  private static ActionRequestDocument buildAMeActionRequestDocument(int i) {
+    ActionRequestDocument result =  new ActionRequestDocument();
     result.setActionId(new BigInteger(new Integer(i).toString()));
     result.setActionType("testActionType");
     result.setIac("testIac");

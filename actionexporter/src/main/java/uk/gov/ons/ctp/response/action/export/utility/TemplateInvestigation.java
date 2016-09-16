@@ -4,7 +4,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
-import uk.gov.ons.ctp.response.action.export.domain.ActionRequest;
+import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
 
 import java.io.*;
@@ -23,8 +23,8 @@ public class TemplateInvestigation {
     /**
      * Step - Get the action requests from the MongoDB
      */
-    List<ActionRequest> actionRequestList = buildMeListOfActionRequests();
-    System.out.println(String.format("We have %d action requests...", actionRequestList.size()));
+    List<ActionRequestDocument> actionRequestDocumentList = buildMeListOfActionRequestDocuments();
+    System.out.println(String.format("We have %d action requests...", actionRequestDocumentList.size()));
 
     /**
      * Step - Configure FreeMarker
@@ -40,7 +40,7 @@ public class TemplateInvestigation {
 
     // Build the data model
     Map<String, Object> root = new HashMap<String, Object>();
-    root.put("actionRequests", actionRequestList);
+    root.put("actionRequests", actionRequestDocumentList);
 
     Template template = cfg.getTemplate("csvExport.ftl"); // Configuration caches Template instances
 
@@ -59,16 +59,16 @@ public class TemplateInvestigation {
   /**
    * TODO This will be replaced by a actionRequestRepo.findAll or similar
    */
-  private static List<ActionRequest> buildMeListOfActionRequests() {
-    List<ActionRequest> result = new ArrayList<>();
+  private static List<ActionRequestDocument> buildMeListOfActionRequestDocuments() {
+    List<ActionRequestDocument> result = new ArrayList<>();
     for (int i = 1; i < 51; i++) {
-      result.add(buildAMeActionRequest(i));
+      result.add(buildAMeActionRequestDocument(i));
     }
     return result;
   }
 
-  private static ActionRequest buildAMeActionRequest(int i) {
-    ActionRequest result =  new ActionRequest();
+  private static ActionRequestDocument buildAMeActionRequestDocument(int i) {
+    ActionRequestDocument result =  new ActionRequestDocument();
     result.setActionId(new BigInteger(new Integer(i).toString()));
     result.setActionType("testActionType");
     result.setIac("testIac");

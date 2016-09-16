@@ -4,7 +4,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.ons.ctp.response.action.export.domain.ActionRequest;
+import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
 import uk.gov.ons.ctp.response.action.export.service.FileService;
 
 import javax.inject.Inject;
@@ -22,10 +22,10 @@ public class FileServiceImpl implements FileService {
   private Configuration configuration;
 
   @Override
-  public void fileMe(List<ActionRequest> actionRequestList) {
+  public void fileMe(List<ActionRequestDocument> actionRequestDocumentList) {
     // Build the data model
     Map<String, Object> root = new HashMap<String, Object>();
-    root.put("actionRequests", actionRequestList);
+    root.put("actionRequests", actionRequestDocumentList);
 
     try {
       Template template = configuration.getTemplate("csvExport.ftl"); // Configuration caches Template instances
