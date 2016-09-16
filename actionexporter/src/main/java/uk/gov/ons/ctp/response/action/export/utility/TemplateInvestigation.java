@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.action.export.service;
+package uk.gov.ons.ctp.response.action.export.utility;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Class to investigate best option for templating - CTPA-700
+ * Class to investigate FreeMarker
+ * TODO Delete once implemented in Spring Boot app and testable
  */
 public class TemplateInvestigation {
   public static void main(String[] args) throws IOException, TemplateException {
@@ -37,7 +38,7 @@ public class TemplateInvestigation {
     // Don't log exceptions inside FreeMarker that it will thrown at you anyway:
     cfg.setLogTemplateExceptions(false);
 
-        // Build the data model
+    // Build the data model
     Map<String, Object> root = new HashMap<String, Object>();
     root.put("actionRequests", actionRequestList);
 
