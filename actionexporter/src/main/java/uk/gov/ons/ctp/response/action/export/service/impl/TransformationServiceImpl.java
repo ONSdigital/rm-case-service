@@ -18,6 +18,9 @@ import java.util.Map;
 
 import static org.glassfish.jersey.message.internal.ReaderWriter.UTF8;
 
+/**
+ * The implementation of TransformationService
+ */
 @Named
 @Slf4j
 public class TransformationServiceImpl implements TransformationService {
@@ -76,6 +79,11 @@ public class TransformationServiceImpl implements TransformationService {
     return outputStream;
   }
 
+  /**
+   * This returns the FreeMarker template required for the transformation.
+   * @return the FreeMarker template
+   * @throws IOException if issue creating the FreeMarker template
+   */
   private Template giveMeTemplate() throws IOException {
     // TODO get templates from db: follow http://www.nurkiewicz.com/2010/01/writing-custom-freemarker-template.html
     Configuration cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_25);
@@ -90,6 +98,11 @@ public class TransformationServiceImpl implements TransformationService {
     return template;
   }
 
+  /**
+   * This builds the data model required by FreeMarker
+   * @param actionRequestDocumentList the list of action requests
+   * @return the data model map
+   */
   private Map<String, Object> buildDataModel(List<ActionRequestDocument> actionRequestDocumentList) {
     Map<String, Object> result = new HashMap<String, Object>();
     result.put("actionRequests", actionRequestDocumentList);
