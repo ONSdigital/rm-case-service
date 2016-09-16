@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.ons.ctp.response.action.export.GenericTestConfig;
-import uk.gov.ons.ctp.response.action.export.config.FreeMarkerConfiguration;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
 import uk.gov.ons.ctp.response.action.export.service.TransformationService;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
@@ -23,7 +22,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.testng.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {GenericTestConfig.class, FreeMarkerConfiguration.class})
+@SpringBootTest
 public class TransformationServiceImplITCase {
 
   private static final int TEST_STRING_LENGTH = 3501;

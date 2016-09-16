@@ -8,8 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
+import uk.gov.ons.ctp.response.action.export.freemarker.MongoTemplateLoader;
 import uk.gov.ons.ctp.response.action.export.service.TransformationService;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.*;
 import java.util.HashMap;
@@ -25,8 +27,12 @@ import static org.glassfish.jersey.message.internal.ReaderWriter.UTF8;
 @Slf4j
 public class TransformationServiceImpl implements TransformationService {
 
+  // TODO Change the below to @Inject?
   @Autowired
   private ResourceLoader resourceLoader;
+
+  @Inject
+  MongoTemplateLoader mongoTemplateLoader;
 
   @Override
   public File fileMe(List<ActionRequestDocument> actionRequestDocumentList, String templateName, String path) {
@@ -87,6 +93,7 @@ public class TransformationServiceImpl implements TransformationService {
    */
   private Template giveMeTemplate(String templateName) throws IOException {
     Configuration cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_25);
+    // TODO cfg.setTemplateLoader(mongoTemplateLoader);
     File templateDirectory = resourceLoader.getResource("classpath:templates").getFile();
     cfg.setDirectoryForTemplateLoading(templateDirectory);  // non-file-system sources are possible too: see setTemplateLoader();
     cfg.setDefaultEncoding(UTF8.name());

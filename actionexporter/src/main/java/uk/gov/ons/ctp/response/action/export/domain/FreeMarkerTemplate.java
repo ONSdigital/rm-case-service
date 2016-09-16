@@ -16,5 +16,6 @@ import java.util.Date;
 public class FreeMarkerTemplate {
   @Id
   private String name;
+  private String content;
   private Date dateModified;
 }
