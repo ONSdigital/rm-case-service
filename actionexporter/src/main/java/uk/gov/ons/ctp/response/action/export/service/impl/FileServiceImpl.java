@@ -3,11 +3,13 @@ package uk.gov.ons.ctp.response.action.export.service.impl;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import freemarker.template.TemplateExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ResourceLoader;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
 import uk.gov.ons.ctp.response.action.export.service.FileService;
 
-import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.*;
 import java.util.HashMap;
@@ -18,8 +20,8 @@ import java.util.Map;
 @Slf4j
 public class FileServiceImpl implements FileService {
 
-  @Inject
-  private Configuration configuration;
+  @Autowired
+  private ResourceLoader resourceLoader;
 
   @Override
   public void fileMe(List<ActionRequestDocument> actionRequestDocumentList) {
@@ -28,7 +30,16 @@ public class FileServiceImpl implements FileService {
     root.put("actionRequests", actionRequestDocumentList);
 
     try {
-      Template template = configuration.getTemplate("csvExport.ftl"); // Configuration caches Template instances
+      // TODO get templates from db: follow http://www.nurkiewicz.com/2010/01/writing-custom-freemarker-template.html
+      Configuration cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_25);
+      File templateDirectory = resourceLoader.getResource("classpath:templates").getFile();
+      cfg.setDirectoryForTemplateLoading(templateDirectory);  // non-file-system sources are possible too: see setTemplateLoader();
+      cfg.setDefaultEncoding("UTF-8");
+      cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+      // Don't log exceptions inside FreeMarker that it will thrown at you anyway:
+      cfg.setLogTemplateExceptions(false);
+
+      Template template = cfg.getTemplate("csvExport.ftl"); // Configuration caches Template instances
 
       // Console output
       Writer out = new OutputStreamWriter(System.out);
