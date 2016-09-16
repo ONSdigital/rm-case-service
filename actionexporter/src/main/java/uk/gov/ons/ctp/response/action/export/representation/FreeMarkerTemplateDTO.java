@@ -14,5 +14,6 @@ import java.util.Date;
 public class FreeMarkerTemplateDTO {
   @NotNull
   private String name;
+  private String content;
   private Date dateModified;
 }

@@ -2,6 +2,8 @@ package uk.gov.ons.ctp.response.action.export.endpoint;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.FreeMarkerTemplate;
 import uk.gov.ons.ctp.response.action.export.representation.FreeMarkerTemplateDTO;
@@ -33,11 +35,12 @@ public class FreeMarkerEndpoint {
   }
 
   @POST
-  @Path("/")
-  public FreeMarkerTemplateDTO storeFreeMarkerTemplate(final @Valid FreeMarkerTemplateDTO freeMarkerTemplateDTO) {
-    log.debug("Entering storeFreeMarkerTemplate with Action {}", freeMarkerTemplateDTO);
-    FreeMarkerTemplate template = freeMarkerService.storeTemplate(mapperFacade.map(freeMarkerTemplateDTO, FreeMarkerTemplate.class));
-    FreeMarkerTemplateDTO result = mapperFacade.map(template, FreeMarkerTemplateDTO.class);
-    return result;
+  @Path("/{templateName}")
+  public FreeMarkerTemplateDTO storeFreeMarkerTemplate(@PathParam("templateName") final String templateName,
+                                                       @RequestParam("template") MultipartFile file)
+          throws CTPException {
+    log.debug("Entering storeFreeMarkerTemplate with templateName {}", templateName);
+    FreeMarkerTemplate template = freeMarkerService.storeTemplate(templateName, file);
+    return mapperFacade.map(template, FreeMarkerTemplateDTO.class);
   }
 }
