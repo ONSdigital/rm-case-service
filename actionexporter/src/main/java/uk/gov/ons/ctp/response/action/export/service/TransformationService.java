@@ -2,8 +2,8 @@ package uk.gov.ons.ctp.response.action.export.service;
 
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.OutputStream;
 import java.util.List;
 
 public interface TransformationService {
@@ -15,6 +15,6 @@ public interface TransformationService {
    */
   File fileMe(List<ActionRequestDocument> actionRequestDocumentList, String path);
 
-  OutputStream streamMe(List<ActionRequestDocument> actionRequestDocumentList);
+  ByteArrayOutputStream streamMe(List<ActionRequestDocument> actionRequestDocumentList);
 }
 

@@ -11,12 +11,14 @@ import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
 import uk.gov.ons.ctp.response.action.export.service.TransformationService;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.glassfish.jersey.message.internal.ReaderWriter.UTF8;
 import static org.junit.Assert.assertNotNull;
 import static org.testng.Assert.assertEquals;
 
@@ -24,24 +26,36 @@ import static org.testng.Assert.assertEquals;
 @SpringBootTest(classes = {GenericTestConfig.class, FreeMarkerConfiguration.class})
 public class TransformationServiceImplITCase {
 
+  private static final int TEST_STRING_LENGTH = 3501;
+  private static final String TEST_FILE_PATH = "/tmp/csv/forPrinter.csv";
+
   @Autowired
   TransformationService transformationService;
 
   @Test
   public void testFileMePositiveScenario() {
+    // Delete the file if present
+    File forPrinterFile = new File(TEST_FILE_PATH);
+    if (forPrinterFile != null && forPrinterFile.exists()) {
+      forPrinterFile.delete();
+    }
+
     List<ActionRequestDocument> actionRequestDocumentList = buildMeListOfActionRequestDocuments();
     assertEquals(50, actionRequestDocumentList.size());
-    File result = transformationService.fileMe(actionRequestDocumentList, "/tmp/csv/forPrinter.csv");
+    File result = transformationService.fileMe(actionRequestDocumentList, TEST_FILE_PATH);
     assertNotNull(result);
-    // TODO assert the file is not there initially in a @Before and then that it has been created
+    assertEquals(TEST_STRING_LENGTH, result.length());
   }
 
   @Test
-  public void testStreamMePositiveScenario() {
+  public void testStreamMePositiveScenario() throws UnsupportedEncodingException {
     List<ActionRequestDocument> actionRequestDocumentList = buildMeListOfActionRequestDocuments();
     assertEquals(50, actionRequestDocumentList.size());
-    OutputStream result= transformationService.streamMe(actionRequestDocumentList);
+    ByteArrayOutputStream result = transformationService.streamMe(actionRequestDocumentList);
     assertNotNull(result);
+    String resultString = result.toString(UTF8.name());
+    assertEquals(TEST_STRING_LENGTH, resultString.length());
+
   }
 
   private static List<ActionRequestDocument> buildMeListOfActionRequestDocuments() {

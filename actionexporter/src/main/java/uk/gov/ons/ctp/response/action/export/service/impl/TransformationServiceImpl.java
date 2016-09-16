@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.glassfish.jersey.message.internal.ReaderWriter.UTF8;
+
 @Named
 @Slf4j
 public class TransformationServiceImpl implements TransformationService {
@@ -35,17 +37,12 @@ public class TransformationServiceImpl implements TransformationService {
       Configuration cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_25);
       File templateDirectory = resourceLoader.getResource("classpath:templates").getFile();
       cfg.setDirectoryForTemplateLoading(templateDirectory);  // non-file-system sources are possible too: see setTemplateLoader();
-      cfg.setDefaultEncoding("UTF-8");
+      cfg.setDefaultEncoding(UTF8.name());
       cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
       // Don't log exceptions inside FreeMarker that it will thrown at you anyway:
       cfg.setLogTemplateExceptions(false);
 
       Template template = cfg.getTemplate("csvExport.ftl"); // Configuration caches Template instances
-
-      // Console output
-      Writer out = new OutputStreamWriter(System.out);
-      template.process(root, out);
-      out.close();
 
       // File output
       Writer fileWriter = new FileWriter(resultFile);
@@ -60,28 +57,23 @@ public class TransformationServiceImpl implements TransformationService {
   }
 
   @Override
-  public OutputStream streamMe(List<ActionRequestDocument> actionRequestDocumentList) {
+  public ByteArrayOutputStream streamMe(List<ActionRequestDocument> actionRequestDocumentList) {
     // Build the data model
     Map<String, Object> root = new HashMap<String, Object>();
     root.put("actionRequests", actionRequestDocumentList);
 
-    OutputStream outputStream = new ByteArrayOutputStream();
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     try {
       // TODO get templates from db: follow http://www.nurkiewicz.com/2010/01/writing-custom-freemarker-template.html
       Configuration cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_25);
       File templateDirectory = resourceLoader.getResource("classpath:templates").getFile();
       cfg.setDirectoryForTemplateLoading(templateDirectory);  // non-file-system sources are possible too: see setTemplateLoader();
-      cfg.setDefaultEncoding("UTF-8");
+      cfg.setDefaultEncoding(UTF8.name());
       cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
       // Don't log exceptions inside FreeMarker that it will thrown at you anyway:
       cfg.setLogTemplateExceptions(false);
 
       Template template = cfg.getTemplate("csvExport.ftl"); // Configuration caches Template instances
-
-      // Console output
-      Writer out = new OutputStreamWriter(System.out);
-      template.process(root, out);
-      out.close();
 
       // Streaming
       Writer outputStreamWriter = new OutputStreamWriter(outputStream);
