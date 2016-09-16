@@ -8,28 +8,40 @@ import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.ons.ctp.response.action.export.GenericTestConfig;
 import uk.gov.ons.ctp.response.action.export.config.FreeMarkerConfiguration;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
-import uk.gov.ons.ctp.response.action.export.service.FileService;
+import uk.gov.ons.ctp.response.action.export.service.TransformationService;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
 
+import java.io.File;
+import java.io.OutputStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertNotNull;
 import static org.testng.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {GenericTestConfig.class, FreeMarkerConfiguration.class})
-public class FileServiceImplITCase {
+public class TransformationServiceImplITCase {
 
   @Autowired
-  FileService fileService;
+  TransformationService transformationService;
 
   @Test
-  public void testPositiveScenario() {
+  public void testFileMePositiveScenario() {
     List<ActionRequestDocument> actionRequestDocumentList = buildMeListOfActionRequestDocuments();
     assertEquals(50, actionRequestDocumentList.size());
-    fileService.fileMe(actionRequestDocumentList);
+    File result = transformationService.fileMe(actionRequestDocumentList, "/tmp/csv/forPrinter.csv");
+    assertNotNull(result);
     // TODO assert the file is not there initially in a @Before and then that it has been created
+  }
+
+  @Test
+  public void testStreamMePositiveScenario() {
+    List<ActionRequestDocument> actionRequestDocumentList = buildMeListOfActionRequestDocuments();
+    assertEquals(50, actionRequestDocumentList.size());
+    OutputStream result= transformationService.streamMe(actionRequestDocumentList);
+    assertNotNull(result);
   }
 
   private static List<ActionRequestDocument> buildMeListOfActionRequestDocuments() {
