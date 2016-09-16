@@ -10,7 +10,7 @@
     <property name="targetConnectionFactory">
       <bean class="org.apache.activemq.ActiveMQConnectionFactory">
         <property name="brokerURL"
-          value="vm://localhost?broker.persistent=false" />
+          value="vm://localhost?broker.persistent=false&amp;jms.redeliveryPolicy.maximumRedeliveries=0" />
         <property name="dispatchAsync" value="false" />
       </bean>
     </property>
