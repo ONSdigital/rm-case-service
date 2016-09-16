@@ -31,7 +31,7 @@ public class TemplateInvestigation {
      */
     // Freemarker configuration object - do this only once at the beginning of the application (possibly servlet) life-cycle
     Configuration cfg = new Configuration(Configuration.VERSION_2_3_25);
-    cfg.setDirectoryForTemplateLoading(new File("actionexporter/src/main/resources/templates"));  // non-file-system sources are possible too
+    cfg.setDirectoryForTemplateLoading(new File("actionexporter/src/main/resources/templates"));  // non-file-system sources are possible too: see setTemplateLoader();
     cfg.setDefaultEncoding("UTF-8");
     cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
     // Don't log exceptions inside FreeMarker that it will thrown at you anyway:
