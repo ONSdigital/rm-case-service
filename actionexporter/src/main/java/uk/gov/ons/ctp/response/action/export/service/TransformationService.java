@@ -14,17 +14,19 @@ public interface TransformationService {
    * This produces a csv file for all our action requests
    *
    * @param actionRequestDocumentList the list of action requests
+   * @param templateName the FreeMarker template to use
    * @param path the full file path. An example is /tmp/csv/forPrinter.csv
    * @return the file
    */
-  File fileMe(List<ActionRequestDocument> actionRequestDocumentList, String path);
+  File fileMe(List<ActionRequestDocument> actionRequestDocumentList, String templateName, String path);
 
   /**
    * This produces a stream for all our action requests
    *
    * @param actionRequestDocumentList the list of action requests
+   * @param templateName the FreeMarker template to use
    * @return the stream
    */
-  ByteArrayOutputStream streamMe(List<ActionRequestDocument> actionRequestDocumentList);
+  ByteArrayOutputStream streamMe(List<ActionRequestDocument> actionRequestDocumentList, String templateName);
 }
 

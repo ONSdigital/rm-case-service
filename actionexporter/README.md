@@ -14,11 +14,4 @@ curl http://localhost:8241/mgmt/health -v -X GET
 
 
 ## Steps TODO
-    - Define a service and unit test for it --> so here we will have to hook up the FreeMarker config correctly
-    - Define CustomTemplateLoader:
-            - To get templates from db: follow http://www.nurkiewicz.com/2010/01/writing-custom-freemarker-template.html
-                - other options:
-                    - setClassForTemplateLoading
-                    - setClassLoaderForTemplateLoading
-                    - setDirectoryForTemplateLoading
-                    - setServletContextForTemplateLoading(Object servletContext, String path)
+    - get templates from db: follow http://www.nurkiewicz.com/2010/01/writing-custom-freemarker-template.html

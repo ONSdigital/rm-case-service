@@ -29,12 +29,12 @@ public class TransformationServiceImpl implements TransformationService {
   private ResourceLoader resourceLoader;
 
   @Override
-  public File fileMe(List<ActionRequestDocument> actionRequestDocumentList, String path) {
+  public File fileMe(List<ActionRequestDocument> actionRequestDocumentList, String templateName, String path) {
     File resultFile = new File(path);
     Writer fileWriter = null;
     try {
       fileWriter = new FileWriter(resultFile);
-      Template template = giveMeTemplate();
+      Template template = giveMeTemplate(templateName);
       template.process(buildDataModel(actionRequestDocumentList), fileWriter);
     } catch (IOException e) {
       log.error("IOException thrown while templating for file...", e.getMessage());
@@ -54,12 +54,12 @@ public class TransformationServiceImpl implements TransformationService {
   }
 
   @Override
-  public ByteArrayOutputStream streamMe(List<ActionRequestDocument> actionRequestDocumentList) {
+  public ByteArrayOutputStream streamMe(List<ActionRequestDocument> actionRequestDocumentList, String templateName) {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     Writer outputStreamWriter = null;
     try {
       outputStreamWriter = new OutputStreamWriter(outputStream);
-      Template template = giveMeTemplate();
+      Template template = giveMeTemplate(templateName);
       template.process(buildDataModel(actionRequestDocumentList), outputStreamWriter);
       outputStreamWriter.close();
     } catch (IOException e) {
@@ -81,11 +81,11 @@ public class TransformationServiceImpl implements TransformationService {
 
   /**
    * This returns the FreeMarker template required for the transformation.
+   * @param templateName the FreeMarker template to use
    * @return the FreeMarker template
    * @throws IOException if issue creating the FreeMarker template
    */
-  private Template giveMeTemplate() throws IOException {
-    // TODO get templates from db: follow http://www.nurkiewicz.com/2010/01/writing-custom-freemarker-template.html
+  private Template giveMeTemplate(String templateName) throws IOException {
     Configuration cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_25);
     File templateDirectory = resourceLoader.getResource("classpath:templates").getFile();
     cfg.setDirectoryForTemplateLoading(templateDirectory);  // non-file-system sources are possible too: see setTemplateLoader();
@@ -94,7 +94,7 @@ public class TransformationServiceImpl implements TransformationService {
     // Don't log exceptions inside FreeMarker that it will thrown at you anyway:
     cfg.setLogTemplateExceptions(false);
 
-    Template template = cfg.getTemplate("csvExport.ftl"); // Configuration caches Template instances
+    Template template = cfg.getTemplate(templateName); // Configuration caches Template instances
     return template;
   }
 

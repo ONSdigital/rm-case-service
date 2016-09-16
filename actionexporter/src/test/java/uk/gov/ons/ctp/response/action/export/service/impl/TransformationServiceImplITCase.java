@@ -28,6 +28,7 @@ public class TransformationServiceImplITCase {
 
   private static final int TEST_STRING_LENGTH = 3501;
   private static final String TEST_FILE_PATH = "/tmp/csv/forPrinter.csv";
+  private static final String CSV_EXPORT_TEMPLATE = "csvExport.ftl";
 
   @Autowired
   TransformationService transformationService;
@@ -42,7 +43,7 @@ public class TransformationServiceImplITCase {
 
     List<ActionRequestDocument> actionRequestDocumentList = buildMeListOfActionRequestDocuments();
     assertEquals(50, actionRequestDocumentList.size());
-    File result = transformationService.fileMe(actionRequestDocumentList, TEST_FILE_PATH);
+    File result = transformationService.fileMe(actionRequestDocumentList, CSV_EXPORT_TEMPLATE, TEST_FILE_PATH);
     assertNotNull(result);
     assertEquals(TEST_STRING_LENGTH, result.length());
   }
@@ -51,7 +52,7 @@ public class TransformationServiceImplITCase {
   public void testStreamMePositiveScenario() throws UnsupportedEncodingException {
     List<ActionRequestDocument> actionRequestDocumentList = buildMeListOfActionRequestDocuments();
     assertEquals(50, actionRequestDocumentList.size());
-    ByteArrayOutputStream result = transformationService.streamMe(actionRequestDocumentList);
+    ByteArrayOutputStream result = transformationService.streamMe(actionRequestDocumentList, CSV_EXPORT_TEMPLATE);
     assertNotNull(result);
     String resultString = result.toString(UTF8.name());
     assertEquals(TEST_STRING_LENGTH, resultString.length());

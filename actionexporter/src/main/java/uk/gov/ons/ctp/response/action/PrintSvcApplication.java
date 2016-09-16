@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import uk.gov.ons.ctp.common.jaxrs.JAXRSRegister;
 import uk.gov.ons.ctp.response.action.export.config.AppConfig;
+import uk.gov.ons.ctp.response.action.export.endpoint.FreeMarkerEndpoint;
 import uk.gov.ons.ctp.response.action.export.endpoint.PrintEndpoint;
 
 /**
@@ -47,6 +48,7 @@ public class PrintSvcApplication {
       JAXRSRegister.listCommonTypes().forEach(t->register(t));
 
       register(PrintEndpoint.class);
+      register(FreeMarkerEndpoint.class);
 //      register(new CTPMessageBodyReader<ActionDTO>(ActionDTO.class) {
 //      });
 
