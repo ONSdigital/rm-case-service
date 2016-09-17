@@ -3,6 +3,7 @@ package uk.gov.ons.ctp.response.action.export.endpoint;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.springframework.util.CollectionUtils;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.FreeMarkerTemplate;
 import uk.gov.ons.ctp.response.action.export.representation.FreeMarkerTemplateDTO;
@@ -12,6 +13,7 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.io.InputStream;
+import java.util.List;
 
 @Path("/freemarker")
 @Produces(MediaType.APPLICATION_JSON)
@@ -22,6 +24,15 @@ public class FreeMarkerEndpoint {
 
   @Inject
   private MapperFacade mapperFacade;
+
+  @GET
+  @Path("/")
+  public List<FreeMarkerTemplateDTO> findAllTemplates() {
+    log.debug("Entering findAllTemplates ...");
+    List<FreeMarkerTemplate> templates = freeMarkerService.retrieveAllTemplates();
+    List<FreeMarkerTemplateDTO> results = mapperFacade.mapAsList(templates, FreeMarkerTemplateDTO.class);
+    return CollectionUtils.isEmpty(results) ? null : results;
+  }
 
   @GET
   @Path("/{templateName}")

@@ -39,9 +39,15 @@ curl http://localhost:8141/freemarker/curltest -v -X POST -F file=@curltest_vali
 
 
 ## To retrieve a FreeMarker template that does exist
-curl http://localhost:8141/freemarker/curltest_validtemplate -v -X GET
-TODO
+curl http://localhost:8141/freemarker/curltest -v -X GET
+200 {"name":"curltest","content":"=================================  File for the Printer ==================================ActionId, ResponseRequired, ActionType, IAC, Line1, Town, Postcode<#list actionRequests as actionRequest>\t${actionRequest.actionId}, ${actionRequest.actionType}, ${actionRequest.iac}, ${actionRequest.address.line1}, ${actionRequest.address.townName}, ${actionRequest.address.postcode}</#list>","dateModified":1474080646781}
 
 
-## Steps TODO
-    - get templates from db: follow http://www.nurkiewicz.com/2010/01/writing-custom-freemarker-template.html
+## To retrieve all FreeMarker templates
+curl http://localhost:8141/freemarker/ -v -X GET
+200 [{"name":"curltest","content":"=================================  File for the Printer ==================================ActionId, ResponseRequired, ActionType, IAC, Line1, Town, Postcode<#list actionRequests as actionRequest>\t${actionRequest.actionId}, ${actionRequest.actionType}, ${actionRequest.iac}, ${actionRequest.address.line1}, ${actionRequest.address.townName}, ${actionRequest.address.postcode}</#list>","dateModified":1474080646781}]
+
+
+## TODO
+- get templates from db: follow http://www.nurkiewicz.com/2010/01/writing-custom-freemarker-template.html
+- unit tests for FreeMarkerEndpoint, FreeMarkerService

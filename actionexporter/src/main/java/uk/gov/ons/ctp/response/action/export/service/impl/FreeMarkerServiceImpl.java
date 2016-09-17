@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.*;
 import java.util.Date;
+import java.util.List;
 
 @Named
 @Slf4j
@@ -24,6 +25,11 @@ public class FreeMarkerServiceImpl implements FreeMarkerService {
   @Override
   public FreeMarkerTemplate retrieveTemplate(String templateName) {
     return repository.findOne(templateName);
+  }
+
+  @Override
+  public List<FreeMarkerTemplate> retrieveAllTemplates() {
+    return repository.findAll();
   }
 
   @Override
