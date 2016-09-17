@@ -41,8 +41,7 @@ public class FreeMarkerEndpoint {
                                                        @FormDataParam("file") InputStream fileContents)
           throws CTPException {
     log.debug("Entering storeFreeMarkerTemplate with templateName {}", templateName);
-//    FreeMarkerTemplate template = freeMarkerService.storeTemplate(templateName, file);
-//    return mapperFacade.map(template, FreeMarkerTemplateDTO.class);
-    return null;
+    FreeMarkerTemplate template = freeMarkerService.storeTemplate(templateName, fileContents);
+    return mapperFacade.map(template, FreeMarkerTemplateDTO.class);
   }
 }
