@@ -5,8 +5,6 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ResourceLoader;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
 import uk.gov.ons.ctp.response.action.export.freemarker.MongoTemplateLoader;
@@ -29,9 +27,6 @@ import static org.glassfish.jersey.message.internal.ReaderWriter.UTF8;
 public class TransformationServiceImpl implements TransformationService {
 
   private static final String ERROR_RETRIEVING_FREEMARKER_TEMPLATE = "Could not find FreeMarker template.";
-
-  @Inject
-  private ResourceLoader resourceLoader;
 
   @Inject
   private MongoTemplateLoader mongoTemplateLoader;
