@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Case Service API
   description: The Case service manages Cases and associated address frame data and forms part of the Response Management product.
-  version: 9.25.0
+  version: 9.25.1
 schemes:
   - http
 basePath: /
@@ -46,6 +46,41 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+    post:
+      summary: Creates a case for the specified UPRN.
+      description: Creates a case from the mandatory respondentType, forename, surname and createdBy properties. Note that at least one of the phoneNumber and emailAddress properties should be specified so the respondent can be contacted electronically.
+      consumes:
+        - application/json
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json
+          required: false
+          type: string
+        - name: uprn
+          description: Unique Property Reference Number against which to create the case.
+          in: path
+          required: true
+          type: integer
+        - in: body
+          name: case
+          description: Case to create
+          required: true
+          schema:
+            $ref: '#/definitions/CaseCreationRequest'
+      tags:
+        - Case
+      responses:
+        201:
+          description: Case created
+          schema:
+            $ref: '#/definitions/Case'
+        400:
+          description: Invalid input
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
   /cases/questionnaire/{questionnaireId}:
     get:
       summary:  Get the case information for the specified questionnaire.
@@ -76,37 +111,6 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /cases:
-    post:
-      summary: Creates a case.
-      description: Creates a case from the mandatory uprn, caseTypeId, createdBy, sampleId, actionPlanId, surveyId and questionSet properties.
-      consumes:
-        - application/json
-      parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json
-          required: false
-          type: string
-        - in: body
-          name: case
-          description: Case to create
-          required: true
-          schema:
-            $ref: '#/definitions/CaseCreationRequest'
-      tags:
-        - Case
-      responses:
-        201:
-          description: Case created
-          schema:
-            $ref: '#/definitions/Case'
-        400:
-          description: Invalid input
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
   /cases/{caseId}:
     get:
       summary:  Get the case information for the specified case.
@@ -127,6 +131,42 @@ paths:
       responses:
         200:
           description: Case details for supplied case ID.
+          schema:
+              $ref: '#/definitions/Case'
+        404:
+          description: Case not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /cases/{caseId}/deactivate:
+    put:
+      summary:  Deactivates the specified case.
+      description: Marks the specified case as inactive. For example, if an Internet Access Code is lost and a new one is generated, requiring a new associated case.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: caseId
+          description: Unique case ID.
+          in: path
+          required: true
+          type: integer
+        - in: body
+          name: case
+          description: Deactivation request details
+          required: true
+          schema:
+            $ref: '#/definitions/CaseDeactivationRequest'
+      tags:
+        - Case
+      responses:
+        200:
+          description: Case successfully deactivated.
           schema:
               $ref: '#/definitions/Case'
         404:
@@ -784,38 +824,45 @@ definitions:
   CaseCreationRequest:
     type: object
     required:
-      - uprn
-      - caseTypeId
+      - respondentType
+      - forename
+      - surname
       - createdBy
-      - sampleId
-      - actionPlanId
-      - surveyId
-      - questionSet
     properties:
-      uprn:
-        type: integer
-        description: Unique Property Reference Number.
-      caseTypeId:
-        type: integer
-        description: Case Type ID.
+      respondentType:
+        type: string
+        description: The type of respondent the case represents.
+        enum:
+          - HH
+          - I
+          - CE
+      forename:
+        type: string
+        description: Respondent forename.
+      surname:
+        type: string
+        description: Respondent surname.
+      dateOfBirth:
+        type: string
+        format: date-time
+        description: Respondent date of birth.
+      phoneNumber:
+        type: string
+        description: Respondent phone number.
+      emailAddress:
+        type: string
+        description: Respondent email address.
       createdBy:
         type: string
         description: Creator of case.
-      sampleId:
-        type: integer
-        description: Sample ID.
-      actionPlanId:
-        type: integer
-        description: Action plan for case.
-      surveyId:
-        type: integer
-        description:  Survey instrument.
-      parentCaseId:
-        type: integer
-        description: Linked parent case.
-      questionSet:
+  CaseDeactivationRequest:
+    type: object
+    required:
+      - updatedBy
+    properties:
+      updatedBy:
+        description: User who deactivated this Case
         type: string
-        description: Type of questionnaire set.
   CaseEvent:
     type: object
     required:
