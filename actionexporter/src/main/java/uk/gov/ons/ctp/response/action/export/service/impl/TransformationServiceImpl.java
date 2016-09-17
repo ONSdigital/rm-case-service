@@ -96,6 +96,8 @@ public class TransformationServiceImpl implements TransformationService {
    * @throws IOException if issue creating the FreeMarker template
    */
   private Template giveMeTemplate(String templateName) throws CTPException, IOException {
+    log.debug("Entering giveMeTemplate with templateName {}", templateName);
+    // TODO Should we create a Configuration each time?
     Configuration cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_25);
     cfg.setTemplateLoader(mongoTemplateLoader);
     cfg.setDefaultEncoding(UTF8.name());
@@ -103,7 +105,9 @@ public class TransformationServiceImpl implements TransformationService {
     // Don't log exceptions inside FreeMarker that it will thrown at you anyway:
     cfg.setLogTemplateExceptions(false);
 
-    Template template = cfg.getTemplate(templateName); // Configuration caches Template instances
+    log.debug("Retrieving template from config...");
+    Template template = cfg.getTemplate(templateName);
+    log.debug("template = {}", template);
     if (template == null) {
       throw new CTPException(CTPException.Fault.SYSTEM_ERROR, ERROR_RETRIEVING_FREEMARKER_TEMPLATE);
     }
