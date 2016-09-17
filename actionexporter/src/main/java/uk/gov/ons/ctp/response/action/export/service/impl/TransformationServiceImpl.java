@@ -94,7 +94,7 @@ public class TransformationServiceImpl implements TransformationService {
   private Template giveMeTemplate(String templateName) throws IOException {
     Configuration cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_25);
     // TODO cfg.setTemplateLoader(mongoTemplateLoader);
-    File templateDirectory = resourceLoader.getResource("classpath:templates").getFile();
+    File templateDirectory = resourceLoader.getResource("classpath:templates/freemarker").getFile();
     cfg.setDirectoryForTemplateLoading(templateDirectory);  // non-file-system sources are possible too: see setTemplateLoader();
     cfg.setDefaultEncoding(UTF8.name());
     cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);

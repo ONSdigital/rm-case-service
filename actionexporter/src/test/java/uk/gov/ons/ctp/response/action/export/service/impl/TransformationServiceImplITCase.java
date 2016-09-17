@@ -44,7 +44,7 @@ public class TransformationServiceImplITCase {
     assertEquals(50, actionRequestDocumentList.size());
     File result = transformationService.fileMe(actionRequestDocumentList, CSV_EXPORT_TEMPLATE, TEST_FILE_PATH);
     assertNotNull(result);
-    assertEquals(TEST_STRING_LENGTH, result.length());
+    assertEquals(result.length(), TEST_STRING_LENGTH);
   }
 
   @Test
@@ -54,7 +54,7 @@ public class TransformationServiceImplITCase {
     ByteArrayOutputStream result = transformationService.streamMe(actionRequestDocumentList, CSV_EXPORT_TEMPLATE);
     assertNotNull(result);
     String resultString = result.toString(UTF8.name());
-    assertEquals(TEST_STRING_LENGTH, resultString.length());
+    assertEquals(resultString.length(), TEST_STRING_LENGTH);
 
   }
 

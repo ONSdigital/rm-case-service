@@ -1,5 +1,5 @@
 info:
-  contactEmail: philip.whiles@ons.gov.uk
+  contactEmail: philippe.brossier@ons.gov.uk
   version: ${project.version}
   commit: ${buildNumber}
   branch: ${scmBranch}

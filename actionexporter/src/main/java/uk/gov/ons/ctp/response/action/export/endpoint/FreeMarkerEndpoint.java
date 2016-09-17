@@ -2,6 +2,7 @@ package uk.gov.ons.ctp.response.action.export.endpoint;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import uk.gov.ons.ctp.common.error.CTPException;
@@ -12,9 +13,10 @@ import uk.gov.ons.ctp.response.action.export.service.FreeMarkerService;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 
 @Path("/freemarker")
-@Produces({"application/json"})
+@Produces(MediaType.APPLICATION_JSON)
 @Slf4j
 public class FreeMarkerEndpoint {
   @Inject
@@ -36,8 +38,9 @@ public class FreeMarkerEndpoint {
 
   @POST
   @Path("/{templateName}")
+  @Consumes(MediaType.MEDIA_TYPE_WILDCARD)
   public FreeMarkerTemplateDTO storeFreeMarkerTemplate(@PathParam("templateName") final String templateName,
-                                                       @RequestParam("template") MultipartFile file)
+                                                       @RequestBody MultipartFile file)
           throws CTPException {
     log.debug("Entering storeFreeMarkerTemplate with templateName {}", templateName);
     FreeMarkerTemplate template = freeMarkerService.storeTemplate(templateName, file);
