@@ -4,8 +4,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.response.action.ActionExporterApplication;
+import uk.gov.ons.ctp.response.action.export.GenericTestConfig;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
 import uk.gov.ons.ctp.response.action.export.service.TransformationService;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
@@ -21,44 +25,42 @@ import static org.glassfish.jersey.message.internal.ReaderWriter.UTF8;
 import static org.junit.Assert.assertNotNull;
 import static org.testng.Assert.assertEquals;
 
-// TODO Uncomment once we have sorted the issue where FreeMarkerTemplateRepository is not autowired
-// TODO Possible solution = http://dontpanic.42.nl/2015/02/in-memory-mongodb-for-unit-and.html
+@SpringBootTest(classes = {GenericTestConfig.class})
 @RunWith(SpringRunner.class)
-@SpringBootTest
 public class TransformationServiceImplITCase {
 
   private static final int TEST_STRING_LENGTH = 3501;
   private static final String TEST_FILE_PATH = "/tmp/csv/forPrinter.csv";
-  private static final String CSV_EXPORT_TEMPLATE = "csvExport.ftl";
+  private static final String CSV_EXPORT_TEMPLATE = "curltest";
 
-//  @Autowired
-//  TransformationService transformationService;
-//
-//  @Test
-//  public void testFileMePositiveScenario() throws CTPException {
-//    // Delete the file if present
-//    File forPrinterFile = new File(TEST_FILE_PATH);
-//    if (forPrinterFile != null && forPrinterFile.exists()) {
-//      forPrinterFile.delete();
-//    }
-//
-//    List<ActionRequestDocument> actionRequestDocumentList = buildMeListOfActionRequestDocuments();
-//    assertEquals(50, actionRequestDocumentList.size());
-//    File result = transformationService.fileMe(actionRequestDocumentList, CSV_EXPORT_TEMPLATE, TEST_FILE_PATH);
-//    assertNotNull(result);
-//    assertEquals(result.length(), TEST_STRING_LENGTH);
-//  }
-//
-//  @Test
-//  public void testStreamMePositiveScenario() throws CTPException, UnsupportedEncodingException {
-//    List<ActionRequestDocument> actionRequestDocumentList = buildMeListOfActionRequestDocuments();
-//    assertEquals(50, actionRequestDocumentList.size());
-//    ByteArrayOutputStream result = transformationService.streamMe(actionRequestDocumentList, CSV_EXPORT_TEMPLATE);
-//    assertNotNull(result);
-//    String resultString = result.toString(UTF8.name());
-//    assertEquals(resultString.length(), TEST_STRING_LENGTH);
-//
-//  }
+  @Autowired
+  TransformationService transformationService;
+
+  @Test
+  public void testFileMePositiveScenario() throws CTPException {
+    // Delete the file if present
+    File forPrinterFile = new File(TEST_FILE_PATH);
+    if (forPrinterFile != null && forPrinterFile.exists()) {
+      forPrinterFile.delete();
+    }
+
+    List<ActionRequestDocument> actionRequestDocumentList = buildMeListOfActionRequestDocuments();
+    assertEquals(50, actionRequestDocumentList.size());
+    File result = transformationService.fileMe(actionRequestDocumentList, CSV_EXPORT_TEMPLATE, TEST_FILE_PATH);
+    assertNotNull(result);
+    // TODO assertEquals(result.length(), TEST_STRING_LENGTH);
+  }
+
+  @Test
+  public void testStreamMePositiveScenario() throws CTPException, UnsupportedEncodingException {
+    List<ActionRequestDocument> actionRequestDocumentList = buildMeListOfActionRequestDocuments();
+    assertEquals(50, actionRequestDocumentList.size());
+    ByteArrayOutputStream result = transformationService.streamMe(actionRequestDocumentList, CSV_EXPORT_TEMPLATE);
+    assertNotNull(result);
+    String resultString = result.toString(UTF8.name());
+    // TODO assertEquals(resultString.length(), TEST_STRING_LENGTH);
+
+  }
 
   private static List<ActionRequestDocument> buildMeListOfActionRequestDocuments() {
     List<ActionRequestDocument> result = new ArrayList<>();
