@@ -2,6 +2,7 @@ package uk.gov.ons.ctp.response.action;
 
 import javax.inject.Named;
 
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -44,13 +45,12 @@ public class PrintSvcApplication {
      * Its public constructor.
      */
     public JerseyConfig() {
-
       JAXRSRegister.listCommonTypes().forEach(t->register(t));
 
       register(PrintEndpoint.class);
+
+      register(MultiPartFeature.class);
       register(FreeMarkerEndpoint.class);
-//      register(new CTPMessageBodyReader<ActionDTO>(ActionDTO.class) {
-//      });
 
       System.setProperty("ma.glasnost.orika.writeSourceFiles", "false");
       System.setProperty("ma.glasnost.orika.writeClassFiles", "false");

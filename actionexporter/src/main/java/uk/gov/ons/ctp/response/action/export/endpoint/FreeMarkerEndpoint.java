@@ -2,6 +2,7 @@ package uk.gov.ons.ctp.response.action.export.endpoint;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,9 +40,9 @@ public class FreeMarkerEndpoint {
 
   @POST
   @Path("/{templateName}")
-  @Consumes(MediaType.MEDIA_TYPE_WILDCARD)
+  @Consumes(MediaType.MULTIPART_FORM_DATA)
   public FreeMarkerTemplateDTO storeFreeMarkerTemplate(@PathParam("templateName") final String templateName,
-                                                       @RequestBody InputStream file)
+                                                       @FormDataParam("file") InputStream fileContents)
           throws CTPException {
     log.debug("Entering storeFreeMarkerTemplate with templateName {}", templateName);
 //    FreeMarkerTemplate template = freeMarkerService.storeTemplate(templateName, file);
