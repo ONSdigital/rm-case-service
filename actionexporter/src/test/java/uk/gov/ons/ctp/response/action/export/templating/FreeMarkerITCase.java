@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.action.export.templating;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
 import uk.gov.ons.ctp.response.action.export.service.TransformationService;
+import uk.gov.ons.ctp.response.action.export.templating.freemarker.service.FreeMarkerService;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
 
 import java.io.ByteArrayOutputStream;
@@ -35,7 +37,15 @@ public class FreeMarkerITCase {
   private static final String FREEMARKER_TEMPLATE_NAME = "curltest";
 
   @Autowired
+  FreeMarkerService freeMarkerService;
+
+  @Autowired
   TransformationService transformationService;
+
+  @Before
+  public void setup() {
+    // TODO store template in DB here
+  }
 
   @Test
   public void testFileMePositiveScenario() throws CTPException {
