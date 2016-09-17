@@ -37,7 +37,8 @@ import static org.testng.Assert.assertTrue;
 @RunWith(SpringRunner.class)
 public class FreeMarkerITCase {
 
-  private static final int TEST_STRING_LENGTH = 3447;
+  private static final int TEST_STRING_LENGTH_WHEN_50_ACTION_REQUESTS = 3447;
+  private static final int TEST_STRING_LENGTH_WHEN_EMPTY_ACTION_REQUESTS =156;
   private static final String TEST_FILE_PATH = "/tmp/csv/forPrinter.csv";
   private static final String FREEMARKER_TEMPLATE_NAME = "curltest";
   private static final String FREEMARKER_TEMPLATE_NON_EXISTING_NAME = "totalRandom";
@@ -67,7 +68,7 @@ public class FreeMarkerITCase {
     assertEquals(50, actionRequestDocumentList.size());
     File result = transformationService.fileMe(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME, TEST_FILE_PATH);
     assertNotNull(result);
-    assertEquals(result.length(), TEST_STRING_LENGTH);
+    assertEquals(result.length(), TEST_STRING_LENGTH_WHEN_50_ACTION_REQUESTS);
   }
 
   @Test
@@ -91,13 +92,46 @@ public class FreeMarkerITCase {
   }
 
   @Test
+  public void testFileMeScenarioNullActionRequests() {
+    // Delete the file if present
+    File forPrinterFile = new File(TEST_FILE_PATH);
+    if (forPrinterFile != null && forPrinterFile.exists()) {
+      forPrinterFile.delete();
+    }
+
+    List<ActionRequestDocument> actionRequestDocumentList = null;
+    boolean exceptionThrown = false;
+    try {
+      transformationService.fileMe(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME, TEST_FILE_PATH);
+    } catch (CTPException e) {
+      exceptionThrown = true;
+      assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
+    }
+    assertTrue(exceptionThrown);
+  }
+
+  @Test
+  public void testFileMeScenarioEmptyActionRequests() throws CTPException {
+    // Delete the file if present
+    File forPrinterFile = new File(TEST_FILE_PATH);
+    if (forPrinterFile != null && forPrinterFile.exists()) {
+      forPrinterFile.delete();
+    }
+
+    List<ActionRequestDocument> actionRequestDocumentList = new ArrayList<>();
+    File result = transformationService.fileMe(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME, TEST_FILE_PATH);
+    assertNotNull(result);
+    assertEquals(result.length(), TEST_STRING_LENGTH_WHEN_EMPTY_ACTION_REQUESTS);
+  }
+
+  @Test
   public void testStreamMePositiveScenario() throws CTPException, UnsupportedEncodingException {
     List<ActionRequestDocument> actionRequestDocumentList = buildMeListOfActionRequestDocuments();
     assertEquals(50, actionRequestDocumentList.size());
     ByteArrayOutputStream result = transformationService.streamMe(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME);
     assertNotNull(result);
     String resultString = result.toString(UTF8.name());
-    assertEquals(resultString.length(), TEST_STRING_LENGTH);
+    assertEquals(resultString.length(), TEST_STRING_LENGTH_WHEN_50_ACTION_REQUESTS);
 
   }
 
@@ -114,6 +148,29 @@ public class FreeMarkerITCase {
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
     }
     assertTrue(exceptionThrown);
+  }
+
+
+  @Test
+  public void testStreameMeScenarioNullActionRequests() {
+    List<ActionRequestDocument> actionRequestDocumentList = null;
+    boolean exceptionThrown = false;
+    try {
+      transformationService.streamMe(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME);
+    } catch (CTPException e) {
+      exceptionThrown = true;
+      assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
+    }
+    assertTrue(exceptionThrown);
+  }
+
+  @Test
+  public void testStreamMeScenarioEmptyActionRequests() throws CTPException, UnsupportedEncodingException {
+    List<ActionRequestDocument> actionRequestDocumentList = new ArrayList<>();
+    ByteArrayOutputStream result = transformationService.streamMe(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME);
+    assertNotNull(result);
+    String resultString = result.toString(UTF8.name());
+    assertEquals(resultString.length(), TEST_STRING_LENGTH_WHEN_EMPTY_ACTION_REQUESTS);
   }
 
   private static List<ActionRequestDocument> buildMeListOfActionRequestDocuments() {
