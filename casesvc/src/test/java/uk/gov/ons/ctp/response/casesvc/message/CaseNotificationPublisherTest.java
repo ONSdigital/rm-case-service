@@ -3,7 +3,7 @@ package uk.gov.ons.ctp.response.casesvc.message;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasXPath;
 import static org.junit.Assert.assertThat;
-import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.ACTIVATED;
+import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.SAMPLED_ACTIVATED;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
@@ -52,15 +52,15 @@ public class CaseNotificationPublisherTest {
   @Test
   public void testNotificationPublisher() {
     List<CaseNotification> notificationList = new ArrayList<>();
-    notificationList.add(new CaseNotification(1, 3, ACTIVATED));
-    notificationList.add(new CaseNotification(2, 3, ACTIVATED));
+    notificationList.add(new CaseNotification(1, 3, SAMPLED_ACTIVATED));
+    notificationList.add(new CaseNotification(2, 3, SAMPLED_ACTIVATED));
     notificationPublisher.sendNotifications(notificationList);
     Message<?> message = notificationXml.receive(RECEIVE_TIMEOUT);
     String payload = (String) message.getPayload();
     Document doc = parse(payload);
     assertThat(doc, hasXPath("/caseNotifications/caseNotification[1]/actionPlanId", equalTo("3")));
     assertThat(doc, hasXPath("/caseNotifications/caseNotification[2]/caseId", equalTo("2")));
-    assertThat(doc, hasXPath("/caseNotifications/caseNotification[2]/notificationType", equalTo("ACTIVATED")));
+    assertThat(doc, hasXPath("/caseNotifications/caseNotification[2]/notificationType", equalTo("SAMPLED_ACTIVATED")));
   }
 
   /**

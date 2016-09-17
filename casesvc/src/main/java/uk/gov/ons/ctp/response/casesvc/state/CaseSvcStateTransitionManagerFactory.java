@@ -32,9 +32,13 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
 
     Map<CaseState, Map<CaseEvent, CaseState>> transitions = new HashMap<>();
 
-    Map<CaseEvent, CaseState> transitionMapForInit = new HashMap<>();
-    transitionMapForInit.put(CaseEvent.ACTIVATED, CaseState.ACTIVE);
-    transitions.put(CaseState.INIT, transitionMapForInit);
+    Map<CaseEvent, CaseState> transitionMapForSampledInit = new HashMap<>();
+    transitionMapForSampledInit.put(CaseEvent.SAMPLED_ACTIVATED, CaseState.ACTIVE);
+    transitions.put(CaseState.SAMPLED_INIT, transitionMapForSampledInit);
+
+    Map<CaseEvent, CaseState> transitionMapForReplacementInit = new HashMap<>();
+    transitionMapForReplacementInit.put(CaseEvent.REPLACEMENT_ACTIVATED, CaseState.ACTIVE);
+    transitions.put(CaseState.REPLACEMENT_INIT, transitionMapForReplacementInit);
 
     Map<CaseEvent, CaseState> transitionMapForActive = new HashMap<>();
     transitionMapForActive.put(CaseEvent.DEACTIVATED, CaseState.INACTIVE);

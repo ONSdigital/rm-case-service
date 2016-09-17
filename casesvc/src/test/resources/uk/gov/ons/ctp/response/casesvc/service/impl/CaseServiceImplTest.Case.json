@@ -2,7 +2,7 @@
 {  
    "caseId":1,
    "uprn":1234,
-   "state":"INIT",
+   "state":"SAMPLED_INIT",
    "caseTypeId":1,
    "createdDateTime":1460732606544,
    "createdBy":"me",
@@ -14,7 +14,7 @@
 {  
    "caseId":2,
    "uprn":1234,
-   "state":"INIT",
+   "state":"SAMPLED_INIT",
    "caseTypeId":2,
    "createdDateTime":1460732606544,
    "createdBy":"me",

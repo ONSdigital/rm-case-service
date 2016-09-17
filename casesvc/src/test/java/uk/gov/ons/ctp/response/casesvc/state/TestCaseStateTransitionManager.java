@@ -33,10 +33,14 @@ public class TestCaseStateTransitionManager {
    */
   @BeforeClass
   public void setup() {
-    Map<CaseEvent, CaseState> initTransitions = new HashMap<>();
-    initTransitions.put(CaseEvent.ACTIVATED, CaseState.ACTIVE);
-    validTransitions.put(CaseState.INIT, initTransitions);
+    Map<CaseEvent, CaseState> sampledInitTransitions = new HashMap<>();
+    sampledInitTransitions.put(CaseEvent.SAMPLED_ACTIVATED, CaseState.ACTIVE);
+    validTransitions.put(CaseState.SAMPLED_INIT, sampledInitTransitions);
 
+    Map<CaseEvent, CaseState> replacementInitTransitions = new HashMap<>();
+    replacementInitTransitions.put(CaseEvent.REPLACEMENT_ACTIVATED, CaseState.ACTIVE);
+    validTransitions.put(CaseState.REPLACEMENT_INIT, replacementInitTransitions);
+    
     Map<CaseEvent, CaseState> activeTransitions = new HashMap<>();
     activeTransitions.put(CaseEvent.DEACTIVATED, CaseState.INACTIVE);
     activeTransitions.put(CaseEvent.RESPONSE_RECEIVED, CaseState.RESPONDED);
