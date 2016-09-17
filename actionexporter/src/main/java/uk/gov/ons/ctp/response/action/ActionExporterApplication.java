@@ -30,7 +30,7 @@ import uk.gov.ons.ctp.response.action.export.endpoint.PrintEndpoint;
 @EnableCaching
 @EnableScheduling
 @ImportResource("main-int.xml")
-public class PrintSvcApplication {
+public class ActionExporterApplication {
 
   public static final String ACTION_DISTRIBUTION_MAP = "actionsvc.action.distribution";
 
@@ -66,6 +66,6 @@ public class PrintSvcApplication {
    * @param args These are the optional command line arguments
    */
   public static void main(final String[] args) {
-    SpringApplication.run(PrintSvcApplication.class, args);
+    SpringApplication.run(ActionExporterApplication.class, args);
   }
 }

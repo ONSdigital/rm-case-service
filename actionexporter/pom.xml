@@ -168,7 +168,7 @@
               <artifactId>actionsvc-api</artifactId>
             </dependency>
           </requiresUnpack>
-          <mainClass>uk.gov.ons.ctp.response.action.PrintSvcApplication</mainClass>
+          <mainClass>uk.gov.ons.ctp.response.action.ActionExporterApplication</mainClass>
         </configuration>
         <executions>
           <execution>
