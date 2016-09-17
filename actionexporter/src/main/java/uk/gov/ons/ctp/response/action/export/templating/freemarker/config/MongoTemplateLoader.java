@@ -1,9 +1,9 @@
-package uk.gov.ons.ctp.response.action.export.freemarker;
+package uk.gov.ons.ctp.response.action.export.templating.freemarker.config;
 
 import freemarker.cache.TemplateLoader;
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.ons.ctp.response.action.export.domain.FreeMarkerTemplate;
-import uk.gov.ons.ctp.response.action.export.repository.FreeMarkerTemplateRepository;
+import uk.gov.ons.ctp.response.action.export.templating.freemarker.domain.FreeMarkerTemplate;
+import uk.gov.ons.ctp.response.action.export.templating.freemarker.repository.FreeMarkerTemplateRepository;
 
 import javax.inject.Inject;
 import javax.inject.Named;

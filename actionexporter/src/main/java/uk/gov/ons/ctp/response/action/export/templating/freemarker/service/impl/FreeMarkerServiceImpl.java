@@ -1,12 +1,12 @@
-package uk.gov.ons.ctp.response.action.export.service.impl;
+package uk.gov.ons.ctp.response.action.export.templating.freemarker.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.response.action.export.domain.FreeMarkerTemplate;
-import uk.gov.ons.ctp.response.action.export.repository.FreeMarkerTemplateRepository;
-import uk.gov.ons.ctp.response.action.export.service.FreeMarkerService;
+import uk.gov.ons.ctp.response.action.export.templating.freemarker.domain.FreeMarkerTemplate;
+import uk.gov.ons.ctp.response.action.export.templating.freemarker.repository.FreeMarkerTemplateRepository;
+import uk.gov.ons.ctp.response.action.export.templating.freemarker.service.FreeMarkerService;
 
 import javax.inject.Inject;
 import javax.inject.Named;

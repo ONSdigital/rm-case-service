@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.action.export.endpoint;
+package uk.gov.ons.ctp.response.action.export.templating.freemarker.endpoint;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -6,9 +6,9 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.response.action.export.domain.FreeMarkerTemplate;
-import uk.gov.ons.ctp.response.action.export.representation.FreeMarkerTemplateDTO;
-import uk.gov.ons.ctp.response.action.export.service.FreeMarkerService;
+import uk.gov.ons.ctp.response.action.export.templating.freemarker.domain.FreeMarkerTemplate;
+import uk.gov.ons.ctp.response.action.export.templating.freemarker.representation.FreeMarkerTemplateDTO;
+import uk.gov.ons.ctp.response.action.export.templating.freemarker.service.FreeMarkerService;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;

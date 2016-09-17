@@ -6,7 +6,7 @@ import freemarker.template.TemplateExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
-import uk.gov.ons.ctp.response.action.export.freemarker.MongoTemplateLoader;
+import uk.gov.ons.ctp.response.action.export.templating.freemarker.config.MongoTemplateLoader;
 import uk.gov.ons.ctp.response.action.export.service.TransformationService;
 
 import javax.inject.Inject;
