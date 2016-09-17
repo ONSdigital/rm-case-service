@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.io.InputStream;
 
 @Path("/freemarker")
 @Produces(MediaType.APPLICATION_JSON)
@@ -40,10 +41,11 @@ public class FreeMarkerEndpoint {
   @Path("/{templateName}")
   @Consumes(MediaType.MEDIA_TYPE_WILDCARD)
   public FreeMarkerTemplateDTO storeFreeMarkerTemplate(@PathParam("templateName") final String templateName,
-                                                       @RequestBody MultipartFile file)
+                                                       @RequestBody InputStream file)
           throws CTPException {
     log.debug("Entering storeFreeMarkerTemplate with templateName {}", templateName);
-    FreeMarkerTemplate template = freeMarkerService.storeTemplate(templateName, file);
-    return mapperFacade.map(template, FreeMarkerTemplateDTO.class);
+//    FreeMarkerTemplate template = freeMarkerService.storeTemplate(templateName, file);
+//    return mapperFacade.map(template, FreeMarkerTemplateDTO.class);
+    return null;
   }
 }
