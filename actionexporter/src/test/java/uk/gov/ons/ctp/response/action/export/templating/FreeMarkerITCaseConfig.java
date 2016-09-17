@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.action.export;
+package uk.gov.ons.ctp.response.action.export.templating;
 
 import com.mongodb.Mongo;
 import org.springframework.boot.SpringBootConfiguration;
@@ -11,7 +11,7 @@ import uk.gov.ons.ctp.response.action.export.service.impl.TransformationServiceI
 
 @SpringBootConfiguration
 @EnableMongoRepositories(basePackages = "uk.gov.ons.ctp.response.action.export.templating.freemarker.repository")
-public class GenericTestConfig {
+public class FreeMarkerITCaseConfig {
 
   public @Bean
   Mongo mongo() throws Exception {
