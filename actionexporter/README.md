@@ -28,9 +28,8 @@ curl http://localhost:8141/freemarker/donotexist -v -X GET
 
 ## To store a FreeMarker template
 cd /home/centos/code/responsemanagement-service/actionexporter/src/test/resources/templates/freemarker
-curl http://localhost:8141/freemarker/curltest -v -X POST -d @curltest.ftl
 curl http://localhost:8141/freemarker/curltest -v -X POST -F file=@curltest.ftl
-TODO 404
+204
 
 
 ## To retrieve a FreeMarker template that does exist
