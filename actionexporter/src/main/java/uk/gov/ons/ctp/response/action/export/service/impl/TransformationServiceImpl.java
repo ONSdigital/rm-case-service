@@ -38,13 +38,15 @@ public class TransformationServiceImpl implements TransformationService {
     File resultFile = new File(path);
     Writer fileWriter = null;
     try {
-      fileWriter = new FileWriter(resultFile);
       Template template = giveMeTemplate(templateName);
+      fileWriter = new FileWriter(resultFile);
       template.process(buildDataModel(actionRequestDocumentList), fileWriter);
     } catch (IOException e) {
       log.error("IOException thrown while templating for file...", e.getMessage());
+      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, e.getMessage());
     } catch (TemplateException f) {
       log.error("TemplateException thrown while templating for file...", f.getMessage());
+      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, f.getMessage());
     } finally {
       if (fileWriter != null) {
         try {
@@ -64,14 +66,16 @@ public class TransformationServiceImpl implements TransformationService {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     Writer outputStreamWriter = null;
     try {
-      outputStreamWriter = new OutputStreamWriter(outputStream);
       Template template = giveMeTemplate(templateName);
+      outputStreamWriter = new OutputStreamWriter(outputStream);
       template.process(buildDataModel(actionRequestDocumentList), outputStreamWriter);
       outputStreamWriter.close();
     } catch (IOException e) {
       log.error("IOException thrown while templating for stream...", e.getMessage());
+      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, e.getMessage());
     } catch (TemplateException f) {
       log.error("TemplateException thrown while templating for stream...", f.getMessage());
+      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, f.getMessage());
     } finally {
       if (outputStreamWriter != null) {
         try {

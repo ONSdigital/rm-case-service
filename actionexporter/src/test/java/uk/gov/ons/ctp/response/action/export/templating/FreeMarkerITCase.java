@@ -23,13 +23,14 @@ import java.util.List;
 import static org.glassfish.jersey.message.internal.ReaderWriter.UTF8;
 import static org.junit.Assert.assertNotNull;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 /**
  * This test focuses on the FreeMarker templating. It first stores a template in the MongoDB and then it uses the
  * TransformationService to verify that a list of ActionRequests can be filed or streamed using the template.
  *
  * Prerequisites:
- *    - a running MongoDB database 'actionExport' (see application.yml and FreeMarkerITCaseConfig)
+ *    - a running MongoDB database (see application-test.properties for config)
  */
 @Slf4j
 @SpringBootTest(classes = {FreeMarkerITCaseConfig.class})
@@ -39,6 +40,7 @@ public class FreeMarkerITCase {
   private static final int TEST_STRING_LENGTH = 3447;
   private static final String TEST_FILE_PATH = "/tmp/csv/forPrinter.csv";
   private static final String FREEMARKER_TEMPLATE_NAME = "curltest";
+  private static final String FREEMARKER_TEMPLATE_NON_EXISTING_NAME = "totalRandom";
 
   @Autowired
   FreeMarkerService freeMarkerService;
@@ -69,6 +71,26 @@ public class FreeMarkerITCase {
   }
 
   @Test
+  public void testFileMeScenarioMissingTemplate() {
+    // Delete the file if present
+    File forPrinterFile = new File(TEST_FILE_PATH);
+    if (forPrinterFile != null && forPrinterFile.exists()) {
+      forPrinterFile.delete();
+    }
+
+    List<ActionRequestDocument> actionRequestDocumentList = buildMeListOfActionRequestDocuments();
+    assertEquals(50, actionRequestDocumentList.size());
+    boolean exceptionThrown = false;
+    try {
+      transformationService.fileMe(actionRequestDocumentList, FREEMARKER_TEMPLATE_NON_EXISTING_NAME, TEST_FILE_PATH);
+    } catch (CTPException e) {
+      exceptionThrown = true;
+      assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
+    }
+    assertTrue(exceptionThrown);
+  }
+
+  @Test
   public void testStreamMePositiveScenario() throws CTPException, UnsupportedEncodingException {
     List<ActionRequestDocument> actionRequestDocumentList = buildMeListOfActionRequestDocuments();
     assertEquals(50, actionRequestDocumentList.size());
@@ -77,6 +99,21 @@ public class FreeMarkerITCase {
     String resultString = result.toString(UTF8.name());
     assertEquals(resultString.length(), TEST_STRING_LENGTH);
 
+  }
+
+
+  @Test
+  public void testStreamMeScenarioMissingTemplate() {
+    List<ActionRequestDocument> actionRequestDocumentList = buildMeListOfActionRequestDocuments();
+    assertEquals(50, actionRequestDocumentList.size());
+    boolean exceptionThrown = false;
+    try {
+      transformationService.streamMe(actionRequestDocumentList, FREEMARKER_TEMPLATE_NON_EXISTING_NAME);
+    } catch (CTPException e) {
+      exceptionThrown = true;
+      assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
+    }
+    assertTrue(exceptionThrown);
   }
 
   private static List<ActionRequestDocument> buildMeListOfActionRequestDocuments() {
