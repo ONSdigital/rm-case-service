@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.action.export.templating;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,10 +25,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.testng.Assert.assertEquals;
 
 /**
- * This test focuses on the TransformationService and it has the following prerequisites:
- *    - have MongoDB running with database 'actionExport' (see application.yml and FreeMarkerITCaseConfig)
- *    - FreeMarker template resources/templates.freemarker/curltest_validtemplate.ftl stored as curltest in 'actionExport' (see README.md for curl command)
+ * This test focuses on the FreeMarker templating. It first stores a template in the MongoDB and then it uses the
+ * TransformationService to verify that a list of ActionRequests can be filed or streamed using the template.
+ *
+ * Prerequisites:
+ *    - a running MongoDB database 'actionExport' (see application.yml and FreeMarkerITCaseConfig)
  */
+@Slf4j
 @SpringBootTest(classes = {FreeMarkerITCaseConfig.class})
 @RunWith(SpringRunner.class)
 public class FreeMarkerITCase {
@@ -43,8 +47,10 @@ public class FreeMarkerITCase {
   TransformationService transformationService;
 
   @Before
-  public void setup() {
-    // TODO store template in DB here
+  public void setup() throws CTPException {
+    log.debug("About to store the FreeMarker template...");
+    freeMarkerService.storeTemplate(FREEMARKER_TEMPLATE_NAME, getClass().getResourceAsStream("/templates/freemarker/curltest_validtemplate.ftl"));
+    log.debug("FreeMarker template stored successfully...");
   }
 
   @Test

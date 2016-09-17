@@ -138,6 +138,12 @@
         <skip.integration.tests>true</skip.integration.tests>
       </properties>
     </profile>
+    <profile>
+      <id>artifactory</id>
+      <properties>
+        <skip.integration.tests>true</skip.integration.tests>
+      </properties>
+    </profile>
   </profiles>
 
   <build>
