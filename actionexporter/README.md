@@ -48,6 +48,15 @@ curl http://localhost:8141/freemarker/ -v -X GET
 200 [{"name":"curltest","content":"=================================  File for the Printer ==================================ActionId, ResponseRequired, ActionType, IAC, Line1, Town, Postcode<#list actionRequests as actionRequest>\t${actionRequest.actionId}, ${actionRequest.actionType}, ${actionRequest.iac}, ${actionRequest.address.line1}, ${actionRequest.address.townName}, ${actionRequest.address.postcode}</#list>","dateModified":1474080646781}]
 
 
+## To template using an existing template
+curl http://localhost:8141/manualtest/curltest -v -X GET
+200
+
+
+## To template using a NON existing template
+curl http://localhost:8141/manualtest/random -v -X GET
+500 {"timestamp":1474094170845,"status":500,"error":"Internal Server Error","message":"Internal Server Error","path":"/manualtest/random"}
+
+
 ## TODO
-- get templates from db: follow http://www.nurkiewicz.com/2010/01/writing-custom-freemarker-template.html
 - unit tests for FreeMarkerEndpoint, FreeMarkerService

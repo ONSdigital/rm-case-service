@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.action.export.service;
 
+import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
 
 import java.io.ByteArrayOutputStream;
@@ -18,7 +19,8 @@ public interface TransformationService {
    * @param path the full file path. An example is /tmp/csv/forPrinter.csv
    * @return the file
    */
-  File fileMe(List<ActionRequestDocument> actionRequestDocumentList, String templateName, String path);
+  File fileMe(List<ActionRequestDocument> actionRequestDocumentList, String templateName, String path)
+          throws CTPException;
 
   /**
    * This produces a stream for all our action requests
@@ -27,6 +29,7 @@ public interface TransformationService {
    * @param templateName the FreeMarker template to use
    * @return the stream
    */
-  ByteArrayOutputStream streamMe(List<ActionRequestDocument> actionRequestDocumentList, String templateName);
+  ByteArrayOutputStream streamMe(List<ActionRequestDocument> actionRequestDocumentList, String templateName)
+          throws CTPException;
 }
 

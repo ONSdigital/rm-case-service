@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import uk.gov.ons.ctp.common.jaxrs.JAXRSRegister;
 import uk.gov.ons.ctp.response.action.export.config.AppConfig;
 import uk.gov.ons.ctp.response.action.export.endpoint.FreeMarkerEndpoint;
+import uk.gov.ons.ctp.response.action.export.endpoint.ManualTestEndpoint;
 import uk.gov.ons.ctp.response.action.export.endpoint.PrintEndpoint;
 
 /**
@@ -51,6 +52,8 @@ public class PrintSvcApplication {
 
       register(MultiPartFeature.class);
       register(FreeMarkerEndpoint.class);
+
+      register(ManualTestEndpoint.class);
 
       System.setProperty("ma.glasnost.orika.writeSourceFiles", "false");
       System.setProperty("ma.glasnost.orika.writeClassFiles", "false");
