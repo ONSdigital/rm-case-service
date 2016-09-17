@@ -3,6 +3,7 @@ package uk.gov.ons.ctp.response.action.export.endpoint;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.FreeMarkerTemplate;
@@ -15,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 import java.io.InputStream;
 import java.util.List;
 
+@Controller
 @Path("/freemarker")
 @Produces(MediaType.APPLICATION_JSON)
 @Slf4j
