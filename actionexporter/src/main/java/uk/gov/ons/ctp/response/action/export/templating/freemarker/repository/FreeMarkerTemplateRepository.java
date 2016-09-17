@@ -10,6 +10,5 @@ import javax.inject.Named;
  * Mongo database repository for FreeMarkerTemplate entities
  */
 @Repository
-@Named
 public interface FreeMarkerTemplateRepository extends MongoRepository<FreeMarkerTemplate, String> {
 }

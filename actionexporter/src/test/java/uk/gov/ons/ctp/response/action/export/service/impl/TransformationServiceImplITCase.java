@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
 import uk.gov.ons.ctp.response.action.export.service.TransformationService;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
@@ -22,8 +23,8 @@ import static org.testng.Assert.assertEquals;
 
 // TODO Uncomment once we have sorted the issue where FreeMarkerTemplateRepository is not autowired
 // TODO Possible solution = http://dontpanic.42.nl/2015/02/in-memory-mongodb-for-unit-and.html
-//@RunWith(SpringRunner.class)
-//@SpringBootTest
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class TransformationServiceImplITCase {
 
   private static final int TEST_STRING_LENGTH = 3501;
@@ -34,7 +35,7 @@ public class TransformationServiceImplITCase {
 //  TransformationService transformationService;
 //
 //  @Test
-//  public void testFileMePositiveScenario() {
+//  public void testFileMePositiveScenario() throws CTPException {
 //    // Delete the file if present
 //    File forPrinterFile = new File(TEST_FILE_PATH);
 //    if (forPrinterFile != null && forPrinterFile.exists()) {
@@ -49,7 +50,7 @@ public class TransformationServiceImplITCase {
 //  }
 //
 //  @Test
-//  public void testStreamMePositiveScenario() throws UnsupportedEncodingException {
+//  public void testStreamMePositiveScenario() throws CTPException, UnsupportedEncodingException {
 //    List<ActionRequestDocument> actionRequestDocumentList = buildMeListOfActionRequestDocuments();
 //    assertEquals(50, actionRequestDocumentList.size());
 //    ByteArrayOutputStream result = transformationService.streamMe(actionRequestDocumentList, CSV_EXPORT_TEMPLATE);
