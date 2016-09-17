@@ -27,8 +27,7 @@ import static org.glassfish.jersey.message.internal.ReaderWriter.UTF8;
 @Slf4j
 public class TransformationServiceImpl implements TransformationService {
 
-  // TODO Change the below to @Inject?
-  @Autowired
+  @Inject
   private ResourceLoader resourceLoader;
 
   @Inject

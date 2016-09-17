@@ -5,7 +5,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import uk.gov.ons.ctp.response.action.export.GenericTestConfig;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
 import uk.gov.ons.ctp.response.action.export.service.TransformationService;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
