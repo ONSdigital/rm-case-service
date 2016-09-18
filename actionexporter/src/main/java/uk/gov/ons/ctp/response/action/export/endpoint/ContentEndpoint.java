@@ -15,7 +15,7 @@ import javax.ws.rs.core.MediaType;
 import java.io.InputStream;
 import java.util.List;
 
-@Path("/freemarker")
+@Path("/content")
 @Produces(MediaType.APPLICATION_JSON)
 @Slf4j
 public class ContentEndpoint {
@@ -27,33 +27,34 @@ public class ContentEndpoint {
 
   @GET
   @Path("/")
-  public List<ContentDocumentDTO> findAllTemplates() {
-    log.debug("Entering findAllTemplates ...");
-    List<ContentDocument> templates = documentService.retrieveAllContentDocuments();
-    List<ContentDocumentDTO> results = mapperFacade.mapAsList(templates, ContentDocumentDTO.class);
+  public List<ContentDocumentDTO> findAllContentDocuments() {
+    log.debug("Entering findAllContentDocuments ...");
+    List<ContentDocument> contentDocuments = documentService.retrieveAllContentDocuments();
+    List<ContentDocumentDTO> results = mapperFacade.mapAsList(contentDocuments, ContentDocumentDTO.class);
     return CollectionUtils.isEmpty(results) ? null : results;
   }
 
   @GET
-  @Path("/{templateName}")
-  public ContentDocumentDTO findTemplate(@PathParam("templateName") final String templateName) throws CTPException {
-    log.debug("Entering findTemplate with {}", templateName);
-    ContentDocument result = documentService.retrieveContentDocument(templateName);
+  @Path("/{contentDocumentName}")
+  public ContentDocumentDTO findContentDocument(@PathParam("contentDocumentName") final String contentDocumentName)
+          throws CTPException {
+    log.debug("Entering findContentDocument with {}", contentDocumentName);
+    ContentDocument result = documentService.retrieveContentDocument(contentDocumentName);
     if (result == null) {
-      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "FreeMarker template not found for name %s", templateName);
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "ContentDocument not found for name %s", contentDocumentName);
     }
     return mapperFacade.map(result, ContentDocumentDTO.class);
   }
 
   @POST
-  @Path("/{templateName}")
+  @Path("/{contentDocumentName}")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
-  public ContentDocumentDTO storeFreeMarkerTemplate(@PathParam("templateName") final String templateName,
-                                                    @FormDataParam("file") InputStream fileContents)
+  public ContentDocumentDTO storeContentDocument(@PathParam("contentDocumentName") final String contentDocumentName,
+                                                 @FormDataParam("file") InputStream fileContents)
           throws CTPException {
-    log.debug("Entering storeFreeMarkerTemplate with templateName {}", templateName);
-    ContentDocument template = documentService.storeContentDocument(templateName, fileContents);
+    log.debug("Entering storeContentDocument with contentDocumentName {}", contentDocumentName);
+    ContentDocument contentDocument = documentService.storeContentDocument(contentDocumentName, fileContents);
     documentService.clearTemplateCache();
-    return mapperFacade.map(template, ContentDocumentDTO.class);
+    return mapperFacade.map(contentDocument, ContentDocumentDTO.class);
   }
 }

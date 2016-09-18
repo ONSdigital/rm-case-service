@@ -17,7 +17,7 @@ import java.util.List;
 @Slf4j
 public class DocumentServiceImpl implements DocumentService {
 
-  public static final String EXCEPTION_STORE_TEMPLATE = "Issue storing FreeMarker template. It appears to be empty.";
+  public static final String EXCEPTION_STORE_TEMPLATE = "Issue storing ContentDocument. It appears to be empty.";
 
   @Inject
   private ContentRepository repository;

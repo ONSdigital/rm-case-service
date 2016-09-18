@@ -19,7 +19,6 @@ import uk.gov.ons.ctp.common.jaxrs.JAXRSRegister;
 import uk.gov.ons.ctp.response.action.export.config.AppConfig;
 import uk.gov.ons.ctp.response.action.export.endpoint.ContentEndpoint;
 import uk.gov.ons.ctp.response.action.export.endpoint.ManualTestEndpoint;
-import uk.gov.ons.ctp.response.action.export.endpoint.PrintEndpoint;
 
 /**
  * The main entry point into the Action Service SpringBoot Application.
@@ -50,8 +49,6 @@ public class ActionExporterApplication {
      */
     public JerseyConfig() {
       JAXRSRegister.listCommonTypes().forEach(t->register(t));
-
-      register(PrintEndpoint.class);
 
       register(MultiPartFeature.class);
       register(ContentEndpoint.class);
