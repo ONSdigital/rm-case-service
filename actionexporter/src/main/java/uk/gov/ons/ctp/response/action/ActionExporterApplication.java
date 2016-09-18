@@ -24,6 +24,9 @@ import uk.gov.ons.ctp.response.action.export.endpoint.PrintEndpoint;
 /**
  * The main entry point into the Action Service SpringBoot Application.
  */
+
+@EnableMongoRepositories(basePackages = {"uk.gov.ons.ctp.response.action.export.repository",
+        "uk.gov.ons.ctp.response.action.export.templating.freemarker.repository"})
 @SpringBootApplication
 @EnableTransactionManagement
 @IntegrationComponentScan
