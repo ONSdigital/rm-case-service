@@ -67,8 +67,8 @@ public class FreeMarkerServiceImpl implements FreeMarkerService {
       while ((line = br.readLine()) != null) {
         sb.append(line);
       }
-    } catch (IOException e) {
-      log.error("IOException thrown while converting template stream to string - msg = {}", e.getMessage());
+    } catch (Exception e) {
+      log.error("Exception thrown while converting template stream to string - msg = {}", e.getMessage());
     } finally {
       if (br != null) {
         try {

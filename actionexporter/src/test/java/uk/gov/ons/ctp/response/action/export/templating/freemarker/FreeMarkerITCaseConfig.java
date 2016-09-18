@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.action.export.templating;
+package uk.gov.ons.ctp.response.action.export.templating.freemarker;
 
 import com.mongodb.Mongo;
 import freemarker.template.TemplateExceptionHandler;

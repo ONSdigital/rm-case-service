@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.action.export.templating;
+package uk.gov.ons.ctp.response.action.export.templating.freemarker;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
