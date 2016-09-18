@@ -106,7 +106,7 @@ public class TransformationServiceImplTest {
     assertNotNull(result);
   }
 
-  private static List<ActionRequestDocument> buildMeListOfActionRequestDocuments() {
+  public static List<ActionRequestDocument> buildMeListOfActionRequestDocuments() {
     List<ActionRequestDocument> result = new ArrayList<>();
     for (int i = 1; i < 51; i++) {
       result.add(buildAMeActionRequestDocument(i));

@@ -11,12 +11,10 @@ import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
 import uk.gov.ons.ctp.response.action.export.service.TransformationService;
 import uk.gov.ons.ctp.response.action.export.templating.freemarker.service.FreeMarkerService;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +22,7 @@ import static org.glassfish.jersey.message.internal.ReaderWriter.UTF8;
 import static org.junit.Assert.assertNotNull;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
+import static uk.gov.ons.ctp.response.action.export.service.TransformationServiceImplTest.buildMeListOfActionRequestDocuments;
 
 /**
  * This test focuses on the FreeMarker templating. It first stores a template in the MongoDB and then it uses the
@@ -171,30 +170,5 @@ public class FreeMarkerITCase {
     assertNotNull(result);
     String resultString = result.toString(UTF8.name());
     assertEquals(resultString.length(), TEST_STRING_LENGTH_WHEN_EMPTY_ACTION_REQUESTS);
-  }
-
-  private static List<ActionRequestDocument> buildMeListOfActionRequestDocuments() {
-    List<ActionRequestDocument> result = new ArrayList<>();
-    for (int i = 1; i < 51; i++) {
-      result.add(buildAMeActionRequestDocument(i));
-    }
-    return result;
-  }
-
-  private static ActionRequestDocument buildAMeActionRequestDocument(int i) {
-    ActionRequestDocument result =  new ActionRequestDocument();
-    result.setActionId(new BigInteger(new Integer(i).toString()));
-    result.setActionType("testActionType");
-    result.setIac("testIac");
-    result.setAddress(buildActionAddress());
-    return result;
-  }
-
-  private static ActionAddress buildActionAddress() {
-    ActionAddress actionAddress = new ActionAddress();
-    actionAddress.setLine1("1 High Street");
-    actionAddress.setTownName("Southampton");
-    actionAddress.setPostcode("SO16 0AS");
-    return actionAddress;
   }
 }
