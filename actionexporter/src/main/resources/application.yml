@@ -81,3 +81,6 @@ export-schedule:
 
 deadxml:
   directory: /var/log/ctp/responsemanagement/actionexporter
+
+freemarker:
+  delayfornewtemplates: 86400000  # ie 24 hours in milliseconds

@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.action.export.config;
 
 import freemarker.template.TemplateExceptionHandler;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import uk.gov.ons.ctp.response.action.export.templating.freemarker.config.MongoTemplateLoader;
@@ -12,6 +13,9 @@ import static org.glassfish.jersey.message.internal.ReaderWriter.UTF8;
  */
 @Configuration
 public class FreeMarkerConfig {
+
+  @Value("${freemarker.delayfornewtemplates}")
+  private long delayForNewTemplates;
   /**
    * The bean to store FreeMarker templates in MongoDB
    * @return the loader to store FreeMarker templates in MongoDB
@@ -32,6 +36,7 @@ public class FreeMarkerConfig {
     configuration.setDefaultEncoding(UTF8.name());
     configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
     configuration.setLogTemplateExceptions(false);
+    configuration.setTemplateUpdateDelayMilliseconds(delayForNewTemplates);
     return configuration;
   }
 }
