@@ -2,8 +2,8 @@ package uk.gov.ons.ctp.response.action.export.templating.freemarker.config;
 
 import freemarker.cache.TemplateLoader;
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.ons.ctp.response.action.export.templating.freemarker.domain.FreeMarkerTemplate;
-import uk.gov.ons.ctp.response.action.export.templating.freemarker.repository.FreeMarkerTemplateRepository;
+import uk.gov.ons.ctp.response.action.export.domain.ContentDocument;
+import uk.gov.ons.ctp.response.action.export.repository.ContentRepository;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -16,27 +16,27 @@ import java.io.StringReader;
 public class MongoTemplateLoader implements TemplateLoader {
 
   @Inject
-  private FreeMarkerTemplateRepository freeMarkerTemplateRepository;
+  private ContentRepository contentRepository;
 
   @Override
   public Object findTemplateSource(String name) throws IOException {
     log.debug("Retrieving template with name {}", name);
-    return freeMarkerTemplateRepository.findOne(name);
+    return contentRepository.findOne(name);
   }
 
   @Override
   public long getLastModified(Object templateSource) {
-    FreeMarkerTemplate template = (FreeMarkerTemplate) templateSource;
+    ContentDocument template = (ContentDocument) templateSource;
     String name = template.getName();
     log.debug("Retrieving last modified time for template with name {}", name);
-    template = freeMarkerTemplateRepository.findOne(name);
+    template = contentRepository.findOne(name);
     return template.getDateModified().getTime();
   }
 
   @Override
   public Reader getReader(Object templateSource, String encoding) throws IOException {
     // TODO encoding will be UTF-8 -do we need to do anything with it?
-    return new StringReader(((FreeMarkerTemplate) templateSource).getContent());
+    return new StringReader(((ContentDocument) templateSource).getContent());
   }
 
   @Override

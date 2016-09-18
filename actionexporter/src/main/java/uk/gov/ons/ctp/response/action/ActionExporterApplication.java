@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import uk.gov.ons.ctp.common.jaxrs.JAXRSRegister;
 import uk.gov.ons.ctp.response.action.export.config.AppConfig;
-import uk.gov.ons.ctp.response.action.export.templating.freemarker.endpoint.FreeMarkerEndpoint;
+import uk.gov.ons.ctp.response.action.export.endpoint.ContentEndpoint;
 import uk.gov.ons.ctp.response.action.export.endpoint.ManualTestEndpoint;
 import uk.gov.ons.ctp.response.action.export.endpoint.PrintEndpoint;
 
@@ -25,8 +25,7 @@ import uk.gov.ons.ctp.response.action.export.endpoint.PrintEndpoint;
  * The main entry point into the Action Service SpringBoot Application.
  */
 
-@EnableMongoRepositories(basePackages = {"uk.gov.ons.ctp.response.action.export.repository",
-        "uk.gov.ons.ctp.response.action.export.templating.freemarker.repository"})
+@EnableMongoRepositories(basePackages = "uk.gov.ons.ctp.response.action.export.repository")
 @SpringBootApplication
 @EnableTransactionManagement
 @IntegrationComponentScan
@@ -55,7 +54,7 @@ public class ActionExporterApplication {
       register(PrintEndpoint.class);
 
       register(MultiPartFeature.class);
-      register(FreeMarkerEndpoint.class);
+      register(ContentEndpoint.class);
 
       register(ManualTestEndpoint.class);
 

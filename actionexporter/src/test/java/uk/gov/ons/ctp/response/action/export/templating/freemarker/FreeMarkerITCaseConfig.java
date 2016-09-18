@@ -11,13 +11,13 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 import uk.gov.ons.ctp.response.action.export.templating.freemarker.config.MongoTemplateLoader;
 import uk.gov.ons.ctp.response.action.export.service.TransformationService;
 import uk.gov.ons.ctp.response.action.export.service.impl.TransformationServiceImpl;
-import uk.gov.ons.ctp.response.action.export.templating.freemarker.service.FreeMarkerService;
-import uk.gov.ons.ctp.response.action.export.templating.freemarker.service.impl.FreeMarkerServiceImpl;
+import uk.gov.ons.ctp.response.action.export.service.DocumentService;
+import uk.gov.ons.ctp.response.action.export.service.impl.DocumentServiceImpl;
 
 import static org.glassfish.jersey.message.internal.ReaderWriter.UTF8;
 
 @PropertySource("classpath:application-test.properties")
-@EnableMongoRepositories(basePackages = "uk.gov.ons.ctp.response.action.export.templating.freemarker.repository")
+@EnableMongoRepositories(basePackages = "uk.gov.ons.ctp.response.action.export.repository")
 @SpringBootConfiguration
 public class FreeMarkerITCaseConfig {
 
@@ -52,8 +52,8 @@ public class FreeMarkerITCaseConfig {
   }
 
   @Bean
-  public FreeMarkerService freeMarkerService() {
-    return new FreeMarkerServiceImpl();
+  public DocumentService freeMarkerService() {
+    return new DocumentServiceImpl();
   }
 
   @Bean

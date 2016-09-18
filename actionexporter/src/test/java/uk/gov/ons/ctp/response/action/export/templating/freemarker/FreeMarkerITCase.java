@@ -10,7 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
 import uk.gov.ons.ctp.response.action.export.service.TransformationService;
-import uk.gov.ons.ctp.response.action.export.templating.freemarker.service.FreeMarkerService;
+import uk.gov.ons.ctp.response.action.export.service.DocumentService;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -43,7 +43,7 @@ public class FreeMarkerITCase {
   private static final String FREEMARKER_TEMPLATE_NON_EXISTING_NAME = "totalRandom";
 
   @Autowired
-  FreeMarkerService freeMarkerService;
+  DocumentService documentService;
 
   @Autowired
   TransformationService transformationService;
@@ -51,7 +51,7 @@ public class FreeMarkerITCase {
   @Before
   public void setup() throws CTPException {
     log.debug("About to store the FreeMarker template...");
-    freeMarkerService.storeTemplate(FREEMARKER_TEMPLATE_NAME, getClass().getResourceAsStream("/templates/freemarker/curltest_validtemplate.ftl"));
+    documentService.storeContentDocument(FREEMARKER_TEMPLATE_NAME, getClass().getResourceAsStream("/templates/freemarker/curltest_validtemplate.ftl"));
     log.debug("FreeMarker template stored successfully...");
   }
 

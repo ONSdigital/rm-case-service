@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.action.export.templating.freemarker.domain;
+package uk.gov.ons.ctp.response.action.export.domain;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Document
-public class FreeMarkerTemplate {
+public class ContentDocument {
   @Id
   private String name;
   private String content;

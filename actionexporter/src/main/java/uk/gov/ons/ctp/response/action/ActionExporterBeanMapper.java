@@ -6,8 +6,8 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.ConfigurableMapper;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import ma.glasnost.orika.impl.generator.EclipseJdtCompilerStrategy;
-import uk.gov.ons.ctp.response.action.export.templating.freemarker.domain.FreeMarkerTemplate;
-import uk.gov.ons.ctp.response.action.export.templating.freemarker.representation.FreeMarkerTemplateDTO;
+import uk.gov.ons.ctp.response.action.export.domain.ContentDocument;
+import uk.gov.ons.ctp.response.action.representation.ContentDocumentDTO;
 
 /**
  * The bean mapper to go from Entity objects to Presentation objects.
@@ -28,7 +28,7 @@ public class ActionExporterBeanMapper extends ConfigurableMapper {
   @Override
   protected final void configure(final MapperFactory factory) {
     factory
-            .classMap(FreeMarkerTemplate.class, FreeMarkerTemplateDTO.class)
+            .classMap(ContentDocument.class, ContentDocumentDTO.class)
             .byDefault()
             .register();
   }

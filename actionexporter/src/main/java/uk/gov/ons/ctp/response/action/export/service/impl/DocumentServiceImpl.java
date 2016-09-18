@@ -1,11 +1,11 @@
-package uk.gov.ons.ctp.response.action.export.templating.freemarker.service.impl;
+package uk.gov.ons.ctp.response.action.export.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.response.action.export.templating.freemarker.domain.FreeMarkerTemplate;
-import uk.gov.ons.ctp.response.action.export.templating.freemarker.repository.FreeMarkerTemplateRepository;
-import uk.gov.ons.ctp.response.action.export.templating.freemarker.service.FreeMarkerService;
+import uk.gov.ons.ctp.response.action.export.domain.ContentDocument;
+import uk.gov.ons.ctp.response.action.export.repository.ContentRepository;
+import uk.gov.ons.ctp.response.action.export.service.DocumentService;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -15,37 +15,37 @@ import java.util.List;
 
 @Named
 @Slf4j
-public class FreeMarkerServiceImpl implements FreeMarkerService {
+public class DocumentServiceImpl implements DocumentService {
 
   public static final String EXCEPTION_STORE_TEMPLATE = "Issue storing FreeMarker template. It appears to be empty.";
 
   @Inject
-  private FreeMarkerTemplateRepository repository;
+  private ContentRepository repository;
 
   @Inject
   private freemarker.template.Configuration configuration;
 
   @Override
-  public FreeMarkerTemplate retrieveTemplate(String templateName) {
-    return repository.findOne(templateName);
+  public ContentDocument retrieveContentDocument(String contentDocumentName) {
+    return repository.findOne(contentDocumentName);
   }
 
   @Override
-  public List<FreeMarkerTemplate> retrieveAllTemplates() {
+  public List<ContentDocument> retrieveAllContentDocuments() {
     return repository.findAll();
   }
 
   @Override
-  public FreeMarkerTemplate storeTemplate(String templateName, InputStream fileContents) throws CTPException {
+  public ContentDocument storeContentDocument(String contentDocumentName, InputStream fileContents) throws CTPException {
     String stringValue = getStringFromInputStream(fileContents);
     if (StringUtils.isEmpty(stringValue)) {
       log.error(EXCEPTION_STORE_TEMPLATE);
       throw new CTPException(CTPException.Fault.SYSTEM_ERROR, EXCEPTION_STORE_TEMPLATE);
     }
-    FreeMarkerTemplate template = new FreeMarkerTemplate();
+    ContentDocument template = new ContentDocument();
     template.setContent(stringValue);
 
-    template.setName(templateName);
+    template.setName(contentDocumentName);
 
     template.setDateModified(new Date());
 
