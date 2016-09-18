@@ -53,7 +53,7 @@ public class FreeMarkerEndpoint {
           throws CTPException {
     log.debug("Entering storeFreeMarkerTemplate with templateName {}", templateName);
     FreeMarkerTemplate template = freeMarkerService.storeTemplate(templateName, fileContents);
-    //TODO configuration.clearTemplateCache();
+    freeMarkerService.clearTemplateCache();
     return mapperFacade.map(template, FreeMarkerTemplateDTO.class);
   }
 }

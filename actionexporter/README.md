@@ -56,7 +56,3 @@ curl http://localhost:8141/manualtest/curltest -v -X GET
 ## To template using a NON existing template
 curl http://localhost:8141/manualtest/random -v -X GET
 500 {"timestamp":1474094170845,"status":500,"error":"Internal Server Error","message":"Internal Server Error","path":"/manualtest/random"}
-
-
-## TODO
-- rename GenericTestConfig?

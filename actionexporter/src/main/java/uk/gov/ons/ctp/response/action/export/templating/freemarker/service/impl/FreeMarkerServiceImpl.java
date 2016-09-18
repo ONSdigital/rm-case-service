@@ -22,6 +22,9 @@ public class FreeMarkerServiceImpl implements FreeMarkerService {
   @Inject
   private FreeMarkerTemplateRepository repository;
 
+  @Inject
+  private freemarker.template.Configuration configuration;
+
   @Override
   public FreeMarkerTemplate retrieveTemplate(String templateName) {
     return repository.findOne(templateName);
@@ -47,6 +50,12 @@ public class FreeMarkerServiceImpl implements FreeMarkerService {
     template.setDateModified(new Date());
 
     return repository.save(template);
+  }
+
+  @Override
+  public void clearTemplateCache() {
+    configuration.clearTemplateCache();
+    log.debug("Free Marker template cache has been cleared.");
   }
 
   private static String getStringFromInputStream(InputStream is) {
