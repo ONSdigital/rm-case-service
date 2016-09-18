@@ -21,7 +21,7 @@ import java.util.Map;
 @Slf4j
 public class TransformationServiceImpl implements TransformationService {
 
-  private static final String ERROR_RETRIEVING_FREEMARKER_TEMPLATE = "Could not find FreeMarker template.";
+  public static final String ERROR_RETRIEVING_FREEMARKER_TEMPLATE = "Could not find FreeMarker template.";
 
   @Inject
   private freemarker.template.Configuration configuration;

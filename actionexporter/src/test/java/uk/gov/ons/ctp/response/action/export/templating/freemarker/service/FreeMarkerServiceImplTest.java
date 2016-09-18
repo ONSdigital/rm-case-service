@@ -10,9 +10,6 @@ import uk.gov.ons.ctp.response.action.export.templating.freemarker.domain.FreeMa
 import uk.gov.ons.ctp.response.action.export.templating.freemarker.repository.FreeMarkerTemplateRepository;
 import uk.gov.ons.ctp.response.action.export.templating.freemarker.service.impl.FreeMarkerServiceImpl;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
