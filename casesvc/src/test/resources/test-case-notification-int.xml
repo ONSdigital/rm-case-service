@@ -30,6 +30,6 @@
     id="jmsIn" container="caseNotificationListenerContainer" channel="notificationXml"/>
 
   <!-- Bean to publish messages -->
-  <bean id="notificationPublisher" class="uk.gov.ons.ctp.response.casesvc.message.impl.NotificationPublisherImpl"/>
+  <bean id="notificationPublisher" class="uk.gov.ons.ctp.response.casesvc.message.impl.CaseNotificationPublisherImpl"/>
 
 </beans>

@@ -128,8 +128,7 @@ public class CaseServiceImplTest {
     verify(questionnaireRepo).findByCaseId(HOTEL_CASE_ID);
     verify(questionnaireRepo).setResponseDatetimeFor(any(Timestamp.class), any(Integer.class));
     verify(caseEventRepository).save(caseEvent);
-    // this is key for this test - we do NOT cancel actions
-    verify(actionSvcClientService, times(0)).cancelActions(HOTEL_CASE_ID);
+    verify(actionSvcClientService, times(1)).cancelActions(HOTEL_CASE_ID);
   }
 
   /**
