@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:int="http://www.springframework.org/schema/integration"
+ xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+  http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+  http://www.springframework.org/schema/integration/jms
+  http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd" >
+
+  <!-- Message listener on ActiveMQ.DLQ in VM memory -->
+  <bean id="activeMQListenerContainer"
+        class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+    <property name="connectionFactory" ref="connectionFactory" />
+    <property name="destinationName" value="ActiveMQ.DLQ" />
+    <property name="maxConcurrentConsumers" value="1" />
+    <property name="concurrentConsumers" value="1" />
+    <property name="autoStartup" value="true" />
+  </bean>
+
+  <!-- Setup Input channel to receive failed messages-->
+  <int:channel id="activeMQDLQXml">
+    <int:queue capacity="1" />
+  </int:channel>
+
+  <!-- Adapter listening on JMS queue to check for failed messages -->
+  <int-jms:message-driven-channel-adapter
+    id="jmsDLQIn" container="activeMQListenerContainer" channel="activeMQDLQXml"/>
+
+  <bean id="actionInstructionJMSQueue" class="org.apache.activemq.command.ActiveMQQueue">
+    <constructor-arg value="Action.Print"/>
+  </bean>
+
+  <!-- action instruction jms queue which can be used for testing -->
+  <int:channel id="testOutbound" />
+
+  <!--  adapt the SI message to a JMS message -->
+  <int-jms:outbound-channel-adapter id="jmsout" channel="testOutbound" destination="actionInstructionJMSQueue"/>
+
+  <!-- Action Export Receiver ServiceActivator(inputChannel = "instructionTransformed")  -->
+  <bean id="ActionExportReceiver" class="uk.gov.ons.ctp.response.action.export.message.impl.ActionExportReceiverImpl" />
+
+  <int:service-activator input-channel="instructionTransformed" ref="ActionExportReceiver"/>
+
+  <!-- Mock instructionService to inject into actionExportReceiver -->
+  <bean id="actionExportService" class="org.mockito.Mockito" factory-method="mock"  >
+    <constructor-arg value="uk.gov.ons.ctp.response.action.export.service.impl.ActionExportServiceImpl" />
+  </bean>
+
+  <!-- Mapper facade for injection into instructionService  -->
+  <bean id="beanMapper" class="org.mockito.Mockito" factory-method="mock"  >
+    <constructor-arg value="ma.glasnost.orika.MapperFacade" />
+  </bean>
+
+  <!-- Mock actionCaseRepository to inject into instructionService  -->
+  <bean id="actionRequestRepository" class="org.mockito.Mockito" factory-method="mock"  >
+    <constructor-arg value="uk.gov.ons.ctp.response.action.export.repository.ActionRequestRepository" />
+  </bean>
+
+</beans>
+

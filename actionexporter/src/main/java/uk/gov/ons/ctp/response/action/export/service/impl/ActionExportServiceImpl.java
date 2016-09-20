@@ -7,7 +7,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import ma.glasnost.orika.MapperFacade;
-import uk.gov.ons.ctp.response.action.export.domain.ActionRequest;
+import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
 import uk.gov.ons.ctp.response.action.export.repository.ActionRequestRepository;
 import uk.gov.ons.ctp.response.action.export.service.ActionExportService;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
@@ -35,8 +35,9 @@ public class ActionExportServiceImpl implements ActionExportService {
    */
   @Override
   public void acceptInstruction(ActionInstruction instruction) {
-    List<ActionRequest> actionRequests = mapperFacade.mapAsList(instruction.getActionRequests().getActionRequests(),
-        ActionRequest.class);
+    List<ActionRequestDocument> actionRequests = mapperFacade.mapAsList(
+        instruction.getActionRequests().getActionRequests(),
+        ActionRequestDocument.class);
     Date now = new Date();
     actionRequests.forEach(actionRequest -> {
       actionRequest.setDateStored(now);

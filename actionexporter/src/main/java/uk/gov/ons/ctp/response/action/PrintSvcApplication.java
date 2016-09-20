@@ -13,6 +13,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import uk.gov.ons.ctp.common.jaxrs.JAXRSRegister;
 import uk.gov.ons.ctp.response.action.export.config.AppConfig;
 import uk.gov.ons.ctp.response.action.export.endpoint.PrintEndpoint;
 
@@ -42,6 +43,8 @@ public class PrintSvcApplication {
      * Its public constructor.
      */
     public JerseyConfig() {
+
+      JAXRSRegister.listCommonTypes().forEach(t->register(t));
 
       register(PrintEndpoint.class);
 //      register(new CTPMessageBodyReader<ActionDTO>(ActionDTO.class) {

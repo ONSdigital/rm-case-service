@@ -38,7 +38,7 @@ server:
   servlet-path: /mgmt
 
 endpoints:
-  autoconfig: 
+  autoconfig:
     enabled: true
     sensitive: true
   beans:
@@ -103,7 +103,7 @@ internet-access-code-svc:
     read-timeout-milli-seconds: 5000
 
 action-svc:
-  actions-path: /actions 
+  actions-path: /actions
   cancel-actions-path: /actions/case/{caseid}/cancel
   connection-config:
     scheme: http
@@ -123,4 +123,4 @@ case-distribution:
   subsequent-delay-seconds: 30
 
 deadxml:
-  directory: /var/log/ctp/responsemanagement/actionsvc
+  directory: /var/log/ctp/responsemanagement/casesvc

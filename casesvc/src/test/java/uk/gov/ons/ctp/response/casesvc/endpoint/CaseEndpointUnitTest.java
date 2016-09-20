@@ -1,6 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
-import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.ERRORMSGCASENOTFOUND;
+import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.ERRORMSG_CASENOTFOUND;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.*;
 
 import javax.ws.rs.core.Application;
@@ -70,7 +70,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
     with("http://localhost:9998/cases/uprn/%s", NON_EXISTING_ID).assertResponseCodeIs(HttpStatus.NOT_FOUND)
             .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
             .assertTimestampExists()
-            .assertMessageEquals(String.format("%s UPRN %s", ERRORMSGCASENOTFOUND, NON_EXISTING_ID))
+            .assertMessageEquals(String.format("%s UPRN %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_ID))
             .andClose();
   }
 
@@ -102,7 +102,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
-        .assertMessageEquals(String.format("%s questionnaire id %s", ERRORMSGCASENOTFOUND, NON_EXISTING_ID))
+        .assertMessageEquals(String.format("%s questionnaire id %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_ID))
         .andClose();
   }
 
@@ -134,7 +134,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
-        .assertMessageEquals(String.format("%s case id %s", ERRORMSGCASENOTFOUND, NON_EXISTING_ID))
+        .assertMessageEquals(String.format("%s case id %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_ID))
         .andClose();
   }
 
@@ -164,7 +164,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
-        .assertMessageEquals(String.format("%s case id %s", ERRORMSGCASENOTFOUND, NON_EXISTING_ID))
+        .assertMessageEquals(String.format("%s case id %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_ID))
         .andClose();
   }
 

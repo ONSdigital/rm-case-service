@@ -20,8 +20,8 @@ import uk.gov.ons.ctp.response.action.message.instruction.Priority;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-@Document
-public class ActionRequest {
+@Document(collection = "actionRequest")
+public class ActionRequestDocument {
 
   @Id
   private BigInteger actionId;

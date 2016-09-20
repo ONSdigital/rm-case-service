@@ -30,7 +30,7 @@ import uk.gov.ons.ctp.response.casesvc.service.QuestionnaireService;
 @Slf4j
 public final class QuestionnaireEndpoint implements CTPEndpoint {
 
-  public static String ERRORMSGQUESTIONNAIRENOTFOUND = "Questionnaire not found for";
+  public static final String ERRORMSG_QUESTIONNAIRENOTFOUND = "Questionnaire not found for";
 
   /**
    * The Questionnaire business service.
@@ -61,7 +61,7 @@ public final class QuestionnaireEndpoint implements CTPEndpoint {
     Questionnaire questionnaire = questionnaireService.findQuestionnaireByIac(iac);
     if (questionnaire == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-              String.format("%s iac %s", ERRORMSGQUESTIONNAIRENOTFOUND, iac));
+              String.format("%s iac %s", ERRORMSG_QUESTIONNAIRENOTFOUND, iac));
     }
     QuestionnaireDTO result = mapperFacade.map(questionnaire, QuestionnaireDTO.class);
 
@@ -82,7 +82,7 @@ public final class QuestionnaireEndpoint implements CTPEndpoint {
     List<Questionnaire> questionnaires = questionnaireService.findQuestionnairesByCaseId(caseId);
     if (CollectionUtils.isEmpty(questionnaires)) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-              String.format("%s case id %s", ERRORMSGQUESTIONNAIRENOTFOUND, caseId));
+              String.format("%s case id %s", ERRORMSG_QUESTIONNAIRENOTFOUND, caseId));
     }
     return mapperFacade.mapAsList(questionnaires, QuestionnaireDTO.class);
   }
@@ -102,7 +102,7 @@ public final class QuestionnaireEndpoint implements CTPEndpoint {
     Questionnaire questionnaire = questionnaireService.recordResponse(questionnaireId);
     if (questionnaire == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-              String.format("%s questionnaire id %s", ERRORMSGQUESTIONNAIRENOTFOUND, questionnaireId));
+              String.format("%s questionnaire id %s", ERRORMSG_QUESTIONNAIRENOTFOUND, questionnaireId));
     }
     return Response.status(Response.Status.NO_CONTENT).build();
   }
