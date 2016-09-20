@@ -30,7 +30,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseTypeRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.QuestionnaireRepository;
-import uk.gov.ons.ctp.response.casesvc.message.NotificationPublisher;
+import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
 
@@ -63,7 +63,7 @@ public class CaseServiceImplTest {
   private AppConfig appConfig;
 
   @Mock
-  private NotificationPublisher notificationPublisher;
+  private CaseNotificationPublisher notificationPublisher;
 
   @InjectMocks
   private CaseServiceImpl caseService;
@@ -153,7 +153,7 @@ public class CaseServiceImplTest {
 
     verify(caseRepo).findOne(HOTEL_CASE_ID);
     verify(categoryRepo).findByName(CASEEVENT_CATEGORY_CI);
-    verify(caseRepo).setState(HOTEL_CASE_ID, CaseDTO.CaseState.CLOSED.name());
+    verify(caseRepo).setState(HOTEL_CASE_ID, CaseDTO.CaseState.RESPONDED.name());
     verify(caseEventRepository).save(caseEvent);
     verify(actionSvcClientService).cancelActions(HOTEL_CASE_ID);
   }
@@ -179,7 +179,7 @@ public class CaseServiceImplTest {
 
     verify(caseRepo).findOne(HOTEL_CASE_ID);
     verify(categoryRepo).findByName(CASEEVENT_CATEGORY_R);
-    verify(caseRepo).setState(HOTEL_CASE_ID, CaseDTO.CaseState.CLOSED.name());
+    verify(caseRepo).setState(HOTEL_CASE_ID, CaseDTO.CaseState.RESPONDED.name());
     verify(caseEventRepository).save(caseEvent);
     verify(actionSvcClientService).cancelActions(HOTEL_CASE_ID);
   }
@@ -205,7 +205,7 @@ public class CaseServiceImplTest {
 
     verify(caseRepo).findOne(HOTEL_CASE_ID);
     verify(categoryRepo).findByName(CASEEVENT_CATEGORY_U);
-    verify(caseRepo).setState(HOTEL_CASE_ID, CaseDTO.CaseState.CLOSED.name());
+    verify(caseRepo).setState(HOTEL_CASE_ID, CaseDTO.CaseState.RESPONDED.name());
     verify(caseEventRepository).save(caseEvent);
     verify(actionSvcClientService).cancelActions(HOTEL_CASE_ID);
   }
@@ -231,7 +231,7 @@ public class CaseServiceImplTest {
 
     verify(caseRepo).findOne(HOUSEHOLD_CASE_ID);
     verify(categoryRepo).findByName(CASEEVENT_CATEGORY_QR);
-    verify(caseRepo).setState(HOUSEHOLD_CASE_ID, CaseDTO.CaseState.CLOSED.name());
+    verify(caseRepo).setState(HOUSEHOLD_CASE_ID, CaseDTO.CaseState.RESPONDED.name());
     verify(questionnaireRepo).findByCaseId(HOUSEHOLD_CASE_ID);
     verify(questionnaireRepo).setResponseDatetimeFor(any(Timestamp.class), any(Integer.class));
     verify(caseEventRepository).save(caseEvent);

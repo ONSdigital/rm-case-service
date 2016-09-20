@@ -22,8 +22,9 @@
   
   <xs:simpleType name="NotificationType">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="CREATED"/>
-      <xs:enumeration value="CLOSED"/>
+      <xs:enumeration value="ACTIVATED"/>
+      <xs:enumeration value="DEACTIVATED"/>
+      <xs:enumeration value="RESPONDED"/>
     </xs:restriction>
   </xs:simpleType>
   

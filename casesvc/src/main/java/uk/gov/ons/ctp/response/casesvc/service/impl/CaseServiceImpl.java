@@ -1,6 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
-import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.CLOSED;
+import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.RESPONDED;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
@@ -20,19 +20,15 @@ import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseType;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Questionnaire;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseTypeRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.QuestionnaireRepository;
-import uk.gov.ons.ctp.response.casesvc.message.NotificationPublisher;
+import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
-import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotifications;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseTypeDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
@@ -52,9 +48,6 @@ public class CaseServiceImpl implements CaseService {
    */
   @Inject
   private CaseRepository caseRepo;
-
-  @Inject
-  private CaseTypeRepository caseTypeRepo;
 
   /**
    * Spring Data Repository for Questionnaire Entities.
@@ -84,7 +77,7 @@ public class CaseServiceImpl implements CaseService {
    * Notification publishing service for Case life cycle events
    */
   @Inject
-  private NotificationPublisher notificationPublisher;
+  private CaseNotificationPublisher notificationPublisher;
 
   @Override
   public List<Case> findCasesByUprn(final Long uprn) {
@@ -139,7 +132,6 @@ public class CaseServiceImpl implements CaseService {
     Case existingCase = caseRepo.findOne(caseId);
 
     if (existingCase != null) {
-      CaseType caseType = caseTypeRepo.findOne(existingCase.getCaseTypeId());
       caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
       createdCaseEvent = caseEventRepo.save(caseEvent);
 
@@ -149,27 +141,7 @@ public class CaseServiceImpl implements CaseService {
       CategoryDTO.CategoryName reasonForClosure = CategoryDTO.CategoryName.getEnumByLabel(caseEvent.getCategory());
 
       if (Boolean.TRUE.equals(closeCase)) {
-        if (caseType.getName().equals(CaseTypeDTO.CaseTypeName.HGH.name())) {
-          if (Arrays.asList(CategoryDTO.CategoryName.CLASSIFICATION_INCORRECT, CategoryDTO.CategoryName.REFUSAL,
-              CategoryDTO.CategoryName.UNDELIVERABLE)
-              .contains(reasonForClosure)) {
-            caseRepo.setState(caseId, CaseDTO.CaseState.CLOSED.name());
-            actionSvcClientService.cancelActions(caseId);
-            CaseNotifications caseNotifications = new CaseNotifications();
-            caseNotifications.getCaseNotifications()
-                .add(new CaseNotification(caseId, existingCase.getActionPlanId(), CLOSED));
-            notificationPublisher.sendNotifications(caseNotifications);
-          } else {
-            caseRepo.setState(caseId, CaseDTO.CaseState.RESPONDED.name());
-          }
-        } else {
-          caseRepo.setState(caseId, CaseDTO.CaseState.CLOSED.name());
-          actionSvcClientService.cancelActions(caseId);
-          CaseNotifications caseNotifications = new CaseNotifications();
-          caseNotifications.getCaseNotifications()
-              .add(new CaseNotification(caseId, existingCase.getActionPlanId(), CLOSED));
-          notificationPublisher.sendNotifications(caseNotifications);
-        }
+        closeCase(existingCase);
       }
 
       if (reasonForClosure == CategoryDTO.CategoryName.QUESTIONNAIRE_RESPONSE) {
@@ -182,6 +154,14 @@ public class CaseServiceImpl implements CaseService {
       }
     }
     return createdCaseEvent;
+  }
+
+  private void closeCase(Case caze) {
+    caseRepo.setState(caze.getCaseId(), CaseDTO.CaseState.RESPONDED.name());
+    actionSvcClientService.cancelActions(caze.getCaseId());
+    notificationPublisher
+        .sendNotifications(Arrays.asList(new CaseNotification(caze.getCaseId(), caze.getActionPlanId(), RESPONDED)));
+
   }
 
   /**

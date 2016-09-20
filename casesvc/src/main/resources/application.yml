@@ -91,6 +91,17 @@ spring:
   zipkin:
     enabled: false
 
+internet-access-code-svc:
+  iac-post-path: /iacs 
+  connection-config:
+    scheme: http
+    host: localhost
+    port: 8131
+    retry-attempts: 10
+    retry-pause-milli-seconds: 5000
+    connect-timeout-milli-seconds: 5000
+    read-timeout-milli-seconds: 5000
+
 action-svc:
   actions-path: /actions 
   cancel-actions-path: /actions/case/{caseid}/cancel
@@ -103,8 +114,13 @@ action-svc:
     connect-timeout-milli-seconds: 5000
     read-timeout-milli-seconds: 5000
 
-notification-publ:
-  notification-max: 100
+case-distribution:
+  iac-max: 30
+  retrieval-max: 1000
+  distribution-max: 20
+  retry-sleep-seconds: 30
+  initial-delay-seconds: 15
+  subsequent-delay-seconds: 30
 
 deadxml:
   directory: /var/log/ctp/responsemanagement/actionsvc

@@ -124,8 +124,6 @@ public final class SampleEndpointUnitTest extends CTPJerseyTest {
 
   @Test
   public void createCasesValidJsonSampleNotFound() {
-    String putBody = "{\"type\":\"LA\",\"code\":\"E07000163\"}";
-
     with("http://localhost:9998/samples/%s", NON_EXISTING_SAMPLEID)
             .assertResponseCodeIs(HttpStatus.NOT_FOUND)
             .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)

@@ -3,9 +3,11 @@ package uk.gov.ons.ctp.response.casesvc.message;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasXPath;
 import static org.junit.Assert.assertThat;
-import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.CREATED;
+import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.ACTIVATED;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.xml.parsers.DocumentBuilder;
@@ -23,7 +25,6 @@ import org.w3c.dom.Document;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
-import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotifications;
 
 /**
  * Test publication of CaseNotification messages on integration flow to
@@ -35,7 +36,7 @@ import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotifications;
 @RunWith(SpringJUnit4ClassRunner.class)
 @Slf4j
 @Data
-public class NotificationPublisherTest {
+public class CaseNotificationPublisherTest {
 
   private static final int RECEIVE_TIMEOUT = 5000;
 
@@ -43,17 +44,17 @@ public class NotificationPublisherTest {
   private PollableChannel notificationXml;
 
   @Inject
-  private NotificationPublisher notificationPublisher;
+  private CaseNotificationPublisher notificationPublisher;
 
   /**
    * Test Publication of Case creation events.
    */
   @Test
   public void testNotificationPublisher() {
-    CaseNotifications caseNotifications = new CaseNotifications();
-    caseNotifications.getCaseNotifications().add(new CaseNotification(1, 3, CREATED));
-    caseNotifications.getCaseNotifications().add(new CaseNotification(2, 3, CREATED));
-    notificationPublisher.sendNotifications(caseNotifications);
+    List<CaseNotification> notificationList = new ArrayList<>();
+    notificationList.add(new CaseNotification(1, 3, ACTIVATED));
+    notificationList.add(new CaseNotification(2, 3, ACTIVATED));
+    notificationPublisher.sendNotifications(notificationList);
     Message<?> message = notificationXml.receive(RECEIVE_TIMEOUT);
     String payload = (String) message.getPayload();
     Document doc = parse(payload);

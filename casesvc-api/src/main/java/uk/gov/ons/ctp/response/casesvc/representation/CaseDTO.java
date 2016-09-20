@@ -19,7 +19,14 @@ public class CaseDTO {
    * enum for case state
    */
   public enum CaseState {
-    INIT, RESPONDED, CLOSED;
+    INIT, ACTIVE, INACTIVE, RESPONDED;
+  }
+
+  /**
+   * enum for Case event
+   */
+  public enum CaseEvent {
+    ACTIVATED, DEACTIVATED, RESPONSE_RECEIVED
   }
 
   private Integer caseId;

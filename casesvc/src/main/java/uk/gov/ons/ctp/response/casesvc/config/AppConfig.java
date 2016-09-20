@@ -14,5 +14,6 @@ import lombok.Data;
 @Data
 public class AppConfig {
   private ActionSvc actionSvc;
-  private NotificationPubl notificationPubl;
+  private InternetAccessCodeSvc internetAccessCodeSvc;
+  private CaseDistribution caseDistribution;
 }
