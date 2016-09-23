@@ -156,6 +156,12 @@ paths:
           in: path
           required: true
           type: integer
+        - in: body
+          name: case
+          description: Deactivation request details
+          required: true
+          schema:
+            $ref: '#/definitions/CaseDeactivationRequest'
       tags:
         - Case
       responses:
@@ -849,6 +855,14 @@ definitions:
       createdBy:
         type: string
         description: Creator of case.
+  CaseDeactivationRequest:
+    type: object
+    required:
+      - updatedBy
+    properties:
+      updatedBy:
+        description: User who deactivated this Case
+        type: string
   CaseEvent:
     type: object
     required:
