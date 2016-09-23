@@ -141,6 +141,36 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  /cases/{caseId}/deactivate:
+    put:
+      summary:  Deactivates the specified case.
+      description: Marks the specified case as inactive. For example, if an Internet Access Code is lost and a new one is generated, requiring a new associated case.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: caseId
+          description: Unique case ID.
+          in: path
+          required: true
+          type: integer
+      tags:
+        - Case
+      responses:
+        200:
+          description: Case successfully deactivated.
+          schema:
+              $ref: '#/definitions/Case'
+        404:
+          description: Case not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
   /cases/actionplan/{actionPlanId}:
     get:
       summary: Get the case IDs for the specified action plan.
