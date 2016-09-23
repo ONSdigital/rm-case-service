@@ -116,8 +116,8 @@ action-svc:
 
 case-distribution:
   iac-max: 30
-  retrieval-max: 1000
-  distribution-max: 20
+  retrieval-max: 50
+  distribution-max: 1
   retry-sleep-seconds: 30
   initial-delay-seconds: 15
   subsequent-delay-seconds: 30

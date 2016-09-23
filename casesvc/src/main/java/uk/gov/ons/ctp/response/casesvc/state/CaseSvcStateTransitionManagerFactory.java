@@ -40,6 +40,15 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
     transitionMapForActive.put(CaseEvent.DEACTIVATED, CaseState.INACTIVE);
     transitionMapForActive.put(CaseEvent.RESPONSE_RECEIVED,
         CaseState.RESPONDED);
+    transitions.put(CaseState.ACTIVE, transitionMapForActive);
+
+    Map<CaseEvent, CaseState> transitionMapForResponded = new HashMap<>();
+    transitionMapForResponded.put(CaseEvent.RESPONSE_RECEIVED, CaseState.RESPONDED);
+    transitions.put(CaseState.RESPONDED, transitionMapForResponded);
+
+    Map<CaseEvent, CaseState> transitionMapForInactive = new HashMap<>();
+    transitionMapForInactive.put(CaseEvent.RESPONSE_RECEIVED, CaseState.INACTIVE);
+    transitions.put(CaseState.INACTIVE, transitionMapForInactive);
 
     StateTransitionManager<CaseState, CaseEvent> caseStateTransitionManager =
         new BasicStateTransitionManager<>(transitions);

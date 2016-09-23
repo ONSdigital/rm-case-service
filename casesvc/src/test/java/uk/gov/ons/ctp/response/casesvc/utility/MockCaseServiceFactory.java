@@ -4,7 +4,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 
-import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -145,18 +144,18 @@ public final class MockCaseServiceFactory implements Factory<CaseService> {
       }
     });
 
-    Mockito.when(mockedService.findCaseIdsByStatesAndActionPlanId(anyObject(), eq(NON_EXISTING_ID))).thenAnswer(new Answer<List<BigInteger>>() {
-      public List<BigInteger> answer(final InvocationOnMock invocation)
+    Mockito.when(mockedService.findCaseIdsByStatesAndActionPlanId(anyObject(), eq(NON_EXISTING_ID))).thenAnswer(new Answer<List<Integer>>() {
+      public List<Integer> answer(final InvocationOnMock invocation)
               throws Throwable {
-        return new ArrayList<BigInteger>();
+        return new ArrayList<Integer>();
       }
     });
 
-    Mockito.when(mockedService.findCaseIdsByStatesAndActionPlanId(anyObject(), eq(EXISTING_ID))).thenAnswer(new Answer<List<BigInteger>>() {
-      public List<BigInteger> answer(final InvocationOnMock invocation)
+    Mockito.when(mockedService.findCaseIdsByStatesAndActionPlanId(anyObject(), eq(EXISTING_ID))).thenAnswer(new Answer<List<Integer>>() {
+      public List<Integer> answer(final InvocationOnMock invocation)
               throws Throwable {
-        List<BigInteger> result = new ArrayList<>();
-        result.add(new BigInteger("1"));
+        List<Integer> result = new ArrayList<>();
+        result.add(new Integer("1"));
         return result;
       }
     });

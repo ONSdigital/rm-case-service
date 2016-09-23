@@ -14,7 +14,7 @@ import org.springframework.boot.actuate.health.HealthIndicator;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 
 /**
- * This bean will have the actionDistributor injected into it by spring on
+ * This bean will have the caseDistributor injected into it by spring on
  * constructions. It will then schedule the running of the distributor using
  * details from the AppConfig
  */
@@ -24,19 +24,19 @@ public class CaseDistributionScheduler implements HealthIndicator {
   @Override
   public Health health() {
     return Health.up()
-        .withDetail("activationInfo", activationInfo)
+        .withDetail("activationInfo", distribInfo)
         .build();
   }
 
   @Inject
-  private CaseDistributor activationDistributorImpl;
+  private CaseDistributor caseDistributorImpl;
 
-  private CaseDistributionInfo activationInfo = new CaseDistributionInfo();
+  private CaseDistributionInfo distribInfo = new CaseDistributionInfo();
 
   private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
   /**
-   * Create the scheduler for the Action Distributor
+   * Create the scheduler for the Case Distributor
    *
    * @param applicationConfig injected app config needs injecting as cannot use
    *          the class appConfig - is not injected until this class created -
@@ -46,7 +46,7 @@ public class CaseDistributionScheduler implements HealthIndicator {
   public CaseDistributionScheduler(AppConfig applicationConfig) {
     final Runnable distributorRunnable = new Runnable() {
       @Override public void run() {
-        activationInfo = activationDistributorImpl.distribute();
+        distribInfo = caseDistributorImpl.distribute();
       }
     };
 

@@ -1,6 +1,5 @@
 package uk.gov.ons.ctp.response.casesvc.domain.repository;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import javax.inject.Named;
@@ -12,6 +11,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseProjection;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 
 /**
@@ -28,12 +28,11 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
    * @param actionPlanId actionPlan id to find by
    * @return the cases found
    */
-  @Query(value = "SELECT caseId FROM casesvc.case WHERE state IN ?1 AND actionplanid = ?2", nativeQuery = true)
-  List<BigInteger> findCaseIdByStateInAndActionPlanId(List<String> states, Integer actionPlanId);
+  List<CaseProjection> findCaseIdByStateInAndActionPlanId(List<CaseDTO.CaseState> states, Integer actionPlanId);
 
   /**
-   * Return all cases in states according to and not in the list of excluded ids
-   * using the page specification
+   * Return all cases in the given states and not in the list of excluded ids
+   * using the page specification provided
    *
    * @param states States of Case
    * @param caseIds caseIds to exclude

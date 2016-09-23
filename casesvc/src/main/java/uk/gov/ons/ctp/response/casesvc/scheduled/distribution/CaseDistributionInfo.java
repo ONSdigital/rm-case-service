@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import uk.gov.ons.ctp.common.health.ScheduledHealthInfo;
 
 /**
- * info regarding the last action distribution to handlers
+ * info regarding the last case distribution to handlers
  *
  */
 @Data

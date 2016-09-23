@@ -2,11 +2,10 @@ package uk.gov.ons.ctp.response.casesvc.service.impl;
 
 import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.RESPONDED;
 
-import java.math.BigInteger;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -20,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseProjection;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Questionnaire;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
@@ -102,18 +102,15 @@ public class CaseServiceImpl implements CaseService {
   }
 
   @Override
-  public List<BigInteger> findCaseIdsByStatesAndActionPlanId(final List<String> caseStates,
+  public List<Integer> findCaseIdsByStatesAndActionPlanId(final List<CaseDTO.CaseState> caseStates,
       final Integer actionPlanId) {
     log.debug("Entering findCaseByStatesAndActionPlanId");
-    List<String> stateParams = new ArrayList<>();
-    if (CollectionUtils.isEmpty(caseStates)) {
-      for (CaseDTO.CaseState caseState : CaseDTO.CaseState.values()) {
-        stateParams.add(caseState.name());
-      }
-    } else {
-      stateParams = caseStates;
+    List<CaseDTO.CaseState> states = caseStates;
+    if (CollectionUtils.isEmpty(states)) {
+      states = Arrays.asList(CaseDTO.CaseState.values());
     }
-    return caseRepo.findCaseIdByStateInAndActionPlanId(stateParams, actionPlanId);
+    List<CaseProjection> caseProjections = caseRepo.findCaseIdByStateInAndActionPlanId(states, actionPlanId);
+    return caseProjections.stream().map(cp->cp.getCaseId()).collect(Collectors.toList());
   }
 
   @Override

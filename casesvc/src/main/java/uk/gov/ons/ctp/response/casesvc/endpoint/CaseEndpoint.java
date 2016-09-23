@@ -1,6 +1,5 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -112,11 +111,11 @@ public final class CaseEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/actionplan/{actionplanid}")
-  public List<BigInteger> findCaseIdsByStateAndActionPlan(
-      @QueryParam("state") final List<String> states,
+  public List<Integer> findCaseIdsByStateAndActionPlan(
+      @QueryParam("state") final List<CaseDTO.CaseState> states,
       @PathParam("actionplanid") final Integer actionPlanId) {
     log.debug("Entering findCasesByStateAndActionPlan with {} and {}", states, actionPlanId);
-    List<BigInteger> caseIds = caseService.findCaseIdsByStatesAndActionPlanId(states, actionPlanId);
+    List<Integer> caseIds = caseService.findCaseIdsByStatesAndActionPlanId(states, actionPlanId);
     return CollectionUtils.isEmpty(caseIds) ? null : caseIds;
   }
 

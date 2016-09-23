@@ -1,11 +1,11 @@
 package uk.gov.ons.ctp.response.casesvc.service;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import uk.gov.ons.ctp.common.service.CTPService;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 
 /**
  * The Case Service interface defines all business behaviours for operations on
@@ -36,7 +36,7 @@ public interface CaseService extends CTPService {
    * @param actionPlanId id of the action plan to find by
    * @return all the matching cases
    */
-  List<BigInteger> findCaseIdsByStatesAndActionPlanId(List<String> states, Integer actionPlanId);
+  List<Integer> findCaseIdsByStatesAndActionPlanId(List<CaseDTO.CaseState> caseStates, Integer actionPlanId);
 
   /**
    * Find Case entity by unique Id.
