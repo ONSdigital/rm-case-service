@@ -217,7 +217,7 @@ public class CaseDistributor {
    * failing to find the IAC service, or if it sends back an http error status
    * code.
    *
-   * @param case the case to deal with
+   * @param caze the case to deal with
    * @param iac the newly minted IAC to assign to the Case Questionnaire
    * @return The resulting CaseNotification that will be added to the outbound
    *         CaseNotifications sent to the action service
@@ -261,7 +261,7 @@ public class CaseDistributor {
    * and clear previous situation (in the scenario where the case has prev.
    * failed)
    *
-   * @param case the case to change and persist
+   * @param caze the case to change and persist
    * @param event the event to transition the case with
    * @return the transitioned case
    */
@@ -281,7 +281,7 @@ public class CaseDistributor {
    * Take an case and using it, fetch further info from Case service in a number
    * of rest calls, in order to create the CaseRequest
    *
-   * @param case It all starts with the Case
+   * @param caze It all starts with the Case
    * @return The CaseRequest created from the Case and the other info from
    *         CaseSvc
    */

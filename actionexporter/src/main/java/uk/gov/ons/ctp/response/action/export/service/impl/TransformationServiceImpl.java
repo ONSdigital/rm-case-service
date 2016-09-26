@@ -1,12 +1,9 @@
 package uk.gov.ons.ctp.response.action.export.service.impl;
 
-import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ResourceLoader;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
 import uk.gov.ons.ctp.response.action.export.freemarker.MongoTemplateLoader;
@@ -31,10 +28,9 @@ public class TransformationServiceImpl implements TransformationService {
   private static final String ERROR_RETRIEVING_FREEMARKER_TEMPLATE = "Could not find FreeMarker template.";
 
   @Inject
-  private ResourceLoader resourceLoader;
-
-  @Inject
   private MongoTemplateLoader mongoTemplateLoader;
+
+  private freemarker.template.Configuration configuration;
 
   @Override
   public File fileMe(List<ActionRequestDocument> actionRequestDocumentList, String templateName, String path)
@@ -97,16 +93,15 @@ public class TransformationServiceImpl implements TransformationService {
    */
   private Template giveMeTemplate(String templateName) throws CTPException, IOException {
     log.debug("Entering giveMeTemplate with templateName {}", templateName);
-    // TODO Should we create a Configuration each time?
-    Configuration cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_25);
-    cfg.setTemplateLoader(mongoTemplateLoader);
-    cfg.setDefaultEncoding(UTF8.name());
-    cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-    // Don't log exceptions inside FreeMarker that it will thrown at you anyway:
-    cfg.setLogTemplateExceptions(false);
-
-    log.debug("Retrieving template from config...");
-    Template template = cfg.getTemplate(templateName);
+    if (configuration == null) {
+      configuration = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_25);
+      configuration.setTemplateLoader(mongoTemplateLoader);
+      configuration.setDefaultEncoding(UTF8.name());
+      configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+      // Don't log exceptions inside FreeMarker that it will thrown at you anyway:
+      configuration.setLogTemplateExceptions(false);
+    }
+    Template template = configuration.getTemplate(templateName);
     log.debug("template = {}", template);
     if (template == null) {
       throw new CTPException(CTPException.Fault.SYSTEM_ERROR, ERROR_RETRIEVING_FREEMARKER_TEMPLATE);

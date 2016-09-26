@@ -6,12 +6,14 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.ConfigurableMapper;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import ma.glasnost.orika.impl.generator.EclipseJdtCompilerStrategy;
+import uk.gov.ons.ctp.response.action.export.domain.FreeMarkerTemplate;
+import uk.gov.ons.ctp.response.action.export.representation.FreeMarkerTemplateDTO;
 
 /**
  * The bean mapper to go from Entity objects to Presentation objects.
  */
 @Named
-public class PrintBeanMapper extends ConfigurableMapper {
+public class ActionExporterBeanMapper extends ConfigurableMapper {
 
   @Override
   public void configureFactoryBuilder(DefaultMapperFactory.Builder builder) {
@@ -25,11 +27,9 @@ public class PrintBeanMapper extends ConfigurableMapper {
    */
   @Override
   protected final void configure(final MapperFactory factory) {
-//    factory
-//        .classMap(Action.class, ActionDTO.class)
-//        .field("actionType.name", "actionTypeName")
-//        .byDefault()
-//        .register();
-
+    factory
+            .classMap(FreeMarkerTemplate.class, FreeMarkerTemplateDTO.class)
+            .byDefault()
+            .register();
   }
 }

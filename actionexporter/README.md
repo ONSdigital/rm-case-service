@@ -59,4 +59,5 @@ curl http://localhost:8141/manualtest/random -v -X GET
 
 
 ## TODO
-- unit tests for FreeMarkerEndpoint, FreeMarkerService
+- unit tests for FreeMarkerEndpoint, FreeMarkerService:
+    - See http://stackoverflow.com/questions/24287024/how-to-enforce-loading-order-of-spring-configuration-classes: @EnableJpaRepositories(basePackages = "de.foobar.rootpackage")
