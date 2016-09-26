@@ -196,7 +196,7 @@ public class CaseDistributor {
         new Sort.Order(Direction.ASC, "createdDateTime")));
     excludedCases.add(Integer.valueOf(IMPOSSIBLE_CASE_ID));
     List<Case> cases = caseRepo
-        .findByStateInAndCaseIdNotIn(Arrays.asList(CaseState.INIT), excludedCases, pageable);
+        .findByStateInAndCaseIdNotIn(Arrays.asList(CaseState.SAMPLED_INIT), excludedCases, pageable);
     log.debug("RETRIEVED case ids {}", cases.stream().map(a -> a.getCaseId().toString())
         .collect(Collectors.joining(",")));
 
@@ -229,7 +229,7 @@ public class CaseDistributor {
       public CaseNotification doInTransaction(final TransactionStatus status) {
         CaseNotification caseNotification = null;
         // update our cases state in db
-        transitionCase(caze, CaseDTO.CaseEvent.ACTIVATED);
+        transitionCase(caze, CaseDTO.CaseEvent.SAMPLED_ACTIVATED);
 
         // stick the IAC to the questionnaire
         assignIacToCaseQuestionnaire(iac, caze.getCaseId());
@@ -291,7 +291,7 @@ public class CaseDistributor {
     CaseNotification caseNotification = new CaseNotification();
     caseNotification.setCaseId(caze.getCaseId());
     caseNotification.setActionPlanId(caze.getActionPlanId());
-    caseNotification.setNotificationType(NotificationType.ACTIVATED);
+    caseNotification.setNotificationType(NotificationType.SAMPLED_ACTIVATED);
 
     return caseNotification;
   }

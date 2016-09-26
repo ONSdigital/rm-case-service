@@ -19,14 +19,14 @@ public class CaseDTO {
    * enum for case state
    */
   public enum CaseState {
-    INIT, ACTIVE, INACTIVE, RESPONDED;
+    SAMPLED_INIT, REPLACEMENT_INIT, ACTIVE, INACTIVE, RESPONDED;
   }
 
   /**
    * enum for Case event
    */
   public enum CaseEvent {
-    ACTIVATED, DEACTIVATED, RESPONSE_RECEIVED
+    SAMPLED_ACTIVATED, REPLACEMENT_ACTIVATED, DEACTIVATED, RESPONSE_RECEIVED
   }
 
   private Integer caseId;
