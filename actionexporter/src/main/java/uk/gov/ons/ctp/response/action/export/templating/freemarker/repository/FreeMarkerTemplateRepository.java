@@ -1,8 +1,8 @@
-package uk.gov.ons.ctp.response.action.export.repository;
+package uk.gov.ons.ctp.response.action.export.templating.freemarker.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
-import uk.gov.ons.ctp.response.action.export.domain.FreeMarkerTemplate;
+import uk.gov.ons.ctp.response.action.export.templating.freemarker.domain.FreeMarkerTemplate;
 
 import javax.inject.Named;
 

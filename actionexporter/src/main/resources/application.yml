@@ -9,7 +9,7 @@ info:
 # ie -Dlogging.level.org.springframework=DEBUG
 logging:
   level:
-    org.springframework: info
+    org.springframework: debug
     uk.gov.ons.ctp: debug
 
 security:

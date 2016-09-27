@@ -6,8 +6,8 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.ConfigurableMapper;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import ma.glasnost.orika.impl.generator.EclipseJdtCompilerStrategy;
-import uk.gov.ons.ctp.response.action.export.domain.FreeMarkerTemplate;
-import uk.gov.ons.ctp.response.action.export.representation.FreeMarkerTemplateDTO;
+import uk.gov.ons.ctp.response.action.export.templating.freemarker.domain.FreeMarkerTemplate;
+import uk.gov.ons.ctp.response.action.export.templating.freemarker.representation.FreeMarkerTemplateDTO;
 
 /**
  * The bean mapper to go from Entity objects to Presentation objects.
