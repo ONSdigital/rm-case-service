@@ -11,8 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,8 +21,9 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Table(name = "caseevent", schema = "casesvc")
 public class CaseEvent implements Serializable {
 
@@ -45,7 +46,8 @@ public class CaseEvent implements Serializable {
   @Column(name = "createddatetime")
   private Timestamp createdDateTime;
 
-  private String category;
+  @Column(name = "categoryid")
+  private Integer categoryId;
 
   @Column(name = "subcategory")
   private String subCategory;

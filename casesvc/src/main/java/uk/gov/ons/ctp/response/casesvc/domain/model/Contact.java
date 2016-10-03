@@ -21,20 +21,23 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "casetype", schema = "casesvc")
-public class CaseType implements Serializable {
-
+@Table(name = "contact", schema = "casesvc")
+public class Contact implements Serializable {
 
   @Id
   @GeneratedValue
-  @Column(name = "casetypeid")
-  private Integer caseTypeId;
+  @Column(name = "contactid")
+  private Integer contactId;
+  
+  @Column(name = "forename")
+  private String forename;
+  
+  @Column(name = "surname")
+  private String surname;
+   
+  @Column(name = "phonenumber")
+  private String phoneNumber;
 
-  private String name;
-
-  private String description;
-
-  @Column(name = "respondenttype")
-  private String respondentType;
-
+  @Column(name = "emailaddress")
+  private String emailAddress;
 }

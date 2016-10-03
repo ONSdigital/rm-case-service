@@ -7,8 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,18 +17,24 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Table(name = "category", schema = "casesvc")
 public class Category implements Serializable {
   private static final long serialVersionUID = 2310849817220604095L;
 
   @Id
+  @Column(name = "categoryid")
+  private Integer categoryId;
+
   private String name;
 
   private String description;
 
   private String role;
+
+  private String group;
 
   @Column(name = "generatedactiontype")
   private String generatedActionType;

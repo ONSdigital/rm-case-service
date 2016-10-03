@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Case Service API
   description: The Case service manages Cases and associated address frame data and forms part of the Response Management product.
-  version: 9.26.0
+  version: 9.26.5
 schemes:
   - http
 basePath: /
@@ -35,8 +35,7 @@ paths:
         200:
           description: ActionPlanMapping details for the supplied id
           schema:
-            items:
-              $ref: '#/definitions/ActionPlanMapping'
+            $ref: '#/definitions/ActionPlanMapping'
         404:
           description: ActionPlanMapping not found
           schema:
@@ -77,7 +76,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /casegroup/uprn/{uprn}:
+  /casegroups/uprn/{uprn}:
     get:
       summary: Get the casegroups for the provided UPRN
       description: Return the casegroups associated with a UPRN
@@ -109,7 +108,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /cases/{externalRef}/response:
+  /cases/caseref/{caseRef}/response:
     put:
       summary:  Confirms a response has been received in the Survey Data Exchange.
       description: |
@@ -120,7 +119,7 @@ paths:
           description: Response type, application/json.
           required: false
           type: string
-        - name: externalRef
+        - name: caseRef
           description: Unique external reference for the case
           in: path
           required: true
@@ -426,6 +425,11 @@ paths:
           description: Security role to filter by
           required: false
           type: string
+        - name: group
+          in: query
+          description: The Category Group to filter by
+          required: false
+          type: string
       tags:
         - Case
       responses:
@@ -499,36 +503,6 @@ paths:
             $ref: '#/definitions/Sample'
         404:
           description: Sample not found
-          schema:
-            $ref: '#/definitions/Error'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
-  /surveys/{surveyId}:
-    get:
-      summary: Get information for the specified survey.
-      description: Return information for the supplied survey code.
-      parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-        - name: surveyId
-          in: path
-          description: Unique survey ID.
-          required: true
-          type: integer
-      tags:
-        - Case
-      responses:
-        200:
-          description: A single survey.
-          schema:
-              $ref: '#/definitions/Survey'
-        404:
-          description: Survey not found
           schema:
             $ref: '#/definitions/Error'
         default:
@@ -661,6 +635,9 @@ definitions:
   Response:
     type: object
     properties:
+      inboundChannel:
+        type: string
+        description: The type of channel used to make the response
       responseDateTime:
         type: string
         format: date-time
@@ -675,9 +652,9 @@ definitions:
       caseId:
         type: integer
         description: Internal Unique case identifier.
-      externalRef:
+      caseRef:
         type: string
-        description: External Unique case identifier.
+        description: External Unique case reference.
       caseGroupId:
         type: integer
         description: Unique case group identifier
@@ -732,10 +709,6 @@ definitions:
       surname:
         type: string
         description: Respondent surname.
-      dateOfBirth:
-        type: string
-        format: date-time
-        description: Respondent date of birth.
       phoneNumber:
         type: string
         description: Respondent phone number.
@@ -759,7 +732,7 @@ definitions:
       - caseEventId
       - caseId
       - description
-      - category
+      - categoryId
       - createdDateTime
       - createdBy
     properties:
@@ -772,9 +745,9 @@ definitions:
       description:
         type: string
         description: Case event description.
-      category:
-        type: string
-        description: Identifies what has triggered the case event.
+      categoryId:
+        type: integer
+        description: Identifier of the category that triggered the case event.
       subCategory:
         type: string
         description: Optional free text for use by automatically-created case events.
@@ -789,15 +762,15 @@ definitions:
     type: object
     required:
       - description
-      - category
+      - categoryId
       - createdBy
     properties:
       description:
         type: string
         description: Case event description.
-      category:
-        type: string
-        description: Identifies what has triggered the case event.
+      categoryId:
+        type: integer
+        description: Identifier of the category of event which triggered the case event.
       subCategory:
         type: string
         description: Optional free text for use by automatically-created case events.
@@ -810,9 +783,9 @@ definitions:
       caseTypeId:
         type: integer
         description: Unique ID of case type.
-      respondentType:
+      respondent:
         type: string
-        description: Identifies the type of respondent
+        description: The type of respondent
   SampleCaseTypes:
     type: array
     items:
@@ -829,9 +802,9 @@ definitions:
       description:
         type: string
         description: Description of case type.
-      respondentType:
+      respondent:
         type: string
-        description: Identifies the type of respondent
+        description: The type of respondent
       questionSet:
         type: string
         description: Type of questionnaire set.
@@ -842,7 +815,11 @@ definitions:
     - description
     - manual
     - role
+    - group
     properties:
+      categoryId:
+        type: integer
+        description: The Unique identifier for the category
       name:
         type: string
         description: Category name.
@@ -873,9 +850,9 @@ definitions:
       addressCriteria:
         type: string
         description: Address selection criteria.
-      surveyId:
-        type: integer
-        description: Survey instrument.
+      survey:
+        type: string
+        description: Survey instrument name.
       sampleCaseTypes:
         $ref: '#/definitions/SampleCaseTypes'
   CaseGroup:
@@ -902,6 +879,9 @@ definitions:
       caseTypeId:
         type: integer
         description: Unique id of the case type that this mapping belongs to
+      isDefault:
+        type: boolean
+        description: true if this mapping is the default for the casetype it is associated with
       inboundChannel:
         type: string
         description: Identifies the expected response channel
@@ -914,36 +894,18 @@ definitions:
   Contact:
     type: object
     properties:
-      contactId:
-        type: integer
-        description: the id of the contact
       forename:
         type: string
         description: the contacts forename
       surname:
         type: string
         description: the contacts surname
-      dateOfBirth:
-        type: string
-        format: date-time
       phoneNumber:
         type: string
         description: the contacts phone number
       emailAddress:
         type: string
         description: the contacts email address
-  Survey:
-    type: object
-    properties:
-      surveyId:
-        type: integer
-        description: Unique ID of survey.
-      name:
-        type: string
-        description: Name of survey.
-      description:
-        type: string
-        description: Description of survey.
   GeographyDetails:
     type: object
     properties:

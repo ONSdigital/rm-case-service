@@ -1,0 +1,12 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 9.26.0-1
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: reboot the casesvc with new schema
+            path: casesvc_foundation.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+

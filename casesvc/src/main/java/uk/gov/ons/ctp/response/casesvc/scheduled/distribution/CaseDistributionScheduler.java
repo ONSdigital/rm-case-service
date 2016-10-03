@@ -44,9 +44,10 @@ public class CaseDistributionScheduler implements HealthIndicator {
    */
   @Inject
   public CaseDistributionScheduler(AppConfig applicationConfig) {
+    //XXX
     final Runnable distributorRunnable = new Runnable() {
       @Override public void run() {
-        distribInfo = caseDistributorImpl.distribute();
+  //     distribInfo = caseDistributorImpl.distribute();
       }
     };
 

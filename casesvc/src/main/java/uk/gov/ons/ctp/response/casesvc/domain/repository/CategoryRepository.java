@@ -11,7 +11,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
  * JPA Data Repository.
  */
 @Repository
-public interface CategoryRepository extends JpaRepository<Category, String> {
+public interface CategoryRepository extends JpaRepository<Category, Integer> {
   /**
    * To find a category by name
    * @param name the name of the category

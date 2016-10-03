@@ -8,8 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,8 +18,9 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Table(name = "sample", schema = "casesvc")
 public class Sample implements Serializable {
 
@@ -37,10 +38,6 @@ public class Sample implements Serializable {
   @Column(name = "addresscriteria")
   private String addressCriteria;
 
-  @Column(name = "casetypeid")
-  private Integer caseTypeId;
-
-  @Column(name = "surveyid")
-  private Integer surveyId;
+  private String survey;
 
 }

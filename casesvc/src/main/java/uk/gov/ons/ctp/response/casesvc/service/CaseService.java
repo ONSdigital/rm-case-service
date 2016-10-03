@@ -13,30 +13,13 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
  */
 public interface CaseService extends CTPService {
 
-  /**
-   * Find Case entities associated with an Address.
-   *
-   * @param uprn UPRN for an address
-   * @return List of Case entities or empty List
-   */
-  List<Case> findCasesByUprn(Long uprn);
 
   /**
-   * Find Case entity by Questionnaire Id.
-   *
-   * @param qid Unique Questionnaire Id
-   * @return Case object or null
+   * Find the cases in a casegroup
+   * @param caseGroupId the group
+   * @return the cases in the group
    */
-  Case findCaseByQuestionnaireId(Integer qid);
-
-  /**
-   * Find Case entity by state and actionplanid
-   *
-   * @param states the case states to find by
-   * @param actionPlanId id of the action plan to find by
-   * @return all the matching cases
-   */
-  List<Integer> findCaseIdsByStatesAndActionPlanId(List<CaseDTO.CaseState> caseStates, Integer actionPlanId);
+  List<Case> findCasesByCaseGroupId(final Integer caseGroupId);
 
   /**
    * Find Case entity by unique Id.
@@ -45,6 +28,15 @@ public interface CaseService extends CTPService {
    * @return Case object or null
    */
   Case findCaseByCaseId(Integer caseId);
+
+  /**
+   * Update a Case to record a response has been
+   * received in the Survey Data Exchange.
+   *
+   * @param caseRef the external case reference given to EQ
+   * @return Updated Case object
+   */
+  Case recordResponse(String caseRef);
 
   /**
    * Find CaseEvent entities associated with a Case.

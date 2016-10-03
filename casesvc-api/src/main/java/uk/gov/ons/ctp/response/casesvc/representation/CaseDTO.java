@@ -31,22 +31,24 @@ public class CaseDTO {
 
   private Integer caseId;
 
-  private Long uprn;
+  private Integer caseGroupId;
+
+  private String externalRef;
 
   private CaseState state;
 
   private Integer caseTypeId;
 
+  private Integer actionPlanMappingId;
+
   private Date createdDateTime;
 
   private String createdBy;
 
-  private Integer sampleId;
+  private String iac;
+  
+  private ResponseDTO[] responses;
 
-  private Integer actionPlanId;
-
-  private Integer surveyId;
-
-  private String questionSet;
+  private ContactDTO contact;
 
 }

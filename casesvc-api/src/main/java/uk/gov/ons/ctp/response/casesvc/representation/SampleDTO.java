@@ -20,8 +20,8 @@ public class SampleDTO {
 
   private String addressCriteria;
 
-  private Integer caseTypeId;
-
   private Integer surveyId;
+
+  private SampleCaseTypeDTO[] sampleCaseTypes;
 
 }

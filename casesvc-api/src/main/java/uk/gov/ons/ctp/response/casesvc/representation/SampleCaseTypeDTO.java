@@ -10,23 +10,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class CaseTypeDTO {
-
-  /**
-   * enum for case type name
-   */
-  public enum CaseTypeName {
-    HH, CH, HGH
-  }
+public class SampleCaseTypeDTO {
 
   private Integer caseTypeId;
 
-  private String name;
-
-  private String description;
-
   private String respondentType;
-
-  private String questionSet;
 
 }

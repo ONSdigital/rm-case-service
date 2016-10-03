@@ -17,7 +17,6 @@ import static uk.gov.ons.ctp.response.casesvc.utility.MockSampleServiceFactory.S
 import static uk.gov.ons.ctp.response.casesvc.utility.MockSampleServiceFactory.SAMPLEID;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockSampleServiceFactory.SURVEYID;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockSampleServiceFactory.UNCHECKED_EXCEPTION;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockSurveyServiceFactory.NON_EXISTING_SURVEYID;
 
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
@@ -89,7 +88,7 @@ public final class SampleEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
-        .assertMessageEquals("Sample not found for id %s", NON_EXISTING_SURVEYID)
+        .assertMessageEquals("Sample not found for id %s", NON_EXISTING_SAMPLEID)
         .andClose();
   }
 
@@ -128,7 +127,7 @@ public final class SampleEndpointUnitTest extends CTPJerseyTest {
             .assertResponseCodeIs(HttpStatus.NOT_FOUND)
             .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
             .assertTimestampExists()
-            .assertMessageEquals("Sample not found for id %s", NON_EXISTING_SURVEYID)
+            .assertMessageEquals("Sample not found for id %s", NON_EXISTING_SAMPLEID)
             .andClose();
   }
 

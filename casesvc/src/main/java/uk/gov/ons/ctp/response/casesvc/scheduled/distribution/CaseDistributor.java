@@ -28,9 +28,7 @@ import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.casesvc.CaseSvcApplication;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
-import uk.gov.ons.ctp.response.casesvc.domain.model.Questionnaire;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.QuestionnaireRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType;
@@ -94,8 +92,6 @@ public class CaseDistributor {
   @Inject
   private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
 
-  @Inject
-  private QuestionnaireRepository questionnaireRepo;
 
   // single TransactionTemplate shared amongst all methods in this instance
   private final TransactionTemplate transactionTemplate;
@@ -249,11 +245,12 @@ public class CaseDistributor {
    * @param caseId the id of the case whose questionnaire we wish to update
    */
   private void assignIacToCaseQuestionnaire(String iac, int caseId) {
-    List<Questionnaire> questionnaires = questionnaireRepo.findByCaseId(caseId);
-    // there can only be one ... it's a kinda magic
-    Questionnaire questionnaire = questionnaires.get(0);
-    questionnaire.setIac(iac);
-    questionnaireRepo.save(questionnaire);
+    //XXX
+//    List<Questionnaire> questionnaires = questionnaireRepo.findByCaseId(caseId);
+//    // there can only be one ... it's a kinda magic
+//    Questionnaire questionnaire = questionnaires.get(0);
+//    questionnaire.setIac(iac);
+//    questionnaireRepo.save(questionnaire);
   }
 
   /**
@@ -290,7 +287,7 @@ public class CaseDistributor {
         caze.getCaseId());
     CaseNotification caseNotification = new CaseNotification();
     caseNotification.setCaseId(caze.getCaseId());
-    caseNotification.setActionPlanId(caze.getActionPlanId());
+   //XXX caseNotification.setActionPlanId(caze.getActionPlanId());
     caseNotification.setNotificationType(NotificationType.SAMPLED_ACTIVATED);
 
     return caseNotification;

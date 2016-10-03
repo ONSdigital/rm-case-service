@@ -73,6 +73,7 @@ public class CategoryDTO {
       return null;
     }
   }
+  private String group;
 
   private String name;
 

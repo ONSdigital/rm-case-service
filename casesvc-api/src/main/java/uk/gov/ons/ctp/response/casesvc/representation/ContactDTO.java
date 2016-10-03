@@ -6,14 +6,21 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * Domain model object
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class QuestionSetDTO {
+public class ContactDTO {
 
-  private String questionSet;
+  private Integer contactId;
+  
+  private String forename;
+  
+  private String surname;
+   
+  private String phoneNumber;
 
-  private String description;
+  private String emailAddress;
 
 }

@@ -8,26 +8,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- *
+ * Domain model object
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class QuestionnaireDTO {
+public class ResponseDTO {
 
-  private Integer questionnaireId;
-
-  private String iac;
+  private Integer responseId;
 
   private Integer caseId;
 
-  private String state;
+  private String inboundChannel;
 
-  private Date dispatchDateTime;
+  private Date dateTime;
 
-  private Date responseDateTime;
-
-  private Date receiptDateTime;
-
-  private String questionSet;
 }

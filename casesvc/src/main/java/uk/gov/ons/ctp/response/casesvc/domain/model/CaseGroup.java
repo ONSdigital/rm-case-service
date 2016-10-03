@@ -8,8 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,20 +18,19 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "survey", schema = "casesvc")
-public class Survey implements Serializable {
-
-  private static final long serialVersionUID = -256606660399234997L;
+@NoArgsConstructor
+@Table(name = "casegroup", schema = "casesvc")
+public class CaseGroup implements Serializable {
 
   @Id
   @GeneratedValue
-  @Column(name = "surveyid")
-  private Integer surveyid;
+  @Column(name = "casegroupid")
+  private Integer caseGroupId;
+  
+  @Column(name = "sampleid")
+  private Integer sampleId;
 
-  private String name;
-
-  private String description;
-
+  private Integer uprn;
 }

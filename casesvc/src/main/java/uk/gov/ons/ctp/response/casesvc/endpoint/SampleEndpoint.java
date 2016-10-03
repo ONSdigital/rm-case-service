@@ -39,19 +39,6 @@ public final class SampleEndpoint implements CTPEndpoint {
   private MapperFacade mapperFacade;
 
   /**
-   * the GET endpoint to retrieve all samples
-   * @return the list of samples
-   */
-  @GET
-  @Path("/")
-  public List<SampleDTO> findSamples() {
-    log.debug("Entering findSamples...");
-    List<Sample> samples = sampleService.findSamples();
-    List<SampleDTO> sampleDTOs = mapperFacade.mapAsList(samples, SampleDTO.class);
-    return CollectionUtils.isEmpty(sampleDTOs) ? null : sampleDTOs;
-  }
-
-  /**
    * the GET endpoint to retrieve a sample by its id
    * @param sampleId the id of the sample
    * @return the sample representation
