@@ -9,8 +9,15 @@
     <xs:complexType name="CaseFeedback">
         <xs:sequence>
             <xs:element name="caseRef" type="xs:string" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="inboundChannel" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="inboundChannel" type="InboundChannel" minOccurs="1" maxOccurs="1"/>
             <xs:element name="responseDateTime" type="xs:dateTime" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
+
+    <xs:simpleType name="InboundChannel">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ONLINE" />
+            <xs:enumeration value="PAPER" />
+        </xs:restriction>
+    </xs:simpleType>
 </xs:schema>
