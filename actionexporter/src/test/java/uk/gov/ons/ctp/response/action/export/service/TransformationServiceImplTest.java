@@ -36,7 +36,7 @@ public class TransformationServiceImplTest {
   freemarker.template.Configuration configuration;
 
   private static final String TEMPLATE_NAME = "testTemplate";
-  private static final String TEST_FILE_PATH = "/tmp/csv/forPrinter.csv";
+  private static final String TEST_FILE_PATH = "/tmp/ctp/forPrinter.csv";
 
   @Test
   public void testFileMeIssueRetrievingTemplate() throws IOException {
