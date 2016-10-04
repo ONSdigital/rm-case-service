@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns="http://ons.gov.uk/ctp/response/casesvc/message/feedback"
+           targetNamespace="http://ons.gov.uk/ctp/response/casesvc/message/feedback">
+
+    <!-- root element of a feedback message to the case service -->
+    <xs:element name="caseFeedback" type="CaseFeedback"/>
+
+    <xs:complexType name="CaseFeedback">
+        <xs:sequence>
+            <xs:element name="caseRef" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="inboundChannel" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="responseDateTime" type="xs:dateTime" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

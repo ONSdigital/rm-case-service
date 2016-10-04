@@ -76,6 +76,45 @@
         <executions>
           <execution>
             <phase>generate-sources</phase>
+            <id>inbound</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <bindingDirectory>src/main/resources/xsd</bindingDirectory>
+              <bindingIncludes>
+                <include>caseFeedback.xjb</include>
+              </bindingIncludes>
+              <bindingExcludes>
+                <include>acaseNotification.xjb</include>
+              </bindingExcludes>
+              <schemaDirectory>src/main/resources/xsd</schemaDirectory>
+              <schemaIncludes>
+                <include>caseFeedback.xsd</include>
+              </schemaIncludes>
+              <generateDirectory>${project.build.directory}/generated-sources/xjc/inbound</generateDirectory>
+              <args>
+                <arg>-Xvalue-constructor</arg>
+                <arg>-Xfluent-builder</arg>
+                <arg>-generateTools=n</arg>
+              </args>
+              <plugins>
+                <plugin>
+                  <groupId>net.codesup.util</groupId>
+                  <artifactId>jaxb2-rich-contract-plugin</artifactId>
+                  <version>1.15.0</version>
+                </plugin>
+                <plugin>
+                  <groupId>org.jvnet.jaxb2_commons</groupId>
+                  <artifactId>jaxb2-value-constructor</artifactId>
+                  <version>3.0</version>
+                </plugin>
+              </plugins>
+            </configuration>
+          </execution>
+
+          <execution>
+            <phase>generate-sources</phase>
             <id>outbound</id>
             <goals>
               <goal>generate</goal>
@@ -85,6 +124,9 @@
               <bindingIncludes>
                 <include>caseNotification.xjb</include>
               </bindingIncludes>
+              <bindingExcludes>
+                <include>caseFeedback.xjb</include>
+              </bindingExcludes>
               <schemaDirectory>src/main/resources/xsd</schemaDirectory>
               <schemaIncludes>
                 <include>caseNotification.xsd</include>
