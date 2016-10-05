@@ -5,6 +5,7 @@ import java.util.List;
 import uk.gov.ons.ctp.common.service.CTPService;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
+import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 
 /**
@@ -12,7 +13,6 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
  * the Case entity model.
  */
 public interface CaseService extends CTPService {
-
 
   /**
    * Find the cases in a casegroup
@@ -30,15 +30,6 @@ public interface CaseService extends CTPService {
   Case findCaseByCaseId(Integer caseId);
 
   /**
-   * Update a Case to record a response has been
-   * received in the Survey Data Exchange.
-   *
-   * @param caseRef the external case reference given to EQ
-   * @return Updated Case object
-   */
-  Case recordResponse(String caseRef);
-
-  /**
    * Find CaseEvent entities associated with a Case.
    *
    * @param caseId Case Id
@@ -52,4 +43,15 @@ public interface CaseService extends CTPService {
    * @return the created CaseEvent
    */
   CaseEvent createCaseEvent(CaseEvent caseEvent);
+  
+
+  /**
+   * Not sure this is the best place for this method, but .. several parts of case svc need to build a 
+   * CaseNotification for a Case and need the services of the ActionPlanMappingService to get the actionPlanId
+   * This method just creates a CaseNotification
+   * @param caze The Case
+   * @param transitionEvent the event to inform the recipient of
+   * @return the newly created notification object
+   */
+  CaseNotification prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent);
 }

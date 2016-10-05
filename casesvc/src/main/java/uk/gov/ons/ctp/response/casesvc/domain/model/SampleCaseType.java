@@ -1,14 +1,10 @@
 package uk.gov.ons.ctp.response.casesvc.domain.model;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -27,22 +23,21 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "response", schema = "casesvc")
-public class Response implements Serializable {
+@Table(name = "samplecasetypeselector", schema = "casesvc")
+public class SampleCaseType implements Serializable {
+
 
   @Id
-  @GeneratedValue
-  @Column(name = "responseid")
-  private Integer responseId;
-  
-  @ManyToOne(fetch=FetchType.LAZY)
-  @JoinColumn(name="caseid")
-  private Case caze;
+  @Column(name = "samplecasetypeselectorid")
+  private Integer sampleCaseTypeId;
 
-  @Column(name = "inboundchannel")
-  @Enumerated(EnumType.STRING)
-  private InboundChannel inboundChannel;
-  
-  @Column(name = "datetime")
-  private Timestamp dateTime;
+  @ManyToOne(fetch=FetchType.LAZY)
+  @JoinColumn(name="sampleid")
+  private Sample sample;
+
+  @Column(name = "castypeid")
+  private Integer caseTypeId;
+
+  @Column(name = "respondenttype")
+  private String respondentType;
 }

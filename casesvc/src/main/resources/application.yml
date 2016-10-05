@@ -93,6 +93,7 @@ spring:
 
 internet-access-code-svc:
   iac-post-path: /iacs 
+  iac-put-path: /iacs
   connection-config:
     scheme: http
     host: localhost

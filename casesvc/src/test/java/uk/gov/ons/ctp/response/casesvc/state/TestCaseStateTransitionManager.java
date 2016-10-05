@@ -34,25 +34,21 @@ public class TestCaseStateTransitionManager {
   @BeforeClass
   public void setup() {
     Map<CaseEvent, CaseState> sampledInitTransitions = new HashMap<>();
-    sampledInitTransitions.put(CaseEvent.SAMPLED_ACTIVATED, CaseState.ACTIVE);
+    sampledInitTransitions.put(CaseEvent.ACTIVATED, CaseState.ACTIONABLE);
     validTransitions.put(CaseState.SAMPLED_INIT, sampledInitTransitions);
 
     Map<CaseEvent, CaseState> replacementInitTransitions = new HashMap<>();
-    replacementInitTransitions.put(CaseEvent.REPLACEMENT_ACTIVATED, CaseState.ACTIVE);
+    replacementInitTransitions.put(CaseEvent.REPLACED, CaseState.ACTIONABLE);
     validTransitions.put(CaseState.REPLACEMENT_INIT, replacementInitTransitions);
     
-    Map<CaseEvent, CaseState> activeTransitions = new HashMap<>();
-    activeTransitions.put(CaseEvent.DEACTIVATED, CaseState.INACTIVE);
-    activeTransitions.put(CaseEvent.RESPONSE_RECEIVED, CaseState.RESPONDED);
-    validTransitions.put(CaseState.ACTIVE, activeTransitions);
+    Map<CaseEvent, CaseState> actionableTransitions = new HashMap<>();
+    actionableTransitions.put(CaseEvent.DEACTIVATED, CaseState.INACTIONABLE);
+    actionableTransitions.put(CaseEvent.DISABLED, CaseState.INACTIONABLE);
+    validTransitions.put(CaseState.ACTIONABLE, actionableTransitions);
 
-    Map<CaseEvent, CaseState> respondedTransitions = new HashMap<>();
-    respondedTransitions.put(CaseEvent.RESPONSE_RECEIVED, CaseState.RESPONDED);
-    validTransitions.put(CaseState.RESPONDED, respondedTransitions);
-
-    Map<CaseEvent, CaseState> inactiveTransitions = new HashMap<>();
-    inactiveTransitions.put(CaseEvent.RESPONSE_RECEIVED, CaseState.INACTIVE);
-    validTransitions.put(CaseState.INACTIVE, inactiveTransitions);
+    Map<CaseEvent, CaseState> inactionableTransitions = new HashMap<>();
+    inactionableTransitions.put(CaseEvent.DEACTIVATED, CaseState.INACTIONABLE);
+    validTransitions.put(CaseState.INACTIONABLE, inactionableTransitions);
   }
 
   /**

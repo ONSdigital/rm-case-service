@@ -108,37 +108,6 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /cases/caseref/{caseRef}/response:
-    put:
-      summary:  Confirms a response has been received in the Survey Data Exchange.
-      description: |
-        For case identified by the external reference, it populates the response_datetime. It also populates case_state for the related Case.
-      parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-        - name: caseRef
-          description: Unique external reference for the case
-          in: path
-          required: true
-          type: string
-      tags:
-        - Case
-      responses:
-        200:
-          description: The response mechanism was completed successfully.
-          schema:
-            $ref: '#/definitions/Case'
-        404:
-          description: Case not found
-          schema:
-            $ref: '#/definitions/Error'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
   /cases/casegroup/{caseGroupId}:
     get:
       summary:  Get the cases for a given casegroup
@@ -232,77 +201,6 @@ paths:
           description: Case not found
           schema:
             $ref: '#/definitions/Error'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
-  /cases/{caseId}/deactivate:
-    put:
-      summary:  Deactivates the specified case.
-      description: Marks the specified case as inactive. For example, if an Internet Access Code is lost and a new one is generated, requiring a new associated case.
-      parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-        - name: caseId
-          description: Unique case ID.
-          in: path
-          required: true
-          type: integer
-        - in: body
-          name: case
-          description: Deactivation request details
-          required: true
-          schema:
-            $ref: '#/definitions/CaseDeactivationRequest'
-      tags:
-        - Case
-      responses:
-        200:
-          description: Case successfully deactivated.
-          schema:
-              $ref: '#/definitions/Case'
-        404:
-          description: Case not found
-          schema:
-            $ref: '#/definitions/Error'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
-  /cases/actionplan/{actionPlanId}:
-    get:
-      summary: Get the case IDs for the specified action plan.
-      description: Lists all case IDs for an action plan's cases, optionally filtered by case state.
-      parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json
-          required: false
-          type: string
-        - in: path
-          name: actionPlanId
-          description: Unique action plan ID
-          required: true
-          type: integer
-        - name: state
-          in: query
-          description: Case state to filter by
-          required: false
-          type: string
-      tags:
-        - Case
-      responses:
-        200:
-          description: Cases found
-          schema:
-            type: array
-            items:
-              type: integer
-        204:
-          description: No cases
         default:
           description: Unexpected error
           schema:
@@ -826,6 +724,9 @@ definitions:
       description:
         type: string
         description: Description of category.
+      eventType:
+        type: string
+        description: The case state model event (if any) applied to the case associated with a CaseEvent of this category
       manual:
         type: boolean
         description: Whether the associated case event was created by a user or by a system event.

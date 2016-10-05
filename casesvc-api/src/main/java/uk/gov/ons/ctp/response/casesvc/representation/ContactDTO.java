@@ -13,8 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class ContactDTO {
 
-  private Integer contactId;
-  
   private String forename;
   
   private String surname;

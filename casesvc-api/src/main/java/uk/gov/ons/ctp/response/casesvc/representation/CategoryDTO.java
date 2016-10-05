@@ -16,63 +16,53 @@ public class CategoryDTO {
   /**
    * enum for category type
    */
-  public enum CategoryName {
-    CASE_CREATED("CaseCreated"),
-    CASE_CLOSED("CaseClosed"),
-    ACTION_UPDATED("ActionUpdated"),
-    ACTION_COMPLETED("ActionCompleted"),
-    ACTION_CREATED("ActionCreated"),
-    GENERAL_ENQUIRY("General Enquiry"),
-    COMPLAINT("Complaint"),
-    SURVEY_ENQUIRY("Survey Enquiry"),
-    ADDRESS_DETAILS_INCORRECT("Address Details Incorrect"),
-    CLASSIFICATION_INCORRECT("Classification Incorrect"),
-    REFUSAL("Refusal"),
-    REQUEST_FOR_FULFILLMENT("Request for Fulfilment"),
-    TECHNICAL_QUERY("Technical Query"),
-    MISCELLANEOUS("Miscellaneous"),
-    PENDING("Pending"),
-    CLOSED("Closed"),
-    COMPLAINT_ESCALATED("Complaint - Escalated"),
-    GENERAL_ENQUIRY_ESCALATED("General Enquiry - Escalated"),
-    SURVEY_ENQUIRY_ESCALATED("Survey Enquiry - Escalated"),
-    UNDELIVERABLE("Undeliverable"),
-    QUESTIONNAIRE_RESPONSE("QuestionnaireResponse"),
-    ACTION_CANCELLATION_COMPLETED("ActionCancellationCompleted"),
-    ACTION_CANCELLATION_CREATED("ActionCancellationCreated");
-
-    private String label;
-
-    /**
-     * constructor
-     * @param theLabel the ... label
-     */
-    CategoryName(String theLabel) {
-      this.label = theLabel;
-    }
-
-    /**
-     * get the label
-     * @return the label
-     */
-    public String getLabel() {
-      return label;
-    }
-
-    /**
-     * get the enum for a given label
-     * @param label this is the label
-     * @return this is the enum!
-     */
-    public static CategoryName getEnumByLabel(String label) {
-      for (CategoryName e : CategoryName.values()) {
-        if (label.equals(e.label)) {
-          return e;
-        }
-      }
-      return null;
-    }
+  public enum CategoryType {
+    ACTION_CANCELLATION_COMPLETED,
+    ACTION_CANCELLATION_CREATED,
+    ACTION_COMPLETED,
+    ACTION_CREATED,
+    ACTION_UPDATED,
+    ADDRESS_DETAILS_INCORRECT,
+    CASE_CREATED,
+    CLASSIFICATION_INCORRECT,
+    GENERAL_COMPLAINT,
+    GENERAL_COMPLAINT_ESCALATED,
+    GENERAL_ENQUIRY,
+    GENERAL_ENQUIRY_ESCALATED,
+    INCORRECT_ESCALATION,
+    MISCELLANEOUS,
+    FIELD_EMERGENCY_ESCALATED,
+    PENDING,
+    FIELD_COMPLAINT_ESCALATED,
+    TECHNICAL_QUERY,
+    ACCESSIBILITY_MATERIALS,
+    PAPER_QUESTIONNAIRE_RESPONSE,
+    ONLINE_QUESTIONNAIRE_RESPONSE,
+    REFUSAL,
+    UNDELIVERABLE,
+    HOUSEHOLD_REPLACEMENT_IAC_REQUESTED,
+    HOUSEHOLD_PAPER_REQUESTED,
+    INDIVIDUAL_RESPONSE_REQUESTED,
+    INDIVIDUAL_REPLACEMENT_IAC_REQUESTED,
+    INDIVIDUAL_PAPER_REQUESTED,
+    TRANSLATION_POLISH,
+    TRANSLATION_CANTONESE,
+    TRANSLATION_SOMALI,
+    TRANSLATION_MANDARIN,
+    TRANSLATION_BENGALI,
+    TRANSLATION_PUNJABI_SHAHMUKI,
+    TRANSLATION_PUNJABI_GURMUKHI,
+    TRANSLATION_LITHUANIAN,
+    TRANSLATION_GUJERATI,
+    TRANSLATION_TURKISH,
+    TRANSLATION_ARABIC,
+    TRANSLATION_URDU,
+    TRANSLATION_PORTUGUESE,
+    TRANSLATION_SPANISH
   }
+
+  private Integer categoryId;
+  
   private String group;
 
   private String name;
@@ -80,10 +70,10 @@ public class CategoryDTO {
   private String description;
 
   private String role;
+  
+  private CaseDTO.CaseEvent eventType;
 
   private String generatedActionType;
-
-  private Boolean closeCase;
 
   private Boolean manual;
 

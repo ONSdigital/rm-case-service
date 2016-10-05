@@ -22,10 +22,10 @@
   
   <xs:simpleType name="NotificationType">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="SAMPLED_ACTIVATED"/>
-      <xs:enumeration value="REPLACEMENT_ACTIVATED"/>
+      <xs:enumeration value="ACTIVATED"/>
+      <xs:enumeration value="REPLACED"/>
       <xs:enumeration value="DEACTIVATED"/>
-      <xs:enumeration value="RESPONDED"/>
+      <xs:enumeration value="DISABLED"/>
     </xs:restriction>
   </xs:simpleType>
   

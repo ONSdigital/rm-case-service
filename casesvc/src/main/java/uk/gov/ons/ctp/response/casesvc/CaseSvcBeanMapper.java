@@ -76,6 +76,7 @@ public class CaseSvcBeanMapper extends ConfigurableMapper {
 
     factory
         .classMap(Category.class, CategoryDTO.class)
+        .field("categoryType", "name")
         .byDefault()
         .register();
 
@@ -89,7 +90,6 @@ public class CaseSvcBeanMapper extends ConfigurableMapper {
         .byDefault()
         .register();
 
-    // XXX will need custom mapping to load up the SampleCaseTypeDTO[] is Sample
     factory
         .classMap(Sample.class, SampleDTO.class)
         .byDefault()

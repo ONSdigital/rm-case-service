@@ -32,5 +32,5 @@ public class CaseGroup implements Serializable {
   @Column(name = "sampleid")
   private Integer sampleId;
 
-  private Integer uprn;
+  private Long uprn;
 }

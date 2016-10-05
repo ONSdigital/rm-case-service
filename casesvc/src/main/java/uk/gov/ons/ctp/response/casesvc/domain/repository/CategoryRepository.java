@@ -12,12 +12,6 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
  */
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
-  /**
-   * To find a category by name
-   * @param name the name of the category
-   * @return the found category
-   */
-  Category findByName(String name);
 
   /**
    * To find a category by security role

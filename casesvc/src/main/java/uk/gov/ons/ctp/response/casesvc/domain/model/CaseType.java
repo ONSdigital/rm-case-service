@@ -36,5 +36,8 @@ public class CaseType implements Serializable {
 
   @Column(name = "respondenttype")
   private String respondentType;
+  
+  @Column(name = "questionset")
+  private String questionSet;
 
 }

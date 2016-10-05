@@ -17,5 +17,5 @@ public class CaseGroupDTO {
 
   private Integer sampleId;
   
-  private Integer uprn;
+  private Long uprn;
 }

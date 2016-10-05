@@ -31,9 +31,9 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
-import uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseState;
+import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 
 /**
@@ -89,6 +89,9 @@ public class CaseDistributor {
   @Inject
   private CaseRepository caseRepo;
 
+  @Inject
+  private CaseService caseService;
+  
   @Inject
   private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
 
@@ -225,13 +228,13 @@ public class CaseDistributor {
       public CaseNotification doInTransaction(final TransactionStatus status) {
         CaseNotification caseNotification = null;
         // update our cases state in db
-        transitionCase(caze, CaseDTO.CaseEvent.SAMPLED_ACTIVATED);
+        transitionCase(caze, CaseDTO.CaseEvent.ACTIVATED);
 
         // stick the IAC to the questionnaire
         assignIacToCaseQuestionnaire(iac, caze.getCaseId());
 
         // create the request, filling in details by GETs from casesvc
-        caseNotification = prepareCaseNotification(caze);
+        caseNotification = caseService.prepareCaseNotification(caze, CaseDTO.CaseEvent.ACTIVATED);
         return caseNotification;
       }
     });
@@ -272,25 +275,6 @@ public class CaseDistributor {
       throw new RuntimeException(ste);
     }
     return updatedCase;
-  }
-
-  /**
-   * Take an case and using it, fetch further info from Case service in a number
-   * of rest calls, in order to create the CaseRequest
-   *
-   * @param caze It all starts with the Case
-   * @return The CaseRequest created from the Case and the other info from
-   *         CaseSvc
-   */
-  private CaseNotification prepareCaseNotification(final Case caze) {
-    log.debug("constructing CaseNotification to publish to downstream handler for case id {}",
-        caze.getCaseId());
-    CaseNotification caseNotification = new CaseNotification();
-    caseNotification.setCaseId(caze.getCaseId());
-   //XXX caseNotification.setActionPlanId(caze.getActionPlanId());
-    caseNotification.setNotificationType(NotificationType.SAMPLED_ACTIVATED);
-
-    return caseNotification;
   }
 
   /**

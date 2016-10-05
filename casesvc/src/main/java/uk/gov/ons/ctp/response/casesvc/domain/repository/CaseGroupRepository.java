@@ -14,8 +14,6 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 public interface CaseGroupRepository extends JpaRepository<CaseGroup, Integer> {
 
  /**
- 
- /**
   * find all case groups associated with a uprn 
   * @param uprn the uprn
   * @return the list, empty or otherwise of groups associated with the uprn

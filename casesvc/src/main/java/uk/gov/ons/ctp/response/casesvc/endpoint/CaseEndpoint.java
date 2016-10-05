@@ -6,11 +6,9 @@ import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
 
 import org.springframework.util.CollectionUtils;
 
@@ -131,24 +129,4 @@ public final class CaseEndpoint implements CTPEndpoint {
     return mapperFacade.map(createdCaseEvent, CaseEventDTO.class);
   }
   
-  /**
-   * Web service to update a Case to record a response
-   * has been received in the Survey Data Exchange.
-   *
-   * @param caseRef of response received
-   * @return javax.ws.rs.core.Response with 200 OK on success
-   * @throws CTPException on operation failure
-   */
-  @PUT
-  @Path("/caseref/{caseref}/response")
-  //XXX needs channel? from sdxg
-  public Response responseOperation(@PathParam("caseRef") final String caseRef) throws CTPException {
-    log.debug("Entering responseOperation with {}", caseRef);
-    Case caze = caseService.recordResponse(caseRef);
-    if (caze == null) {
-      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-              String.format("%s caseref %s", ERRORMSG_CASENOTFOUND, caseRef));
-    }
-    return Response.status(Response.Status.NO_CONTENT).build();
-  }
 }

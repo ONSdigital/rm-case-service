@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -27,24 +29,23 @@ public class ActionPlanMapping implements Serializable {
   @GeneratedValue
   @Column(name = "actionplanmappingid")
   private Integer actionPlanMappingId;
-  
+
   @Column(name = "actionplanid")
   private Integer actionPlanId;
 
   @Column(name = "casetypeid")
   private Integer caseTypeId;
 
-  @Column(name = "casegroupid")
-  private Integer caseGroupId;
-
   @Column(name = "isdefault")
   private Boolean isDefault;
-  
+
   @Column(name = "inboundchannel")
-  private String inboundChannel;
+  @Enumerated(EnumType.STRING)
+  private InboundChannel inboundChannel;
 
   private String variant;
 
   @Column(name = "outboundchannel")
-  private String outboundChannel;
+  @Enumerated(EnumType.STRING)
+  private OutboundChannel outboundChannel;
 }

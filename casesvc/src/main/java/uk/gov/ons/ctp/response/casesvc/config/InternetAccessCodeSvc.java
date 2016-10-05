@@ -11,4 +11,5 @@ import uk.gov.ons.ctp.common.rest.RestClientConfig;
 public class InternetAccessCodeSvc {
   private RestClientConfig connectionConfig;
   private String iacPostPath;
+  private String iacPutPath;
 }

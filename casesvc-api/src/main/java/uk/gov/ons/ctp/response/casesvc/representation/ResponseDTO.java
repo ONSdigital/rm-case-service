@@ -15,10 +15,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class ResponseDTO {
 
-  private Integer responseId;
-
-  private Integer caseId;
-
   private String inboundChannel;
 
   private Date dateTime;
