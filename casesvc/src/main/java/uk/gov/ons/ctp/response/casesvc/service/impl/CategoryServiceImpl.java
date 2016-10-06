@@ -24,11 +24,13 @@ public class CategoryServiceImpl implements CategoryService {
   @Inject
   private CategoryRepository categoryRepo;
 
-  /**
-   * find case event categories by role
-   * @param role the role
-   * @return the list of categories
-   */
+
+  @Override
+  public Category findCategory(Integer categoryId) {
+    log.debug("Entering findCategory with categoryId {}", categoryId);
+    return categoryRepo.findOne(categoryId);
+  }
+
   @Override
   public List<Category> findCategories(String role) {
     log.debug("Entering findCategories with role {}", role);
