@@ -25,6 +25,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "actionplanmapping", schema = "casesvc")
 public class ActionPlanMapping implements Serializable {
+  private static final long serialVersionUID = -2115603335146371158L;
+
   @Id
   @GeneratedValue
   @Column(name = "actionplanmappingid")

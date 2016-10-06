@@ -24,6 +24,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "casegroup", schema = "casesvc")
 public class CaseGroup implements Serializable {
 
+  private static final long serialVersionUID = -2971565755952967983L;
+
   @Id
   @GeneratedValue
   @Column(name = "casegroupid")

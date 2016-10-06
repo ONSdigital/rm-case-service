@@ -30,6 +30,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "response", schema = "casesvc")
 public class Response implements Serializable {
 
+  private static final long serialVersionUID = 7338670357547040523L;
+
   @Id
   @GeneratedValue
   @Column(name = "responseid")

@@ -24,6 +24,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "contact", schema = "casesvc")
 public class Contact implements Serializable {
 
+  private static final long serialVersionUID = 2512883011247985734L;
+
   @Id
   @GeneratedValue
   @Column(name = "contactid")

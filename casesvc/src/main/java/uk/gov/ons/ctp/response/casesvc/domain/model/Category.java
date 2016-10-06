@@ -27,6 +27,8 @@ import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 @Table(name = "category", schema = "casesvc")
 public class Category implements Serializable {
 
+  private static final long serialVersionUID = -8265556287097172790L;
+
   @Id
   @Column(name = "categoryid")
   private Integer categoryId;
