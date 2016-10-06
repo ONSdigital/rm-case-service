@@ -341,6 +341,36 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  /categories/{categoryId}:
+    get:
+      summary: Get information for the specified category.
+      description: Return information for the supplied category code.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: categoryId
+          in: path
+          description: Unique category ID.
+          required: true
+          type: integer
+      tags:
+        - Case
+      responses:
+        200:
+          description: A single category.
+          schema:
+              $ref: '#/definitions/Category'
+        404:
+          description: Category not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
   /samples/{sampleId}:
     get:
       summary: Get information for the specified sample.
@@ -724,6 +754,9 @@ definitions:
       description:
         type: string
         description: Description of category.
+      eventType:
+        type: string
+        description: The case state model event (if any) applied to the case associated with a CaseEvent of this category
       manual:
         type: boolean
         description: Whether the associated case event was created by a user or by a system event.
