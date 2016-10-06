@@ -71,10 +71,6 @@ public class CategoryDTO {
 
   private String role;
   
-  private CaseDTO.CaseEvent eventType;
-
-  private String generatedActionType;
-
   private Boolean manual;
 
 }

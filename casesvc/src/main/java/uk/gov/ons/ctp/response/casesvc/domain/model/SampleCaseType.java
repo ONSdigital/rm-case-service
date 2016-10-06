@@ -26,6 +26,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "samplecasetypeselector", schema = "casesvc")
 public class SampleCaseType implements Serializable {
 
+  private static final long serialVersionUID = -7109840000867720238L;
 
   @Id
   @Column(name = "samplecasetypeselectorid")

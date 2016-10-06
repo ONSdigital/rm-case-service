@@ -19,4 +19,10 @@ public interface CategoryService extends CTPService {
    */
   List<Category> findCategories(String role);
 
+  /**
+   * Fnd a single category by its id
+   * @param categoryId the id
+   * @return the category
+   */
+  Category findCategory(Integer categoryId);
 }

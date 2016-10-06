@@ -190,12 +190,12 @@ public class CaseDistributor {
         .collect(Collectors.toList());
     log.debug("retrieving while excluding cases {}", excludedCases);
 
-    // prepare and execute the query to find the oldest N cases that are in state INIT and not in the excluded list
+    // prepare and execute the query to find the oldest N cases that are in INIT states and not in the excluded list
     Pageable pageable = new PageRequest(0, appConfig.getCaseDistribution().getRetrievalMax(), new Sort(
         new Sort.Order(Direction.ASC, "createdDateTime")));
     excludedCases.add(Integer.valueOf(IMPOSSIBLE_CASE_ID));
     List<Case> cases = caseRepo
-        .findByStateInAndCaseIdNotIn(Arrays.asList(CaseState.SAMPLED_INIT), excludedCases, pageable);
+        .findByStateInAndCaseIdNotIn(Arrays.asList(CaseState.SAMPLED_INIT, CaseState.REPLACEMENT_INIT), excludedCases, pageable);
     log.debug("RETRIEVED case ids {}", cases.stream().map(a -> a.getCaseId().toString())
         .collect(Collectors.joining(",")));
 
@@ -228,32 +228,29 @@ public class CaseDistributor {
       public CaseNotification doInTransaction(final TransactionStatus status) {
         CaseNotification caseNotification = null;
         // update our cases state in db
-        transitionCase(caze, CaseDTO.CaseEvent.ACTIVATED);
+        CaseDTO.CaseEvent event = null;
+        switch (caze.getState()) {
+        case SAMPLED_INIT:
+          event = CaseDTO.CaseEvent.ACTIVATED;
+          break;
+        case REPLACEMENT_INIT:
+          event = CaseDTO.CaseEvent.REPLACED;
+          break;
+        default:
+          String msg = String.format("Case %d has incorrect state %s", caze.getCaseId(), caze.getState());
+          log.error(msg);
+          throw new RuntimeException(msg);
+        }
+        Case updatedCase = transitionCase(caze, event);
+        updatedCase.setIac(iac);
 
-        // stick the IAC to the questionnaire
-        assignIacToCaseQuestionnaire(iac, caze.getCaseId());
+        caseRepo.saveAndFlush(updatedCase);
 
         // create the request, filling in details by GETs from casesvc
-        caseNotification = caseService.prepareCaseNotification(caze, CaseDTO.CaseEvent.ACTIVATED);
+        caseNotification = caseService.prepareCaseNotification(caze, event);
         return caseNotification;
       }
     });
-  }
-
-  /**
-   * simply get the questionnaire associated with the case and update it with
-   * the provided iac
-   * 
-   * @param iac the freshly minted IAC to assign to the case questionnaire
-   * @param caseId the id of the case whose questionnaire we wish to update
-   */
-  private void assignIacToCaseQuestionnaire(String iac, int caseId) {
-    //XXX
-//    List<Questionnaire> questionnaires = questionnaireRepo.findByCaseId(caseId);
-//    // there can only be one ... it's a kinda magic
-//    Questionnaire questionnaire = questionnaires.get(0);
-//    questionnaire.setIac(iac);
-//    questionnaireRepo.save(questionnaire);
   }
 
   /**
@@ -270,7 +267,6 @@ public class CaseDistributor {
     try {
       CaseDTO.CaseState nextState = caseSvcStateTransitionManager.transition(caze.getState(), event);
       caze.setState(nextState);
-      updatedCase = caseRepo.saveAndFlush(caze);
     } catch (StateTransitionException ste) {
       throw new RuntimeException(ste);
     }

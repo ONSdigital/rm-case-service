@@ -1,4 +1,4 @@
-
+﻿
 SET SCHEMA 'casesvc';
 
 
@@ -46,8 +46,8 @@ CREATE TABLE address (
     htc numeric(8,0),
     latitude double precision,
     longitude double precision,
-    sample character varying(10),
-    casetype character varying(10)
+    sample character varying(20),
+    casetype character varying(20)
 );
 
 
@@ -61,8 +61,8 @@ ALTER TABLE casesvc.address OWNER TO postgres;
 CREATE TABLE "case" (
     caseid bigint NOT NULL,
     casegroupid bigint NOT NULL,
-    caseref bigint,
-    state character varying(10),
+    caseref varchar(16),
+    state character varying(20),
     casetypeid integer,
     actionplanmappingid integer,
     createddatetime timestamp with time zone,
@@ -203,7 +203,7 @@ CREATE TABLE category (
     categoryid integer NOT NULL,
     name character varying(40) NOT NULL,
     description character varying(50),
-    closecase boolean,
+    eventtype character varying(20),
     manual boolean,
     role character varying(50),
     generatedactiontype character varying(100),
@@ -324,7 +324,7 @@ ALTER TABLE casesvc.sample OWNER TO postgres;
 CREATE TABLE samplecasetypeselector (
     samplecasetypeselectorid integer NOT NULL,
     sampleid integer,
-    castypeid integer,
+    casetypeid integer,
     respondenttype character varying(10)
 );
 
@@ -545,7 +545,7 @@ ALTER TABLE ONLY response
 --
 
 ALTER TABLE ONLY samplecasetypeselector
-    ADD CONSTRAINT casetyeid_fkey FOREIGN KEY (castypeid) REFERENCES casetype(casetypeid);
+    ADD CONSTRAINT casetyeid_fkey FOREIGN KEY (casetypeid) REFERENCES casetype(casetypeid);
 
 
 --
@@ -877,8 +877,4 @@ REVOKE ALL ON TABLE survey FROM postgres;
 GRANT ALL ON TABLE survey TO postgres;
 
 
--- Completed on 2016-09-30 12:59:05 BST
 
---
--- PostgreSQL database dump complete
---

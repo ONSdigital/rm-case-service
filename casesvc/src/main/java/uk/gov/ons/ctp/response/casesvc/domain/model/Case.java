@@ -34,6 +34,8 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 @Table(name = "case", schema = "casesvc")
 public class Case implements Serializable {
 
+  private static final long serialVersionUID = 7778360895016862176L;
+
   @Id
   @GeneratedValue
   @Column(name = "caseid")

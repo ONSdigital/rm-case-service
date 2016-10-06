@@ -28,6 +28,8 @@ import lombok.NoArgsConstructor;
 public class Sample implements Serializable {
 
 
+  private static final long serialVersionUID = -5990905483071750964L;
+
   @Id
   @GeneratedValue
   @Column(name = "sampleid")
