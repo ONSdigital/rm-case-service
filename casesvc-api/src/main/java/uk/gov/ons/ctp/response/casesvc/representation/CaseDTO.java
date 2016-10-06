@@ -33,7 +33,7 @@ public class CaseDTO {
 
   private Integer caseGroupId;
 
-  private String externalRef;
+  private String caseRef;
 
   private CaseState state;
 
