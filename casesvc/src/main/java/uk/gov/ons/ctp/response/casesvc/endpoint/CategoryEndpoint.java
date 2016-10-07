@@ -47,21 +47,4 @@ public final class CategoryEndpoint implements CTPEndpoint {
     List<CategoryDTO> categoryDTOs = mapperFacade.mapAsList(categories, CategoryDTO.class);
     return CollectionUtils.isEmpty(categoryDTOs) ? null : categoryDTOs;
   }
-
-  /**
-   * the GET endpoint to retrieve a single category by id
-   * @param caetgoryId the id of teh category to get
-   * @return the category
-   */
-  @GET
-  @Path("/{categoryId}")
-  public CategoryDTO findCategory(@PathParam("categoryId") final Integer categoryId) throws CTPException {
-    log.debug("Entering findCategory with categoryId {}", categoryId);
-    Category category = categoryService.findCategory(categoryId);
-    if (category == null) {
-      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-              String.format("%s category id %s", ERRORMSG_CATEGORYNOTFOUND, categoryId));
-    }
-    return mapperFacade.map(category, CategoryDTO.class);
-  }
 }

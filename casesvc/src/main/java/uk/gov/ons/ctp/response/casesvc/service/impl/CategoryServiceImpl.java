@@ -26,12 +26,6 @@ public class CategoryServiceImpl implements CategoryService {
 
 
   @Override
-  public Category findCategory(Integer categoryId) {
-    log.debug("Entering findCategory with categoryId {}", categoryId);
-    return categoryRepo.findOne(categoryId);
-  }
-
-  @Override
   public List<Category> findCategories(String role) {
     log.debug("Entering findCategories with role {}", role);
     if (role == null || role.isEmpty()) {

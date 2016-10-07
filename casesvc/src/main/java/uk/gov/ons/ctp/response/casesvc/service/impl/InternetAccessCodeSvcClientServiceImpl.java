@@ -14,6 +14,7 @@ import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 import uk.gov.ons.ctp.response.iac.representation.CreateInternetAccessCodeDTO;
 import uk.gov.ons.ctp.response.iac.representation.InternetAccessCodeDTO;
+import uk.gov.ons.ctp.response.iac.representation.UpdateInternetAccessCodeDTO;
 
 /**
  * The impl of the service which calls the IAC service via REST
@@ -45,8 +46,9 @@ public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCod
   @Override
   public InternetAccessCodeDTO disableIAC(String iac) {
     log.debug("about to put to the IAC SVC with {}", iac);
-     InternetAccessCodeDTO internetAccessCodeDTO = internetAccessClientServiceClient
-        .putResource(appConfig.getInternetAccessCodeSvc().getIacPutPath(), iac, InternetAccessCodeDTO.class);
+    UpdateInternetAccessCodeDTO updateInternetAccessCodeDTO = new UpdateInternetAccessCodeDTO("SYSTEM");
+    InternetAccessCodeDTO internetAccessCodeDTO = internetAccessClientServiceClient
+        .putResource(appConfig.getInternetAccessCodeSvc().getIacPutPath(), updateInternetAccessCodeDTO, InternetAccessCodeDTO.class, iac);
     return internetAccessCodeDTO;
   }
 }

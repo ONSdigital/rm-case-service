@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -66,7 +67,7 @@ public class Case implements Serializable {
   @Column(name = "createdby")
   private String createdBy;
 
-  @OneToMany(mappedBy="caze", fetch=FetchType.EAGER)
+  @OneToMany(mappedBy="caze", fetch=FetchType.EAGER, cascade=CascadeType.ALL)
   private List<Response> responses;
 
   private String iac;

@@ -5,6 +5,8 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 
 /**
  * Domain model object.
@@ -46,8 +49,8 @@ public class CaseEvent implements Serializable {
   @Column(name = "createddatetime")
   private Timestamp createdDateTime;
 
-  @Column(name = "categoryid")
-  private Integer categoryId;
+  @Enumerated(EnumType.STRING)
+  private CategoryDTO.CategoryType category;
 
   @Column(name = "subcategory")
   private String subCategory;

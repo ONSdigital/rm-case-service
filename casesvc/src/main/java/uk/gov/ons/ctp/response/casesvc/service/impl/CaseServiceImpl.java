@@ -97,7 +97,7 @@ public class CaseServiceImpl implements CaseService {
       caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
       createdCaseEvent = caseEventRepo.save(caseEvent);
 
-      Category category = categoryRepo.findOne(caseEvent.getCategoryId());
+      Category category = categoryRepo.findOne(caseEvent.getCategory());
       // create and add Response obj to the case if event is a response
       switch (category.getCategoryType()) {
       case ONLINE_QUESTIONNAIRE_RESPONSE:
@@ -157,6 +157,7 @@ public class CaseServiceImpl implements CaseService {
     // create a Response obj and associate it with this case
     Response response = Response.builder()
         .inboundChannel(channel)
+        .caze(caze)
         .dateTime(DateTimeUtil.nowUTC()).build();
 
     caze.getResponses().add(response);

@@ -108,6 +108,36 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  /casegroups/{caseGroupId}:
+    get:
+      summary: Get the casegroup for the provided id
+      description: Return the casegroup associated with a case group id
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: caseGroupId
+          description: The caseGroupId of the casegroup to be fetched
+          in: path
+          required: true
+          type: integer
+      tags:
+        - Case
+      responses:
+        200:
+          description: CaseGroup details for the requested group id
+          schema:
+            $ref: '#/definitions/CaseGroup'
+        404:
+          description: CaseGroup not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
   /cases/casegroup/{caseGroupId}:
     get:
       summary:  Get the cases for a given casegroup
@@ -646,21 +676,13 @@ definitions:
       createdBy:
         type: string
         description: Creator of case.
-  CaseDeactivationRequest:
-    type: object
-    required:
-      - updatedBy
-    properties:
-      updatedBy:
-        description: User who deactivated this Case
-        type: string
   CaseEvent:
     type: object
     required:
       - caseEventId
       - caseId
       - description
-      - categoryId
+      - category
       - createdDateTime
       - createdBy
     properties:
@@ -673,8 +695,8 @@ definitions:
       description:
         type: string
         description: Case event description.
-      categoryId:
-        type: integer
+      category:
+        type: string
         description: Identifier of the category that triggered the case event.
       subCategory:
         type: string
@@ -690,14 +712,14 @@ definitions:
     type: object
     required:
       - description
-      - categoryId
+      - category
       - createdBy
     properties:
       description:
         type: string
         description: Case event description.
-      categoryId:
-        type: integer
+      category:
+        type: string
         description: Identifier of the category of event which triggered the case event.
       subCategory:
         type: string
@@ -745,12 +767,9 @@ definitions:
     - role
     - group
     properties:
-      categoryId:
-        type: integer
-        description: The Unique identifier for the category
       name:
         type: string
-        description: Category name.
+        description: Category name - the unique identifier for the category.
       description:
         type: string
         description: Description of category.

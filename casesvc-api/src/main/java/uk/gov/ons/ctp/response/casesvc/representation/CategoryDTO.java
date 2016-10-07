@@ -61,11 +61,10 @@ public class CategoryDTO {
     TRANSLATION_SPANISH
   }
 
-  private Integer categoryId;
   
   private String group;
 
-  private String name;
+  private CategoryType name;
 
   private String description;
 

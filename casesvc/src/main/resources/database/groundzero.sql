@@ -1,16 +1,3 @@
--- PLEASE NOTE - execute as a query, not pgScript --
-
--- Remove below for caseframe when everyone moved to casesvc schema 
-
-DO $$
-BEGIN
-IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname='caseframesvc') THEN
-   DROP OWNED BY caseframesvc;
-END IF;
-END$$;
-DROP ROLE IF EXISTS caseframesvc;
-
-DROP SCHEMA if exists caseframe cascade;
 
 --Set up casesvc schema
 DO $$

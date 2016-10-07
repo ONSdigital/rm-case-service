@@ -151,8 +151,9 @@ public class CaseDistributor {
         } catch (Exception e) {
           // single case/questionnaire db changes rolled back
           log.error(
-              "Exception thrown processing case {}. Processing will be retried at next scheduled distribution",
+              "Exception thrown processing case {}. Processing postponed",
               caze.getCaseId());
+          log.error(e.getStackTrace().toString());
           failures++;
         }
       }
@@ -263,14 +264,13 @@ public class CaseDistributor {
    * @return the transitioned case
    */
   private Case transitionCase(final Case caze, final CaseDTO.CaseEvent event) {
-    Case updatedCase = null;
     try {
       CaseDTO.CaseState nextState = caseSvcStateTransitionManager.transition(caze.getState(), event);
       caze.setState(nextState);
     } catch (StateTransitionException ste) {
       throw new RuntimeException(ste);
     }
-    return updatedCase;
+    return caze;
   }
 
   /**

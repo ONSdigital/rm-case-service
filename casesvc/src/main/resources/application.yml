@@ -93,11 +93,11 @@ spring:
 
 internet-access-code-svc:
   iac-post-path: /iacs 
-  iac-put-path: /iacs
+  iac-put-path: /iacs/{iac}
   connection-config:
     scheme: http
     host: localhost
-    port: 8131
+    port: 8121
     retry-attempts: 10
     retry-pause-milli-seconds: 5000
     connect-timeout-milli-seconds: 5000

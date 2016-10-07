@@ -28,6 +28,7 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 @Slf4j
 public final class CaseGroupEndpoint implements CTPEndpoint {
 
+  public static final String ERRORMSG_CASEGROUPNOTFOUND = "CaseGroup not found for";
   public static final String ERRORMSG_ADDRESSNOTFOUND = "Address not found for";
 
   @Inject
@@ -38,7 +39,26 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
 
   @Inject
   private MapperFacade mapperFacade;
-
+ /**
+   * the GET endpoint to find CaseGroups by uprn
+   *
+   * @param uprn to find by
+   * @return the casegroups found
+   * @throws CTPException something went wrong
+   */
+  @GET
+  @Path("/{caseGroupId}")
+  public CaseGroupDTO findCaseGroupById(@PathParam("caseGroupId") final Integer caseGroupId)  throws CTPException {
+    log.debug("Entering findCaseGroupById with {}", caseGroupId);
+    CaseGroup caseGroupObj = caseGroupService.findCaseGroupByCaseGroupId(caseGroupId);
+    if (caseGroupObj == null) {
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
+              String.format("%s casegroup id %s", ERRORMSG_CASEGROUPNOTFOUND, caseGroupId));
+    }
+    return mapperFacade.map(caseGroupObj, CaseGroupDTO.class);
+  }
+    
+    
   /**
    * the GET endpoint to find CaseGroups by uprn
    *
