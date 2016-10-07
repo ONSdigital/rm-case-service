@@ -100,7 +100,7 @@ CREATE TABLE caseevent (
     description character varying(350),
     createdby character varying(50),
     createddatetime timestamp with time zone,
-    categoryid integer,
+    category varchar(40),
     subcategory character varying(100)
 );
 
@@ -200,7 +200,6 @@ ALTER TABLE casesvc.casetype OWNER TO postgres;
 --
 
 CREATE TABLE category (
-    categoryid integer NOT NULL,
     name character varying(40) NOT NULL,
     description character varying(50),
     eventtype character varying(20),
@@ -412,7 +411,7 @@ ALTER TABLE ONLY casetype
 --
 
 ALTER TABLE ONLY category
-    ADD CONSTRAINT category_pkey PRIMARY KEY (categoryid);
+    ADD CONSTRAINT category_pkey PRIMARY KEY (name);
 
 
 --
@@ -572,7 +571,7 @@ ALTER TABLE ONLY "case"
 --
 
 ALTER TABLE ONLY caseevent
-    ADD CONSTRAINT categoryid_fkey FOREIGN KEY (categoryid) REFERENCES category(categoryid);
+    ADD CONSTRAINT category_fkey FOREIGN KEY (category) REFERENCES category(name);
 
 
 --
