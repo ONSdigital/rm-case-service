@@ -36,7 +36,7 @@ public class SampleCaseType implements Serializable {
   @JoinColumn(name="sampleid")
   private Sample sample;
 
-  @Column(name = "castypeid")
+  @Column(name = "casetypeid")
   private Integer caseTypeId;
 
   @Column(name = "respondenttype")

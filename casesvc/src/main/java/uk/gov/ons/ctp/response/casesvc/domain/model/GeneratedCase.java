@@ -19,8 +19,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Deprecated
-//XXX when the plsql change returns boolean instead
 public class GeneratedCase implements Serializable {
 
   private static final long serialVersionUID = -798186055190065296L;
