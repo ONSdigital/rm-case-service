@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -62,6 +63,9 @@ public class CaseServiceImplTest {
 
   private static final String ACTIONSVC_CANCEL_ACTIONS_PATH = "actions/case/123/cancel";
 
+  @Test
+  public void removeThisDummyTestOnceAllTestsReinstated() {
+  }
 //  /**
 //   * A test
 //   */

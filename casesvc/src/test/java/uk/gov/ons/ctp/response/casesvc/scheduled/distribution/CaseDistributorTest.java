@@ -106,6 +106,9 @@ public class CaseDistributorTest {
     MockitoAnnotations.initMocks(this);
   }
 
+  @Test
+  public void removeThisDummyTestOnceAllTestsReinstated() {
+  }
 //  /**
 //   * Test BlueSky scenario
 //   * 
@@ -127,7 +130,7 @@ public class CaseDistributorTest {
 //
 //    // wire up mock responses
 //    Mockito.when(
-//        caseSvcStateTransitionManager.transition(CaseState.SAMPLED_INIT, CaseDTO.CaseEvent.SAMPLED_ACTIVATED))
+//        caseSvcStateTransitionManager.transition(CaseState.SAMPLED_INIT, CaseDTO.CaseEvent.ACTIVATED))
 //        .thenReturn(CaseState.ACTIVE);
 //
 //    List<CaseDTO.CaseState> states = Arrays.asList(CaseDTO.CaseState.SAMPLED_INIT);
@@ -207,7 +210,7 @@ public class CaseDistributorTest {
 //
 //    // wire up mock responses
 //    Mockito.when(
-//        caseSvcStateTransitionManager.transition(CaseState.SAMPLED_INIT, CaseDTO.CaseEvent.SAMPLED_ACTIVATED))
+//        caseSvcStateTransitionManager.transition(CaseState.SAMPLED_INIT, CaseDTO.CaseEvent.ACTIVATED))
 //        .thenReturn(CaseState.ACTIVE);
 //
 //    List<CaseDTO.CaseState> states = Arrays.asList(CaseDTO.CaseState.SAMPLED_INIT);

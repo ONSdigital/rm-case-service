@@ -60,7 +60,7 @@ public class CaseNotificationPublisherTest {
     Document doc = parse(payload);
     assertThat(doc, hasXPath("/caseNotifications/caseNotification[1]/actionPlanId", equalTo("3")));
     assertThat(doc, hasXPath("/caseNotifications/caseNotification[2]/caseId", equalTo("2")));
-    assertThat(doc, hasXPath("/caseNotifications/caseNotification[2]/notificationType", equalTo("SAMPLED_ACTIVATED")));
+    assertThat(doc, hasXPath("/caseNotifications/caseNotification[2]/notificationType", equalTo("ACTIVATED")));
   }
 
   /**
