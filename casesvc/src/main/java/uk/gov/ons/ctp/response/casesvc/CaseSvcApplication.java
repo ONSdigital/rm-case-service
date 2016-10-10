@@ -25,7 +25,6 @@ import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
-import uk.gov.ons.ctp.response.casesvc.domain.model.ActionPlanMapping;
 import uk.gov.ons.ctp.response.casesvc.endpoint.ActionPlanMappingEndpoint;
 import uk.gov.ons.ctp.response.casesvc.endpoint.AddressEndpoint;
 import uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint;

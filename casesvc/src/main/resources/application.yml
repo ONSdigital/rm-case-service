@@ -105,7 +105,6 @@ internet-access-code-svc:
 
 action-svc:
   actions-path: /actions
-  cancel-actions-path: /actions/case/{caseid}/cancel
   connection-config:
     scheme: http
     host: localhost

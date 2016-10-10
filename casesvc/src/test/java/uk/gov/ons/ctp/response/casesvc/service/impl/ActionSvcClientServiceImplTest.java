@@ -75,24 +75,5 @@ public class ActionSvcClientServiceImplTest {
     actionSvcClientService.createAndPostAction("GeneralEscalation", 123, "System");
     mockServer.verify();
   }  
-  
-  /**
-   * Guess what? - a test!
-   */
-  @Test
-  public void testCancelAction() {
-    ActionSvc actionSvcConfig = new ActionSvc();
-    actionSvcConfig.setCancelActionsPath("/actions/case/{caseid}/cancel");
-    Mockito.when(appConfig.getActionSvc()).thenReturn(actionSvcConfig);
-    RestTemplate restTemplate = this.restClient.getRestTemplate();
-
-    MockRestServiceServer mockServer = MockRestServiceServer.createServer(restTemplate);
-    mockServer.expect(requestTo("http://localhost:8080/actions/case/123/cancel"))
-        .andExpect(method(HttpMethod.PUT))
-        .andRespond(withSuccess());
-
-    actionSvcClientService.cancelActions(123);
-    mockServer.verify();
-  }
 
 }

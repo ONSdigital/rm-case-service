@@ -14,5 +14,4 @@ public class ActionSvc {
   private String host;
   private String port;
   private String actionsPath;
-  private String cancelActionsPath;
 }
