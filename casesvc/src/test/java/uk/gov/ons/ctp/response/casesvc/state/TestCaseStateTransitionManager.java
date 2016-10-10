@@ -48,6 +48,7 @@ public class TestCaseStateTransitionManager {
 
     Map<CaseEvent, CaseState> inactionableTransitions = new HashMap<>();
     inactionableTransitions.put(CaseEvent.DEACTIVATED, CaseState.INACTIONABLE);
+    inactionableTransitions.put(CaseEvent.DISABLED, CaseState.INACTIONABLE);
     validTransitions.put(CaseState.INACTIONABLE, inactionableTransitions);
   }
 

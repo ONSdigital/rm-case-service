@@ -17,10 +17,4 @@ public interface ActionSvcClientService {
    */
   void createAndPostAction(String actionType, int caseId, String createdBy);
 
-  /**
-   * Cancel any Actions existing for a caseId
-   *
-   * @param caseId Integer caseId
-   */
-  void cancelActions(int caseId);
 }

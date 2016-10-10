@@ -104,7 +104,7 @@ public class CaseServiceImpl implements CaseService {
         recordResponse(targetCase, InboundChannel.ONLINE);
         break;
       case PAPER_QUESTIONNAIRE_RESPONSE:
-        recordResponse(targetCase, InboundChannel.ONLINE);
+        recordResponse(targetCase, InboundChannel.PAPER);
         break;
       default:
         break;

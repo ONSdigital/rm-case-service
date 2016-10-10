@@ -47,6 +47,7 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
 
     Map<CaseEvent, CaseState> transitionMapForInactionable = new HashMap<>();
     transitionMapForInactionable.put(CaseEvent.DEACTIVATED, CaseState.INACTIONABLE);
+    transitionMapForInactionable.put(CaseEvent.DISABLED, CaseState.INACTIONABLE);
     transitions.put(CaseState.INACTIONABLE, transitionMapForInactionable);
 
     StateTransitionManager<CaseState, CaseEvent> caseStateTransitionManager =
