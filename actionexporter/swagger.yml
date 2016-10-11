@@ -122,7 +122,33 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-
+    post:
+      summary: Trigger the export of the stored actionRequest's information for the specified actionId.
+      description: Trigger the export of the stored actionRequest's information for the specified actionId.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: actionId
+          description: Unique action ID.
+          in: path
+          required: true
+          type: integer
+      responses:
+        201:
+          description: ActionRequest for the specified actionId exported successfully.
+          schema:
+            $ref: '#/definitions/ActionRequestDocument'
+        404:
+          description: ActionRequest not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
 definitions:
   Address:
     type: object
