@@ -94,8 +94,96 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  /export/{actionId}:
+    get:
+      summary:  Get the stored actionRequest's information for the specified actionId.
+      description: Return details of the stored actionRequest's information for the specified actionId.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: actionId
+          description: Unique action ID.
+          in: path
+          required: true
+          type: integer
+      responses:
+        200:
+          description: actionRequest's details for the supplied action ID.
+          schema:
+            $ref: '#/definitions/ActionRequestDocument'
+        404:
+          description: ActionRequest not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
 
 definitions:
+  Address:
+    type: object
+    properties:
+      uprn:
+        type: integer
+        description: Unique Property Reference Number.
+      category:
+        type: string
+        description: only if care home or hotel
+        enum:
+         - HOTEL
+         - CARE HOME
+      type:
+        type: string
+        description: Address type CE, HH, I.
+      estabType:
+        type: string
+        description: Communal Establishment type.
+      line1:
+        type: string
+        description: Address details.
+      line2:
+        type: string
+        description: Address details.
+      townName:
+        type: string
+        description: Postal town name.
+      postcode:
+        type: string
+        description: Postal Code.
+      outputArea:
+        type: string
+        description: Census Geography Output Area code.
+      lsoaArea:
+        type: string
+        description: Lower Layer Super Output Area code.
+      msoaArea:
+        type: string
+        description: Middle layer Super Output Area code.
+      ladCode:
+        type: string
+        description: GSS nine character LAD code.
+      regionCode:
+        type: string
+        description: GSS nine character Region geography code.
+      eastings:
+        type: integer
+        description: Easting or x-coordinate.
+      northings:
+        type: integer
+        description: Northing or y-coordinate.
+      htc:
+        type: integer
+        description: Hard to count code.
+      latitude:
+        type: number
+        description: Position North or South of Equator.
+      longitude:
+        type: number
+        description: Position East or West of Greenwich Meridian.
   ContentDocument:
     type: object
     required:
@@ -113,6 +201,38 @@ definitions:
         type: string
         format: date-time
         description: Creation date-time.
+  ActionRequestDocument:
+    type: object
+    required:
+      - actionId
+      - actionType
+      - address
+      - caseId
+      - contactName
+      - dateStored
+      - iac
+    properties:
+      actionId:
+        type: integer
+        description: Unique actionId.
+      actionType:
+        type: string
+        description: Action type.
+      address:
+        $ref: '#/definitions/Address'
+      caseId:
+        type: integer
+        description: Unique caseId.
+      contactName:
+        type: string
+        description: Contact Name.
+      dateStored:
+        type: string
+        format: date-time
+        description: Creation date-time.
+      iac:
+        type: string
+        description: IAC.
   Error:
     type: object
     properties:
