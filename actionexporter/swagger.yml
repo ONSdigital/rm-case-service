@@ -4,6 +4,8 @@ info:
   description: >
     The Action Exporter API provides support endpoints to store documents (FreeMarker templates, etc.) in MongoDB and
     to enable exports to be initiated for ActionRequests previously stored in MongoDB.
+
+    Note that all of the endpoints this service provides are authenticated using HTTP basic authentication.
   version: 9.26.0
 schemes:
   - http
@@ -90,6 +92,77 @@ paths:
             $ref: '#/definitions/ContentDocument'
         400:
           description: Invalid input
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /export:
+    get:
+      summary: Get all stored ActionRequests.
+      description: Return all stored ActionRequests.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: actionType
+          in: query
+          description: Action type to filter by
+          required: false
+          type: string
+        - name: dateFrom
+          in: query
+          description: Date from to filter by
+          required: false
+          type: string
+        - name: dateTo
+          in: query
+          description: Date from to filter by
+          required: false
+          type: string
+      responses:
+        200:
+          description: An array of ActionRequests
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ActionRequestDocument'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Trigger the export of the stored actionRequests' information.
+      description: Trigger the export of the stored actionRequests' information.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: actionType
+          in: query
+          description: Action type to filter by
+          required: false
+          type: string
+        - name: dateFrom
+          in: query
+          description: Date from to filter by
+          required: false
+          type: string
+        - name: dateTo
+          in: query
+          description: Date from to filter by
+          required: false
+          type: string
+      responses:
+        201:
+          description: ActionRequests for the specified parameters exported successfully.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ActionRequestDocument'
         default:
           description: Unexpected error
           schema:
@@ -271,3 +344,8 @@ definitions:
       message:
         description: Error message
         type: string
+securityDefinitions:
+  UserSecurity:
+    type: basic
+security:
+  - UserSecurity: []
