@@ -14,10 +14,10 @@ logging:
 
 security:
   basic:
-    enabled: false
+    enabled: true
   user:
     name: admin
-    password: secret
+    password: ctp
 
 management:
   port: 8241
