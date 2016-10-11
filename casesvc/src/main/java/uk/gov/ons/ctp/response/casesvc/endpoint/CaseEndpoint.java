@@ -44,7 +44,6 @@ public final class CaseEndpoint implements CTPEndpoint {
   @Inject
   private MapperFacade mapperFacade;
 
-
   /**
    * the GET endpoint to find a Case by id
    *
@@ -63,6 +62,26 @@ public final class CaseEndpoint implements CTPEndpoint {
     }
     return mapperFacade.map(caseObj, CaseDTO.class);
   }
+
+  /**
+   * the GET endpoint to find a Case by IAC
+   *
+   * @param IAC to find by
+   * @return the case found
+   * @throws CTPException something went wrong
+   */
+  @GET
+  @Path("/iac/{iac}")
+  public CaseDTO findCaseByIac(@PathParam("iac") final String iac) throws CTPException {
+    log.debug("Entering findCaseByIac with {}", iac);
+    Case caseObj = caseService.findCaseByIac(iac);
+    if (caseObj == null) {
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
+              String.format("%s iac id %s", ERRORMSG_CASENOTFOUND, iac));
+    }
+    return mapperFacade.map(caseObj, CaseDTO.class);
+  }
+
   /**
    * the GET endpoint to find case events by case id
    *

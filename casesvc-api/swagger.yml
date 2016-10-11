@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Case Service API
   description: The Case service manages Cases and associated address frame data and forms part of the Response Management product.
-  version: 9.27.0
+  version: 9.27.1
 schemes:
   - http
 basePath: /
@@ -201,6 +201,36 @@ paths:
             $ref: '#/definitions/Case'
         400:
           description: Invalid input
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /cases/iac/{iac}:
+    get:
+      summary:  Get the case information for the specified case.
+      description: Return details of a case for the supplied internet access code
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: iac
+          description: Unique case IAC
+          in: path
+          required: true
+          type: string
+      tags:
+        - Case
+      responses:
+        200:
+          description: Case details for supplied IAC
+          schema:
+              $ref: '#/definitions/Case'
+        404:
+          description: Case not found
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:

@@ -6,6 +6,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -39,6 +40,7 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 @Slf4j
 public class CaseServiceImpl implements CaseService {
 
+  private static final String IAC_OVERUSE_MSG = "More than one case found to be using IAC %s";
   private static final int TRANSACTION_TIMEOUT = 30;
 
   @Inject
@@ -69,6 +71,21 @@ public class CaseServiceImpl implements CaseService {
   public Case findCaseByCaseId(final Integer caseId) {
     log.debug("Entering findCaseByCaseId");
     return caseRepo.findOne(caseId);
+  }
+
+  @Override
+  public Case findCaseByIac(final String iac) {
+    log.debug("Entering findCaseByIac");
+
+    List<Case> cases = caseRepo.findByIac(iac);
+    Case caze = null;
+    if (!CollectionUtils.isEmpty(cases)) {
+      if (cases.size() != 1) {
+        throw new RuntimeException(String.format(IAC_OVERUSE_MSG, iac));
+      }
+      caze = cases.get(0);
+    }
+    return caze;
   }
 
   @Override
