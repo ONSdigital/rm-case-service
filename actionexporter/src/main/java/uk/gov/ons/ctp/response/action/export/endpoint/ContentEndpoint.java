@@ -11,8 +11,9 @@ import uk.gov.ons.ctp.response.action.representation.ContentDocumentDTO;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.*;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.List;
 
 @Path("/content")
@@ -24,6 +25,9 @@ public class ContentEndpoint {
 
   @Inject
   private MapperFacade mapperFacade;
+
+  @Context
+  private UriInfo uriInfo;
 
   @GET
   @Path("/")
@@ -49,12 +53,16 @@ public class ContentEndpoint {
   @POST
   @Path("/{contentDocumentName}")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
-  public ContentDocumentDTO storeContentDocument(@PathParam("contentDocumentName") final String contentDocumentName,
-                                                 @FormDataParam("file") InputStream fileContents)
+  public Response storeContentDocument(@PathParam("contentDocumentName") final String contentDocumentName,
+                                       @FormDataParam("file") InputStream fileContents)
           throws CTPException {
     log.debug("Entering storeContentDocument with contentDocumentName {}", contentDocumentName);
     ContentDocument contentDocument = documentService.storeContentDocument(contentDocumentName, fileContents);
     documentService.clearTemplateCache();
-    return mapperFacade.map(contentDocument, ContentDocumentDTO.class);
+
+    UriBuilder ub = uriInfo.getAbsolutePathBuilder();
+    URI contentDocumentUri = ub.path(contentDocumentName).build();
+    ContentDocumentDTO contentDocumentDTO = mapperFacade.map(contentDocument, ContentDocumentDTO.class);
+    return Response.created(contentDocumentUri).entity(contentDocumentDTO).build();
   }
 }
