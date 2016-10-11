@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Case Service API
   description: The Case service manages Cases and associated address frame data and forms part of the Response Management product.
-  version: 9.26.7
+  version: 9.27.0
 schemes:
   - http
 basePath: /
@@ -95,7 +95,7 @@ paths:
         - Case
       responses:
         200:
-          description: CaseGroup details for all groups associated with the UPRN 
+          description: CaseGroup details for all groups associated with the UPRN
           schema:
             type: array
             items:
@@ -651,6 +651,7 @@ definitions:
     required:
       - caseTypeId
       - actionPlanMappingId
+      - title
       - forename
       - surname
       - createdBy
@@ -661,6 +662,9 @@ definitions:
       actionPlanMappingId:
         type: integer
         description: The action plan mapping to associate with the new case
+      title:
+        type: string
+        description: Rrespondent title
       forename:
         type: string
         description: Respondent forename.
@@ -841,6 +845,9 @@ definitions:
   Contact:
     type: object
     properties:
+      title:
+        type: string
+        description: the contacts title
       forename:
         type: string
         description: the contacts forename
