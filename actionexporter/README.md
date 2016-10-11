@@ -35,7 +35,7 @@ curl http://localhost:8141/content/curltest -v -X POST -F file=@curltest_emptyte
 ## To store a valid FreeMarker template
 cd /home/centos/code/responsemanagement-service/actionexporter/src/test/resources/templates/freemarker
 curl http://localhost:8141/content/curltest -v -X POST -F file=@curltest_validtemplate.ftl
-200 {"name":"curltest","content":"=================================  File for the Printer ==================================ActionId, ResponseRequired, ActionType, IAC, Line1, Town, Postcode<#list actionRequests as actionRequest>\t${actionRequest.actionId}, ${actionRequest.actionType}, ${actionRequest.iac}, ${actionRequest.address.line1}, ${actionRequest.address.townName}, ${actionRequest.address.postcode}</#list>","dateModified":1474080646781}
+TODO Should be 201 not 200 {"name":"curltest","content":"=================================  File for the Printer ==================================ActionId, ResponseRequired, ActionType, IAC, Line1, Town, Postcode<#list actionRequests as actionRequest>\t${actionRequest.actionId}, ${actionRequest.actionType}, ${actionRequest.iac}, ${actionRequest.address.line1}, ${actionRequest.address.townName}, ${actionRequest.address.postcode}</#list>","dateModified":1474080646781}
 
 
 ## To retrieve a DocumentContent that does exist

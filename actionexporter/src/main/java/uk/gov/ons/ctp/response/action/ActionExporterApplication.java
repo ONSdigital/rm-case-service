@@ -19,6 +19,7 @@ import uk.gov.ons.ctp.common.jaxrs.JAXRSRegister;
 import uk.gov.ons.ctp.response.action.export.config.AppConfig;
 import uk.gov.ons.ctp.response.action.export.endpoint.ContentEndpoint;
 import uk.gov.ons.ctp.response.action.export.endpoint.ManualTestEndpoint;
+import uk.gov.ons.ctp.response.action.export.endpoint.SupportEndpoint;
 
 /**
  * The main entry point into the Action Service SpringBoot Application.
@@ -52,6 +53,8 @@ public class ActionExporterApplication {
 
       register(MultiPartFeature.class);
       register(ContentEndpoint.class);
+
+      register(SupportEndpoint.class);
 
       register(ManualTestEndpoint.class);
 

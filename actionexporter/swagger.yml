@@ -1,0 +1,127 @@
+swagger: '2.0'
+info:
+  title: Action Exporter API
+  description: >
+    The Action Exporter API provides support endpoints to store documents (FreeMarker templates, etc.) in MongoDB and
+    to enable exports to be initiated for ActionRequests previously stored in MongoDB.
+  version: 9.26.0
+schemes:
+  - http
+basePath: /
+produces:
+  - application/json
+paths:
+  /content:
+    get:
+      summary:  Get all documents stored in MongoDB.
+      description: Return all documents stored in MongoDB.
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+      responses:
+        200:
+          description: All documents stored in MongoDB.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ContentDocument'
+        204:
+          description: No document found in MongoDB.
+        default:
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/Error'
+  /content/{contentDocumentName}:
+    get:
+        summary:  Get the document for the specified contentDocumentName.
+        description: Return details of the document for the supplied contentDocumentName.
+        parameters:
+          - name: Accept
+            in: header
+            description: Response type, application/json.
+            required: false
+            type: string
+          - name: contentDocumentName
+            description: Unique document name
+            in: path
+            required: true
+            type: string
+        responses:
+          200:
+            description: Document details for the supplied contentDocumentName.
+            schema:
+              $ref: '#/definitions/ContentDocument'
+          404:
+            description: contentDocumentName not found
+            schema:
+              $ref: '#/definitions/Error'
+          default:
+            description: Unexpected error
+            schema:
+              $ref: '#/definitions/Error'
+    post:
+      summary: Store a document (FreeMarker template, etc.) in MongoDB
+      description: Store a document (FreeMarker template, etc.) in MongoDB
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json
+          required: false
+          type: string
+        - name: contentDocumentName
+          in: path
+          type: string
+          description: Unique document name
+          required: true
+        - name: file
+          in: formData
+          type: file
+          description: Document to store in MongoDB
+          required: true
+      responses:
+        201:
+          description: Document stored in MongoDB
+          schema:
+            $ref: '#/definitions/ContentDocument'
+        400:
+          description: Invalid input
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+definitions:
+  ContentDocument:
+    type: object
+    required:
+      - name
+      - content
+      - dateModified
+    properties:
+      name:
+        type: string
+        description: Unique name for the Document.
+      content:
+        type: string
+        description: Content of the Document.
+      dateModified:
+        type: string
+        format: date-time
+        description: Creation date-time.
+  Error:
+    type: object
+    properties:
+      code:
+        description: Error code
+        type: string
+      timestamp:
+        description:  Unique error timestamp that can be searched for in logs
+        type: integer
+      message:
+        description: Error message
+        type: string
