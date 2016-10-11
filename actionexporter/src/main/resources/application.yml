@@ -76,6 +76,13 @@ spring:
   data:
     mongodb.uri: mongodb://localhost:27017/actionExport
 
+  sleuth:
+    sampler:
+      percentage: 10
+
+  zipkin:
+    enabled: false
+
 export-schedule:
   cron-expression: "0/30 * * * * ?"
 
