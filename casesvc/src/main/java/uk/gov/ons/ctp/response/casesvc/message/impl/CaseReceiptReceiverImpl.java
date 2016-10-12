@@ -32,7 +32,6 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
     } else {
       CaseEvent caseEvent = new CaseEvent();
       caseEvent.setCaseId(existingCase.getCaseId());
-      // TODO there is an InboundChannel under domain as well. Do we need both?
       InboundChannel inboundChannel = caseReceipt.getInboundChannel();
       if (inboundChannel == InboundChannel.ONLINE) {
         caseEvent.setCategory(ONLINE_QUESTIONNAIRE_RESPONSE);
