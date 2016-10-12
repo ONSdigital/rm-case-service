@@ -133,7 +133,7 @@
         <activeByDefault>true</activeByDefault>
       </activation>
       <properties>
-        <skip.integration.tests>false</skip.integration.tests>
+        <skip.integration.tests>true</skip.integration.tests>
       </properties>
     </profile>
     <profile>
