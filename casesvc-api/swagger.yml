@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Case Service API
   description: The Case service manages Cases and associated address frame data and forms part of the Response Management product.
-  version: 9.27.1
+  version: 9.27.2
 schemes:
   - http
 basePath: /
@@ -401,19 +401,19 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /categories/{categoryId}:
+  /categories/{categoryName}:
     get:
       summary: Get information for the specified category.
-      description: Return information for the supplied category code.
+      description: Return information for the supplied category name.
       parameters:
         - name: Accept
           in: header
           description: Response type, application/json.
           required: false
           type: string
-        - name: categoryId
+        - name: categoryName
           in: path
-          description: Unique category ID.
+          description: Unique category name.
           required: true
           type: integer
       tags:
