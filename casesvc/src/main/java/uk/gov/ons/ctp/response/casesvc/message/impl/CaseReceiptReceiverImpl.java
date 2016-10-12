@@ -5,8 +5,8 @@ import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
-import uk.gov.ons.ctp.response.casesvc.message.CaseFeedbackReceiver;
-import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseFeedback;
+import uk.gov.ons.ctp.response.casesvc.message.CaseReceiptReceiver;
+import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 
@@ -17,15 +17,15 @@ import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.Categor
 
 @Slf4j
 @MessageEndpoint
-public class CaseFeedbackReceiverImpl implements CaseFeedbackReceiver {
+public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
 
   @Inject
   private CaseService caseService;
 
-  @ServiceActivator(inputChannel = "caseFeedbackTransformed")
-  public void process(CaseFeedback caseFeedback) {
-    log.debug("entering process with caseFeedback {}", caseFeedback);
-    Case existingCase = caseService.findCaseByCaseRef(caseFeedback.getCaseRef());
+  @ServiceActivator(inputChannel = "caseReceiptTransformed")
+  public void process(CaseReceipt caseReceipt) {
+    log.debug("entering process with caseReceipt {}", caseReceipt);
+    Case existingCase = caseService.findCaseByCaseRef(caseReceipt.getCaseRef());
     log.debug("existingCase is {}", existingCase);
     if (existingCase == null) {
       // TODO store case feedback as unlinked
@@ -33,7 +33,7 @@ public class CaseFeedbackReceiverImpl implements CaseFeedbackReceiver {
       CaseEvent caseEvent = new CaseEvent();
       caseEvent.setCaseId(existingCase.getCaseId());
       // TODO there is an InboundChannel under domain as well. Do we need both?
-      InboundChannel inboundChannel = caseFeedback.getInboundChannel();
+      InboundChannel inboundChannel = caseReceipt.getInboundChannel();
       if (inboundChannel == InboundChannel.ONLINE) {
         caseEvent.setCategory(ONLINE_QUESTIONNAIRE_RESPONSE);
       }

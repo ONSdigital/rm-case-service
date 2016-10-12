@@ -17,9 +17,9 @@
     <!--  First the inbound flow -->
 
     <!-- The inbound message container config - the inbound queue is defined here
-    We will listen for caseFeedbacks coming from the SDX Gateway.
+    We will listen for caseReceipts coming from the SDX Gateway.
     -->
-    <bean id="caseFeedbackMessageListenerContainer"
+    <bean id="caseReceiptMessageListenerContainer"
           class="org.springframework.jms.listener.DefaultMessageListenerContainer">
         <property name="connectionFactory" ref="connectionFactory" />
         <property name="destinationName" value="Case.Responses" />
@@ -31,44 +31,44 @@
     </bean>
 
     <!-- need an input channel defined for MQ adapter to input to -->
-    <int:channel id="caseFeedbackXml" />
+    <int:channel id="caseReceiptXml" />
 
-    <!-- anything sent to this channel is put on the queue Case.InvalidCaseFeedbacks -->
-    <int:channel id="caseFeedbackXmlInvalid" />
-    <bean id="invalidCaseFeedbackQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Case.InvalidCaseFeedbacks"/>
+    <!-- anything sent to this channel is put on the queue Case.InvalidcaseReceipts -->
+    <int:channel id="caseReceiptXmlInvalid" />
+    <bean id="invalidcaseReceiptQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Case.InvalidcaseReceipts"/>
     </bean>
-    <int-jms:outbound-channel-adapter id="invalidCaseFeedbackJmsOut" destination="invalidCaseFeedbackQueue" channel="caseFeedbackXmlInvalid"/>
+    <int-jms:outbound-channel-adapter id="invalidcaseReceiptJmsOut" destination="invalidcaseReceiptQueue" channel="caseReceiptXmlInvalid"/>
 
-    <!-- the MQ channel adapter reads from the Case.Responses Queue (see the container above) and inputs to caseFeedbackXml -->
+    <!-- the MQ channel adapter reads from the Case.Responses Queue (see the container above) and inputs to caseReceiptXml -->
     <int-jms:message-driven-channel-adapter
-            id="jmsIn" container="caseFeedbackMessageListenerContainer" channel="caseFeedbackXml" />
+            id="jmsIn" container="caseReceiptMessageListenerContainer" channel="caseReceiptXml" />
 
     <!-- First the SI message provided by the channel adapter is validated against the inbound schema -->
     <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
-    <int-xml:validating-filter id="caseFeedbackValidator" input-channel="caseFeedbackXml"
-                               output-channel="caseFeedbackXmlValid" schema-location="classpath:xsd/caseFeedback.xsd" discard-channel="caseFeedbackXmlInvalid"/>
+    <int-xml:validating-filter id="caseReceiptValidator" input-channel="caseReceiptXml"
+                               output-channel="caseReceiptXmlValid" schema-location="classpath:xsd/caseReceipt.xsd" discard-channel="caseReceiptXmlInvalid"/>
 
     <!-- Secondly the now validated xml is transformed into the jaxb generated object model -->
-    <int:channel id="caseFeedbackTransformed" datatype="uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback">
+    <int:channel id="caseReceiptTransformed" datatype="uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback">
         <int:queue capacity="60"/>
     </int:channel>
     <int-xml:unmarshalling-transformer
-            input-channel="caseFeedbackXmlValid" output-channel="caseFeedbackTransformed"
-            unmarshaller="caseFeedbackUnmarshaller" />
+            input-channel="caseReceiptXmlValid" output-channel="caseReceiptTransformed"
+            unmarshaller="caseReceiptUnmarshaller" />
 
     <!-- The transformer uses this unmarshaller to do the heavy (un)lifting -->
-    <bean id="caseFeedbackUnmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+    <bean id="caseReceiptUnmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.feedback" />
     </bean>
 
-    <int:channel id="caseFeedbackPollerError" />
-    <bean id="caseFeedbackPollerErrorQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Case.CaseFeedbackPollerErrors"/>
+    <int:channel id="caseReceiptPollerError" />
+    <bean id="caseReceiptPollerErrorQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Case.caseReceiptPollerErrors"/>
     </bean>
-    <int-jms:outbound-channel-adapter id="caseFeedbackPollerErrorJmsOut" destination="caseFeedbackPollerErrorQueue" channel="caseFeedbackPollerError"/>
-    <int:poller id="defaultPoller" default="true" error-channel="caseFeedbackPollerError" fixed-delay="5000" time-unit="MILLISECONDS" max-messages-per-poll="1" receive-timeout="5000" />
-    <!-- Finally see the @ServiceActivator(inputChannel="caseFeedbackTransformed") -->
+    <int-jms:outbound-channel-adapter id="caseReceiptPollerErrorJmsOut" destination="caseReceiptPollerErrorQueue" channel="caseReceiptPollerError"/>
+    <int:poller id="defaultPoller" default="true" error-channel="caseReceiptPollerError" fixed-delay="5000" time-unit="MILLISECONDS" max-messages-per-poll="1" receive-timeout="5000" />
+    <!-- Finally see the @ServiceActivator(inputChannel="caseReceiptTransformed") -->
 
     <!-- Invalid notification XML written to file -->
     <int:channel id="caseNotificationXmlInvalid" />

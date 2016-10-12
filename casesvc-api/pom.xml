@@ -83,14 +83,14 @@
             <configuration>
               <bindingDirectory>src/main/resources/xsd</bindingDirectory>
               <bindingIncludes>
-                <include>caseFeedback.xjb</include>
+                <include>caseReceipt.xjb</include>
               </bindingIncludes>
               <bindingExcludes>
-                <include>acaseNotification.xjb</include>
+                <include>caseNotification.xjb</include>
               </bindingExcludes>
               <schemaDirectory>src/main/resources/xsd</schemaDirectory>
               <schemaIncludes>
-                <include>caseFeedback.xsd</include>
+                <include>caseReceipt.xsd</include>
               </schemaIncludes>
               <generateDirectory>${project.build.directory}/generated-sources/xjc/inbound</generateDirectory>
               <args>
@@ -125,7 +125,7 @@
                 <include>caseNotification.xjb</include>
               </bindingIncludes>
               <bindingExcludes>
-                <include>caseFeedback.xjb</include>
+                <include>caseReceipt.xjb</include>
               </bindingExcludes>
               <schemaDirectory>src/main/resources/xsd</schemaDirectory>
               <schemaIncludes>

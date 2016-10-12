@@ -4,9 +4,9 @@
            targetNamespace="http://ons.gov.uk/ctp/response/casesvc/message/feedback">
 
     <!-- root element of a feedback message to the case service -->
-    <xs:element name="caseFeedback" type="CaseFeedback"/>
+    <xs:element name="caseReceipt" type="CaseReceipt"/>
 
-    <xs:complexType name="CaseFeedback">
+    <xs:complexType name="CaseReceipt">
         <xs:sequence>
             <xs:element name="caseRef" type="xs:string" minOccurs="1" maxOccurs="1"/>
             <xs:element name="inboundChannel" type="InboundChannel" minOccurs="1" maxOccurs="1"/>
