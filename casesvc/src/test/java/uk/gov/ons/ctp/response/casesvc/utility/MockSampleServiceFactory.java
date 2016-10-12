@@ -44,35 +44,35 @@ public final class MockSampleServiceFactory implements Factory<SampleService> {
 
     final SampleService mockedService = Mockito.mock(SampleService.class);
 
-    Mockito.when(mockedService.findSamples()).thenAnswer(new Answer<List<Sample>>() {
-      public List<Sample> answer(final InvocationOnMock invocation)
-          throws Throwable {
-        List<Sample> result = new ArrayList<Sample>();
-        result.add(new Sample(1, SAMPLE1_NAME, SAMPLE1_DESC, SAMPLE1_CRITERIA, SAMPLE1_CASETYPEID, SURVEYID));
-        result.add(new Sample(2, SAMPLE2_NAME, SAMPLE2_DESC, SAMPLE2_CRITERIA, SAMPLE2_CASETYPEID, SURVEYID));
-        result.add(new Sample(3, SAMPLE3_NAME, SAMPLE3_DESC, SAMPLE3_CRITERIA, SAMPLE3_CASETYPEID, SURVEYID));
-        return result;
-      }
-    });
-
-    Mockito.when(mockedService.findSampleBySampleId(SAMPLEID)).thenAnswer(new Answer<Sample>() {
-      public Sample answer(final InvocationOnMock invocation)
-          throws Throwable {
-        return new Sample(3, SAMPLE3_NAME, SAMPLE3_DESC, SAMPLE3_CRITERIA, SAMPLE3_CASETYPEID, SURVEYID);
-      }
-    });
-
-    Mockito.when(mockedService.findSampleBySampleId(UNCHECKED_EXCEPTION))
-        .thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
-
-    Mockito.when(mockedService.findSampleBySampleId(NON_EXISTING_SAMPLEID)).thenAnswer(new Answer<Sample>() {
-      public Sample answer(final InvocationOnMock invocation)
-          throws Throwable {
-        return null;
-      }
-    });
-
-    //Mockito.when(mockedService.generateCases(SAMPLEID, GEOGRAPHY_TYPE, GEOGRAPHY_CODE)).thenReturn(true);
+//    Mockito.when(mockedService.findSamples()).thenAnswer(new Answer<List<Sample>>() {
+//      public List<Sample> answer(final InvocationOnMock invocation)
+//          throws Throwable {
+//        List<Sample> result = new ArrayList<Sample>();
+//        result.add(new Sample(1, SAMPLE1_NAME, SAMPLE1_DESC, SAMPLE1_CRITERIA, SAMPLE1_CASETYPEID, SURVEYID));
+//        result.add(new Sample(2, SAMPLE2_NAME, SAMPLE2_DESC, SAMPLE2_CRITERIA, SAMPLE2_CASETYPEID, SURVEYID));
+//        result.add(new Sample(3, SAMPLE3_NAME, SAMPLE3_DESC, SAMPLE3_CRITERIA, SAMPLE3_CASETYPEID, SURVEYID));
+//        return result;
+//      }
+//    });
+//
+//    Mockito.when(mockedService.findSampleBySampleId(SAMPLEID)).thenAnswer(new Answer<Sample>() {
+//      public Sample answer(final InvocationOnMock invocation)
+//          throws Throwable {
+//        return new Sample(3, SAMPLE3_NAME, SAMPLE3_DESC, SAMPLE3_CRITERIA, SAMPLE3_CASETYPEID, SURVEYID);
+//      }
+//    });
+//
+//    Mockito.when(mockedService.findSampleBySampleId(UNCHECKED_EXCEPTION))
+//        .thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
+//
+//    Mockito.when(mockedService.findSampleBySampleId(NON_EXISTING_SAMPLEID)).thenAnswer(new Answer<Sample>() {
+//      public Sample answer(final InvocationOnMock invocation)
+//          throws Throwable {
+//        return null;
+//      }
+//    });
+//
+//    //Mockito.when(mockedService.generateCases(SAMPLEID, GEOGRAPHY_TYPE, GEOGRAPHY_CODE)).thenReturn(true);
 
     return mockedService;
   }

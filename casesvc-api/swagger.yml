@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Case Service API
   description: The Case service manages Cases and associated address frame data and forms part of the Response Management product.
-  version: 9.25.1
+  version: 9.27.2
 schemes:
   - http
 basePath: /
@@ -14,18 +14,18 @@ tags:
   - name: Frame
     description: Navigation of address frame information
 paths:
-  /cases/uprn/{uprn}:
+  /actionplanmappings/{mappingId}:
     get:
-      summary:  Get the case information for the specified UPRN.
-      description: Return details of cases for the supplied Unique Property Reference Number (UPRN).
+      summary: Get the action plan mapping identified by the id
+      description: Return the action plan mapping identified by the supplied id
       parameters:
         - name: Accept
           in: header
           description: Response type, application/json.
           required: false
           type: string
-        - name: uprn
-          description: Unique Property Reference Number for which to return details of cases.
+        - name: mappingId
+          description: The unique identifier for the action plan mapping
           in: path
           required: true
           type: integer
@@ -33,13 +33,137 @@ paths:
         - Case
       responses:
         200:
-          description: Case details for supplied UPRN.
+          description: ActionPlanMapping details for the supplied id
+          schema:
+            $ref: '#/definitions/ActionPlanMapping'
+        404:
+          description: ActionPlanMapping not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /actionplanmappings/casetype/{caseTypeId}:
+    get:
+      summary: Get the mappings associated with the provided case type
+      description: Returns the Action Plan Mappings linked to the given case type
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: caseTypeId
+          description: Uniques identifier of the case type linked to the mappings
+          in: path
+          required: true
+          type: integer
+      tags:
+        - Case
+      responses:
+        200:
+          description: ActionPlanMappings details associated with the case type
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ActionPlanMapping'
+        404:
+          description: CaseType not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /casegroups/uprn/{uprn}:
+    get:
+      summary: Get the casegroups for the provided UPRN
+      description: Return the casegroups associated with a UPRN
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: uprn
+          description: The UPRN of the address the casegroups were created for
+          in: path
+          required: true
+          type: integer
+      tags:
+        - Case
+      responses:
+        200:
+          description: CaseGroup details for all groups associated with the UPRN
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CaseGroup'
+        404:
+          description: CaseGroup not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /casegroups/{caseGroupId}:
+    get:
+      summary: Get the casegroup for the provided id
+      description: Return the casegroup associated with a case group id
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: caseGroupId
+          description: The caseGroupId of the casegroup to be fetched
+          in: path
+          required: true
+          type: integer
+      tags:
+        - Case
+      responses:
+        200:
+          description: CaseGroup details for the requested group id
+          schema:
+            $ref: '#/definitions/CaseGroup'
+        404:
+          description: CaseGroup not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /cases/casegroup/{caseGroupId}:
+    get:
+      summary:  Get the cases for a given casegroup
+      description: Return details of cases for the supplied case group
+      parameters:
+        - name: Accept
+          in: header
+          description: Response type, application/json.
+          required: false
+          type: string
+        - name: caseGroupId
+          description: The id of the casegroup
+          in: path
+          required: true
+          type: integer
+      tags:
+        - Case
+      responses:
+        200:
+          description: Case details for supplied CaseGroup.
           schema:
             type: array
             items:
               $ref: '#/definitions/Case'
         404:
-          description: UPRN not found
+          description: CaseGroup not found
           schema:
             $ref: '#/definitions/Error'
         default:
@@ -47,8 +171,8 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     post:
-      summary: Creates a case for the specified UPRN.
-      description: Creates a case from the mandatory respondentType, forename, surname and createdBy properties. Note that at least one of the phoneNumber and emailAddress properties should be specified so the respondent can be contacted electronically.
+      summary: Creates a case for the specified CaseGroup.
+      description: Creates a case from the mandatory casetypeId, actionPlanMappingId, forename, surname and createdBy properties. Note that at least one of the phoneNumber and emailAddress properties should be specified so the respondent can be contacted electronically.
       consumes:
         - application/json
       parameters:
@@ -57,8 +181,8 @@ paths:
           description: Response type, application/json
           required: false
           type: string
-        - name: uprn
-          description: Unique Property Reference Number against which to create the case.
+        - name: caseGroupId
+          description: The CaseGroup into which the new Case will be placed.
           in: path
           required: true
           type: integer
@@ -81,30 +205,30 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /cases/questionnaire/{questionnaireId}:
+  /cases/iac/{iac}:
     get:
-      summary:  Get the case information for the specified questionnaire.
-      description: Return details of a case for the supplied questionnaire ID.
+      summary:  Get the case information for the specified case.
+      description: Return details of a case for the supplied internet access code
       parameters:
         - name: Accept
           in: header
           description: Response type, application/json.
           required: false
           type: string
-        - name: questionnaireId
-          description: Unique questionnaire ID.
+        - name: iac
+          description: Unique case IAC
           in: path
           required: true
-          type: integer
+          type: string
       tags:
         - Case
       responses:
         200:
-          description: Case details for supplied questionnaire ID.
+          description: Case details for supplied IAC
           schema:
               $ref: '#/definitions/Case'
         404:
-          description: Questionnaire not found
+          description: Case not found
           schema:
             $ref: '#/definitions/Error'
         default:
@@ -137,77 +261,6 @@ paths:
           description: Case not found
           schema:
             $ref: '#/definitions/Error'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
-  /cases/{caseId}/deactivate:
-    put:
-      summary:  Deactivates the specified case.
-      description: Marks the specified case as inactive. For example, if an Internet Access Code is lost and a new one is generated, requiring a new associated case.
-      parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-        - name: caseId
-          description: Unique case ID.
-          in: path
-          required: true
-          type: integer
-        - in: body
-          name: case
-          description: Deactivation request details
-          required: true
-          schema:
-            $ref: '#/definitions/CaseDeactivationRequest'
-      tags:
-        - Case
-      responses:
-        200:
-          description: Case successfully deactivated.
-          schema:
-              $ref: '#/definitions/Case'
-        404:
-          description: Case not found
-          schema:
-            $ref: '#/definitions/Error'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
-  /cases/actionplan/{actionPlanId}:
-    get:
-      summary: Get the case IDs for the specified action plan.
-      description: Lists all case IDs for an action plan's cases, optionally filtered by case state.
-      parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json
-          required: false
-          type: string
-        - in: path
-          name: actionPlanId
-          description: Unique action plan ID
-          required: true
-          type: integer
-        - name: state
-          in: query
-          description: Case state to filter by
-          required: false
-          type: string
-      tags:
-        - Case
-      responses:
-        200:
-          description: Cases found
-          schema:
-            type: array
-            items:
-              type: integer
-        204:
-          description: No cases
         default:
           description: Unexpected error
           schema:
@@ -285,178 +338,6 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /questionnaires/iac/{iac}:
-    get:
-      summary:  Get the questionnaire details for a specified IAC.
-      description: |
-        Return the questionnaire details for the supplied Internet Access Code (IAC).
-      parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-        - name: iac
-          description: Unique Internet Access Code (token).
-          in: path
-          required: true
-          type: string
-      tags:
-        - Case
-      responses:
-        200:
-          description: Details for a single questionnaire.
-          schema:
-            $ref: '#/definitions/Questionnaire'
-        404:
-          description: Internet Access Code not found
-          schema:
-            $ref: '#/definitions/Error'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
-  /questionnaires/case/{caseId}:
-    get:
-      summary:  Get all questionnaire details for a specified case.
-      description: |
-        Return all questionnaire details for the supplied case ID.
-      parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-        - name: caseId
-          description: Unique case ID.
-          in: path
-          required: true
-          type: string
-      tags:
-        - Case
-      responses:
-        200:
-          description: All questionnaire details for a supplied case ID.
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Questionnaire'
-        404:
-          description: Case not found
-          schema:
-            $ref: '#/definitions/Error'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
-  /questionnaires/{questionnaireId}/response:
-    put:
-      summary:  Confirms a response has been received in the Survey Data Exchange.
-      description: |
-        For the given Questionnaire, it populates the response_datetime. It also populates case_state for the related Case.
-      parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-        - name: questionnaireId
-          description: Unique questionnaire ID.
-          in: path
-          required: true
-          type: string
-      tags:
-        - Case
-      responses:
-        200:
-          description: The response mechanism was completed successfully.
-          schema:
-            $ref: '#/definitions/Questionnaire'
-        404:
-          description: Questionnaire not found
-          schema:
-            $ref: '#/definitions/Error'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
-  /questionsets:
-    get:
-      summary: Get all question set types.
-      description: >
-        Return all question set types and their description.
-      parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-      tags:
-        - Case
-      responses:
-        200:
-          description: An array of question sets
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/QuestionSet'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
-  /questionsets/{questionset}:
-    get:
-      summary: Get information for the specified question set.
-      description: Return information for the supplied question set.
-      parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-        - name: questionset
-          in: path
-          description: Unique question set code.
-          required: true
-          type: string
-      tags:
-        - Case
-      responses:
-        200:
-          description: A single question set.
-          schema:
-              $ref: '#/definitions/QuestionSet'
-        404:
-          description: Question set not found
-          schema:
-            $ref: '#/definitions/Error'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
-  /casetypes:
-    get:
-      summary: Get all case types
-      description: Return all case types.
-      parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-      tags:
-        - Case
-      responses:
-        200:
-          description: An array of case types
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/CaseType'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
   /casetypes/{caseTypeId}:
     get:
       summary: Get information for the specified case type.
@@ -502,6 +383,11 @@ paths:
           description: Security role to filter by
           required: false
           type: string
+        - name: group
+          in: query
+          description: The Category Group to filter by
+          required: false
+          type: string
       tags:
         - Case
       responses:
@@ -515,25 +401,32 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /samples:
+  /categories/{categoryName}:
     get:
-      summary: Get all samples
-      description: Return details of all samples.
+      summary: Get information for the specified category.
+      description: Return information for the supplied category name.
       parameters:
         - name: Accept
           in: header
           description: Response type, application/json.
           required: false
           type: string
+        - name: categoryName
+          in: path
+          description: Unique category name.
+          required: true
+          type: integer
       tags:
         - Case
       responses:
         200:
-          description: An array of samples
+          description: A single category.
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/Sample'
+              $ref: '#/definitions/Category'
+        404:
+          description: Category not found
+          schema:
+            $ref: '#/definitions/Error'
         default:
           description: Unexpected error
           schema:
@@ -598,59 +491,6 @@ paths:
             $ref: '#/definitions/Sample'
         404:
           description: Sample not found
-          schema:
-            $ref: '#/definitions/Error'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
-  /surveys:
-    get:
-      summary: Get all surveys.
-      description: Return details of all surveys.
-      parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-      tags:
-        - Case
-      responses:
-        200:
-          description: An array of surveys.
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Survey'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
-  /surveys/{surveyId}:
-    get:
-      summary: Get information for the specified survey.
-      description: Return information for the supplied survey code.
-      parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-        - name: surveyId
-          in: path
-          description: Unique survey ID.
-          required: true
-          type: integer
-      tags:
-        - Case
-      responses:
-        200:
-          description: A single survey.
-          schema:
-              $ref: '#/definitions/Survey'
-        404:
-          description: Survey not found
           schema:
             $ref: '#/definitions/Error'
         default:
@@ -780,22 +620,49 @@ definitions:
       longitude:
         type: number
         description: Position East or West of Greenwich Meridian.
+  Response:
+    type: object
+    properties:
+      inboundChannel:
+        type: string
+        description: The type of channel used to make the response
+      responseDateTime:
+        type: string
+        format: date-time
+        description: Date and time the questionnaire was sent for return.
+  Responses:
+    type: array
+    items:
+      $ref: '#/definitions/Response'
   Case:
     type: object
     properties:
       caseId:
         type: integer
-        description: Unique case identifier.
-      uprn:
+        description: Internal Unique case identifier.
+      caseRef:
+        type: string
+        description: External Unique case reference.
+      caseGroupId:
         type: integer
-        description: Unique Property Reference Number.
+        description: Unique case group identifier
+      responses:
+        $ref: '#/definitions/Responses'
+      contact:
+        $ref: '#/definitions/Contact'
       state:
         type: string
         description: State of case.
-        default: INIT
+        default: SAMPLED_INIT
         enum:
-          - INIT
-          - CLOSED
+          - SAMPLED_INIT
+          - REPLACEMENT_INIT
+          - ACTIVE
+          - INACTIVE
+          - RESPONDED
+      iac:
+        type: string
+        description: Internet Access Code
       caseTypeId:
         type: integer
         description: Case Type ID
@@ -806,46 +673,34 @@ definitions:
       createdBy:
         type: string
         description: Creator of case.
-      sampleId:
+      actionPlanMappingId:
         type: integer
-        description: Sample ID.
-      actionPlanId:
-        type: integer
-        description: Action plan for case.
-      surveyId:
-        type: integer
-        description:  Survey instrument.
-      parentCaseId:
-        type: integer
-        description: Linked parent case.
-      questionSet:
-        type: string
-        description: Type of questionnaire set.
+        description: Action plan mapping for case.
   CaseCreationRequest:
     type: object
     required:
-      - respondentType
+      - caseTypeId
+      - actionPlanMappingId
+      - title
       - forename
       - surname
       - createdBy
     properties:
-      respondentType:
+      caseTypeId:
+        type: integer
+        description: The case type to associate with the new case
+      actionPlanMappingId:
+        type: integer
+        description: The action plan mapping to associate with the new case
+      title:
         type: string
-        description: The type of respondent the case represents.
-        enum:
-          - HH
-          - I
-          - CE
+        description: Rrespondent title
       forename:
         type: string
         description: Respondent forename.
       surname:
         type: string
         description: Respondent surname.
-      dateOfBirth:
-        type: string
-        format: date-time
-        description: Respondent date of birth.
       phoneNumber:
         type: string
         description: Respondent phone number.
@@ -855,14 +710,6 @@ definitions:
       createdBy:
         type: string
         description: Creator of case.
-  CaseDeactivationRequest:
-    type: object
-    required:
-      - updatedBy
-    properties:
-      updatedBy:
-        description: User who deactivated this Case
-        type: string
   CaseEvent:
     type: object
     required:
@@ -884,7 +731,7 @@ definitions:
         description: Case event description.
       category:
         type: string
-        description: Identifies what has triggered the case event.
+        description: Identifier of the category that triggered the case event.
       subCategory:
         type: string
         description: Optional free text for use by automatically-created case events.
@@ -907,52 +754,26 @@ definitions:
         description: Case event description.
       category:
         type: string
-        description: Identifies what has triggered the case event.
+        description: Identifier of the category of event which triggered the case event.
       subCategory:
         type: string
         description: Optional free text for use by automatically-created case events.
       createdBy:
         type: string
         description: Creator of case event.
-  Questionnaire:
+  SampleCaseType:
     type: object
     properties:
-      questionnaireId:
+      caseTypeId:
         type: integer
-        description: Unique questionnaire ID.
-      caseId:
-        type: integer
-        description: Unique case identifier.
-      state:
+        description: Unique ID of case type.
+      respondent:
         type: string
-        description: Questionnaire state.
-      dispatchDateTime:
-        type: string
-        format: date-time
-        description: Date and time the questionnaire was dispatched.
-      responseDateTime:
-        type: string
-        format: date-time
-        description: Date and time the questionnaire was sent for return.
-      receiptDateTime:
-        type: string
-        format: date-time
-        description: Date and time the questionnaire was recieved.
-      questionSet:
-        type: string
-        description: Type of questionnaire set.
-      iac:
-        type: string
-        description: Internet Access Code.
-  QuestionSet:
-    type: object
-    properties:
-      questionSet:
-        type: string
-        description: Type of question set.
-      description:
-        type: string
-        description: Description of question set.
+        description: The type of respondent
+  SampleCaseTypes:
+    type: array
+    items:
+      $ref: '#/definitions/SampleCaseType'
   CaseType:
     type: object
     properties:
@@ -965,9 +786,9 @@ definitions:
       description:
         type: string
         description: Description of case type.
-      actionPlanId:
-        type: integer
-        description: Unique action plan ID.
+      respondent:
+        type: string
+        description: The type of respondent
       questionSet:
         type: string
         description: Type of questionnaire set.
@@ -978,10 +799,11 @@ definitions:
     - description
     - manual
     - role
+    - group
     properties:
       name:
         type: string
-        description: Category name.
+        description: Category name - the unique identifier for the category.
       description:
         type: string
         description: Description of category.
@@ -991,6 +813,9 @@ definitions:
       role:
         type: string
         description: Security role with access to the category.
+      group:
+        type: string
+        description: the name of the group that the category is a part of
   Sample:
     type: object
     properties:
@@ -1006,24 +831,65 @@ definitions:
       addressCriteria:
         type: string
         description: Address selection criteria.
-      caseTypeId:
-        type: integer
-        description: Unique ID of case type.
-      surveyId:
-        type: integer
-        description: Survey instrument.
-  Survey:
+      survey:
+        type: string
+        description: Survey instrument name.
+      sampleCaseTypes:
+        $ref: '#/definitions/SampleCaseTypes'
+  CaseGroup:
     type: object
     properties:
-      surveyId:
+      caseGroupId:
         type: integer
-        description: Unique ID of survey.
-      name:
+        description: Unique id of group
+      uprn:
+        type: integer
+        description: Identifies the address for which this group belongs
+      sampleId:
+        type: integer
+        description: Unique id of the sample this was created from
+  ActionPlanMapping:
+    type: object
+    properties:
+      actionPlanMappingId:
+        type: integer
+        description: Unique id of the mapping
+      actionPlanId:
+        type: integer
+        description: Identifies the action plan the mapping maps to
+      caseTypeId:
+        type: integer
+        description: Unique id of the case type that this mapping belongs to
+      isDefault:
+        type: boolean
+        description: true if this mapping is the default for the casetype it is associated with
+      inboundChannel:
         type: string
-        description: Name of survey.
-      description:
+        description: Identifies the expected response channel
+      variant:
         type: string
-        description: Description of survey.
+        description: Identifies the required language variant
+      outboundChannel:
+        type: string
+        description: Identifies the required delivery channel
+  Contact:
+    type: object
+    properties:
+      title:
+        type: string
+        description: the contacts title
+      forename:
+        type: string
+        description: the contacts forename
+      surname:
+        type: string
+        description: the contacts surname
+      phoneNumber:
+        type: string
+        description: the contacts phone number
+      emailAddress:
+        type: string
+        description: the contacts email address
   GeographyDetails:
     type: object
     properties:

@@ -8,8 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,12 +18,13 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Table(name = "casetype", schema = "casesvc")
 public class CaseType implements Serializable {
 
-  private static final long serialVersionUID = -2974430124226920391L;
+  private static final long serialVersionUID = 1860777024715053996L;
 
   @Id
   @GeneratedValue
@@ -34,9 +35,9 @@ public class CaseType implements Serializable {
 
   private String description;
 
-  @Column(name = "actionplanid")
-  private Integer actionPlanId;
-
+  @Column(name = "respondenttype")
+  private String respondentType;
+  
   @Column(name = "questionset")
   private String questionSet;
 

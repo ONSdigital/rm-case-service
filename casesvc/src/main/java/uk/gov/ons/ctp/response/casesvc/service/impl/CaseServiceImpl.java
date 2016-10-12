@@ -1,11 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
-import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.RESPONDED;
-
-import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -16,20 +12,23 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.ons.ctp.common.state.StateTransitionException;
+import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
+import uk.gov.ons.ctp.response.casesvc.domain.model.ActionPlanMapping;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseProjection;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
-import uk.gov.ons.ctp.response.casesvc.domain.model.Questionnaire;
+import uk.gov.ons.ctp.response.casesvc.domain.model.InboundChannel;
+import uk.gov.ons.ctp.response.casesvc.domain.model.Response;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.QuestionnaireRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
+import uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
+import uk.gov.ons.ctp.response.casesvc.service.ActionPlanMappingService;
 import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 
@@ -41,59 +40,32 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 @Slf4j
 public class CaseServiceImpl implements CaseService {
 
+  private static final String IAC_OVERUSE_MSG = "More than one case found to be using IAC %s";
   private static final int TRANSACTION_TIMEOUT = 30;
 
-  /**
-   * Spring Data Repository for Case entities.
-   */
   @Inject
   private CaseRepository caseRepo;
 
-  /**
-   * Spring Data Repository for Questionnaire Entities.
-   */
   @Inject
-  private QuestionnaireRepository questionnaireRepo;
+  private StateTransitionManager<CaseDTO.CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
-  /**
-   * Spring Data Repository for CaseEvent Entities.
-   */
+  @Inject
+  private ActionPlanMappingService actionPlanMappingService;
+
   @Inject
   private CaseEventRepository caseEventRepo;
 
-  /**
-   * Spring Data Repository for Category Entities.
-   */
   @Inject
   private CategoryRepository categoryRepo;
 
-  /**
-   * ActionSVC client service
-   */
   @Inject
   private ActionSvcClientService actionSvcClientService;
 
-  /**
-   * Notification publishing service for Case life cycle events
-   */
+  @Inject
+  private InternetAccessCodeSvcClientServiceImpl internetAccessCodeSvcClientServiceImpl;
+
   @Inject
   private CaseNotificationPublisher notificationPublisher;
-
-  @Override
-  public List<Case> findCasesByUprn(final Long uprn) {
-    log.debug("Entering findCasesByUprn with uprn {}", uprn);
-    return caseRepo.findByUprn(uprn);
-  }
-
-  @Override
-  public Case findCaseByQuestionnaireId(final Integer qid) {
-    log.debug("Entering findCaseByQuestionnaireId");
-    Questionnaire questionnaire = questionnaireRepo.findByQuestionnaireId(qid);
-    if (questionnaire == null) {
-      return null;
-    }
-    return caseRepo.findOne(questionnaire.getCaseId());
-  }
 
   @Override
   public Case findCaseByCaseId(final Integer caseId) {
@@ -102,15 +74,24 @@ public class CaseServiceImpl implements CaseService {
   }
 
   @Override
-  public List<Integer> findCaseIdsByStatesAndActionPlanId(final List<CaseDTO.CaseState> caseStates,
-      final Integer actionPlanId) {
-    log.debug("Entering findCaseByStatesAndActionPlanId");
-    List<CaseDTO.CaseState> states = caseStates;
-    if (CollectionUtils.isEmpty(states)) {
-      states = Arrays.asList(CaseDTO.CaseState.values());
+  public Case findCaseByIac(final String iac) {
+    log.debug("Entering findCaseByIac");
+
+    List<Case> cases = caseRepo.findByIac(iac);
+    Case caze = null;
+    if (!CollectionUtils.isEmpty(cases)) {
+      if (cases.size() != 1) {
+        throw new RuntimeException(String.format(IAC_OVERUSE_MSG, iac));
+      }
+      caze = cases.get(0);
     }
-    List<CaseProjection> caseProjections = caseRepo.findCaseIdByStateInAndActionPlanId(states, actionPlanId);
-    return caseProjections.stream().map(cp->cp.getCaseId()).collect(Collectors.toList());
+    return caze;
+  }
+
+  @Override
+  public List<Case> findCasesByCaseGroupId(final Integer caseGroupId) {
+    log.debug("Entering findCasesByCaseGroupId");
+    return caseRepo.findByCaseGroupId(caseGroupId);
   }
 
   @Override
@@ -126,25 +107,50 @@ public class CaseServiceImpl implements CaseService {
     CaseEvent createdCaseEvent = null;
 
     Integer caseId = caseEvent.getCaseId();
-    Case existingCase = caseRepo.findOne(caseId);
+    Case targetCase = caseRepo.findOne(caseId);
 
-    if (existingCase != null) {
+    if (targetCase != null) {
+      // save the case event to db
       caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
       createdCaseEvent = caseEventRepo.save(caseEvent);
 
-      Category category = categoryRepo.findByName(caseEvent.getCategory());
-      Boolean closeCase = category.getCloseCase();
-
-      CategoryDTO.CategoryName reasonForClosure = CategoryDTO.CategoryName.getEnumByLabel(caseEvent.getCategory());
-
-      if (Boolean.TRUE.equals(closeCase)) {
-        closeCase(existingCase);
+      Category category = categoryRepo.findOne(caseEvent.getCategory());
+      // create and add Response obj to the case if event is a response
+      switch (category.getCategoryType()) {
+      case ONLINE_QUESTIONNAIRE_RESPONSE:
+        recordResponse(targetCase, InboundChannel.ONLINE);
+        break;
+      case PAPER_QUESTIONNAIRE_RESPONSE:
+        recordResponse(targetCase, InboundChannel.PAPER);
+        break;
+      default:
+        break;
       }
 
-      if (reasonForClosure == CategoryDTO.CategoryName.QUESTIONNAIRE_RESPONSE) {
-        markQuestionnairesAsResponded(caseId);
+      // does the event transition the case?
+      CaseDTO.CaseEvent transitionEvent = category.getEventType();
+      if (transitionEvent != null) {
+        CaseDTO.CaseState oldState = targetCase.getState();
+        CaseDTO.CaseState newState = null;
+        try {
+          // make the transition
+          newState = caseSvcStateTransitionManager.transition(targetCase.getState(), transitionEvent);
+          targetCase.setState(newState);
+          caseRepo.saveAndFlush(targetCase);
+        } catch (StateTransitionException ste) {
+          throw new RuntimeException(ste);
+        }
+
+        // was a state change effected?
+        if (oldState != newState) {
+          notifyActionService(targetCase, transitionEvent);
+          if (transitionEvent == CaseDTO.CaseEvent.DISABLED) {
+            internetAccessCodeSvcClientServiceImpl.disableIAC(targetCase.getIac());
+          }
+        }
       }
 
+      // should the event create an ad-hoc action?
       String actionType = category.getGeneratedActionType();
       if (!StringUtils.isEmpty(actionType)) {
         actionSvcClientService.createAndPostAction(actionType, caseId, caseEvent.getCreatedBy());
@@ -153,24 +159,27 @@ public class CaseServiceImpl implements CaseService {
     return createdCaseEvent;
   }
 
-  private void closeCase(Case caze) {
-    caseRepo.setState(caze.getCaseId(), CaseDTO.CaseState.RESPONDED.name());
-    actionSvcClientService.cancelActions(caze.getCaseId());
-    notificationPublisher
-        .sendNotifications(Arrays.asList(new CaseNotification(caze.getCaseId(), caze.getActionPlanId(), RESPONDED)));
-
+  @Override
+  public CaseNotification prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent) {
+    ActionPlanMapping actionPlanMapping = actionPlanMappingService.findActionPlanMapping(caze.getActionPlanMappingId());
+    NotificationType notifType = NotificationType.valueOf(transitionEvent.name());
+    return new CaseNotification(caze.getCaseId(), actionPlanMapping.getActionPlanId(), notifType);
   }
 
-  /**
-   * mark all case related questionnaires as responded
-   *
-   * @param caseId Integer case ID
-   */
-  private void markQuestionnairesAsResponded(int caseId) {
-    Timestamp currentTime = DateTimeUtil.nowUTC();
-    List<Questionnaire> associatedQuestionnaires = questionnaireRepo.findByCaseId(caseId);
-    for (Questionnaire questionnaire : associatedQuestionnaires) {
-      questionnaireRepo.setResponseDatetimeFor(currentTime, questionnaire.getQuestionnaireId());
-    }
+  private void notifyActionService(Case caze, CaseDTO.CaseEvent transitionEvent) {
+    notificationPublisher.sendNotifications(Arrays.asList(prepareCaseNotification(caze, transitionEvent)));
   }
+
+  private Case recordResponse(Case caze, InboundChannel channel) {
+    // create a Response obj and associate it with this case
+    Response response = Response.builder()
+        .inboundChannel(channel)
+        .caze(caze)
+        .dateTime(DateTimeUtil.nowUTC()).build();
+
+    caze.getResponses().add(response);
+    caseRepo.save(caze);
+    return caze;
+  }
+
 }

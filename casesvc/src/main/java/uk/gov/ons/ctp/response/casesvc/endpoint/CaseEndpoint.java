@@ -9,7 +9,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 
 import org.springframework.util.CollectionUtils;
 
@@ -19,8 +18,10 @@ import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
+import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 
 /**
@@ -32,51 +33,16 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 public final class CaseEndpoint implements CTPEndpoint {
 
   public static final String ERRORMSG_CASENOTFOUND = "Case not found for";
+  public static final String ERRORMSG_CASEGROUPNOTFOUND = "CaseGroup not found for";
+
+  @Inject
+  private CaseGroupService caseGroupService;
 
   @Inject
   private CaseService caseService;
 
   @Inject
   private MapperFacade mapperFacade;
-
-  /**
-   * the GET endpoint to find Cases by postcode
-   *
-   * @param uprn to find by
-   * @return the cases found
-   * @throws CTPException something went wrong
-   */
-  @GET
-  @Path("/uprn/{uprn}")
-  public List<CaseDTO> findCasesByUprn(@PathParam("uprn") final Long uprn)  throws CTPException {
-    log.debug("Entering findCasesByUprn with {}", uprn);
-    List<Case> cases = caseService.findCasesByUprn(uprn);
-    if (org.apache.commons.collections.CollectionUtils.isEmpty(cases)) {
-      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-              String.format("%s UPRN %s", ERRORMSG_CASENOTFOUND, uprn));
-    }
-    List<CaseDTO> caseDTOs = mapperFacade.mapAsList(cases, CaseDTO.class);
-    return CollectionUtils.isEmpty(caseDTOs) ? null : caseDTOs;
-  }
-
-  /**
-   * the GET endpoint to find a Case by questionnaire id
-   *
-   * @param qid to find by
-   * @return the case found
-   * @throws CTPException something went wrong
-   */
-  @GET
-  @Path("/questionnaire/{qid}")
-  public CaseDTO findCaseByQuestionnaireId(@PathParam("qid") final Integer qid) throws CTPException {
-    log.debug("Entering findCaseByQuestionnaireId with {}", qid);
-    Case caseObj = caseService.findCaseByQuestionnaireId(qid);
-    if (caseObj == null) {
-      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-              String.format("%s questionnaire id %s", ERRORMSG_CASENOTFOUND, qid));
-    }
-    return mapperFacade.map(caseObj, CaseDTO.class);
-  }
 
   /**
    * the GET endpoint to find a Case by id
@@ -98,25 +64,43 @@ public final class CaseEndpoint implements CTPEndpoint {
   }
 
   /**
-   * The GET endpoint to find case events by state and actionplanid. Note that
-   * this has been replaced by the Case.Notification queue mechanism to notify
-   * the Action service of case life cycle events. Has been left in place
-   * pending implementation of recovery functionality if Case and Action service
-   * state gets out of synchronisation.
+   * the GET endpoint to find a Case by IAC
    *
-   * @param states the case states to find by
-   * @param actionPlanId the id of the action plan to find by
-   * @return the cases found
+   * @param IAC to find by
+   * @return the case found
    * @throws CTPException something went wrong
    */
   @GET
-  @Path("/actionplan/{actionplanid}")
-  public List<Integer> findCaseIdsByStateAndActionPlan(
-      @QueryParam("state") final List<CaseDTO.CaseState> states,
-      @PathParam("actionplanid") final Integer actionPlanId) {
-    log.debug("Entering findCasesByStateAndActionPlan with {} and {}", states, actionPlanId);
-    List<Integer> caseIds = caseService.findCaseIdsByStatesAndActionPlanId(states, actionPlanId);
-    return CollectionUtils.isEmpty(caseIds) ? null : caseIds;
+  @Path("/iac/{iac}")
+  public CaseDTO findCaseByIac(@PathParam("iac") final String iac) throws CTPException {
+    log.debug("Entering findCaseByIac with {}", iac);
+    Case caseObj = caseService.findCaseByIac(iac);
+    if (caseObj == null) {
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
+              String.format("%s iac id %s", ERRORMSG_CASENOTFOUND, iac));
+    }
+    return mapperFacade.map(caseObj, CaseDTO.class);
+  }
+
+  /**
+   * the GET endpoint to find case events by case id
+   *
+   * @param caseId to find by
+   * @return the case events found
+   * @throws CTPException something went wrong
+   */
+  @GET
+  @Path("/casegroup/{caseGroupId}")
+  public List<CaseDTO> findCasesInCaseGroup(@PathParam("caseGroupId") final Integer caseGroupId) throws CTPException {
+    log.debug("Entering findCasesInCaseGroup with {}", caseGroupId);
+    CaseGroup caseGroup = caseGroupService.findCaseGroupByCaseGroupId(caseGroupId);
+    if (caseGroup == null) {
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
+              String.format("%s casegroup id %s", ERRORMSG_CASEGROUPNOTFOUND, caseGroupId));
+    }
+    List<Case> cases = caseService.findCasesByCaseGroupId(caseGroupId);
+    List<CaseDTO> caseDTOs = mapperFacade.mapAsList(cases, CaseDTO.class);
+    return CollectionUtils.isEmpty(caseDTOs) ? null : caseDTOs;
   }
 
   /**
@@ -163,4 +147,5 @@ public final class CaseEndpoint implements CTPEndpoint {
     }
     return mapperFacade.map(createdCaseEvent, CaseEventDTO.class);
   }
+  
 }

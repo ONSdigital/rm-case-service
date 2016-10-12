@@ -1,7 +1,5 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -9,8 +7,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-
-import org.springframework.util.CollectionUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -37,19 +33,6 @@ public final class SampleEndpoint implements CTPEndpoint {
 
   @Inject
   private MapperFacade mapperFacade;
-
-  /**
-   * the GET endpoint to retrieve all samples
-   * @return the list of samples
-   */
-  @GET
-  @Path("/")
-  public List<SampleDTO> findSamples() {
-    log.debug("Entering findSamples...");
-    List<Sample> samples = sampleService.findSamples();
-    List<SampleDTO> sampleDTOs = mapperFacade.mapAsList(samples, SampleDTO.class);
-    return CollectionUtils.isEmpty(sampleDTOs) ? null : sampleDTOs;
-  }
 
   /**
    * the GET endpoint to retrieve a sample by its id

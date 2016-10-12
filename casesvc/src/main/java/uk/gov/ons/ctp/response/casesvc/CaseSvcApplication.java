@@ -25,14 +25,13 @@ import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
+import uk.gov.ons.ctp.response.casesvc.endpoint.ActionPlanMappingEndpoint;
 import uk.gov.ons.ctp.response.casesvc.endpoint.AddressEndpoint;
 import uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint;
+import uk.gov.ons.ctp.response.casesvc.endpoint.CaseGroupEndpoint;
 import uk.gov.ons.ctp.response.casesvc.endpoint.CaseTypeEndpoint;
 import uk.gov.ons.ctp.response.casesvc.endpoint.CategoryEndpoint;
-import uk.gov.ons.ctp.response.casesvc.endpoint.QuestionSetEndpoint;
-import uk.gov.ons.ctp.response.casesvc.endpoint.QuestionnaireEndpoint;
 import uk.gov.ons.ctp.response.casesvc.endpoint.SampleEndpoint;
-import uk.gov.ons.ctp.response.casesvc.endpoint.SurveyEndpoint;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.GeographyDTO;
@@ -116,17 +115,14 @@ public class CaseSvcApplication {
     public JerseyConfig() {
       JAXRSRegister.listCommonTypes().forEach(t->register(t));
 
-      // Register Frame JAX-RS components
+      // Register JAX-RS components
+      register(ActionPlanMappingEndpoint.class);
       register(AddressEndpoint.class);
-
-      // Register Case JAX-RS components
       register(CaseEndpoint.class);
+      register(CaseGroupEndpoint.class);
       register(CaseTypeEndpoint.class);
       register(CategoryEndpoint.class);
-      register(QuestionnaireEndpoint.class);
-      register(QuestionSetEndpoint.class);
       register(SampleEndpoint.class);
-      register(SurveyEndpoint.class);
 
       register(new CTPMessageBodyReader<GeographyDTO>(GeographyDTO.class) {
       });

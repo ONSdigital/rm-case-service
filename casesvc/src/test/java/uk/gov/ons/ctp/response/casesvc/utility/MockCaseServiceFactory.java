@@ -1,20 +1,10 @@
 package uk.gov.ons.ctp.response.casesvc.utility;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.eq;
-
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.glassfish.hk2.api.Factory;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
-import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 
@@ -60,105 +50,105 @@ public final class MockCaseServiceFactory implements Factory<CaseService> {
   public CaseService provide() {
 
     final CaseService mockedService = Mockito.mock(CaseService.class);
-
-    Mockito.when(mockedService.findCasesByUprn(UPRN)).thenAnswer(new Answer<List<Case>>() {
-      public List<Case> answer(final InvocationOnMock invocation)
-          throws Throwable {
-        List<Case> result = new ArrayList<Case>();
-        result.add(new Case(1, UPRN, CASE_STATE, CASE1_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY,
-            CASE1_SAMPLEID, CASE1_ACTIONPLANID, CASE_SURVEYID, CASE_QUESTIONSET));
-        result.add(new Case(2, UPRN, CASE_STATE, CASE2_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY,
-            CASE2_SAMPLEID, CASE2_ACTIONPLANID, CASE_SURVEYID, CASE_QUESTIONSET));
-        result.add(new Case(3, UPRN, CASE_STATE, CASE3_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY,
-            CASE3_SAMPLEID, CASE3_ACTIONPLANID, CASE_SURVEYID, CASE_QUESTIONSET));
-        return result;
-      }
-    });
-
-    Mockito.when(mockedService.findCasesByUprn(NON_EXISTING_UPRN)).thenAnswer(new Answer<List<Case>>() {
-      public List<Case> answer(final InvocationOnMock invocation)
-          throws Throwable {
-        return new ArrayList<Case>();
-      }
-    });
-
-    Mockito.when(mockedService.findCaseByQuestionnaireId(QUESTIONNAIREID)).thenAnswer(new Answer<Case>() {
-      public Case answer(final InvocationOnMock invocation)
-          throws Throwable {
-        return new Case(CASEID, UPRN, CASE_STATE, CASE1_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY,
-            CASE1_SAMPLEID, CASE1_ACTIONPLANID, CASE_SURVEYID, CASE_QUESTIONSET);
-      }
-    });
-
-    Mockito.when(mockedService.findCaseByQuestionnaireId(NON_EXISTING_ID)).thenAnswer(new Answer<Case>() {
-      public Case answer(final InvocationOnMock invocation)
-          throws Throwable {
-        return null;
-      }
-    });
-
-    Mockito.when(mockedService.findCaseByCaseId(CASEID)).thenAnswer(new Answer<Case>() {
-      public Case answer(final InvocationOnMock invocation)
-          throws Throwable {
-        return new Case(CASEID, UPRN, CASE_STATE, CASE1_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY,
-            CASE1_SAMPLEID, CASE1_ACTIONPLANID, CASE_SURVEYID, CASE_QUESTIONSET);
-      }
-    });
-
-    Mockito.when(mockedService.findCaseByCaseId(NON_EXISTING_ID)).thenAnswer(new Answer<Case>() {
-      public Case answer(final InvocationOnMock invocation)
-          throws Throwable {
-        return null;
-      }
-    });
-
-    Mockito.when(mockedService.findCaseEventsByCaseId(CASEID)).thenAnswer(new Answer<List<CaseEvent>>() {
-      public List<CaseEvent> answer(final InvocationOnMock invocation)
-          throws Throwable {
-        List<CaseEvent> result = new ArrayList<CaseEvent>();
-        result.add(new CaseEvent(1, CASEID, CASEEVENT_DESC1, CREATEDBY, CREATEDDATE_TIMESTAMP, CASEEVENT_CATEGORY,
-            CASEEVENT_SUBCATEGORY));
-        result.add(new CaseEvent(2, CASEID, CASEEVENT_DESC2, CREATEDBY, CREATEDDATE_TIMESTAMP, CASEEVENT_CATEGORY,
-            CASEEVENT_SUBCATEGORY));
-        result.add(new CaseEvent(3, CASEID, CASEEVENT_DESC3, CREATEDBY, CREATEDDATE_TIMESTAMP, CASEEVENT_CATEGORY,
-            CASEEVENT_SUBCATEGORY));
-        return result;
-      }
-    });
-
-    Mockito.when(mockedService.findCaseEventsByCaseId(NON_EXISTING_ID)).thenAnswer(new Answer<List<CaseEvent>>() {
-      public List<CaseEvent> answer(final InvocationOnMock invocation)
-          throws Throwable {
-        return new ArrayList<CaseEvent>();
-      }
-    });
-
-    Mockito.when(mockedService.findCaseByCaseId(UNCHECKED_EXCEPTION))
-        .thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
-
-    Mockito.when(mockedService.createCaseEvent(any(CaseEvent.class))).thenAnswer(new Answer<CaseEvent>() {
-      public CaseEvent answer(final InvocationOnMock invocation)
-          throws Throwable {
-        return new CaseEvent(1, CASEID, CASEEVENT_DESC1, CREATEDBY, CREATEDDATE_TIMESTAMP, CASEEVENT_CATEGORY,
-            CASEEVENT_SUBCATEGORY);
-      }
-    });
-
-    Mockito.when(mockedService.findCaseIdsByStatesAndActionPlanId(anyObject(), eq(NON_EXISTING_ID))).thenAnswer(new Answer<List<Integer>>() {
-      public List<Integer> answer(final InvocationOnMock invocation)
-              throws Throwable {
-        return new ArrayList<Integer>();
-      }
-    });
-
-    Mockito.when(mockedService.findCaseIdsByStatesAndActionPlanId(anyObject(), eq(EXISTING_ID))).thenAnswer(new Answer<List<Integer>>() {
-      public List<Integer> answer(final InvocationOnMock invocation)
-              throws Throwable {
-        List<Integer> result = new ArrayList<>();
-        result.add(new Integer("1"));
-        return result;
-      }
-    });
+//
+//    Mockito.when(mockedService.findCasesByUprn(UPRN)).thenAnswer(new Answer<List<Case>>() {
+//      public List<Case> answer(final InvocationOnMock invocation)
+//          throws Throwable {
+//        List<Case> result = new ArrayList<Case>();
+//        result.add(new Case(1, UPRN, CASE_STATE, CASE1_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY,
+//            CASE1_SAMPLEID, CASE1_ACTIONPLANID, CASE_SURVEYID, CASE_QUESTIONSET));
+//        result.add(new Case(2, UPRN, CASE_STATE, CASE2_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY,
+//            CASE2_SAMPLEID, CASE2_ACTIONPLANID, CASE_SURVEYID, CASE_QUESTIONSET));
+//        result.add(new Case(3, UPRN, CASE_STATE, CASE3_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY,
+//            CASE3_SAMPLEID, CASE3_ACTIONPLANID, CASE_SURVEYID, CASE_QUESTIONSET));
+//        return result;
+//      }
+//    });
+//
+//    Mockito.when(mockedService.findCasesByUprn(NON_EXISTING_UPRN)).thenAnswer(new Answer<List<Case>>() {
+//      public List<Case> answer(final InvocationOnMock invocation)
+//          throws Throwable {
+//        return new ArrayList<Case>();
+//      }
+//    });
+//
+//    Mockito.when(mockedService.findCaseByQuestionnaireId(QUESTIONNAIREID)).thenAnswer(new Answer<Case>() {
+//      public Case answer(final InvocationOnMock invocation)
+//          throws Throwable {
+//        return new Case(CASEID, UPRN, CASE_STATE, CASE1_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY,
+//            CASE1_SAMPLEID, CASE1_ACTIONPLANID, CASE_SURVEYID, CASE_QUESTIONSET);
+//      }
+//    });
+//
+//    Mockito.when(mockedService.findCaseByQuestionnaireId(NON_EXISTING_ID)).thenAnswer(new Answer<Case>() {
+//      public Case answer(final InvocationOnMock invocation)
+//          throws Throwable {
+//        return null;
+//      }
+//    });
+//
+//    Mockito.when(mockedService.findCaseByCaseId(CASEID)).thenAnswer(new Answer<Case>() {
+//      public Case answer(final InvocationOnMock invocation)
+//          throws Throwable {
+//        return new Case(CASEID, UPRN, CASE_STATE, CASE1_TYPEID, CREATEDDATE_TIMESTAMP, CREATEDBY,
+//            CASE1_SAMPLEID, CASE1_ACTIONPLANID, CASE_SURVEYID, CASE_QUESTIONSET);
+//      }
+//    });
+//
+//    Mockito.when(mockedService.findCaseByCaseId(NON_EXISTING_ID)).thenAnswer(new Answer<Case>() {
+//      public Case answer(final InvocationOnMock invocation)
+//          throws Throwable {
+//        return null;
+//      }
+//    });
+//
+//    Mockito.when(mockedService.findCaseEventsByCaseId(CASEID)).thenAnswer(new Answer<List<CaseEvent>>() {
+//      public List<CaseEvent> answer(final InvocationOnMock invocation)
+//          throws Throwable {
+//        List<CaseEvent> result = new ArrayList<CaseEvent>();
+//        result.add(new CaseEvent(1, CASEID, CASEEVENT_DESC1, CREATEDBY, CREATEDDATE_TIMESTAMP, CASEEVENT_CATEGORY,
+//            CASEEVENT_SUBCATEGORY));
+//        result.add(new CaseEvent(2, CASEID, CASEEVENT_DESC2, CREATEDBY, CREATEDDATE_TIMESTAMP, CASEEVENT_CATEGORY,
+//            CASEEVENT_SUBCATEGORY));
+//        result.add(new CaseEvent(3, CASEID, CASEEVENT_DESC3, CREATEDBY, CREATEDDATE_TIMESTAMP, CASEEVENT_CATEGORY,
+//            CASEEVENT_SUBCATEGORY));
+//        return result;
+//      }
+//    });
+//
+//    Mockito.when(mockedService.findCaseEventsByCaseId(NON_EXISTING_ID)).thenAnswer(new Answer<List<CaseEvent>>() {
+//      public List<CaseEvent> answer(final InvocationOnMock invocation)
+//          throws Throwable {
+//        return new ArrayList<CaseEvent>();
+//      }
+//    });
+//
+//    Mockito.when(mockedService.findCaseByCaseId(UNCHECKED_EXCEPTION))
+//        .thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
+//
+//    Mockito.when(mockedService.createCaseEvent(any(CaseEvent.class))).thenAnswer(new Answer<CaseEvent>() {
+//      public CaseEvent answer(final InvocationOnMock invocation)
+//          throws Throwable {
+//        return new CaseEvent(1, CASEID, CASEEVENT_DESC1, CREATEDBY, CREATEDDATE_TIMESTAMP, CASEEVENT_CATEGORY,
+//            CASEEVENT_SUBCATEGORY);
+//      }
+//    });
+//
+//    Mockito.when(mockedService.findCaseIdsByStatesAndActionPlanId(anyObject(), eq(NON_EXISTING_ID))).thenAnswer(new Answer<List<Integer>>() {
+//      public List<Integer> answer(final InvocationOnMock invocation)
+//              throws Throwable {
+//        return new ArrayList<Integer>();
+//      }
+//    });
+//
+//    Mockito.when(mockedService.findCaseIdsByStatesAndActionPlanId(anyObject(), eq(EXISTING_ID))).thenAnswer(new Answer<List<Integer>>() {
+//      public List<Integer> answer(final InvocationOnMock invocation)
+//              throws Throwable {
+//        List<Integer> result = new ArrayList<>();
+//        result.add(new Integer("1"));
+//        return result;
+//      }
+//    });
 
     return mockedService;
   }

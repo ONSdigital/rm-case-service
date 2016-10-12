@@ -1,15 +1,18 @@
 package uk.gov.ons.ctp.response.casesvc.domain.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,12 +21,14 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Table(name = "sample", schema = "casesvc")
 public class Sample implements Serializable {
 
-  private static final long serialVersionUID = -7537916260549107271L;
+
+  private static final long serialVersionUID = -5990905483071750964L;
 
   @Id
   @GeneratedValue
@@ -37,10 +42,9 @@ public class Sample implements Serializable {
   @Column(name = "addresscriteria")
   private String addressCriteria;
 
-  @Column(name = "casetypeid")
-  private Integer caseTypeId;
-
-  @Column(name = "surveyid")
-  private Integer surveyId;
+  private String survey;
+  
+  @OneToMany(mappedBy="sample", fetch=FetchType.EAGER)
+  private List<SampleCaseType> sampleCaseTypes;
 
 }

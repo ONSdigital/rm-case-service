@@ -40,33 +40,33 @@ public final class MockCaseTypeServiceFactory implements Factory<CaseTypeService
 
     final CaseTypeService mockedService = Mockito.mock(CaseTypeService.class);
 
-    Mockito.when(mockedService.findCaseTypes()).thenAnswer(new Answer<List<CaseType>>() {
-      public List<CaseType> answer(final InvocationOnMock invocation)
-          throws Throwable {
-        List<CaseType> result = new ArrayList<CaseType>();
-        result.add(new CaseType(1, CASETYPE1_NAME, CASETYPE1_DESC, CASETYPE1_ACTIONPLANID, CASETYPE1_QUESTIONSET));
-        result.add(new CaseType(2, CASETYPE2_NAME, CASETYPE2_DESC, CASETYPE2_ACTIONPLANID, CASETYPE2_QUESTIONSET));
-        result.add(new CaseType(3, CASETYPE3_NAME, CASETYPE3_DESC, CASETYPE3_ACTIONPLANID, CASETYPE3_QUESTIONSET));
-        return result;
-      }
-    });
-
-    Mockito.when(mockedService.findCaseTypeByCaseTypeId(CASETYPEID)).thenAnswer(new Answer<CaseType>() {
-      public CaseType answer(final InvocationOnMock invocation)
-          throws Throwable {
-        return new CaseType(3, CASETYPE3_NAME, CASETYPE3_DESC, CASETYPE3_ACTIONPLANID, CASETYPE3_QUESTIONSET);
-      }
-    });
-
-    Mockito.when(mockedService.findCaseTypeByCaseTypeId(UNCHECKED_EXCEPTION))
-        .thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
-
-    Mockito.when(mockedService.findCaseTypeByCaseTypeId(NON_EXISTING_CASETYPEID)).thenAnswer(new Answer<CaseType>() {
-      public CaseType answer(final InvocationOnMock invocation)
-          throws Throwable {
-        return null;
-      }
-    });
+//    Mockito.when(mockedService.findCaseTypes()).thenAnswer(new Answer<List<CaseType>>() {
+//      public List<CaseType> answer(final InvocationOnMock invocation)
+//          throws Throwable {
+//        List<CaseType> result = new ArrayList<CaseType>();
+//        result.add(new CaseType(1, CASETYPE1_NAME, CASETYPE1_DESC, CASETYPE1_ACTIONPLANID, CASETYPE1_QUESTIONSET));
+//        result.add(new CaseType(2, CASETYPE2_NAME, CASETYPE2_DESC, CASETYPE2_ACTIONPLANID, CASETYPE2_QUESTIONSET));
+//        result.add(new CaseType(3, CASETYPE3_NAME, CASETYPE3_DESC, CASETYPE3_ACTIONPLANID, CASETYPE3_QUESTIONSET));
+//        return result;
+//      }
+//    });
+//
+//    Mockito.when(mockedService.findCaseTypeByCaseTypeId(CASETYPEID)).thenAnswer(new Answer<CaseType>() {
+//      public CaseType answer(final InvocationOnMock invocation)
+//          throws Throwable {
+//        return new CaseType(3, CASETYPE3_NAME, CASETYPE3_DESC, CASETYPE3_ACTIONPLANID, CASETYPE3_QUESTIONSET);
+//      }
+//    });
+//
+//    Mockito.when(mockedService.findCaseTypeByCaseTypeId(UNCHECKED_EXCEPTION))
+//        .thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
+//
+//    Mockito.when(mockedService.findCaseTypeByCaseTypeId(NON_EXISTING_CASETYPEID)).thenAnswer(new Answer<CaseType>() {
+//      public CaseType answer(final InvocationOnMock invocation)
+//          throws Throwable {
+//        return null;
+//      }
+//    });
 
     return mockedService;
   }

@@ -21,8 +21,6 @@ public class CaseEventDTO {
   private static final int DESC_MIN = 2;
   private static final int CREATED_BY_MAX = 20;
   private static final int CREATED_BY_MIN = 2;
-  private static final int CAT_MAX = 40;
-  private static final int CAT_MIN = 1;
 
   private Date createdDateTime;
 
@@ -30,8 +28,8 @@ public class CaseEventDTO {
 
   private Integer caseId;
 
-  @NotNull @Size(min = CAT_MIN, max = CAT_MAX)
-  private String category;
+  @NotNull
+  private CategoryDTO.CategoryType category;
 
   private String subCategory;
 

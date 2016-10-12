@@ -13,6 +13,8 @@ import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 import uk.gov.ons.ctp.response.iac.representation.CreateInternetAccessCodeDTO;
+import uk.gov.ons.ctp.response.iac.representation.InternetAccessCodeDTO;
+import uk.gov.ons.ctp.response.iac.representation.UpdateInternetAccessCodeDTO;
 
 /**
  * The impl of the service which calls the IAC service via REST
@@ -24,7 +26,7 @@ public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCod
 
   // TODO centralize this!
   public static final String SYSTEM = "System";
-  
+
   @Inject
   private AppConfig appConfig;
 
@@ -32,14 +34,21 @@ public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCod
   @Qualifier("internetAccessCodeServiceClient")
   private RestClient internetAccessClientServiceClient;
 
-  /* (non-Javadoc)
-   * @see uk.gov.ons.ctp.response.casesvc.service.impl.InternetAccessCodeSvcClient#generateIACs(int)
-   */
   @Override
   public List<String> generateIACs(int count) {
-      CreateInternetAccessCodeDTO createCodesDTO = new CreateInternetAccessCodeDTO(count, SYSTEM);
-      log.debug("about to post to the IAC SVC with {}", createCodesDTO);
-      String[] codes = internetAccessClientServiceClient.postResource(appConfig.getInternetAccessCodeSvc().getIacPostPath(), createCodesDTO, String[].class);
-      return Arrays.asList(codes);
+    CreateInternetAccessCodeDTO createCodesDTO = new CreateInternetAccessCodeDTO(count, SYSTEM);
+    log.debug("about to post to the IAC SVC with {}", createCodesDTO);
+    String[] codes = internetAccessClientServiceClient
+        .postResource(appConfig.getInternetAccessCodeSvc().getIacPostPath(), createCodesDTO, String[].class);
+    return Arrays.asList(codes);
+  }
+
+  @Override
+  public InternetAccessCodeDTO disableIAC(String iac) {
+    log.debug("about to put to the IAC SVC with {}", iac);
+    UpdateInternetAccessCodeDTO updateInternetAccessCodeDTO = new UpdateInternetAccessCodeDTO("SYSTEM");
+    InternetAccessCodeDTO internetAccessCodeDTO = internetAccessClientServiceClient
+        .putResource(appConfig.getInternetAccessCodeSvc().getIacPutPath(), updateInternetAccessCodeDTO, InternetAccessCodeDTO.class, iac);
+    return internetAccessCodeDTO;
   }
 }

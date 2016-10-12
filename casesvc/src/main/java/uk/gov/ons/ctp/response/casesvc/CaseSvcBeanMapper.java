@@ -4,22 +4,26 @@ import javax.inject.Named;
 
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.ConfigurableMapper;
+import uk.gov.ons.ctp.response.casesvc.domain.model.ActionPlanMapping;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Address;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseType;
-import uk.gov.ons.ctp.response.casesvc.domain.model.QuestionSet;
-import uk.gov.ons.ctp.response.casesvc.domain.model.Questionnaire;
+import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
+import uk.gov.ons.ctp.response.casesvc.domain.model.Contact;
+import uk.gov.ons.ctp.response.casesvc.domain.model.Response;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Sample;
-import uk.gov.ons.ctp.response.casesvc.domain.model.Survey;
+import uk.gov.ons.ctp.response.casesvc.representation.ActionPlanMappingDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.AddressDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseTypeDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.QuestionSetDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.QuestionnaireDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.ContactDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.ResponseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.SampleDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.SurveyDTO;
 
 /**
  * The bean mapper that maps to/from DTOs and JPA entity types.
@@ -34,6 +38,11 @@ public class CaseSvcBeanMapper extends ConfigurableMapper {
    * @param factory the factory to which we add our mappings
    */
   protected final void configure(final MapperFactory factory) {
+
+    factory
+        .classMap(ActionPlanMapping.class, ActionPlanMappingDTO.class)
+        .byDefault()
+        .register();
 
     factory
         .classMap(Address.class, AddressDTO.class)
@@ -51,6 +60,11 @@ public class CaseSvcBeanMapper extends ConfigurableMapper {
         .register();
 
     factory
+        .classMap(CaseGroup.class, CaseGroupDTO.class)
+        .byDefault()
+        .register();
+
+    factory
         .classMap(CaseEvent.class, CaseEventDTO.class)
         .byDefault()
         .register();
@@ -61,12 +75,18 @@ public class CaseSvcBeanMapper extends ConfigurableMapper {
         .register();
 
     factory
-        .classMap(Questionnaire.class, QuestionnaireDTO.class)
+        .classMap(Category.class, CategoryDTO.class)
+        .field("categoryType", "name")
         .byDefault()
         .register();
 
     factory
-        .classMap(QuestionSet.class, QuestionSetDTO.class)
+        .classMap(Contact.class, ContactDTO.class)
+        .byDefault()
+        .register();
+
+    factory
+        .classMap(Response.class, ResponseDTO.class)
         .byDefault()
         .register();
 
@@ -75,10 +95,6 @@ public class CaseSvcBeanMapper extends ConfigurableMapper {
         .byDefault()
         .register();
 
-    factory
-        .classMap(Survey.class, SurveyDTO.class)
-        .byDefault()
-        .register();
 
   }
 }

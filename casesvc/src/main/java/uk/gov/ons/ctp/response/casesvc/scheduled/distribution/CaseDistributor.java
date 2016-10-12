@@ -28,14 +28,12 @@ import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.casesvc.CaseSvcApplication;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
-import uk.gov.ons.ctp.response.casesvc.domain.model.Questionnaire;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.QuestionnaireRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
-import uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseState;
+import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 
 /**
@@ -92,10 +90,11 @@ public class CaseDistributor {
   private CaseRepository caseRepo;
 
   @Inject
+  private CaseService caseService;
+  
+  @Inject
   private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
 
-  @Inject
-  private QuestionnaireRepository questionnaireRepo;
 
   // single TransactionTemplate shared amongst all methods in this instance
   private final TransactionTemplate transactionTemplate;
@@ -152,8 +151,9 @@ public class CaseDistributor {
         } catch (Exception e) {
           // single case/questionnaire db changes rolled back
           log.error(
-              "Exception thrown processing case {}. Processing will be retried at next scheduled distribution",
+              "Exception thrown processing case {}. Processing postponed",
               caze.getCaseId());
+          log.error(e.getStackTrace().toString());
           failures++;
         }
       }
@@ -191,12 +191,12 @@ public class CaseDistributor {
         .collect(Collectors.toList());
     log.debug("retrieving while excluding cases {}", excludedCases);
 
-    // prepare and execute the query to find the oldest N cases that are in state INIT and not in the excluded list
+    // prepare and execute the query to find the oldest N cases that are in INIT states and not in the excluded list
     Pageable pageable = new PageRequest(0, appConfig.getCaseDistribution().getRetrievalMax(), new Sort(
         new Sort.Order(Direction.ASC, "createdDateTime")));
     excludedCases.add(Integer.valueOf(IMPOSSIBLE_CASE_ID));
     List<Case> cases = caseRepo
-        .findByStateInAndCaseIdNotIn(Arrays.asList(CaseState.SAMPLED_INIT), excludedCases, pageable);
+        .findByStateInAndCaseIdNotIn(Arrays.asList(CaseState.SAMPLED_INIT, CaseState.REPLACEMENT_INIT), excludedCases, pageable);
     log.debug("RETRIEVED case ids {}", cases.stream().map(a -> a.getCaseId().toString())
         .collect(Collectors.joining(",")));
 
@@ -229,31 +229,29 @@ public class CaseDistributor {
       public CaseNotification doInTransaction(final TransactionStatus status) {
         CaseNotification caseNotification = null;
         // update our cases state in db
-        transitionCase(caze, CaseDTO.CaseEvent.SAMPLED_ACTIVATED);
+        CaseDTO.CaseEvent event = null;
+        switch (caze.getState()) {
+        case SAMPLED_INIT:
+          event = CaseDTO.CaseEvent.ACTIVATED;
+          break;
+        case REPLACEMENT_INIT:
+          event = CaseDTO.CaseEvent.REPLACED;
+          break;
+        default:
+          String msg = String.format("Case %d has incorrect state %s", caze.getCaseId(), caze.getState());
+          log.error(msg);
+          throw new RuntimeException(msg);
+        }
+        Case updatedCase = transitionCase(caze, event);
+        updatedCase.setIac(iac);
 
-        // stick the IAC to the questionnaire
-        assignIacToCaseQuestionnaire(iac, caze.getCaseId());
+        caseRepo.saveAndFlush(updatedCase);
 
         // create the request, filling in details by GETs from casesvc
-        caseNotification = prepareCaseNotification(caze);
+        caseNotification = caseService.prepareCaseNotification(caze, event);
         return caseNotification;
       }
     });
-  }
-
-  /**
-   * simply get the questionnaire associated with the case and update it with
-   * the provided iac
-   * 
-   * @param iac the freshly minted IAC to assign to the case questionnaire
-   * @param caseId the id of the case whose questionnaire we wish to update
-   */
-  private void assignIacToCaseQuestionnaire(String iac, int caseId) {
-    List<Questionnaire> questionnaires = questionnaireRepo.findByCaseId(caseId);
-    // there can only be one ... it's a kinda magic
-    Questionnaire questionnaire = questionnaires.get(0);
-    questionnaire.setIac(iac);
-    questionnaireRepo.save(questionnaire);
   }
 
   /**
@@ -266,34 +264,13 @@ public class CaseDistributor {
    * @return the transitioned case
    */
   private Case transitionCase(final Case caze, final CaseDTO.CaseEvent event) {
-    Case updatedCase = null;
     try {
       CaseDTO.CaseState nextState = caseSvcStateTransitionManager.transition(caze.getState(), event);
       caze.setState(nextState);
-      updatedCase = caseRepo.saveAndFlush(caze);
     } catch (StateTransitionException ste) {
       throw new RuntimeException(ste);
     }
-    return updatedCase;
-  }
-
-  /**
-   * Take an case and using it, fetch further info from Case service in a number
-   * of rest calls, in order to create the CaseRequest
-   *
-   * @param caze It all starts with the Case
-   * @return The CaseRequest created from the Case and the other info from
-   *         CaseSvc
-   */
-  private CaseNotification prepareCaseNotification(final Case caze) {
-    log.debug("constructing CaseNotification to publish to downstream handler for case id {}",
-        caze.getCaseId());
-    CaseNotification caseNotification = new CaseNotification();
-    caseNotification.setCaseId(caze.getCaseId());
-    caseNotification.setActionPlanId(caze.getActionPlanId());
-    caseNotification.setNotificationType(NotificationType.SAMPLED_ACTIVATED);
-
-    return caseNotification;
+    return caze;
   }
 
   /**

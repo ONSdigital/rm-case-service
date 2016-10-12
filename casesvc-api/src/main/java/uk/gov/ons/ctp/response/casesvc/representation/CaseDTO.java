@@ -19,34 +19,36 @@ public class CaseDTO {
    * enum for case state
    */
   public enum CaseState {
-    SAMPLED_INIT, REPLACEMENT_INIT, ACTIVE, INACTIVE, RESPONDED;
+    SAMPLED_INIT, REPLACEMENT_INIT, ACTIONABLE, INACTIONABLE;
   }
 
   /**
    * enum for Case event
    */
   public enum CaseEvent {
-    SAMPLED_ACTIVATED, REPLACEMENT_ACTIVATED, DEACTIVATED, RESPONSE_RECEIVED
+    ACTIVATED, REPLACED, DEACTIVATED, DISABLED
   }
 
   private Integer caseId;
 
-  private Long uprn;
+  private Integer caseGroupId;
+
+  private String caseRef;
 
   private CaseState state;
 
   private Integer caseTypeId;
 
+  private Integer actionPlanMappingId;
+
   private Date createdDateTime;
 
   private String createdBy;
 
-  private Integer sampleId;
+  private String iac;
+  
+  private ResponseDTO[] responses;
 
-  private Integer actionPlanId;
-
-  private Integer surveyId;
-
-  private String questionSet;
+  private ContactDTO contact;
 
 }

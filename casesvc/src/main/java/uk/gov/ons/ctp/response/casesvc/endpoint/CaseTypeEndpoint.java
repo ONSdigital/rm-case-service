@@ -1,14 +1,10 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-
-import org.springframework.util.CollectionUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -32,18 +28,6 @@ public final class CaseTypeEndpoint implements CTPEndpoint {
   @Inject
   private MapperFacade mapperFacade;
 
-  /**
-   * the GET endpoint to retrieve all casetypes
-   * @return the list of case types
-   */
-  @GET
-  @Path("/")
-  public List<CaseTypeDTO> findCaseTypes() {
-    log.debug("Entering findCaseTypes...");
-    List<CaseType> caseTypes = caseTypeService.findCaseTypes();
-    List<CaseTypeDTO> caseTypeDTOs = mapperFacade.mapAsList(caseTypes, CaseTypeDTO.class);
-    return CollectionUtils.isEmpty(caseTypeDTOs) ? null : caseTypeDTOs;
-  }
 
   /**
    * the GET endpoint to find a casetype by id

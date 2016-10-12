@@ -5,14 +5,5 @@ databaseChangeLog:
         username: postgres
 
   - include:
-      file: database/changes/release-9.21.0/changelog.yml
-
-  - include:
-      file: database/changes/release-9.22.0/changelog.yml
-
-  - include:
-      file: database/changes/release-9.24.0/changelog.yml
-
-  - include:
-      file: database/changes/release-9.25.0/changelog.yml
+      file: database/changes/release-9.26.0/changelog.yml
 

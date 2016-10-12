@@ -36,10 +36,4 @@ public class ActionSvcClientServiceImpl implements ActionSvcClientService {
       actionServiceClient.postResource(appConfig.getActionSvc().getActionsPath(), actionDTO, ActionDTO.class);
   }
 
-  @Override
-  public void cancelActions(int caseId) {
-    log.debug("about to put cancel actions to the Action SVC with {}", caseId);
-    actionServiceClient.putResource(appConfig.getActionSvc().getCancelActionsPath(), null, ActionDTO[].class, caseId);
-  }
-
 }

@@ -11,7 +11,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseProjection;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 
 /**
@@ -20,15 +19,6 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 @Named
 @Transactional
 public interface CaseRepository extends JpaRepository<Case, Integer> {
-
-  /**
-   * find the Cases by State and ActionPlanId
-   * 
-   * @param states case state to find by
-   * @param actionPlanId actionPlan id to find by
-   * @return the cases found
-   */
-  List<CaseProjection> findCaseIdByStateInAndActionPlanId(List<CaseDTO.CaseState> states, Integer actionPlanId);
 
   /**
    * Return all cases in the given states and not in the list of excluded ids
@@ -42,14 +32,6 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
   List<Case> findByStateInAndCaseIdNotIn(List<CaseDTO.CaseState> states, List<Integer> caseIds, Pageable pageable);
 
   /**
-   * find the Case by uprn.
-   * 
-   * @param uprn to find by
-   * @return the case or null if not found
-   */
-  List<Case> findByUprn(Long uprn);
-
-  /**
    * set the case state for a given case.
    * 
    * @param state the case state value
@@ -59,4 +41,28 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
   @Modifying
   @Query(value = "UPDATE casesvc.case SET state = ?2 WHERE caseid = ?1", nativeQuery = true)
   int setState(Integer caseid, String state);
+  
+  
+  /**
+   * Find cases assigned to the given casegroupid
+   * @param caseGroupId the group id
+   * @return the cases in the group
+   */
+  List<Case> findByCaseGroupId(Integer caseGroupId);
+  
+  /**
+   * Find cases assigned to the given iac
+   * There should only be one - it is the job of the caller to complain if there is >1
+   * @param caseGroupId the group id
+   * @return the cases associated with the IAC (see above)
+   */
+  List<Case> findByIac(String iac);
+
+  /**
+   * Find a case by its external case reference
+   * @param caseRef the external ref
+   * @return the case
+   */
+  Case findByCaseRef(String caseRef);
+  
 }

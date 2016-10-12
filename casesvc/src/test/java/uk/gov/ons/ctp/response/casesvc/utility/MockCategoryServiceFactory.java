@@ -45,29 +45,29 @@ public final class MockCategoryServiceFactory implements Factory<CategoryService
 
     final CategoryService mockedService = Mockito.mock(CategoryService.class);
 
-    Mockito.when(mockedService.findCategories(null)).thenAnswer(new Answer<List<Category>>() {
-      public List<Category> answer(final InvocationOnMock invocation)
-          throws Throwable {
-        List<Category> result = new ArrayList<Category>();
-        result.add(new Category(CATEGORY1_NAME, CATEGORY1_DESC, CATEGORY1_ROLE, CATEGORY1_ACTIONTYPE,
-            CATEGORY1_CLOSECASE, CATEGORY1_MANUAL));
-        result.add(new Category(CATEGORY2_NAME, CATEGORY2_DESC, CATEGORY2_ROLE, CATEGORY2_ACTIONTYPE,
-            CATEGORY2_CLOSECASE, CATEGORY2_MANUAL));
-        result.add(new Category(CATEGORY3_NAME, CATEGORY3_DESC, CATEGORY3_ROLE, CATEGORY3_ACTIONTYPE,
-            CATEGORY3_CLOSECASE, CATEGORY3_MANUAL));
-        return result;
-      }
-    });
-
-    Mockito.when(mockedService.findCategories(ADMIN_ROLE)).thenAnswer(new Answer<List<Category>>() {
-      public List<Category> answer(final InvocationOnMock invocation)
-          throws Throwable {
-        List<Category> result = new ArrayList<Category>();
-        result.add(new Category(CATEGORY1_NAME, CATEGORY1_DESC, ADMIN_ROLE, CATEGORY1_ACTIONTYPE,
-            CATEGORY1_CLOSECASE, CATEGORY1_MANUAL));
-        return result;
-      }
-    });
+//    Mockito.when(mockedService.findCategories(null)).thenAnswer(new Answer<List<Category>>() {
+//      public List<Category> answer(final InvocationOnMock invocation)
+//          throws Throwable {
+//        List<Category> result = new ArrayList<Category>();
+//        result.add(new Category(CATEGORY1_NAME, CATEGORY1_DESC, CATEGORY1_ROLE, CATEGORY1_ACTIONTYPE,
+//            CATEGORY1_CLOSECASE, CATEGORY1_MANUAL));
+//        result.add(new Category(CATEGORY2_NAME, CATEGORY2_DESC, CATEGORY2_ROLE, CATEGORY2_ACTIONTYPE,
+//            CATEGORY2_CLOSECASE, CATEGORY2_MANUAL));
+//        result.add(new Category(CATEGORY3_NAME, CATEGORY3_DESC, CATEGORY3_ROLE, CATEGORY3_ACTIONTYPE,
+//            CATEGORY3_CLOSECASE, CATEGORY3_MANUAL));
+//        return result;
+//      }
+//    });
+//
+//    Mockito.when(mockedService.findCategories(ADMIN_ROLE)).thenAnswer(new Answer<List<Category>>() {
+//      public List<Category> answer(final InvocationOnMock invocation)
+//          throws Throwable {
+//        List<Category> result = new ArrayList<Category>();
+//        result.add(new Category(CATEGORY1_NAME, CATEGORY1_DESC, ADMIN_ROLE, CATEGORY1_ACTIONTYPE,
+//            CATEGORY1_CLOSECASE, CATEGORY1_MANUAL));
+//        return result;
+//      }
+//    });
 
     return mockedService;
   }
