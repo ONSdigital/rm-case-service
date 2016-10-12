@@ -28,20 +28,26 @@ public class CategoryServiceImpl implements CategoryService {
   @Inject
   private CategoryRepository categoryRepo;
 
-
   @Override
   public Category findCategory(CategoryDTO.CategoryType categoryType) {
     log.debug("Entering findCategory with type {}", categoryType);
     return categoryRepo.findOne(categoryType);
   }
-  
+
   @Override
   public List<Category> findCategories(String role, String group) {
     log.debug("Entering findCategories with role {} and group", role, group);
     List<Category> categories = categoryRepo.findAll();
-    return categories.stream()
-      .filter(cat->StringUtils.isEmpty(role)?true:cat.getRole().contains(role) && StringUtils.isEmpty(group)?true:cat.getGroup().contains(group))
-      .collect(Collectors.toList());
+    return filterCategories(categories, group, role);
   }
-
+  
+  private List<Category> filterCategories(List<Category> categories, String group, String role) {
+    boolean roleFiltered = !StringUtils.isEmpty(role);
+    boolean groupFiltered = !StringUtils.isEmpty(group);
+    List<Category> filteredCategories = categories.stream()
+        .filter(cat -> (roleFiltered ? (cat.getRole() == null ? false : cat.getRole().contains(role)) : true))
+        .filter(cat -> (groupFiltered ? (cat.getGroup() == null ? false : cat.getGroup().contains(group)) : true))
+        .collect(Collectors.toList());
+    return filteredCategories;
+  }
 }
