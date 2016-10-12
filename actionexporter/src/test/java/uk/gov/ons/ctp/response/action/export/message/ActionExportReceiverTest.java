@@ -68,7 +68,7 @@ public class ActionExportReceiverTest {
       + "<contactName>contactName</contactName>"
       + "<caseId>1</caseId>";
 
-  private static final String VALIDXML_PART2 = "<questionnaireId>1</questionnaireId>"
+  private static final String VALIDXML_PART2 = "<caseRef>1</caseRef>"
       + "<iac>12345678930666392556</iac>"
       + "<events>"
       + "<event>event</event>"
@@ -96,7 +96,7 @@ public class ActionExportReceiverTest {
       + "<contactName>contactName</contactName>"
       + "<caseId>2</caseId>"
       + "<priority>highest</priority>"
-      + "<questionnaireId>1</questionnaireId>"
+      + "<caseRef>2</caseRef>"
       + "<iac>12345678930666392557</iac>"
       + "<events>"
       + "<event>event</event>"
