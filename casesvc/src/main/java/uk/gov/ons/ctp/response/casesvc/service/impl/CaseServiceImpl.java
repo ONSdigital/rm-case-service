@@ -74,6 +74,12 @@ public class CaseServiceImpl implements CaseService {
   }
 
   @Override
+  public Case findCaseByCaseRef(final String caseRef) {
+    log.debug("Entering findCaseByCaseRef");
+    return caseRepo.findByCaseRef(caseRef);
+  }
+
+  @Override
   public Case findCaseByIac(final String iac) {
     log.debug("Entering findCaseByIac");
 
