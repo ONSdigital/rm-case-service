@@ -14,10 +14,5 @@ import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, CategoryDTO.CategoryType> {
 
-  /**
-   * To find a category by security role
-   * @param role the security role
-   * @return the found category
-   */
-  List<Category> findByRoleContaining(String role);
+
 }
