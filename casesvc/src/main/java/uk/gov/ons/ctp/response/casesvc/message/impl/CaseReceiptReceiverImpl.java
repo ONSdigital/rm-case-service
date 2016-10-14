@@ -33,12 +33,8 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
       CaseEvent caseEvent = new CaseEvent();
       caseEvent.setCaseId(existingCase.getCaseId());
       InboundChannel inboundChannel = caseReceipt.getInboundChannel();
-      if (inboundChannel == InboundChannel.ONLINE) {
-        caseEvent.setCategory(ONLINE_QUESTIONNAIRE_RESPONSE);
-      }
-      if (inboundChannel == InboundChannel.PAPER) {
-        caseEvent.setCategory(PAPER_QUESTIONNAIRE_RESPONSE);
-      }
+      caseEvent.setCategory(
+              inboundChannel == InboundChannel.ONLINE ? ONLINE_QUESTIONNAIRE_RESPONSE : PAPER_QUESTIONNAIRE_RESPONSE);
       caseService.createCaseEvent(caseEvent) ;
     }
   }
