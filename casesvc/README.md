@@ -226,6 +226,10 @@ curl -H "Accept: application/json" -H "Content-Type: application/json" http://lo
 200 {"sampleId":1,"name":"Residential","description":"Households","addressCriteria":"addresstype = 'HH'","caseTypeId":1,"surveyId":1}
 
 
+curl -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/samples/20 -v -X PUT -d "{\"type\":\"REGION\", \"code\":\"E12000005\"}"
+200 {"sampleId":20,"name":"COM2T12","description":null,"addressCriteria":"SAMPLE = COM2T12","survey":"2017 TEST","sampleCaseTypes":[{"caseTypeId":20,"respondentType":"H"},{"caseTypeId":42,"respondentType":"I"}]}
+
+
 ########################################################################
 ## GET /surveys
 ########################################################################

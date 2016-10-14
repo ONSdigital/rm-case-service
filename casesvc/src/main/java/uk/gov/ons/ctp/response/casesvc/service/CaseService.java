@@ -30,6 +30,14 @@ public interface CaseService extends CTPService {
   Case findCaseByCaseId(Integer caseId);
 
   /**
+   * Find Case entity by unique caseRef.
+   *
+   * @param caseRef Unique caseRef
+   * @return Case object or null
+   */
+  Case findCaseByCaseRef(String caseRef);
+
+  /**
    * Find Case entity by IAC
    *
    * @param iac The IAC 
