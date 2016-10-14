@@ -1,0 +1,26 @@
+[
+{
+   "caseId": 1,
+   "state": "SAMPLED_INIT",
+   "caseTypeId": 1,
+   "createdDateTime": 1460736159699,
+   "createdBy": "UnitTester",
+   "actionPlanMappingId": 1
+},
+{
+   "caseId":2,
+   "state":"SAMPLED_INIT",
+   "caseTypeId":2,
+   "createdDateTime":1460736159699,
+   "createdBy":"UnitTester",
+   "actionPlanMappingId":2
+},
+{
+   "caseId":3,
+   "state":"SAMPLED_INIT",
+   "caseTypeId":3,
+   "createdDateTime":1460736159699,
+   "createdBy":"UnitTester",
+   "actionPlanMappingId":3
+}
+]

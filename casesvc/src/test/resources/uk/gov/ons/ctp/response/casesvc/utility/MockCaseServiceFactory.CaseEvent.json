@@ -1,0 +1,28 @@
+[
+{  
+   "createdDateTime":1460736159699,
+   "caseEventId":1,
+   "caseId":124,
+   "category":"GENERAL_ENQUIRY",
+   "subCategory":"subcat",
+   "createdBy":"UnitTester",
+   "description":"Test Event 1"
+},
+{  
+   "createdDateTime":1460736159699,
+   "caseEventId":2,
+   "caseId":124,
+   "category":"GENERAL_ENQUIRY",
+   "subCategory":"subcat",
+   "createdBy":"UnitTester",
+   "description":"Test Event 2"
+},
+{  
+   "createdDateTime":1460736159699,
+   "caseEventId":3,
+   "caseId":124,
+   "category":"GENERAL_ENQUIRY",
+   "subCategory":"subcat",
+   "createdBy":"UnitTester",
+   "description":"Test Event 3"
+}]

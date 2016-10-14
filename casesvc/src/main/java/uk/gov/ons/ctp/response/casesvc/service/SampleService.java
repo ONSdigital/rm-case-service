@@ -34,6 +34,6 @@ public interface SampleService extends CTPService {
    * @param geographyCode Code for area
    *
    */
-  void generateCases(Integer sampleId, String goegraphyType, String geographyCode);
+  boolean generateCases(Integer sampleId, String goegraphyType, String geographyCode);
 
 }

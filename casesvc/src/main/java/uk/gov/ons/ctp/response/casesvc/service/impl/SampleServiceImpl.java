@@ -48,11 +48,10 @@ public class SampleServiceImpl implements SampleService {
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
-  public void generateCases(final Integer sampleId, final String geographyType, final String geographyCode) {
+  public boolean generateCases(final Integer sampleId, final String geographyType, final String geographyCode) {
     log.debug("Entering generateCases with sampleId {} - geographyType {} - geographyCode {}", sampleId, geographyType,
         geographyCode);
-    caseLifeCycleRepo.generateCases(sampleId, geographyType, geographyCode);
-    return;
+    return caseLifeCycleRepo.generateCases(sampleId, geographyType, geographyCode);
   }
 
 }

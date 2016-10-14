@@ -1,0 +1,29 @@
+[
+  {
+  "categoryType": "GENERAL_ENQUIRY",
+  "description": "General Enquiry",
+  "role": "collect-admins",
+  "group": "general",
+  "eventType": "DISABLED",
+  "generatedActionType": "",
+  "manual": "true"
+  },
+  {
+  "categoryType": "ONLINE_QUESTIONNAIRE_RESPONSE",
+  "description": "Online Questionnaire Response",
+  "role": "collect-csos",
+  "group": "general",
+  "eventType": "DISABLED",
+  "generatedActionType": "",
+  "manual": "false"
+  },
+  {
+  "categoryType": "GENERAL_ENQUIRY_ESCALATED",
+  "description": "General Enquiry Escalated",
+  "role": "collect-csos",
+  "group": "general",
+  "eventType": "DISABLED",
+  "generatedActionType": "GeneralEscalation",
+  "manual": "true"
+  }
+]

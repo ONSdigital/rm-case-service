@@ -3,7 +3,7 @@
    "createdDateTime":1460736159699,
    "caseEventId":1,
    "caseId":2,
-   "category":"QuestionnaireResponse",
+   "category":"ONLINE_QUESTIONNAIRE_RESPONSE",
    "subCategory":"subcat",
    "createdBy":"me",
    "description":"desc"
@@ -12,7 +12,7 @@
    "createdDateTime":1460736159699,
    "caseEventId":2,
    "caseId":2,
-   "category":"Classification Incorrect",
+   "category":"CLASSIFICATION_INCORRECT",
    "subCategory":"subcat",
    "createdBy":"me",
    "description":"desc"
@@ -21,7 +21,7 @@
    "createdDateTime":1460736159699,
    "caseEventId":3,
    "caseId":2,
-   "category":"Refusal",
+   "category":"REFUSAL",
    "subCategory":"subcat",
    "createdBy":"me",
    "description":"desc"
@@ -30,7 +30,7 @@
    "createdDateTime":1460736159699,
    "caseEventId":4,
    "caseId":2,
-   "category":"Undeliverable",
+   "category":"UNDELIVERABLE",
    "subCategory":"subcat",
    "createdBy":"me",
    "description":"desc"
@@ -39,7 +39,7 @@
    "createdDateTime":1460736159699,
    "caseEventId":5,
    "caseId":1,
-   "category":"QuestionnaireResponse",
+   "category":"ONLINE_QUESTIONNAIRE_RESPONSE",
    "subCategory":"subcat",
    "createdBy":"me",
    "description":"desc"

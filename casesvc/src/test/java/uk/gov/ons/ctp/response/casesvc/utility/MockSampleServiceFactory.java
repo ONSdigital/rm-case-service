@@ -1,6 +1,5 @@
 package uk.gov.ons.ctp.response.casesvc.utility;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.glassfish.hk2.api.Factory;
@@ -8,6 +7,7 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import uk.gov.ons.ctp.common.FixtureHelper;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Sample;
 import uk.gov.ons.ctp.response.casesvc.service.SampleService;
 
@@ -28,7 +28,9 @@ public final class MockSampleServiceFactory implements Factory<SampleService> {
   public static final Integer SAMPLE1_CASETYPEID = 1;
   public static final Integer SAMPLE2_CASETYPEID = 2;
   public static final Integer SAMPLE3_CASETYPEID = 3;
-  public static final Integer SURVEYID = 1;
+  public static final String SURVEY1_NAME = "survey1";
+  public static final String SURVEY2_NAME = "survey2";
+  public static final String SURVEY3_NAME = "survey3";
   public static final Integer SAMPLEID = 3;
   public static final Integer NON_EXISTING_SAMPLEID = 998;
   public static final Integer UNCHECKED_EXCEPTION = 999;
@@ -38,47 +40,50 @@ public final class MockSampleServiceFactory implements Factory<SampleService> {
 
   /**
    * provide method
+   * 
    * @return mocked service
    */
   public SampleService provide() {
 
     final SampleService mockedService = Mockito.mock(SampleService.class);
 
-//    Mockito.when(mockedService.findSamples()).thenAnswer(new Answer<List<Sample>>() {
-//      public List<Sample> answer(final InvocationOnMock invocation)
-//          throws Throwable {
-//        List<Sample> result = new ArrayList<Sample>();
-//        result.add(new Sample(1, SAMPLE1_NAME, SAMPLE1_DESC, SAMPLE1_CRITERIA, SAMPLE1_CASETYPEID, SURVEYID));
-//        result.add(new Sample(2, SAMPLE2_NAME, SAMPLE2_DESC, SAMPLE2_CRITERIA, SAMPLE2_CASETYPEID, SURVEYID));
-//        result.add(new Sample(3, SAMPLE3_NAME, SAMPLE3_DESC, SAMPLE3_CRITERIA, SAMPLE3_CASETYPEID, SURVEYID));
-//        return result;
-//      }
-//    });
-//
-//    Mockito.when(mockedService.findSampleBySampleId(SAMPLEID)).thenAnswer(new Answer<Sample>() {
-//      public Sample answer(final InvocationOnMock invocation)
-//          throws Throwable {
-//        return new Sample(3, SAMPLE3_NAME, SAMPLE3_DESC, SAMPLE3_CRITERIA, SAMPLE3_CASETYPEID, SURVEYID);
-//      }
-//    });
-//
-//    Mockito.when(mockedService.findSampleBySampleId(UNCHECKED_EXCEPTION))
-//        .thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
-//
-//    Mockito.when(mockedService.findSampleBySampleId(NON_EXISTING_SAMPLEID)).thenAnswer(new Answer<Sample>() {
-//      public Sample answer(final InvocationOnMock invocation)
-//          throws Throwable {
-//        return null;
-//      }
-//    });
-//
-//    //Mockito.when(mockedService.generateCases(SAMPLEID, GEOGRAPHY_TYPE, GEOGRAPHY_CODE)).thenReturn(true);
+    try {
+      List<Sample> samples = FixtureHelper.loadClassFixtures(Sample[].class);
+      Mockito.when(mockedService.findSamples()).thenAnswer(new Answer<List<Sample>>() {
+        public List<Sample> answer(final InvocationOnMock invocation)
+            throws Throwable {
+          return samples;
+        }
+      });
 
+      Mockito.when(mockedService.findSampleBySampleId(SAMPLEID)).thenAnswer(new Answer<Sample>() {
+        public Sample answer(final InvocationOnMock invocation)
+            throws Throwable {
+          return samples.get(2);
+        }
+      });
+
+      Mockito.when(mockedService.findSampleBySampleId(UNCHECKED_EXCEPTION))
+          .thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
+
+      Mockito.when(mockedService.findSampleBySampleId(NON_EXISTING_SAMPLEID)).thenAnswer(new Answer<Sample>() {
+        public Sample answer(final InvocationOnMock invocation)
+            throws Throwable {
+          return null;
+        }
+      });
+
+      Mockito.when(mockedService.generateCases(SAMPLEID, GEOGRAPHY_TYPE, GEOGRAPHY_CODE)).thenReturn(true);
+
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
     return mockedService;
   }
 
   /**
    * dispose method
+   * 
    * @param t service to dispose
    */
   public void dispose(final SampleService t) {
