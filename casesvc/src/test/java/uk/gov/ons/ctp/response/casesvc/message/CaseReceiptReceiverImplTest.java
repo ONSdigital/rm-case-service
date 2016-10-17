@@ -6,7 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import uk.gov.ons.ctp.common.util.DateUtils;
+import uk.gov.ons.ctp.common.time.DateUtil;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.UnlinkedCaseReceipt;
@@ -116,7 +116,7 @@ public class CaseReceiptReceiverImplTest {
     CaseReceipt caseReceipt = new CaseReceipt();
     caseReceipt.setCaseRef(caseRef);
     caseReceipt.setInboundChannel(inboundChannel);
-    caseReceipt.setResponseDateTime(DateUtils.giveMeCalendarForNow());
+    caseReceipt.setResponseDateTime(DateUtil.giveMeCalendarForNow());
     return caseReceipt;
   }
 }
