@@ -31,6 +31,8 @@ public class Contact implements Serializable {
   @Column(name = "contactid")
   private Integer contactId;
   
+  private String title;
+
   @Column(name = "forename")
   private String forename;
   

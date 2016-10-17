@@ -66,7 +66,9 @@ public class CategoryDTO {
 
   private CategoryType name;
 
-  private String description;
+  private String longDescription;
+
+  private String shortDescription;
 
   private String role;
   

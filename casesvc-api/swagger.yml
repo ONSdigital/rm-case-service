@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Case Service API
   description: The Case service manages Cases and associated address frame data and forms part of the Response Management product.
-  version: 9.27.2
+  version: 9.27.3
 schemes:
   - http
 basePath: /
@@ -796,7 +796,8 @@ definitions:
     type: object
     required:
     - name
-    - description
+    - shortDescription
+    - longDescription
     - manual
     - role
     - group
@@ -804,9 +805,12 @@ definitions:
       name:
         type: string
         description: Category name - the unique identifier for the category.
-      description:
+      shortDescription:
         type: string
-        description: Description of category.
+        description: Short description of category.
+      longDescription:
+        type: string
+        description: Long description of category.
       manual:
         type: boolean
         description: Whether the associated case event was created by a user or by a system event.

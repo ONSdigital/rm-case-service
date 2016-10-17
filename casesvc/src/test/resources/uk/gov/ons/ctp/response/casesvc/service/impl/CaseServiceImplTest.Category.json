@@ -1,7 +1,8 @@
 [
 {  
    "name":"QuestionnaireResponse",
-   "description":"blah blah blah",
+   "longDescription":"blah blah blah",
+   "shortDescription":"blah",
    "role":null,
    "generatedActionType":null,
    "closeCase":true,
@@ -9,7 +10,8 @@
 },
 {  
    "name":"Classification Incorrect",
-   "description":"blah blah blah",
+   "longDescription":"blah blah blah",
+   "shortDescription":"blah",
    "role":null,
    "generatedActionType":null,
    "closeCase":true,
@@ -17,7 +19,8 @@
 },
 {  
    "name":"Refusal",
-   "description":"blah blah blah",
+   "longDescription":"blah blah blah",
+   "shortDescription":"blah",
    "role":null,
    "generatedActionType":null,
    "closeCase":true,
@@ -25,7 +28,8 @@
 },
 {  
    "name":"Undeliverable",
-   "description":"blah blah blah",
+   "longDescription":"blah blah blah",
+   "shortDescription":"blah",
    "role":null,
    "generatedActionType":null,
    "closeCase":true,

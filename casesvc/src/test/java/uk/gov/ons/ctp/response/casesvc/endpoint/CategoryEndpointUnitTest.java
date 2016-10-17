@@ -2,17 +2,20 @@ package uk.gov.ons.ctp.response.casesvc.endpoint;
 
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCategoryServiceFactory.ADMIN_ROLE;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCategoryServiceFactory.CATEGORY1_GROUP;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCategoryServiceFactory.CATEGORY1_DESC;
+import static uk.gov.ons.ctp.response.casesvc.utility.MockCategoryServiceFactory.CATEGORY1_SHORT_DESC;
+import static uk.gov.ons.ctp.response.casesvc.utility.MockCategoryServiceFactory.CATEGORY1_LONG_DESC;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCategoryServiceFactory.CATEGORY1_MANUAL;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCategoryServiceFactory.CATEGORY1_TYPE;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCategoryServiceFactory.CATEGORY1_ROLE;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCategoryServiceFactory.CATEGORY2_GROUP;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCategoryServiceFactory.CATEGORY2_DESC;
+import static uk.gov.ons.ctp.response.casesvc.utility.MockCategoryServiceFactory.CATEGORY2_SHORT_DESC;
+import static uk.gov.ons.ctp.response.casesvc.utility.MockCategoryServiceFactory.CATEGORY2_LONG_DESC;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCategoryServiceFactory.CATEGORY2_MANUAL;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCategoryServiceFactory.CATEGORY2_TYPE;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCategoryServiceFactory.CATEGORY2_ROLE;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCategoryServiceFactory.CATEGORY3_GROUP;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCategoryServiceFactory.CATEGORY3_DESC;
+import static uk.gov.ons.ctp.response.casesvc.utility.MockCategoryServiceFactory.CATEGORY3_SHORT_DESC;
+import static uk.gov.ons.ctp.response.casesvc.utility.MockCategoryServiceFactory.CATEGORY3_LONG_DESC;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCategoryServiceFactory.CATEGORY3_MANUAL;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCategoryServiceFactory.CATEGORY3_TYPE;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCategoryServiceFactory.CATEGORY3_ROLE;
@@ -52,7 +55,8 @@ public final class CategoryEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.OK)
         .assertArrayLengthInBodyIs(3)
         .assertStringListInBody("$..name", CATEGORY1_TYPE, CATEGORY2_TYPE, CATEGORY3_TYPE)
-        .assertStringListInBody("$..description", CATEGORY1_DESC, CATEGORY2_DESC, CATEGORY3_DESC)
+        .assertStringListInBody("$..longDescription", CATEGORY1_LONG_DESC, CATEGORY2_LONG_DESC, CATEGORY3_LONG_DESC)
+        .assertStringListInBody("$..shortDescription", CATEGORY1_SHORT_DESC, CATEGORY2_SHORT_DESC, CATEGORY3_SHORT_DESC)
         .assertStringListInBody("$..role", CATEGORY1_ROLE, CATEGORY2_ROLE, CATEGORY3_ROLE)
         .assertStringListInBody("$..group", CATEGORY1_GROUP, CATEGORY2_GROUP, CATEGORY3_GROUP)
         .assertBooleanListInBody("$..manual", CATEGORY1_MANUAL, CATEGORY2_MANUAL, CATEGORY3_MANUAL)
@@ -69,7 +73,8 @@ public final class CategoryEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.OK)
         .assertArrayLengthInBodyIs(1)
         .assertStringListInBody("$..name", CATEGORY1_TYPE)
-        .assertStringListInBody("$..description", CATEGORY1_DESC)
+        .assertStringListInBody("$..longDescription", CATEGORY1_LONG_DESC)
+        .assertStringListInBody("$..shortDescription", CATEGORY1_SHORT_DESC)
         .assertStringListInBody("$..role", ADMIN_ROLE)
         .assertStringListInBody("$..group", CATEGORY1_GROUP)
         .assertBooleanListInBody("$..manual", CATEGORY1_MANUAL)
