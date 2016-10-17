@@ -72,8 +72,6 @@ public class CaseReceiptReceiverImplITCase {
 
     Thread.sleep(10000L);
 
-    // TODO Check process is not invoked
-
     /**
      * We check that the bad xml ends up on the invalid queue.
      */
@@ -87,8 +85,6 @@ public class CaseReceiptReceiverImplITCase {
     caseReceiptXml.send(MessageBuilder.withPayload(testMessage).build());
 
     Thread.sleep(10000L);
-
-    // TODO Check process is invoked
 
     /**
      * We check that no xml ends up on the invalid queue.
