@@ -50,7 +50,7 @@
                                output-channel="caseReceiptXmlValid" schema-location="classpath:xsd/caseReceipt.xsd" discard-channel="caseReceiptXmlInvalid"/>
 
     <!-- Secondly the now validated xml is transformed into the jaxb generated object model -->
-    <int:channel id="caseReceiptTransformed" datatype="uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback">
+    <int:channel id="caseReceiptTransformed" datatype="uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt">
         <int:queue capacity="60"/>
     </int:channel>
     <int-xml:unmarshalling-transformer
@@ -59,7 +59,7 @@
 
     <!-- The transformer uses this unmarshaller to do the heavy (un)lifting -->
     <bean id="caseReceiptUnmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-        <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.feedback" />
+        <property name="contextPath" value="uk.gov.ons.ctp.response.casesvc.message.feedback" />
     </bean>
 
     <int:channel id="caseReceiptPollerError" />
