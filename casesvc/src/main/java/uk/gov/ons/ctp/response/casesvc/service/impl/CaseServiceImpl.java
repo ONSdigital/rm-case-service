@@ -109,32 +109,35 @@ public class CaseServiceImpl implements CaseService {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
   public CaseEvent createCaseEvent(final CaseEvent caseEvent) {
-    log.debug("Entering createCaseEvent");
+    log.debug("Entering createCaseEvent with caseEvent {}", caseEvent);
     CaseEvent createdCaseEvent = null;
 
     Integer caseId = caseEvent.getCaseId();
     Case targetCase = caseRepo.findOne(caseId);
-
+    log.debug("targetCase = {}", targetCase);
     if (targetCase != null) {
       // save the case event to db
       caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
       createdCaseEvent = caseEventRepo.save(caseEvent);
+      log.debug("createdCaseEvent = {}", createdCaseEvent);
 
       Category category = categoryRepo.findOne(caseEvent.getCategory());
+      log.debug("category = {}", category);
       // create and add Response obj to the case if event is a response
       switch (category.getCategoryType()) {
-      case ONLINE_QUESTIONNAIRE_RESPONSE:
-        recordResponse(targetCase, InboundChannel.ONLINE);
-        break;
-      case PAPER_QUESTIONNAIRE_RESPONSE:
-        recordResponse(targetCase, InboundChannel.PAPER);
-        break;
-      default:
-        break;
+        case ONLINE_QUESTIONNAIRE_RESPONSE:
+          recordResponse(targetCase, InboundChannel.ONLINE);
+          break;
+        case PAPER_QUESTIONNAIRE_RESPONSE:
+          recordResponse(targetCase, InboundChannel.PAPER);
+          break;
+        default:
+          break;
       }
 
       // does the event transition the case?
       CaseDTO.CaseEvent transitionEvent = category.getEventType();
+      log.debug("transitionEvent = {}", transitionEvent);
       if (transitionEvent != null) {
         CaseDTO.CaseState oldState = targetCase.getState();
         CaseDTO.CaseState newState = null;
@@ -158,6 +161,7 @@ public class CaseServiceImpl implements CaseService {
 
       // should the event create an ad-hoc action?
       String actionType = category.getGeneratedActionType();
+      log.debug("actionType = {}", actionType);
       if (!StringUtils.isEmpty(actionType)) {
         actionSvcClientService.createAndPostAction(actionType, caseId, caseEvent.getCreatedBy());
       }
@@ -177,6 +181,7 @@ public class CaseServiceImpl implements CaseService {
   }
 
   private Case recordResponse(Case caze, InboundChannel channel) {
+    log.debug("Entering recordResponse with caze {} and channel {}", caze, channel);
     // create a Response obj and associate it with this case
     Response response = Response.builder()
         .inboundChannel(channel)

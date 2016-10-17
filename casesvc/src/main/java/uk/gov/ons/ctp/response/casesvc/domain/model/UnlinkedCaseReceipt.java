@@ -31,6 +31,6 @@ public class UnlinkedCaseReceipt {
   @Enumerated(EnumType.STRING)
   private InboundChannel inboundChannel;
 
-  @Column(name = "respondedatetime")
+  @Column(name = "responsedatetime")
   private Timestamp responseDateTime;
 }
