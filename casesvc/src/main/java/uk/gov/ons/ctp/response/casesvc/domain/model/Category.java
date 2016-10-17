@@ -34,7 +34,11 @@ public class Category implements Serializable {
   @Enumerated(EnumType.STRING)
   private CategoryDTO.CategoryType categoryType;
 
-  private String description;
+  @Column(name = "longdescription")
+  private String longDescription;
+
+  @Column(name = "shortdescription")
+  private String shortDescription;
 
   private String role;
 

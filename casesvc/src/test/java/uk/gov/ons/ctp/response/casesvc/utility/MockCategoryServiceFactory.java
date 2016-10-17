@@ -19,9 +19,12 @@ public final class MockCategoryServiceFactory implements Factory<CategoryService
   public static final String CATEGORY1_TYPE = "GENERAL_ENQUIRY";
   public static final String CATEGORY2_TYPE = "ONLINE_QUESTIONNAIRE_RESPONSE";
   public static final String CATEGORY3_TYPE = "GENERAL_ENQUIRY_ESCALATED";
-  public static final String CATEGORY1_DESC = "General Enquiry";
-  public static final String CATEGORY2_DESC = "Online Questionnaire Response";
-  public static final String CATEGORY3_DESC = "General Enquiry Escalated";
+  public static final String CATEGORY1_SHORT_DESC = "General Enquiry";
+  public static final String CATEGORY2_SHORT_DESC = "Online Questionnaire Response";
+  public static final String CATEGORY3_SHORT_DESC = "General Enquiry Escalated";
+  public static final String CATEGORY1_LONG_DESC = "General Enquiry Blah";
+  public static final String CATEGORY2_LONG_DESC = "Online Questionnaire Response Blah";
+  public static final String CATEGORY3_LONG_DESC = "General Enquiry Escalated Blah";
   public static final String CATEGORY1_ROLE = "collect-admins";
   public static final String CATEGORY2_ROLE = "collect-csos";
   public static final String CATEGORY3_ROLE = "collect-csos";

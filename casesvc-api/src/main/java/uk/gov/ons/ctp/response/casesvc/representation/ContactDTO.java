@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class ContactDTO {
 
+  private String title;
+
   private String forename;
   
   private String surname;

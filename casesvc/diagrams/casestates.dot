@@ -1,0 +1,20 @@
+/* Case service case states. Run using dot -Tpng casestates.dot > casestates.png */
+/* See https://fsteeg.wordpress.com/2006/11/16/uml-activity-diagrams-with-graphviz/ */
+digraph casestates {
+    size="20,20";
+    edge[arrowhead=open]
+    node [shape=rectangle];
+    start[shape=circle, label="", fillcolor=black, style=filled]
+    sampledinit[label="SAMPLED_INIT", fontname="helvetica", style=rounded]
+    replacementinit[label="REPLACEMENT_INIT", fontname="helvetica", style=rounded]
+    actionable[label="ACTIONABLE", fontname="helvetica", style=rounded]
+    inactionable[label="INACTIONABLE", fontname="helvetica", style=rounded]
+
+    start -> sampledinit
+    start -> replacementinit
+    sampledinit -> actionable[fontname="helvetica", label="ACTIVATED"]
+    replacementinit -> actionable[fontname="helvetica", label="REPLACED"]
+    actionable -> inactionable[fontname="helvetica", label="DISABLED"]
+    actionable -> inactionable[fontname="helvetica", label="DEACTIVATED"]
+    inactionable -> inactionable[fontname="helvetica", label="DEACTIVATED\lDISABLED"]    
+}

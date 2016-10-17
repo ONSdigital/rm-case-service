@@ -1,0 +1,13 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 9.27.0-1
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: contact title etc
+            path: casesvc_category_contact_changes.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+

@@ -1,7 +1,8 @@
 [
   {
   "categoryType": "GENERAL_ENQUIRY",
-  "description": "General Enquiry",
+  "longDescription": "General Enquiry Blah",
+  "shortDescription": "General Enquiry",
   "role": "collect-admins",
   "group": "general",
   "eventType": "DISABLED",
@@ -10,7 +11,8 @@
   },
   {
   "categoryType": "ONLINE_QUESTIONNAIRE_RESPONSE",
-  "description": "Online Questionnaire Response",
+  "longDescription": "Online Questionnaire Response Blah",
+  "shortDescription": "Online Questionnaire Response",
   "role": "collect-csos",
   "group": "general",
   "eventType": "DISABLED",
@@ -19,7 +21,8 @@
   },
   {
   "categoryType": "GENERAL_ENQUIRY_ESCALATED",
-  "description": "General Enquiry Escalated",
+  "longDescription": "General Enquiry Escalated Blah",
+  "shortDescription": "General Enquiry Escalated",
   "role": "collect-csos",
   "group": "general",
   "eventType": "DISABLED",
