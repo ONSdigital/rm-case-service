@@ -7,12 +7,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -32,7 +29,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "response", schema = "casesvc")
 public class Response implements Serializable {
 
-  private static final long serialVersionUID = 7338670357547040523L;
+  private static final long serialVersionUID = 6584615161503944025L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "responseseq_gen")
@@ -40,9 +37,8 @@ public class Response implements Serializable {
   @Column(name = "responseid")
   private Integer responseId;
   
-  @ManyToOne(fetch=FetchType.LAZY)
-  @JoinColumn(name="caseid")
-  private Case caze;
+  @Column(name = "caseid")
+  private Integer caseId;
 
   @Column(name = "inboundchannel")
   @Enumerated(EnumType.STRING)

@@ -1,26 +1,30 @@
 [
 {  
    "caseId":1,
-   "uprn":1234,
-   "state":"SAMPLED_INIT",
+   "state":"ACTIONABLE",
    "caseTypeId":1,
    "createdDateTime":1460732606544,
    "createdBy":"me",
-   "sampleId":1,
-   "actionPlanId":1,
-   "surveyId":1,
-   "questionSet":"survey01"
+   "actionPlanMappingId":1,
+   "responses":[
+   {
+   "dateTime":1460732606544,
+   "inboundChannel":"ONLINE"
+   }
+   ]
 },
 {  
    "caseId":2,
-   "uprn":1234,
-   "state":"SAMPLED_INIT",
+   "state":"ACTIONABLE",
    "caseTypeId":2,
    "createdDateTime":1460732606544,
    "createdBy":"me",
-   "sampleId":1,
-   "actionPlanId":1,
-   "surveyId":1,
-   "questionSet":"survey01"
+   "actionPlanMappingId":1,
+   "responses":[
+   {
+   "dateTime":1460732606544,
+   "inboundChannel":"ONLINE"
+   }
+   ]
 }
 ]

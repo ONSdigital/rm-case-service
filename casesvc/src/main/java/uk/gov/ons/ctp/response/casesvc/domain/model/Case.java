@@ -67,7 +67,7 @@ public class Case implements Serializable {
   @Column(name = "createdby")
   private String createdBy;
 
-  @OneToMany(mappedBy="caze", fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+  @OneToMany(mappedBy="caseId", fetch=FetchType.EAGER, cascade=CascadeType.ALL)
   private List<Response> responses;
 
   private String iac;

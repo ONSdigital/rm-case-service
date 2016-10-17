@@ -21,6 +21,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.domain.model.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Response;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.ActionPlanMappingRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
@@ -28,9 +29,9 @@ import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
-import uk.gov.ons.ctp.response.casesvc.service.ActionPlanMappingService;
 import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
+import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 
 /**
  * A CaseService implementation which encapsulates all business logic operating
@@ -50,7 +51,7 @@ public class CaseServiceImpl implements CaseService {
   private StateTransitionManager<CaseDTO.CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
   @Inject
-  private ActionPlanMappingService actionPlanMappingService;
+  private ActionPlanMappingRepository actionPlanMappingRepo;
 
   @Inject
   private CaseEventRepository caseEventRepo;
@@ -62,7 +63,7 @@ public class CaseServiceImpl implements CaseService {
   private ActionSvcClientService actionSvcClientService;
 
   @Inject
-  private InternetAccessCodeSvcClientServiceImpl internetAccessCodeSvcClientServiceImpl;
+  private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
 
   @Inject
   private CaseNotificationPublisher notificationPublisher;
@@ -151,7 +152,7 @@ public class CaseServiceImpl implements CaseService {
         if (oldState != newState) {
           notifyActionService(targetCase, transitionEvent);
           if (transitionEvent == CaseDTO.CaseEvent.DISABLED) {
-            internetAccessCodeSvcClientServiceImpl.disableIAC(targetCase.getIac());
+            internetAccessCodeSvcClientService.disableIAC(targetCase.getIac());
           }
         }
       }
@@ -167,7 +168,7 @@ public class CaseServiceImpl implements CaseService {
 
   @Override
   public CaseNotification prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent) {
-    ActionPlanMapping actionPlanMapping = actionPlanMappingService.findActionPlanMapping(caze.getActionPlanMappingId());
+    ActionPlanMapping actionPlanMapping = actionPlanMappingRepo.findOne(caze.getActionPlanMappingId());
     NotificationType notifType = NotificationType.valueOf(transitionEvent.name());
     return new CaseNotification(caze.getCaseId(), actionPlanMapping.getActionPlanId(), notifType);
   }
@@ -180,7 +181,7 @@ public class CaseServiceImpl implements CaseService {
     // create a Response obj and associate it with this case
     Response response = Response.builder()
         .inboundChannel(channel)
-        .caze(caze)
+        .caseId(caze.getCaseId())
         .dateTime(DateTimeUtil.nowUTC()).build();
 
     caze.getResponses().add(response);
