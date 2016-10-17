@@ -14,7 +14,7 @@ import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.test.context.junit4.SpringRunner;
-import uk.gov.ons.ctp.response.casesvc.utility.JmsHelper;
+import uk.gov.ons.ctp.common.message.JmsHelper;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;
@@ -79,6 +79,22 @@ public class CaseReceiptReceiverImplITCase {
      */
     int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_CASE_RECEIPTS_QUEUE);
     assertEquals(1, finalCounter - initialCounter);
+  }
+
+  @Test
+  public void testSendValidCaseReceipt() throws Exception {
+    String testMessage = FileUtils.readFileToString(giveMeTempFile("/xmlSampleFiles/validCaseReceipt.xml"), "UTF-8");
+    caseReceiptXml.send(MessageBuilder.withPayload(testMessage).build());
+
+    Thread.sleep(10000L);
+
+    // TODO Check process is invoked
+
+    /**
+     * We check that no xml ends up on the invalid queue.
+     */
+    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_CASE_RECEIPTS_QUEUE);
+    assertEquals(initialCounter, finalCounter);
   }
 
   private File giveMeTempFile(String inputStreamLocation) throws IOException {
