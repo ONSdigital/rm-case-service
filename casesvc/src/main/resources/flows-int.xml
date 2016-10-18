@@ -62,13 +62,27 @@
         <property name="contextPath" value="uk.gov.ons.ctp.response.casesvc.message.feedback" />
     </bean>
 
+    <!-- we add an error channel so we can reprocess CaseReceipts when createCaseEvent (in CaseReceiptReceiverImpl)
+    throws an exception (the IAC service is down, etc.) -->
+    <int:channel id="caseReceiptProcessError" />
+    <bean id="caseReceiptProcessErrorQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Case.CaseReceiptProcessErrors"/>
+    </bean>
+    <int-jms:outbound-channel-adapter id="caseReceiptPollerErrorJmsOut" destination="caseReceiptProcessErrorQueue" channel="caseReceiptProcessError"/>
+    <int:channel id="caseReceiptTransformedWithHeader" datatype="uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt">
+        <int:queue capacity="60"/>
+    </int:channel>
+    <int:header-enricher input-channel="caseReceiptTransformed" output-channel="caseReceiptTransformedWithHeader">
+        <int:error-channel value="caseReceiptProcessError"/>
+    </int:header-enricher>
+
     <int:channel id="caseReceiptPollerError" />
     <bean id="caseReceiptPollerErrorQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Case.caseReceiptPollerErrors"/>
+        <constructor-arg value="Case.CaseReceiptPollerErrors"/>
     </bean>
     <int-jms:outbound-channel-adapter id="caseReceiptPollerErrorJmsOut" destination="caseReceiptPollerErrorQueue" channel="caseReceiptPollerError"/>
     <int:poller id="defaultPoller" default="true" error-channel="caseReceiptPollerError" fixed-delay="5000" time-unit="MILLISECONDS" max-messages-per-poll="1" receive-timeout="5000" />
-    <!-- Finally see the @ServiceActivator(inputChannel="caseReceiptTransformed") -->
+    <!-- Finally see the @ServiceActivator(inputChannel="caseReceiptTransformedWithHeader") -->
 
     <!-- Invalid notification XML written to file -->
     <int:channel id="caseNotificationXmlInvalid" />

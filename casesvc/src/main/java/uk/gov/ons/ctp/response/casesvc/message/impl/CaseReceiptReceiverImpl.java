@@ -32,7 +32,7 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
   @Inject
   private UnlinkedCaseReceiptService unlinkedCaseReceiptService;
 
-  @ServiceActivator(inputChannel = "caseReceiptTransformed")
+  @ServiceActivator(inputChannel = "caseReceiptTransformedWithHeader")
   public void process(CaseReceipt caseReceipt) {
     log.debug("entering process with caseReceipt {}", caseReceipt);
     String receiptCaseRef = caseReceipt.getCaseRef();
