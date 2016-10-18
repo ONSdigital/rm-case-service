@@ -14,8 +14,7 @@
   http://www.springframework.org/schema/integration/xml
   http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
 
-    <!--  First the inbound flow -->
-
+    <!-- START of section to receive CaseReceipts -->
     <!-- The inbound message container config - the inbound queue is defined here
     We will listen for caseReceipts coming from the SDX Gateway.
     -->
@@ -83,7 +82,9 @@
     <int-jms:outbound-channel-adapter id="caseReceiptPollerErrorJmsOut" destination="caseReceiptPollerErrorQueue" channel="caseReceiptPollerError"/>
     <int:poller id="defaultPoller" default="true" error-channel="caseReceiptPollerError" fixed-delay="5000" time-unit="MILLISECONDS" max-messages-per-poll="1" receive-timeout="5000" />
     <!-- Finally see the @ServiceActivator(inputChannel="caseReceiptTransformedWithHeader") -->
+    <!-- END of section to receive CaseReceipts -->
 
+    <!-- START of section to publish CaseNotifications -->
     <!-- Invalid notification XML written to file -->
     <int:channel id="caseNotificationXmlInvalid" />
     <int-file:outbound-channel-adapter 
@@ -124,6 +125,40 @@
       discard-channel="caseNotificationXmlInvalid"/>
 
     <!--  adapt the SI message to a JMS message -->
-    <int-jms:outbound-channel-adapter id="jmsout" channel="caseNotification" destination="caseNotificationJMSQueue"/>
+    <int-jms:outbound-channel-adapter id="caseNotificationJmsout" channel="caseNotification" destination="caseNotificationJMSQueue"/>
+    <!-- END of section to publish CaseNotifications -->
+
+    <!-- START of section to publish CaseReceipts -->
+    <bean id="caseReceiptQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Case.Responses"/>
+    </bean>
+
+    <!--  setup the outbound channels - note each queue needs a channel -->
+    <int:channel id="caseReceiptOutbound" />
+    <int:channel id="caseReceiptOutboundXml" />
+    <int:channel id="caseReceipt" />
+
+    <!--  the @Publisher sends to the marshalling-transformers input channel -->
+    <int-xml:marshalling-transformer
+            input-channel="caseReceiptOutbound" output-channel="caseReceiptOutboundXml"
+            marshaller="caseReceiptMarshaller"
+            result-transformer="caseReceiptTransformer"/>
+    <!--  the caseReceiptMarshaller turns java objects into xml dom -->
+    <bean id="caseReceiptMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="uk.gov.ons.ctp.response.casesvc.message.feedback" />
+    </bean>
+    <!--  the caseReceiptTransformer turns the xml dom into a string -->
+    <bean id="caseReceiptTransformer" class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
+
+    <!-- we validate here that we post case receipts matching the outbound schema -->
+    <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
+    <int-xml:validating-filter id="caseReceiptValidator" input-channel="caseReceiptOutboundXml"
+                               output-channel="caseReceiptOutboundXmlValid" schema-location="classpath:xsd/caseReceipt.xsd" discard-channel="caseReceiptXmlInvalid"/>
+
+    <!-- define the channel name to send our xml string to -->
+    <int:router input-channel="caseReceiptOutboundXmlValid" expression="'caseReceipt'"/>
+
+    <int-jms:outbound-channel-adapter id="caseReeceiptJmsout" channel="caseReceipt" destination="caseReceiptQueue"/>
+    <!-- END of section to publish CaseReceipts -->
 </beans>
 
