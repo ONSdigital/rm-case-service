@@ -1,0 +1,11 @@
+[
+{  
+   "actionPlanMappingId":1,
+   "actionPlanId":2,
+   "caseTypeId":3,
+   "isDefault":true,
+   "inboundChannel":"ONLINE",
+   "outboundChannel":"POST",
+   "variant":"English"
+}
+]

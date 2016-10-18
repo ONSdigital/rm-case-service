@@ -1,38 +1,42 @@
 [
 {  
-   "name":"QuestionnaireResponse",
+   "categoryType":"ONLINE_QUESTIONNAIRE_RESPONSE",
    "longDescription":"blah blah blah",
    "shortDescription":"blah",
    "role":null,
    "generatedActionType":null,
-   "closeCase":true,
+   "group": "general",
+   "eventType":"DISABLED",
    "manual":false
 },
 {  
-   "name":"Classification Incorrect",
+   "categoryType":"CLASSIFICATION_INCORRECT",
    "longDescription":"blah blah blah",
    "shortDescription":"blah",
    "role":null,
    "generatedActionType":null,
-   "closeCase":true,
+   "group": "general",
+   "eventType":"DEACTIVATED",
    "manual":true
 },
 {  
-   "name":"Refusal",
+   "categoryType":"REFUSAL",
    "longDescription":"blah blah blah",
    "shortDescription":"blah",
    "role":null,
    "generatedActionType":null,
-   "closeCase":true,
+   "group": "general",
+   "eventType":"DEACTIVATED",
    "manual":true
 },
 {  
-   "name":"Undeliverable",
+   "categoryType":"UNDELIVERABLE",
    "longDescription":"blah blah blah",
    "shortDescription":"blah",
    "role":null,
    "generatedActionType":null,
-   "closeCase":true,
+   "group": "general",
+   "eventType":"DEACTIVATED",
    "manual":true
 }
 ]
