@@ -16,3 +16,7 @@ The app can be started from the command line using : ./mvnw spring-boot:run
 
 ## To test
 See curlTests.txt under /test/resources
+
+
+about to invoke the event creation...
+org.springframework.integration
