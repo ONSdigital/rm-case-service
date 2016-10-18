@@ -16,7 +16,7 @@ databaseChangeLog:
       changes:
         - sqlFile:
             comment: insert setup data based on version 2 of spreadsheet
-            path: casesvc_stup_v2.sql
+            path: casesvc_setup_v2.sql
             relativeToChangelogFile: true
             splitStatements: false
 
