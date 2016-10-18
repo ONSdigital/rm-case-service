@@ -24,6 +24,8 @@ import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.Categor
 @MessageEndpoint
 public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
 
+  private static final int TRANSACTION_TIMEOUT = 60;  // Seconds
+
   @Inject
   private CaseService caseService;
 
@@ -52,6 +54,7 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
       caseEvent.setCaseId(existingCase.getCaseId());
       caseEvent.setCategory(
               inboundChannel == InboundChannel.ONLINE ? ONLINE_QUESTIONNAIRE_RESPONSE : PAPER_QUESTIONNAIRE_RESPONSE);
+      log.debug("about to invoke the event creation...");
       caseService.createCaseEvent(caseEvent) ;
     }
   }
