@@ -10,6 +10,9 @@ import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
 
 import javax.inject.Inject;
 
+/**
+ * The reader of messages put on channel caseReceiptProcessError
+ */
 @Slf4j
 @MessageEndpoint
 public class CaseReceiptProcessErrorReceiverImpl implements CaseReceiptProcessErrorReceiver {
@@ -17,7 +20,10 @@ public class CaseReceiptProcessErrorReceiverImpl implements CaseReceiptProcessEr
   @Inject
   private CaseReceiptPublisher caseReceiptPublisher;
 
-  // TODO we want this to wake up occasionally only - use a Poller?
+  /**
+   * To process exceptions put on channel caseReceiptProcessError
+   * @param exception the exception to process
+   */
   @ServiceActivator(inputChannel = "caseReceiptProcessError")
   public void process(MessageHandlingException exception) {
     log.debug("entering process with exception {}", exception);

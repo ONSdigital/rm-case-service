@@ -20,6 +20,9 @@ import java.sql.Timestamp;
 import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryType.PAPER_QUESTIONNAIRE_RESPONSE;
 import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryType.ONLINE_QUESTIONNAIRE_RESPONSE;
 
+/**
+ * The reader of CaseReceipts from queue
+ */
 @Slf4j
 @MessageEndpoint
 public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
@@ -32,6 +35,10 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
   @Inject
   private UnlinkedCaseReceiptService unlinkedCaseReceiptService;
 
+  /**
+   * To process CaseReceipts read from queue
+   * @param caseReceipt to process
+   */
   @ServiceActivator(inputChannel = "caseReceiptTransformedWithHeader")
   public void process(CaseReceipt caseReceipt) {
     log.debug("entering process with caseReceipt {}", caseReceipt);
@@ -55,7 +62,7 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
       caseEvent.setCategory(
               inboundChannel == InboundChannel.ONLINE ? ONLINE_QUESTIONNAIRE_RESPONSE : PAPER_QUESTIONNAIRE_RESPONSE);
       log.debug("about to invoke the event creation...");
-      caseService.createCaseEvent(caseEvent) ;
+      caseService.createCaseEvent(caseEvent);
     }
   }
 }

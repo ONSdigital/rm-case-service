@@ -3,7 +3,7 @@ package uk.gov.ons.ctp.response.casesvc.message;
 import org.springframework.messaging.MessageHandlingException;
 
 /**
- * This is the receiver for messages put on channel caseReceiptProcessError
+ * The reader of messages put on channel caseReceiptProcessError
  */
 public interface CaseReceiptProcessErrorReceiver {
   /**
