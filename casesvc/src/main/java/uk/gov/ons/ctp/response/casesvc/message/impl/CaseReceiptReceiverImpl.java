@@ -52,7 +52,7 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
       caseEvent.setCaseId(existingCase.getCaseId());
       caseEvent.setCategory(
               inboundChannel == InboundChannel.ONLINE ? ONLINE_QUESTIONNAIRE_RESPONSE : PAPER_QUESTIONNAIRE_RESPONSE);
-      caseService.createCaseEvent(caseEvent) ;
+      caseService.createCaseEvent(caseEvent, null);
     }
   }
 }

@@ -11,12 +11,17 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PostLoad;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,16 +43,18 @@ public class Case implements Serializable {
   private static final long serialVersionUID = 7778360895016862176L;
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "caseidseq_gen")
+  @SequenceGenerator(name = "caseidseq_gen", sequenceName = "casesvc.caseidseq")
   @Column(name = "caseid")
   private Integer caseId;
-  
+
   @Column(name = "casegroupid")
   private Integer caseGroupId;
 
-  @Column(name = "caseref")
+  @Generated(GenerationTime.INSERT)
+  @Column(name = "caseref", nullable=false, unique = true, insertable = false, updatable = false, columnDefinition = "VARCHAR DEFAULT nextval('casesvc.caserefseq')")
   private String caseRef;
-  
+
   @Enumerated(EnumType.STRING)
   private CaseDTO.CaseState state;
 
@@ -57,8 +64,8 @@ public class Case implements Serializable {
   @Column(name = "actionplanmappingid")
   private Integer actionPlanMappingId;
 
-  @OneToOne(fetch=FetchType.EAGER)
-  @JoinColumn(name="contactid")
+  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @JoinColumn(name = "contactid")
   private Contact contact;
 
   @Column(name = "createddatetime")
@@ -67,7 +74,7 @@ public class Case implements Serializable {
   @Column(name = "createdby")
   private String createdBy;
 
-  @OneToMany(mappedBy="caseId", fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+  @OneToMany(mappedBy = "caseId", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   private List<Response> responses;
 
   private String iac;
@@ -78,6 +85,5 @@ public class Case implements Serializable {
       iac = iac.trim();
     }
   }
-  
 
 }

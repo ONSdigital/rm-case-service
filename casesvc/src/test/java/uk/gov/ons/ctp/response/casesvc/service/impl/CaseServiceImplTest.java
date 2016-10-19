@@ -109,7 +109,7 @@ public class CaseServiceImplTest {
     CaseEvent caseEvent = new CaseEvent(1, NON_EXISTING_PARENT_CASE_ID, CASEEVENT_DESCRIPTION, CASEEVENT_CREATEDBY,
         currentTime, CASEEVENT_CATEGORY_QR, CASEEVENT_SUBCATEGORY);
 
-    CaseEvent result = caseService.createCaseEvent(caseEvent);
+    CaseEvent result = caseService.createCaseEvent(caseEvent, null);
 
     verify(caseRepo).findOne(NON_EXISTING_PARENT_CASE_ID);
     assertNull(result);
@@ -132,7 +132,7 @@ public class CaseServiceImplTest {
 
     // now kick it off
     CaseEvent caseEvent = caseEventFixtureLoad(0);
-    caseService.createCaseEvent(caseEvent);
+    caseService.createCaseEvent(caseEvent, null);
 
     verify(caseRepo).findOne(HOTEL_CASE_ID);
     verify(categoryRepo).findOne(CASEEVENT_CATEGORY_QR);
@@ -157,7 +157,7 @@ public class CaseServiceImplTest {
 
     // now kick it off
     CaseEvent caseEvent = caseEventFixtureLoad(1);
-    caseService.createCaseEvent(caseEvent);
+    caseService.createCaseEvent(caseEvent, null);
 
     verify(caseRepo).findOne(HOTEL_CASE_ID);
     verify(categoryRepo).findOne(CASEEVENT_CATEGORY_CI);
@@ -182,7 +182,7 @@ public class CaseServiceImplTest {
 
     // now kick it off
     CaseEvent caseEvent = caseEventFixtureLoad(2);
-    caseService.createCaseEvent(caseEvent);
+    caseService.createCaseEvent(caseEvent, null);
 
     verify(caseRepo).findOne(HOTEL_CASE_ID);
     verify(categoryRepo).findOne(CASEEVENT_CATEGORY_R);
@@ -207,7 +207,7 @@ public class CaseServiceImplTest {
 
     // now kick it off
     CaseEvent caseEvent = caseEventFixtureLoad(3);
-    caseService.createCaseEvent(caseEvent);
+    caseService.createCaseEvent(caseEvent, null);
 
     verify(caseRepo).findOne(HOTEL_CASE_ID);
     verify(categoryRepo).findOne(CASEEVENT_CATEGORY_U);
@@ -232,7 +232,7 @@ public class CaseServiceImplTest {
 
     // now kick it off
     CaseEvent caseEvent = caseEventFixtureLoad(4);
-    caseService.createCaseEvent(caseEvent);
+    caseService.createCaseEvent(caseEvent, null);
 
     verify(caseRepo).findOne(HOUSEHOLD_CASE_ID);
     verify(categoryRepo).findOne(CASEEVENT_CATEGORY_QR);

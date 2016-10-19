@@ -87,7 +87,7 @@ public final class MockCaseServiceFactory implements Factory<CaseService> {
       Mockito.when(mockedService.findCaseByCaseId(UNCHECKED_EXCEPTION))
           .thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
 
-      Mockito.when(mockedService.createCaseEvent(any(CaseEvent.class))).thenAnswer(new Answer<CaseEvent>() {
+      Mockito.when(mockedService.createCaseEvent(any(CaseEvent.class), any(Case.class))).thenAnswer(new Answer<CaseEvent>() {
         public CaseEvent answer(final InvocationOnMock invocation)
             throws Throwable {
           return caseEvents.get(0);

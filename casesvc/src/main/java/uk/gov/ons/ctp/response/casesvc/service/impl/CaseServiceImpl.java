@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
@@ -19,6 +20,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.ActionPlanMapping;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
+import uk.gov.ons.ctp.response.casesvc.domain.model.Contact;
 import uk.gov.ons.ctp.response.casesvc.domain.model.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Response;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.ActionPlanMappingRepository;
@@ -42,6 +44,8 @@ import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientServic
 public class CaseServiceImpl implements CaseService {
 
   private static final String IAC_OVERUSE_MSG = "More than one case found to be using IAC %s";
+  private static final String MISSING_NEW_CASE_MSG = "New Case definition missing for original case %s";
+
   private static final int TRANSACTION_TIMEOUT = 30;
 
   @Inject
@@ -109,65 +113,92 @@ public class CaseServiceImpl implements CaseService {
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
-  public CaseEvent createCaseEvent(final CaseEvent caseEvent) {
+  public CaseEvent createCaseEvent(final CaseEvent caseEvent, final Case newCase) {
     log.debug("Entering createCaseEvent with caseEvent {}", caseEvent);
-    CaseEvent createdCaseEvent = null;
 
+    CaseEvent createdCaseEvent = null;
     Integer caseId = caseEvent.getCaseId();
     Case targetCase = caseRepo.findOne(caseId);
-    log.debug("targetCase = {}", targetCase);
+
     if (targetCase != null) {
+      Category category = categoryRepo.findOne(caseEvent.getCategory());
+
       // save the case event to db
       caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
       createdCaseEvent = caseEventRepo.save(caseEvent);
-      log.debug("createdCaseEvent = {}", createdCaseEvent);
 
-      Category category = categoryRepo.findOne(caseEvent.getCategory());
-      log.debug("category = {}", category);
-      // create and add Response obj to the case if event is a response
-      switch (category.getCategoryType()) {
-        case ONLINE_QUESTIONNAIRE_RESPONSE:
-          recordResponse(targetCase, InboundChannel.ONLINE);
-          break;
-        case PAPER_QUESTIONNAIRE_RESPONSE:
-          recordResponse(targetCase, InboundChannel.PAPER);
-          break;
-        default:
-          break;
-      }
+      // do we need to record a response?
+      checkAndEffectRecordinfOfResponse(category, targetCase);
 
       // does the event transition the case?
-      CaseDTO.CaseEvent transitionEvent = category.getEventType();
-      log.debug("transitionEvent = {}", transitionEvent);
-      if (transitionEvent != null) {
-        CaseDTO.CaseState oldState = targetCase.getState();
-        CaseDTO.CaseState newState = null;
-        try {
-          // make the transition
-          newState = caseSvcStateTransitionManager.transition(targetCase.getState(), transitionEvent);
-          targetCase.setState(newState);
-          caseRepo.saveAndFlush(targetCase);
-        } catch (StateTransitionException ste) {
-          throw new RuntimeException(ste);
-        }
+      checkAndEffectOriginalCaseStateTransition(category, targetCase);
+      
+      // should we create an ad hoc action?
+      checkAndEffectAdHocActionCreation(category, caseId, caseEvent);
 
-        // was a state change effected?
-        if (oldState != newState) {
-          notifyActionService(targetCase, transitionEvent);
-          if (transitionEvent == CaseDTO.CaseEvent.DISABLED) {
-            internetAccessCodeSvcClientService.disableIAC(targetCase.getIac());
-          }
-        }
-      }
-
-      // should the event create an ad-hoc action?
-      String actionType = category.getGeneratedActionType();
-      log.debug("actionType = {}", actionType);
-      if (!StringUtils.isEmpty(actionType)) {
-        actionSvcClientService.createAndPostAction(actionType, caseId, caseEvent.getCreatedBy());
-      }
+      // should a new case be created?
+      checkAndEffectCreationOfNewCase(category, caseEvent, caseId, targetCase, newCase);
     }
     return createdCaseEvent;
+  }
+
+  private void checkAndEffectCreationOfNewCase(Category category, CaseEvent caseEvent, Integer caseId, Case targetCase,
+      Case newCase) {
+    if (category.getNewCaseRespondentType() != null) {
+      if (newCase == null) {
+        throw new RuntimeException(String.format(MISSING_NEW_CASE_MSG, caseId));
+      } else {
+        Case persistedNewCase = createNewCaseFromEvent(caseEvent, targetCase, newCase);
+        log.debug("Newly created case has id of {} and ref of {}", persistedNewCase.getCaseId(),
+            persistedNewCase.getCaseRef());
+      }
+    }
+  }
+
+  private void checkAndEffectRecordinfOfResponse(Category category, Case targetCase) {
+    // create and add Response obj to the case if event is a response
+    switch (category.getCategoryType()) {
+    case ONLINE_QUESTIONNAIRE_RESPONSE:
+      recordResponse(targetCase, InboundChannel.ONLINE);
+      break;
+    case PAPER_QUESTIONNAIRE_RESPONSE:
+      recordResponse(targetCase, InboundChannel.PAPER);
+      break;
+    default:
+      break;
+    }
+  }
+
+  private void checkAndEffectAdHocActionCreation(Category category, Integer caseId, CaseEvent caseEvent) {
+    String actionType = category.getGeneratedActionType();
+    log.debug("actionType = {}", actionType);
+    if (!StringUtils.isEmpty(actionType)) {
+      actionSvcClientService.createAndPostAction(actionType, caseId, caseEvent.getCreatedBy());
+    }
+  }
+
+  private void checkAndEffectOriginalCaseStateTransition(Category category, Case targetCase) {
+    CaseDTO.CaseEvent transitionEvent = category.getEventType();
+    if (transitionEvent != null) {
+      CaseDTO.CaseState oldState = targetCase.getState();
+      CaseDTO.CaseState newState = null;
+      try {
+        // make the transition
+        newState = caseSvcStateTransitionManager.transition(targetCase.getState(), transitionEvent);
+        targetCase.setState(newState);
+        caseRepo.saveAndFlush(targetCase);
+      } catch (StateTransitionException ste) {
+        throw new RuntimeException(ste);
+      }
+
+      // was a state change effected?
+      if (oldState != newState) {
+        notifyActionService(targetCase, transitionEvent);
+        if (transitionEvent == CaseDTO.CaseEvent.DISABLED) {
+          internetAccessCodeSvcClientService.disableIAC(targetCase.getIac());
+        }
+      }
+    }
   }
 
   @Override
@@ -175,6 +206,14 @@ public class CaseServiceImpl implements CaseService {
     ActionPlanMapping actionPlanMapping = actionPlanMappingRepo.findOne(caze.getActionPlanMappingId());
     NotificationType notifType = NotificationType.valueOf(transitionEvent.name());
     return new CaseNotification(caze.getCaseId(), actionPlanMapping.getActionPlanId(), notifType);
+  }
+
+  private Case createNewCaseFromEvent(CaseEvent caseEvent, Case originalCase, Case newCase) {
+    newCase.setState(CaseDTO.CaseState.REPLACEMENT_INIT);
+    newCase.setCreatedDateTime(DateTimeUtil.nowUTC());
+    newCase.setCaseGroupId(originalCase.getCaseGroupId());
+    newCase.setCreatedBy(caseEvent.getCreatedBy());
+    return caseRepo.saveAndFlush(newCase);
   }
 
   private void notifyActionService(Case caze, CaseDTO.CaseEvent transitionEvent) {

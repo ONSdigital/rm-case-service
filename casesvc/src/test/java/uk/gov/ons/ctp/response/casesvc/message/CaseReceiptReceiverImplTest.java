@@ -1,12 +1,24 @@
 package uk.gov.ons.ctp.response.casesvc.message;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryType.ONLINE_QUESTIONNAIRE_RESPONSE;
+import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryType.PAPER_QUESTIONNAIRE_RESPONSE;
+
+import java.sql.Timestamp;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import uk.gov.ons.ctp.common.time.DateUtil;
+
+import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.UnlinkedCaseReceipt;
@@ -15,17 +27,6 @@ import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.message.impl.CaseReceiptReceiverImpl;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.UnlinkedCaseReceiptService;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-
-import java.sql.Timestamp;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryType.ONLINE_QUESTIONNAIRE_RESPONSE;
-import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryType.PAPER_QUESTIONNAIRE_RESPONSE;
 
 /**
  * To unit test CaseReceiptReceiverImpl
@@ -57,7 +58,7 @@ public class CaseReceiptReceiverImplTest {
     CaseEvent caseEvent = new CaseEvent();
     caseEvent.setCaseId(caseId);
     caseEvent.setCategory(ONLINE_QUESTIONNAIRE_RESPONSE);
-    verify(caseService, times(1)).createCaseEvent(eq(caseEvent));
+    verify(caseService, times(1)).createCaseEvent(eq(caseEvent), null);
 
     verify(unlinkedCaseReceiptService, times(0)).createUnlinkedCaseReceipt(any(UnlinkedCaseReceipt.class));
   }
@@ -74,7 +75,7 @@ public class CaseReceiptReceiverImplTest {
     CaseEvent caseEvent = new CaseEvent();
     caseEvent.setCaseId(caseId);
     caseEvent.setCategory(PAPER_QUESTIONNAIRE_RESPONSE);
-    verify(caseService, times(1)).createCaseEvent(eq(caseEvent));
+    verify(caseService, times(1)).createCaseEvent(eq(caseEvent), null);
 
     verify(unlinkedCaseReceiptService, times(0)).createUnlinkedCaseReceipt(any(UnlinkedCaseReceipt.class));
   }
@@ -86,7 +87,7 @@ public class CaseReceiptReceiverImplTest {
     CaseReceipt caseReceipt = buildCaseReceipt(NON_EXISTING_CASE_REF, InboundChannel.ONLINE);
     caseReceiptReceiver.process(caseReceipt);
 
-    verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class));
+    verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class), null);
 
     UnlinkedCaseReceipt unlinkedCaseReceipt = new UnlinkedCaseReceipt();
     unlinkedCaseReceipt.setCaseRef(NON_EXISTING_CASE_REF);
@@ -102,7 +103,7 @@ public class CaseReceiptReceiverImplTest {
     CaseReceipt caseReceipt = buildCaseReceipt(NON_EXISTING_CASE_REF, InboundChannel.PAPER);
     caseReceiptReceiver.process(caseReceipt);
 
-    verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class));
+    verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class), null);
 
     UnlinkedCaseReceipt unlinkedCaseReceipt = new UnlinkedCaseReceipt();
     unlinkedCaseReceipt.setCaseRef(NON_EXISTING_CASE_REF);
@@ -116,7 +117,7 @@ public class CaseReceiptReceiverImplTest {
     CaseReceipt caseReceipt = new CaseReceipt();
     caseReceipt.setCaseRef(caseRef);
     caseReceipt.setInboundChannel(inboundChannel);
-    caseReceipt.setResponseDateTime(DateUtil.giveMeCalendarForNow());
+    caseReceipt.setResponseDateTime(DateTimeUtil.giveMeCalendarForNow());
     return caseReceipt;
   }
 }

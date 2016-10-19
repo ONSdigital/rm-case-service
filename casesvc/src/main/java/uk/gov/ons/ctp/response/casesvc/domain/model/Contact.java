@@ -5,7 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -27,7 +29,8 @@ public class Contact implements Serializable {
   private static final long serialVersionUID = 2512883011247985734L;
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "casecontactseq_gen")
+  @SequenceGenerator(name = "casecontactseq_gen", sequenceName = "casesvc.contactidseq")
   @Column(name = "contactid")
   private Integer contactId;
   

@@ -19,10 +19,14 @@ import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
+import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
+import uk.gov.ons.ctp.response.casesvc.domain.model.Contact;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
+import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
 
 /**
  * The REST endpoint controller for CaseSvc Cases
@@ -34,9 +38,13 @@ public final class CaseEndpoint implements CTPEndpoint {
 
   public static final String ERRORMSG_CASENOTFOUND = "Case not found for";
   public static final String ERRORMSG_CASEGROUPNOTFOUND = "CaseGroup not found for";
+  public static final String EVENT_REQUIRES_NEW_CASE = "Event requested for case %s requires additional data - new Case details";
 
   @Inject
   private CaseGroupService caseGroupService;
+
+  @Inject
+  private CategoryService categoryService;
 
   @Inject
   private CaseService caseService;
@@ -58,7 +66,7 @@ public final class CaseEndpoint implements CTPEndpoint {
     Case caseObj = caseService.findCaseByCaseId(caseId);
     if (caseObj == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-              String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseId));
+          String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseId));
     }
     return mapperFacade.map(caseObj, CaseDTO.class);
   }
@@ -77,7 +85,7 @@ public final class CaseEndpoint implements CTPEndpoint {
     Case caseObj = caseService.findCaseByIac(iac);
     if (caseObj == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-              String.format("%s iac id %s", ERRORMSG_CASENOTFOUND, iac));
+          String.format("%s iac id %s", ERRORMSG_CASENOTFOUND, iac));
     }
     return mapperFacade.map(caseObj, CaseDTO.class);
   }
@@ -96,7 +104,7 @@ public final class CaseEndpoint implements CTPEndpoint {
     CaseGroup caseGroup = caseGroupService.findCaseGroupByCaseGroupId(caseGroupId);
     if (caseGroup == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-              String.format("%s casegroup id %s", ERRORMSG_CASEGROUPNOTFOUND, caseGroupId));
+          String.format("%s casegroup id %s", ERRORMSG_CASEGROUPNOTFOUND, caseGroupId));
     }
     List<Case> cases = caseService.findCasesByCaseGroupId(caseGroupId);
     List<CaseDTO> caseDTOs = mapperFacade.mapAsList(cases, CaseDTO.class);
@@ -117,7 +125,7 @@ public final class CaseEndpoint implements CTPEndpoint {
     Case caseObj = caseService.findCaseByCaseId(caseId);
     if (caseObj == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-              String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseId));
+          String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseId));
     }
     List<CaseEvent> caseEvents = caseService.findCaseEventsByCaseId(caseId);
     List<CaseEventDTO> caseEventDTOs = mapperFacade.mapAsList(caseEvents, CaseEventDTO.class);
@@ -129,23 +137,37 @@ public final class CaseEndpoint implements CTPEndpoint {
    * case event to be created
    *
    * @param caseId the parent case
-   * @param caseEventDTO the CaseEventDTO describing the case event to be
-   *          created
+   * @param caseEventCreationRequestDTO the CaseEventDTO describing the case
+   *          event to be created
    * @return the created CaseEventDTO
    * @throws CTPException on failure to create CaseEvent
    */
   @POST
   @Path("/{caseId}/events")
   public CaseEventDTO createCaseEvent(@PathParam("caseId") final Integer caseId,
-      @Valid final CaseEventDTO caseEventDTO) throws CTPException {
-    log.debug("Entering createCaseEvent with caseId {} and requestObject {}", caseId, caseEventDTO);
-    caseEventDTO.setCaseId(caseId);
-    CaseEvent createdCaseEvent = caseService.createCaseEvent(mapperFacade.map(caseEventDTO, CaseEvent.class));
+      @Valid final CaseEventCreationRequestDTO caseEventCreationRequestDTO) throws CTPException {
+    log.debug("Entering createCaseEvent with caseId {} and requestObject {}", caseId, caseEventCreationRequestDTO);
+    caseEventCreationRequestDTO.setCaseId(caseId);
+
+    CaseEvent caseEvent = mapperFacade.map(caseEventCreationRequestDTO, CaseEvent.class);
+    Case caze = mapperFacade.map(caseEventCreationRequestDTO.getCaseCreationRequest(), Case.class);
+    if (caze != null) {
+      Contact contact = mapperFacade.map(caseEventCreationRequestDTO.getCaseCreationRequest(), Contact.class);
+      caze.setContact(contact);
+    }
+
+    Category category = categoryService.findCategory(caseEvent.getCategory());
+    if (category.getNewCaseRespondentType() != null && caze == null) {
+      throw new CTPException(CTPException.Fault.VALIDATION_FAILED,
+          String.format(EVENT_REQUIRES_NEW_CASE, caseId));
+    }
+
+    CaseEvent createdCaseEvent = caseService.createCaseEvent(caseEvent, caze);
     if (createdCaseEvent == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-              String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseId));
+          String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseId));
     }
     return mapperFacade.map(createdCaseEvent, CaseEventDTO.class);
   }
-  
+
 }

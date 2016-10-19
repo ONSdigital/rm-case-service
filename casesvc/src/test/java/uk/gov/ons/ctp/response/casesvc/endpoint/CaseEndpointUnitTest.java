@@ -30,8 +30,10 @@ import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
+import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
 import uk.gov.ons.ctp.response.casesvc.utility.MockCaseGroupServiceFactory;
 import uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory;
+import uk.gov.ons.ctp.response.casesvc.utility.MockCategoryServiceFactory;
 
 /**
  * Case Endpoint Unit tests
@@ -55,6 +57,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
   public Application configure() {
     return super.init(CaseEndpoint.class,
         new ServiceFactoryPair [] {
+        new ServiceFactoryPair(CategoryService.class, MockCategoryServiceFactory.class),
         new ServiceFactoryPair(CaseService.class, MockCaseServiceFactory.class),
         new ServiceFactoryPair(CaseGroupService.class, MockCaseGroupServiceFactory.class)
         },

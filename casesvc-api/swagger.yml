@@ -170,41 +170,6 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-    post:
-      summary: Creates a case for the specified CaseGroup.
-      description: Creates a case from the mandatory casetypeId, actionPlanMappingId, forename, surname and createdBy properties. Note that at least one of the phoneNumber and emailAddress properties should be specified so the respondent can be contacted electronically.
-      consumes:
-        - application/json
-      parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json
-          required: false
-          type: string
-        - name: caseGroupId
-          description: The CaseGroup into which the new Case will be placed.
-          in: path
-          required: true
-          type: integer
-        - in: body
-          name: case
-          description: Case to create
-          required: true
-          schema:
-            $ref: '#/definitions/CaseCreationRequest'
-      tags:
-        - Case
-      responses:
-        201:
-          description: Case created
-          schema:
-            $ref: '#/definitions/Case'
-        400:
-          description: Invalid input
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
   /cases/iac/{iac}:
     get:
       summary:  Get the case information for the specified case.
@@ -301,7 +266,7 @@ paths:
             $ref: '#/definitions/Error'
     post:
       summary: Creates a case event.
-      description: Creates a case event from the mandatory description, category and createdBy properties.
+      description: Creates a case event from the mandatory description, category and createdBy properties. Certain types of events will require the optional embedded CaseCreationRequest to be provided.
       consumes:
         - application/json
       parameters:
@@ -694,7 +659,7 @@ definitions:
         description: The action plan mapping to associate with the new case
       title:
         type: string
-        description: Rrespondent title
+        description: Respondent title
       forename:
         type: string
         description: Respondent forename.
@@ -707,9 +672,6 @@ definitions:
       emailAddress:
         type: string
         description: Respondent email address.
-      createdBy:
-        type: string
-        description: Creator of case.
   CaseEvent:
     type: object
     required:
@@ -761,6 +723,8 @@ definitions:
       createdBy:
         type: string
         description: Creator of case event.
+      caseCreationRequest:
+        $ref: '#/definitions/CaseCreationRequest'
   SampleCaseType:
     type: object
     properties:
