@@ -15,9 +15,8 @@
   http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
 
     <!-- START of section to receive CaseReceipts -->
-    <!-- The inbound message container config - the inbound queue is defined here
-    We will listen for caseReceipts coming from the SDX Gateway.
-    -->
+    <!-- The inbound message container config - the inbound queue is defined here. We will listen for caseReceipts
+    coming from the SDX Gateway.  -->
     <bean id="caseReceiptMessageListenerContainer"
           class="org.springframework.jms.listener.DefaultMessageListenerContainer">
         <property name="connectionFactory" ref="connectionFactory" />
@@ -40,8 +39,7 @@
     <int-jms:outbound-channel-adapter id="invalidCaseReceiptJmsOut" destination="invalidCaseReceiptQueue" channel="caseReceiptXmlInvalid"/>
 
     <!-- the MQ channel adapter reads from the Case.Responses Queue (see the container above) and inputs to caseReceiptXml -->
-    <int-jms:message-driven-channel-adapter
-            id="jmsIn" container="caseReceiptMessageListenerContainer" channel="caseReceiptXml" />
+    <int-jms:message-driven-channel-adapter id="jmsInCaseReceipt" container="caseReceiptMessageListenerContainer" channel="caseReceiptXml" />
 
     <!-- First the SI message provided by the channel adapter is validated against the inbound schema -->
     <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
@@ -67,7 +65,6 @@
     <bean id="caseReceiptProcessErrorQueue" class="org.apache.activemq.command.ActiveMQQueue">
         <constructor-arg value="Case.CaseReceiptProcessErrors"/>
     </bean>
-    <int-jms:outbound-channel-adapter id="caseReceiptPollerErrorJmsOut" destination="caseReceiptProcessErrorQueue" channel="caseReceiptProcessError"/>
     <int:channel id="caseReceiptTransformedWithHeader" datatype="uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt">
         <int:queue capacity="60"/>
     </int:channel>
@@ -79,7 +76,7 @@
     <bean id="caseReceiptPollerErrorQueue" class="org.apache.activemq.command.ActiveMQQueue">
         <constructor-arg value="Case.CaseReceiptPollerErrors"/>
     </bean>
-    <int-jms:outbound-channel-adapter id="caseReceiptPollerErrorJmsOut" destination="caseReceiptPollerErrorQueue" channel="caseReceiptPollerError"/>
+    <int-jms:outbound-channel-adapter id="caseReceiptPollerErrorJmsOut" destination="caseReceiptProcessErrorQueue" channel="caseReceiptProcessError"/>
     <int:poller id="defaultPoller" default="true" error-channel="caseReceiptPollerError" fixed-delay="5000" time-unit="MILLISECONDS" max-messages-per-poll="1" receive-timeout="5000" />
     <!-- Finally see the @ServiceActivator(inputChannel="caseReceiptTransformedWithHeader") -->
     <!-- END of section to receive CaseReceipts -->
@@ -152,7 +149,7 @@
 
     <!-- we validate here that we post case receipts matching the outbound schema -->
     <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
-    <int-xml:validating-filter id="caseReceiptValidator" input-channel="caseReceiptOutboundXml"
+    <int-xml:validating-filter id="caseReceiptOutboundValidator" input-channel="caseReceiptOutboundXml"
                                output-channel="caseReceiptOutboundXmlValid" schema-location="classpath:xsd/caseReceipt.xsd" discard-channel="caseReceiptXmlInvalid"/>
 
     <!-- define the channel name to send our xml string to -->
