@@ -68,17 +68,13 @@
 
     <!-- we add an error channel so we can reprocess CaseReceipts when createCaseEvent (in CaseReceiptReceiverImpl)
     throws an exception (the IAC service is down, etc.) -->
-    <bean id="caseReceiptProcessErrorQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Case.CaseReceiptProcessErrors"/>
-    </bean>
-    <int:channel id="caseReceiptProcessError" >
+    <int:channel id="caseReceiptProcessError">
         <int:queue />
     </int:channel>
     <int:channel id="caseReceiptProcessErrorFailedMsgOnly" >
         <int:queue />
     </int:channel>
     <int:transformer input-channel="caseReceiptProcessError" output-channel="caseReceiptProcessErrorFailedMsgOnly" expression="payload.failedMessage"/>
-    <int-jms:outbound-channel-adapter id="caseReceiptProcessErrorJmsOut" destination="caseReceiptProcessErrorQueue" channel="caseReceiptProcessErrorFailedMsgOnly"/>
     <int:channel id="caseReceiptTransformedWithHeader" datatype="uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt">
         <int:queue />
     </int:channel>
