@@ -14,6 +14,8 @@
   http://www.springframework.org/schema/integration/xml
   http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
 
+    <int:annotation-config/>
+
     <!-- START of section to read CaseReceipts from Case.Responses-->
     <!-- The inbound message container config - the inbound queue is defined here. We will listen for caseReceipts
     coming from the SDX Gateway. -->
@@ -89,7 +91,6 @@
       <constructor-arg value="Case.Notifications"/>
     </bean>
 
-    <int:annotation-config/>
     <!--  setup the channels - note each queue needs a channel -->
     <int:channel id="caseNotificationOutbound" />
     <int:channel id="caseNotificationXml" />
