@@ -57,7 +57,7 @@
 
     <!-- Secondly the now validated xml is transformed into the jaxb generated object model -->
     <int:channel id="caseReceiptTransformed" datatype="uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt">
-        <int:queue capacity="60"/>
+        <int:queue />
     </int:channel>
     <int-xml:unmarshalling-transformer
             input-channel="caseReceiptXmlValid" output-channel="caseReceiptTransformed"
@@ -68,12 +68,14 @@
 
     <!-- we add an error channel so we can reprocess CaseReceipts when createCaseEvent (in CaseReceiptReceiverImpl)
     throws an exception (the IAC service is down, etc.) -->
-    <int:channel id="caseReceiptProcessError" />
-    <bean id="caseReceiptProcessErrorQueue" class="org.apache.activemq.command.ActiveMQQueue">
+    <int:channel id="caseReceiptProcessError" >
+        <int:queue />
+    </int:channel>
+    <!-- <bean id="caseReceiptProcessErrorQueue" class="org.apache.activemq.command.ActiveMQQueue">
         <constructor-arg value="Case.CaseReceiptProcessErrors"/>
-    </bean>
+    </bean> -->
     <int:channel id="caseReceiptTransformedWithHeader" datatype="uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt">
-        <int:queue capacity="60"/>
+        <int:queue />
     </int:channel>
     <int:header-enricher input-channel="caseReceiptTransformed" output-channel="caseReceiptTransformedWithHeader">
         <int:error-channel value="caseReceiptProcessError"/>
