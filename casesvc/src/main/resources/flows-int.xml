@@ -16,6 +16,15 @@
 
     <int:annotation-config/>
 
+    <!-- START of section to define a default poller -->
+    <int:channel id="caseReceiptPollerError" />
+    <bean id="caseReceiptPollerErrorQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Case.CaseReceiptPollerErrors"/>
+    </bean>
+    <int-jms:outbound-channel-adapter id="caseReceiptPollerErrorJmsOut" destination="caseReceiptProcessErrorQueue" channel="caseReceiptProcessError"/>
+    <int:poller id="defaultPoller" default="true" error-channel="caseReceiptPollerError" fixed-delay="5000" time-unit="MILLISECONDS" max-messages-per-poll="1" receive-timeout="5000" />
+    <!-- END of section to define a default poller -->
+
     <!-- START of section to read CaseReceipts from Case.Responses-->
     <!-- The inbound message container config - the inbound queue is defined here. We will listen for caseReceipts
     coming from the SDX Gateway. -->
@@ -69,13 +78,6 @@
     <int:header-enricher input-channel="caseReceiptTransformed" output-channel="caseReceiptTransformedWithHeader">
         <int:error-channel value="caseReceiptProcessError"/>
     </int:header-enricher>
-
-    <int:channel id="caseReceiptPollerError" />
-    <bean id="caseReceiptPollerErrorQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Case.CaseReceiptPollerErrors"/>
-    </bean>
-    <int-jms:outbound-channel-adapter id="caseReceiptPollerErrorJmsOut" destination="caseReceiptProcessErrorQueue" channel="caseReceiptProcessError"/>
-    <int:poller id="defaultPoller" default="true" error-channel="caseReceiptPollerError" fixed-delay="5000" time-unit="MILLISECONDS" max-messages-per-poll="1" receive-timeout="5000" />
     <!-- Finally see the @ServiceActivator(inputChannel="caseReceiptTransformedWithHeader") -->
     <!-- END of section to read CaseReceipts from Case.Responses -->
 
