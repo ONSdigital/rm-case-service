@@ -10,6 +10,7 @@ info:
 logging:
   level:
     org.springframework: INFO
+    org.springframework.integration: DEBUG
     uk.gov.ons.ctp: DEBUG
 
 liquibase:
@@ -92,7 +93,7 @@ spring:
     enabled: false
 
 internet-access-code-svc:
-  iac-post-path: /iacs 
+  iac-post-path: /iacs
   iac-put-path: /iacs/{iac}
   connection-config:
     scheme: http

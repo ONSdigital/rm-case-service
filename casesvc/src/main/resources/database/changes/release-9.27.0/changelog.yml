@@ -20,4 +20,34 @@ databaseChangeLog:
             relativeToChangelogFile: true
             splitStatements: false
 
+  - changeSet:
+      id: 9.27.0-3
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: insert setup data based on version 2 of spreadsheet
+            path: casesvc_setup_v2.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 9.27.0-4
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Amend case table to use default sequences
+            path: case_table_changes.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 9.27.0-5
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Amend generate initial cases function to use default sequences
+            path: generate_initial_cases.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
 

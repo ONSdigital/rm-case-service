@@ -20,9 +20,14 @@ import java.sql.Timestamp;
 import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryType.PAPER_QUESTIONNAIRE_RESPONSE;
 import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryType.ONLINE_QUESTIONNAIRE_RESPONSE;
 
+/**
+ * The reader of CaseReceipts from queue
+ */
 @Slf4j
 @MessageEndpoint
 public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
+
+  private static final int TRANSACTION_TIMEOUT = 60;  // Seconds
 
   @Inject
   private CaseService caseService;
@@ -30,7 +35,11 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
   @Inject
   private UnlinkedCaseReceiptService unlinkedCaseReceiptService;
 
-  @ServiceActivator(inputChannel = "caseReceiptTransformed")
+  /**
+   * To process CaseReceipts read from queue
+   * @param caseReceipt to process
+   */
+  @ServiceActivator(inputChannel = "caseReceiptTransformedWithHeader")
   public void process(CaseReceipt caseReceipt) {
     log.debug("entering process with caseReceipt {}", caseReceipt);
     String receiptCaseRef = caseReceipt.getCaseRef();
@@ -52,6 +61,7 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
       caseEvent.setCaseId(existingCase.getCaseId());
       caseEvent.setCategory(
               inboundChannel == InboundChannel.ONLINE ? ONLINE_QUESTIONNAIRE_RESPONSE : PAPER_QUESTIONNAIRE_RESPONSE);
+      log.debug("about to invoke the event creation...");
       caseService.createCaseEvent(caseEvent, null);
     }
   }
