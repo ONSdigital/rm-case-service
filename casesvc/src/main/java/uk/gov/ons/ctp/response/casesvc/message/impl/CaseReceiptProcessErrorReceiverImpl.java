@@ -25,7 +25,10 @@ public class CaseReceiptProcessErrorReceiverImpl implements CaseReceiptProcessEr
    * To process messages put on channel caseReceiptProcessErrorFailedMsgOnly
    * @param message the message to process
    */
-  @ServiceActivator(inputChannel = "caseReceiptProcessErrorFailedMsgOnly", poller = @Poller(fixedDelay = "50000", maxMessagesPerPoll = "1"))
+  @ServiceActivator(inputChannel = "caseReceiptProcessErrorFailedMsgOnly",
+          poller = @Poller(
+                  fixedDelay = "${case-error-poller.fixedDelay}",
+                  maxMessagesPerPoll = "${case-error-poller.msgPerPoll}"))
   public void process(Message<?> message) {
     log.debug("entering process with message {}", message);
     CaseReceipt caseReceiptToReprocess = (CaseReceipt)message.getPayload();

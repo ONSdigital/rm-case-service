@@ -22,7 +22,7 @@
         <constructor-arg value="Case.CasePollerErrors"/>
     </bean>
     <int-jms:outbound-channel-adapter id="casePollerErrorJmsOut" destination="casePollerErrorQueue" channel="casePollerError"/>
-    <int:poller id="defaultPoller" default="true" error-channel="casePollerError" fixed-delay="5000" time-unit="MILLISECONDS" max-messages-per-poll="1" receive-timeout="5000" />
+    <int:poller id="defaultPoller" default="true" error-channel="casePollerError" fixed-delay="${case-default-poller.fixedDelay}" time-unit="MILLISECONDS" max-messages-per-poll="${case-default-poller.msgPerPoll}" receive-timeout="5000" />
     <!-- END of section to define a default poller -->
 
     <!-- START of section to read CaseReceipts from Case.Responses-->
