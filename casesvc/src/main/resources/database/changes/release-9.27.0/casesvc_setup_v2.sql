@@ -2,6 +2,7 @@
 
 set schema 'casesvc';
 
+
 delete from actionplanmapping;
 delete from samplecasetypeselector;
 delete from casetype;
@@ -108,6 +109,5 @@ INSERT INTO samplecasetypeselector (samplecasetypeselectorid, sampleid, casetype
 INSERT INTO samplecasetypeselector (samplecasetypeselectorid, sampleid, casetypeid, respondenttype) VALUES (20, 4, 20, 'H');
 INSERT INTO samplecasetypeselector (samplecasetypeselectorid, sampleid, casetypeid, respondenttype) VALUES (21, 5, 21, 'H');
 INSERT INTO samplecasetypeselector (samplecasetypeselectorid, sampleid, casetypeid, respondenttype) VALUES (22, 6, 22, 'H');
-
 
 

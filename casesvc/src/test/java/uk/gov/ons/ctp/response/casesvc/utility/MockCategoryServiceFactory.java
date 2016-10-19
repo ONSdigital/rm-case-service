@@ -10,6 +10,7 @@ import org.mockito.stubbing.Answer;
 
 import uk.gov.ons.ctp.common.FixtureHelper;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
 
 /**
@@ -56,7 +57,12 @@ public final class MockCategoryServiceFactory implements Factory<CategoryService
           return categories;
         }
       });
-
+      Mockito.when(mockedService.findCategory(CategoryDTO.CategoryType.GENERAL_ENQUIRY)).thenAnswer(new Answer<Category>() {
+        public Category answer(final InvocationOnMock invocation)
+            throws Throwable {
+          return categories.get(0);
+        }
+      });
       Mockito.when(mockedService.findCategories(ADMIN_ROLE, null)).thenAnswer(new Answer<List<Category>>() {
         public List<Category> answer(final InvocationOnMock invocation)
             throws Throwable {

@@ -12,20 +12,20 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.casesvc.domain.model.ActionPlanMapping;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseType;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
-import uk.gov.ons.ctp.response.casesvc.domain.model.Contact;
 import uk.gov.ons.ctp.response.casesvc.domain.model.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Response;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.ActionPlanMappingRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseTypeRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
@@ -45,6 +45,7 @@ public class CaseServiceImpl implements CaseService {
 
   private static final String IAC_OVERUSE_MSG = "More than one case found to be using IAC %s";
   private static final String MISSING_NEW_CASE_MSG = "New Case definition missing for original case %s";
+  private static final String WRONG_NEW_CASE_TYPE_MSG = "New Case definition has incorrect casetype (respondent type '%s' mismatched)";
 
   private static final int TRANSACTION_TIMEOUT = 30;
 
@@ -59,6 +60,9 @@ public class CaseServiceImpl implements CaseService {
 
   @Inject
   private CaseEventRepository caseEventRepo;
+
+  @Inject
+  private CaseTypeRepository caseTypeRepo;
 
   @Inject
   private CategoryRepository categoryRepo;
@@ -132,7 +136,7 @@ public class CaseServiceImpl implements CaseService {
 
       // does the event transition the case?
       checkAndEffectOriginalCaseStateTransition(category, targetCase);
-      
+
       // should we create an ad hoc action?
       checkAndEffectAdHocActionCreation(category, caseId, caseEvent);
 
@@ -144,14 +148,18 @@ public class CaseServiceImpl implements CaseService {
 
   private void checkAndEffectCreationOfNewCase(Category category, CaseEvent caseEvent, Integer caseId, Case targetCase,
       Case newCase) {
+
     if (category.getNewCaseRespondentType() != null) {
       if (newCase == null) {
         throw new RuntimeException(String.format(MISSING_NEW_CASE_MSG, caseId));
-      } else {
-        Case persistedNewCase = createNewCaseFromEvent(caseEvent, targetCase, newCase);
-        log.debug("Newly created case has id of {} and ref of {}", persistedNewCase.getCaseId(),
-            persistedNewCase.getCaseRef());
       }
+      CaseType intendedCaseType = caseTypeRepo.findOne(newCase.getCaseTypeId());
+      if (!category.getNewCaseRespondentType().equals(intendedCaseType.getRespondentType())) {
+        throw new RuntimeException(String.format(WRONG_NEW_CASE_TYPE_MSG, caseId));
+      }
+      Case persistedNewCase = createNewCaseFromEvent(caseEvent, targetCase, newCase);
+      log.debug("Newly created case has id of {} and ref of {}", persistedNewCase.getCaseId(),
+          persistedNewCase.getCaseRef());
     }
   }
 

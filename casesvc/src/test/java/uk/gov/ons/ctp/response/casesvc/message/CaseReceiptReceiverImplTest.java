@@ -58,7 +58,7 @@ public class CaseReceiptReceiverImplTest {
     CaseEvent caseEvent = new CaseEvent();
     caseEvent.setCaseId(caseId);
     caseEvent.setCategory(ONLINE_QUESTIONNAIRE_RESPONSE);
-    verify(caseService, times(1)).createCaseEvent(eq(caseEvent), null);
+    verify(caseService, times(1)).createCaseEvent(eq(caseEvent), any(Case.class));
 
     verify(unlinkedCaseReceiptService, times(0)).createUnlinkedCaseReceipt(any(UnlinkedCaseReceipt.class));
   }
@@ -75,7 +75,7 @@ public class CaseReceiptReceiverImplTest {
     CaseEvent caseEvent = new CaseEvent();
     caseEvent.setCaseId(caseId);
     caseEvent.setCategory(PAPER_QUESTIONNAIRE_RESPONSE);
-    verify(caseService, times(1)).createCaseEvent(eq(caseEvent), null);
+    verify(caseService, times(1)).createCaseEvent(eq(caseEvent), any(Case.class));
 
     verify(unlinkedCaseReceiptService, times(0)).createUnlinkedCaseReceipt(any(UnlinkedCaseReceipt.class));
   }
@@ -87,7 +87,7 @@ public class CaseReceiptReceiverImplTest {
     CaseReceipt caseReceipt = buildCaseReceipt(NON_EXISTING_CASE_REF, InboundChannel.ONLINE);
     caseReceiptReceiver.process(caseReceipt);
 
-    verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class), null);
+    verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class), any(Case.class));
 
     UnlinkedCaseReceipt unlinkedCaseReceipt = new UnlinkedCaseReceipt();
     unlinkedCaseReceipt.setCaseRef(NON_EXISTING_CASE_REF);
@@ -103,7 +103,7 @@ public class CaseReceiptReceiverImplTest {
     CaseReceipt caseReceipt = buildCaseReceipt(NON_EXISTING_CASE_REF, InboundChannel.PAPER);
     caseReceiptReceiver.process(caseReceipt);
 
-    verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class), null);
+    verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class), any(Case.class));
 
     UnlinkedCaseReceipt unlinkedCaseReceipt = new UnlinkedCaseReceipt();
     unlinkedCaseReceipt.setCaseRef(NON_EXISTING_CASE_REF);
