@@ -27,7 +27,8 @@ import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.Categor
 @MessageEndpoint
 public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
 
-  private static final int TRANSACTION_TIMEOUT = 60;  // Seconds
+  public static final String CREATED_BY_SYSTEM = "SYSTEM";
+  public static final String QUESTIONNAIRE_RESPONSE = "Questionnaire response";
 
   @Inject
   private CaseService caseService;
@@ -42,15 +43,15 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
   @ServiceActivator(inputChannel = "caseReceiptTransformedWithHeader")
   public void process(CaseReceipt caseReceipt) {
     log.debug("entering process with caseReceipt {}", caseReceipt);
-    String receiptCaseRef = caseReceipt.getCaseRef();
+    String caseRef = caseReceipt.getCaseRef();
     InboundChannel inboundChannel = caseReceipt.getInboundChannel();
 
-    Case existingCase = caseService.findCaseByCaseRef(receiptCaseRef);
+    Case existingCase = caseService.findCaseByCaseRef(caseRef);
     log.debug("existingCase is {}", existingCase);
 
     if (existingCase == null) {
       UnlinkedCaseReceipt unlinkedCaseReceipt = new UnlinkedCaseReceipt();
-      unlinkedCaseReceipt.setCaseRef(receiptCaseRef);
+      unlinkedCaseReceipt.setCaseRef(caseRef);
       unlinkedCaseReceipt.setInboundChannel(
               uk.gov.ons.ctp.response.casesvc.domain.model.InboundChannel.valueOf(inboundChannel.name()));
       XMLGregorianCalendar responseDateTime = caseReceipt.getResponseDateTime();
@@ -61,6 +62,8 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
       caseEvent.setCaseId(existingCase.getCaseId());
       caseEvent.setCategory(
               inboundChannel == InboundChannel.ONLINE ? ONLINE_QUESTIONNAIRE_RESPONSE : PAPER_QUESTIONNAIRE_RESPONSE);
+      caseEvent.setCreatedBy(CREATED_BY_SYSTEM);
+      caseEvent.setDescription(QUESTIONNAIRE_RESPONSE);
       log.debug("about to invoke the event creation...");
       caseService.createCaseEvent(caseEvent, null);
     }
