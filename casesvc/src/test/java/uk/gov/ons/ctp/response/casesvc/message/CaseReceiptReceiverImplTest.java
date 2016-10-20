@@ -6,6 +6,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryType.ONLINE_QUESTIONNAIRE_RESPONSE;
 import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryType.PAPER_QUESTIONNAIRE_RESPONSE;
+import static uk.gov.ons.ctp.response.casesvc.utility.Constants.QUESTIONNAIRE_RESPONSE;
+import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
 import java.sql.Timestamp;
 
@@ -34,8 +36,9 @@ import uk.gov.ons.ctp.response.casesvc.service.UnlinkedCaseReceiptService;
 @RunWith(MockitoJUnitRunner.class)
 public class CaseReceiptReceiverImplTest {
 
-  private static final String EXISTING_CASE_REF = "123";
-  private static final String NON_EXISTING_CASE_REF = "456";
+  private static final Integer LINKED_CASE_ID = 1;
+  private static final String LINKED_CASE_REF = "123";
+  private static final String UNLINKED_CASE_REF = "456";
 
   @InjectMocks
   CaseReceiptReceiverImpl caseReceiptReceiver;
@@ -49,16 +52,17 @@ public class CaseReceiptReceiverImplTest {
   @Test
   public void testProcessLinkedOnlineCaseReceipt() throws DatatypeConfigurationException {
     Case existingCase = new Case();
-    Integer caseId = new Integer(EXISTING_CASE_REF);
-    existingCase.setCaseId(caseId);
-    Mockito.when(caseService.findCaseByCaseRef(EXISTING_CASE_REF)).thenReturn(existingCase);
+    existingCase.setCaseId(LINKED_CASE_ID);
+    Mockito.when(caseService.findCaseByCaseRef(LINKED_CASE_REF)).thenReturn(existingCase);
 
-    caseReceiptReceiver.process(buildCaseReceipt(EXISTING_CASE_REF, InboundChannel.ONLINE));
+    caseReceiptReceiver.process(buildCaseReceipt(LINKED_CASE_REF, InboundChannel.ONLINE));
 
     CaseEvent caseEvent = new CaseEvent();
-    caseEvent.setCaseId(caseId);
+    caseEvent.setCaseId(LINKED_CASE_ID);
     caseEvent.setCategory(ONLINE_QUESTIONNAIRE_RESPONSE);
-    verify(caseService, times(1)).createCaseEvent(eq(caseEvent), any(Case.class));
+    caseEvent.setCreatedBy(SYSTEM);
+    caseEvent.setDescription(QUESTIONNAIRE_RESPONSE);
+    verify(caseService, times(1)).createCaseEvent(eq(caseEvent), eq(null));
 
     verify(unlinkedCaseReceiptService, times(0)).createUnlinkedCaseReceipt(any(UnlinkedCaseReceipt.class));
   }
@@ -66,31 +70,32 @@ public class CaseReceiptReceiverImplTest {
   @Test
   public void testProcessLinkedPaperCaseReceipt() throws DatatypeConfigurationException {
     Case existingCase = new Case();
-    Integer caseId = new Integer(EXISTING_CASE_REF);
-    existingCase.setCaseId(caseId);
-    Mockito.when(caseService.findCaseByCaseRef(EXISTING_CASE_REF)).thenReturn(existingCase);
+    existingCase.setCaseId(LINKED_CASE_ID);
+    Mockito.when(caseService.findCaseByCaseRef(LINKED_CASE_REF)).thenReturn(existingCase);
 
-    caseReceiptReceiver.process(buildCaseReceipt(EXISTING_CASE_REF, InboundChannel.PAPER));
+    caseReceiptReceiver.process(buildCaseReceipt(LINKED_CASE_REF, InboundChannel.PAPER));
 
     CaseEvent caseEvent = new CaseEvent();
-    caseEvent.setCaseId(caseId);
+    caseEvent.setCaseId(LINKED_CASE_ID);
     caseEvent.setCategory(PAPER_QUESTIONNAIRE_RESPONSE);
-    verify(caseService, times(1)).createCaseEvent(eq(caseEvent), any(Case.class));
+    caseEvent.setCreatedBy(SYSTEM);
+    caseEvent.setDescription(QUESTIONNAIRE_RESPONSE);
+    verify(caseService, times(1)).createCaseEvent(eq(caseEvent), eq(null));
 
     verify(unlinkedCaseReceiptService, times(0)).createUnlinkedCaseReceipt(any(UnlinkedCaseReceipt.class));
   }
 
   @Test
   public void testProcessUnlinkedOnlineCaseReceipt() throws DatatypeConfigurationException {
-    Mockito.when(caseService.findCaseByCaseRef(NON_EXISTING_CASE_REF)).thenReturn(null);
+    Mockito.when(caseService.findCaseByCaseRef(UNLINKED_CASE_REF)).thenReturn(null);
 
-    CaseReceipt caseReceipt = buildCaseReceipt(NON_EXISTING_CASE_REF, InboundChannel.ONLINE);
+    CaseReceipt caseReceipt = buildCaseReceipt(UNLINKED_CASE_REF, InboundChannel.ONLINE);
     caseReceiptReceiver.process(caseReceipt);
 
     verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class), any(Case.class));
 
     UnlinkedCaseReceipt unlinkedCaseReceipt = new UnlinkedCaseReceipt();
-    unlinkedCaseReceipt.setCaseRef(NON_EXISTING_CASE_REF);
+    unlinkedCaseReceipt.setCaseRef(UNLINKED_CASE_REF);
     unlinkedCaseReceipt.setInboundChannel(uk.gov.ons.ctp.response.casesvc.domain.model.InboundChannel.ONLINE);
     unlinkedCaseReceipt.setResponseDateTime(new Timestamp(caseReceipt.getResponseDateTime().toGregorianCalendar().getTimeInMillis()));
     verify(unlinkedCaseReceiptService, times(1)).createUnlinkedCaseReceipt(eq(unlinkedCaseReceipt));
@@ -98,15 +103,15 @@ public class CaseReceiptReceiverImplTest {
 
   @Test
   public void testProcessUnlinkedPaperCaseReceipt() throws DatatypeConfigurationException {
-    Mockito.when(caseService.findCaseByCaseRef(NON_EXISTING_CASE_REF)).thenReturn(null);
+    Mockito.when(caseService.findCaseByCaseRef(UNLINKED_CASE_REF)).thenReturn(null);
 
-    CaseReceipt caseReceipt = buildCaseReceipt(NON_EXISTING_CASE_REF, InboundChannel.PAPER);
+    CaseReceipt caseReceipt = buildCaseReceipt(UNLINKED_CASE_REF, InboundChannel.PAPER);
     caseReceiptReceiver.process(caseReceipt);
 
     verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class), any(Case.class));
 
     UnlinkedCaseReceipt unlinkedCaseReceipt = new UnlinkedCaseReceipt();
-    unlinkedCaseReceipt.setCaseRef(NON_EXISTING_CASE_REF);
+    unlinkedCaseReceipt.setCaseRef(UNLINKED_CASE_REF);
     unlinkedCaseReceipt.setInboundChannel(uk.gov.ons.ctp.response.casesvc.domain.model.InboundChannel.PAPER);
     unlinkedCaseReceipt.setResponseDateTime(new Timestamp(caseReceipt.getResponseDateTime().toGregorianCalendar().getTimeInMillis()));
     verify(unlinkedCaseReceiptService, times(1)).createUnlinkedCaseReceipt(eq(unlinkedCaseReceipt));

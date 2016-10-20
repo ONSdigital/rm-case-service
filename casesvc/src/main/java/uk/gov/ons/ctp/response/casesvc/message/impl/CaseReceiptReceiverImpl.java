@@ -19,6 +19,8 @@ import java.sql.Timestamp;
 
 import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryType.PAPER_QUESTIONNAIRE_RESPONSE;
 import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryType.ONLINE_QUESTIONNAIRE_RESPONSE;
+import static uk.gov.ons.ctp.response.casesvc.utility.Constants.QUESTIONNAIRE_RESPONSE;
+import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
 /**
  * The reader of CaseReceipts from queue
@@ -26,9 +28,6 @@ import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.Categor
 @Slf4j
 @MessageEndpoint
 public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
-
-  public static final String CREATED_BY_SYSTEM = "SYSTEM";
-  public static final String QUESTIONNAIRE_RESPONSE = "Questionnaire response";
 
   @Inject
   private CaseService caseService;
@@ -62,7 +61,7 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
       caseEvent.setCaseId(existingCase.getCaseId());
       caseEvent.setCategory(
               inboundChannel == InboundChannel.ONLINE ? ONLINE_QUESTIONNAIRE_RESPONSE : PAPER_QUESTIONNAIRE_RESPONSE);
-      caseEvent.setCreatedBy(CREATED_BY_SYSTEM);
+      caseEvent.setCreatedBy(SYSTEM);
       caseEvent.setDescription(QUESTIONNAIRE_RESPONSE);
       log.debug("about to invoke the event creation...");
       caseService.createCaseEvent(caseEvent, null);
