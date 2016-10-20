@@ -27,6 +27,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.UnlinkedCaseReceipt;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.message.impl.CaseReceiptReceiverImpl;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.UnlinkedCaseReceiptService;
 
@@ -57,13 +58,8 @@ public class CaseReceiptReceiverImplTest {
 
     caseReceiptReceiver.process(buildCaseReceipt(LINKED_CASE_REF, InboundChannel.ONLINE));
 
-    CaseEvent caseEvent = new CaseEvent();
-    caseEvent.setCaseId(LINKED_CASE_ID);
-    caseEvent.setCategory(ONLINE_QUESTIONNAIRE_RESPONSE);
-    caseEvent.setCreatedBy(SYSTEM);
-    caseEvent.setDescription(QUESTIONNAIRE_RESPONSE);
-    verify(caseService, times(1)).createCaseEvent(eq(caseEvent), eq(null));
-
+    verify(caseService, times(1)).createCaseEvent(eq(buildCaseEvent(LINKED_CASE_ID, ONLINE_QUESTIONNAIRE_RESPONSE)),
+            eq(null));
     verify(unlinkedCaseReceiptService, times(0)).createUnlinkedCaseReceipt(any(UnlinkedCaseReceipt.class));
   }
 
@@ -75,13 +71,8 @@ public class CaseReceiptReceiverImplTest {
 
     caseReceiptReceiver.process(buildCaseReceipt(LINKED_CASE_REF, InboundChannel.PAPER));
 
-    CaseEvent caseEvent = new CaseEvent();
-    caseEvent.setCaseId(LINKED_CASE_ID);
-    caseEvent.setCategory(PAPER_QUESTIONNAIRE_RESPONSE);
-    caseEvent.setCreatedBy(SYSTEM);
-    caseEvent.setDescription(QUESTIONNAIRE_RESPONSE);
-    verify(caseService, times(1)).createCaseEvent(eq(caseEvent), eq(null));
-
+    verify(caseService, times(1)).createCaseEvent(eq(buildCaseEvent(LINKED_CASE_ID, PAPER_QUESTIONNAIRE_RESPONSE)),
+            eq(null));
     verify(unlinkedCaseReceiptService, times(0)).createUnlinkedCaseReceipt(any(UnlinkedCaseReceipt.class));
   }
 
@@ -93,12 +84,8 @@ public class CaseReceiptReceiverImplTest {
     caseReceiptReceiver.process(caseReceipt);
 
     verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class), any(Case.class));
-
-    UnlinkedCaseReceipt unlinkedCaseReceipt = new UnlinkedCaseReceipt();
-    unlinkedCaseReceipt.setCaseRef(UNLINKED_CASE_REF);
-    unlinkedCaseReceipt.setInboundChannel(uk.gov.ons.ctp.response.casesvc.domain.model.InboundChannel.ONLINE);
-    unlinkedCaseReceipt.setResponseDateTime(new Timestamp(caseReceipt.getResponseDateTime().toGregorianCalendar().getTimeInMillis()));
-    verify(unlinkedCaseReceiptService, times(1)).createUnlinkedCaseReceipt(eq(unlinkedCaseReceipt));
+    verify(unlinkedCaseReceiptService, times(1)).createUnlinkedCaseReceipt(eq(buildUnlinkedCaseReceipt(caseReceipt,
+            uk.gov.ons.ctp.response.casesvc.domain.model.InboundChannel.ONLINE)));
   }
 
   @Test
@@ -109,12 +96,8 @@ public class CaseReceiptReceiverImplTest {
     caseReceiptReceiver.process(caseReceipt);
 
     verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class), any(Case.class));
-
-    UnlinkedCaseReceipt unlinkedCaseReceipt = new UnlinkedCaseReceipt();
-    unlinkedCaseReceipt.setCaseRef(UNLINKED_CASE_REF);
-    unlinkedCaseReceipt.setInboundChannel(uk.gov.ons.ctp.response.casesvc.domain.model.InboundChannel.PAPER);
-    unlinkedCaseReceipt.setResponseDateTime(new Timestamp(caseReceipt.getResponseDateTime().toGregorianCalendar().getTimeInMillis()));
-    verify(unlinkedCaseReceiptService, times(1)).createUnlinkedCaseReceipt(eq(unlinkedCaseReceipt));
+    verify(unlinkedCaseReceiptService, times(1)).createUnlinkedCaseReceipt(eq(buildUnlinkedCaseReceipt(caseReceipt,
+            uk.gov.ons.ctp.response.casesvc.domain.model.InboundChannel.PAPER)));
   }
 
   private CaseReceipt buildCaseReceipt(String caseRef, InboundChannel inboundChannel)
@@ -124,5 +107,24 @@ public class CaseReceiptReceiverImplTest {
     caseReceipt.setInboundChannel(inboundChannel);
     caseReceipt.setResponseDateTime(DateTimeUtil.giveMeCalendarForNow());
     return caseReceipt;
+  }
+
+  private CaseEvent buildCaseEvent(int caseId, CategoryDTO.CategoryType categoryType) {
+    CaseEvent caseEvent = new CaseEvent();
+    caseEvent.setCaseId(caseId);
+    caseEvent.setCategory(categoryType);
+    caseEvent.setCreatedBy(SYSTEM);
+    caseEvent.setDescription(QUESTIONNAIRE_RESPONSE);
+    return caseEvent;
+  }
+
+  private UnlinkedCaseReceipt buildUnlinkedCaseReceipt(CaseReceipt caseReceipt,
+                                                       uk.gov.ons.ctp.response.casesvc.domain.model.InboundChannel inboundChannel) {
+    UnlinkedCaseReceipt unlinkedCaseReceipt = new UnlinkedCaseReceipt();
+    unlinkedCaseReceipt.setCaseRef(UNLINKED_CASE_REF);
+    unlinkedCaseReceipt.setInboundChannel(inboundChannel);
+    unlinkedCaseReceipt.setResponseDateTime(
+            new Timestamp(caseReceipt.getResponseDateTime().toGregorianCalendar().getTimeInMillis()));
+    return unlinkedCaseReceipt;
   }
 }
