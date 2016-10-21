@@ -96,6 +96,89 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  /templatemappings:
+      get:
+        summary:  Get all template mappings stored in MongoDB.
+        description: Return all template mappings stored in MongoDB.
+        parameters:
+          - name: Accept
+            in: header
+            description: Response type, application/json.
+            required: false
+            type: string
+        responses:
+          200:
+            description: All template mappings stored in MongoDB.
+            schema:
+              type: array
+              items:
+                $ref: '#/definitions/TemplateMappingDocument'
+          204:
+            description: No template mapping found in MongoDB.
+          default:
+            description: Unexpected error.
+            schema:
+              $ref: '#/definitions/Error'
+  /templatemappings/{templateMappingDocumentName}:
+      get:
+        summary:  Get the template mapping for the specified templateMappingDocumentName.
+        description: Return details of the template mapping for the supplied templateMappingDocumentName.
+        parameters:
+          - name: Accept
+            in: header
+            description: Response type, application/json.
+            required: false
+            type: string
+          - name: templateMappingDocumentName
+            description: Unique template mapping name
+            in: path
+            required: true
+            type: string
+        responses:
+          200:
+            description: Template mapping details for the supplied templateMappingDocumentName.
+            schema:
+              $ref: '#/definitions/TemplateMappingDocument'
+          404:
+            description: templateMappingDocumentName not found
+            schema:
+              $ref: '#/definitions/Error'
+          default:
+            description: Unexpected error
+            schema:
+              $ref: '#/definitions/Error'
+      post:
+        summary: Store a template mapping (FreeMarker, Velocity, etc.) in MongoDB
+        description: Store a template mapping (FreeMarker, Velocity, etc.) in MongoDB
+        consumes:
+          - multipart/form-data
+        parameters:
+          - name: Accept
+            in: header
+            description: Response type, application/json
+            required: false
+            type: string
+          - name: templateMappingDocumentName
+            in: path
+            type: string
+            description: Unique template mapping name
+            required: true
+          - name: file
+            in: formData
+            type: file
+            description: Template mapping file to store in MongoDB
+            required: true
+        responses:
+          201:
+            description: Template mapping file stored in MongoDB
+            schema:
+              $ref: '#/definitions/TemplateMappingDocument'
+          400:
+            description: Invalid input
+          default:
+            description: Unexpected error
+            schema:
+              $ref: '#/definitions/Error'
   /actionrequests:
     get:
       summary: Get all stored ActionRequests.
@@ -300,6 +383,27 @@ definitions:
       content:
         type: string
         description: Content of the Template.
+      dateModified:
+        type: string
+        format: date-time
+        description: Creation date-time.
+  TemplateMappingDocument:
+    type: object
+    required:
+      - type
+      - name
+      - content
+      - dateModified
+    properties:
+      type:
+        type: string
+        description: Type of the Template Mapping (FreeMarker, Velocity, etc.)
+      name:
+        type: string
+        description: Unique name for the Template Mapping.
+      content:
+        type: string
+        description: Content of the Template Mapping.
       dateModified:
         type: string
         format: date-time
