@@ -17,17 +17,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.PollableChannel;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.w3c.dom.Document;
 
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 

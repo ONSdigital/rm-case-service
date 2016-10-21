@@ -38,6 +38,7 @@ import uk.gov.ons.ctp.response.casesvc.service.UnlinkedCaseReceiptService;
 public class CaseReceiptReceiverImplTest {
 
   private static final Integer LINKED_CASE_ID = 1;
+  private static final String NON_EXISTING_CASE_REF = "567";
   private static final String LINKED_CASE_REF = "123";
   private static final String UNLINKED_CASE_REF = "456";
 
@@ -127,7 +128,7 @@ public class CaseReceiptReceiverImplTest {
   }
 
   private UnlinkedCaseReceipt buildUnlinkedCaseReceipt(CaseReceipt caseReceipt,
-                                                       uk.gov.ons.ctp.response.casesvc.domain.model.InboundChannel inboundChannel) {
+                                                       uk.gov.ons.ctp.response.casesvc.representation.InboundChannel inboundChannel) {
     UnlinkedCaseReceipt unlinkedCaseReceipt = new UnlinkedCaseReceipt();
     unlinkedCaseReceipt.setCaseRef(UNLINKED_CASE_REF);
     unlinkedCaseReceipt.setInboundChannel(inboundChannel);
