@@ -139,15 +139,15 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
   /**
    * a test providing bad json
    */
-//  @Test
-//  public void createCaseEventBadJson() {
-//    with("http://localhost:9998/cases/%s/events", CASEID).post(MediaType.APPLICATION_JSON_TYPE, CASEEVENT_INVALIDJSON)
-//        .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
-//        .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
-//        .assertTimestampExists()
-//        .assertMessageEquals(GeneralExceptionMapper.BAD_JSON)
-//        .andClose();
-//  }
+  @Test
+  public void createCaseEventBadJson() {
+    with("http://localhost:9998/cases/%s/events", CASEID).post(MediaType.APPLICATION_JSON_TYPE, CASEEVENT_INVALIDJSON)
+        .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
+        .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)
+        .assertTimestampExists()
+        .assertMessageEquals(GeneralExceptionMapper.BAD_JSON)
+        .andClose();
+  }
 
   /**
    * a test providing good json

@@ -54,8 +54,11 @@ public interface CaseService extends CTPService {
   List<CaseEvent> findCaseEventsByCaseId(Integer caseId);
 
   /**
-   * Create a CaseEvent being given the parent CaseId and the CaseEvent to create
+   * Create a CaseEvent from the details provided in the passesd CaseEvent. Some events will also as a side effect
+   * create a new case - if so the details must be provided in the newCase argument, otherwise it may remain null.
+   * If the newCase is passed it must also contain the contact details for the new case.
    * @param caseEvent CaseEvent to be created
+   * @param newCase optional case object containing partial details of the case to be created by this event.
    * @return the created CaseEvent
    */
   CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase);

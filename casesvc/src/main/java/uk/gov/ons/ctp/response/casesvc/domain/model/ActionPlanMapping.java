@@ -14,6 +14,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
+import uk.gov.ons.ctp.response.casesvc.representation.OutboundChannel;
 
 /**
  * Domain model object.

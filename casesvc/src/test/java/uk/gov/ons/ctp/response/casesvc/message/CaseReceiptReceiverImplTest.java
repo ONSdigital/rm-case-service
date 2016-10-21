@@ -91,7 +91,7 @@ public class CaseReceiptReceiverImplTest {
 
     UnlinkedCaseReceipt unlinkedCaseReceipt = new UnlinkedCaseReceipt();
     unlinkedCaseReceipt.setCaseRef(NON_EXISTING_CASE_REF);
-    unlinkedCaseReceipt.setInboundChannel(uk.gov.ons.ctp.response.casesvc.domain.model.InboundChannel.ONLINE);
+    unlinkedCaseReceipt.setInboundChannel(uk.gov.ons.ctp.response.casesvc.representation.InboundChannel.ONLINE);
     unlinkedCaseReceipt.setResponseDateTime(new Timestamp(caseReceipt.getResponseDateTime().toGregorianCalendar().getTimeInMillis()));
     verify(unlinkedCaseReceiptService, times(1)).createUnlinkedCaseReceipt(eq(unlinkedCaseReceipt));
   }
@@ -107,7 +107,7 @@ public class CaseReceiptReceiverImplTest {
 
     UnlinkedCaseReceipt unlinkedCaseReceipt = new UnlinkedCaseReceipt();
     unlinkedCaseReceipt.setCaseRef(NON_EXISTING_CASE_REF);
-    unlinkedCaseReceipt.setInboundChannel(uk.gov.ons.ctp.response.casesvc.domain.model.InboundChannel.PAPER);
+    unlinkedCaseReceipt.setInboundChannel(uk.gov.ons.ctp.response.casesvc.representation.InboundChannel.PAPER);
     unlinkedCaseReceipt.setResponseDateTime(new Timestamp(caseReceipt.getResponseDateTime().toGregorianCalendar().getTimeInMillis()));
     verify(unlinkedCaseReceiptService, times(1)).createUnlinkedCaseReceipt(eq(unlinkedCaseReceipt));
   }

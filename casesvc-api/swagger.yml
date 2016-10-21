@@ -2,7 +2,7 @@ swagger: '2.0'
 info:
   title: Case Service API
   description: The Case service manages Cases and associated address frame data and forms part of the Response Management product.
-  version: 9.27.3
+  version: 9.27.4
 schemes:
   - http
 basePath: /
@@ -591,7 +591,7 @@ definitions:
       inboundChannel:
         type: string
         description: The type of channel used to make the response
-      responseDateTime:
+      dateTime:
         type: string
         format: date-time
         description: Date and time the questionnaire was sent for return.
@@ -649,7 +649,6 @@ definitions:
       - title
       - forename
       - surname
-      - createdBy
     properties:
       caseTypeId:
         type: integer

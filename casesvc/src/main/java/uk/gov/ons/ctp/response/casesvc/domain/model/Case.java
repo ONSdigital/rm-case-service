@@ -51,6 +51,9 @@ public class Case implements Serializable {
   @Column(name = "casegroupid")
   private Integer caseGroupId;
 
+  @Column(name = "sourcecaseid")
+  private Integer sourceCaseId;
+
   @Generated(GenerationTime.INSERT)
   @Column(name = "caseref", nullable=false, unique = true, insertable = false, updatable = false, columnDefinition = "VARCHAR DEFAULT nextval('casesvc.caserefseq')")
   private String caseRef;

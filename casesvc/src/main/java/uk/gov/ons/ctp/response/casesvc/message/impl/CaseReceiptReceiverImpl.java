@@ -27,7 +27,6 @@ import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.Categor
 @MessageEndpoint
 public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
 
-  private static final int TRANSACTION_TIMEOUT = 60;  // Seconds
 
   @Inject
   private CaseService caseService;
@@ -52,7 +51,7 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
       UnlinkedCaseReceipt unlinkedCaseReceipt = new UnlinkedCaseReceipt();
       unlinkedCaseReceipt.setCaseRef(receiptCaseRef);
       unlinkedCaseReceipt.setInboundChannel(
-              uk.gov.ons.ctp.response.casesvc.domain.model.InboundChannel.valueOf(inboundChannel.name()));
+              uk.gov.ons.ctp.response.casesvc.representation.InboundChannel.valueOf(inboundChannel.name()));
       XMLGregorianCalendar responseDateTime = caseReceipt.getResponseDateTime();
       unlinkedCaseReceipt.setResponseDateTime(new Timestamp(responseDateTime.toGregorianCalendar().getTimeInMillis()));
       unlinkedCaseReceiptService.createUnlinkedCaseReceipt(unlinkedCaseReceipt);
