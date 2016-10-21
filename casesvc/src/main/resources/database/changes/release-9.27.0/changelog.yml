@@ -5,49 +5,19 @@ databaseChangeLog:
       author: Narinder Birk
       changes:
         - sqlFile:
-            comment: contact title etc
-            path: casesvc_category_contact_changes.sql
+            comment: new foundation schema for casesvc
+            path: casesvc_2017_foundation_schema.sql
             relativeToChangelogFile: true
             splitStatements: false
             
-  - changeSet:
-      id: 9.27.0-2
-      author: Phil Whiles
-      changes:
-        - sqlFile:
-            comment: added newcaserespondenttype
-            path: casesvc_category_contact_changes2.sql
-            relativeToChangelogFile: true
-            splitStatements: false
 
   - changeSet:
-      id: 9.27.0-3
+      id: 9.27.0-2
       author: Narinder Birk
       changes:
         - sqlFile:
-            comment: insert setup data based on version 2 of spreadsheet
-            path: casesvc_setup_v2.sql
+            comment: inserts for casesvc set up data
+            path: casesvc_2017_foundation_data.sql
             relativeToChangelogFile: true
             splitStatements: false
-
-  - changeSet:
-      id: 9.27.0-4
-      author: Sarah Radford
-      changes:
-        - sqlFile:
-            comment: Amend case table to use default sequences
-            path: case_table_changes.sql
-            relativeToChangelogFile: true
-            splitStatements: false
-
-  - changeSet:
-      id: 9.27.0-5
-      author: Sarah Radford
-      changes:
-        - sqlFile:
-            comment: Amend generate initial cases function to use default sequences
-            path: generate_initial_cases.sql
-            relativeToChangelogFile: true
-            splitStatements: false
-
 
