@@ -38,7 +38,6 @@ import uk.gov.ons.ctp.response.casesvc.service.UnlinkedCaseReceiptService;
 public class CaseReceiptReceiverImplTest {
 
   private static final Integer LINKED_CASE_ID = 1;
-  private static final String NON_EXISTING_CASE_REF = "567";
   private static final String LINKED_CASE_REF = "123";
   private static final String UNLINKED_CASE_REF = "456";
 
@@ -87,7 +86,7 @@ public class CaseReceiptReceiverImplTest {
     verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class), any(Case.class));
 
     UnlinkedCaseReceipt unlinkedCaseReceipt = new UnlinkedCaseReceipt();
-    unlinkedCaseReceipt.setCaseRef(NON_EXISTING_CASE_REF);
+    unlinkedCaseReceipt.setCaseRef(UNLINKED_CASE_REF);
     unlinkedCaseReceipt.setInboundChannel(uk.gov.ons.ctp.response.casesvc.representation.InboundChannel.ONLINE);
     unlinkedCaseReceipt.setResponseDateTime(new Timestamp(caseReceipt.getResponseDateTime().toGregorianCalendar().getTimeInMillis()));
     verify(unlinkedCaseReceiptService, times(1)).createUnlinkedCaseReceipt(eq(unlinkedCaseReceipt));
@@ -103,7 +102,7 @@ public class CaseReceiptReceiverImplTest {
     verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class), any(Case.class));
 
     UnlinkedCaseReceipt unlinkedCaseReceipt = new UnlinkedCaseReceipt();
-    unlinkedCaseReceipt.setCaseRef(NON_EXISTING_CASE_REF);
+    unlinkedCaseReceipt.setCaseRef(UNLINKED_CASE_REF);
     unlinkedCaseReceipt.setInboundChannel(uk.gov.ons.ctp.response.casesvc.representation.InboundChannel.PAPER);
     unlinkedCaseReceipt.setResponseDateTime(new Timestamp(caseReceipt.getResponseDateTime().toGregorianCalendar().getTimeInMillis()));
     verify(unlinkedCaseReceiptService, times(1)).createUnlinkedCaseReceipt(eq(unlinkedCaseReceipt));
