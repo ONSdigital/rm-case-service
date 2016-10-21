@@ -5,6 +5,7 @@
        xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
        xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
        xmlns:int-file="http://www.springframework.org/schema/integration/file"
+       xmlns:int-sftp="http://www.springframework.org/schema/integration/sftp"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
   http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
@@ -12,8 +13,12 @@
   http://www.springframework.org/schema/integration/file
   http://www.springframework.org/schema/integration/file/spring-integration-file.xsd
   http://www.springframework.org/schema/integration/xml
-  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
+  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd
+  http://www.springframework.org/schema/integration/sftp
+  http://www.springframework.org/schema/integration/sftp/spring-integration-sftp.xsd">
 
+    <!-- ** Inbound flow of ActionRequests from queue ** -->
+    
     <!-- Invalid instruction XML written to file-->
     <int:channel id="instructionXmlInvalid" />
     <int-file:outbound-channel-adapter
@@ -40,6 +45,47 @@
      <property name="contextPath"
        value="uk.gov.ons.ctp.response.action.message.instruction" />
     </bean>
+
+    <!-- ** End of inbound flow of ActionRequests from queue ** -->
+    <!-- ** Outbound flow of transformed ActionRequests to external service ** -->
+
+    <bean id="sftpSessionFactory" class="org.springframework.integration.file.remote.session.CachingSessionFactory">
+      <constructor-arg ref="defaultSftpSessionFactory" />
+      <constructor-arg value="1"/>
+      <property name="sessionWaitTimeout" value="5000"/>
+    </bean>
+
+    <bean id="defaultSftpSessionFactory" class="org.springframework.integration.sftp.session.DefaultSftpSessionFactory">
+      <property name="host" value="${sftp.host}"/>
+      <property name="port" value="22"/>
+      <property name="user" value="${sftp.username}"/>
+      <property name="password" value="${sftp.password}"/>
+      <property name="allowUnknownKeys" value="true"/>
+	</bean>
+
+	<int:channel id="sftpOutbound"/>
+
+    <int-sftp:outbound-channel-adapter id="sftpOutboundAdapter"
+      session-factory="sftpSessionFactory"
+      channel="sftpOutbound"
+      remote-filename-generator-expression="headers[#{T(org.springframework.integration.file.FileHeaders).REMOTE_FILE}]"
+      remote-directory="${sftp.directory}">
+      <int-sftp:request-handler-advice-chain>
+        <bean class="org.springframework.integration.handler.advice.ExpressionEvaluatingRequestHandlerAdvice">
+          <property name="onSuccessExpression" value="#root" />
+          <property name="successChannel" ref="sftpSuccessProcess" />
+          <property name="onFailureExpression" value="#root" />
+          <property name="failureChannel" ref="sftpFailedProcess" />
+        </bean>
+        <int:retry-advice>
+          <int:exponential-back-off initial="2000" multiplier="2" />
+        </int:retry-advice>
+      </int-sftp:request-handler-advice-chain>
+	</int-sftp:outbound-channel-adapter>
+
+    <!-- Please see SftpServicePublisher implementation -->
+	<int:channel id="sftpSuccessProcess"/>
+	<int:channel id="sftpFailedProcess"/>
 
 </beans>
 

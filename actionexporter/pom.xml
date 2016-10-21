@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>actionexporter</artifactId>
-  <version>9.26.0-SNAPSHOT</version>
+  <version>9.27.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>CTP : ResponseManagement : ActionExporter</name>
@@ -13,7 +13,7 @@
   <parent>
     <groupId>uk.gov.ons.ctp.product</groupId>
     <artifactId>responsemanagement</artifactId>
-    <version>9.26.0-SNAPSHOT</version>
+    <version>9.27.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -27,7 +27,7 @@
     <dependency>
       <groupId>uk.gov.ons.ctp.product</groupId>
       <artifactId>actionsvc-api</artifactId>
-      <version>9.26.0-SNAPSHOT</version>
+      <version>9.27.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -105,6 +105,17 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-mongodb</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.integration</groupId>
+      <artifactId>spring-integration-sftp</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.sshd</groupId>
+      <artifactId>sshd-core</artifactId>
+      <version>1.3.0</version>
     </dependency>
 
     <dependency>

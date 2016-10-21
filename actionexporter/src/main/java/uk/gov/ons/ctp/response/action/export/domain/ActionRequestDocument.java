@@ -26,6 +26,7 @@ public class ActionRequestDocument {
   @Id
   private BigInteger actionId;
   private boolean responseRequired;
+  private String actionPlan;
   private String actionType;
   private ActionAddress address;
   private String contactName;
@@ -35,4 +36,5 @@ public class ActionRequestDocument {
   private String iac;
   private ActionEvent events;
   private Date dateStored;
+  private Date dateSent;
 }

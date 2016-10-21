@@ -52,6 +52,10 @@ curl http://localhost:8141/content/curltest -u admin:ctp -v -X POST -F file=@cur
 curl http://localhost:8141/content/curltest -u admin:ctp -v -X GET
 200 {"name":"curltest","content":"=================================  File for the Printer ==================================ActionId, ResponseRequired, ActionType, IAC, Line1, Town, Postcode<#list actionRequests as actionRequest>\t${actionRequest.actionId}, ${actionRequest.actionType}, ${actionRequest.iac}, ${actionRequest.address.line1}, ${actionRequest.address.townName}, ${actionRequest.address.postcode}</#list>","dateModified":1474080646781}
 
+## To store a template mapping for Freemarker templates
+cd /home/centos/code/responsemanagement-service/actionexporter/src/test/resources/templates/freemarker
+curl http://localhost:8141/content/templateMapping -v -X POST -F file=@template_mapping.json
+200 {"name":"templateMapping","content":"{  \"ICL1\":\"curltestvalid_template.ftl\",  \"ICL2\":\"curltest_validtemplate.ftl\",  \"ICL2W\":\"curltest_validtemplate.ftl\",  \"ICL1AD\":\"curltest_validtemplate.ftl\",  \"IRL1\":\"curltest_validtemplate.ftl\",  \"IRL2W\":\"curltest_validtemplate.ftl\",  \"IRLAD1\":\"curltest_validtemplate.ftl\",  \"2RL1\":\"curltest_validtemplate.ftl\",  \"2RL2W\":\"curltest_validtemplate.ftl\",  \"2RLAD1\":\"curltest_validtemplate.ftl\",  \"3RL1\":\"curltest_validtemplate.ftl\",  \"3RL2W\":\"curltest_validtemplate.ftl\",  \"3RLAD1\":\"curltest_validtemplate.ftl\",  \"H1\":\"curltest_validtemplate.ftl\",  \"H2\":\"curltest_validtemplate.ftl\",  \"H1S\":\"curltest_validtemplate.ftl\",  \"H2S\":\"curltest_validtemplate.ftl\",  \"H2W\":\"curltest_validtemplate.ftl\",  \"H2WS\":\"curltest_validtemplate.ftl\"}","dateModified":1474972116596}
 
 ## To retrieve all DocumentContents
 curl http://localhost:8141/content/ -u admin:ctp -v -X GET

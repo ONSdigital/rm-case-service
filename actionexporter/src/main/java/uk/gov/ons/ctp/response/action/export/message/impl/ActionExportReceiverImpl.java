@@ -21,6 +21,7 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 @MessageEndpoint
 @Slf4j
 public class ActionExportReceiverImpl implements ActionExportReceiver {
+
   @Inject
   private ActionExportService actionExportService;
 
