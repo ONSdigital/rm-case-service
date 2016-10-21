@@ -100,17 +100,12 @@ public class CaseReceiptReceiverImplTest {
     caseReceiptReceiver.process(caseReceipt);
 
     verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class), any(Case.class));
-<<<<<<< HEAD
 
     UnlinkedCaseReceipt unlinkedCaseReceipt = new UnlinkedCaseReceipt();
     unlinkedCaseReceipt.setCaseRef(NON_EXISTING_CASE_REF);
     unlinkedCaseReceipt.setInboundChannel(uk.gov.ons.ctp.response.casesvc.representation.InboundChannel.PAPER);
     unlinkedCaseReceipt.setResponseDateTime(new Timestamp(caseReceipt.getResponseDateTime().toGregorianCalendar().getTimeInMillis()));
     verify(unlinkedCaseReceiptService, times(1)).createUnlinkedCaseReceipt(eq(unlinkedCaseReceipt));
-=======
-    verify(unlinkedCaseReceiptService, times(1)).createUnlinkedCaseReceipt(eq(buildUnlinkedCaseReceipt(caseReceipt,
-            uk.gov.ons.ctp.response.casesvc.domain.model.InboundChannel.PAPER)));
->>>>>>> 59706056c7337375c9b74933faed14db18bfdf77
   }
 
   private CaseReceipt buildCaseReceipt(String caseRef, InboundChannel inboundChannel)
