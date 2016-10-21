@@ -2,6 +2,7 @@ package uk.gov.ons.ctp.response.casesvc.message.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.integration.annotation.MessageEndpoint;
+import org.springframework.integration.annotation.Poller;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.messaging.Message;
 import uk.gov.ons.ctp.response.casesvc.message.CaseReceiptProcessErrorReceiver;
@@ -24,7 +25,10 @@ public class CaseReceiptProcessErrorReceiverImpl implements CaseReceiptProcessEr
    * To process messages put on channel caseReceiptProcessErrorFailedMsgOnly
    * @param message the message to process
    */
-  @ServiceActivator(inputChannel = "caseReceiptProcessErrorFailedMsgOnly")
+  @ServiceActivator(inputChannel = "caseReceiptProcessErrorFailedMsgOnly",
+          poller = @Poller(
+                  fixedDelay = "${case-error-poller.fixedDelay}",
+                  maxMessagesPerPoll = "${case-error-poller.msgPerPoll}"))
   public void process(Message<?> message) {
     log.debug("entering process with message {}", message);
     CaseReceipt caseReceiptToReprocess = (CaseReceipt)message.getPayload();

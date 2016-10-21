@@ -3,6 +3,7 @@ package uk.gov.ons.ctp.response.casesvc.message;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasXPath;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.ACTIVATED;
 
 import java.io.ByteArrayInputStream;
@@ -15,11 +16,15 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.PollableChannel;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.w3c.dom.Document;
 
 import lombok.Data;
@@ -31,11 +36,9 @@ import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
  * Case.Notifications queue.
  *
  */
-@ContextConfiguration(locations = {"/CaseNotificationPublishTest-context.xml"})
-@TestPropertySource("classpath:/application-test.properties")
-@RunWith(SpringJUnit4ClassRunner.class)
 @Slf4j
-@Data
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = CaseNotificationPublisherTestConfig.class)
 public class CaseNotificationPublisherTest {
 
   private static final int RECEIVE_TIMEOUT = 5000;
@@ -51,6 +54,7 @@ public class CaseNotificationPublisherTest {
    */
   @Test
   public void testNotificationPublisher() {
+    assertTrue(true);
     List<CaseNotification> notificationList = new ArrayList<>();
     notificationList.add(new CaseNotification(1, 3, ACTIVATED));
     notificationList.add(new CaseNotification(2, 3, ACTIVATED));

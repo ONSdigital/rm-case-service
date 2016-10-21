@@ -89,5 +89,11 @@ export-schedule:
 deadxml:
   directory: /var/log/ctp/responsemanagement/actionexporter
 
+sftp:
+  host: localhost
+  username: centos
+  password: "JLibV2&XD,"
+  directory: Documents
+
 freemarker:
   delayfornewtemplates: 86400000  # ie 24 hours in milliseconds

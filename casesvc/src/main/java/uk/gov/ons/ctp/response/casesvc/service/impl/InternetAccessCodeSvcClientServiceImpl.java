@@ -16,6 +16,8 @@ import uk.gov.ons.ctp.response.iac.representation.CreateInternetAccessCodeDTO;
 import uk.gov.ons.ctp.response.iac.representation.InternetAccessCodeDTO;
 import uk.gov.ons.ctp.response.iac.representation.UpdateInternetAccessCodeDTO;
 
+import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
+
 /**
  * The impl of the service which calls the IAC service via REST
  *
@@ -23,9 +25,6 @@ import uk.gov.ons.ctp.response.iac.representation.UpdateInternetAccessCodeDTO;
 @Slf4j
 @Named
 public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCodeSvcClientService {
-
-  // TODO centralize this!
-  public static final String SYSTEM = "System";
 
   @Inject
   private AppConfig appConfig;
