@@ -2,8 +2,8 @@ swagger: '2.0'
 info:
   title: Action Exporter API
   description: >
-    The Action Exporter API provides support endpoints to store documents (FreeMarker templates, etc.) in MongoDB and
-    to enable exports to be initiated for ActionRequests previously stored in MongoDB.
+    The Action Exporter API provides support endpoints to store templates (FreeMarker, Velocity, etc.), template
+    mappings in MongoDB and to enable exports to be initiated for ActionRequests previously stored in MongoDB.
 
     Note that all of the endpoints this service provides are authenticated using HTTP basic authentication.
   version: 9.26.0
@@ -13,10 +13,10 @@ basePath: /
 produces:
   - application/json
 paths:
-  /content:
+  /templates:
     get:
-      summary:  Get all documents stored in MongoDB.
-      description: Return all documents stored in MongoDB.
+      summary:  Get all templates stored in MongoDB.
+      description: Return all templates stored in MongoDB.
       parameters:
         - name: Accept
           in: header
@@ -25,39 +25,39 @@ paths:
           type: string
       responses:
         200:
-          description: All documents stored in MongoDB.
+          description: All templates stored in MongoDB.
           schema:
             type: array
             items:
-              $ref: '#/definitions/ContentDocument'
+              $ref: '#/definitions/TemplateDocument'
         204:
-          description: No document found in MongoDB.
+          description: No template found in MongoDB.
         default:
           description: Unexpected error.
           schema:
             $ref: '#/definitions/Error'
-  /content/{contentDocumentName}:
+  /templates/{templateDocumentName}:
     get:
-        summary:  Get the document for the specified contentDocumentName.
-        description: Return details of the document for the supplied contentDocumentName.
+        summary:  Get the template for the specified templateDocumentName.
+        description: Return details of the template for the supplied templateDocumentName.
         parameters:
           - name: Accept
             in: header
             description: Response type, application/json.
             required: false
             type: string
-          - name: contentDocumentName
-            description: Unique document name
+          - name: templateDocumentName
+            description: Unique template name
             in: path
             required: true
             type: string
         responses:
           200:
-            description: Document details for the supplied contentDocumentName.
+            description: Template details for the supplied templateDocumentName.
             schema:
-              $ref: '#/definitions/ContentDocument'
+              $ref: '#/definitions/TemplateDocument'
           404:
-            description: contentDocumentName not found
+            description: templateDocumentName not found
             schema:
               $ref: '#/definitions/Error'
           default:
@@ -65,8 +65,8 @@ paths:
             schema:
               $ref: '#/definitions/Error'
     post:
-      summary: Store a document (FreeMarker template, etc.) in MongoDB
-      description: Store a document (FreeMarker template, etc.) in MongoDB
+      summary: Store a template (FreeMarker, Velocity, etc.) in MongoDB
+      description: Store a template (FreeMarker, Velocity, etc.) in MongoDB
       consumes:
         - multipart/form-data
       parameters:
@@ -75,28 +75,28 @@ paths:
           description: Response type, application/json
           required: false
           type: string
-        - name: contentDocumentName
+        - name: templateDocumentName
           in: path
           type: string
-          description: Unique document name
+          description: Unique template name
           required: true
         - name: file
           in: formData
           type: file
-          description: Document to store in MongoDB
+          description: Template file to store in MongoDB
           required: true
       responses:
         201:
-          description: Document stored in MongoDB
+          description: Template file stored in MongoDB
           schema:
-            $ref: '#/definitions/ContentDocument'
+            $ref: '#/definitions/TemplateDocument'
         400:
           description: Invalid input
         default:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /export:
+  /actionrequests:
     get:
       summary: Get all stored ActionRequests.
       description: Return all stored ActionRequests.
@@ -167,7 +167,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /export/{actionId}:
+  /actionrequests/{actionId}:
     get:
       summary:  Get the stored actionRequest's information for the specified actionId.
       description: Return details of the stored actionRequest's information for the specified actionId.
@@ -283,19 +283,23 @@ definitions:
       longitude:
         type: number
         description: Position East or West of Greenwich Meridian.
-  ContentDocument:
+  TemplateDocument:
     type: object
     required:
+      - type
       - name
       - content
       - dateModified
     properties:
+      type:
+        type: string
+        description: Type of the Template (FreeMarker, Velocity, etc.)
       name:
         type: string
-        description: Unique name for the Document.
+        description: Unique name for the Template.
       content:
         type: string
-        description: Content of the Document.
+        description: Content of the Template.
       dateModified:
         type: string
         format: date-time
