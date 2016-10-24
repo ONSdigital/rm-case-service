@@ -14,6 +14,5 @@ public interface TemplateMappingService {
   TemplateMappingDocument retrieveTemplateMappingDocument(String templateMappingName);
   List<TemplateMappingDocument> retrieveAllTemplateMappingDocuments();
 
-  // TODO rename, move?
-  Map<String, String> retrieveMaoFromTemplateMappingDocument(String templateMappingName);
+  Map<String, String> retrieveMapFromTemplateMappingDocument(String templateMappingName);
 }

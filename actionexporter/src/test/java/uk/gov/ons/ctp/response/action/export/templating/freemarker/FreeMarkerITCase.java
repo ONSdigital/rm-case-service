@@ -52,7 +52,6 @@ public class FreeMarkerITCase {
   @Before
   public void setup() throws CTPException {
     log.debug("About to store the FreeMarker template...");
-    // TODO Remove hardcoding FreeMarker below
     templateService.storeTemplateDocument(FREEMARKER_TEMPLATE_NAME, TemplateEngine.FREEMARKER, getClass().getResourceAsStream("/templates/freemarker/curltest_validtemplate.ftl"));
     log.debug("FreeMarker template stored successfully...");
   }

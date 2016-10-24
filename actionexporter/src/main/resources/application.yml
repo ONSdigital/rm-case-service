@@ -16,7 +16,7 @@ security:
   basic:
     enabled: true
   user:
-    name: admin
+    name: actionexporter
     password: ctp
 
 management:

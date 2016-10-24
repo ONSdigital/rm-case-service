@@ -61,11 +61,11 @@ public class TemplateMappingServiceImpl implements TemplateMappingService {
   }
 
   @Override
-  public Map<String, String> retrieveMaoFromTemplateMappingDocument(String mappingName) {
-    Map<String, String> mapping = new HashMap<String, String>();
+  public Map<String, String> retrieveMapFromTemplateMappingDocument(String templateMappingName) {
+    Map<String, String> mapping = new HashMap<>();
     try {
       ObjectMapper mapper = new ObjectMapper();
-      mapping = mapper.readValue(repository.findOne(mappingName).getContent(),
+      mapping = mapper.readValue(repository.findOne(templateMappingName).getContent(),
               new TypeReference<Map<String, String>>() {
               });
     } catch (JsonParseException e) {

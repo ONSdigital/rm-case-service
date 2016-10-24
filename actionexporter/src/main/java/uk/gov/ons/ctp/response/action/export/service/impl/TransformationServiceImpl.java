@@ -119,7 +119,7 @@ public class TransformationServiceImpl implements TransformationService {
       log.warn("No Action Export requests to process.");
       return sftpMessage;
     }
-    Map<String, String> mapping = templateMappingService.retrieveMaoFromTemplateMappingDocument(TEMPLATE_MAPPING);
+    Map<String, String> mapping = templateMappingService.retrieveMapFromTemplateMappingDocument(TEMPLATE_MAPPING);
     Map<String, Map<String, List<ActionRequestDocument>>> templateRequests = requests.stream()
         .collect(Collectors.groupingBy(ActionRequestDocument::getActionPlan,
             Collectors.groupingBy(ActionRequestDocument::getActionType)));
