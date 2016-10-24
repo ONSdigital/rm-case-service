@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.response.action.export.domain.TemplateDocument;
 import uk.gov.ons.ctp.response.action.export.domain.TemplateEngine;
 import uk.gov.ons.ctp.response.action.export.domain.TemplateMappingDocument;
 import uk.gov.ons.ctp.response.action.export.repository.TemplateMappingRepository;
@@ -15,14 +14,14 @@ import uk.gov.ons.ctp.response.action.export.service.TemplateMappingService;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static uk.gov.ons.ctp.common.util.InputStreamUtil.getStringFromInputStream;
 
 @Named
 @Slf4j
@@ -79,35 +78,4 @@ public class TemplateMappingServiceImpl implements TemplateMappingService {
     return mapping;
   }
 
-  // TODO to make it in Common
-  /**
-   * Form content String of ContentDocument.
-   * @param is InputStream of Document content
-   * @return content String
-   */
-  private static String getStringFromInputStream(InputStream is) {
-    BufferedReader br = null;
-    String line;
-    StringBuilder sb = new StringBuilder();
-    try {
-      br = new BufferedReader(new InputStreamReader(is));
-      while ((line = br.readLine()) != null) {
-        sb.append(line);
-        sb.append("\n");
-      }
-    } catch (Exception e) {
-      log.error("Exception thrown while converting template stream to string - msg = {}", e.getMessage());
-    } finally {
-      if (br != null) {
-        try {
-          br.close();
-        } catch (IOException e) {
-          log.error("IOException thrown while closing buffered reader used to convert template stream - msg = {}",
-                  e.getMessage());
-        }
-      }
-    }
-
-    return sb.toString();
-  }
 }

@@ -56,7 +56,6 @@ public class TemplateEndpoint {
   public Response storeTemplate(@PathParam("templateName") final String templateName,
                                 @FormDataParam("file") InputStream fileContents) throws CTPException {
     log.debug("Entering storeTemplate with templateName {}", templateName);
-    // TODO Remove the Freemarker hardcoding below
     TemplateDocument templateDocument = templateService.storeTemplateDocument(templateName, TemplateEngine.FREEMARKER,
             fileContents);
     templateService.clearTemplateCache();

@@ -2,7 +2,6 @@ package uk.gov.ons.ctp.response.action.export.service;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.Map;
 
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.TemplateDocument;
@@ -38,7 +37,6 @@ public interface TemplateService {
    */
   List<TemplateDocument> retrieveAllTemplateDocuments();
 
-  // TODO Should it stay here?
   /**
    * To clear the FreeMarker configuration's template cache
    */

@@ -1,34 +1,26 @@
 package uk.gov.ons.ctp.response.action.export.service.impl;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.springframework.util.StringUtils;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.response.action.export.domain.ContentDocument;
 import uk.gov.ons.ctp.response.action.export.domain.TemplateDocument;
 import uk.gov.ons.ctp.response.action.export.domain.TemplateEngine;
 import uk.gov.ons.ctp.response.action.export.repository.TemplateRepository;
 import uk.gov.ons.ctp.response.action.export.service.TemplateService;
 
+import static uk.gov.ons.ctp.common.util.InputStreamUtil.getStringFromInputStream;
+
 /**
  * The implementation of the TemplateService
+ * TODO Specific to FreeMarker at the moment with freemarker.template.Configuration, clearTemplateCache, etc.
  */
 @Named
 @Slf4j
@@ -76,36 +68,5 @@ public class TemplateServiceImpl implements TemplateService {
   public void clearTemplateCache() {
     configuration.clearTemplateCache();
     log.debug("Free Marker template cache has been cleared.");
-  }
-
-  /**
-   * Form content String of ContentDocument.
-   * @param is InputStream of Document content
-   * @return content String
-   */
-  private static String getStringFromInputStream(InputStream is) {
-    BufferedReader br = null;
-    String line;
-    StringBuilder sb = new StringBuilder();
-    try {
-      br = new BufferedReader(new InputStreamReader(is));
-      while ((line = br.readLine()) != null) {
-        sb.append(line);
-        sb.append("\n");
-      }
-    } catch (Exception e) {
-      log.error("Exception thrown while converting template stream to string - msg = {}", e.getMessage());
-    } finally {
-      if (br != null) {
-        try {
-          br.close();
-        } catch (IOException e) {
-          log.error("IOException thrown while closing buffered reader used to convert template stream - msg = {}",
-              e.getMessage());
-        }
-      }
-    }
-
-    return sb.toString();
   }
 }
