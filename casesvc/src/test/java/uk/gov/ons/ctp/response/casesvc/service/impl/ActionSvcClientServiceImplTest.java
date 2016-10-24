@@ -69,11 +69,11 @@ public class ActionSvcClientServiceImplTest {
         .andExpect(method(HttpMethod.POST))
         .andExpect(content().string(containsString("\"actionTypeName\":" + "\"GeneralEscalation\"" + ",")))
         .andExpect(content().string(containsString("\"caseId\":" + "123,")))
-        .andExpect(content().string(containsString("\"createdBy\":" + "\"System\"")))
+        .andExpect(content().string(containsString("\"createdBy\":" + "\"SYSTEM\"")))
         .andRespond(withSuccess());
 
-    actionSvcClientService.createAndPostAction("GeneralEscalation", 123, "System");
+    actionSvcClientService.createAndPostAction("GeneralEscalation", 123, "SYSTEM");
     mockServer.verify();
-  }  
+  }
 
 }
