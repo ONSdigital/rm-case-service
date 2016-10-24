@@ -73,7 +73,7 @@ public class InternetAccessCodeSvcClientServiceImplTest {
     mockServer.expect(requestTo("http://localhost:8080/iacs"))
         .andExpect(method(HttpMethod.POST))
         .andExpect(content().string(containsString("\"count\":" + 3 + ",")))
-        .andExpect(content().string(containsString("\"createdBy\":" + "\"System\"")))
+        .andExpect(content().string(containsString("\"createdBy\":" + "\"SYSTEM\"")))
         .andRespond(withSuccess("[1,2,3]", MediaType.APPLICATION_JSON));
 
     List<String> codes = iacSvcClientService.generateIACs(3);
