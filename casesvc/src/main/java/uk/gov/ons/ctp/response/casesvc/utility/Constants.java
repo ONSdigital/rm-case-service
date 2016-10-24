@@ -5,5 +5,5 @@ package uk.gov.ons.ctp.response.casesvc.utility;
  */
 public class Constants {
   public static final String QUESTIONNAIRE_RESPONSE = "Questionnaire response";
-  public static final String SYSTEM = "System";
+  public static final String SYSTEM = "SYSTEM";
 }

@@ -25,7 +25,7 @@ DECLARE
     v_number_of_cases integer;
     v_survey character varying(20);
     v_sample character varying(20);
-   
+
 
 BEGIN
 
@@ -41,7 +41,7 @@ END IF;
  --SELECT addresscriteria FROM casesvc.sample WHERE sampleid = p_sampleid INTO v_address_criteria;
 
  SELECT name FROM casesvc.sample WHERE sampleid = p_sampleid INTO v_sample;
- 
+
            SELECT CASE p_geog_area_type
            WHEN 'OA' THEN   'oa11cd = ''' || p_geog_area_code ||''''
            WHEN 'LSOA' THEN  'lsoa11cd = ''' || p_geog_area_code ||''''
@@ -77,19 +77,19 @@ v_sql_text := 'SELECT uprn FROM casesvc.address where ' || v_geog_select_text ||
  FOR v_address_loop IN  EXECUTE v_sql_text LOOP
      v_caseeventid := nextval('casesvc.caseeventidseq') ;
      v_casegroupid := nextval('casesvc.casegroupidseq') ;
-     
+
 
 --insert intitial record into casegroup  and case table
-   
+
      INSERT INTO casesvc.casegroup(casegroupid, uprn, sampleid)
      Values (
-     v_casegroupid 
+     v_casegroupid
     ,v_address_loop.uprn
     ,v_sampleid);
 
 
     INSERT INTO casesvc.case(casegroupid, state, casetypeid, actionplanmappingid, createddatetime, createdby)
-     Values ( 
+     Values (
      v_casegroupid
     ,'SAMPLED_INIT'
     ,v_casetypeid
@@ -102,13 +102,13 @@ v_sql_text := 'SELECT uprn FROM casesvc.address where ' || v_geog_select_text ||
   INSERT INTO casesvc.caseevent(
      caseeventid, caseid, description, createdby, createddatetime, category)
      VALUES(v_caseeventid
-    ,currval('casesvc.caseidseq')   
-    ,'Initial Creation Of Case'
+    ,currval('casesvc.caseidseq')
+    ,'Initial creation of case'
     ,'SYSTEM'
     ,CURRENT_TIMESTAMP
     ,'CASE_CREATED');
 
-        
+
 END LOOP;
 
     PERFORM casesvc.logmessage(p_messagetext := v_number_of_cases || ' cases generated for sampleid ' || v_sampleid || ' : Area Type ' || p_geog_area_type || ' : Area Code ' || p_geog_area_code
@@ -122,24 +122,23 @@ EXCEPTION
 
   WHEN sqlstate  'Z0001' THEN
        PERFORM casesvc.logmessage(p_messagetext := 'EXCEPTION TRIGGERED ' || SQLERRM || ' SQLSTATE : ' || SQLSTATE
-                               ,p_jobid := 0   
+                               ,p_jobid := 0
                                ,p_messagelevel := 'WARNING'
-                               ,p_functionname := 'casesvc.generate_cases'); 
+                               ,p_functionname := 'casesvc.generate_cases');
 RETURN FALSE;
-                               
+
   WHEN OTHERS THEN
     PERFORM casesvc.logmessage(p_messagetext := 'GENERATE CASES EXCEPTION TRIGGERED SQLERRM: ' || SQLERRM || ' SQLSTATE : ' || SQLSTATE
                              ,p_jobid := 0
                              ,p_messagelevel := 'FATAL'
                              ,p_functionname := 'casesvc.generate_cases');
 
-                             
+
 RETURN FALSE;
-   
+
 END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 ALTER FUNCTION casesvc.generate_initial_cases(integer, character varying, character varying)
   OWNER TO postgres;
-

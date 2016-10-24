@@ -72,8 +72,8 @@ public class ActionSvcClientServiceImplTest {
         .andExpect(content().string(containsString("\"createdBy\":" + "\"System\"")))
         .andRespond(withSuccess());
 
-    actionSvcClientService.createAndPostAction("GeneralEscalation", 123, "System");
+    actionSvcClientService.createAndPostAction("GeneralEscalation", 123, "SYSTEM");
     mockServer.verify();
-  }  
+  }
 
 }

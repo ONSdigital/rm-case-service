@@ -20,7 +20,7 @@ DECLARE
     v_number_of_cases integer;
     v_survey character varying(20);
     v_sample character varying(20);
-   
+
 
 BEGIN
 
@@ -36,7 +36,7 @@ END IF;
  --SELECT addresscriteria FROM casesvc.sample WHERE sampleid = p_sampleid INTO v_address_criteria;
 
  SELECT name FROM casesvc.sample WHERE sampleid = p_sampleid INTO v_sample;
- 
+
            SELECT CASE p_geog_area_type
            WHEN 'OA' THEN   'oa11cd = ''' || p_geog_area_code ||''''
            WHEN 'LSOA' THEN  'lsoa11cd = ''' || p_geog_area_code ||''''
@@ -72,19 +72,19 @@ v_sql_text := 'SELECT uprn FROM casesvc.address where ' || v_geog_select_text ||
  FOR v_address_loop IN  EXECUTE v_sql_text LOOP
      v_caseeventid := nextval('casesvc.caseeventidseq') ;
      v_casegroupid := nextval('casesvc.casegroupidseq') ;
-     
+
 
 --insert intitial record into casegroup  and case table
-   
+
      INSERT INTO casesvc.casegroup(casegroupid, uprn, sampleid)
      Values (
-     v_casegroupid 
+     v_casegroupid
     ,v_address_loop.uprn
     ,v_sampleid);
 
 
     INSERT INTO casesvc.case(casegroupid, state, casetypeid, actionplanmappingid, createddatetime, createdby)
-     Values ( 
+     Values (
      v_casegroupid
     ,'SAMPLED_INIT'
     ,v_casetypeid
@@ -97,13 +97,13 @@ v_sql_text := 'SELECT uprn FROM casesvc.address where ' || v_geog_select_text ||
   INSERT INTO casesvc.caseevent(
      caseeventid, caseid, description, createdby, createddatetime, category)
      VALUES(v_caseeventid
-    ,currval('casesvc.caseidseq')   
-    ,'Initial Creation Of Case'
+    ,currval('casesvc.caseidseq')
+    ,'Initial creation of case'
     ,'SYSTEM'
     ,CURRENT_TIMESTAMP
     ,'CASE_CREATED');
 
-        
+
 END LOOP;
 
     PERFORM casesvc.logmessage(p_messagetext := v_number_of_cases || ' cases generated for sampleid ' || v_sampleid || ' : Area Type ' || p_geog_area_type || ' : Area Code ' || p_geog_area_code
@@ -117,20 +117,20 @@ EXCEPTION
 
   WHEN sqlstate  'Z0001' THEN
        PERFORM casesvc.logmessage(p_messagetext := 'EXCEPTION TRIGGERED ' || SQLERRM || ' SQLSTATE : ' || SQLSTATE
-                               ,p_jobid := 0   
+                               ,p_jobid := 0
                                ,p_messagelevel := 'WARNING'
-                               ,p_functionname := 'casesvc.generate_cases'); 
+                               ,p_functionname := 'casesvc.generate_cases');
 RETURN FALSE;
-                               
+
   WHEN OTHERS THEN
     PERFORM casesvc.logmessage(p_messagetext := 'GENERATE CASES EXCEPTION TRIGGERED SQLERRM: ' || SQLERRM || ' SQLSTATE : ' || SQLSTATE
                              ,p_jobid := 0
                              ,p_messagelevel := 'FATAL'
                              ,p_functionname := 'casesvc.generate_cases');
 
-                             
+
 RETURN FALSE;
-   
+
 END;
 $$;
 
@@ -164,7 +164,7 @@ ALTER FUNCTION casesvc.logmessage(p_messagetext text, p_jobid numeric, p_message
 
 --
 -- TOC entry 359 (class 1259 OID 55720)
--- Name: actionplanmapping; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: actionplanmapping; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE actionplanmapping (
@@ -182,7 +182,7 @@ ALTER TABLE casesvc.actionplanmapping OWNER TO postgres;
 
 --
 -- TOC entry 360 (class 1259 OID 55723)
--- Name: address; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: address; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE address (
@@ -245,7 +245,7 @@ ALTER TABLE casesvc.caserefseq OWNER TO postgres;
 
 --
 -- TOC entry 361 (class 1259 OID 55726)
--- Name: case; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: case; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE "case" (
@@ -282,7 +282,7 @@ ALTER TABLE casesvc.caseeventidseq OWNER TO postgres;
 
 --
 -- TOC entry 363 (class 1259 OID 55731)
--- Name: caseevent; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: caseevent; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE caseevent (
@@ -300,7 +300,7 @@ ALTER TABLE casesvc.caseevent OWNER TO postgres;
 
 --
 -- TOC entry 364 (class 1259 OID 55738)
--- Name: casegroup; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: casegroup; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE casegroup (
@@ -329,7 +329,7 @@ ALTER TABLE casesvc.casegroupidseq OWNER TO postgres;
 
 --
 -- TOC entry 368 (class 1259 OID 55747)
--- Name: casestate; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: casestate; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE casestate (
@@ -341,7 +341,7 @@ ALTER TABLE casesvc.casestate OWNER TO postgres;
 
 --
 -- TOC entry 369 (class 1259 OID 55750)
--- Name: casetype; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: casetype; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE casetype (
@@ -357,7 +357,7 @@ ALTER TABLE casesvc.casetype OWNER TO postgres;
 
 --
 -- TOC entry 370 (class 1259 OID 55753)
--- Name: category; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: category; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE category (
@@ -393,7 +393,7 @@ ALTER TABLE casesvc.contactidseq OWNER TO postgres;
 
 --
 -- TOC entry 371 (class 1259 OID 55756)
--- Name: contact; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: contact; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE contact (
@@ -425,7 +425,7 @@ ALTER TABLE casesvc.messageseq OWNER TO postgres;
 
 --
 -- TOC entry 373 (class 1259 OID 55761)
--- Name: messagelog; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: messagelog; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE messagelog (
@@ -442,7 +442,7 @@ ALTER TABLE casesvc.messagelog OWNER TO postgres;
 
 --
 -- TOC entry 374 (class 1259 OID 55768)
--- Name: questionset; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: questionset; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE questionset (
@@ -454,7 +454,7 @@ ALTER TABLE casesvc.questionset OWNER TO postgres;
 
 --
 -- TOC entry 375 (class 1259 OID 55771)
--- Name: respondenttype; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: respondenttype; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE respondenttype (
@@ -481,7 +481,7 @@ ALTER TABLE casesvc.responseidseq OWNER TO postgres;
 
 --
 -- TOC entry 377 (class 1259 OID 55776)
--- Name: response; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: response; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE response (
@@ -496,7 +496,7 @@ ALTER TABLE casesvc.response OWNER TO postgres;
 
 --
 -- TOC entry 378 (class 1259 OID 55780)
--- Name: sample; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: sample; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE sample (
@@ -512,7 +512,7 @@ ALTER TABLE casesvc.sample OWNER TO postgres;
 
 --
 -- TOC entry 379 (class 1259 OID 55783)
--- Name: samplecasetypeselector; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: samplecasetypeselector; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE samplecasetypeselector (
@@ -527,7 +527,7 @@ ALTER TABLE casesvc.samplecasetypeselector OWNER TO postgres;
 
 --
 -- TOC entry 380 (class 1259 OID 55786)
--- Name: survey; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: survey; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE survey (
@@ -539,7 +539,7 @@ ALTER TABLE casesvc.survey OWNER TO postgres;
 
 --
 -- TOC entry 381 (class 1259 OID 55908)
--- Name: unlinkedcasereceipt; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: unlinkedcasereceipt; Type: TABLE; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE unlinkedcasereceipt (
@@ -553,7 +553,7 @@ ALTER TABLE casesvc.unlinkedcasereceipt OWNER TO postgres;
 
 --
 -- TOC entry 3452 (class 2606 OID 55790)
--- Name: actionplanmapping_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: actionplanmapping_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY actionplanmapping
@@ -562,7 +562,7 @@ ALTER TABLE ONLY actionplanmapping
 
 --
 -- TOC entry 3456 (class 2606 OID 55792)
--- Name: address_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: address_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY address
@@ -571,7 +571,7 @@ ALTER TABLE ONLY address
 
 --
 -- TOC entry 3458 (class 2606 OID 55794)
--- Name: case_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: case_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY "case"
@@ -580,7 +580,7 @@ ALTER TABLE ONLY "case"
 
 --
 -- TOC entry 3460 (class 2606 OID 55796)
--- Name: caseevent_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: caseevent_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY caseevent
@@ -589,7 +589,7 @@ ALTER TABLE ONLY caseevent
 
 --
 -- TOC entry 3462 (class 2606 OID 55798)
--- Name: casegroup_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: casegroup_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY casegroup
@@ -598,7 +598,7 @@ ALTER TABLE ONLY casegroup
 
 --
 -- TOC entry 3464 (class 2606 OID 55800)
--- Name: casestate_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: casestate_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY casestate
@@ -607,7 +607,7 @@ ALTER TABLE ONLY casestate
 
 --
 -- TOC entry 3466 (class 2606 OID 55802)
--- Name: casetype_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: casetype_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY casetype
@@ -616,7 +616,7 @@ ALTER TABLE ONLY casetype
 
 --
 -- TOC entry 3468 (class 2606 OID 55804)
--- Name: category_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: category_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY category
@@ -625,7 +625,7 @@ ALTER TABLE ONLY category
 
 --
 -- TOC entry 3470 (class 2606 OID 55806)
--- Name: contact_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: contact_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY contact
@@ -634,7 +634,7 @@ ALTER TABLE ONLY contact
 
 --
 -- TOC entry 3472 (class 2606 OID 55808)
--- Name: messageid_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: messageid_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY messagelog
@@ -643,7 +643,7 @@ ALTER TABLE ONLY messagelog
 
 --
 -- TOC entry 3474 (class 2606 OID 55810)
--- Name: questionset_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: questionset_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY questionset
@@ -652,7 +652,7 @@ ALTER TABLE ONLY questionset
 
 --
 -- TOC entry 3476 (class 2606 OID 55812)
--- Name: respondenttype_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: respondenttype_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY respondenttype
@@ -661,7 +661,7 @@ ALTER TABLE ONLY respondenttype
 
 --
 -- TOC entry 3478 (class 2606 OID 55814)
--- Name: response_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: response_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY response
@@ -670,7 +670,7 @@ ALTER TABLE ONLY response
 
 --
 -- TOC entry 3480 (class 2606 OID 55816)
--- Name: sample_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: sample_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY sample
@@ -679,7 +679,7 @@ ALTER TABLE ONLY sample
 
 --
 -- TOC entry 3482 (class 2606 OID 55818)
--- Name: samplecasetypeselector_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: samplecasetypeselector_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY samplecasetypeselector
@@ -688,7 +688,7 @@ ALTER TABLE ONLY samplecasetypeselector
 
 --
 -- TOC entry 3484 (class 2606 OID 55820)
--- Name: survey_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: survey_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY survey
@@ -697,7 +697,7 @@ ALTER TABLE ONLY survey
 
 --
 -- TOC entry 3453 (class 1259 OID 55821)
--- Name: address_lad12cd_idx; Type: INDEX; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: address_lad12cd_idx; Type: INDEX; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 CREATE INDEX address_lad12cd_idx ON address USING btree (lad12cd);
@@ -705,7 +705,7 @@ CREATE INDEX address_lad12cd_idx ON address USING btree (lad12cd);
 
 --
 -- TOC entry 3454 (class 1259 OID 55822)
--- Name: address_msoa11cd_idx; Type: INDEX; Schema: casesvc; Owner: postgres; Tablespace: 
+-- Name: address_msoa11cd_idx; Type: INDEX; Schema: casesvc; Owner: postgres; Tablespace:
 --
 
 CREATE INDEX address_msoa11cd_idx ON address USING btree (msoa11cd);
