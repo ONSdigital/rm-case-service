@@ -3,7 +3,8 @@ package uk.gov.ons.ctp.response.action.export.templating.freemarker.config;
 import freemarker.cache.TemplateLoader;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.response.action.export.domain.ContentDocument;
-import uk.gov.ons.ctp.response.action.export.repository.ContentRepository;
+import uk.gov.ons.ctp.response.action.export.domain.TemplateDocument;
+import uk.gov.ons.ctp.response.action.export.repository.TemplateRepository;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -16,20 +17,20 @@ import java.io.StringReader;
 public class MongoTemplateLoader implements TemplateLoader {
 
   @Inject
-  private ContentRepository contentRepository;
+  private TemplateRepository templateRepository;
 
   @Override
   public Object findTemplateSource(String name) throws IOException {
     log.debug("Retrieving template with name {}", name);
-    return contentRepository.findOne(name);
+    return templateRepository.findOne(name);
   }
 
   @Override
   public long getLastModified(Object templateSource) {
-    ContentDocument template = (ContentDocument) templateSource;
+    TemplateDocument template = (TemplateDocument) templateSource;
     String name = template.getName();
     log.debug("Retrieving last modified time for template with name {}", name);
-    template = contentRepository.findOne(name);
+    template = templateRepository.findOne(name);
     return template.getDateModified().getTime();
   }
 

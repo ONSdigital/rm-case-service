@@ -11,9 +11,10 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class ContentDocumentDTO {
+public class TemplateDocumentDTO {
   @NotNull
   private String name;
   private String content;
+  private String type;
   private Date dateModified;
 }

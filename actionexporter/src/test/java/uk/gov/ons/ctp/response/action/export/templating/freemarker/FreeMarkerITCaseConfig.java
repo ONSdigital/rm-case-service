@@ -8,11 +8,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import uk.gov.ons.ctp.response.action.export.service.TemplateService;
+import uk.gov.ons.ctp.response.action.export.service.impl.TemplateServiceImpl;
 import uk.gov.ons.ctp.response.action.export.templating.freemarker.config.MongoTemplateLoader;
 import uk.gov.ons.ctp.response.action.export.service.TransformationService;
 import uk.gov.ons.ctp.response.action.export.service.impl.TransformationServiceImpl;
-import uk.gov.ons.ctp.response.action.export.service.DocumentService;
-import uk.gov.ons.ctp.response.action.export.service.impl.DocumentServiceImpl;
 
 import static org.glassfish.jersey.message.internal.ReaderWriter.UTF8;
 
@@ -52,8 +52,8 @@ public class FreeMarkerITCaseConfig {
   }
 
   @Bean
-  public DocumentService freeMarkerService() {
-    return new DocumentServiceImpl();
+  public TemplateService freeMarkerService() {
+    return new TemplateServiceImpl();
   }
 
   @Bean

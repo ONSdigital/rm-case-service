@@ -1,23 +1,15 @@
 package uk.gov.ons.ctp.response.action.export.domain;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 
 /**
- * Mongo repository domain entity representing an ContentDocument e.g.
- * Freemarker template or mapping document.
+ * Abstract Mongo repository domain entity representing any Content
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
-@Document
-public class ContentDocument {
+public abstract class ContentDocument {
   @Id
   private String name;
   private String content;

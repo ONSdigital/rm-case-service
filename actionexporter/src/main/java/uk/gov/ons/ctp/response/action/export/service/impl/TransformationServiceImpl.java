@@ -24,7 +24,8 @@ import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
 import uk.gov.ons.ctp.response.action.export.domain.SftpMessage;
 import uk.gov.ons.ctp.response.action.export.repository.ActionRequestRepository;
-import uk.gov.ons.ctp.response.action.export.service.DocumentService;
+import uk.gov.ons.ctp.response.action.export.service.TemplateMappingService;
+import uk.gov.ons.ctp.response.action.export.service.TemplateService;
 import uk.gov.ons.ctp.response.action.export.service.TransformationService;
 
 /**
@@ -45,7 +46,10 @@ public class TransformationServiceImpl implements TransformationService {
   private ActionRequestRepository actionRequestRepo;
 
   @Inject
-  private DocumentService docService;
+  private TemplateService templateService;
+
+  @Inject
+  private TemplateMappingService templateMappingService;
 
   @Override
   public File fileMe(List<ActionRequestDocument> actionRequestDocumentList, String templateName, String path)
@@ -115,7 +119,7 @@ public class TransformationServiceImpl implements TransformationService {
       log.warn("No Action Export requests to process.");
       return sftpMessage;
     }
-    Map<String, String> mapping = docService.retrieveMapping(TEMPLATE_MAPPING);
+    Map<String, String> mapping = templateMappingService.retrieveMaoFromTemplateMappingDocument(TEMPLATE_MAPPING);
     Map<String, Map<String, List<ActionRequestDocument>>> templateRequests = requests.stream()
         .collect(Collectors.groupingBy(ActionRequestDocument::getActionPlan,
             Collectors.groupingBy(ActionRequestDocument::getActionType)));

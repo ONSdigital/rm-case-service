@@ -22,47 +22,48 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.ContentDocument;
-import uk.gov.ons.ctp.response.action.export.repository.ContentRepository;
-import uk.gov.ons.ctp.response.action.export.service.DocumentService;
+import uk.gov.ons.ctp.response.action.export.domain.TemplateDocument;
+import uk.gov.ons.ctp.response.action.export.domain.TemplateEngine;
+import uk.gov.ons.ctp.response.action.export.repository.TemplateRepository;
+import uk.gov.ons.ctp.response.action.export.service.TemplateService;
 
 /**
- * The implementation of the DocumentService
+ * The implementation of the TemplateService
  */
 @Named
 @Slf4j
-public class DocumentServiceImpl implements DocumentService {
+public class TemplateServiceImpl implements TemplateService {
 
-  public static final String EXCEPTION_STORE_TEMPLATE = "Issue storing ContentDocument. It appears to be empty.";
+  public static final String EXCEPTION_STORE_TEMPLATE = "Issue storing TemplateDocument. It appears to be empty.";
 
   @Inject
-  private ContentRepository repository;
+  private TemplateRepository repository;
 
   @Inject
   private freemarker.template.Configuration configuration;
 
   @Override
-  public ContentDocument retrieveContentDocument(String contentDocumentName) {
-    return repository.findOne(contentDocumentName);
+  public TemplateDocument retrieveTemplateDocument(String templateName) {
+    return repository.findOne(templateName);
   }
 
   @Override
-  public List<ContentDocument> retrieveAllContentDocuments() {
+  public List<TemplateDocument> retrieveAllTemplateDocuments() {
     return repository.findAll();
   }
 
   @Override
-  public ContentDocument storeContentDocument(String contentDocumentName, InputStream fileContents)
-      throws CTPException {
+  public TemplateDocument storeTemplateDocument(String templateName, TemplateEngine templateEngine, InputStream
+          fileContents) throws CTPException {
     String stringValue = getStringFromInputStream(fileContents);
     if (StringUtils.isEmpty(stringValue)) {
       log.error(EXCEPTION_STORE_TEMPLATE);
       throw new CTPException(CTPException.Fault.SYSTEM_ERROR, EXCEPTION_STORE_TEMPLATE);
     }
-    ContentDocument template = new ContentDocument();
+    TemplateDocument template = new TemplateDocument();
     template.setContent(stringValue);
-
-    template.setName(contentDocumentName);
-
+    template.setName(templateName);
+    template.setTemplateEngine(templateEngine);
     template.setDateModified(new Date());
 
     // Clear cache in case updated FreeMarker content template stored
@@ -107,23 +108,4 @@ public class DocumentServiceImpl implements DocumentService {
 
     return sb.toString();
   }
-
-  @Override
-  public Map<String, String> retrieveMapping(String mappingName) {
-    Map<String, String> mapping = new HashMap<String, String>();
-    try {
-      ObjectMapper mapper = new ObjectMapper();
-      mapping = mapper.readValue(repository.findOne(mappingName).getContent(),
-          new TypeReference<Map<String, String>>() {
-          });
-    } catch (JsonParseException e) {
-      log.error("JsonParseException thrown while parsing mapping...", e.getMessage());
-    } catch (JsonMappingException e) {
-      log.error("JsonMappingException thrown while parsing mapping...", e.getMessage());
-    } catch (IOException e) {
-      log.error("IOException thrown while parsing mapping...", e.getMessage());
-    }
-    return mapping;
-  }
-
 }

@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import uk.gov.ons.ctp.common.jaxrs.JAXRSRegister;
 import uk.gov.ons.ctp.response.action.export.config.AppConfig;
-import uk.gov.ons.ctp.response.action.export.endpoint.ContentEndpoint;
+import uk.gov.ons.ctp.response.action.export.endpoint.TemplateEndpoint;
 import uk.gov.ons.ctp.response.action.export.endpoint.ManualTestEndpoint;
 import uk.gov.ons.ctp.response.action.export.endpoint.SupportEndpoint;
 
@@ -52,7 +52,7 @@ public class ActionExporterApplication {
       JAXRSRegister.listCommonTypes().forEach(t->register(t));
 
       register(MultiPartFeature.class);
-      register(ContentEndpoint.class);
+      register(TemplateEndpoint.class);
 
       register(SupportEndpoint.class);
 
