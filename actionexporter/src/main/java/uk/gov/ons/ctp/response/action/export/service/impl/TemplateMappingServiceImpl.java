@@ -65,10 +65,11 @@ public class TemplateMappingServiceImpl implements TemplateMappingService {
   public Map<String, String> retrieveMapFromTemplateMappingDocument(String templateMappingName) {
     Map<String, String> mapping = new HashMap<>();
     try {
-      ObjectMapper mapper = new ObjectMapper();
-      mapping = mapper.readValue(repository.findOne(templateMappingName).getContent(),
-              new TypeReference<Map<String, String>>() {
-              });
+      TemplateMappingDocument templateMapping = repository.findOne(templateMappingName);
+      if (templateMapping != null) {
+        ObjectMapper mapper = new ObjectMapper();
+        mapping = mapper.readValue(templateMapping.getContent(), new TypeReference<Map<String, String>>() { });
+      }
     } catch (JsonParseException e) {
       log.error("JsonParseException thrown while parsing mapping...", e.getMessage());
     } catch (JsonMappingException e) {
