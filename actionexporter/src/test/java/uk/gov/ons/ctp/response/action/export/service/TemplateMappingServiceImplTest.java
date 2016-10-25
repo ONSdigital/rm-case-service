@@ -59,4 +59,10 @@ public class TemplateMappingServiceImplTest {
     verify(repository, times(0)).save(any(TemplateMappingDocument.class));
   }
 
+  @Test
+  public void testStoreValidTemplateMapping() throws CTPException {
+    templateMappingService.storeTemplateMappingDocument(TEMPLATE_MAPPING_NAME, getClass().getResourceAsStream("/templates/freemarker/valid_template_mapping.json"));
+    verify(repository, times(1)).save(any(TemplateMappingDocument.class));
+  }
+
 }
