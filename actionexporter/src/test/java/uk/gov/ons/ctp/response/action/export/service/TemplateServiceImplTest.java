@@ -22,8 +22,11 @@ import static uk.gov.ons.ctp.response.action.export.service.impl.TemplateService
  */
 @RunWith(MockitoJUnitRunner.class)
 public class TemplateServiceImplTest {
+
+  private static final String TEMPLATE_NAME = "testTemplate";
+
   @InjectMocks
-  TemplateServiceImpl freeMarkerService;
+  TemplateServiceImpl templateService;
 
   @Mock
   TemplateRepository repository;
@@ -31,13 +34,11 @@ public class TemplateServiceImplTest {
   @Mock
   freemarker.template.Configuration configuration;
 
-  private static final String TEMPLATE_NAME = "testTemplate";
-
   @Test
   public void testStoreNullTemplate() {
     boolean exceptionThrown = false;
     try {
-      freeMarkerService.storeTemplateDocument(TEMPLATE_NAME, null);
+      templateService.storeTemplateDocument(TEMPLATE_NAME, null);
     } catch (CTPException e) {
       exceptionThrown = true;
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
@@ -52,7 +53,7 @@ public class TemplateServiceImplTest {
   public void testStoreEmptyTemplate() {
     boolean exceptionThrown = false;
     try {
-      freeMarkerService.storeTemplateDocument(TEMPLATE_NAME,getClass().getResourceAsStream("/templates/freemarker/curltest_emptytemplate.ftl"));
+      templateService.storeTemplateDocument(TEMPLATE_NAME,getClass().getResourceAsStream("/templates/freemarker/empty_template.ftl"));
     } catch (CTPException e) {
       exceptionThrown = true;
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
@@ -65,7 +66,7 @@ public class TemplateServiceImplTest {
 
   @Test
   public void testStoreValidTemplate() throws CTPException {
-    freeMarkerService.storeTemplateDocument(TEMPLATE_NAME, getClass().getResourceAsStream("/templates/freemarker/curltest_validtemplate.ftl"));
+    templateService.storeTemplateDocument(TEMPLATE_NAME, getClass().getResourceAsStream("/templates/freemarker/valid_template.ftl"));
     verify(repository, times(1)).save(any(TemplateDocument.class));
     verify(configuration, times(1)).clearTemplateCache();
   }

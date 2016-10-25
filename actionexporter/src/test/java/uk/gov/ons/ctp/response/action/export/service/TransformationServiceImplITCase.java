@@ -49,7 +49,7 @@ public class TransformationServiceImplITCase {
   @Before
   public void setup() throws CTPException {
     log.debug("About to store the FreeMarker template...");
-    templateService.storeTemplateDocument(FREEMARKER_TEMPLATE_NAME, getClass().getResourceAsStream("/templates/freemarker/curltest_validtemplate.ftl"));
+    templateService.storeTemplateDocument(FREEMARKER_TEMPLATE_NAME, getClass().getResourceAsStream("/templates/freemarker/valid_template.ftl"));
     log.debug("FreeMarker template stored successfully...");
   }
 

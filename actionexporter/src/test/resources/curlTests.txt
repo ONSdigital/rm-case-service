@@ -18,13 +18,13 @@ curl http://localhost:8141/templates/donotexist -u actionexporter:ctp -v -X GET
 
 ## To store an empty Template
 cd /home/centos/code/responsemanagement-service/actionexporter/src/test/resources/templates/freemarker
-curl http://localhost:8141/templates/curltest -u actionexporter:ctp -v -X POST -F file=@curltest_emptytemplate.ftl
+curl http://localhost:8141/templates/curltest -u actionexporter:ctp -v -X POST -F file=@empty_template.ftl
 500 {"error":{"code":"SYSTEM_ERROR","timestamp":"20161024155054746","message":"Issue storing TemplateDocument. It appears to be empty."}}
 
 
 ## To store a valid FreeMarker template
 cd /home/centos/code/responsemanagement-service/actionexporter/src/test/resources/templates/freemarker
-curl http://localhost:8141/templates/curltest -u actionexporter:ctp -v -X POST -F file=@curltest_validtemplate.ftl
+curl http://localhost:8141/templates/curltest -u actionexporter:ctp -v -X POST -F file=@valid_template.ftl
 201 and Location: http://localhost:8141/templates/curltest/curltest and {"name":"curltest","content":"=================================  File for the Printer ==================================ActionId, ResponseRequired, ActionType, IAC, Line1, Town, Postcode<#list actionRequests as actionRequest>\t${actionRequest.actionId}, ${actionRequest.actionType}, ${actionRequest.iac}, ${actionRequest.address.line1}, ${actionRequest.address.townName}, ${actionRequest.address.postcode}</#list>","dateModified":1474080646781}
 
 
