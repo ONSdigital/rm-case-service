@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.action.export.templating.freemarker;
+package uk.gov.ons.ctp.response.action.export.service;
 
 import com.mongodb.Mongo;
 import freemarker.template.TemplateExceptionHandler;
@@ -19,7 +19,7 @@ import static org.glassfish.jersey.message.internal.ReaderWriter.UTF8;
 @PropertySource("classpath:application-test.properties")
 @EnableMongoRepositories(basePackages = "uk.gov.ons.ctp.response.action.export.repository")
 @SpringBootConfiguration
-public class FreeMarkerITCaseConfig {
+public class TransformationServiceImplITCaseConfig {
 
   @Value("${mongodb.server}")
   private String databseServerName;

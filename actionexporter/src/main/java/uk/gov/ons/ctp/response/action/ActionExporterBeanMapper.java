@@ -8,8 +8,8 @@ import ma.glasnost.orika.impl.DefaultMapperFactory;
 import ma.glasnost.orika.impl.generator.EclipseJdtCompilerStrategy;
 import uk.gov.ons.ctp.response.action.export.domain.TemplateDocument;
 import uk.gov.ons.ctp.response.action.export.domain.TemplateMappingDocument;
-import uk.gov.ons.ctp.response.action.representation.TemplateDocumentDTO;
-import uk.gov.ons.ctp.response.action.representation.TemplateMappingDocumentDTO;
+import uk.gov.ons.ctp.response.action.export.representation.TemplateDocumentDTO;
+import uk.gov.ons.ctp.response.action.export.representation.TemplateMappingDocumentDTO;
 
 /**
  * The bean mapper to go from Entity objects to Presentation objects.

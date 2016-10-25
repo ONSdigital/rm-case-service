@@ -1,7 +1,6 @@
 package uk.gov.ons.ctp.response.action.export.message;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.util.List;
 
 import org.springframework.messaging.support.ErrorMessage;

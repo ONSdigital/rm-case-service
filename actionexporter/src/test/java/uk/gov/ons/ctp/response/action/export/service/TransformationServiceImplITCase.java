@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.action.export.templating.freemarker;
+package uk.gov.ons.ctp.response.action.export.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
@@ -9,8 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
-import uk.gov.ons.ctp.response.action.export.service.TransformationService;
-import uk.gov.ons.ctp.response.action.export.service.TemplateService;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -32,9 +30,9 @@ import static uk.gov.ons.ctp.response.action.export.service.TransformationServic
  *    - a running MongoDB database (see application-test.properties for config)
  */
 @Slf4j
-@SpringBootTest(classes = {FreeMarkerITCaseConfig.class})
+@SpringBootTest(classes = {TransformationServiceImplITCaseConfig.class})
 @RunWith(SpringRunner.class)
-public class FreeMarkerITCase {
+public class TransformationServiceImplITCase {
 
   private static final int TEST_STRING_LENGTH_WHEN_50_ACTION_REQUESTS = 3501;
   private static final int TEST_STRING_LENGTH_WHEN_EMPTY_ACTION_REQUESTS =160;

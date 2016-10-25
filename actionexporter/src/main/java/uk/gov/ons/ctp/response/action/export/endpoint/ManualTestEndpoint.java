@@ -33,9 +33,19 @@ import static org.glassfish.jersey.message.internal.ReaderWriter.UTF8;
 @Produces(MediaType.APPLICATION_JSON)
 @Slf4j
 public class ManualTestEndpoint {
+
+  private static final int ACTION_REQUEST_NUMBER = 51;
+
   @Inject
   private TransformationService transformationService;
 
+  /**
+   * To trigger the FreeMarker templating of a list of ActionRequests
+   * @param templateName the name of the Template to use for templating
+   * @return OK if the templating completed successfully
+   * @throws CTPException if issue encountered during the FreeMarker templating
+   * @throws UnsupportedEncodingException if issue encountered during the FreeMarker templating
+   */
   @GET
   @Path("/{templateName}")
   public final Response testingFreeMarkerTemplating(@PathParam("templateName") final String templateName)
@@ -52,14 +62,23 @@ public class ManualTestEndpoint {
     }
   }
 
+  /**
+   * To build a list of ActionRequests
+   * @return a list of ActionRequests
+   */
   private static List<ActionRequestDocument> buildMeListOfActionRequestDocuments() {
     List<ActionRequestDocument> result = new ArrayList<>();
-    for (int i = 1; i < 51; i++) {
+    for (int i = 1; i < ACTION_REQUEST_NUMBER; i++) {
       result.add(buildAMeActionRequestDocument(i));
     }
     return result;
   }
 
+  /**
+   *  To build an ActionRequest
+   * @param i the action id for the ActionRequest
+   * @return an ActionRequest
+   */
   private static ActionRequestDocument buildAMeActionRequestDocument(int i) {
     ActionRequestDocument result =  new ActionRequestDocument();
     result.setActionId(new BigInteger(new Integer(i).toString()));
@@ -69,6 +88,10 @@ public class ManualTestEndpoint {
     return result;
   }
 
+  /**
+   * To build an ActionAddress
+   * @return an ActionAddress
+   */
   private static ActionAddress buildActionAddress() {
     ActionAddress actionAddress = new ActionAddress();
     actionAddress.setLine1("1 High Street");

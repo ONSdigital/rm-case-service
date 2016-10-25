@@ -22,6 +22,9 @@ import java.util.Map;
 
 import static uk.gov.ons.ctp.common.util.InputStreamUtil.getStringFromInputStream;
 
+/**
+ * The implementation of the TemplateMappingService
+ */
 @Named
 @Slf4j
 public class TemplateMappingServiceImpl implements TemplateMappingService {

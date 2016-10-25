@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.action.export.templating.freemarker.service;
+package uk.gov.ons.ctp.response.action.export.service;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -31,7 +31,8 @@ public class FreeMarkerConfig {
    */
   @Bean
   public freemarker.template.Configuration configuration() {
-    freemarker.template.Configuration configuration = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_25);
+    freemarker.template.Configuration configuration = new freemarker.template.Configuration(
+            freemarker.template.Configuration.VERSION_2_3_25);
     configuration.setTemplateLoader(mongoTemplateLoader());
     configuration.setDefaultEncoding(UTF8.name());
     configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);

@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
+/**
+ * TemplateLoader to load templates stored in MongopDB
+ */
 @Slf4j
 @Named
 public class MongoTemplateLoader implements TemplateLoader {

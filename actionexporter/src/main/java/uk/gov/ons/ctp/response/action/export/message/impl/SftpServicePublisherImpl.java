@@ -1,7 +1,6 @@
 package uk.gov.ons.ctp.response.action.export.message.impl;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;

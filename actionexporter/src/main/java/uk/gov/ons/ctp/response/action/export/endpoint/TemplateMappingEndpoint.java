@@ -8,7 +8,7 @@ import org.springframework.util.CollectionUtils;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.TemplateMappingDocument;
 import uk.gov.ons.ctp.response.action.export.service.TemplateMappingService;
-import uk.gov.ons.ctp.response.action.representation.TemplateMappingDocumentDTO;
+import uk.gov.ons.ctp.response.action.export.representation.TemplateMappingDocumentDTO;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -26,6 +26,9 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
 
+/**
+ * The REST endpoint controller for TemplateMappings.
+ */
 @Path("/templatemappings")
 @Produces(MediaType.APPLICATION_JSON)
 @Slf4j
@@ -39,6 +42,10 @@ public class TemplateMappingEndpoint {
   @Context
   private UriInfo uriInfo;
 
+  /**
+   * To retrieve all TemplateMappings
+   * @return a list of TemplateMappings
+   */
   @GET
   @Path("/")
   public List<TemplateMappingDocumentDTO> findAllTemplateMappings() {
@@ -50,6 +57,12 @@ public class TemplateMappingEndpoint {
     return CollectionUtils.isEmpty(results) ? null : results;
   }
 
+  /**
+   * To retrieve a specific TemplateMapping
+   * @param templateMappingName for the specific TemplateMapping to retrieve
+   * @return the specific TemplateMapping
+   * @throws CTPException if no TemplateMapping found
+   */
   @GET
   @Path("/{templateMappingName}")
   public TemplateMappingDocumentDTO findTemplateMapping(@PathParam("templateMappingName") final String
@@ -63,6 +76,13 @@ public class TemplateMappingEndpoint {
     return mapperFacade.map(result, TemplateMappingDocumentDTO.class);
   }
 
+  /**
+   * To store a TemplateMapping
+   * @param templateMappingName the TemplateMapping name
+   * @param fileContents the TemplateMapping content
+   * @return 201 if created
+   * @throws CTPException if the TemplateMapping can't be stored
+   */
   @POST
   @Path("/{templateMappingName}")
   @Consumes(MediaType.MULTIPART_FORM_DATA)
