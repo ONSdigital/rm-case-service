@@ -35,9 +35,4 @@ public interface TemplateService {
    * @return a list of TemplateDocuments
    */
   List<TemplateDocument> retrieveAllTemplateDocuments();
-
-  /**
-   * To clear the FreeMarker configuration's template cache
-   */
-  void clearTemplateCache();
 }

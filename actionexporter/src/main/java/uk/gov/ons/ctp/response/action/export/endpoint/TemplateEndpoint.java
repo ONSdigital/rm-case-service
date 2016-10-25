@@ -85,7 +85,6 @@ public class TemplateEndpoint {
                                 @FormDataParam("file") InputStream fileContents) throws CTPException {
     log.debug("Entering storeTemplate with templateName {}", templateName);
     TemplateDocument templateDocument = templateService.storeTemplateDocument(templateName, fileContents);
-    templateService.clearTemplateCache();
 
     UriBuilder ub = uriInfo.getAbsolutePathBuilder();
     URI templateDocumentUri = ub.path(templateName).build();

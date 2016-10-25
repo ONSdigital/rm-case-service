@@ -50,20 +50,15 @@ public class TemplateServiceImpl implements TemplateService {
       log.error(EXCEPTION_STORE_TEMPLATE);
       throw new CTPException(CTPException.Fault.SYSTEM_ERROR, EXCEPTION_STORE_TEMPLATE);
     }
+
     TemplateDocument template = new TemplateDocument();
     template.setContent(stringValue);
     template.setName(templateName);
     template.setDateModified(new Date());
+    template = repository.save(template);
 
-    // Clear cache in case updated FreeMarker content template stored
-    clearTemplateCache();
-
-    return repository.save(template);
-  }
-
-  @Override
-  public void clearTemplateCache() {
     configuration.clearTemplateCache();
-    log.debug("Free Marker template cache has been cleared.");
+
+    return template;
   }
 }

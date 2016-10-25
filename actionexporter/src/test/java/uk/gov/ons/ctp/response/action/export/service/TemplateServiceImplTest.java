@@ -34,12 +34,6 @@ public class TemplateServiceImplTest {
   private static final String TEMPLATE_NAME = "testTemplate";
 
   @Test
-  public void testClearTemplateCache() {
-    freeMarkerService.clearTemplateCache();
-    verify(configuration, times(1)).clearTemplateCache();
-  }
-
-  @Test
   public void testStoreNullTemplate() {
     boolean exceptionThrown = false;
     try {
@@ -51,6 +45,7 @@ public class TemplateServiceImplTest {
     }
     assertTrue(exceptionThrown);
     verify(repository, times(0)).save(any(TemplateDocument.class));
+    verify(configuration, times(0)).clearTemplateCache();
   }
 
   @Test
@@ -65,12 +60,14 @@ public class TemplateServiceImplTest {
     }
     assertTrue(exceptionThrown);
     verify(repository, times(0)).save(any(TemplateDocument.class));
+    verify(configuration, times(0)).clearTemplateCache();
   }
 
   @Test
   public void testStoreValidTemplate() throws CTPException {
     freeMarkerService.storeTemplateDocument(TEMPLATE_NAME, getClass().getResourceAsStream("/templates/freemarker/curltest_validtemplate.ftl"));
     verify(repository, times(1)).save(any(TemplateDocument.class));
+    verify(configuration, times(1)).clearTemplateCache();
   }
 
 }
