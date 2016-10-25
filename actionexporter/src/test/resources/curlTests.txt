@@ -12,7 +12,7 @@ curl http://localhost:8241/mgmt/health -v -X GET -u actionexporter:ctp
 
 
 ## To retrieve a Template that does NOT exist
-curl http://localhost:8141/templates/donotexist  -u actionexporter:ctp -v -X GET
+curl http://localhost:8141/templates/donotexist -u actionexporter:ctp -v -X GET
 404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20161024154934768","message":"Template not found for name donotexist"}}
 
 
@@ -38,10 +38,20 @@ curl http://localhost:8141/templates/ -u actionexporter:ctp -v -X GET
 200 [{"name":"curltest","content":"=================================  File for the Printer ==================================ActionId, ResponseRequired, ActionType, IAC, Line1, Town, Postcode<#list actionRequests as actionRequest>\t${actionRequest.actionId}, ${actionRequest.actionType}, ${actionRequest.iac}, ${actionRequest.address.line1}, ${actionRequest.address.townName}, ${actionRequest.address.postcode}</#list>","dateModified":1474080646781}]
 
 
-## To store a template mapping for Freemarker templates
-TODO cd /home/centos/code/responsemanagement-service/actionexporter/src/test/resources/templates/freemarker
-TODO curl http://localhost:8141/content/templateMapping -v -X POST -F file=@template_mapping.json
-TODO 200 {"name":"templateMapping","content":"{  \"ICL1\":\"curltestvalid_template.ftl\",  \"ICL2\":\"curltest_validtemplate.ftl\",  \"ICL2W\":\"curltest_validtemplate.ftl\",  \"ICL1AD\":\"curltest_validtemplate.ftl\",  \"IRL1\":\"curltest_validtemplate.ftl\",  \"IRL2W\":\"curltest_validtemplate.ftl\",  \"IRLAD1\":\"curltest_validtemplate.ftl\",  \"2RL1\":\"curltest_validtemplate.ftl\",  \"2RL2W\":\"curltest_validtemplate.ftl\",  \"2RLAD1\":\"curltest_validtemplate.ftl\",  \"3RL1\":\"curltest_validtemplate.ftl\",  \"3RL2W\":\"curltest_validtemplate.ftl\",  \"3RLAD1\":\"curltest_validtemplate.ftl\",  \"H1\":\"curltest_validtemplate.ftl\",  \"H2\":\"curltest_validtemplate.ftl\",  \"H1S\":\"curltest_validtemplate.ftl\",  \"H2S\":\"curltest_validtemplate.ftl\",  \"H2W\":\"curltest_validtemplate.ftl\",  \"H2WS\":\"curltest_validtemplate.ftl\"}","dateModified":1474972116596}
+## To store a Template Mapping for Freemarker templates
+cd /home/centos/code/responsemanagement-service/actionexporter/src/test/resources/templates/freemarker
+curl http://localhost:8141/templatemappings/freemarkertmapping -v -X POST -F file=@template_mapping.json -u actionexporter:ctp
+201 {"name":"freemarkertmapping","content":....
+
+
+## To retrieve all Template Mappings
+curl http://localhost:8141/templatemappings/ -u actionexporter:ctp -v -X GET
+200 [{"name":"freemarkertmapping","....
+
+
+## To retrieve a specific Template Mapping
+curl http://localhost:8141/templatemappings/freemarkertmapping -u actionexporter:ctp -v -X GET
+200 {"name":"freemarkertmapping","content
 
 
 ## To template using an existing template
