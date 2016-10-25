@@ -5,7 +5,6 @@ import java.util.List;
 
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.TemplateDocument;
-import uk.gov.ons.ctp.response.action.export.domain.TemplateEngine;
 
 /**
  * Service responsible for dealing with TemplateDocuments stored in MongoDB
@@ -19,7 +18,7 @@ public interface TemplateService {
    * @return the TemplateDocument stored
    * @throws CTPException if the TemplateDocument content is empty
    */
-  TemplateDocument storeTemplateDocument(String templateName, TemplateEngine templateEngine, InputStream fileContents)
+  TemplateDocument storeTemplateDocument(String templateName, InputStream fileContents)
           throws CTPException;
 
   /**

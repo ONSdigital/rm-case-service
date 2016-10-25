@@ -4,7 +4,10 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.Date;
 
 /**
  * Mongo repository domain entity representing a Template Mapping.
@@ -13,6 +16,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Document
-public class TemplateMappingDocument extends ContentDocument {
-  private TemplateEngine templateEngine;
+public class TemplateMappingDocument {
+  @Id
+  private String name;
+  private String content;
+  private Date dateModified;
 }

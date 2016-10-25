@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.response.action.export.domain.TemplateEngine;
 import uk.gov.ons.ctp.response.action.export.domain.TemplateMappingDocument;
 import uk.gov.ons.ctp.response.action.export.repository.TemplateMappingRepository;
 import uk.gov.ons.ctp.response.action.export.service.TemplateMappingService;
@@ -44,8 +43,8 @@ public class TemplateMappingServiceImpl implements TemplateMappingService {
   }
 
   @Override
-  public TemplateMappingDocument storeTemplateMappingDocument(String templateMappingName, TemplateEngine templateEngine,
-                                                              InputStream fileContents) throws CTPException {
+  public TemplateMappingDocument storeTemplateMappingDocument(String templateMappingName, InputStream fileContents)
+          throws CTPException {
     String stringValue = getStringFromInputStream(fileContents);
     if (StringUtils.isEmpty(stringValue)) {
       log.error(EXCEPTION_STORE_TEMPLATE_MAPPING);
@@ -54,7 +53,6 @@ public class TemplateMappingServiceImpl implements TemplateMappingService {
     TemplateMappingDocument templateMappingDocument = new TemplateMappingDocument();
     templateMappingDocument.setContent(stringValue);
     templateMappingDocument.setName(templateMappingName);
-    templateMappingDocument.setTemplateEngine(templateEngine);
     templateMappingDocument.setDateModified(new Date());
 
     return repository.save(templateMappingDocument);

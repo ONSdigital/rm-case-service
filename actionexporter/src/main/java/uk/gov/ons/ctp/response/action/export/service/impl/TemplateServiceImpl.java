@@ -12,7 +12,6 @@ import org.springframework.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.TemplateDocument;
-import uk.gov.ons.ctp.response.action.export.domain.TemplateEngine;
 import uk.gov.ons.ctp.response.action.export.repository.TemplateRepository;
 import uk.gov.ons.ctp.response.action.export.service.TemplateService;
 
@@ -45,8 +44,7 @@ public class TemplateServiceImpl implements TemplateService {
   }
 
   @Override
-  public TemplateDocument storeTemplateDocument(String templateName, TemplateEngine templateEngine, InputStream
-          fileContents) throws CTPException {
+  public TemplateDocument storeTemplateDocument(String templateName, InputStream fileContents) throws CTPException {
     String stringValue = getStringFromInputStream(fileContents);
     if (StringUtils.isEmpty(stringValue)) {
       log.error(EXCEPTION_STORE_TEMPLATE);
@@ -55,7 +53,6 @@ public class TemplateServiceImpl implements TemplateService {
     TemplateDocument template = new TemplateDocument();
     template.setContent(stringValue);
     template.setName(templateName);
-    template.setTemplateEngine(templateEngine);
     template.setDateModified(new Date());
 
     // Clear cache in case updated FreeMarker content template stored

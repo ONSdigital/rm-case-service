@@ -6,7 +6,6 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.util.CollectionUtils;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.TemplateDocument;
-import uk.gov.ons.ctp.response.action.export.domain.TemplateEngine;
 import uk.gov.ons.ctp.response.action.export.service.TemplateService;
 import uk.gov.ons.ctp.response.action.representation.TemplateDocumentDTO;
 
@@ -56,8 +55,7 @@ public class TemplateEndpoint {
   public Response storeTemplate(@PathParam("templateName") final String templateName,
                                 @FormDataParam("file") InputStream fileContents) throws CTPException {
     log.debug("Entering storeTemplate with templateName {}", templateName);
-    TemplateDocument templateDocument = templateService.storeTemplateDocument(templateName, TemplateEngine.FREEMARKER,
-            fileContents);
+    TemplateDocument templateDocument = templateService.storeTemplateDocument(templateName, fileContents);
     templateService.clearTemplateCache();
 
     UriBuilder ub = uriInfo.getAbsolutePathBuilder();

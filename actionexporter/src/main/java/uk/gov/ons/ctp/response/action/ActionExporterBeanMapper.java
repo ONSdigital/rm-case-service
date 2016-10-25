@@ -6,7 +6,6 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.ConfigurableMapper;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import ma.glasnost.orika.impl.generator.EclipseJdtCompilerStrategy;
-import uk.gov.ons.ctp.response.action.export.domain.ContentDocument;
 import uk.gov.ons.ctp.response.action.export.domain.TemplateDocument;
 import uk.gov.ons.ctp.response.action.export.domain.TemplateMappingDocument;
 import uk.gov.ons.ctp.response.action.representation.TemplateDocumentDTO;
@@ -32,13 +31,11 @@ public class ActionExporterBeanMapper extends ConfigurableMapper {
   protected final void configure(final MapperFactory factory) {
     factory
             .classMap(TemplateDocument.class, TemplateDocumentDTO.class)
-            .field("templateEngine", "type")
             .byDefault()
             .register();
 
     factory
             .classMap(TemplateMappingDocument.class, TemplateMappingDocumentDTO.class)
-            .field("templateEngine", "type")
             .byDefault()
             .register();
   }

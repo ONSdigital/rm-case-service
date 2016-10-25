@@ -9,7 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
-import uk.gov.ons.ctp.response.action.export.domain.TemplateEngine;
 import uk.gov.ons.ctp.response.action.export.service.TransformationService;
 import uk.gov.ons.ctp.response.action.export.service.TemplateService;
 
@@ -52,7 +51,7 @@ public class FreeMarkerITCase {
   @Before
   public void setup() throws CTPException {
     log.debug("About to store the FreeMarker template...");
-    templateService.storeTemplateDocument(FREEMARKER_TEMPLATE_NAME, TemplateEngine.FREEMARKER, getClass().getResourceAsStream("/templates/freemarker/curltest_validtemplate.ftl"));
+    templateService.storeTemplateDocument(FREEMARKER_TEMPLATE_NAME, getClass().getResourceAsStream("/templates/freemarker/curltest_validtemplate.ftl"));
     log.debug("FreeMarker template stored successfully...");
   }
 

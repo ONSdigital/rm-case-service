@@ -7,7 +7,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.TemplateDocument;
-import uk.gov.ons.ctp.response.action.export.domain.TemplateEngine;
 import uk.gov.ons.ctp.response.action.export.repository.TemplateRepository;
 import uk.gov.ons.ctp.response.action.export.service.impl.TemplateServiceImpl;
 
@@ -44,7 +43,7 @@ public class TemplateServiceImplTest {
   public void testStoreNullTemplate() {
     boolean exceptionThrown = false;
     try {
-      freeMarkerService.storeTemplateDocument(TEMPLATE_NAME, TemplateEngine.FREEMARKER, null);
+      freeMarkerService.storeTemplateDocument(TEMPLATE_NAME, null);
     } catch (CTPException e) {
       exceptionThrown = true;
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
@@ -58,7 +57,7 @@ public class TemplateServiceImplTest {
   public void testStoreEmptyTemplate() {
     boolean exceptionThrown = false;
     try {
-      freeMarkerService.storeTemplateDocument(TEMPLATE_NAME, TemplateEngine.FREEMARKER, getClass().getResourceAsStream("/templates/freemarker/curltest_emptytemplate.ftl"));
+      freeMarkerService.storeTemplateDocument(TEMPLATE_NAME,getClass().getResourceAsStream("/templates/freemarker/curltest_emptytemplate.ftl"));
     } catch (CTPException e) {
       exceptionThrown = true;
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
@@ -70,7 +69,7 @@ public class TemplateServiceImplTest {
 
   @Test
   public void testStoreValidTemplate() throws CTPException {
-    freeMarkerService.storeTemplateDocument(TEMPLATE_NAME, TemplateEngine.FREEMARKER, getClass().getResourceAsStream("/templates/freemarker/curltest_validtemplate.ftl"));
+    freeMarkerService.storeTemplateDocument(TEMPLATE_NAME, getClass().getResourceAsStream("/templates/freemarker/curltest_validtemplate.ftl"));
     verify(repository, times(1)).save(any(TemplateDocument.class));
   }
 
