@@ -100,7 +100,6 @@ public class ActionRequestEndpoint {
     }
 
     SftpMessage message = transformationService.processActionRequest(actionRequestDocument);
-    // TODO refactor the below - same code than in ExportScheduler
     message.getOutputStreams().forEach((fileName, stream) -> {
       sftpService.sendMessage(fileName, message.getActionRequestIds(fileName), stream);
     });

@@ -37,6 +37,7 @@ public class TransformationServiceImpl implements TransformationService {
 
   public static final String ERROR_RETRIEVING_FREEMARKER_TEMPLATE = "Could not find FreeMarker template.";
 
+  private static final String DATE_FORMAT_IN_FILE_NAMES = "ddMMyyyy_HH:mm";
   private static final String TEMPLATE_MAPPING = "templateMapping";
 
   @Inject
@@ -57,7 +58,7 @@ public class TransformationServiceImpl implements TransformationService {
     File resultFile = new File(path);
     Writer fileWriter = null;
     try {
-      Template template = giveMeTemplate(templateName);
+      Template template = giveTemplate(templateName);
       fileWriter = new FileWriter(resultFile);
       template.process(buildDataModel(actionRequestDocumentList), fileWriter);
     } catch (IOException e) {
@@ -85,7 +86,7 @@ public class TransformationServiceImpl implements TransformationService {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     Writer outputStreamWriter = null;
     try {
-      Template template = giveMeTemplate(templateName);
+      Template template = giveTemplate(templateName);
       outputStreamWriter = new OutputStreamWriter(outputStream);
       template.process(buildDataModel(actionRequestDocumentList), outputStreamWriter);
       outputStreamWriter.close();
@@ -110,54 +111,32 @@ public class TransformationServiceImpl implements TransformationService {
 
   @Override
   public SftpMessage processActionRequests() {
-    Map<String, ByteArrayOutputStream> outputStreams = new HashMap<String, ByteArrayOutputStream>();
-    Map<String, List<String>> actionIds = new HashMap<String, List<String>>();
-    SftpMessage sftpMessage = new SftpMessage(actionIds, outputStreams);
-    String timeStamp = new SimpleDateFormat("ddMMyyyy_HH:mm").format(Calendar.getInstance().getTime());
     List<ActionRequestDocument> requests = actionRequestRepo.findByDateSentIsNullOrderByActionTypeDesc();
-    if (requests.isEmpty()) {
+    return buildSftpMessage(requests);
+  }
+
+  @Override
+  public SftpMessage processActionRequest(ActionRequestDocument actionRequestDocument) {
+    List<ActionRequestDocument> requests = new ArrayList<>();
+    requests.add(actionRequestDocument);
+    return buildSftpMessage(requests);
+  }
+
+  private SftpMessage buildSftpMessage(List<ActionRequestDocument> actionRequestDocumentList) {
+    Map<String, List<String>> actionIds = new HashMap();
+    Map<String, ByteArrayOutputStream> outputStreams = new HashMap();
+    SftpMessage sftpMessage = new SftpMessage(actionIds, outputStreams);
+
+    if (actionRequestDocumentList.isEmpty()) {
       log.warn("No Action Export requests to process.");
       return sftpMessage;
     }
-    Map<String, String> mapping = templateMappingService.retrieveMapFromTemplateMappingDocument(TEMPLATE_MAPPING);
-    Map<String, Map<String, List<ActionRequestDocument>>> templateRequests = requests.stream()
-        .collect(Collectors.groupingBy(ActionRequestDocument::getActionPlan,
-            Collectors.groupingBy(ActionRequestDocument::getActionType)));
-    templateRequests.forEach((actionPlan, actionPlans) -> {
-      actionPlans.forEach((actionType, actionRequests) -> {
-        if (mapping.containsKey(actionType)) {
-          try {
-            outputStreams.put(actionPlan + "_" + actionType + "_" + timeStamp + ".csv",
-                stream(actionRequests, mapping.get(actionType)));
-            List<String> addActionIds = new ArrayList<String>();
-            actionIds.put(actionPlan + "_" + actionType + "_" + timeStamp + ".csv", addActionIds);
-            actionRequests.forEach((actionRequest) -> {
-              addActionIds.add(actionRequest.getActionId().toString());
-            });
-          } catch (CTPException e) {
-            log.error("Error generating actionType : {}.", actionType);
-          }
-        } else {
-          log.warn("No mapping for actionType : {}.", actionType);
-        }
-      });
-    });
-    return sftpMessage;
-  }
 
-  // TODO refactor the below
-  @Override
-  public SftpMessage processActionRequest(ActionRequestDocument actionRequestDocument) {
-    Map<String, ByteArrayOutputStream> outputStreams = new HashMap<String, ByteArrayOutputStream>();
-    Map<String, List<String>> actionIds = new HashMap<String, List<String>>();
-    SftpMessage sftpMessage = new SftpMessage(actionIds, outputStreams);
-    String timeStamp = new SimpleDateFormat("ddMMyyyy_HH:mm").format(Calendar.getInstance().getTime());
-    List<ActionRequestDocument> requests = new ArrayList<>();
-    requests.add(actionRequestDocument);
-    Map<String, String> mapping = templateMappingService.retrieveMapFromTemplateMappingDocument(TEMPLATE_MAPPING);
-    Map<String, Map<String, List<ActionRequestDocument>>> templateRequests = requests.stream()
+    Map<String, Map<String, List<ActionRequestDocument>>> templateRequests = actionRequestDocumentList.stream()
             .collect(Collectors.groupingBy(ActionRequestDocument::getActionPlan,
                     Collectors.groupingBy(ActionRequestDocument::getActionType)));
+    Map<String, String> mapping = templateMappingService.retrieveMapFromTemplateMappingDocument(TEMPLATE_MAPPING);
+    String timeStamp = new SimpleDateFormat(DATE_FORMAT_IN_FILE_NAMES).format(Calendar.getInstance().getTime());
     templateRequests.forEach((actionPlan, actionPlans) -> {
       actionPlans.forEach((actionType, actionRequests) -> {
         if (mapping.containsKey(actionType)) {
@@ -188,7 +167,7 @@ public class TransformationServiceImpl implements TransformationService {
    * @throws IOException if issue creating the FreeMarker template
    * @throws CTPException if problem getting Freemarker template with name given
    */
-  private Template giveMeTemplate(String templateName) throws CTPException, IOException {
+  private Template giveTemplate(String templateName) throws CTPException, IOException {
     log.debug("Entering giveMeTemplate with templateName {}", templateName);
     Template template = configuration.getTemplate(templateName);
     log.debug("template = {}", template);
