@@ -52,7 +52,7 @@ public class TransformationServiceImpl implements TransformationService {
   private TemplateMappingService templateMappingService;
 
   @Override
-  public File fileMe(List<ActionRequestDocument> actionRequestDocumentList, String templateName, String path)
+  public File file(List<ActionRequestDocument> actionRequestDocumentList, String templateName, String path)
       throws CTPException {
     File resultFile = new File(path);
     Writer fileWriter = null;
@@ -80,7 +80,7 @@ public class TransformationServiceImpl implements TransformationService {
   }
 
   @Override
-  public ByteArrayOutputStream streamMe(List<ActionRequestDocument> actionRequestDocumentList, String templateName)
+  public ByteArrayOutputStream stream(List<ActionRequestDocument> actionRequestDocumentList, String templateName)
       throws CTPException {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     Writer outputStreamWriter = null;
@@ -109,7 +109,7 @@ public class TransformationServiceImpl implements TransformationService {
   }
 
   @Override
-  public SftpMessage applyTemplatesStreamMe() {
+  public SftpMessage processActionRequests() {
     Map<String, ByteArrayOutputStream> outputStreams = new HashMap<String, ByteArrayOutputStream>();
     Map<String, List<String>> actionIds = new HashMap<String, List<String>>();
     SftpMessage sftpMessage = new SftpMessage(actionIds, outputStreams);
@@ -128,7 +128,42 @@ public class TransformationServiceImpl implements TransformationService {
         if (mapping.containsKey(actionType)) {
           try {
             outputStreams.put(actionPlan + "_" + actionType + "_" + timeStamp + ".csv",
-                streamMe(actionRequests, mapping.get(actionType)));
+                stream(actionRequests, mapping.get(actionType)));
+            List<String> addActionIds = new ArrayList<String>();
+            actionIds.put(actionPlan + "_" + actionType + "_" + timeStamp + ".csv", addActionIds);
+            actionRequests.forEach((actionRequest) -> {
+              addActionIds.add(actionRequest.getActionId().toString());
+            });
+          } catch (CTPException e) {
+            log.error("Error generating actionType : {}.", actionType);
+          }
+        } else {
+          log.warn("No mapping for actionType : {}.", actionType);
+        }
+      });
+    });
+    return sftpMessage;
+  }
+
+  // TODO refactor the below
+  @Override
+  public SftpMessage processActionRequest(ActionRequestDocument actionRequestDocument) {
+    Map<String, ByteArrayOutputStream> outputStreams = new HashMap<String, ByteArrayOutputStream>();
+    Map<String, List<String>> actionIds = new HashMap<String, List<String>>();
+    SftpMessage sftpMessage = new SftpMessage(actionIds, outputStreams);
+    String timeStamp = new SimpleDateFormat("ddMMyyyy_HH:mm").format(Calendar.getInstance().getTime());
+    List<ActionRequestDocument> requests = new ArrayList<>();
+    requests.add(actionRequestDocument);
+    Map<String, String> mapping = templateMappingService.retrieveMapFromTemplateMappingDocument(TEMPLATE_MAPPING);
+    Map<String, Map<String, List<ActionRequestDocument>>> templateRequests = requests.stream()
+            .collect(Collectors.groupingBy(ActionRequestDocument::getActionPlan,
+                    Collectors.groupingBy(ActionRequestDocument::getActionType)));
+    templateRequests.forEach((actionPlan, actionPlans) -> {
+      actionPlans.forEach((actionType, actionRequests) -> {
+        if (mapping.containsKey(actionType)) {
+          try {
+            outputStreams.put(actionPlan + "_" + actionType + "_" + timeStamp + ".csv",
+                    stream(actionRequests, mapping.get(actionType)));
             List<String> addActionIds = new ArrayList<String>();
             actionIds.put(actionPlan + "_" + actionType + "_" + timeStamp + ".csv", addActionIds);
             actionRequests.forEach((actionRequest) -> {

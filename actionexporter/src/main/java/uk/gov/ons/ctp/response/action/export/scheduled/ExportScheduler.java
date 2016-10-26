@@ -40,7 +40,7 @@ public class ExportScheduler implements HealthIndicator {
    */
   @Scheduled(cron = "#{appConfig.exportSchedule.cronExpression}")
   public void scheduleExport() {
-    SftpMessage message = transformationService.applyTemplatesStreamMe();
+    SftpMessage message = transformationService.processActionRequests();
     message.getOutputStreams().forEach((fileName, stream) -> {
       sftpService.sendMessage(fileName, message.getActionRequestIds(fileName), stream);
     });

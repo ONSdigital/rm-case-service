@@ -63,7 +63,7 @@ public class TransformationServiceImplITCase {
 
     List<ActionRequestDocument> actionRequestDocumentList = buildMeListOfActionRequestDocuments();
     assertEquals(50, actionRequestDocumentList.size());
-    File result = transformationService.fileMe(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME, TEST_FILE_PATH);
+    File result = transformationService.file(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME, TEST_FILE_PATH);
     assertNotNull(result);
     assertEquals(result.length(), TEST_STRING_LENGTH_WHEN_50_ACTION_REQUESTS);
   }
@@ -80,7 +80,7 @@ public class TransformationServiceImplITCase {
     assertEquals(50, actionRequestDocumentList.size());
     boolean exceptionThrown = false;
     try {
-      transformationService.fileMe(actionRequestDocumentList, FREEMARKER_TEMPLATE_NON_EXISTING_NAME, TEST_FILE_PATH);
+      transformationService.file(actionRequestDocumentList, FREEMARKER_TEMPLATE_NON_EXISTING_NAME, TEST_FILE_PATH);
     } catch (CTPException e) {
       exceptionThrown = true;
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
@@ -99,7 +99,7 @@ public class TransformationServiceImplITCase {
     List<ActionRequestDocument> actionRequestDocumentList = null;
     boolean exceptionThrown = false;
     try {
-      transformationService.fileMe(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME, TEST_FILE_PATH);
+      transformationService.file(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME, TEST_FILE_PATH);
     } catch (CTPException e) {
       exceptionThrown = true;
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
@@ -116,7 +116,7 @@ public class TransformationServiceImplITCase {
     }
 
     List<ActionRequestDocument> actionRequestDocumentList = new ArrayList<>();
-    File result = transformationService.fileMe(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME, TEST_FILE_PATH);
+    File result = transformationService.file(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME, TEST_FILE_PATH);
     assertNotNull(result);
     assertEquals(result.length(), TEST_STRING_LENGTH_WHEN_EMPTY_ACTION_REQUESTS);
   }
@@ -125,7 +125,7 @@ public class TransformationServiceImplITCase {
   public void testStreamMePositiveScenario() throws CTPException, UnsupportedEncodingException {
     List<ActionRequestDocument> actionRequestDocumentList = buildMeListOfActionRequestDocuments();
     assertEquals(50, actionRequestDocumentList.size());
-    ByteArrayOutputStream result = transformationService.streamMe(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME);
+    ByteArrayOutputStream result = transformationService.stream(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME);
     assertNotNull(result);
     String resultString = result.toString(UTF8.name());
     assertEquals(resultString.length(), TEST_STRING_LENGTH_WHEN_50_ACTION_REQUESTS);
@@ -139,7 +139,7 @@ public class TransformationServiceImplITCase {
     assertEquals(50, actionRequestDocumentList.size());
     boolean exceptionThrown = false;
     try {
-      transformationService.streamMe(actionRequestDocumentList, FREEMARKER_TEMPLATE_NON_EXISTING_NAME);
+      transformationService.stream(actionRequestDocumentList, FREEMARKER_TEMPLATE_NON_EXISTING_NAME);
     } catch (CTPException e) {
       exceptionThrown = true;
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
@@ -153,7 +153,7 @@ public class TransformationServiceImplITCase {
     List<ActionRequestDocument> actionRequestDocumentList = null;
     boolean exceptionThrown = false;
     try {
-      transformationService.streamMe(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME);
+      transformationService.stream(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME);
     } catch (CTPException e) {
       exceptionThrown = true;
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
@@ -164,7 +164,7 @@ public class TransformationServiceImplITCase {
   @Test
   public void testStreamMeScenarioEmptyActionRequests() throws CTPException, UnsupportedEncodingException {
     List<ActionRequestDocument> actionRequestDocumentList = new ArrayList<>();
-    ByteArrayOutputStream result = transformationService.streamMe(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME);
+    ByteArrayOutputStream result = transformationService.stream(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME);
     assertNotNull(result);
     String resultString = result.toString(UTF8.name());
     assertEquals(resultString.length(), TEST_STRING_LENGTH_WHEN_EMPTY_ACTION_REQUESTS);

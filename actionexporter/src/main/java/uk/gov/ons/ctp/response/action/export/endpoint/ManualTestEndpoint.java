@@ -51,7 +51,7 @@ public class ManualTestEndpoint {
   public final Response testingFreeMarkerTemplating(@PathParam("templateName") final String templateName)
           throws CTPException, UnsupportedEncodingException {
     log.debug("Entering testingFreeMarkerTemplating ...");
-    ByteArrayOutputStream result = transformationService.streamMe(buildMeListOfActionRequestDocuments(), templateName);
+    ByteArrayOutputStream result = transformationService.stream(buildMeListOfActionRequestDocuments(), templateName);
     String resultString = result.toString(UTF8.name());
     log.debug("resultString = {}", resultString);
 

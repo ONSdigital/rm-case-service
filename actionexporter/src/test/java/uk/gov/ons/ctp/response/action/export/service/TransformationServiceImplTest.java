@@ -43,7 +43,7 @@ public class TransformationServiceImplTest {
     Mockito.when(configuration.getTemplate(TEMPLATE_NAME)).thenThrow(new IOException());
     boolean exceptionThrown = false;
     try {
-      transformationService.fileMe(buildMeListOfActionRequestDocuments(), TEMPLATE_NAME, TEST_FILE_PATH);
+      transformationService.file(buildMeListOfActionRequestDocuments(), TEMPLATE_NAME, TEST_FILE_PATH);
     } catch (CTPException e) {
       exceptionThrown = true;
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
@@ -56,7 +56,7 @@ public class TransformationServiceImplTest {
     Mockito.when(configuration.getTemplate(TEMPLATE_NAME)).thenReturn(null);
     boolean exceptionThrown = false;
     try {
-      transformationService.fileMe(buildMeListOfActionRequestDocuments(), TEMPLATE_NAME, TEST_FILE_PATH);
+      transformationService.file(buildMeListOfActionRequestDocuments(), TEMPLATE_NAME, TEST_FILE_PATH);
     } catch (CTPException e) {
       exceptionThrown = true;
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
@@ -68,7 +68,7 @@ public class TransformationServiceImplTest {
   @Test
   public void testFileMe() throws CTPException, IOException {
     Mockito.when(configuration.getTemplate(TEMPLATE_NAME)).thenReturn(Mockito.mock(Template.class));
-    File result = transformationService.fileMe(buildMeListOfActionRequestDocuments(), TEMPLATE_NAME, TEST_FILE_PATH);
+    File result = transformationService.file(buildMeListOfActionRequestDocuments(), TEMPLATE_NAME, TEST_FILE_PATH);
     assertNotNull(result);
   }
 
@@ -77,7 +77,7 @@ public class TransformationServiceImplTest {
     Mockito.when(configuration.getTemplate(TEMPLATE_NAME)).thenThrow(new IOException());
     boolean exceptionThrown = false;
     try {
-      transformationService.streamMe(buildMeListOfActionRequestDocuments(), TEMPLATE_NAME);
+      transformationService.stream(buildMeListOfActionRequestDocuments(), TEMPLATE_NAME);
     } catch (CTPException e) {
       exceptionThrown = true;
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
@@ -90,7 +90,7 @@ public class TransformationServiceImplTest {
     Mockito.when(configuration.getTemplate(TEMPLATE_NAME)).thenReturn(null);
     boolean exceptionThrown = false;
     try {
-      transformationService.streamMe(buildMeListOfActionRequestDocuments(), TEMPLATE_NAME);
+      transformationService.stream(buildMeListOfActionRequestDocuments(), TEMPLATE_NAME);
     } catch (CTPException e) {
       exceptionThrown = true;
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
@@ -102,7 +102,7 @@ public class TransformationServiceImplTest {
   @Test
   public void testStreamMe() throws CTPException, IOException {
     Mockito.when(configuration.getTemplate(TEMPLATE_NAME)).thenReturn(Mockito.mock(Template.class));
-    ByteArrayOutputStream result = transformationService.streamMe(buildMeListOfActionRequestDocuments(), TEMPLATE_NAME);
+    ByteArrayOutputStream result = transformationService.stream(buildMeListOfActionRequestDocuments(), TEMPLATE_NAME);
     assertNotNull(result);
   }
 
