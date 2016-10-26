@@ -39,7 +39,7 @@ import java.util.List;
 @Slf4j
 public class ActionRequestEndpoint {
 
-  private static final String ACTION_REQUEST_NOT_FOUND = "ActionRequest not found for actionId";
+  public static final String ACTION_REQUEST_NOT_FOUND = "ActionRequest not found for actionId";
 
   @Inject
   private ActionRequestService actionRequestService;
