@@ -20,7 +20,7 @@ import static org.glassfish.jersey.message.internal.ReaderWriter.UTF8;
 import static org.junit.Assert.assertNotNull;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import static uk.gov.ons.ctp.response.action.export.service.TransformationServiceImplTest.buildListOfActionRequestDocuments;
+import static uk.gov.ons.ctp.response.action.export.service.TemplateServiceImplTest.buildListOfActionRequestDocuments;
 
 /**
  * This test focuses on the FreeMarker templating. It first stores a template in the MongoDB and then it uses the
@@ -30,9 +30,9 @@ import static uk.gov.ons.ctp.response.action.export.service.TransformationServic
  *    - a running MongoDB database (see application-test.properties for config)
  */
 @Slf4j
-@SpringBootTest(classes = {TransformationServiceImplITCaseConfig.class})
+@SpringBootTest(classes = {TemplateServiceImplITCaseConfig.class})
 @RunWith(SpringRunner.class)
-public class TransformationServiceImplITCase {
+public class TemplateServiceImplITCase {
 
   private static final int TEST_STRING_LENGTH_WHEN_50_ACTION_REQUESTS = 3501;
   private static final int TEST_STRING_LENGTH_WHEN_EMPTY_ACTION_REQUESTS =160;
@@ -42,9 +42,6 @@ public class TransformationServiceImplITCase {
 
   @Autowired
   TemplateService templateService;
-
-  @Autowired
-  TransformationService transformationService;
 
   @Before
   public void setup() throws CTPException {
@@ -63,7 +60,7 @@ public class TransformationServiceImplITCase {
 
     List<ActionRequestDocument> actionRequestDocumentList = buildListOfActionRequestDocuments();
     assertEquals(50, actionRequestDocumentList.size());
-    File result = transformationService.file(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME, TEST_FILE_PATH);
+    File result = templateService.file(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME, TEST_FILE_PATH);
     assertNotNull(result);
     assertEquals(result.length(), TEST_STRING_LENGTH_WHEN_50_ACTION_REQUESTS);
   }
@@ -80,7 +77,7 @@ public class TransformationServiceImplITCase {
     assertEquals(50, actionRequestDocumentList.size());
     boolean exceptionThrown = false;
     try {
-      transformationService.file(actionRequestDocumentList, FREEMARKER_TEMPLATE_NON_EXISTING_NAME, TEST_FILE_PATH);
+      templateService.file(actionRequestDocumentList, FREEMARKER_TEMPLATE_NON_EXISTING_NAME, TEST_FILE_PATH);
     } catch (CTPException e) {
       exceptionThrown = true;
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
@@ -99,7 +96,7 @@ public class TransformationServiceImplITCase {
     List<ActionRequestDocument> actionRequestDocumentList = null;
     boolean exceptionThrown = false;
     try {
-      transformationService.file(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME, TEST_FILE_PATH);
+      templateService.file(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME, TEST_FILE_PATH);
     } catch (CTPException e) {
       exceptionThrown = true;
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
@@ -116,7 +113,7 @@ public class TransformationServiceImplITCase {
     }
 
     List<ActionRequestDocument> actionRequestDocumentList = new ArrayList<>();
-    File result = transformationService.file(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME, TEST_FILE_PATH);
+    File result = templateService.file(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME, TEST_FILE_PATH);
     assertNotNull(result);
     assertEquals(result.length(), TEST_STRING_LENGTH_WHEN_EMPTY_ACTION_REQUESTS);
   }
@@ -125,7 +122,7 @@ public class TransformationServiceImplITCase {
   public void testStreamPositiveScenario() throws CTPException, UnsupportedEncodingException {
     List<ActionRequestDocument> actionRequestDocumentList = buildListOfActionRequestDocuments();
     assertEquals(50, actionRequestDocumentList.size());
-    ByteArrayOutputStream result = transformationService.stream(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME);
+    ByteArrayOutputStream result = templateService.stream(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME);
     assertNotNull(result);
     String resultString = result.toString(UTF8.name());
     assertEquals(resultString.length(), TEST_STRING_LENGTH_WHEN_50_ACTION_REQUESTS);
@@ -139,7 +136,7 @@ public class TransformationServiceImplITCase {
     assertEquals(50, actionRequestDocumentList.size());
     boolean exceptionThrown = false;
     try {
-      transformationService.stream(actionRequestDocumentList, FREEMARKER_TEMPLATE_NON_EXISTING_NAME);
+      templateService.stream(actionRequestDocumentList, FREEMARKER_TEMPLATE_NON_EXISTING_NAME);
     } catch (CTPException e) {
       exceptionThrown = true;
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
@@ -153,7 +150,7 @@ public class TransformationServiceImplITCase {
     List<ActionRequestDocument> actionRequestDocumentList = null;
     boolean exceptionThrown = false;
     try {
-      transformationService.stream(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME);
+      templateService.stream(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME);
     } catch (CTPException e) {
       exceptionThrown = true;
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
@@ -164,7 +161,7 @@ public class TransformationServiceImplITCase {
   @Test
   public void testStreamScenarioEmptyActionRequests() throws CTPException, UnsupportedEncodingException {
     List<ActionRequestDocument> actionRequestDocumentList = new ArrayList<>();
-    ByteArrayOutputStream result = transformationService.stream(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME);
+    ByteArrayOutputStream result = templateService.stream(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME);
     assertNotNull(result);
     String resultString = result.toString(UTF8.name());
     assertEquals(resultString.length(), TEST_STRING_LENGTH_WHEN_EMPTY_ACTION_REQUESTS);

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
-import uk.gov.ons.ctp.response.action.export.service.TransformationService;
+import uk.gov.ons.ctp.response.action.export.service.TemplateService;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
 
 import javax.inject.Inject;
@@ -37,7 +37,7 @@ public class ManualTestEndpoint {
   private static final int ACTION_REQUEST_NUMBER = 51;
 
   @Inject
-  private TransformationService transformationService;
+  private TemplateService templateService;
 
   /**
    * To trigger the FreeMarker templating of a list of ActionRequests
@@ -51,7 +51,7 @@ public class ManualTestEndpoint {
   public final Response testingFreeMarkerTemplating(@PathParam("templateName") final String templateName)
           throws CTPException, UnsupportedEncodingException {
     log.debug("Entering testingFreeMarkerTemplating ...");
-    ByteArrayOutputStream result = transformationService.stream(buildMeListOfActionRequestDocuments(), templateName);
+    ByteArrayOutputStream result = templateService.stream(buildMeListOfActionRequestDocuments(), templateName);
     String resultString = result.toString(UTF8.name());
     log.debug("resultString = {}", resultString);
 
