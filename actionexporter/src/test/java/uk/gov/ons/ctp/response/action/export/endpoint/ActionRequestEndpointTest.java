@@ -13,6 +13,7 @@ import uk.gov.ons.ctp.response.action.export.utility.MockSftpServicePublisherFac
 import uk.gov.ons.ctp.response.action.export.utility.MockTransformationServiceFactory;
 
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.MediaType;
 
 import static uk.gov.ons.ctp.response.action.export.endpoint.ActionRequestEndpoint.ACTION_REQUEST_NOT_FOUND;
 import static uk.gov.ons.ctp.response.action.export.utility.MockActionRequestServiceFactory.EXISTING_ACTION_ID;
@@ -59,6 +60,24 @@ public class ActionRequestEndpointTest extends CTPJerseyTest {
   public void findExistingActionRequest() {
     with("http://localhost:9998/actionrequests/%s/", EXISTING_ACTION_ID)
             .assertResponseCodeIs(HttpStatus.OK)
+            .assertIntegerInBody("$.actionId", EXISTING_ACTION_ID)
+            .andClose();
+  }
+
+  @Test
+  public void exportNonExistingActionRequest() {
+    with("http://localhost:9998/actionrequests/%s/", NON_EXISTING_ACTION_ID).post(MediaType.APPLICATION_JSON_TYPE, null)
+            .assertResponseCodeIs(HttpStatus.NOT_FOUND)
+            .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
+            .assertTimestampExists()
+            .assertMessageEquals(String.format("%s %d", ACTION_REQUEST_NOT_FOUND, NON_EXISTING_ACTION_ID))
+            .andClose();
+  }
+
+  @Test
+  public void exportExistingActionRequest() {
+    with("http://localhost:9998/actionrequests/%s/", EXISTING_ACTION_ID).post(MediaType.APPLICATION_JSON_TYPE, null)
+            .assertResponseCodeIs(HttpStatus.CREATED)
             .assertIntegerInBody("$.actionId", EXISTING_ACTION_ID)
             .andClose();
   }
