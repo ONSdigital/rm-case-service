@@ -17,6 +17,7 @@ import java.util.List;
  */
 public class MockActionRequestServiceFactory implements Factory<ActionRequestService> {
 
+  public final static int EXISTING_ACTION_ID = 2;
   public final static int NON_EXISTING_ACTION_ID = 1;
 
   /**
@@ -40,6 +41,12 @@ public class MockActionRequestServiceFactory implements Factory<ActionRequestSer
     Mockito.when(mockedService.retrieveActionRequestDocument(BigInteger.valueOf(NON_EXISTING_ACTION_ID))).thenAnswer(new Answer<ActionRequestDocument>() {
       public ActionRequestDocument answer(final InvocationOnMock invocation) throws Throwable {
         return null;
+      }
+    });
+
+    Mockito.when(mockedService.retrieveActionRequestDocument(BigInteger.valueOf(EXISTING_ACTION_ID))).thenAnswer(new Answer<ActionRequestDocument>() {
+      public ActionRequestDocument answer(final InvocationOnMock invocation) throws Throwable {
+        return buildActionRequestDocument(EXISTING_ACTION_ID);
       }
     });
 

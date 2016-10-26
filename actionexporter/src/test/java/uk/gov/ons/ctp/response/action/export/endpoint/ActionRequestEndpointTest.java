@@ -15,6 +15,7 @@ import uk.gov.ons.ctp.response.action.export.utility.MockTransformationServiceFa
 import javax.ws.rs.core.Application;
 
 import static uk.gov.ons.ctp.response.action.export.endpoint.ActionRequestEndpoint.ACTION_REQUEST_NOT_FOUND;
+import static uk.gov.ons.ctp.response.action.export.utility.MockActionRequestServiceFactory.EXISTING_ACTION_ID;
 import static uk.gov.ons.ctp.response.action.export.utility.MockActionRequestServiceFactory.NON_EXISTING_ACTION_ID;
 
 /**
@@ -51,6 +52,14 @@ public class ActionRequestEndpointTest extends CTPJerseyTest {
             .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
             .assertTimestampExists()
             .assertMessageEquals(String.format("%s %d", ACTION_REQUEST_NOT_FOUND, NON_EXISTING_ACTION_ID))
+            .andClose();
+  }
+
+  @Test
+  public void findExistingActionRequest() {
+    with("http://localhost:9998/actionrequests/%s/", EXISTING_ACTION_ID)
+            .assertResponseCodeIs(HttpStatus.OK)
+            .assertIntegerInBody("$.actionId", EXISTING_ACTION_ID)
             .andClose();
   }
 }
