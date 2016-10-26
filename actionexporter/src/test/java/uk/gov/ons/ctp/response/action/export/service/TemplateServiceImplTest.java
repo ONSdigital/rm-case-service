@@ -31,6 +31,7 @@ import static org.mockito.Mockito.verify;
 import static org.testng.Assert.assertNotNull;
 import static uk.gov.ons.ctp.response.action.export.service.impl.TemplateServiceImpl.ERROR_RETRIEVING_FREEMARKER_TEMPLATE;
 import static uk.gov.ons.ctp.response.action.export.service.impl.TemplateServiceImpl.EXCEPTION_STORE_TEMPLATE;
+import static uk.gov.ons.ctp.response.action.export.utility.ObjectBuilder.buildListOfActionRequestDocuments;
 
 /**
  * To unit test TemplateServiceImpl
@@ -153,29 +154,4 @@ public class TemplateServiceImplTest {
     ByteArrayOutputStream result = templateService.stream(buildListOfActionRequestDocuments(), TEMPLATE_NAME);
     assertNotNull(result);
   }
-  public static List<ActionRequestDocument> buildListOfActionRequestDocuments() {
-    List<ActionRequestDocument> result = new ArrayList<>();
-    for (int i = 1; i < 51; i++) {
-      result.add(buildActionRequestDocument(i));
-    }
-    return result;
-  }
-
-  private static ActionRequestDocument buildActionRequestDocument(int i) {
-    ActionRequestDocument result =  new ActionRequestDocument();
-    result.setActionId(new BigInteger(new Integer(i).toString()));
-    result.setActionType("testActionType");
-    result.setIac("testIac");
-    result.setAddress(buildActionAddress());
-    return result;
-  }
-
-  private static ActionAddress buildActionAddress() {
-    ActionAddress actionAddress = new ActionAddress();
-    actionAddress.setLine1("1 High Street");
-    actionAddress.setTownName("Southampton");
-    actionAddress.setPostcode("SO16 0AS");
-    return actionAddress;
-  }
-
 }

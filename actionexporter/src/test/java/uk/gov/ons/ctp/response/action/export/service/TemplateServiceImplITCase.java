@@ -20,7 +20,7 @@ import static org.glassfish.jersey.message.internal.ReaderWriter.UTF8;
 import static org.junit.Assert.assertNotNull;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import static uk.gov.ons.ctp.response.action.export.service.TemplateServiceImplTest.buildListOfActionRequestDocuments;
+import static uk.gov.ons.ctp.response.action.export.utility.ObjectBuilder.buildListOfActionRequestDocuments;
 
 /**
  * This test focuses on the FreeMarker templating. It first stores a template in the MongoDB and then it uses the
