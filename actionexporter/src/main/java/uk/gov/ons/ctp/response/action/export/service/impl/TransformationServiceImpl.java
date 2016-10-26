@@ -25,7 +25,6 @@ import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
 import uk.gov.ons.ctp.response.action.export.domain.SftpMessage;
 import uk.gov.ons.ctp.response.action.export.repository.ActionRequestRepository;
 import uk.gov.ons.ctp.response.action.export.service.TemplateMappingService;
-import uk.gov.ons.ctp.response.action.export.service.TemplateService;
 import uk.gov.ons.ctp.response.action.export.service.TransformationService;
 
 /**
@@ -45,9 +44,6 @@ public class TransformationServiceImpl implements TransformationService {
 
   @Inject
   private ActionRequestRepository actionRequestRepo;
-
-  @Inject
-  private TemplateService templateService;
 
   @Inject
   private TemplateMappingService templateMappingService;
@@ -122,6 +118,11 @@ public class TransformationServiceImpl implements TransformationService {
     return buildSftpMessage(requests);
   }
 
+  /**
+   * Produces SftpMessage with stream objects and list of ActionRequest Ids.
+   * @param actionRequestDocumentList the list to be processed
+   * @return SftpMessage with stream objects and list of ActionRequest Ids.
+   */
   private SftpMessage buildSftpMessage(List<ActionRequestDocument> actionRequestDocumentList) {
     Map<String, List<String>> actionIds = new HashMap();
     Map<String, ByteArrayOutputStream> outputStreams = new HashMap();

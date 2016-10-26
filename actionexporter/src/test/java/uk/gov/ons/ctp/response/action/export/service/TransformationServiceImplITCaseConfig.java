@@ -9,6 +9,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import uk.gov.ons.ctp.response.action.export.service.TemplateService;
+import uk.gov.ons.ctp.response.action.export.service.impl.TemplateMappingServiceImpl;
 import uk.gov.ons.ctp.response.action.export.service.impl.TemplateServiceImpl;
 import uk.gov.ons.ctp.response.action.export.templating.freemarker.config.MongoTemplateLoader;
 import uk.gov.ons.ctp.response.action.export.service.TransformationService;
@@ -52,8 +53,13 @@ public class TransformationServiceImplITCaseConfig {
   }
 
   @Bean
-  public TemplateService freeMarkerService() {
+  public TemplateService templateService() {
     return new TemplateServiceImpl();
+  }
+
+  @Bean
+  public TemplateMappingService templateMappingService() {
+    return new TemplateMappingServiceImpl();
   }
 
   @Bean

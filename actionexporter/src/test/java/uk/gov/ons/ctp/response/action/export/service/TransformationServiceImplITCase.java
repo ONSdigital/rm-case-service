@@ -20,7 +20,7 @@ import static org.glassfish.jersey.message.internal.ReaderWriter.UTF8;
 import static org.junit.Assert.assertNotNull;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import static uk.gov.ons.ctp.response.action.export.service.TransformationServiceImplTest.buildMeListOfActionRequestDocuments;
+import static uk.gov.ons.ctp.response.action.export.service.TransformationServiceImplTest.buildListOfActionRequestDocuments;
 
 /**
  * This test focuses on the FreeMarker templating. It first stores a template in the MongoDB and then it uses the
@@ -54,14 +54,14 @@ public class TransformationServiceImplITCase {
   }
 
   @Test
-  public void testFileMePositiveScenario() throws CTPException {
+  public void testFilePositiveScenario() throws CTPException {
     // Delete the file if present
     File forPrinterFile = new File(TEST_FILE_PATH);
     if (forPrinterFile != null && forPrinterFile.exists()) {
       forPrinterFile.delete();
     }
 
-    List<ActionRequestDocument> actionRequestDocumentList = buildMeListOfActionRequestDocuments();
+    List<ActionRequestDocument> actionRequestDocumentList = buildListOfActionRequestDocuments();
     assertEquals(50, actionRequestDocumentList.size());
     File result = transformationService.file(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME, TEST_FILE_PATH);
     assertNotNull(result);
@@ -69,14 +69,14 @@ public class TransformationServiceImplITCase {
   }
 
   @Test
-  public void testFileMeScenarioMissingTemplate() {
+  public void testFileScenarioMissingTemplate() {
     // Delete the file if present
     File forPrinterFile = new File(TEST_FILE_PATH);
     if (forPrinterFile != null && forPrinterFile.exists()) {
       forPrinterFile.delete();
     }
 
-    List<ActionRequestDocument> actionRequestDocumentList = buildMeListOfActionRequestDocuments();
+    List<ActionRequestDocument> actionRequestDocumentList = buildListOfActionRequestDocuments();
     assertEquals(50, actionRequestDocumentList.size());
     boolean exceptionThrown = false;
     try {
@@ -89,7 +89,7 @@ public class TransformationServiceImplITCase {
   }
 
   @Test
-  public void testFileMeScenarioNullActionRequests() {
+  public void testFileScenarioNullActionRequests() {
     // Delete the file if present
     File forPrinterFile = new File(TEST_FILE_PATH);
     if (forPrinterFile != null && forPrinterFile.exists()) {
@@ -108,7 +108,7 @@ public class TransformationServiceImplITCase {
   }
 
   @Test
-  public void testFileMeScenarioEmptyActionRequests() throws CTPException {
+  public void testFileScenarioEmptyActionRequests() throws CTPException {
     // Delete the file if present
     File forPrinterFile = new File(TEST_FILE_PATH);
     if (forPrinterFile != null && forPrinterFile.exists()) {
@@ -122,8 +122,8 @@ public class TransformationServiceImplITCase {
   }
 
   @Test
-  public void testStreamMePositiveScenario() throws CTPException, UnsupportedEncodingException {
-    List<ActionRequestDocument> actionRequestDocumentList = buildMeListOfActionRequestDocuments();
+  public void testStreamPositiveScenario() throws CTPException, UnsupportedEncodingException {
+    List<ActionRequestDocument> actionRequestDocumentList = buildListOfActionRequestDocuments();
     assertEquals(50, actionRequestDocumentList.size());
     ByteArrayOutputStream result = transformationService.stream(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME);
     assertNotNull(result);
@@ -134,8 +134,8 @@ public class TransformationServiceImplITCase {
 
 
   @Test
-  public void testStreamMeScenarioMissingTemplate() {
-    List<ActionRequestDocument> actionRequestDocumentList = buildMeListOfActionRequestDocuments();
+  public void testStreamScenarioMissingTemplate() {
+    List<ActionRequestDocument> actionRequestDocumentList = buildListOfActionRequestDocuments();
     assertEquals(50, actionRequestDocumentList.size());
     boolean exceptionThrown = false;
     try {
@@ -162,7 +162,7 @@ public class TransformationServiceImplITCase {
   }
 
   @Test
-  public void testStreamMeScenarioEmptyActionRequests() throws CTPException, UnsupportedEncodingException {
+  public void testStreamScenarioEmptyActionRequests() throws CTPException, UnsupportedEncodingException {
     List<ActionRequestDocument> actionRequestDocumentList = new ArrayList<>();
     ByteArrayOutputStream result = transformationService.stream(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME);
     assertNotNull(result);

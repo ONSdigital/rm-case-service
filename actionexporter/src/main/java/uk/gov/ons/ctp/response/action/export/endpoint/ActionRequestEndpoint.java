@@ -2,20 +2,16 @@ package uk.gov.ons.ctp.response.action.export.endpoint;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.util.CollectionUtils;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
 import uk.gov.ons.ctp.response.action.export.domain.SftpMessage;
-import uk.gov.ons.ctp.response.action.export.domain.TemplateDocument;
 import uk.gov.ons.ctp.response.action.export.message.SftpServicePublisher;
 import uk.gov.ons.ctp.response.action.export.representation.ActionRequestDocumentDTO;
-import uk.gov.ons.ctp.response.action.export.representation.TemplateDocumentDTO;
 import uk.gov.ons.ctp.response.action.export.service.ActionRequestService;
 import uk.gov.ons.ctp.response.action.export.service.TransformationService;
 
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -26,7 +22,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
-import java.io.InputStream;
 import java.math.BigInteger;
 import java.net.URI;
 import java.util.List;
@@ -89,6 +84,12 @@ public class ActionRequestEndpoint {
     return mapperFacade.map(result, ActionRequestDocumentDTO.class);
   }
 
+  /**
+   * To export a specific ActionRequest
+   * @param actionId the actionId of the specific ActionRequest
+   * @return 201 if successful
+   * @throws CTPException if specific ActionRequest not found
+   */
   @POST
   @Path("/{actionId}")
   public Response export(@PathParam("actionId") final BigInteger actionId) throws CTPException {
@@ -106,7 +107,8 @@ public class ActionRequestEndpoint {
 
     UriBuilder ub = uriInfo.getAbsolutePathBuilder();
     URI actionRequestDocumentUri = ub.path(actionId.toString()).build();
-    ActionRequestDocumentDTO actionRequestDocumentDTO = mapperFacade.map(actionRequestDocument, ActionRequestDocumentDTO.class);
+    ActionRequestDocumentDTO actionRequestDocumentDTO = mapperFacade.map(actionRequestDocument,
+            ActionRequestDocumentDTO.class);
     return Response.created(actionRequestDocumentUri).entity(actionRequestDocumentDTO).build();
   }
 }

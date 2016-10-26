@@ -62,3 +62,19 @@ curl http://localhost:8141/manualtest/curltest -u actionexporter:ctp -v -X GET
 ## To template using a NON existing template
 curl http://localhost:8141/manualtest/random -u actionexporter:ctp -v -X GET
 500 {"error":{"code":"SYSTEM_ERROR","timestamp":"20161024155359769","message":"Template not found for name \"random\".\nThe name was interpreted by this TemplateLoader: uk.gov.ons.ctp.response.action.export.templating.freemarker.config.MongoTemplateLoader@3147999e."}}
+
+
+## To retrieve all ActionRequests
+curl http://localhost:8141/actionrequests/ -u actionexporter:ctp -v -X GET
+204 as I did not store any so far
+
+
+## To retrieve an ActionRequest that does not exist
+curl http://localhost:8141/actionrequests/1 -u actionexporter:ctp -v -X GET
+404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20161026154956023","message":"ActionRequest not found for actionId 1"}}
+
+
+## To export an ActionRequest that does not exist
+curl http://localhost:8141/actionrequests/1 -u actionexporter:ctp -v -X POST
+404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20161026154956023","message":"ActionRequest not found for actionId 1"}}
+
