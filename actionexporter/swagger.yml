@@ -216,7 +216,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     post:
-      summary: Triggers the export of the actionRequests' information.
+      summary: Triggers the export of the actionRequests' information. (NOT yet implemented - TBD)
       description: Triggers the export of the actionRequests' information.
       parameters:
         - name: Accept
