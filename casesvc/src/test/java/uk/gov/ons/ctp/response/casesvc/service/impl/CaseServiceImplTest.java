@@ -1,7 +1,9 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockActionPlanMappingServiceFactory.MAPPING_ID;
 
@@ -85,6 +87,7 @@ public class CaseServiceImplTest {
 
   private static final Integer NON_EXISTING_PARENT_CASE_ID = 1;
 
+  private static final CategoryDTO.CategoryType CASEEVENT_CATEGORY_TA = CategoryDTO.CategoryType.TRANSLATION_ARABIC;
   private static final CategoryDTO.CategoryType CASEEVENT_CATEGORY_QR = CategoryDTO.CategoryType.ONLINE_QUESTIONNAIRE_RESPONSE;
   private static final CategoryDTO.CategoryType CASEEVENT_CATEGORY_CI = CategoryDTO.CategoryType.CLASSIFICATION_INCORRECT;
   private static final CategoryDTO.CategoryType CASEEVENT_CATEGORY_R = CategoryDTO.CategoryType.REFUSAL;
@@ -240,6 +243,30 @@ public class CaseServiceImplTest {
     verify(caseEventRepository).save(caseEvent);
   }
 
+  @Test
+  public void testCreateFulfilmentCaseEventAgainstInactionalCase() throws Exception {
+
+    mockInactionableHouseholdCaseLoadSuccess();
+    mockActionPlanMappingLoad();
+    mockCaseEventCategoryForTranslationLoadSuccess();
+    mockCaseTypeHouseholdLoadSuccess();
+    mockAppConfigUse();
+
+    // now kick it off
+    CaseEvent caseEvent = caseEventFixtureLoad(5);
+
+    try {
+      caseService.createCaseEvent(caseEvent, null);
+      fail();
+    } catch (RuntimeException re) {
+      verify(caseRepo).findOne(HOUSEHOLD_CASE_ID);
+      verify(categoryRepo).findOne(CASEEVENT_CATEGORY_TA);
+      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+      verify(caseEventRepository, times(0)).save(caseEvent);
+    }
+
+  }
+
   /**
    * mock loading data
    *
@@ -267,6 +294,19 @@ public class CaseServiceImplTest {
   }
 
   /**
+   * mock loading case data for INACTIONABLE CASE
+   *
+   * @return list of mock cases
+   * @throws Exception oops
+   */
+  private List<Case> mockInactionableHouseholdCaseLoadSuccess() throws Exception {
+    List<Case> cases = FixtureHelper.loadClassFixtures(Case[].class);
+    Case parentCase = cases.get(2);
+    Mockito.when(caseRepo.findOne(HOUSEHOLD_CASE_ID)).thenReturn(parentCase);
+    return cases;
+  }
+
+  /**
    * mock loading data
    *
    * @return list of mock cases
@@ -276,6 +316,19 @@ public class CaseServiceImplTest {
     List<Category> categories = FixtureHelper.loadClassFixtures(Category[].class);
     Category category = categories.get(0);
     Mockito.when(categoryRepo.findOne(CASEEVENT_CATEGORY_QR)).thenReturn(category);
+    return categories;
+  }
+
+  /**
+   * mock loading data
+   *
+   * @return list of mock cases
+   * @throws Exception oops
+   */
+  private List<Category> mockCaseEventCategoryForTranslationLoadSuccess() throws Exception {
+    List<Category> categories = FixtureHelper.loadClassFixtures(Category[].class);
+    Category category = categories.get(4);
+    Mockito.when(categoryRepo.findOne(CASEEVENT_CATEGORY_TA)).thenReturn(category);
     return categories;
   }
 
@@ -368,7 +421,7 @@ public class CaseServiceImplTest {
     CaseEvent caseEvent = caseEvents.get(0);
     Mockito.when(caseEventRepository.save(caseEvent)).thenReturn(caseEvent);
     return caseEvent;
-  } 
+  }
 
   /**
    * mock state transitions
@@ -377,10 +430,12 @@ public class CaseServiceImplTest {
    */
   private void mockStateTransitions() throws Exception {
     Mockito.when(
-        caseSvcStateTransitionManager.transition(CaseState.ACTIONABLE, uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseEvent.DISABLED))
+        caseSvcStateTransitionManager.transition(CaseState.ACTIONABLE,
+            uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseEvent.DISABLED))
         .thenReturn(CaseState.INACTIONABLE);
     Mockito.when(
-        caseSvcStateTransitionManager.transition(CaseState.ACTIONABLE, uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseEvent.DEACTIVATED))
+        caseSvcStateTransitionManager.transition(CaseState.ACTIONABLE,
+            uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseEvent.DEACTIVATED))
         .thenReturn(CaseState.INACTIONABLE);
   }
 

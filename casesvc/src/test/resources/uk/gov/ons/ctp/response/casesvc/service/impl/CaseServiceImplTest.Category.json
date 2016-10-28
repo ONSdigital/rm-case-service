@@ -38,5 +38,16 @@
    "group": "general",
    "eventType":"DEACTIVATED",
    "manual":true
+},
+{  
+   "categoryType":"TRANSLATION_ARABIC",
+   "longDescription":"blah blah blah",
+   "shortDescription":"blah",
+   "role":null,
+   "generatedActionType":"A_TRANSLATION_ACTION",
+   "group": "general",
+   "eventType":null,
+   "manual":true
 }
+
 ]

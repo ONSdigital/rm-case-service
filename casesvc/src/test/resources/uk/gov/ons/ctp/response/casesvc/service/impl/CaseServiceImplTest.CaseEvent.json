@@ -43,5 +43,15 @@
    "subCategory":"subcat",
    "createdBy":"me",
    "description":"desc"
+},
+{  
+   "createdDateTime":1460736159699,
+   "caseEventId":6,
+   "caseId":1,
+   "category":"TRANSLATION_ARABIC",
+   "subCategory":"subcat",
+   "createdBy":"me",
+   "description":"desc"
 }
+
 ]

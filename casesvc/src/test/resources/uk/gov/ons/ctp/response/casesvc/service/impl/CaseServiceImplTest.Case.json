@@ -26,5 +26,19 @@
    "inboundChannel":"ONLINE"
    }
    ]
+},
+{  
+   "caseId":1,
+   "state":"INACTIONABLE",
+   "caseTypeId":2,
+   "createdDateTime":1460732606544,
+   "createdBy":"me",
+   "actionPlanMappingId":1,
+   "responses":[
+   {
+   "dateTime":1460732606544,
+   "inboundChannel":"ONLINE"
+   }
+   ]
 }
 ]

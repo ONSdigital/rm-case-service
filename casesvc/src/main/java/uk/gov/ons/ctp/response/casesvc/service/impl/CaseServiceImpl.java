@@ -46,6 +46,7 @@ public class CaseServiceImpl implements CaseService {
 
   private static final String IAC_OVERUSE_MSG = "More than one case found to be using IAC %s";
   private static final String MISSING_NEW_CASE_MSG = "New Case definition missing for original case %s";
+  private static final String CASE_NO_LONGER_ACTIONABLE_MSG = "The Case %s is no longer actionable - the requested event is invalid";
   private static final String WRONG_NEW_CASE_TYPE_MSG = "New Case definition has incorrect casetype (new respondent type '%s' is not required type '%s')";
   private static final String WRONG_OLD_CASE_TYPE_MSG = "Old Case definition has incorrect casetype (old respondent type '%s' is not expected type '%s')";
 
@@ -146,7 +147,7 @@ public class CaseServiceImpl implements CaseService {
       checkAndEffectRecordingOfResponse(category, targetCase);
 
       // does the event transition the case?
-      checkAndEffectOriginalCaseStateTransition(category, targetCase);
+      checkAndEffectTargetCaseStateTransition(category, targetCase);
 
       // should we create an ad hoc action?
       checkAndEffectAdHocActionCreation(category, caseEvent);
@@ -180,6 +181,11 @@ public class CaseServiceImpl implements CaseService {
       CaseType intendedCaseType = caseTypeRepo.findOne(newCase.getCaseTypeId());
       checkRespondentTypesMatch(WRONG_NEW_CASE_TYPE_MSG, category.getNewCaseRespondentType(), intendedCaseType.getRespondentType());
     }
+   
+    if (!StringUtils.isEmpty(category.getGeneratedActionType()) && targetCase.getState().equals(CaseDTO.CaseState.INACTIONABLE)) {
+        throw new RuntimeException(String.format(CASE_NO_LONGER_ACTIONABLE_MSG, targetCase.getCaseId()));
+    }
+    
   }
 
   /**
@@ -258,7 +264,7 @@ public class CaseServiceImpl implements CaseService {
    * @param category the category details of the event
    * @param targetCase the 'source' case the event is being created for
    */
-  private void checkAndEffectOriginalCaseStateTransition(Category category, Case targetCase) {
+  private void checkAndEffectTargetCaseStateTransition(Category category, Case targetCase) {
     CaseDTO.CaseEvent transitionEvent = category.getEventType();
     if (transitionEvent != null) {
       CaseDTO.CaseState oldState = targetCase.getState();
