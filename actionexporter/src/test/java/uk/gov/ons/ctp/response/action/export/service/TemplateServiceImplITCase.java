@@ -34,8 +34,8 @@ import static uk.gov.ons.ctp.response.action.export.utility.ObjectBuilder.buildL
 @RunWith(SpringRunner.class)
 public class TemplateServiceImplITCase {
 
-  private static final int TEST_STRING_LENGTH_WHEN_50_ACTION_REQUESTS = 3301;
-  private static final int TEST_STRING_LENGTH_WHEN_EMPTY_ACTION_REQUESTS =160;
+  private static final int TEST_STRING_LENGTH_WHEN_50_ACTION_REQUESTS = 2614;
+  private static final int TEST_STRING_LENGTH_WHEN_EMPTY_ACTION_REQUESTS =114;
   private static final String TEST_FILE_PATH = "/tmp/ctp/forPrinter.csv";
   private static final String FREEMARKER_TEMPLATE_NAME = "curltest";
   private static final String FREEMARKER_TEMPLATE_NON_EXISTING_NAME = "totalRandom";
