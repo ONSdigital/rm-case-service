@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.action.representation;
+package uk.gov.ons.ctp.response.action.export.representation;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -8,10 +8,13 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
+/**
+ * Representation of TemplateMappingDocument
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class TemplateDocumentDTO {
+public class TemplateMappingDocumentDTO {
   @NotNull
   private String name;
   private String content;

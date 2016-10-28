@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.response.action.export.domain.TemplateEngine;
 import uk.gov.ons.ctp.response.action.export.domain.TemplateMappingDocument;
 import uk.gov.ons.ctp.response.action.export.repository.TemplateMappingRepository;
 import uk.gov.ons.ctp.response.action.export.service.TemplateMappingService;
@@ -23,6 +22,9 @@ import java.util.Map;
 
 import static uk.gov.ons.ctp.common.util.InputStreamUtil.getStringFromInputStream;
 
+/**
+ * The implementation of the TemplateMappingService
+ */
 @Named
 @Slf4j
 public class TemplateMappingServiceImpl implements TemplateMappingService {
@@ -44,8 +46,8 @@ public class TemplateMappingServiceImpl implements TemplateMappingService {
   }
 
   @Override
-  public TemplateMappingDocument storeTemplateMappingDocument(String templateMappingName, TemplateEngine templateEngine,
-                                                              InputStream fileContents) throws CTPException {
+  public TemplateMappingDocument storeTemplateMappingDocument(String templateMappingName, InputStream fileContents)
+          throws CTPException {
     String stringValue = getStringFromInputStream(fileContents);
     if (StringUtils.isEmpty(stringValue)) {
       log.error(EXCEPTION_STORE_TEMPLATE_MAPPING);
@@ -54,7 +56,6 @@ public class TemplateMappingServiceImpl implements TemplateMappingService {
     TemplateMappingDocument templateMappingDocument = new TemplateMappingDocument();
     templateMappingDocument.setContent(stringValue);
     templateMappingDocument.setName(templateMappingName);
-    templateMappingDocument.setTemplateEngine(templateEngine);
     templateMappingDocument.setDateModified(new Date());
 
     return repository.save(templateMappingDocument);
@@ -64,10 +65,11 @@ public class TemplateMappingServiceImpl implements TemplateMappingService {
   public Map<String, String> retrieveMapFromTemplateMappingDocument(String templateMappingName) {
     Map<String, String> mapping = new HashMap<>();
     try {
-      ObjectMapper mapper = new ObjectMapper();
-      mapping = mapper.readValue(repository.findOne(templateMappingName).getContent(),
-              new TypeReference<Map<String, String>>() {
-              });
+      TemplateMappingDocument templateMapping = repository.findOne(templateMappingName);
+      if (templateMapping != null) {
+        ObjectMapper mapper = new ObjectMapper();
+        mapping = mapper.readValue(templateMapping.getContent(), new TypeReference<Map<String, String>>() { });
+      }
     } catch (JsonParseException e) {
       log.error("JsonParseException thrown while parsing mapping...", e.getMessage());
     } catch (JsonMappingException e) {

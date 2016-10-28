@@ -1,14 +1,16 @@
 package uk.gov.ons.ctp.response.action.export.service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
 import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
 import uk.gov.ons.ctp.response.action.export.domain.TemplateDocument;
-import uk.gov.ons.ctp.response.action.export.domain.TemplateEngine;
 
 /**
- * Service responsible for dealing with TemplateDocuments stored in MongoDB
+ * Service responsible for dealing with Templates (storage/retrieval in/from MongoDB, templating)
  */
 public interface TemplateService {
   /**
@@ -19,7 +21,7 @@ public interface TemplateService {
    * @return the TemplateDocument stored
    * @throws CTPException if the TemplateDocument content is empty
    */
-  TemplateDocument storeTemplateDocument(String templateName, TemplateEngine templateEngine, InputStream fileContents)
+  TemplateDocument storeTemplateDocument(String templateName, InputStream fileContents)
           throws CTPException;
 
   /**
@@ -38,7 +40,26 @@ public interface TemplateService {
   List<TemplateDocument> retrieveAllTemplateDocuments();
 
   /**
-   * To clear the FreeMarker configuration's template cache
+   * This produces a csv file for all our action requests.
+   *
+   * @param actionRequestDocumentList the list of action requests.
+   * @param templateName the FreeMarker template to use.
+   * @param path the full file path. An example is /tmp/csv/forPrinter.csv.
+   * @throws CTPException if problem creating file from template.
+   * @return the file.
    */
-  void clearTemplateCache();
+  File file(List<ActionRequestDocument> actionRequestDocumentList, String templateName, String path)
+          throws CTPException;
+
+  /**
+   * This produces a stream for all our action requests.
+   *
+   * @param actionRequestDocumentList the list of action requests.
+   * @param templateName the FreeMarker template to use.
+   * @throws CTPException if problem creating stream from template.
+   * @return the stream.
+   */
+  ByteArrayOutputStream stream(List<ActionRequestDocument> actionRequestDocumentList, String templateName)
+          throws CTPException;
+
 }

@@ -1,6 +1,5 @@
 package uk.gov.ons.ctp.response.action.export.service.impl;
 
-import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -47,17 +46,5 @@ public class ActionExportServiceImpl implements ActionExportService {
       actionRequest.setDateStored(now);
     });
     actionRequestRepo.save(actionRequests);
-  }
-
-  @Override
-  public ActionRequestDocument findActionRequestDocument(final BigInteger actionId) {
-    log.debug("Entering findActionPlan with {}", actionId);
-    return actionRequestRepo.findOne(actionId);
-  }
-
-  @Override
-  public ActionRequestDocument save(final ActionRequestDocument actionRequest) {
-    log.debug("Saving ActionRequestDocument {}", actionRequest.getActionId());
-    return actionRequestRepo.save(actionRequest);
   }
 }

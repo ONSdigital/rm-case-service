@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
-import uk.gov.ons.ctp.response.action.export.service.TransformationService;
+import uk.gov.ons.ctp.response.action.export.service.TemplateService;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionAddress;
 
 import javax.inject.Inject;
@@ -33,15 +33,25 @@ import static org.glassfish.jersey.message.internal.ReaderWriter.UTF8;
 @Produces(MediaType.APPLICATION_JSON)
 @Slf4j
 public class ManualTestEndpoint {
-  @Inject
-  private TransformationService transformationService;
 
+  private static final int ACTION_REQUEST_NUMBER = 51;
+
+  @Inject
+  private TemplateService templateService;
+
+  /**
+   * To trigger the FreeMarker templating of a list of ActionRequests
+   * @param templateName the name of the Template to use for templating
+   * @return OK if the templating completed successfully
+   * @throws CTPException if issue encountered during the FreeMarker templating
+   * @throws UnsupportedEncodingException if issue encountered during the FreeMarker templating
+   */
   @GET
   @Path("/{templateName}")
   public final Response testingFreeMarkerTemplating(@PathParam("templateName") final String templateName)
           throws CTPException, UnsupportedEncodingException {
     log.debug("Entering testingFreeMarkerTemplating ...");
-    ByteArrayOutputStream result = transformationService.streamMe(buildMeListOfActionRequestDocuments(), templateName);
+    ByteArrayOutputStream result = templateService.stream(buildMeListOfActionRequestDocuments(), templateName);
     String resultString = result.toString(UTF8.name());
     log.debug("resultString = {}", resultString);
 
@@ -52,14 +62,23 @@ public class ManualTestEndpoint {
     }
   }
 
+  /**
+   * To build a list of ActionRequests
+   * @return a list of ActionRequests
+   */
   private static List<ActionRequestDocument> buildMeListOfActionRequestDocuments() {
     List<ActionRequestDocument> result = new ArrayList<>();
-    for (int i = 1; i < 51; i++) {
+    for (int i = 1; i < ACTION_REQUEST_NUMBER; i++) {
       result.add(buildAMeActionRequestDocument(i));
     }
     return result;
   }
 
+  /**
+   *  To build an ActionRequest
+   * @param i the action id for the ActionRequest
+   * @return an ActionRequest
+   */
   private static ActionRequestDocument buildAMeActionRequestDocument(int i) {
     ActionRequestDocument result =  new ActionRequestDocument();
     result.setActionId(new BigInteger(new Integer(i).toString()));
@@ -69,6 +88,10 @@ public class ManualTestEndpoint {
     return result;
   }
 
+  /**
+   * To build an ActionAddress
+   * @return an ActionAddress
+   */
   private static ActionAddress buildActionAddress() {
     ActionAddress actionAddress = new ActionAddress();
     actionAddress.setLine1("1 High Street");

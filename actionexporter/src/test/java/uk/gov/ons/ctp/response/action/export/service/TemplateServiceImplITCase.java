@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.action.export.templating.freemarker;
+package uk.gov.ons.ctp.response.action.export.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
@@ -9,9 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
-import uk.gov.ons.ctp.response.action.export.domain.TemplateEngine;
-import uk.gov.ons.ctp.response.action.export.service.TransformationService;
-import uk.gov.ons.ctp.response.action.export.service.TemplateService;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -23,7 +20,7 @@ import static org.glassfish.jersey.message.internal.ReaderWriter.UTF8;
 import static org.junit.Assert.assertNotNull;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import static uk.gov.ons.ctp.response.action.export.service.TransformationServiceImplTest.buildMeListOfActionRequestDocuments;
+import static uk.gov.ons.ctp.response.action.export.utility.ObjectBuilder.buildListOfActionRequestDocuments;
 
 /**
  * This test focuses on the FreeMarker templating. It first stores a template in the MongoDB and then it uses the
@@ -33,9 +30,9 @@ import static uk.gov.ons.ctp.response.action.export.service.TransformationServic
  *    - a running MongoDB database (see application-test.properties for config)
  */
 @Slf4j
-@SpringBootTest(classes = {FreeMarkerITCaseConfig.class})
+@SpringBootTest(classes = {TemplateServiceImplITCaseConfig.class})
 @RunWith(SpringRunner.class)
-public class FreeMarkerITCase {
+public class TemplateServiceImplITCase {
 
   private static final int TEST_STRING_LENGTH_WHEN_50_ACTION_REQUESTS = 3501;
   private static final int TEST_STRING_LENGTH_WHEN_EMPTY_ACTION_REQUESTS =160;
@@ -46,44 +43,41 @@ public class FreeMarkerITCase {
   @Autowired
   TemplateService templateService;
 
-  @Autowired
-  TransformationService transformationService;
-
   @Before
   public void setup() throws CTPException {
     log.debug("About to store the FreeMarker template...");
-    templateService.storeTemplateDocument(FREEMARKER_TEMPLATE_NAME, TemplateEngine.FREEMARKER, getClass().getResourceAsStream("/templates/freemarker/curltest_validtemplate.ftl"));
+    templateService.storeTemplateDocument(FREEMARKER_TEMPLATE_NAME, getClass().getResourceAsStream("/templates/freemarker/valid_template.ftl"));
     log.debug("FreeMarker template stored successfully...");
   }
 
   @Test
-  public void testFileMePositiveScenario() throws CTPException {
+  public void testFilePositiveScenario() throws CTPException {
     // Delete the file if present
     File forPrinterFile = new File(TEST_FILE_PATH);
     if (forPrinterFile != null && forPrinterFile.exists()) {
       forPrinterFile.delete();
     }
 
-    List<ActionRequestDocument> actionRequestDocumentList = buildMeListOfActionRequestDocuments();
+    List<ActionRequestDocument> actionRequestDocumentList = buildListOfActionRequestDocuments();
     assertEquals(50, actionRequestDocumentList.size());
-    File result = transformationService.fileMe(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME, TEST_FILE_PATH);
+    File result = templateService.file(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME, TEST_FILE_PATH);
     assertNotNull(result);
     assertEquals(result.length(), TEST_STRING_LENGTH_WHEN_50_ACTION_REQUESTS);
   }
 
   @Test
-  public void testFileMeScenarioMissingTemplate() {
+  public void testFileScenarioMissingTemplate() {
     // Delete the file if present
     File forPrinterFile = new File(TEST_FILE_PATH);
     if (forPrinterFile != null && forPrinterFile.exists()) {
       forPrinterFile.delete();
     }
 
-    List<ActionRequestDocument> actionRequestDocumentList = buildMeListOfActionRequestDocuments();
+    List<ActionRequestDocument> actionRequestDocumentList = buildListOfActionRequestDocuments();
     assertEquals(50, actionRequestDocumentList.size());
     boolean exceptionThrown = false;
     try {
-      transformationService.fileMe(actionRequestDocumentList, FREEMARKER_TEMPLATE_NON_EXISTING_NAME, TEST_FILE_PATH);
+      templateService.file(actionRequestDocumentList, FREEMARKER_TEMPLATE_NON_EXISTING_NAME, TEST_FILE_PATH);
     } catch (CTPException e) {
       exceptionThrown = true;
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
@@ -92,7 +86,7 @@ public class FreeMarkerITCase {
   }
 
   @Test
-  public void testFileMeScenarioNullActionRequests() {
+  public void testFileScenarioNullActionRequests() {
     // Delete the file if present
     File forPrinterFile = new File(TEST_FILE_PATH);
     if (forPrinterFile != null && forPrinterFile.exists()) {
@@ -102,7 +96,7 @@ public class FreeMarkerITCase {
     List<ActionRequestDocument> actionRequestDocumentList = null;
     boolean exceptionThrown = false;
     try {
-      transformationService.fileMe(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME, TEST_FILE_PATH);
+      templateService.file(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME, TEST_FILE_PATH);
     } catch (CTPException e) {
       exceptionThrown = true;
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
@@ -111,7 +105,7 @@ public class FreeMarkerITCase {
   }
 
   @Test
-  public void testFileMeScenarioEmptyActionRequests() throws CTPException {
+  public void testFileScenarioEmptyActionRequests() throws CTPException {
     // Delete the file if present
     File forPrinterFile = new File(TEST_FILE_PATH);
     if (forPrinterFile != null && forPrinterFile.exists()) {
@@ -119,16 +113,16 @@ public class FreeMarkerITCase {
     }
 
     List<ActionRequestDocument> actionRequestDocumentList = new ArrayList<>();
-    File result = transformationService.fileMe(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME, TEST_FILE_PATH);
+    File result = templateService.file(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME, TEST_FILE_PATH);
     assertNotNull(result);
     assertEquals(result.length(), TEST_STRING_LENGTH_WHEN_EMPTY_ACTION_REQUESTS);
   }
 
   @Test
-  public void testStreamMePositiveScenario() throws CTPException, UnsupportedEncodingException {
-    List<ActionRequestDocument> actionRequestDocumentList = buildMeListOfActionRequestDocuments();
+  public void testStreamPositiveScenario() throws CTPException, UnsupportedEncodingException {
+    List<ActionRequestDocument> actionRequestDocumentList = buildListOfActionRequestDocuments();
     assertEquals(50, actionRequestDocumentList.size());
-    ByteArrayOutputStream result = transformationService.streamMe(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME);
+    ByteArrayOutputStream result = templateService.stream(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME);
     assertNotNull(result);
     String resultString = result.toString(UTF8.name());
     assertEquals(resultString.length(), TEST_STRING_LENGTH_WHEN_50_ACTION_REQUESTS);
@@ -137,12 +131,12 @@ public class FreeMarkerITCase {
 
 
   @Test
-  public void testStreamMeScenarioMissingTemplate() {
-    List<ActionRequestDocument> actionRequestDocumentList = buildMeListOfActionRequestDocuments();
+  public void testStreamScenarioMissingTemplate() {
+    List<ActionRequestDocument> actionRequestDocumentList = buildListOfActionRequestDocuments();
     assertEquals(50, actionRequestDocumentList.size());
     boolean exceptionThrown = false;
     try {
-      transformationService.streamMe(actionRequestDocumentList, FREEMARKER_TEMPLATE_NON_EXISTING_NAME);
+      templateService.stream(actionRequestDocumentList, FREEMARKER_TEMPLATE_NON_EXISTING_NAME);
     } catch (CTPException e) {
       exceptionThrown = true;
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
@@ -156,7 +150,7 @@ public class FreeMarkerITCase {
     List<ActionRequestDocument> actionRequestDocumentList = null;
     boolean exceptionThrown = false;
     try {
-      transformationService.streamMe(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME);
+      templateService.stream(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME);
     } catch (CTPException e) {
       exceptionThrown = true;
       assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
@@ -165,9 +159,9 @@ public class FreeMarkerITCase {
   }
 
   @Test
-  public void testStreamMeScenarioEmptyActionRequests() throws CTPException, UnsupportedEncodingException {
+  public void testStreamScenarioEmptyActionRequests() throws CTPException, UnsupportedEncodingException {
     List<ActionRequestDocument> actionRequestDocumentList = new ArrayList<>();
-    ByteArrayOutputStream result = transformationService.streamMe(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME);
+    ByteArrayOutputStream result = templateService.stream(actionRequestDocumentList, FREEMARKER_TEMPLATE_NAME);
     assertNotNull(result);
     String resultString = result.toString(UTF8.name());
     assertEquals(resultString.length(), TEST_STRING_LENGTH_WHEN_EMPTY_ACTION_REQUESTS);

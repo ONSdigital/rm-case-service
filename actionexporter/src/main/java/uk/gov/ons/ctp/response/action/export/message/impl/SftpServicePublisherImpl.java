@@ -1,7 +1,6 @@
 package uk.gov.ons.ctp.response.action.export.message.impl;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
@@ -22,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
 import uk.gov.ons.ctp.response.action.export.message.SftpServicePublisher;
 import uk.gov.ons.ctp.response.action.export.scheduled.ExportInfo;
-import uk.gov.ons.ctp.response.action.export.service.ActionExportService;
+import uk.gov.ons.ctp.response.action.export.service.ActionRequestService;
 
 /**
  * Service implementation responsible for publishing transformed ActionRequests
@@ -37,7 +36,7 @@ public class SftpServicePublisherImpl implements SftpServicePublisher {
   private static final String ACTION_LIST = "list_actionIds";
 
   @Inject
-  private ActionExportService actionExportSvc;
+  private ActionRequestService actionRequestService;
 
   @Inject
   private ExportInfo exportInfo;
@@ -57,9 +56,10 @@ public class SftpServicePublisherImpl implements SftpServicePublisher {
     List<String> actionIds = (List<String>) message.getPayload().getHeaders().get(ACTION_LIST);
     Date now = new Date();
     actionIds.forEach((actionId) -> {
-      ActionRequestDocument actionRequest = actionExportSvc.findActionRequestDocument(new BigInteger(actionId));
+      ActionRequestDocument actionRequest =
+              actionRequestService.retrieveActionRequestDocument(new BigInteger(actionId));
       actionRequest.setDateSent(now);
-      ActionRequestDocument saved = actionExportSvc.save(actionRequest);
+      ActionRequestDocument saved = actionRequestService.save(actionRequest);
       if (saved == null) {
         log.error("ActionRequestDocument {} failed to update DateSent", actionRequest.getActionId());
       }

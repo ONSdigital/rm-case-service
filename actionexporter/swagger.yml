@@ -2,8 +2,8 @@ swagger: '2.0'
 info:
   title: Action Exporter API
   description: >
-    The Action Exporter API provides support endpoints to store templates (FreeMarker, Velocity, etc.), template
-    mappings and to enable exports to be initiated for ActionRequests previously stored.
+    The Action Exporter API provides support endpoints to store FreeMarker templates, template mappings and to enable
+    exports to be initiated for ActionRequests previously stored.
 
     Note that all of the endpoints this service provides are authenticated using HTTP basic authentication.
   version: 9.28.0
@@ -65,8 +65,8 @@ paths:
             schema:
               $ref: '#/definitions/Error'
     post:
-      summary: Stores a template (FreeMarker, Velocity, etc.)
-      description: Stores a template (FreeMarker, Velocity, etc.)
+      summary: Stores a FreeMarker template
+      description: Stores a FreeMarker template
       consumes:
         - multipart/form-data
       parameters:
@@ -148,8 +148,8 @@ paths:
             schema:
               $ref: '#/definitions/Error'
       post:
-        summary: Stores a template mapping (FreeMarker, Velocity, etc.)
-        description: Stores a template mapping (FreeMarker, Velocity, etc.)
+        summary: Stores a FreeMarker template mapping
+        description: Stores a FreeMarker template mapping
         consumes:
           - multipart/form-data
         parameters:
@@ -216,7 +216,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
     post:
-      summary: Triggers the export of the actionRequests' information.
+      summary: Triggers the export of the actionRequests' information. (NOT yet implemented - TBD)
       description: Triggers the export of the actionRequests' information.
       parameters:
         - name: Accept
@@ -369,14 +369,10 @@ definitions:
   Template:
     type: object
     required:
-      - type
       - name
       - content
       - dateModified
     properties:
-      type:
-        type: string
-        description: Type of the Template (FreeMarker, Velocity, etc.)
       name:
         type: string
         description: Unique name for the Template.
@@ -390,14 +386,10 @@ definitions:
   TemplateMapping:
     type: object
     required:
-      - type
       - name
       - content
       - dateModified
     properties:
-      type:
-        type: string
-        description: Type of the Template Mapping (FreeMarker, Velocity, etc.)
       name:
         type: string
         description: Unique name for the Template Mapping.
