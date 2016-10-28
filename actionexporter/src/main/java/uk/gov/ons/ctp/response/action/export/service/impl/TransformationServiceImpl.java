@@ -114,7 +114,7 @@ public class TransformationServiceImpl implements TransformationService {
     Map<String, List<String>> actionIds = new HashMap<String, List<String>>();
     SftpMessage sftpMessage = new SftpMessage(actionIds, outputStreams);
     String timeStamp = new SimpleDateFormat("ddMMyyyy_HH:mm").format(Calendar.getInstance().getTime());
-    List<ActionRequestDocument> requests = actionRequestRepo.findByDateSentIsNullOrderByActionTypeDesc();
+    List<ActionRequestDocument> requests = actionRequestRepo.findByDateSentIsNull();
     if (requests.isEmpty()) {
       log.warn("No Action Export requests to process.");
       return sftpMessage;
@@ -135,7 +135,7 @@ public class TransformationServiceImpl implements TransformationService {
               addActionIds.add(actionRequest.getActionId().toString());
             });
           } catch (CTPException e) {
-            log.error("Error generating actionType : {}.", actionType);
+            log.error("Error generating actionType : {}. {}", actionType, e.getMessage());
           }
         } else {
           log.warn("No mapping for actionType : {}.", actionType);
