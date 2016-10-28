@@ -35,7 +35,7 @@ public class TransformationServiceImplTest {
 
   @Test
   public void testProcessActionRequestsNothingToProcess() {
-    when(actionRequestRepo.findByDateSentIsNullOrderByActionTypeDesc()).thenReturn(new ArrayList<>());
+    when(actionRequestRepo.findByDateSentIsNull()).thenReturn(new ArrayList<>());
     SftpMessage sftpMessage = transformationService.processActionRequests();
     assertNotNull(sftpMessage);
     assertTrue(sftpMessage.getOutputStreams().isEmpty());
@@ -44,7 +44,7 @@ public class TransformationServiceImplTest {
 
   @Test
   public void testProcessActionRequests() {
-    when(actionRequestRepo.findByDateSentIsNullOrderByActionTypeDesc()).thenReturn(buildListOfActionRequestDocuments());
+    when(actionRequestRepo.findByDateSentIsNull()).thenReturn(buildListOfActionRequestDocuments());
     // TODO
     //SftpMessage sftpMessage = transformationService.processActionRequests();
     //assertNotNull(sftpMessage);

@@ -9,8 +9,9 @@ info:
 # ie -Dlogging.level.org.springframework=DEBUG
 logging:
   level:
-    org.springframework: debug
-    uk.gov.ons.ctp: debug
+    ROOT: ERROR
+    org.springframework: ERROR
+    uk.gov.ons.ctp: WARN
 
 security:
   basic:
@@ -84,7 +85,7 @@ spring:
     enabled: false
 
 export-schedule:
-  cron-expression: "0/30 * * * * ?"
+  cron-expression: "0 0/5 * * * ?"
 
 deadxml:
   directory: /var/log/ctp/responsemanagement/actionexporter

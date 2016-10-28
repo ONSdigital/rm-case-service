@@ -18,6 +18,6 @@ public interface ActionRequestRepository extends MongoRepository<ActionRequestDo
    * Retrieve all action export requests not done.
    * @return List ActionRequestDocuments not sent to external services
    */
-  List<ActionRequestDocument> findByDateSentIsNullOrderByActionTypeDesc();
+  List<ActionRequestDocument> findByDateSentIsNull();
 
 }

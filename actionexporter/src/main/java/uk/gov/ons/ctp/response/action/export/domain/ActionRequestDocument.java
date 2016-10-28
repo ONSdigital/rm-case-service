@@ -32,7 +32,7 @@ public class ActionRequestDocument {
   private String contactName;
   private BigInteger caseId;
   private Priority priority;
-  private BigInteger questionnaireId;
+  private String caseRef;
   private String iac;
   private ActionEvent events;
   private Date dateStored;

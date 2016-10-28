@@ -42,7 +42,7 @@ public class TransformationServiceImpl implements TransformationService {
 
   @Override
   public SftpMessage processActionRequests() {
-    List<ActionRequestDocument> requests = actionRequestRepo.findByDateSentIsNullOrderByActionTypeDesc();
+    List<ActionRequestDocument> requests = actionRequestRepo.findByDateSentIsNull();
     return buildSftpMessage(requests);
   }
 
@@ -85,7 +85,7 @@ public class TransformationServiceImpl implements TransformationService {
               addActionIds.add(actionRequest.getActionId().toString());
             });
           } catch (CTPException e) {
-            log.error("Error generating actionType : {}.", actionType);
+            log.error("Error generating actionType : {}. {}", actionType, e.getMessage());
           }
         } else {
           log.warn("No mapping for actionType : {}.", actionType);
