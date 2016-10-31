@@ -12,7 +12,7 @@ logging:
     ROOT: ERROR
     org.springframework: ERROR
     org.springframework.integration: ERROR
-    uk.gov.ons.ctp: ERROR
+    uk.gov.ons.ctp: WARN
 
 liquibase:
   user: postgres
@@ -117,9 +117,9 @@ action-svc:
     read-timeout-milli-seconds: 5000
 
 case-distribution:
-  iac-max: 20
+  iac-max: 50
   retrieval-max: 200
-  distribution-max: 20
+  distribution-max: 50
   retry-sleep-seconds: 30
   initial-delay-seconds: 30
   subsequent-delay-seconds: 60
