@@ -7,16 +7,42 @@
    "createdBy":"me",
    "actionPlanMappingId":1,
    "responses":[
-   {
-   "dateTime":1460732606544,
-   "inboundChannel":"ONLINE"
-   }
    ]
 },
 {  
    "caseId":2,
-   "state":"ACTIONABLE",
+   "state":"INACTIONABLE",
    "caseTypeId":2,
+   "createdDateTime":1460732606544,
+   "createdBy":"me",
+   "actionPlanMappingId":2,
+   "responses":[
+   ]
+},
+{  
+   "caseId":3,
+   "state":"ACTIONABLE",
+   "caseTypeId":3,
+   "createdDateTime":1460732606544,
+   "createdBy":"me",
+   "actionPlanMappingId":3,
+   "responses":[
+   ]
+},
+{  
+   "caseId":4,
+   "state":"INACTIONABLE",
+   "caseTypeId":4,
+   "createdDateTime":1460732606544,
+   "createdBy":"me",
+   "actionPlanMappingId":4,
+   "responses":[
+   ]
+},
+{  
+   "caseId":5,
+   "state":"ACTIONABLE",
+   "caseTypeId":1,
    "createdDateTime":1460732606544,
    "createdBy":"me",
    "actionPlanMappingId":1,
@@ -28,12 +54,40 @@
    ]
 },
 {  
-   "caseId":1,
+   "caseId":5,
    "state":"INACTIONABLE",
    "caseTypeId":2,
    "createdDateTime":1460732606544,
    "createdBy":"me",
-   "actionPlanMappingId":1,
+   "actionPlanMappingId":2,
+   "responses":[
+   {
+   "dateTime":1460732606544,
+   "inboundChannel":"ONLINE"
+   }
+   ]
+},
+{  
+   "caseId":6,
+   "state":"ACTIONABLE",
+   "caseTypeId":3,
+   "createdDateTime":1460732606544,
+   "createdBy":"me",
+   "actionPlanMappingId":3,
+   "responses":[
+   {
+   "dateTime":1460732606544,
+   "inboundChannel":"ONLINE"
+   }
+   ]
+},
+{  
+   "caseId":7,
+   "state":"INACTIONABLE",
+   "caseTypeId":4,
+   "createdDateTime":1460732606544,
+   "createdBy":"me",
+   "actionPlanMappingId":4,
    "responses":[
    {
    "dateTime":1460732606544,

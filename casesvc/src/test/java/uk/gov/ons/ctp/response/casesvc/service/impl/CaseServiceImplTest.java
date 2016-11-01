@@ -16,7 +16,9 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 
 import uk.gov.ons.ctp.common.FixtureHelper;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
@@ -79,19 +81,105 @@ public class CaseServiceImplTest {
   @Mock
   private StateTransitionManager<CaseDTO.CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
-  private static final Integer HOUSEHOLD_CASE_ID = 1;
-  private static final Integer HOUSEHOLD_CASETYPE_ID = 1;
+  private static final int CAT_ACCESSIBILITY_MATERIALS = 0;
+  private static final int CAT_ACTION_CANCELLATION_COMPLETED = 1;
+  private static final int CAT_ACTION_CANCELLATION_CREATED = 2;
+  private static final int CAT_ACTION_COMPLETED = 3;
+  private static final int CAT_ACTION_CREATED = 4;
+  private static final int CAT_ACTION_UPDATED = 5;
+  private static final int CAT_ADDRESS_DETAILS_INCORRECT = 6;
+  private static final int CAT_CASE_CREATED = 7;
+  private static final int CAT_CLASSIFICATION_INCORRECT = 8;
+  private static final int CAT_CLOSE_ESCALATION = 9;
+  private static final int CAT_FIELD_COMPLAINT_ESCALATED = 10;
+  private static final int CAT_FIELD_EMERGENCY_ESCALATED = 11;
+  private static final int CAT_GENERAL_COMPLAINT = 12;
+  private static final int CAT_GENERAL_COMPLAINT_ESCALATED = 13;
+  private static final int CAT_GENERAL_ENQUIRY = 14;
+  private static final int CAT_GENERAL_ENQUIRY_ESCALATED = 15;
+  private static final int CAT_HOUSEHOLD_PAPER_REQUESTED = 16;
+  private static final int CAT_HOUSEHOLD_REPLACEMENT_IAC_REQUESTED = 17;
+  private static final int CAT_INCORRECT_ESCALATION = 18;
+  private static final int CAT_INDIVIDUAL_PAPER_REQUESTED = 19;
+  private static final int CAT_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED = 20;
+  private static final int CAT_INDIVIDUAL_RESPONSE_REQUESTED = 21;
+  private static final int CAT_MISCELLANEOUS = 22;
+  private static final int CAT_ONLINE_QUESTIONNAIRE_RESPONSE = 23;
+  private static final int CAT_PAPER_QUESTIONNAIRE_RESPONSE = 24;
+  private static final int CAT_PENDING = 25;
+  private static final int CAT_REFUSAL = 26;
+  private static final int CAT_TECHNICAL_QUERY = 27;
+  private static final int CAT_TRANSLATION_ARABIC = 28;
+  private static final int CAT_TRANSLATION_BENGALI = 29;
+  private static final int CAT_TRANSLATION_CANTONESE = 30;
+  private static final int CAT_TRANSLATION_GUJARATI = 31;
+  private static final int CAT_TRANSLATION_LITHUANIAN = 32;
+  private static final int CAT_TRANSLATION_MANDARIN = 33;
+  private static final int CAT_TRANSLATION_POLISH = 34;
+  private static final int CAT_TRANSLATION_PORTUGUESE = 35;
+  private static final int CAT_TRANSLATION_PUNJABI_GURMUKHI = 36;
+  private static final int CAT_TRANSLATION_PUNJABI_SHAHMUKI = 37;
+  private static final int CAT_TRANSLATION_SOMALI = 38;
+  private static final int CAT_TRANSLATION_SPANISH = 39;
+  private static final int CAT_TRANSLATION_TURKISH = 40;
+  private static final int CAT_TRANSLATION_URDU = 41;
+  private static final int CAT_UNDELIVERABLE = 42;
+ 
 
-  private static final Integer HOTEL_CASE_ID = 2;
-  private static final Integer HOTEL_CASETYPE_ID = 2;
+
+  private static final CategoryDTO.CategoryType CAT_ACTION_CANCELLATION_COMPLETED_TYPE = CategoryDTO.CategoryType.ACTION_CANCELLATION_COMPLETED;
+  private static final CategoryDTO.CategoryType CAT_ACTION_CANCELLATION_CREATED_TYPE = CategoryDTO.CategoryType.ACTION_CANCELLATION_CREATED;
+  private static final CategoryDTO.CategoryType CAT_ACTION_COMPLETED_TYPE = CategoryDTO.CategoryType.ACTION_COMPLETED;
+  private static final CategoryDTO.CategoryType CAT_ACTION_CREATED_TYPE = CategoryDTO.CategoryType.ACTION_CREATED;
+  private static final CategoryDTO.CategoryType CAT_ACTION_UPDATED_TYPE = CategoryDTO.CategoryType.ACTION_UPDATED;
+  private static final CategoryDTO.CategoryType CAT_ADDRESS_DETAILS_INCORRECT_TYPE = CategoryDTO.CategoryType.ADDRESS_DETAILS_INCORRECT;
+  private static final CategoryDTO.CategoryType CAT_CASE_CREATED_TYPE = CategoryDTO.CategoryType.CASE_CREATED;
+  private static final CategoryDTO.CategoryType CAT_CLASSIFICATION_INCORRECT_TYPE = CategoryDTO.CategoryType.CLASSIFICATION_INCORRECT;
+  private static final CategoryDTO.CategoryType CAT_GENERAL_COMPLAINT_TYPE = CategoryDTO.CategoryType.GENERAL_COMPLAINT;
+  private static final CategoryDTO.CategoryType CAT_GENERAL_ENQUIRY_TYPE = CategoryDTO.CategoryType.GENERAL_ENQUIRY;
+  private static final CategoryDTO.CategoryType CAT_MISCELLANEOUS_TYPE = CategoryDTO.CategoryType.MISCELLANEOUS;
+  private static final CategoryDTO.CategoryType CAT_TECHNICAL_QUERY_TYPE = CategoryDTO.CategoryType.TECHNICAL_QUERY;
+  private static final CategoryDTO.CategoryType CAT_ACCESSIBILITY_MATERIALS_TYPE = CategoryDTO.CategoryType.ACCESSIBILITY_MATERIALS;
+  private static final CategoryDTO.CategoryType CAT_PAPER_QUESTIONNAIRE_RESPONSE_TYPE = CategoryDTO.CategoryType.PAPER_QUESTIONNAIRE_RESPONSE;
+  private static final CategoryDTO.CategoryType CAT_ONLINE_QUESTIONNAIRE_RESPONSE_TYPE = CategoryDTO.CategoryType.ONLINE_QUESTIONNAIRE_RESPONSE;
+  private static final CategoryDTO.CategoryType CAT_UNDELIVERABLE_TYPE = CategoryDTO.CategoryType.UNDELIVERABLE;
+  private static final CategoryDTO.CategoryType CAT_TRANSLATION_SOMALI_TYPE = CategoryDTO.CategoryType.TRANSLATION_SOMALI;
+  private static final CategoryDTO.CategoryType CAT_TRANSLATION_BENGALI_TYPE = CategoryDTO.CategoryType.TRANSLATION_BENGALI;
+  private static final CategoryDTO.CategoryType CAT_TRANSLATION_SPANISH_TYPE = CategoryDTO.CategoryType.TRANSLATION_SPANISH;
+  private static final CategoryDTO.CategoryType CAT_TRANSLATION_POLISH_TYPE = CategoryDTO.CategoryType.TRANSLATION_POLISH;
+  private static final CategoryDTO.CategoryType CAT_TRANSLATION_CANTONESE_TYPE = CategoryDTO.CategoryType.TRANSLATION_CANTONESE;
+  private static final CategoryDTO.CategoryType CAT_TRANSLATION_MANDARIN_TYPE = CategoryDTO.CategoryType.TRANSLATION_MANDARIN;
+  private static final CategoryDTO.CategoryType CAT_TRANSLATION_PUNJABI_SHAHMUKI_TYPE = CategoryDTO.CategoryType.TRANSLATION_PUNJABI_SHAHMUKI;
+  private static final CategoryDTO.CategoryType CAT_TRANSLATION_LITHUANIAN_TYPE = CategoryDTO.CategoryType.TRANSLATION_LITHUANIAN;
+  private static final CategoryDTO.CategoryType CAT_FIELD_COMPLAINT_ESCALATED_TYPE = CategoryDTO.CategoryType.FIELD_COMPLAINT_ESCALATED;
+  private static final CategoryDTO.CategoryType CAT_FIELD_EMERGENCY_ESCALATED_TYPE = CategoryDTO.CategoryType.FIELD_EMERGENCY_ESCALATED;
+  private static final CategoryDTO.CategoryType CAT_GENERAL_COMPLAINT_ESCALATED_TYPE = CategoryDTO.CategoryType.GENERAL_COMPLAINT_ESCALATED;
+  private static final CategoryDTO.CategoryType CAT_GENERAL_ENQUIRY_ESCALATED_TYPE = CategoryDTO.CategoryType.GENERAL_ENQUIRY_ESCALATED;
+  private static final CategoryDTO.CategoryType CAT_INCORRECT_ESCALATION_TYPE = CategoryDTO.CategoryType.INCORRECT_ESCALATION;
+  private static final CategoryDTO.CategoryType CAT_PENDING_TYPE = CategoryDTO.CategoryType.PENDING;
+  private static final CategoryDTO.CategoryType CAT_REFUSAL_TYPE = CategoryDTO.CategoryType.REFUSAL;
+  private static final CategoryDTO.CategoryType CAT_TRANSLATION_PUNJABI_GURMUKHI_TYPE = CategoryDTO.CategoryType.TRANSLATION_PUNJABI_GURMUKHI;
+  private static final CategoryDTO.CategoryType CAT_TRANSLATION_TURKISH_TYPE = CategoryDTO.CategoryType.TRANSLATION_TURKISH;
+  private static final CategoryDTO.CategoryType CAT_TRANSLATION_ARABIC_TYPE = CategoryDTO.CategoryType.TRANSLATION_ARABIC;
+  private static final CategoryDTO.CategoryType CAT_TRANSLATION_PORTUGUESE_TYPE = CategoryDTO.CategoryType.TRANSLATION_PORTUGUESE;
+  private static final CategoryDTO.CategoryType CAT_TRANSLATION_URDU_TYPE = CategoryDTO.CategoryType.TRANSLATION_URDU;
+  private static final CategoryDTO.CategoryType CAT_TRANSLATION_GUJARATI_TYPE = CategoryDTO.CategoryType.TRANSLATION_GUJARATI;
+  private static final CategoryDTO.CategoryType CAT_CLOSE_ESCALATION_TYPE = CategoryDTO.CategoryType.CLOSE_ESCALATION;
+  private static final CategoryDTO.CategoryType CAT_INDIVIDUAL_RESPONSE_REQUESTED_TYPE = CategoryDTO.CategoryType.INDIVIDUAL_RESPONSE_REQUESTED;
+  private static final CategoryDTO.CategoryType CAT_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED_TYPE = CategoryDTO.CategoryType.INDIVIDUAL_REPLACEMENT_IAC_REQUESTED;
+  private static final CategoryDTO.CategoryType CAT_INDIVIDUAL_PAPER_REQUESTED_TYPE = CategoryDTO.CategoryType.INDIVIDUAL_PAPER_REQUESTED;
+  private static final CategoryDTO.CategoryType CAT_HOUSEHOLD_REPLACEMENT_IAC_REQUESTED_TYPE = CategoryDTO.CategoryType.HOUSEHOLD_REPLACEMENT_IAC_REQUESTED;
+  private static final CategoryDTO.CategoryType CAT_HOUSEHOLD_PAPER_REQUESTED_TYPE = CategoryDTO.CategoryType.HOUSEHOLD_PAPER_REQUESTED;
+
+  private static final Integer ACTIONABLE_HOUSEHOLD_CASE_ID = 1;
+  private static final Integer INACTIONABLE_HOUSEHOLD_CASE_ID = 2;
+
+  private static final Integer ACTIONABLE_INDIVIDUAL_CASE_ID = 3;
+  private static final Integer INACTIONABLE_INDIVIDUAL_CASE_ID = 4;
+
 
   private static final Integer NON_EXISTING_PARENT_CASE_ID = 1;
 
-  private static final CategoryDTO.CategoryType CASEEVENT_CATEGORY_TA = CategoryDTO.CategoryType.TRANSLATION_ARABIC;
-  private static final CategoryDTO.CategoryType CASEEVENT_CATEGORY_QR = CategoryDTO.CategoryType.ONLINE_QUESTIONNAIRE_RESPONSE;
-  private static final CategoryDTO.CategoryType CASEEVENT_CATEGORY_CI = CategoryDTO.CategoryType.CLASSIFICATION_INCORRECT;
-  private static final CategoryDTO.CategoryType CASEEVENT_CATEGORY_R = CategoryDTO.CategoryType.REFUSAL;
-  private static final CategoryDTO.CategoryType CASEEVENT_CATEGORY_U = CategoryDTO.CategoryType.UNDELIVERABLE;
   private static final String CASEEVENT_CREATEDBY = "unit test";
   private static final String CASEEVENT_DESCRIPTION = "a desc";
   private static final String CASEEVENT_SUBCATEGORY = "sub category";
@@ -99,18 +187,24 @@ public class CaseServiceImplTest {
   @Before
   public void init() throws Exception {
     mockStateTransitions();
+    mockupCaseRepo();
+    mockupCategoryRepo();
+    mockupCaseTypeRepo();
+    mockupActionPlanMappingRepo();
+    mockAppConfigUse();
+    mockupCaseEventRepo();
   }
 
   /**
    * A test
    */
   @Test
-  public void testCreateCaseEventNoParentCase() {
+  public void testCreateCaseEventAgainstNonExistentCase() {
     Mockito.when(caseRepo.findOne(NON_EXISTING_PARENT_CASE_ID)).thenReturn(null);
 
     Timestamp currentTime = DateTimeUtil.nowUTC();
     CaseEvent caseEvent = new CaseEvent(1, NON_EXISTING_PARENT_CASE_ID, CASEEVENT_DESCRIPTION, CASEEVENT_CREATEDBY,
-        currentTime, CASEEVENT_CATEGORY_QR, CASEEVENT_SUBCATEGORY);
+        currentTime, CAT_ADDRESS_DETAILS_INCORRECT_TYPE, CASEEVENT_SUBCATEGORY);
 
     CaseEvent result = caseService.createCaseEvent(caseEvent, null);
 
@@ -119,243 +213,70 @@ public class CaseServiceImplTest {
   }
 
   /**
-   * A test
-   *
-   * @throws Exception oops
+   * Tries to apply a Transaltion fulfillment request event against a case
+   * already inactionable. Should throw and not save anything
+   * 
+   * @throws Exception
    */
   @Test
-  public void testCreateCaseEventCloseHotelWithResponse() throws Exception {
+  public void testCreateFulfilmentCaseEventAgainstInactionableCase() throws Exception {
 
-    mockHotelCaseLoadSuccess();
-    mockActionPlanMappingLoad();
-    mockCaseEventCategoryForQuestionnaireResponseLoadSuccess();
-    mockCaseTypeHotelLoadSuccess();
-    mockCaseEventSave();
-    mockAppConfigUse();
-
-    // now kick it off
-    CaseEvent caseEvent = caseEventFixtureLoad(0);
-    caseService.createCaseEvent(caseEvent, null);
-
-    verify(caseRepo).findOne(HOTEL_CASE_ID);
-    verify(categoryRepo).findOne(CASEEVENT_CATEGORY_QR);
-    verify(caseRepo).saveAndFlush(any(Case.class));
-    verify(caseEventRepository).save(caseEvent);
-  }
-
-  /**
-   * A test
-   *
-   * @throws Exception oops
-   */
-  @Test
-  public void testCreateCaseEventCloseHotelWithClassificationIncorrect() throws Exception {
-
-    mockHotelCaseLoadSuccess();
-    mockActionPlanMappingLoad();
-    mockCaseEventCategoryForClassificationIncorrectSuccess();
-    mockCaseTypeHotelLoadSuccess();
-    mockCaseEventSave();
-    mockAppConfigUse();
-
-    // now kick it off
-    CaseEvent caseEvent = caseEventFixtureLoad(1);
-    caseService.createCaseEvent(caseEvent, null);
-
-    verify(caseRepo).findOne(HOTEL_CASE_ID);
-    verify(categoryRepo).findOne(CASEEVENT_CATEGORY_CI);
-    verify(caseRepo).saveAndFlush(any(Case.class));
-    verify(caseEventRepository).save(caseEvent);
-  }
-
-  /**
-   * A test
-   *
-   * @throws Exception oops
-   */
-  @Test
-  public void testCreateCaseEventCloseHotelWithRefusal() throws Exception {
-
-    mockHotelCaseLoadSuccess();
-    mockActionPlanMappingLoad();
-    mockCaseEventCategoryForRefusalSuccess();
-    mockCaseTypeHotelLoadSuccess();
-    mockCaseEventSave();
-    mockAppConfigUse();
-
-    // now kick it off
-    CaseEvent caseEvent = caseEventFixtureLoad(2);
-    caseService.createCaseEvent(caseEvent, null);
-
-    verify(caseRepo).findOne(HOTEL_CASE_ID);
-    verify(categoryRepo).findOne(CASEEVENT_CATEGORY_R);
-    verify(caseRepo).saveAndFlush(any(Case.class));
-    verify(caseEventRepository).save(caseEvent);
-  }
-
-  /**
-   * A test
-   *
-   * @throws Exception oops
-   */
-  @Test
-  public void testCreateCaseEventCloseHotelWithUndeliverable() throws Exception {
-
-    mockHotelCaseLoadSuccess();
-    mockActionPlanMappingLoad();
-    mockCaseEventCategoryForUndeliverableSuccess();
-    mockCaseTypeHotelLoadSuccess();
-    mockCaseEventSave();
-    mockAppConfigUse();
-
-    // now kick it off
-    CaseEvent caseEvent = caseEventFixtureLoad(3);
-    caseService.createCaseEvent(caseEvent, null);
-
-    verify(caseRepo).findOne(HOTEL_CASE_ID);
-    verify(categoryRepo).findOne(CASEEVENT_CATEGORY_U);
-    verify(caseRepo).saveAndFlush(any(Case.class));
-    verify(caseEventRepository).save(caseEvent);
-  }
-
-  /**
-   * A test
-   *
-   * @throws Exception oops
-   */
-  @Test
-  public void testCreateCaseEventCloseHousehold() throws Exception {
-
-    mockHouseholdCaseLoadSuccess();
-    mockActionPlanMappingLoad();
-    mockCaseEventCategoryForQuestionnaireResponseLoadSuccess();
-    mockCaseTypeHouseholdLoadSuccess();
-    mockCaseEventSave();
-    mockAppConfigUse();
-
-    // now kick it off
-    CaseEvent caseEvent = caseEventFixtureLoad(4);
-    caseService.createCaseEvent(caseEvent, null);
-
-    verify(caseRepo).findOne(HOUSEHOLD_CASE_ID);
-    verify(categoryRepo).findOne(CASEEVENT_CATEGORY_QR);
-    verify(caseRepo).saveAndFlush(any(Case.class));
-    verify(caseEventRepository).save(caseEvent);
-  }
-
-  @Test
-  public void testCreateFulfilmentCaseEventAgainstInactionalCase() throws Exception {
-
-    mockInactionableHouseholdCaseLoadSuccess();
-    mockActionPlanMappingLoad();
-    mockCaseEventCategoryForTranslationLoadSuccess();
-    mockCaseTypeHouseholdLoadSuccess();
-    mockAppConfigUse();
-
-    // now kick it off
-    CaseEvent caseEvent = caseEventFixtureLoad(5);
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryType.TRANSLATION_ARABIC, INACTIONABLE_HOUSEHOLD_CASE_ID);
 
     try {
       caseService.createCaseEvent(caseEvent, null);
       fail();
     } catch (RuntimeException re) {
-      verify(caseRepo).findOne(HOUSEHOLD_CASE_ID);
-      verify(categoryRepo).findOne(CASEEVENT_CATEGORY_TA);
+      verify(caseRepo).findOne(INACTIONABLE_HOUSEHOLD_CASE_ID);
+      verify(categoryRepo).findOne(CategoryDTO.CategoryType.TRANSLATION_ARABIC);
       verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
       verify(caseEventRepository, times(0)).save(caseEvent);
     }
-
   }
 
   /**
-   * mock loading data
+   * Tries to apply a Transaltion fulfillment request event against a case
+   * already inactionable. Should throw and not save anything
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void testCreateIndividualResponseRequestedCaseEventAgainstIndividualCaseNotAllowed() throws Exception {
+
+
+    // now kick it off
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryType.INDIVIDUAL_RESPONSE_REQUESTED, ACTIONABLE_INDIVIDUAL_CASE_ID);
+
+    try {
+      caseService.createCaseEvent(caseEvent, null);
+      fail();
+    } catch (RuntimeException re) {
+      verify(caseRepo).findOne(ACTIONABLE_INDIVIDUAL_CASE_ID);
+      verify(categoryRepo).findOne(CategoryDTO.CategoryType.INDIVIDUAL_RESPONSE_REQUESTED);
+      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+      verify(caseEventRepository, times(0)).save(caseEvent);
+    }
+  }
+
+  /**
+   * mock loading case data
    *
    * @return list of mock cases
    * @throws Exception oops
    */
-  private List<Case> mockHotelCaseLoadSuccess() throws Exception {
+  private List<Case> mockupCaseRepo() throws Exception {
     List<Case> cases = FixtureHelper.loadClassFixtures(Case[].class);
-    Case parentCase = cases.get(1);
-    Mockito.when(caseRepo.findOne(HOTEL_CASE_ID)).thenReturn(parentCase);
+
+    Mockito.when(caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_ID))
+        .thenReturn(cases.get(ACTIONABLE_HOUSEHOLD_CASE_ID - 1));
+    Mockito.when(caseRepo.findOne(INACTIONABLE_HOUSEHOLD_CASE_ID))
+        .thenReturn(cases.get(INACTIONABLE_HOUSEHOLD_CASE_ID - 1));
+    Mockito.when(caseRepo.findOne(ACTIONABLE_INDIVIDUAL_CASE_ID))
+        .thenReturn(cases.get(ACTIONABLE_INDIVIDUAL_CASE_ID - 1));
+    Mockito.when(caseRepo.findOne(INACTIONABLE_INDIVIDUAL_CASE_ID))
+        .thenReturn(cases.get(INACTIONABLE_INDIVIDUAL_CASE_ID - 1));
+
     return cases;
-  }
-
-  /**
-   * mock loading data
-   *
-   * @return list of mock cases
-   * @throws Exception oops
-   */
-  private List<Case> mockHouseholdCaseLoadSuccess() throws Exception {
-    List<Case> cases = FixtureHelper.loadClassFixtures(Case[].class);
-    Case parentCase = cases.get(0);
-    Mockito.when(caseRepo.findOne(HOUSEHOLD_CASE_ID)).thenReturn(parentCase);
-    return cases;
-  }
-
-  /**
-   * mock loading case data for INACTIONABLE CASE
-   *
-   * @return list of mock cases
-   * @throws Exception oops
-   */
-  private List<Case> mockInactionableHouseholdCaseLoadSuccess() throws Exception {
-    List<Case> cases = FixtureHelper.loadClassFixtures(Case[].class);
-    Case parentCase = cases.get(2);
-    Mockito.when(caseRepo.findOne(HOUSEHOLD_CASE_ID)).thenReturn(parentCase);
-    return cases;
-  }
-
-  /**
-   * mock loading data
-   *
-   * @return list of mock cases
-   * @throws Exception oops
-   */
-  private List<Category> mockCaseEventCategoryForQuestionnaireResponseLoadSuccess() throws Exception {
-    List<Category> categories = FixtureHelper.loadClassFixtures(Category[].class);
-    Category category = categories.get(0);
-    Mockito.when(categoryRepo.findOne(CASEEVENT_CATEGORY_QR)).thenReturn(category);
-    return categories;
-  }
-
-  /**
-   * mock loading data
-   *
-   * @return list of mock cases
-   * @throws Exception oops
-   */
-  private List<Category> mockCaseEventCategoryForTranslationLoadSuccess() throws Exception {
-    List<Category> categories = FixtureHelper.loadClassFixtures(Category[].class);
-    Category category = categories.get(4);
-    Mockito.when(categoryRepo.findOne(CASEEVENT_CATEGORY_TA)).thenReturn(category);
-    return categories;
-  }
-
-  /**
-   * mock loading data
-   *
-   * @return list of mock cases
-   * @throws Exception oops
-   */
-  private List<Category> mockCaseEventCategoryForClassificationIncorrectSuccess() throws Exception {
-    List<Category> categories = FixtureHelper.loadClassFixtures(Category[].class);
-    Category category = categories.get(1);
-    Mockito.when(categoryRepo.findOne(CASEEVENT_CATEGORY_CI)).thenReturn(category);
-    return categories;
-  }
-
-  /**
-   * mock loading data
-   *
-   * @return list of mock cases
-   * @throws Exception oops
-   */
-  private List<Category> mockCaseEventCategoryForRefusalSuccess() throws Exception {
-    List<Category> categories = FixtureHelper.loadClassFixtures(Category[].class);
-    Category category = categories.get(2);
-    Mockito.when(categoryRepo.findOne(CASEEVENT_CATEGORY_R)).thenReturn(category);
-    return categories;
   }
 
   /**
@@ -364,10 +285,84 @@ public class CaseServiceImplTest {
    * @return list of mock categories
    * @throws Exception oops
    */
-  private List<Category> mockCaseEventCategoryForUndeliverableSuccess() throws Exception {
+  private List<Category> mockupCategoryRepo() throws Exception {
     List<Category> categories = FixtureHelper.loadClassFixtures(Category[].class);
-    Category category = categories.get(3);
-    Mockito.when(categoryRepo.findOne(CASEEVENT_CATEGORY_U)).thenReturn(category);
+
+    Mockito.when(categoryRepo.findOne(CAT_ACTION_CANCELLATION_COMPLETED_TYPE))
+        .thenReturn(categories.get(CAT_ACTION_CANCELLATION_COMPLETED));
+    Mockito.when(categoryRepo.findOne(CAT_ACTION_CANCELLATION_CREATED_TYPE))
+        .thenReturn(categories.get(CAT_ACTION_CANCELLATION_CREATED));
+    Mockito.when(categoryRepo.findOne(CAT_ACTION_COMPLETED_TYPE)).thenReturn(categories.get(CAT_ACTION_COMPLETED));
+    Mockito.when(categoryRepo.findOne(CAT_ACTION_CREATED_TYPE)).thenReturn(categories.get(CAT_ACTION_CREATED));
+    Mockito.when(categoryRepo.findOne(CAT_ACTION_UPDATED_TYPE)).thenReturn(categories.get(CAT_ACTION_UPDATED));
+    Mockito.when(categoryRepo.findOne(CAT_ADDRESS_DETAILS_INCORRECT_TYPE))
+        .thenReturn(categories.get(CAT_ADDRESS_DETAILS_INCORRECT));
+    Mockito.when(categoryRepo.findOne(CAT_CASE_CREATED_TYPE)).thenReturn(categories.get(CAT_CASE_CREATED));
+    Mockito.when(categoryRepo.findOne(CAT_CLASSIFICATION_INCORRECT_TYPE))
+        .thenReturn(categories.get(CAT_CLASSIFICATION_INCORRECT));
+    Mockito.when(categoryRepo.findOne(CAT_GENERAL_COMPLAINT_TYPE))
+        .thenReturn(categories.get(CAT_GENERAL_COMPLAINT));
+    Mockito.when(categoryRepo.findOne(CAT_GENERAL_ENQUIRY_TYPE)).thenReturn(categories.get(CAT_GENERAL_ENQUIRY));
+    Mockito.when(categoryRepo.findOne(CAT_MISCELLANEOUS_TYPE)).thenReturn(categories.get(CAT_MISCELLANEOUS));
+    Mockito.when(categoryRepo.findOne(CAT_TECHNICAL_QUERY_TYPE)).thenReturn(categories.get(CAT_TECHNICAL_QUERY));
+    Mockito.when(categoryRepo.findOne(CAT_ACCESSIBILITY_MATERIALS_TYPE))
+        .thenReturn(categories.get(CAT_ACCESSIBILITY_MATERIALS));
+    Mockito.when(categoryRepo.findOne(CAT_PAPER_QUESTIONNAIRE_RESPONSE_TYPE))
+        .thenReturn(categories.get(CAT_PAPER_QUESTIONNAIRE_RESPONSE));
+    Mockito.when(categoryRepo.findOne(CAT_ONLINE_QUESTIONNAIRE_RESPONSE_TYPE))
+        .thenReturn(categories.get(CAT_ONLINE_QUESTIONNAIRE_RESPONSE));
+    Mockito.when(categoryRepo.findOne(CAT_UNDELIVERABLE_TYPE)).thenReturn(categories.get(CAT_UNDELIVERABLE));
+    Mockito.when(categoryRepo.findOne(CAT_TRANSLATION_SOMALI_TYPE))
+        .thenReturn(categories.get(CAT_TRANSLATION_SOMALI));
+    Mockito.when(categoryRepo.findOne(CAT_TRANSLATION_BENGALI_TYPE))
+        .thenReturn(categories.get(CAT_TRANSLATION_BENGALI));
+    Mockito.when(categoryRepo.findOne(CAT_TRANSLATION_SPANISH_TYPE))
+        .thenReturn(categories.get(CAT_TRANSLATION_SPANISH));
+    Mockito.when(categoryRepo.findOne(CAT_TRANSLATION_POLISH_TYPE))
+        .thenReturn(categories.get(CAT_TRANSLATION_POLISH));
+    Mockito.when(categoryRepo.findOne(CAT_TRANSLATION_CANTONESE_TYPE))
+        .thenReturn(categories.get(CAT_TRANSLATION_CANTONESE));
+    Mockito.when(categoryRepo.findOne(CAT_TRANSLATION_MANDARIN_TYPE))
+        .thenReturn(categories.get(CAT_TRANSLATION_MANDARIN));
+    Mockito.when(categoryRepo.findOne(CAT_TRANSLATION_PUNJABI_SHAHMUKI_TYPE))
+        .thenReturn(categories.get(CAT_TRANSLATION_PUNJABI_SHAHMUKI));
+    Mockito.when(categoryRepo.findOne(CAT_TRANSLATION_LITHUANIAN_TYPE))
+        .thenReturn(categories.get(CAT_TRANSLATION_LITHUANIAN));
+    Mockito.when(categoryRepo.findOne(CAT_FIELD_COMPLAINT_ESCALATED_TYPE))
+        .thenReturn(categories.get(CAT_FIELD_COMPLAINT_ESCALATED));
+    Mockito.when(categoryRepo.findOne(CAT_FIELD_EMERGENCY_ESCALATED_TYPE))
+        .thenReturn(categories.get(CAT_FIELD_EMERGENCY_ESCALATED));
+    Mockito.when(categoryRepo.findOne(CAT_GENERAL_COMPLAINT_ESCALATED_TYPE))
+        .thenReturn(categories.get(CAT_GENERAL_COMPLAINT_ESCALATED));
+    Mockito.when(categoryRepo.findOne(CAT_GENERAL_ENQUIRY_ESCALATED_TYPE))
+        .thenReturn(categories.get(CAT_GENERAL_ENQUIRY_ESCALATED));
+    Mockito.when(categoryRepo.findOne(CAT_INCORRECT_ESCALATION_TYPE))
+        .thenReturn(categories.get(CAT_INCORRECT_ESCALATION));
+    Mockito.when(categoryRepo.findOne(CAT_PENDING_TYPE)).thenReturn(categories.get(CAT_PENDING));
+    Mockito.when(categoryRepo.findOne(CAT_REFUSAL_TYPE)).thenReturn(categories.get(CAT_REFUSAL));
+    Mockito.when(categoryRepo.findOne(CAT_TRANSLATION_PUNJABI_GURMUKHI_TYPE))
+        .thenReturn(categories.get(CAT_TRANSLATION_PUNJABI_GURMUKHI));
+    Mockito.when(categoryRepo.findOne(CAT_TRANSLATION_TURKISH_TYPE))
+        .thenReturn(categories.get(CAT_TRANSLATION_TURKISH));
+    Mockito.when(categoryRepo.findOne(CAT_TRANSLATION_ARABIC_TYPE))
+        .thenReturn(categories.get(CAT_TRANSLATION_ARABIC));
+    Mockito.when(categoryRepo.findOne(CAT_TRANSLATION_PORTUGUESE_TYPE))
+        .thenReturn(categories.get(CAT_TRANSLATION_PORTUGUESE));
+    Mockito.when(categoryRepo.findOne(CAT_TRANSLATION_URDU_TYPE)).thenReturn(categories.get(CAT_TRANSLATION_URDU));
+    Mockito.when(categoryRepo.findOne(CAT_TRANSLATION_GUJARATI_TYPE))
+        .thenReturn(categories.get(CAT_TRANSLATION_GUJARATI));
+    Mockito.when(categoryRepo.findOne(CAT_CLOSE_ESCALATION_TYPE)).thenReturn(categories.get(CAT_CLOSE_ESCALATION));
+    Mockito.when(categoryRepo.findOne(CAT_INDIVIDUAL_RESPONSE_REQUESTED_TYPE))
+        .thenReturn(categories.get(CAT_INDIVIDUAL_RESPONSE_REQUESTED));
+    Mockito.when(categoryRepo.findOne(CAT_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED_TYPE))
+        .thenReturn(categories.get(CAT_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED));
+    Mockito.when(categoryRepo.findOne(CAT_INDIVIDUAL_PAPER_REQUESTED_TYPE))
+        .thenReturn(categories.get(CAT_INDIVIDUAL_PAPER_REQUESTED));
+    Mockito.when(categoryRepo.findOne(CAT_HOUSEHOLD_REPLACEMENT_IAC_REQUESTED_TYPE))
+        .thenReturn(categories.get(CAT_HOUSEHOLD_REPLACEMENT_IAC_REQUESTED));
+    Mockito.when(categoryRepo.findOne(CAT_HOUSEHOLD_PAPER_REQUESTED_TYPE))
+        .thenReturn(categories.get(CAT_HOUSEHOLD_PAPER_REQUESTED));
+
     return categories;
   }
 
@@ -377,23 +372,11 @@ public class CaseServiceImplTest {
    * @return list of mock cases types
    * @throws Exception oops
    */
-  private List<CaseType> mockCaseTypeHouseholdLoadSuccess() throws Exception {
+  private List<CaseType> mockupCaseTypeRepo() throws Exception {
     List<CaseType> caseTypes = FixtureHelper.loadClassFixtures(CaseType[].class);
-    CaseType caseType = caseTypes.get(0);
-    Mockito.when(caseTypeRepo.findOne(HOUSEHOLD_CASETYPE_ID)).thenReturn(caseType);
-    return caseTypes;
-  }
-
-  /**
-   * mock loading data
-   *
-   * @return list of mock cases types
-   * @throws Exception oops
-   */
-  private List<CaseType> mockCaseTypeHotelLoadSuccess() throws Exception {
-    List<CaseType> caseTypes = FixtureHelper.loadClassFixtures(CaseType[].class);
-    CaseType caseType = caseTypes.get(1);
-    Mockito.when(caseTypeRepo.findOne(HOTEL_CASETYPE_ID)).thenReturn(caseType);
+    for (int i = 1; i <= 4; i++) {
+      Mockito.when(caseTypeRepo.findOne(i)).thenReturn(caseTypes.get(i-1));
+    }
     return caseTypes;
   }
 
@@ -404,9 +387,14 @@ public class CaseServiceImplTest {
    * @return a mock case event
    * @throws Exception oops
    */
-  private CaseEvent caseEventFixtureLoad(int caseEventIndex) throws Exception {
-    List<CaseEvent> caseEvents = FixtureHelper.loadClassFixtures(CaseEvent[].class);
-    CaseEvent caseEvent = caseEvents.get(caseEventIndex);
+  private CaseEvent fabricateEvent(CategoryDTO.CategoryType categoryType, int caseId) throws Exception {
+    CaseEvent caseEvent = new CaseEvent();
+    caseEvent.setCaseId(caseId);
+    caseEvent.setCategory(categoryType);
+    caseEvent.setCreatedBy(CASEEVENT_CREATEDBY);
+    caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
+    caseEvent.setDescription(CASEEVENT_DESCRIPTION);
+    caseEvent.setSubCategory(CASEEVENT_SUBCATEGORY);
     return caseEvent;
   }
 
@@ -416,11 +404,14 @@ public class CaseServiceImplTest {
    * @return a mock case event
    * @throws Exception oops
    */
-  private CaseEvent mockCaseEventSave() throws Exception {
+  private List<CaseEvent> mockupCaseEventRepo() throws Exception {
     List<CaseEvent> caseEvents = FixtureHelper.loadClassFixtures(CaseEvent[].class);
-    CaseEvent caseEvent = caseEvents.get(0);
-    Mockito.when(caseEventRepository.save(caseEvent)).thenReturn(caseEvent);
-    return caseEvent;
+    Mockito.when(caseEventRepository.save(any(CaseEvent.class))).thenAnswer(new Answer<CaseEvent>() {
+      public CaseEvent answer(InvocationOnMock invocation) {
+        return (CaseEvent) invocation.getArguments()[0];
+      }
+    });
+    return caseEvents;
   }
 
   /**
@@ -445,11 +436,12 @@ public class CaseServiceImplTest {
    * @return a mock action plan mapping
    * @throws Exception oops
    */
-  private ActionPlanMapping mockActionPlanMappingLoad() throws Exception {
+  private List<ActionPlanMapping> mockupActionPlanMappingRepo() throws Exception {
     List<ActionPlanMapping> actionPlanMappings = FixtureHelper.loadClassFixtures(ActionPlanMapping[].class);
-    ActionPlanMapping actionPlanMapping = actionPlanMappings.get(0);
-    Mockito.when(actionPlanMappingRepo.findOne(MAPPING_ID)).thenReturn(actionPlanMapping);
-    return actionPlanMapping;
+    for (int i = 1; i <= 12; i++) {
+      Mockito.when(actionPlanMappingRepo.findOne(i)).thenReturn(actionPlanMappings.get(i - 1));
+    }
+    return actionPlanMappings;
   }
 
   /**

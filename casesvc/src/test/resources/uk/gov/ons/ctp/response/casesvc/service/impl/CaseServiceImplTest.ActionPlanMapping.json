@@ -1,11 +1,112 @@
 [
-{  
-   "actionPlanMappingId":1,
-   "actionPlanId":2,
-   "caseTypeId":3,
-   "isDefault":true,
-   "inboundChannel":"ONLINE",
-   "outboundChannel":"POST",
-   "variant":"English"
+{
+  "actionPlanMappingId":"1",
+  "actionPlanId":"1",
+  "caseTypeId":"1",
+  "isDefault":true,
+  "inboundChannel":"ONLINE",
+  "variant":"ENGLISH",
+  "outboundChannel":"POST"
+},
+{
+  "actionPlanMappingId":"2",
+  "actionPlanId":"1",
+  "caseTypeId":"1",
+  "isDefault":true,
+  "inboundChannel":"ONLINE",
+  "variant":"ENGLISH",
+  "outboundChannel":"POST"
+},
+{
+  "actionPlanMappingId":"3",
+  "actionPlanId":"2",
+  "caseTypeId":"1",
+  "isDefault":true,
+  "inboundChannel":"ONLINE",
+  "variant":"WELSH",
+  "outboundChannel":"POST"
+},
+{
+  "actionPlanMappingId":"4",
+  "actionPlanId":"2",
+  "caseTypeId":"2",
+  "isDefault":true,
+  "inboundChannel":"ONLINE",
+  "variant":"WELSH",
+  "outboundChannel":"POST"
+},
+{
+  "actionPlanMappingId":"5",
+  "actionPlanId":"3",
+  "caseTypeId":"2",
+  "isDefault":true,
+  "inboundChannel":"ONLINE",
+  "variant":"ENGLISH",
+  "outboundChannel":"POST"
+},
+{
+  "actionPlanMappingId":"6",
+  "actionPlanId":"3",
+  "caseTypeId":"2",
+  "isDefault":true,
+  "inboundChannel":"ONLINE",
+  "variant":"ENGLISH",
+  "outboundChannel":"POST"
+},
+{
+  "actionPlanMappingId":"7",
+  "actionPlanId":"4",
+  "caseTypeId":"3",
+  "isDefault":true,
+  "inboundChannel":"ONLINE",
+  "variant":"WELSH",
+  "outboundChannel":"POST"
+},
+{
+  "actionPlanMappingId":"8",
+  "actionPlanId":"4",
+  "caseTypeId":"3",
+  "isDefault":true,
+  "inboundChannel":"ONLINE",
+  "variant":"WELSH",
+  "outboundChannel":"POST"
+},
+{
+  "actionPlanMappingId":"9",
+  "actionPlanId":"5",
+  "caseTypeId":"3",
+  "isDefault":true,
+  "inboundChannel":"PAPER",
+  "variant":"ENGLISH",
+  "outboundChannel":"POST"
+},
+{
+  "actionPlanMappingId":"10",
+  "actionPlanId":"6",
+  "caseTypeId":"4",
+  "isDefault":true,
+  "inboundChannel":"PAPER",
+  "variant":"WELSH",
+  "outboundChannel":"POST"
+},
+{
+  "actionPlanMappingId":"11",
+  "actionPlanId":"7",
+  "caseTypeId":"4",
+  "isDefault":true,
+  "inboundChannel":"PAPER",
+  "variant":"ENGLISH",
+  "outboundChannel":"POST"
+},
+{
+  "actionPlanMappingId":"12",
+  "actionPlanId":"8",
+  "caseTypeId":"4",
+  "isDefault":true,
+  "inboundChannel":"PAPER",
+  "variant":"WELSH",
+  "outboundChannel":"POST"
 }
 ]
+
+

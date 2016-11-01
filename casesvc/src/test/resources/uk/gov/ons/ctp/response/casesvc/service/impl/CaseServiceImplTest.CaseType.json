@@ -1,23 +1,30 @@
 [
-{  
+{
   "caseTypeId":"1",
-  "name":"HH",
-  "description":"Home Sweet Home",
-  "respondentType": "H",
-  "questionSet":"HH"
+  "name":"HC1SO331D4E",
+  "description":"component 1 sex id online first 331 day 4 england household",
+  "questionSet":"H1S",
+  "respondentType":"H"
 },
-{  
+{
   "caseTypeId":"2",
-  "name":"HGH",
-  "description":"Hotel, Slum House, Squat or Cardboard box",
-  "respondentType": "H",
-  "questionSet":"CE"
+  "name":"HC1SO331D4W",
+  "description":"component 1 sex id online first 331 day 4 wales household",
+  "questionSet":"H2S",
+  "respondentType":"H"
 },
-{  
+{
   "caseTypeId":"3",
-  "name":"CH",
-  "description":"The Penultimate Residence",
-  "respondentType": "H",
-  "questionSet":"CE"
-}
+  "name":"HC1SO331D10E",
+  "description":"component 1 sex id online first 331 day 10 england household",
+  "questionSet":"H1S",
+  "respondentType":"I"
+},
+{
+  "caseTypeId":"4",
+  "name":"HC1SO331D10W",
+  "description":"component 1 sex id online first 331 day 10 wales household",
+  "questionSet":"H2S",
+  "respondentType":"I"
+  }
 ]
