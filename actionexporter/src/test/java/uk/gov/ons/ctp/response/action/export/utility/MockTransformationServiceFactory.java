@@ -5,7 +5,7 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
-import uk.gov.ons.ctp.response.action.export.domain.SftpMessage;
+import uk.gov.ons.ctp.response.action.export.domain.ExportMessage;
 import uk.gov.ons.ctp.response.action.export.service.TransformationService;
 
 import java.io.ByteArrayOutputStream;
@@ -25,8 +25,8 @@ public class MockTransformationServiceFactory implements Factory<TransformationS
   public TransformationService provide() {
     final TransformationService mockedService = Mockito.mock(TransformationService.class);
 
-    Mockito.when(mockedService.processActionRequest(any(ActionRequestDocument.class))).thenAnswer(new Answer<SftpMessage>() {
-      public SftpMessage answer(final InvocationOnMock invocation) throws Throwable {
+    Mockito.when(mockedService.processActionRequest(any(ActionRequestDocument.class))).thenAnswer(new Answer<ExportMessage>() {
+      public ExportMessage answer(final InvocationOnMock invocation) throws Throwable {
         return buildSftpMessage();
       }
     });
@@ -42,8 +42,8 @@ public class MockTransformationServiceFactory implements Factory<TransformationS
   public void dispose(final TransformationService t) {
   }
 
-  private SftpMessage buildSftpMessage() {
-    SftpMessage message = new SftpMessage();
+  private ExportMessage buildSftpMessage() {
+    ExportMessage message = new ExportMessage();
     message.setOutputStreams(new HashMap());
     return message;
   }

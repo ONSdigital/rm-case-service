@@ -5,7 +5,7 @@ import ma.glasnost.orika.MapperFacade;
 import org.springframework.util.CollectionUtils;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
-import uk.gov.ons.ctp.response.action.export.domain.SftpMessage;
+import uk.gov.ons.ctp.response.action.export.domain.ExportMessage;
 import uk.gov.ons.ctp.response.action.export.message.SftpServicePublisher;
 import uk.gov.ons.ctp.response.action.export.representation.ActionRequestDocumentDTO;
 import uk.gov.ons.ctp.response.action.export.service.ActionRequestService;
@@ -100,7 +100,7 @@ public class ActionRequestEndpoint {
               String.format("%s %d", ACTION_REQUEST_NOT_FOUND, actionId));
     }
 
-    SftpMessage message = transformationService.processActionRequest(actionRequestDocument);
+    ExportMessage message = transformationService.processActionRequest(actionRequestDocument);
     message.getOutputStreams().forEach((fileName, stream) -> {
       sftpService.sendMessage(fileName, message.getActionRequestIds(fileName), stream);
     });

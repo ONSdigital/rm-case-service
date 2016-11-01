@@ -35,7 +35,6 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
  *
  */
 @ContextConfiguration(locations = {"/PrintServiceTest-context.xml"})
-@TestPropertySource("classpath:/application-test.properties")
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ActionExportReceiverTest {
 

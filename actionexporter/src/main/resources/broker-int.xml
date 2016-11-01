@@ -23,7 +23,7 @@
 	<bean id="instructionListenerContainer"
 		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
 		<property name="connectionFactory" ref="connectionFactory" />
-		<property name="destinationName" value="Action.Printer" />
+		<property name="destinationName" value="${jms.queue.name}" />
 		<property name="sessionTransacted" value="true" />
 		<property name="maxConcurrentConsumers" value="1" />
 		<property name="concurrentConsumers" value="1" />

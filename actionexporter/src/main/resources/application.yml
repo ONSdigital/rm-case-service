@@ -92,9 +92,14 @@ deadxml:
 
 sftp:
   host: localhost
+  port: 22
   username: centos
   password: "JLibV2&XD,"
   directory: Documents
+
+jms:
+  queue:
+    name: Action.Printer
 
 freemarker:
   delayfornewtemplates: 86400000  # ie 24 hours in milliseconds
