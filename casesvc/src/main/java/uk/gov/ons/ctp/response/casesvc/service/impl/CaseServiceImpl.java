@@ -45,8 +45,8 @@ import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientServic
 public class CaseServiceImpl implements CaseService {
 
   private static final String IAC_OVERUSE_MSG = "More than one case found to be using IAC %s";
-  private static final String MISSING_NEW_CASE_MSG = "New Case definition missing for original case %s";
-  private static final String CASE_NO_LONGER_ACTIONABLE_MSG = "The Case %s is no longer actionable - the requested event is invalid";
+  private static final String MISSING_NEW_CASE_MSG = "New Case definition missing for case %s";
+  private static final String CASE_NO_LONGER_ACTIONABLE_MSG = "Case is no longer actionable (%s) - the requested event is invalid";
   private static final String WRONG_NEW_CASE_TYPE_MSG = "New Case definition has incorrect casetype (new respondent type '%s' is not required type '%s')";
   private static final String WRONG_OLD_CASE_TYPE_MSG = "Old Case definition has incorrect casetype (old respondent type '%s' is not expected type '%s')";
 

@@ -1,11 +1,11 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockActionPlanMappingServiceFactory.MAPPING_ID;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -50,6 +50,10 @@ public class CaseServiceImplTest {
 
   private static final String IAC_SVC_PUT_PATH = "iacs/123";
   private static final String IAC_SVC_POST_PATH = "iacs/123";
+  private static final String NEW_CASE_MISSING_EX = "New Case definition missing";
+  private static final String CASE_NO_LONGER_ACTIONABLE_EX = "Case is no longer actionable";
+  private static final String WRONG_NEW_CASE_TYPE_EX = "New Case definition has incorrect casetype";
+  private static final String WRONG_OLD_CASE_TYPE_EX = "Old Case definition has incorrect casetype";
 
   @Mock
   private CaseRepository caseRepo;
@@ -227,6 +231,7 @@ public class CaseServiceImplTest {
       caseService.createCaseEvent(caseEvent, null);
       fail();
     } catch (RuntimeException re) {
+      assertThat(re.getMessage().startsWith(CASE_NO_LONGER_ACTIONABLE_EX));
       verify(caseRepo).findOne(INACTIONABLE_HOUSEHOLD_CASE_ID);
       verify(categoryRepo).findOne(CategoryDTO.CategoryType.TRANSLATION_ARABIC);
       verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
@@ -241,9 +246,31 @@ public class CaseServiceImplTest {
    * @throws Exception
    */
   @Test
-  public void testCreateIndividualResponseRequestedCaseEventAgainstIndividualCaseNotAllowed() throws Exception {
+  public void testIndividualResponseRequestedAgainstIndividualCaseNotAllowed() throws Exception {
+    // now kick it off
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryType.INDIVIDUAL_RESPONSE_REQUESTED, ACTIONABLE_INDIVIDUAL_CASE_ID);
+    Case indCase = caseRepo.findOne(ACTIONABLE_INDIVIDUAL_CASE_ID);
+    try {
+      caseService.createCaseEvent(caseEvent, indCase);
+      fail();
+    } catch (RuntimeException re) {
+      assertThat(re.getMessage().startsWith(WRONG_OLD_CASE_TYPE_EX));
+      // one of the caseRepo calls is the test loading indCase
+      verify(caseRepo, times(2)).findOne(ACTIONABLE_INDIVIDUAL_CASE_ID);
+      verify(categoryRepo).findOne(CategoryDTO.CategoryType.INDIVIDUAL_RESPONSE_REQUESTED);
+      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+      verify(caseEventRepository, times(0)).save(caseEvent);
+    }
+  }
 
-
+  /**
+   * Tries to apply a Transaltion fulfillment request event against a case
+   * already inactionable. Should throw and not save anything
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void testIndividualResponseRequestedAgainstIndividualCaseWithoutNewCase() throws Exception {
     // now kick it off
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryType.INDIVIDUAL_RESPONSE_REQUESTED, ACTIONABLE_INDIVIDUAL_CASE_ID);
 
@@ -251,6 +278,7 @@ public class CaseServiceImplTest {
       caseService.createCaseEvent(caseEvent, null);
       fail();
     } catch (RuntimeException re) {
+      assertThat(re.getMessage().startsWith(NEW_CASE_MISSING_EX));
       verify(caseRepo).findOne(ACTIONABLE_INDIVIDUAL_CASE_ID);
       verify(categoryRepo).findOne(CategoryDTO.CategoryType.INDIVIDUAL_RESPONSE_REQUESTED);
       verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
