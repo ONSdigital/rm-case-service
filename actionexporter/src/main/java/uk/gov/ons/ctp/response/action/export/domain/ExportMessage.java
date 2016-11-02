@@ -11,12 +11,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Representation of a message being sent via sftp.
+ * Representation of a message being sent.
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class SftpMessage {
+public class ExportMessage {
 
   private Map<String, List<String>>  actionRequestIds;
   private Map<String, ByteArrayOutputStream> outputStreams;

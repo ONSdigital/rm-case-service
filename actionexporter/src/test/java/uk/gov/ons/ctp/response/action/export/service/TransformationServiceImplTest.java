@@ -5,7 +5,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import uk.gov.ons.ctp.response.action.export.domain.SftpMessage;
+import uk.gov.ons.ctp.response.action.export.domain.ExportMessage;
 import uk.gov.ons.ctp.response.action.export.repository.ActionRequestRepository;
 import uk.gov.ons.ctp.response.action.export.service.impl.TransformationServiceImpl;
 
@@ -36,7 +36,7 @@ public class TransformationServiceImplTest {
   @Test
   public void testProcessActionRequestsNothingToProcess() {
     when(actionRequestRepo.findByDateSentIsNull()).thenReturn(new ArrayList<>());
-    SftpMessage sftpMessage = transformationService.processActionRequests();
+    ExportMessage sftpMessage = transformationService.processActionRequests();
     assertNotNull(sftpMessage);
     assertTrue(sftpMessage.getOutputStreams().isEmpty());
     assertTrue(sftpMessage.getActionRequestIds().isEmpty());

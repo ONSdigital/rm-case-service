@@ -1,10 +1,9 @@
-package uk.gov.ons.ctp.response.action.export.config;
+package uk.gov.ons.ctp.response.action.export.templating.freemarker.config;
 
 import freemarker.template.TemplateExceptionHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import uk.gov.ons.ctp.response.action.export.templating.freemarker.config.MongoTemplateLoader;
 
 import static org.glassfish.jersey.message.internal.ReaderWriter.UTF8;
 

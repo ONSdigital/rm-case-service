@@ -57,7 +57,7 @@
 
     <bean id="defaultSftpSessionFactory" class="org.springframework.integration.sftp.session.DefaultSftpSessionFactory">
       <property name="host" value="${sftp.host}"/>
-      <property name="port" value="22"/>
+      <property name="port" value="${sftp.port}"/>
       <property name="user" value="${sftp.username}"/>
       <property name="password" value="${sftp.password}"/>
       <property name="allowUnknownKeys" value="true"/>

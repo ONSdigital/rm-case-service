@@ -7,7 +7,7 @@ import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import uk.gov.ons.ctp.response.action.export.domain.SftpMessage;
+import uk.gov.ons.ctp.response.action.export.domain.ExportMessage;
 import uk.gov.ons.ctp.response.action.export.message.SftpServicePublisher;
 import uk.gov.ons.ctp.response.action.export.service.TransformationService;
 
@@ -40,7 +40,7 @@ public class ExportScheduler implements HealthIndicator {
    */
   @Scheduled(cron = "#{appConfig.exportSchedule.cronExpression}")
   public void scheduleExport() {
-    SftpMessage message = transformationService.processActionRequests();
+    ExportMessage message = transformationService.processActionRequests();
     message.getOutputStreams().forEach((fileName, stream) -> {
       sftpService.sendMessage(fileName, message.getActionRequestIds(fileName), stream);
     });

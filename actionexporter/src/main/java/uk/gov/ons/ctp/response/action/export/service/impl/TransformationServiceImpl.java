@@ -15,7 +15,7 @@ import javax.inject.Named;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
-import uk.gov.ons.ctp.response.action.export.domain.SftpMessage;
+import uk.gov.ons.ctp.response.action.export.domain.ExportMessage;
 import uk.gov.ons.ctp.response.action.export.repository.ActionRequestRepository;
 import uk.gov.ons.ctp.response.action.export.service.TemplateMappingService;
 import uk.gov.ons.ctp.response.action.export.service.TemplateService;
@@ -41,31 +41,31 @@ public class TransformationServiceImpl implements TransformationService {
   private TemplateMappingService templateMappingService;
 
   @Override
-  public SftpMessage processActionRequests() {
+  public ExportMessage processActionRequests() {
     List<ActionRequestDocument> requests = actionRequestRepo.findByDateSentIsNull();
-    return buildSftpMessage(requests);
+    return buildExportMessage(requests);
   }
 
   @Override
-  public SftpMessage processActionRequest(ActionRequestDocument actionRequestDocument) {
+  public ExportMessage processActionRequest(ActionRequestDocument actionRequestDocument) {
     List<ActionRequestDocument> requests = new ArrayList<>();
     requests.add(actionRequestDocument);
-    return buildSftpMessage(requests);
+    return buildExportMessage(requests);
   }
 
   /**
-   * Produces SftpMessage with stream objects and list of ActionRequest Ids.
+   * Produces ExportMessage with stream objects and list of ActionRequest Ids.
    * @param actionRequestDocumentList the list to be processed
-   * @return SftpMessage with stream objects and list of ActionRequest Ids.
+   * @return ExportMessage with stream objects and list of ActionRequest Ids.
    */
-  private SftpMessage buildSftpMessage(List<ActionRequestDocument> actionRequestDocumentList) {
+  private ExportMessage buildExportMessage(List<ActionRequestDocument> actionRequestDocumentList) {
     Map<String, List<String>> actionIds = new HashMap();
     Map<String, ByteArrayOutputStream> outputStreams = new HashMap();
-    SftpMessage sftpMessage = new SftpMessage(actionIds, outputStreams);
+    ExportMessage message = new ExportMessage(actionIds, outputStreams);
 
     if (actionRequestDocumentList.isEmpty()) {
       log.warn("No Action Export requests to process.");
-      return sftpMessage;
+      return message;
     }
 
     Map<String, Map<String, List<ActionRequestDocument>>> templateRequests = actionRequestDocumentList.stream()
@@ -92,6 +92,6 @@ public class TransformationServiceImpl implements TransformationService {
         }
       });
     });
-    return sftpMessage;
+    return message;
   }
 }
