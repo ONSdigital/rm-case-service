@@ -176,16 +176,19 @@ public class CaseServiceImpl implements CaseService {
         throw new RuntimeException(String.format(MISSING_NEW_CASE_MSG, targetCase.getCaseId()));
       }
       CaseType targetCaseType = caseTypeRepo.findOne(targetCase.getCaseTypeId());
-      checkRespondentTypesMatch(WRONG_OLD_CASE_TYPE_MSG, category.getOldCaseRespondentType(), targetCaseType.getRespondentType());
+      checkRespondentTypesMatch(WRONG_OLD_CASE_TYPE_MSG, category.getOldCaseRespondentType(),
+          targetCaseType.getRespondentType());
 
       CaseType intendedCaseType = caseTypeRepo.findOne(newCase.getCaseTypeId());
-      checkRespondentTypesMatch(WRONG_NEW_CASE_TYPE_MSG, category.getNewCaseRespondentType(), intendedCaseType.getRespondentType());
+      checkRespondentTypesMatch(WRONG_NEW_CASE_TYPE_MSG, category.getNewCaseRespondentType(),
+          intendedCaseType.getRespondentType());
     }
-   
-    if (!StringUtils.isEmpty(category.getGeneratedActionType()) && targetCase.getState().equals(CaseDTO.CaseState.INACTIONABLE)) {
-        throw new RuntimeException(String.format(CASE_NO_LONGER_ACTIONABLE_MSG, targetCase.getCaseId()));
+
+    if (!StringUtils.isEmpty(category.getGeneratedActionType())
+        && targetCase.getState().equals(CaseDTO.CaseState.INACTIONABLE)) {
+      throw new RuntimeException(String.format(CASE_NO_LONGER_ACTIONABLE_MSG, targetCase.getCaseId()));
     }
-    
+
   }
 
   /**
@@ -214,7 +217,7 @@ public class CaseServiceImpl implements CaseService {
   private void checkAndEffectCreationOfNewCase(Category category, CaseEvent caseEvent, Case targetCase,
       Case newCase) {
     if (category.getNewCaseRespondentType() != null) {
-      createNewCaseFromEvent(caseEvent, targetCase, newCase);
+      createNewCaseFromEvent(caseEvent, targetCase, newCase, category);
     }
   }
 
@@ -272,18 +275,17 @@ public class CaseServiceImpl implements CaseService {
       try {
         // make the transition
         newState = caseSvcStateTransitionManager.transition(targetCase.getState(), transitionEvent);
-        targetCase.setState(newState);
-        caseRepo.saveAndFlush(targetCase);
+        // was a state change effected?
+        if (oldState != newState) {
+          targetCase.setState(newState);
+          caseRepo.saveAndFlush(targetCase);
+          notificationPublisher.sendNotifications(Arrays.asList(prepareCaseNotification(targetCase, transitionEvent)));
+          if (transitionEvent == CaseDTO.CaseEvent.DISABLED) {
+            internetAccessCodeSvcClientService.disableIAC(targetCase.getIac());
+          }
+        }
       } catch (StateTransitionException ste) {
         throw new RuntimeException(ste);
-      }
-
-      // was a state change effected?
-      if (oldState != newState) {
-        notificationPublisher.sendNotifications(Arrays.asList(prepareCaseNotification(targetCase, transitionEvent)));
-        if (transitionEvent == CaseDTO.CaseEvent.DISABLED) {
-          internetAccessCodeSvcClientService.disableIAC(targetCase.getIac());
-        }
       }
     }
   }
@@ -298,7 +300,7 @@ public class CaseServiceImpl implements CaseService {
    *          else null
    * @return the new case
    */
-  private Case createNewCaseFromEvent(CaseEvent caseEvent, Case targetCase, Case newCase) {
+  private Case createNewCaseFromEvent(CaseEvent caseEvent, Case targetCase, Case newCase, Category caseEventCategory) {
     Case persistedCase = null;
 
     newCase.setState(CaseDTO.CaseState.REPLACEMENT_INIT);
@@ -313,7 +315,6 @@ public class CaseServiceImpl implements CaseService {
     newCaseCaseEvent.setCategory(CategoryDTO.CategoryType.CASE_CREATED);
     newCaseCaseEvent.setCreatedBy("SYSTEM");
     newCaseCaseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
-    Category caseEventCategory = categoryRepo.findOne(caseEvent.getCategory());
     newCaseCaseEvent.setDescription(String.format("Case created when %s", caseEventCategory.getShortDescription()));
 
     caseEventRepo.saveAndFlush(newCaseCaseEvent);

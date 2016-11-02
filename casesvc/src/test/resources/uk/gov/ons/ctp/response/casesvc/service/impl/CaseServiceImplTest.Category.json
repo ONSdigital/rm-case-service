@@ -8,6 +8,7 @@
     "generatedActionType": null,
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": true
   },
   {
@@ -19,6 +20,7 @@
     "generatedActionType": null,
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": false
   },
   {
@@ -30,6 +32,7 @@
     "generatedActionType": null,
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": false
   },
   {
@@ -41,6 +44,7 @@
     "generatedActionType": null,
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": false
   },
   {
@@ -52,6 +56,7 @@
     "generatedActionType": null,
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": false
   },
   {
@@ -63,6 +68,7 @@
     "generatedActionType": null,
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": false
   },
   {
@@ -74,6 +80,7 @@
     "generatedActionType": null,
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": true
   },
   {
@@ -85,6 +92,7 @@
     "generatedActionType": null,
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": false
   },
   {
@@ -96,6 +104,7 @@
     "generatedActionType": null,
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": true
   },
   {
@@ -107,6 +116,7 @@
     "generatedActionType": null,
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": true
   },
   {
@@ -118,6 +128,7 @@
     "generatedActionType": "FC_ESCALATION",
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": true
   },
   {
@@ -129,6 +140,7 @@
     "generatedActionType": "FC_ESCALATION",
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": true
   },
   {
@@ -140,6 +152,7 @@
     "generatedActionType": null,
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": "DEACTIVATED",
     "manual": true
   },
   {
@@ -151,6 +164,7 @@
     "generatedActionType": "GC_ESCALATION",
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": true
   },
   {
@@ -162,6 +176,7 @@
     "generatedActionType": null,
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": true
   },
   {
@@ -173,6 +188,7 @@
     "generatedActionType": "GE_ESCALATION",
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": true
   },
   {
@@ -184,6 +200,7 @@
     "generatedActionType": null,
     "newCaseRespondentType": "H",
     "oldCaseRespondentType": "H",
+    "eventType": "DEACTIVATED",
     "manual": true
   },
   {
@@ -195,6 +212,7 @@
     "generatedActionType": null,
     "newCaseRespondentType": "H",
     "oldCaseRespondentType": "H",
+    "eventType": "DISABLED",
     "manual": true
   },
   {
@@ -206,6 +224,7 @@
     "generatedActionType": null,
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": true
   },
   {
@@ -217,6 +236,7 @@
     "generatedActionType": null,
     "newCaseRespondentType": "I",
     "oldCaseRespondentType": "I",
+    "eventType": "DEACTIVATED",
     "manual": true
   },
   {
@@ -228,6 +248,7 @@
     "generatedActionType": null,
     "newCaseRespondentType": "I",
     "oldCaseRespondentType": "I",
+    "eventType": "DISABLED",
     "manual": true
   },
   {
@@ -239,6 +260,7 @@
     "generatedActionType": null,
     "newCaseRespondentType": "I",
     "oldCaseRespondentType": "H",
+    "eventType": null,
     "manual": true
   },
   {
@@ -250,6 +272,7 @@
     "generatedActionType": null,
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": true
   },
   {
@@ -261,6 +284,7 @@
     "generatedActionType": null,
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": "DISABLED",
     "manual": false
   },
   {
@@ -272,6 +296,7 @@
     "generatedActionType": null,
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": "DEACTIVATED",
     "manual": false
   },
   {
@@ -283,6 +308,7 @@
     "generatedActionType": null,
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": true
   },
   {
@@ -294,6 +320,7 @@
     "generatedActionType": null,
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": "DEACTIVATED",
     "manual": true
   },
   {
@@ -305,6 +332,7 @@
     "generatedActionType": null,
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": true
   },
   {
@@ -316,6 +344,7 @@
     "generatedActionType": "QGARA",
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": true
   },
   {
@@ -327,6 +356,7 @@
     "generatedActionType": "QGBEN",
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": true
   },
   {
@@ -338,6 +368,7 @@
     "generatedActionType": "QGCAN",
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": true
   },
   {
@@ -349,6 +380,7 @@
     "generatedActionType": "QGGUJ",
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": true
   },
   {
@@ -360,6 +392,7 @@
     "generatedActionType": "QGLIT",
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": true
   },
   {
@@ -371,6 +404,7 @@
     "generatedActionType": "QGMAN",
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": true
   },
   {
@@ -382,6 +416,7 @@
     "generatedActionType": null,
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": true
   },
   {
@@ -393,6 +428,7 @@
     "generatedActionType": "QGPOL",
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": true
   },
   {
@@ -404,6 +440,7 @@
     "generatedActionType": "QGGUR",
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": true
   },
   {
@@ -415,6 +452,7 @@
     "generatedActionType": "QGSHA",
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": true
   },
   {
@@ -426,6 +464,7 @@
     "generatedActionType": "QGSOM",
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": true
   },
   {
@@ -437,6 +476,7 @@
     "generatedActionType": "QGSPA",
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": true
   },
   {
@@ -448,6 +488,7 @@
     "generatedActionType": "QGTUR",
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": true
   },
   {
@@ -459,6 +500,7 @@
     "generatedActionType": "QGURD",
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": null,
     "manual": true
   },
   {
@@ -470,6 +512,7 @@
     "generatedActionType": null,
     "newCaseRespondentType": null,
     "oldCaseRespondentType": null,
+    "eventType": "DEACTIVATED",
     "manual": true
   }
 ]
