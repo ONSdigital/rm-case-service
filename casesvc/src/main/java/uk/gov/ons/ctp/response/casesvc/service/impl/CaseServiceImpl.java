@@ -35,6 +35,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
+import uk.gov.ons.ctp.response.casesvc.utility.Constants;
 
 /**
  * A CaseService implementation which encapsulates all business logic operating
@@ -44,6 +45,7 @@ import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientServic
 @Slf4j
 public class CaseServiceImpl implements CaseService {
 
+  private static final String CASE_CREATED_EVENT_DESCRIPTION = "Case created when %s";
   private static final String IAC_OVERUSE_MSG = "More than one case found to be using IAC %s";
   private static final String MISSING_NEW_CASE_MSG = "New Case definition missing for case %s";
   private static final String CASE_NO_LONGER_ACTIONABLE_MSG = "Case is no longer actionable (%s) - the requested event is invalid";
@@ -176,8 +178,8 @@ public class CaseServiceImpl implements CaseService {
         throw new RuntimeException(String.format(MISSING_NEW_CASE_MSG, targetCase.getCaseId()));
       }
       CaseType targetCaseType = caseTypeRepo.findOne(targetCase.getCaseTypeId());
-      checkRespondentTypesMatch(WRONG_OLD_CASE_TYPE_MSG, category.getOldCaseRespondentType(),
-          targetCaseType.getRespondentType());
+      checkRespondentTypesMatch(WRONG_OLD_CASE_TYPE_MSG,
+          targetCaseType.getRespondentType(), category.getOldCaseRespondentType());
 
       CaseType intendedCaseType = caseTypeRepo.findOne(newCase.getCaseTypeId());
       checkRespondentTypesMatch(WRONG_NEW_CASE_TYPE_MSG, category.getNewCaseRespondentType(),
@@ -195,12 +197,12 @@ public class CaseServiceImpl implements CaseService {
    * Simple method to compare two respondent types and complain if they don't
    * 
    * @param msg the error message to use if they mismatch
-   * @param respondentTypeA the type on the left
-   * @param respondentTypeB the type on the right
+   * @param newRespondentType the type on the left
+   * @param expectedRespondentType the type on the right
    */
-  private void checkRespondentTypesMatch(String msg, String respondentTypeA, String respondentTypeB) {
-    if (!respondentTypeA.equals(respondentTypeB)) {
-      throw new RuntimeException(String.format(msg, respondentTypeA, respondentTypeB));
+  private void checkRespondentTypesMatch(String msg, String newRespondentType, String expectedRespondentType) {
+    if (!newRespondentType.equals(expectedRespondentType)) {
+      throw new RuntimeException(String.format(msg, newRespondentType, expectedRespondentType));
     }
   }
 
@@ -310,12 +312,16 @@ public class CaseServiceImpl implements CaseService {
     newCase.setSourceCaseId(targetCase.getCaseId());
     persistedCase = caseRepo.saveAndFlush(newCase);
 
+    // NOTE the action service does not need to be notified of the creation of the new case - yet
+    // That will be done when the CaseDistributor wakes up and assigns an IAC to the newly created case
+    // ie it might be created here, but it is not yet ready for prime time without its IAC!
+
     CaseEvent newCaseCaseEvent = new CaseEvent();
     newCaseCaseEvent.setCaseId(persistedCase.getCaseId());
     newCaseCaseEvent.setCategory(CategoryDTO.CategoryType.CASE_CREATED);
-    newCaseCaseEvent.setCreatedBy("SYSTEM");
+    newCaseCaseEvent.setCreatedBy(Constants.SYSTEM);
     newCaseCaseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
-    newCaseCaseEvent.setDescription(String.format("Case created when %s", caseEventCategory.getShortDescription()));
+    newCaseCaseEvent.setDescription(String.format(CASE_CREATED_EVENT_DESCRIPTION, caseEventCategory.getShortDescription()));
 
     caseEventRepo.saveAndFlush(newCaseCaseEvent);
     return persistedCase;
