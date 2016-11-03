@@ -40,7 +40,7 @@ curl http://localhost:8141/templates/ -u actionexporter:ctp -v -X GET
 
 ## To store a Template Mapping for Freemarker templates
 cd /home/centos/code/responsemanagement-service/actionexporter/src/test/resources/templates/freemarker
-curl http://localhost:8141/templatemappings/freemarkertmapping -v -X POST -F file=@valid_template_mapping.json -u actionexporter:ctp
+curl http://localhost:8141/templatemappings/templateMapping -v -X POST -F file=@valid_template_mapping.json -u actionexporter:ctp
 201 {"name":"freemarkertmapping","content":....
 
 
