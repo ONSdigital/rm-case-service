@@ -1,0 +1,13 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 9.28.0-1
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: version 3 setup data ( Individuals for England)
+            path: casesvc_setup_data_v3.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+            
+
