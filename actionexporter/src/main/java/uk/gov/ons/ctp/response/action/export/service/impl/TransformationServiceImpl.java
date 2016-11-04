@@ -68,29 +68,26 @@ public class TransformationServiceImpl implements TransformationService {
       return message;
     }
 
-    Map<String, Map<String, List<ActionRequestDocument>>> templateRequests = actionRequestDocumentList.stream()
-            .collect(Collectors.groupingBy(ActionRequestDocument::getActionPlan,
-                    Collectors.groupingBy(ActionRequestDocument::getActionType)));
+    Map<String, List<ActionRequestDocument>> templateRequests = actionRequestDocumentList.stream()
+            .collect(Collectors.groupingBy(ActionRequestDocument::getActionType));
     Map<String, String> mapping = templateMappingService.retrieveMapFromTemplateMappingDocument(TEMPLATE_MAPPING);
     String timeStamp = new SimpleDateFormat(DATE_FORMAT_IN_FILE_NAMES).format(Calendar.getInstance().getTime());
-    templateRequests.forEach((actionPlan, actionPlans) -> {
-      actionPlans.forEach((actionType, actionRequests) -> {
-        if (mapping.containsKey(actionType)) {
-          try {
-            outputStreams.put(actionPlan + "_" + actionType + "_" + timeStamp + ".csv",
-                    templateService.stream(actionRequests, mapping.get(actionType)));
-            List<String> addActionIds = new ArrayList<String>();
-            actionIds.put(actionPlan + "_" + actionType + "_" + timeStamp + ".csv", addActionIds);
-            actionRequests.forEach((actionRequest) -> {
-              addActionIds.add(actionRequest.getActionId().toString());
-            });
-          } catch (CTPException e) {
-            log.error("Error generating actionType : {}. {}", actionType, e.getMessage());
-          }
-        } else {
-          log.warn("No mapping for actionType : {}.", actionType);
+    templateRequests.forEach((actionType, actionRequests) -> {
+      if (mapping.containsKey(actionType)) {
+        try {
+          outputStreams.put(actionType + "_" + timeStamp + ".csv",
+                  templateService.stream(actionRequests, mapping.get(actionType)));
+          List<String> addActionIds = new ArrayList<String>();
+          actionIds.put(actionType + "_" + timeStamp + ".csv", addActionIds);
+          actionRequests.forEach((actionRequest) -> {
+            addActionIds.add(actionRequest.getActionId().toString());
+          });
+        } catch (CTPException e) {
+          log.error("Error generating actionType : {}. {}", actionType, e.getMessage());
         }
-      });
+      } else {
+        log.warn("No mapping for actionType : {}.", actionType);
+      }
     });
     return message;
   }
