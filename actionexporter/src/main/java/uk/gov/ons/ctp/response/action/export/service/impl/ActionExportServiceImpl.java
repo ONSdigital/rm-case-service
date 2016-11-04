@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.action.export.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -9,8 +10,11 @@ import javax.inject.Named;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
+import uk.gov.ons.ctp.response.action.export.message.ActionFeedbackPublisher;
 import uk.gov.ons.ctp.response.action.export.repository.ActionRequestRepository;
 import uk.gov.ons.ctp.response.action.export.service.ActionExportService;
+import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
+import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 
 /**
@@ -19,6 +23,11 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 @Named
 @Slf4j
 public class ActionExportServiceImpl implements ActionExportService {
+
+  private static final String DATE_FORMAT = "dd/MM/yyyy HH:mm";
+
+  @Inject
+  private ActionFeedbackPublisher actionFeedbackPubl;
 
   @Inject
   private MapperFacade mapperFacade;
@@ -46,5 +55,13 @@ public class ActionExportServiceImpl implements ActionExportService {
       actionRequest.setDateStored(now);
     });
     actionRequestRepo.save(actionRequests);
+    String timeStamp = new SimpleDateFormat(DATE_FORMAT).format(now);
+    actionRequests.forEach(actionRequest -> {
+      if (actionRequest.isResponseRequired()) {
+        ActionFeedback actionFeedback = new ActionFeedback(actionRequest.getActionId(),
+            "ActionExport Stored: " + timeStamp, Outcome.REQUEST_ACCEPTED, null);
+        actionFeedbackPubl.sendActionFeedback(actionFeedback);
+      }
+    });
   }
 }

@@ -17,7 +17,7 @@
   http://www.springframework.org/schema/integration/sftp
   http://www.springframework.org/schema/integration/sftp/spring-integration-sftp.xsd">
 
-    <!-- ** Inbound flow of ActionRequests from queue ** -->
+    <!-- ** START of Inbound flow of ActionRequests from queue ** -->
     
     <!-- Invalid instruction XML written to file-->
     <int:channel id="instructionXmlInvalid" />
@@ -25,7 +25,7 @@
       directory="file:${deadxml.directory}/instruction"
       channel="instructionXmlInvalid" />
 
-    <!--  Adapt the JMS message to aN incoming SI message -->
+    <!--  Adapt the JMS message to an incoming SI message -->
     <int-jms:message-driven-channel-adapter
       id="jmsIn" container="instructionListenerContainer" channel="instructionXml" />
 
@@ -46,8 +46,8 @@
        value="uk.gov.ons.ctp.response.action.message.instruction" />
     </bean>
 
-    <!-- ** End of inbound flow of ActionRequests from queue ** -->
-    <!-- ** Outbound flow of transformed ActionRequests to external service ** -->
+    <!-- ** END of inbound flow of ActionRequests from queue ** -->
+    <!-- ** START of Outbound flow of transformed ActionRequests to external service ** -->
 
     <bean id="sftpSessionFactory" class="org.springframework.integration.file.remote.session.CachingSessionFactory">
       <constructor-arg ref="defaultSftpSessionFactory" />
@@ -87,5 +87,50 @@
 	<int:channel id="sftpSuccessProcess"/>
 	<int:channel id="sftpFailedProcess"/>
 
-</beans>
+   <!-- ** END of outbound flow of transformed ActionRequests ** -->
+   <!-- ** START of section to publish ActionFeedbacks  ** -->
 
+    <int:channel id="actionFeedbackXmlInvalid" />
+    <bean id="invalidActionFeedbackQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Action.InvalidActionFeedback"/>
+    </bean>
+    <int-jms:outbound-channel-adapter id="invalidActionFeedbackJmsOut" destination="invalidActionFeedbackQueue" channel="actionFeedbackXmlInvalid"/>
+
+    <bean id="actionFeedbackQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Action.Notifications"/>
+    </bean>
+
+    <int:annotation-config/>
+    <!--  setup the outbound channels - note each queue needs a channel -->
+    <int:channel id="actionFeedbackOutbound" />
+    <int:channel id="actionFeedbackXml" />
+    <int:channel id="actionFeedback" />
+
+    <!--  the @Publisher sends to the marshalling-transformers input channel -->
+    <int-xml:marshalling-transformer
+            input-channel="actionFeedbackOutbound"
+            output-channel="actionFeedbackXml"
+            marshaller="actionFeedbackMarshaller"
+            result-transformer="actionFeedbackTransformer"/>
+
+    <!--  the actionFeedbackMarshaller turns java objects into xml dom -->
+    <bean id="actionFeedbackMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.feedback" />
+    </bean>
+
+    <!--  the actionFeedbackTransformer turns the xml dom into a string -->
+    <bean id="actionFeedbackTransformer" class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
+
+    <!-- validate XML against schema -->
+    <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
+    <int-xml:validating-filter id="actionFeedbackValidator"
+      input-channel="actionFeedbackXml"
+      output-channel="actionFeedback"
+      schema-location="classpath:xsd/actionFeedback.xsd"
+      discard-channel="actionFeedbackXmlInvalid"/>
+
+    <!--  adapt the SI message to a JMS message -->
+    <int-jms:outbound-channel-adapter id="actionFeedbackJmsout" channel="actionFeedback" destination="actionFeedbackQueue"/>
+    <!-- END of section to publish ActionFeedbacks  -->
+
+</beans>

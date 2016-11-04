@@ -48,6 +48,11 @@
     <constructor-arg value="uk.gov.ons.ctp.response.action.export.service.impl.ActionExportServiceImpl" />
   </bean>
 
+  <!-- Mock actionFeedbackPublisher to inject into actionExportService -->
+  <bean id="actionFeedbackPublisher" class="org.mockito.Mockito" factory-method="mock"  >
+    <constructor-arg value="uk.gov.ons.ctp.response.action.export.message.impl.ActionFeedbackPublisherImpl" />
+  </bean>
+
   <!-- Mapper facade for injection into instructionService  -->
   <bean id="beanMapper" class="org.mockito.Mockito" factory-method="mock"  >
     <constructor-arg value="ma.glasnost.orika.MapperFacade" />
