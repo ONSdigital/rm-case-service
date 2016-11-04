@@ -127,6 +127,10 @@ public class CaseServiceImpl implements CaseService {
     return new CaseNotification(caze.getCaseId(), actionPlanMapping.getActionPlanId(), notifType);
   }
 
+  /**
+   * This is where it all happens kids. After the creation of the cases from sample and their subsequent distribution, this is where
+   * everything happens. Anything that happens to the case from then on is thru events - created here.
+   */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
   public CaseEvent createCaseEvent(final CaseEvent caseEvent, final Case newCase) {
@@ -146,16 +150,16 @@ public class CaseServiceImpl implements CaseService {
       createdCaseEvent = caseEventRepo.save(caseEvent);
 
       // do we need to record a response?
-      checkAndEffectRecordingOfResponse(category, targetCase);
+      recordCaseResponse(category, targetCase);
 
       // does the event transition the case?
-      checkAndEffectTargetCaseStateTransition(category, targetCase);
+      effectTargetCaseStateTransition(category, targetCase);
 
       // should we create an ad hoc action?
-      checkAndEffectAdHocActionCreation(category, caseEvent);
+      createAdHocAction(category, caseEvent);
 
       // should a new case be created?
-      checkAndEffectCreationOfNewCase(category, caseEvent, targetCase, newCase);
+      createNewCase(category, caseEvent, targetCase, newCase);
     }
     return createdCaseEvent;
   }
@@ -216,7 +220,7 @@ public class CaseServiceImpl implements CaseService {
    * @param newCase the details for the new case (if indeed one is required)
    *          else null
    */
-  private void checkAndEffectCreationOfNewCase(Category category, CaseEvent caseEvent, Case targetCase,
+  private void createNewCase(Category category, CaseEvent caseEvent, Case targetCase,
       Case newCase) {
     if (category.getNewCaseRespondentType() != null) {
       createNewCaseFromEvent(caseEvent, targetCase, newCase, category);
@@ -230,7 +234,7 @@ public class CaseServiceImpl implements CaseService {
    * @param category the category details of the event
    * @param targetCase the 'source' case the event is being created for
    */
-  private void checkAndEffectRecordingOfResponse(Category category, Case targetCase) {
+  private void recordCaseResponse(Category category, Case targetCase) {
     // create and add Response obj to the case if event is a response
     switch (category.getCategoryType()) {
     case ONLINE_QUESTIONNAIRE_RESPONSE:
@@ -251,7 +255,7 @@ public class CaseServiceImpl implements CaseService {
    * @param category the category details of the event
    * @param caseEvent the basic event
    */
-  private void checkAndEffectAdHocActionCreation(Category category, CaseEvent caseEvent) {
+  private void createAdHocAction(Category category, CaseEvent caseEvent) {
     String actionType = category.getGeneratedActionType();
     log.debug("actionType = {}", actionType);
     if (!StringUtils.isEmpty(actionType)) {
@@ -269,7 +273,7 @@ public class CaseServiceImpl implements CaseService {
    * @param category the category details of the event
    * @param targetCase the 'source' case the event is being created for
    */
-  private void checkAndEffectTargetCaseStateTransition(Category category, Case targetCase) {
+  private void effectTargetCaseStateTransition(Category category, Case targetCase) {
     CaseDTO.CaseEvent transitionEvent = category.getEventType();
     if (transitionEvent != null) {
       CaseDTO.CaseState oldState = targetCase.getState();

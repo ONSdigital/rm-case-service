@@ -271,7 +271,7 @@ public class CaseServiceImplTest {
   }
 
   /**
-   * Tries to apply a response event against an actionable case Should allow it
+   * Tries to apply an online response event against an actionable case Should allow it
    * and record response.
    * 
    * @throws Exception
@@ -332,7 +332,6 @@ public class CaseServiceImplTest {
     // IAC should not be disabled again!
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
 
-
     // action service should NOT be told of case state change 
     verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
 
@@ -372,7 +371,7 @@ public class CaseServiceImplTest {
   }
 
   /**
-   * Bluesky test for creating a replacement household case
+   * Bluesky test for creating a replacement household paper case
    * 
    * @throws Exception
    */
@@ -396,7 +395,7 @@ public class CaseServiceImplTest {
   }
   
   /**
-   * Bluesky test for creating a replacement household case
+   * Bluesky test for creating a replacement individual case
    * 
    * @throws Exception
    */
@@ -442,7 +441,7 @@ public class CaseServiceImplTest {
   }
 
   /**
-   * Bluesky test for creating a replacement household case
+   * Bluesky test for creating an individual paper request event
    * 
    * @throws Exception
    */
@@ -464,8 +463,8 @@ public class CaseServiceImplTest {
   }
   
   /**
-   * Tries to apply a Translation fulfillment request event against a case
-   * already inactionable. Should throw and not save anything
+   * Tries to create an individual response requested against an individual case - should be household case so
+   * should throw and not do anything
    * 
    * @throws Exception
    */
@@ -521,8 +520,7 @@ public class CaseServiceImplTest {
   }
 
   /**
-   * Tries to apply a Translation fulfillment request event against a case
-   * already inactionable. Should throw and not save anything
+   * Tries to create a individual request with providing the individual case. Should throw and not save anything
    * 
    * @throws Exception
    */
