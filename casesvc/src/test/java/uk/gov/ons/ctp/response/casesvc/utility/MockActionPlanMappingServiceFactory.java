@@ -16,6 +16,9 @@ import uk.gov.ons.ctp.response.casesvc.service.ActionPlanMappingService;
 public final class MockActionPlanMappingServiceFactory implements Factory<ActionPlanMappingService> {
 
   public static final Integer MAPPING_ID = 1;
+  public static final Integer CASE_TYPE_ID = 1;
+  public static final Integer NON_EXISTENT_MAPPING_ID = 9;
+  public static final String VARIANT_ENG = "ENGLISH";
   /**
    * provide method
    * 
@@ -32,6 +35,13 @@ public final class MockActionPlanMappingServiceFactory implements Factory<Action
         public ActionPlanMapping answer(final InvocationOnMock invocation)
             throws Throwable {
           return mappings.get(0);
+        }
+      });
+
+      Mockito.when(mockedService.findActionPlanMappingsForCaseType(CASE_TYPE_ID)).thenAnswer(new Answer<List<ActionPlanMapping>>() {
+        public List<ActionPlanMapping> answer(final InvocationOnMock invocation)
+            throws Throwable {
+          return mappings;
         }
       });
 
