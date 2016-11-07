@@ -128,8 +128,10 @@ public class CaseServiceImpl implements CaseService {
   }
 
   /**
-   * This is where it all happens kids. After the creation of the cases from sample and their subsequent distribution, this is where
-   * everything happens. Anything that happens to the case from then on is thru events - created here.
+   * This is where it all happens kids. After the creation of the cases from
+   * sample and their subsequent distribution, this is where everything happens.
+   * Anything that happens to the case from then on is thru events - created
+   * here.
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
@@ -235,16 +237,25 @@ public class CaseServiceImpl implements CaseService {
    * @param targetCase the 'source' case the event is being created for
    */
   private void recordCaseResponse(Category category, Case targetCase) {
-    // create and add Response obj to the case if event is a response
+    InboundChannel channel = null;
     switch (category.getCategoryType()) {
     case ONLINE_QUESTIONNAIRE_RESPONSE:
-      recordResponse(targetCase, InboundChannel.ONLINE);
+      channel = InboundChannel.ONLINE;
       break;
     case PAPER_QUESTIONNAIRE_RESPONSE:
-      recordResponse(targetCase, InboundChannel.PAPER);
+      channel = InboundChannel.PAPER;
       break;
     default:
       break;
+    }
+    if (channel != null) {
+      Response response = Response.builder()
+          .inboundChannel(channel)
+          .caseId(targetCase.getCaseId())
+          .dateTime(DateTimeUtil.nowUTC()).build();
+
+      targetCase.getResponses().add(response);
+      caseRepo.save(targetCase);
     }
   }
 
@@ -316,38 +327,22 @@ public class CaseServiceImpl implements CaseService {
     newCase.setSourceCaseId(targetCase.getCaseId());
     persistedCase = caseRepo.saveAndFlush(newCase);
 
-    // NOTE the action service does not need to be notified of the creation of the new case - yet
-    // That will be done when the CaseDistributor wakes up and assigns an IAC to the newly created case
-    // ie it might be created here, but it is not yet ready for prime time without its IAC!
+    // NOTE the action service does not need to be notified of the creation of
+    // the new case - yet
+    // That will be done when the CaseDistributor wakes up and assigns an IAC to
+    // the newly created case
+    // ie it might be created here, but it is not yet ready for prime time
+    // without its IAC!
 
     CaseEvent newCaseCaseEvent = new CaseEvent();
     newCaseCaseEvent.setCaseId(persistedCase.getCaseId());
     newCaseCaseEvent.setCategory(CategoryDTO.CategoryType.CASE_CREATED);
     newCaseCaseEvent.setCreatedBy(Constants.SYSTEM);
     newCaseCaseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
-    newCaseCaseEvent.setDescription(String.format(CASE_CREATED_EVENT_DESCRIPTION, caseEventCategory.getShortDescription()));
+    newCaseCaseEvent
+        .setDescription(String.format(CASE_CREATED_EVENT_DESCRIPTION, caseEventCategory.getShortDescription()));
 
     caseEventRepo.saveAndFlush(newCaseCaseEvent);
     return persistedCase;
   }
-
-  /**
-   * Record the online/paper response against the case
-   * 
-   * @param caze the case
-   * @param channel the response channel used
-   * @return the modified case
-   */
-  private Case recordResponse(Case caze, InboundChannel channel) {
-    log.debug("Entering recordResponse with caze {} and channel {}", caze, channel);
-    // create a Response obj and associate it with this case
-    Response response = Response.builder()
-        .inboundChannel(channel)
-        .caseId(caze.getCaseId())
-        .dateTime(DateTimeUtil.nowUTC()).build();
-
-    caze.getResponses().add(response);
-    return caseRepo.save(caze);
-  }
-
 }
