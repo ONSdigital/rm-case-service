@@ -2,6 +2,7 @@ package uk.gov.ons.ctp.response.action.export.message.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -19,9 +20,12 @@ import org.springframework.messaging.support.GenericMessage;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
+import uk.gov.ons.ctp.response.action.export.message.ActionFeedbackPublisher;
 import uk.gov.ons.ctp.response.action.export.message.SftpServicePublisher;
 import uk.gov.ons.ctp.response.action.export.scheduled.ExportInfo;
 import uk.gov.ons.ctp.response.action.export.service.ActionRequestService;
+import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
+import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
 
 /**
  * Service implementation responsible for publishing transformed ActionRequests
@@ -33,10 +37,14 @@ import uk.gov.ons.ctp.response.action.export.service.ActionRequestService;
 @Slf4j
 public class SftpServicePublisherImpl implements SftpServicePublisher {
 
+  private static final String DATE_FORMAT = "dd/MM/yyyy HH:mm";
   private static final String ACTION_LIST = "list_actionIds";
 
   @Inject
   private ActionRequestService actionRequestService;
+
+  @Inject
+  private ActionFeedbackPublisher actionFeedbackPubl;
 
   @Inject
   private ExportInfo exportInfo;
@@ -55,13 +63,20 @@ public class SftpServicePublisherImpl implements SftpServicePublisher {
   public void sftpSuccessProcess(GenericMessage<GenericMessage<byte[]>> message) {
     List<String> actionIds = (List<String>) message.getPayload().getHeaders().get(ACTION_LIST);
     Date now = new Date();
+    String timeStamp = new SimpleDateFormat(DATE_FORMAT).format(now);
     actionIds.forEach((actionId) -> {
-      ActionRequestDocument actionRequest =
-              actionRequestService.retrieveActionRequestDocument(new BigInteger(actionId));
+      ActionRequestDocument actionRequest = actionRequestService
+          .retrieveActionRequestDocument(new BigInteger(actionId));
       actionRequest.setDateSent(now);
       ActionRequestDocument saved = actionRequestService.save(actionRequest);
       if (saved == null) {
         log.error("ActionRequestDocument {} failed to update DateSent", actionRequest.getActionId());
+      } else {
+        if (saved.isResponseRequired()) {
+          ActionFeedback actionFeedback = new ActionFeedback(saved.getActionId(),
+              "ActionExport Sent: " + timeStamp, Outcome.REQUEST_COMPLETED, null);
+          actionFeedbackPubl.sendActionFeedback(actionFeedback);
+        }
       }
     });
     log.info("Sftp transfer complete for file {}", message.getPayload().getHeaders().get(FileHeaders.REMOTE_FILE));
