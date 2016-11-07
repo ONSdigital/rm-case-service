@@ -12,7 +12,7 @@ logging:
     ROOT: ERROR
     org.springframework: ERROR
     org.springframework.integration: ERROR
-    uk.gov.ons.ctp: WARN
+    uk.gov.ons.ctp: DEBUG
 
 liquibase:
   user: postgres
