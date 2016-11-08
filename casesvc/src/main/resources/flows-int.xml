@@ -111,38 +111,5 @@
     <!--  adapt the SI message to a JMS message -->
     <int-jms:outbound-channel-adapter id="caseNotificationJmsout" channel="caseNotification" destination="caseNotificationJMSQueue"/>
     <!-- END of section to publish CaseNotifications -->
-
-    <!-- START of section to publish CaseReceipts -->
-    <bean id="caseReceiptQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Case.Responses"/>
-    </bean>
-
-    <!--  setup the outbound channels - note each queue needs a channel -->
-    <int:channel id="caseReceiptOutbound" />
-    <int:channel id="caseReceiptOutboundXml" />
-    <int:channel id="caseReceipt" />
-
-    <!--  the @Publisher sends to the marshalling-transformers input channel -->
-    <int-xml:marshalling-transformer
-            input-channel="caseReceiptOutbound" output-channel="caseReceiptOutboundXml"
-            marshaller="caseReceiptMarshaller"
-            result-transformer="caseReceiptTransformer"/>
-    <!--  the caseReceiptMarshaller turns java objects into xml dom -->
-    <bean id="caseReceiptMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-        <property name="contextPath" value="uk.gov.ons.ctp.response.casesvc.message.feedback" />
-    </bean>
-    <!--  the caseReceiptTransformer turns the xml dom into a string -->
-    <bean id="caseReceiptTransformer" class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
-
-    <!-- we validate here that we post case receipts matching the outbound schema -->
-    <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
-    <int-xml:validating-filter id="caseReceiptOutboundValidator" input-channel="caseReceiptOutboundXml"
-                               output-channel="caseReceiptOutboundXmlValid" schema-location="classpath:xsd/caseReceipt.xsd" discard-channel="caseReceiptXmlInvalid"/>
-
-    <!-- define the channel name to send our xml string to -->
-    <int:router input-channel="caseReceiptOutboundXmlValid" expression="'caseReceipt'"/>
-
-    <int-jms:outbound-channel-adapter id="caseReceiptJmsout" channel="caseReceipt" destination="caseReceiptQueue"/>
-    <!-- END of section to publish CaseReceipts -->
 </beans>
 
