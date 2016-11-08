@@ -39,7 +39,7 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
    * To process CaseReceipts read from queue
    * @param caseReceipt to process
    */
-  @ServiceActivator(inputChannel = "caseReceiptTransformedWithHeader")
+  @ServiceActivator(inputChannel = "caseReceiptTransformed")
   public void process(CaseReceipt caseReceipt) {
     log.debug("entering process with caseReceipt {}", caseReceipt);
     String caseRef = caseReceipt.getCaseRef();
