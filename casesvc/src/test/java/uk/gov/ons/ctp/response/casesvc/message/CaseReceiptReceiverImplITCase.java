@@ -91,6 +91,8 @@ public class CaseReceiptReceiverImplITCase {
      */
     int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_CASE_RECEIPTS_QUEUE);
     assertEquals(initialCounter, finalCounter);
+
+    Thread.sleep(30000L);
   }
 
   private File giveMeTempFile(String inputStreamLocation) throws IOException {

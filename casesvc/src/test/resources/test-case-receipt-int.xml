@@ -3,15 +3,44 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
 
-    <!--
     <bean id="caseReceiptReceiver" class="uk.gov.ons.ctp.response.casesvc.message.impl.CaseReceiptReceiverImpl"/>
+
+    <bean id="caseRepo" class="org.mockito.Mockito" factory-method="mock"  >
+        <constructor-arg value="uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository" />
+    </bean>
+    <bean id="actionPlanMappingRepo" class="org.mockito.Mockito" factory-method="mock"  >
+        <constructor-arg value="uk.gov.ons.ctp.response.casesvc.domain.repository.ActionPlanMappingRepository" />
+    </bean>
+    <bean id="caseEventRepo" class="org.mockito.Mockito" factory-method="mock"  >
+        <constructor-arg value="uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository" />
+    </bean>
+    <bean id="caseTypeRepo" class="org.mockito.Mockito" factory-method="mock"  >
+        <constructor-arg value="uk.gov.ons.ctp.response.casesvc.domain.repository.CaseTypeRepository" />
+    </bean>
+    <bean id="categoryRepo" class="org.mockito.Mockito" factory-method="mock"  >
+        <constructor-arg value="uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository" />
+    </bean>
+    <bean id="unlinkedCaseReceiptRepository" class="org.mockito.Mockito" factory-method="mock"  >
+        <constructor-arg value="uk.gov.ons.ctp.response.casesvc.domain.repository.UnlinkedCaseReceiptRepository" />
+    </bean>
+    <bean id="caseSvcStateTransitionManager" class="org.mockito.Mockito" factory-method="mock"  >
+        <constructor-arg value="uk.gov.ons.ctp.common.state.StateTransitionManager" />
+    </bean>
+    <bean id="actionSvcClientService" class="org.mockito.Mockito" factory-method="mock"  >
+        <constructor-arg value="uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService" />
+    </bean>
+    <bean id="internetAccessCodeSvcClientService" class="org.mockito.Mockito" factory-method="mock"  >
+        <constructor-arg value="uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService" />
+    </bean>
+    <bean id="notificationPublisher" class="org.mockito.Mockito" factory-method="mock"  >
+        <constructor-arg value="uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher" />
+    </bean>
 
     <bean id="caseService" class="uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl">
     </bean>
 
     <bean id="unlinkedCaseReceiptService" class="uk.gov.ons.ctp.response.casesvc.service.impl.UnlinkedCaseReceiptServiceImpl">
     </bean>
-    -->
 
 </beans>
 
