@@ -3,6 +3,8 @@ package uk.gov.ons.ctp.response.casesvc.message.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.UnlinkedCaseReceipt;
@@ -39,6 +41,7 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
    * To process CaseReceipts read from queue
    * @param caseReceipt to process
    */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   @ServiceActivator(inputChannel = "caseReceiptTransformed")
   public void process(CaseReceipt caseReceipt) {
     log.debug("entering process with caseReceipt {}", caseReceipt);
