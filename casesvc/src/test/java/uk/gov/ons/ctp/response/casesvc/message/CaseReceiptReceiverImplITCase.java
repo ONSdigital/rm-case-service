@@ -14,7 +14,9 @@ import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.UnexpectedRollbackException;
 import uk.gov.ons.ctp.common.message.JmsHelper;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 
 import javax.jms.Connection;
 import javax.jms.JMSException;
@@ -25,6 +27,8 @@ import java.io.InputStream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 /**
  * Test focusing on Spring Integration
@@ -42,6 +46,9 @@ public class CaseReceiptReceiverImplITCase {
 
   @Autowired
   CachingConnectionFactory connectionFactory;
+
+  @Autowired
+  CaseRepository caseRepo;
 
   private Connection connection;
   private int initialCounter;
@@ -80,7 +87,9 @@ public class CaseReceiptReceiverImplITCase {
   }
 
   @Test
-  public void testSendValidCaseReceipt() throws Exception {
+  public void testSendValidCaseReceiptExceptionThrown() throws Exception {
+    when(caseRepo.findByCaseRef(any(String.class))).thenThrow(new UnexpectedRollbackException("test"));
+
     String testMessage = FileUtils.readFileToString(giveMeTempFile("/xmlSampleFiles/validCaseReceipt.xml"), "UTF-8");
     caseReceiptXml.send(MessageBuilder.withPayload(testMessage).build());
 
@@ -92,7 +101,9 @@ public class CaseReceiptReceiverImplITCase {
     int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_CASE_RECEIPTS_QUEUE);
     assertEquals(initialCounter, finalCounter);
 
-    Thread.sleep(30000L);
+    /**
+     * TODO Check that a message ends up back on queue and is reprocessed
+     */
   }
 
   private File giveMeTempFile(String inputStreamLocation) throws IOException {
