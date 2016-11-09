@@ -6,8 +6,8 @@ import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 @SpringBootConfiguration
-@ImportResource(locations = { "classpath:springintegration/CaseNotificationPublishTest-context.xml" })
-public class CaseNotificationPublisherTestConfig {
+@ImportResource(locations = { "classpath:springintegration/CaseReceiptReceiverImplSITest-context.xml" })
+public class CaseReceiptReceiverImplSITestConfig {
   @Bean
   public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
     return new PropertySourcesPlaceholderConfigurer();

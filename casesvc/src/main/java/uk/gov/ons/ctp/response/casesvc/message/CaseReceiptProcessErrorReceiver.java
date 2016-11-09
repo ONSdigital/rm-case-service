@@ -10,5 +10,5 @@ public interface CaseReceiptProcessErrorReceiver {
    * To process messages put on channel caseReceiptProcessErrorFailedMsgOnly
    * @param message the message to process
    */
-  void process(Message<?> message);
+  void process(Message<?> message) ;
 }

@@ -44,7 +44,7 @@ import uk.gov.ons.ctp.response.casesvc.state.CaseSvcStateTransitionManagerFactor
 @EnableTransactionManagement
 @IntegrationComponentScan
 @EnableAsync
-@ImportResource("main-int.xml")
+@ImportResource("springintegration/main.xml")
 public class CaseSvcApplication {
 
   public static final String CASE_DISTRIBUTION_MAP = "actionsvc.case.distribution";

@@ -33,8 +33,6 @@ public class CaseReceiptProcessErrorReceiverImpl implements CaseReceiptProcessEr
     log.debug("entering process with message {}", message);
     CaseReceipt caseReceiptToReprocess = (CaseReceipt)message.getPayload();
     log.debug("caseReceiptToReprocess = {}", caseReceiptToReprocess);
-
     caseReceiptPublisher.send(caseReceiptToReprocess);
   }
-
 }
