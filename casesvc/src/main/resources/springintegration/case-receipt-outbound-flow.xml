@@ -16,12 +16,12 @@
     <constructor-arg value="Case.Responses"/>
 </bean>
 
-        <!--  setup the outbound channels - note each queue needs a channel -->
+<!--  setup the outbound channels - note each queue needs a channel -->
 <int:channel id="caseReceiptOutbound" />
 <int:channel id="caseReceiptOutboundXml" />
 <int:channel id="caseReceipt" />
 
-        <!--  the @Publisher sends to the marshalling-transformers input channel -->
+<!--  the @Publisher sends to the marshalling-transformers input channel -->
 <int-xml:marshalling-transformer
 input-channel="caseReceiptOutbound" output-channel="caseReceiptOutboundXml"
 marshaller="caseReceiptMarshaller"

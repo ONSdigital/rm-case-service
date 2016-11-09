@@ -4,31 +4,25 @@
        xmlns:int="http://www.springframework.org/schema/integration"
        xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
        xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
-       xmlns:int-file="http://www.springframework.org/schema/integration/file"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
   http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
   http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
   http://www.springframework.org/schema/integration/xml
-  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd
-  http://www.springframework.org/schema/integration/file
-  http://www.springframework.org/schema/integration/file/spring-integration-file.xsd">
+  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
 
-    <!-- START of section to publish CaseNotifications -->
-    <!-- Invalid notification XML written to file -->
-    <int:channel id="caseNotificationXmlInvalid" />
-    <int-file:outbound-channel-adapter
-            directory ="file:${deadxml.directory}/notification"
-            channel="caseNotificationXmlInvalid"/>
-
-    <!-- setup the case notification jms queue -->
+    <!-- setup the jms queues -->
     <bean id="caseNotificationJMSQueue" class="org.apache.activemq.command.ActiveMQQueue">
         <constructor-arg value="Case.Notifications"/>
+    </bean>
+    <bean id="invalidCaseNotificationQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Case.InvalidNotifications"/>
     </bean>
 
     <!--  setup the channels - note each queue needs a channel -->
     <int:channel id="caseNotificationOutbound" />
     <int:channel id="caseNotificationXml" />
+    <int:channel id="caseNotificationXmlInvalid" />
     <int:channel id="caseNotification" />
 
     <!--  the @Publisher sends to the marshalling-transformers input channel -->
@@ -47,6 +41,7 @@
     <bean id="caseNotificationTransformer" class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
 
     <!-- validate XML against schema -->
+    <int-jms:outbound-channel-adapter id="invalidCaseNotificationJmsOut" destination="invalidCaseNotificationQueue" channel="caseNotificationXmlInvalid"/>
     <int-xml:validating-filter id="caseNotificationValidator"
                                input-channel="caseNotificationXml"
                                output-channel="caseNotification"
@@ -55,6 +50,4 @@
 
     <!--  adapt the SI message to a JMS message -->
     <int-jms:outbound-channel-adapter id="caseNotificationJmsout" channel="caseNotification" destination="caseNotificationJMSQueue"/>
-    <!-- END of section to publish CaseNotifications -->
-
 </beans>

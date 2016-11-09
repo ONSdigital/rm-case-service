@@ -7,7 +7,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 @SpringBootConfiguration
 @ImportResource(locations = { "classpath:springintegration/CaseNotificationPublishTest-context.xml" })
-public class CaseNotificationPublisherTestConfig {
+public class CaseNotificationPublisherSITestConfig {
   @Bean
   public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
     return new PropertySourcesPlaceholderConfigurer();

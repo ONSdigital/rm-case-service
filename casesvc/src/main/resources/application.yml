@@ -124,9 +124,6 @@ case-distribution:
   initial-delay-seconds: 30
   subsequent-delay-seconds: 60
 
-deadxml:
-  directory: /var/log/ctp/responsemanagement/casesvc
-
 case-default-poller:
   fixedDelay: 5000
   msgPerPoll: 1
