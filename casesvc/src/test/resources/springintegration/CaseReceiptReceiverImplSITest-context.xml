@@ -8,6 +8,6 @@
 			http://www.springframework.org/schema/integration/spring-integration.xsd">
 
     <beans:import resource="flows.xml" />
-    <beans:import resource="test-broker-int.xml" />
-    <beans:import resource="test-case-receipt-int.xml" />
+    <beans:import resource="test-broker.xml" />
+    <beans:import resource="test-case-receipt.xml" />
 </beans:beans>
