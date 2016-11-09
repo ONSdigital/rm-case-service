@@ -10,9 +10,9 @@ info:
 logging:
   level:
     ROOT: ERROR
-    org.springframework: ERROR
-    org.springframework.integration: ERROR
-    uk.gov.ons.ctp: DEBUG
+    org.springframework: WARN
+    org.springframework.integration: WARN
+    uk.gov.ons.ctp: INFO
 
 liquibase:
   user: postgres
@@ -82,10 +82,16 @@ spring:
     username: casesvc
     password: casesvc
     driverClassName: org.postgresql.Driver
+    tomcat:
+      initial-size: 5
+      max-active: 10
+      max-idle: 5
+      min-idle: 3
+      remove-abandoned: true   
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         ddl-auto: update
@@ -122,7 +128,7 @@ case-distribution:
   distribution-max: 50
   retry-sleep-seconds: 30
   initial-delay-seconds: 30
-  subsequent-delay-seconds: 60
+  subsequent-delay-seconds: 30
 
 deadxml:
   directory: /var/log/ctp/responsemanagement/casesvc
