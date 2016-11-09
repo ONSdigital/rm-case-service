@@ -41,8 +41,8 @@ import static org.mockito.Mockito.verify;
  * Test focusing on Spring Integration
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = CaseReceiptReceiverImplITCaseConfig.class)
-public class CaseReceiptReceiverImplITCase {
+@SpringBootTest(classes = CaseReceiptReceiverImplSITestConfig.class)
+public class CaseReceiptReceiverImplSITest {
 
   private static final int RECEIVE_TIMEOUT = 20000;
 
