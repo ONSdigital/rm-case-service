@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+       xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+  http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+  http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
+  http://www.springframework.org/schema/integration/xml
+  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
+
+    <!-- START of section to read CaseReceipts from Case.Responses-->
+    <!-- The inbound message container config - the inbound queue is defined here. We will listen for caseReceipts
+    coming from the SDX Gateway. -->
+    <bean id="caseReceiptMessageListenerContainer"
+          class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="connectionFactory" />
+        <property name="destinationName" value="Case.Responses" />
+        <property name="maxConcurrentConsumers" value="1" />
+        <property name="concurrentConsumers" value="1" />
+        <property name="receiveTimeout" value="5000" />
+        <property name="recoveryInterval" value="60000" />
+        <property name="autoStartup" value="true" />
+        <property name="sessionTransacted" value="true" />
+    </bean>
+
+    <!-- need an input channel defined for MQ adapter to input to -->
+    <int:channel id="caseReceiptXml" />
+
+    <!-- the MQ channel adapter reads from the Case.Responses Queue (see the container above) and inputs to caseReceiptXml -->
+    <int-jms:message-driven-channel-adapter id="jmsInCaseReceipt" container="caseReceiptMessageListenerContainer" channel="caseReceiptXml" />
+
+    <!-- First the SI message provided by the channel adapter is validated against the inbound schema -->
+    <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
+    <int:channel id="caseReceiptXmlInvalid" />
+    <bean id="invalidCaseReceiptQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Case.InvalidCaseReceipts"/>
+    </bean>
+    <int-jms:outbound-channel-adapter id="invalidCaseReceiptJmsOut" destination="invalidCaseReceiptQueue" channel="caseReceiptXmlInvalid"/>
+    <int-xml:validating-filter id="caseReceiptValidator" input-channel="caseReceiptXml"
+                               output-channel="caseReceiptXmlValid" schema-location="classpath:xsd/caseReceipt.xsd" discard-channel="caseReceiptXmlInvalid"/>
+
+    <!-- Secondly the now validated xml is transformed into the jaxb generated object model -->
+    <int:channel id="caseReceiptTransformed" datatype="uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt">
+        <int:queue />
+    </int:channel>
+    <int-xml:unmarshalling-transformer
+            input-channel="caseReceiptXmlValid" output-channel="caseReceiptTransformed"
+            unmarshaller="caseReceiptUnmarshaller" />
+    <bean id="caseReceiptUnmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="uk.gov.ons.ctp.response.casesvc.message.feedback" />
+    </bean>
+
+    <!-- we add an error channel so we can reprocess CaseReceipts when process (in CaseReceiptReceiverImpl)
+    throws an exception (the IAC service is down, etc.) -->
+    <int:channel id="caseReceiptProcessError">
+        <int:queue />
+    </int:channel>
+    <int:channel id="caseReceiptProcessErrorFailedMsgOnly" >
+        <int:queue />
+    </int:channel>
+    <int:transformer input-channel="caseReceiptProcessError" output-channel="caseReceiptProcessErrorFailedMsgOnly" expression="payload.failedMessage"/>
+    <int:channel id="caseReceiptTransformedWithHeader" datatype="uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt">
+        <int:queue />
+    </int:channel>
+    <int:header-enricher input-channel="caseReceiptTransformed" output-channel="caseReceiptTransformedWithHeader">
+        <int:error-channel value="caseReceiptProcessError"/>
+    </int:header-enricher>
+    <!-- Finally see the @ServiceActivator(inputChannel="caseReceiptTransformedWithHeader") -->
+    <!-- END of section to read CaseReceipts from Case.Responses -->
+
+</beans>
