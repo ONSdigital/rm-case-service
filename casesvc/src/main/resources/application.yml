@@ -130,3 +130,8 @@ deadxml:
 case-default-poller:
   fixedDelay: 5000
   msgPerPoll: 1
+
+redelivery-policy:
+  maxRedeliveries: 10
+  initialRedeliveryDelay: 300000
+  redeliveryDelay: 300000
