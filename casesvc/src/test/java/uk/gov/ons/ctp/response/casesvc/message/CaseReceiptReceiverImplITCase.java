@@ -6,18 +6,20 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.jms.connection.CachingConnectionFactory;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.PollableChannel;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.UnexpectedRollbackException;
 import uk.gov.ons.ctp.common.message.JmsHelper;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 
+import javax.inject.Inject;
 import javax.jms.Connection;
 import javax.jms.JMSException;
 import java.io.File;
@@ -37,17 +39,25 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(classes = CaseReceiptReceiverImplITCaseConfig.class)
 public class CaseReceiptReceiverImplITCase {
 
-  @Autowired
-  MessageChannel caseReceiptXml;
+  private static final int RECEIVE_TIMEOUT = 20000;
 
-  @Autowired
+  @Inject
+  private MessageChannel testOutbound;
+
+  @Inject
+  private PollableChannel activeMQDLQXml;
+
+  @Inject
+  private MessageChannel caseReceiptXml;
+
+  @Inject
   @Qualifier("caseReceiptUnmarshaller")
   Jaxb2Marshaller caseReceiptUnmarshaller;
 
-  @Autowired
+  @Inject
   CachingConnectionFactory connectionFactory;
 
-  @Autowired
+  @Inject
   CaseRepository caseRepo;
 
   private Connection connection;
@@ -73,38 +83,57 @@ public class CaseReceiptReceiverImplITCase {
   }
 
   @Test
-  public void testSendInvalidCaseReceipt() throws Exception {
-    String testMessage = FileUtils.readFileToString(giveMeTempFile("/xmlSampleFiles/invalidCaseReceipt.xml"), "UTF-8");
-    caseReceiptXml.send(MessageBuilder.withPayload(testMessage).build());
-
-    Thread.sleep(10000L);
+  public void testReceivingCaseReceiptXmlBadlyFormed() throws IOException, JMSException {
+    String testMessage = FileUtils.readFileToString(giveMeTempFile("/xmlSampleFiles/badlyFormedCaseReceipt.xml"), "UTF-8");
+    testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
 
     /**
-     * We check that the bad xml ends up on the invalid queue.
+     * We check that the badly formed xml ends up on the dead letter queue.
+     */
+    Message<?> message = activeMQDLQXml.receive(RECEIVE_TIMEOUT);
+    String payload = (String) message.getPayload();
+    assertEquals(testMessage, payload);
+
+    /**
+     * We check that no badly formed xml ends up on the invalid queue.
+     */
+    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_CASE_RECEIPTS_QUEUE);
+    assertEquals(0, finalCounter - initialCounter);
+
+  }
+
+  @Test
+  public void testReceivingCaseReceiptInvalidXml() throws IOException, JMSException {
+    String testMessage = FileUtils.readFileToString(giveMeTempFile("/xmlSampleFiles/invalidCaseReceipt.xml"), "UTF-8");
+
+    caseReceiptXml.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
+
+    /**
+     * We check that the invalid xml ends up on the invalid queue.
      */
     int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_CASE_RECEIPTS_QUEUE);
     assertEquals(1, finalCounter - initialCounter);
   }
 
-  @Test
-  public void testSendValidCaseReceiptExceptionThrown() throws Exception {
-    when(caseRepo.findByCaseRef(any(String.class))).thenThrow(new UnexpectedRollbackException("test"));
-
-    String testMessage = FileUtils.readFileToString(giveMeTempFile("/xmlSampleFiles/validCaseReceipt.xml"), "UTF-8");
-    caseReceiptXml.send(MessageBuilder.withPayload(testMessage).build());
-
-    Thread.sleep(10000L);
-
-    /**
-     * We check that no xml ends up on the invalid queue.
-     */
-    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_CASE_RECEIPTS_QUEUE);
-    assertEquals(initialCounter, finalCounter);
-
-    /**
-     * TODO Check that a message ends up back on queue and is reprocessed
-     */
-  }
+//  @Test
+//  public void testSendValidCaseReceiptExceptionThrown() throws Exception {
+//    when(caseRepo.findByCaseRef(any(String.class))).thenThrow(new UnexpectedRollbackException("test"));
+//
+//    String testMessage = FileUtils.readFileToString(giveMeTempFile("/xmlSampleFiles/validCaseReceipt.xml"), "UTF-8");
+//    caseReceiptXml.send(MessageBuilder.withPayload(testMessage).build());
+//
+//    Thread.sleep(10000L);
+//
+//    /**
+//     * We check that no xml ends up on the invalid queue.
+//     */
+//    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_CASE_RECEIPTS_QUEUE);
+//    assertEquals(initialCounter, finalCounter);
+//
+//    /**
+//     * TODO Check that a message ends up back on queue and is reprocessed
+//     */
+//  }
 
   private File giveMeTempFile(String inputStreamLocation) throws IOException {
     InputStream is = getClass().getResourceAsStream(inputStreamLocation);
