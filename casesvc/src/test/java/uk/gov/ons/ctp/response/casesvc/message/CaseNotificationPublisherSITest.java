@@ -1,9 +1,9 @@
 package uk.gov.ons.ctp.response.casesvc.message;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasXPath;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType.ACTIVATED;
 
 import java.io.ByteArrayInputStream;
@@ -18,9 +18,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.jms.Connection;
 import javax.jms.JMSException;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -84,37 +82,31 @@ public class CaseNotificationPublisherSITest {
     connection.close();
   }
 
-//  @Test
-//  public void testPublishValidNotification() throws InterruptedException, JAXBException, JMSException {
-//    List<CaseNotification> notificationList = new ArrayList<>();
-//    notificationList.add(new CaseNotification(1, 3, ACTIVATED));
-//    notificationList.add(new CaseNotification(2, 3, ACTIVATED));
-//    caseNotificationPublisher.sendNotifications(notificationList);
-//
-//    /**
-//     * We check that no additional message has been put on the xml invalid queue
-//     */
-//    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_CASE_NOTIFICATIONS_QUEUE);
-//    assertEquals(initialCounter, finalCounter);
-//
-//    /**
-//     * The section below verifies that a CaseNotification ends up on the queue
-//     */
-//    CaseNotificationMessageListener listener = (CaseNotificationMessageListener) caseNotificationListenerContainer.getMessageListener();
-//    TimeUnit.SECONDS.sleep(10);
-//    String listenerPayload = listener.getPayload();
-//
-//    // TODO Unfortunately, when building via the command line, the test may fail with a nullpointer.
-//    //if (listenerPayload != null) {
-//    JAXBContext jaxbContext = JAXBContext.newInstance(CaseNotification.class);
-//    Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-//    CaseNotification retrievedCaseNotification = (CaseNotification) jaxbUnmarshaller.unmarshal(new ByteArrayInputStream(listenerPayload.getBytes()));
-//
-//
-////    assertThat(doc, hasXPath("/caseNotifications/caseNotification[1]/actionPlanId", equalTo("3")));
-////    assertThat(doc, hasXPath("/caseNotifications/caseNotification[2]/caseId", equalTo("2")));
-////    assertThat(doc, hasXPath("/caseNotifications/caseNotification[2]/notificationType", equalTo("ACTIVATED")));
-//  }
+  @Test
+  public void testPublishValidNotification() throws InterruptedException, JAXBException, JMSException {
+    List<CaseNotification> notificationList = new ArrayList<>();
+    notificationList.add(new CaseNotification(1, 3, ACTIVATED));
+    notificationList.add(new CaseNotification(2, 3, ACTIVATED));
+    caseNotificationPublisher.sendNotifications(notificationList);
+
+    /**
+     * We check that no additional message has been put on the xml invalid queue
+     */
+    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_CASE_NOTIFICATIONS_QUEUE);
+    assertEquals(initialCounter, finalCounter);
+
+    /**
+     * The section below verifies that a CaseNotification ends up on the queue
+     */
+    CaseNotificationMessageListener listener = (CaseNotificationMessageListener) caseNotificationListenerContainer.getMessageListener();
+    TimeUnit.SECONDS.sleep(10);
+    String payload = listener.getPayload();
+
+    Document doc = parse(payload);
+    assertThat(doc, hasXPath("/caseNotifications/caseNotification[1]/actionPlanId", equalTo("3")));
+    assertThat(doc, hasXPath("/caseNotifications/caseNotification[2]/caseId", equalTo("2")));
+    assertThat(doc, hasXPath("/caseNotifications/caseNotification[2]/notificationType", equalTo("ACTIVATED")));
+  }
 
   @Test
   public void testPublishInvalidNotification() throws IOException, JMSException {
