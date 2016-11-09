@@ -17,7 +17,10 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.PollableChannel;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.UnexpectedRollbackException;
 import uk.gov.ons.ctp.common.message.JmsHelper;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
+import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
 import uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl;
 
 import javax.inject.Inject;
@@ -36,6 +39,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Test focusing on Spring Integration
@@ -64,6 +68,9 @@ public class CaseReceiptReceiverImplSITest {
 
   @Inject
   private CaseServiceImpl caseService;
+
+  @Inject
+  private CaseReceiptPublisher caseReceiptPublisher;
 
   private Connection connection;
   private int initialCounter;
@@ -151,6 +158,47 @@ public class CaseReceiptReceiverImplSITest {
     ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
     verify(caseService).findCaseByCaseRef(argumentCaptor.capture());
     assertEquals(argumentCaptor.getValue(), "tiptop");
+  }
+
+  @Test
+  public void testReceivingCaseReceiptValidXmlExceptionThrownInProcessing()
+          throws InterruptedException, IOException, JMSException {
+    // Set up CountDownLatch for synchronisation with async call
+    final CountDownLatch caseServiceInvoked = new CountDownLatch(1);
+    // Release all waiting threads when mock caseService.findCaseByCaseRef method is called
+    doAnswer(countsDownLatch(caseServiceInvoked)).when(caseService).findCaseByCaseRef(any(String.class));
+
+    when(caseService.findCaseByCaseRef(any(String.class))).thenThrow(new RuntimeException());
+
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/validCaseReceipt.xml"), "UTF-8");
+    testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
+
+    // Await synchronisation with the asynchronous message call
+    caseServiceInvoked.await(RECEIVE_TIMEOUT, MILLISECONDS);
+
+    /**
+     * We check that no xml ends up on the invalid queue.
+     */
+    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_CASE_RECEIPTS_QUEUE);
+    assertEquals(initialCounter, finalCounter);
+
+    /**
+     * We check that no xml ends up on the dead letter queue.
+     */
+    Message<?> message = activeMQDLQXml.receive(RECEIVE_TIMEOUT);
+    assertNull(message);
+
+    /**
+     * We check the message was processed by CaseReceiptReceiverImpl
+     */
+    ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
+    verify(caseService).findCaseByCaseRef(argumentCaptor.capture());
+    assertEquals(argumentCaptor.getValue(), "tiptop");
+
+    /**
+     * We check that the message was processed by CaseReceiptProcessErrorReceiverImpl
+     */
+    verify(caseReceiptPublisher).send(any(CaseReceipt.class));
   }
 
   private File provideTempFile(String inputStreamLocation) throws IOException {

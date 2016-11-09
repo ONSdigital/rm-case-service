@@ -131,6 +131,10 @@ case-default-poller:
   fixedDelay: 5000
   msgPerPoll: 1
 
+case-error-poller:
+  fixedDelay: 300000
+  msgPerPoll: 1
+
 redelivery-policy:
   maxRedeliveries: 10
   initialRedeliveryDelay: 300000

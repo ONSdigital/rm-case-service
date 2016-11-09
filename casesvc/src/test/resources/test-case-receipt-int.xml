@@ -36,10 +36,9 @@
 
     <int-jms:outbound-channel-adapter id="jmsout" channel="testOutbound" destination="caseReceiptJMSQueue"/>
 
-    <!-- ServiceActivator(inputChannel = "caseReceiptTransformed")  -->
+    <!-- ServiceActivator(inputChannel = "caseReceiptTransformedWithHeader")  -->
     <bean id="caseReceiptReceiver" class="uk.gov.ons.ctp.response.casesvc.message.impl.CaseReceiptReceiverImpl"/>
-
-    <int:service-activator input-channel="caseReceiptTransformed" ref="caseReceiptReceiver"/>
+    <int:service-activator input-channel="caseReceiptTransformedWithHeader" ref="caseReceiptReceiver"/>
 
     <bean id="caseRepo" class="org.mockito.Mockito" factory-method="mock"  >
         <constructor-arg value="uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository" />
@@ -79,5 +78,11 @@
     <bean id="unlinkedCaseReceiptService" class="uk.gov.ons.ctp.response.casesvc.service.impl.UnlinkedCaseReceiptServiceImpl">
     </bean>
 
+    <bean id="caseReceiptPublisher" class="org.mockito.Mockito" factory-method="mock"  >
+        <constructor-arg value="uk.gov.ons.ctp.response.casesvc.message.CaseReceiptPublisher" />
+    </bean>
+    <!-- ServiceActivator(inputChannel = "caseReceiptTransformedWithHeader")  -->
+    <bean id="caseReceiptProcessErrorReceiver" class="uk.gov.ons.ctp.response.casesvc.message.impl.CaseReceiptProcessErrorReceiverImpl"/>
+    <int:service-activator input-channel="caseReceiptProcessErrorFailedMsgOnly" ref="caseReceiptProcessErrorReceiver"/>
 </beans>
 

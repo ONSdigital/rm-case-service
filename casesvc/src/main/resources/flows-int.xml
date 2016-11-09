@@ -66,8 +66,57 @@
     <bean id="caseReceiptUnmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="contextPath" value="uk.gov.ons.ctp.response.casesvc.message.feedback" />
     </bean>
-    <!-- Finally see the @ServiceActivator(inputChannel="caseReceiptTransformed") -->
+
+    <!-- we add an error channel so we can reprocess CaseReceipts when process (in CaseReceiptReceiverImpl)
+    throws an exception (the IAC service is down, etc.) -->
+    <int:channel id="caseReceiptProcessError">
+        <int:queue />
+    </int:channel>
+    <int:channel id="caseReceiptProcessErrorFailedMsgOnly" >
+        <int:queue />
+    </int:channel>
+    <int:transformer input-channel="caseReceiptProcessError" output-channel="caseReceiptProcessErrorFailedMsgOnly" expression="payload.failedMessage"/>
+    <int:channel id="caseReceiptTransformedWithHeader" datatype="uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt">
+        <int:queue />
+    </int:channel>
+    <int:header-enricher input-channel="caseReceiptTransformed" output-channel="caseReceiptTransformedWithHeader">
+        <int:error-channel value="caseReceiptProcessError"/>
+    </int:header-enricher>
+    <!-- Finally see the @ServiceActivator(inputChannel="caseReceiptTransformedWithHeader") -->
     <!-- END of section to read CaseReceipts from Case.Responses -->
+
+    <!-- START of section to publish CaseReceipts -->
+    <bean id="caseReceiptQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Case.Responses"/>
+    </bean>
+
+    <!--  setup the outbound channels - note each queue needs a channel -->
+    <int:channel id="caseReceiptOutbound" />
+    <int:channel id="caseReceiptOutboundXml" />
+    <int:channel id="caseReceipt" />
+
+    <!--  the @Publisher sends to the marshalling-transformers input channel -->
+    <int-xml:marshalling-transformer
+            input-channel="caseReceiptOutbound" output-channel="caseReceiptOutboundXml"
+            marshaller="caseReceiptMarshaller"
+            result-transformer="caseReceiptTransformer"/>
+    <!--  the caseReceiptMarshaller turns java objects into xml dom -->
+    <bean id="caseReceiptMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="uk.gov.ons.ctp.response.casesvc.message.feedback" />
+    </bean>
+    <!--  the caseReceiptTransformer turns the xml dom into a string -->
+    <bean id="caseReceiptTransformer" class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
+
+    <!-- we validate here that we post case receipts matching the outbound schema -->
+    <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
+    <int-xml:validating-filter id="caseReceiptOutboundValidator" input-channel="caseReceiptOutboundXml"
+                               output-channel="caseReceiptOutboundXmlValid" schema-location="classpath:xsd/caseReceipt.xsd" discard-channel="caseReceiptXmlInvalid"/>
+
+    <!-- define the channel name to send our xml string to -->
+    <int:router input-channel="caseReceiptOutboundXmlValid" expression="'caseReceipt'"/>
+
+    <int-jms:outbound-channel-adapter id="caseReceiptJmsout" channel="caseReceipt" destination="caseReceiptQueue"/>
+    <!-- END of section to publish CaseReceipts -->
 
     <!-- START of section to publish CaseNotifications -->
     <!-- Invalid notification XML written to file -->
