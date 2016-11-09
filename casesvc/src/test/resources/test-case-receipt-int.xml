@@ -72,7 +72,8 @@
         <constructor-arg value="uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher" />
     </bean>
 
-    <bean id="caseService" class="uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl">
+    <bean id="caseService" class="org.mockito.Mockito" factory-method="mock"  >
+        <constructor-arg value="uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl" />
     </bean>
 
     <bean id="unlinkedCaseReceiptService" class="uk.gov.ons.ctp.response.casesvc.service.impl.UnlinkedCaseReceiptServiceImpl">

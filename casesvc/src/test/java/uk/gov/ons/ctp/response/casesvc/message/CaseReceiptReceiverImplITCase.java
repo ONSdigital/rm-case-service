@@ -6,18 +6,19 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.integration.support.MessageBuilder;
 import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.PollableChannel;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.UnexpectedRollbackException;
 import uk.gov.ons.ctp.common.message.JmsHelper;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
+import uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl;
 
 import javax.inject.Inject;
 import javax.jms.Connection;
@@ -26,11 +27,15 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.CountDownLatch;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.verify;
 
 /**
  * Test focusing on Spring Integration
@@ -58,7 +63,7 @@ public class CaseReceiptReceiverImplITCase {
   CachingConnectionFactory connectionFactory;
 
   @Inject
-  CaseRepository caseRepo;
+  private CaseServiceImpl caseService;
 
   private Connection connection;
   private int initialCounter;
@@ -84,7 +89,7 @@ public class CaseReceiptReceiverImplITCase {
 
   @Test
   public void testReceivingCaseReceiptXmlBadlyFormed() throws IOException, JMSException {
-    String testMessage = FileUtils.readFileToString(giveMeTempFile("/xmlSampleFiles/badlyFormedCaseReceipt.xml"), "UTF-8");
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/badlyFormedCaseReceipt.xml"), "UTF-8");
     testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
 
     /**
@@ -104,7 +109,7 @@ public class CaseReceiptReceiverImplITCase {
 
   @Test
   public void testReceivingCaseReceiptInvalidXml() throws IOException, JMSException {
-    String testMessage = FileUtils.readFileToString(giveMeTempFile("/xmlSampleFiles/invalidCaseReceipt.xml"), "UTF-8");
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/invalidCaseReceipt.xml"), "UTF-8");
 
     caseReceiptXml.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
 
@@ -115,32 +120,62 @@ public class CaseReceiptReceiverImplITCase {
     assertEquals(1, finalCounter - initialCounter);
   }
 
-//  @Test
-//  public void testSendValidCaseReceiptExceptionThrown() throws Exception {
-//    when(caseRepo.findByCaseRef(any(String.class))).thenThrow(new UnexpectedRollbackException("test"));
-//
-//    String testMessage = FileUtils.readFileToString(giveMeTempFile("/xmlSampleFiles/validCaseReceipt.xml"), "UTF-8");
-//    caseReceiptXml.send(MessageBuilder.withPayload(testMessage).build());
-//
-//    Thread.sleep(10000L);
-//
-//    /**
-//     * We check that no xml ends up on the invalid queue.
-//     */
-//    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_CASE_RECEIPTS_QUEUE);
-//    assertEquals(initialCounter, finalCounter);
-//
-//    /**
-//     * TODO Check that a message ends up back on queue and is reprocessed
-//     */
-//  }
+  @Test
+  public void testReceivingCaseReceiptValidXml() throws InterruptedException, IOException, JMSException {
+    // Set up CountDownLatch for synchronisation with async call
+    final CountDownLatch caseServiceInvoked = new CountDownLatch(1);
+    // Release all waiting threads when mock caseService.findCaseByCaseRef method is called
+    doAnswer(countsDownLatch(caseServiceInvoked)).when(caseService).findCaseByCaseRef(any(String.class));
 
-  private File giveMeTempFile(String inputStreamLocation) throws IOException {
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/validCaseReceipt.xml"), "UTF-8");
+    testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
+
+    // Await synchronisation with the asynchronous message call
+    caseServiceInvoked.await(RECEIVE_TIMEOUT, MILLISECONDS);
+
+    /**
+     * We check that no xml ends up on the invalid queue.
+     */
+    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_CASE_RECEIPTS_QUEUE);
+    assertEquals(initialCounter, finalCounter);
+
+    /**
+     * We check that no xml ends up on the dead letter queue.
+     */
+    Message<?> message = activeMQDLQXml.receive(RECEIVE_TIMEOUT);
+    assertNull(message);
+
+    /**
+     * We check the message was processed
+     */
+    ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
+    verify(caseService).findCaseByCaseRef(argumentCaptor.capture());
+    assertEquals(argumentCaptor.getValue(), "tiptop");
+  }
+
+  private File provideTempFile(String inputStreamLocation) throws IOException {
     InputStream is = getClass().getResourceAsStream(inputStreamLocation);
     File tempFile = File.createTempFile("prefix","suffix");
     tempFile.deleteOnExit();
     FileOutputStream out = new FileOutputStream(tempFile);
     IOUtils.copy(is, out);
     return tempFile;
+  }
+
+  /**
+   * Should be called when mock method is called in asynchronous test to countDown the CountDownLatch test thread is
+   * waiting on.
+   *
+   * @param serviceInvoked CountDownLatch to countDown
+   * @return Answer<CountDownLatch> Mockito Answer object
+   */
+  private Answer<CountDownLatch> countsDownLatch(final CountDownLatch serviceInvoked) {
+    return new Answer<CountDownLatch>() {
+      @Override
+      public CountDownLatch answer(InvocationOnMock invocationOnMock) throws Throwable {
+        serviceInvoked.countDown();
+        return null;
+      }
+    };
   }
 }
