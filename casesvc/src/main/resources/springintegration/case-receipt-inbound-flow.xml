@@ -44,7 +44,6 @@
 
     <!-- Secondly the now validated xml is transformed into the jaxb generated object model -->
     <int:channel id="caseReceiptTransformed" datatype="uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt">
-        <int:queue />
     </int:channel>
     <int-xml:unmarshalling-transformer
             input-channel="caseReceiptXmlValid" output-channel="caseReceiptTransformed"
@@ -52,23 +51,5 @@
     <bean id="caseReceiptUnmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="contextPath" value="uk.gov.ons.ctp.response.casesvc.message.feedback" />
     </bean>
-
-    <!-- we add an error channel so we can reprocess CaseReceipts when process (in CaseReceiptReceiverImpl)
-    throws an exception (the IAC service is down, etc.) -->
-    <int:channel id="caseReceiptProcessError">
-        <int:queue />
-    </int:channel>
-    <int:channel id="caseReceiptProcessErrorFailedMsgOnly" >
-        <int:queue />
-    </int:channel>
-    <int:transformer input-channel="caseReceiptProcessError" output-channel="caseReceiptProcessErrorFailedMsgOnly" expression="payload.failedMessage"/>
-    <int:channel id="caseReceiptTransformedWithHeader" datatype="uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt">
-        <int:queue />
-    </int:channel>
-    <int:header-enricher input-channel="caseReceiptTransformed" output-channel="caseReceiptTransformedWithHeader">
-        <int:error-channel value="caseReceiptProcessError"/>
-    </int:header-enricher>
-    <!-- Finally see the @ServiceActivator(inputChannel="caseReceiptTransformedWithHeader") -->
-    <!-- END of section to read CaseReceipts from Case.Responses -->
-
+    <!-- Finally see the @ServiceActivator(inputChannel="caseReceiptTransformed") -->
 </beans>

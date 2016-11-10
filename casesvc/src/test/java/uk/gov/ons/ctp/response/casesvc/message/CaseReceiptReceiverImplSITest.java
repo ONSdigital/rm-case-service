@@ -17,10 +17,9 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.PollableChannel;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.UnexpectedRollbackException;
 import uk.gov.ons.ctp.common.message.JmsHelper;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
-import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
+import uk.gov.ons.ctp.response.casesvc.domain.model.UnlinkedCaseReceipt;
+import uk.gov.ons.ctp.response.casesvc.service.UnlinkedCaseReceiptService;
 import uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl;
 
 import javax.inject.Inject;
@@ -49,6 +48,7 @@ import static org.mockito.Mockito.when;
 public class CaseReceiptReceiverImplSITest {
 
   private static final int RECEIVE_TIMEOUT = 20000;
+  private static final String NONEXISTING_CASE_REF = "tiptop";
 
   @Inject
   private MessageChannel testOutbound;
@@ -68,9 +68,6 @@ public class CaseReceiptReceiverImplSITest {
 
   @Inject
   private CaseServiceImpl caseService;
-
-  @Inject
-  private CaseReceiptPublisher caseReceiptPublisher;
 
   private Connection connection;
   private int initialCounter;
@@ -134,6 +131,8 @@ public class CaseReceiptReceiverImplSITest {
     // Release all waiting threads when mock caseService.findCaseByCaseRef method is called
     doAnswer(countsDownLatch(caseServiceInvoked)).when(caseService).findCaseByCaseRef(any(String.class));
 
+    when(caseService.findCaseByCaseRef(NONEXISTING_CASE_REF)).thenReturn(null);
+
     String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/validCaseReceipt.xml"), "UTF-8");
     testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
 
@@ -157,7 +156,7 @@ public class CaseReceiptReceiverImplSITest {
      */
     ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
     verify(caseService).findCaseByCaseRef(argumentCaptor.capture());
-    assertEquals(argumentCaptor.getValue(), "tiptop");
+    assertEquals(argumentCaptor.getValue(), NONEXISTING_CASE_REF);
   }
 
   @Test
@@ -186,19 +185,8 @@ public class CaseReceiptReceiverImplSITest {
      * We check that no xml ends up on the dead letter queue.
      */
     Message<?> message = activeMQDLQXml.receive(RECEIVE_TIMEOUT);
-    assertNull(message);
-
-    /**
-     * We check the message was processed by CaseReceiptReceiverImpl
-     */
-    ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
-    verify(caseService).findCaseByCaseRef(argumentCaptor.capture());
-    assertEquals(argumentCaptor.getValue(), "tiptop");
-
-    /**
-     * We check that the message was processed by CaseReceiptProcessErrorReceiverImpl
-     */
-    verify(caseReceiptPublisher).send(any(CaseReceipt.class));
+    String payload = (String) message.getPayload();
+    assertEquals(testMessage, payload);
   }
 
   private File provideTempFile(String inputStreamLocation) throws IOException {
