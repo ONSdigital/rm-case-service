@@ -19,7 +19,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.ons.ctp.common.message.JmsHelper;
-import uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl;
+import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 
 import javax.inject.Inject;
 import javax.jms.Connection;
@@ -68,7 +68,7 @@ public class CaseReceiptReceiverImplSITest {
   CachingConnectionFactory connectionFactory;
 
   @Inject
-  private CaseServiceImpl caseService;
+  private CaseService caseService;
 
   private Connection connection;
   private int initialCounter;
