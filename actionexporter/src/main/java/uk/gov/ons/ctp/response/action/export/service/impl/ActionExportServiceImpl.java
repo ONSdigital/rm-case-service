@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.action.export.service.impl;
 
+import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -15,7 +16,9 @@ import uk.gov.ons.ctp.response.action.export.repository.ActionRequestRepository;
 import uk.gov.ons.ctp.response.action.export.service.ActionExportService;
 import uk.gov.ons.ctp.response.action.message.feedback.ActionFeedback;
 import uk.gov.ons.ctp.response.action.message.feedback.Outcome;
+import uk.gov.ons.ctp.response.action.message.instruction.ActionCancel;
 import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
+import uk.gov.ons.ctp.response.action.message.instruction.ActionRequest;
 
 /**
  * Service implementation responsible for persisting action export requests
@@ -46,22 +49,54 @@ public class ActionExportServiceImpl implements ActionExportService {
    */
   @Override
   public void acceptInstruction(ActionInstruction instruction) {
-    log.debug("Saving {} actionRequests", instruction.getActionRequests().getActionRequests().size());
-    List<ActionRequestDocument> actionRequests = mapperFacade.mapAsList(
-        instruction.getActionRequests().getActionRequests(),
-        ActionRequestDocument.class);
+    if (instruction.getActionRequests().getActionRequests().size() > 0) {
+      processActionRequests(instruction.getActionRequests().getActionRequests());
+    } else {
+      log.info("No ActionRequests to process");
+    }
+    if (instruction.getActionCancels().getActionCancels().size() > 0) {
+      processActionCancels(instruction.getActionCancels().getActionCancels());
+    } else {
+      log.info("No ActionCancels to process");
+    }
+  }
+
+  private void processActionRequests(List<ActionRequest> actionRequests) {
+    log.debug("Saving {} actionRequests", actionRequests.size());
+    List<ActionRequestDocument> actionRequestDocs = mapperFacade.mapAsList(actionRequests, ActionRequestDocument.class);
     Date now = new Date();
-    actionRequests.forEach(actionRequest -> {
-      actionRequest.setDateStored(now);
+    actionRequestDocs.forEach(actionRequestDoc -> {
+      actionRequestDoc.setDateStored(now);
     });
-    actionRequestRepo.save(actionRequests);
+    actionRequestRepo.save(actionRequestDocs);
     String timeStamp = new SimpleDateFormat(DATE_FORMAT).format(now);
-    actionRequests.forEach(actionRequest -> {
-      if (actionRequest.isResponseRequired()) {
-        ActionFeedback actionFeedback = new ActionFeedback(actionRequest.getActionId(),
+    actionRequestDocs.forEach(actionRequestDoc -> {
+      if (actionRequestDoc.isResponseRequired()) {
+        ActionFeedback actionFeedback = new ActionFeedback(actionRequestDoc.getActionId(),
             "ActionExport Stored: " + timeStamp, Outcome.REQUEST_ACCEPTED, null);
         actionFeedbackPubl.sendActionFeedback(actionFeedback);
       }
     });
+  }
+
+  private void processActionCancels(List<ActionCancel> actionCancels) {
+    log.debug("Processing {} actionCancels", actionCancels.size());
+    String timeStamp = new SimpleDateFormat(DATE_FORMAT).format(new Date());
+    boolean cancelled = false;
+    for (ActionCancel actionCancel : actionCancels ) {
+      ActionRequestDocument actionRequest = actionRequestRepo.findOne(actionCancel.getActionId());
+      if (actionRequest != null && actionRequest.getDateSent() == null) {
+        actionRequestRepo.delete(actionCancel.getActionId());
+        cancelled = true;
+      } else {
+        cancelled = false;
+      }
+      if (actionCancel.isResponseRequired()) {
+        ActionFeedback actionFeedback = new ActionFeedback(actionCancel.getActionId(),
+            "ActionExport Cancelled: " + timeStamp,
+            cancelled ? Outcome.CANCELLATION_COMPLETED : Outcome.CANCELLATION_FAILED, null);
+        actionFeedbackPubl.sendActionFeedback(actionFeedback);
+      }
+    }
   }
 }

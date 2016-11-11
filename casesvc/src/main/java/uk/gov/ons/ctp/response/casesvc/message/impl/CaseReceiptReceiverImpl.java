@@ -42,7 +42,7 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
    * @param caseReceipt to process
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  @ServiceActivator(inputChannel = "caseReceiptTransformedWithHeader")
+  @ServiceActivator(inputChannel = "caseReceiptTransformed")
   public void process(CaseReceipt caseReceipt) {
     log.debug("entering process with caseReceipt {}", caseReceipt);
     String caseRef = caseReceipt.getCaseRef();
