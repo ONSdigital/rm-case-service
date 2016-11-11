@@ -62,7 +62,7 @@ public final class CaseEndpoint implements CTPEndpoint {
   @GET
   @Path("/{caseId}")
   public CaseDTO findCaseByCaseId(@PathParam("caseId") final Integer caseId) throws CTPException {
-    log.debug("Entering findCaseByCaseId with {}", caseId);
+    log.info("Entering findCaseByCaseId with {}", caseId);
     Case caseObj = caseService.findCaseByCaseId(caseId);
     if (caseObj == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
@@ -81,7 +81,7 @@ public final class CaseEndpoint implements CTPEndpoint {
   @GET
   @Path("/iac/{iac}")
   public CaseDTO findCaseByIac(@PathParam("iac") final String iac) throws CTPException {
-    log.debug("Entering findCaseByIac with {}", iac);
+    log.info("Entering findCaseByIac with {}", iac);
     Case caseObj = caseService.findCaseByIac(iac);
     if (caseObj == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
@@ -100,7 +100,7 @@ public final class CaseEndpoint implements CTPEndpoint {
   @GET
   @Path("/casegroup/{caseGroupId}")
   public List<CaseDTO> findCasesInCaseGroup(@PathParam("caseGroupId") final Integer caseGroupId) throws CTPException {
-    log.debug("Entering findCasesInCaseGroup with {}", caseGroupId);
+    log.info("Entering findCasesInCaseGroup with {}", caseGroupId);
     CaseGroup caseGroup = caseGroupService.findCaseGroupByCaseGroupId(caseGroupId);
     if (caseGroup == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
@@ -121,7 +121,7 @@ public final class CaseEndpoint implements CTPEndpoint {
   @GET
   @Path("/{caseId}/events")
   public List<CaseEventDTO> findCaseEventsByCaseId(@PathParam("caseId") final Integer caseId) throws CTPException {
-    log.debug("Entering findCaseEventsByCaseId with {}", caseId);
+    log.info("Entering findCaseEventsByCaseId with {}", caseId);
     Case caseObj = caseService.findCaseByCaseId(caseId);
     if (caseObj == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
@@ -146,7 +146,7 @@ public final class CaseEndpoint implements CTPEndpoint {
   @Path("/{caseId}/events")
   public CaseEventDTO createCaseEvent(@PathParam("caseId") final Integer caseId,
       @Valid final CaseEventCreationRequestDTO caseEventCreationRequestDTO) throws CTPException {
-    log.debug("Entering createCaseEvent with caseId {} and requestObject {}", caseId, caseEventCreationRequestDTO);
+    log.info("Entering createCaseEvent with caseId {} and requestObject {}", caseId, caseEventCreationRequestDTO);
     caseEventCreationRequestDTO.setCaseId(caseId);
 
     CaseEvent caseEvent = mapperFacade.map(caseEventCreationRequestDTO, CaseEvent.class);

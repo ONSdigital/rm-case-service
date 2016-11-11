@@ -43,7 +43,7 @@ public final class CategoryEndpoint implements CTPEndpoint {
   @GET
   @Path("/{categoryName}")
   public CategoryDTO findCategory(@PathParam("categoryName") final CategoryDTO.CategoryType categoryType) throws CTPException {
-    log.debug("Entering findCategory with categoryName {}", categoryType);
+    log.info("Entering findCategory with categoryName {}", categoryType);
     Category category = categoryService.findCategory(categoryType);
     if (category == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
@@ -61,7 +61,7 @@ public final class CategoryEndpoint implements CTPEndpoint {
   @GET
   @Path("/")
   public List<CategoryDTO> findCategories(@QueryParam("role") final String role, @QueryParam("group") final String group) {
-    log.debug("Entering findCategories with role {}", role);
+    log.info("Entering findCategories with role {}", role);
     List<Category> categories = categoryService.findCategories(role, group);
     List<CategoryDTO> categoryDTOs = mapperFacade.mapAsList(categories, CategoryDTO.class);
     return CollectionUtils.isEmpty(categoryDTOs) ? null : categoryDTOs;

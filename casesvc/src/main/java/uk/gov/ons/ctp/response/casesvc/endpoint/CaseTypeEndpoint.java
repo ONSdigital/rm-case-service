@@ -38,7 +38,7 @@ public final class CaseTypeEndpoint implements CTPEndpoint {
   @GET
   @Path("/{casetypeid}")
   public CaseTypeDTO findCaseTypeByCaseTypeId(@PathParam("casetypeid") final Integer caseTypeId) throws CTPException {
-    log.debug("Entering findCaseTypeByCaseTypeId with {}", caseTypeId);
+    log.info("Entering findCaseTypeByCaseTypeId with {}", caseTypeId);
     CaseType caseType = caseTypeService.findCaseTypeByCaseTypeId(caseTypeId);
     if (caseType == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "CaseType not found for id %s", caseTypeId);

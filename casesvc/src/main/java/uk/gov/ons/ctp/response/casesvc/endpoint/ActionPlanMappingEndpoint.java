@@ -47,7 +47,7 @@ public final class ActionPlanMappingEndpoint implements CTPEndpoint {
   @GET
   @Path("/{mappingId}")
   public ActionPlanMappingDTO findActionPlanMappingByActionPlanMappingId(@PathParam("mappingId") final Integer actionPlanMappingId) throws CTPException {
-    log.debug("Entering findActionPlanMappingByActionPlanMappingId with {}", actionPlanMappingId);
+    log.info("Entering findActionPlanMappingByActionPlanMappingId with {}", actionPlanMappingId);
     ActionPlanMapping actionPlanMapping = actionPlanMappingService.findActionPlanMapping(actionPlanMappingId);
     if (actionPlanMapping == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "ActionPlanMapping not found for id %s", actionPlanMappingId);
@@ -64,7 +64,7 @@ public final class ActionPlanMappingEndpoint implements CTPEndpoint {
   @GET
   @Path("/casetype/{caseTypeId}")
   public List<ActionPlanMappingDTO> findActionPlanMappingByCaseTypeId(@PathParam("caseTypeId") final Integer caseTypeId) throws CTPException {
-    log.debug("Entering findActionPlanMappingByCaseTypeId with {}", caseTypeId);
+    log.info("Entering findActionPlanMappingByCaseTypeId with {}", caseTypeId);
     CaseType caseType = caseTypeService.findCaseTypeByCaseTypeId(caseTypeId);
     if (caseType == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "CaseType not found for id %s", caseTypeId);

@@ -151,9 +151,8 @@ public class CaseDistributor {
         } catch (Exception e) {
           // single case/questionnaire db changes rolled back
           log.error(
-              "Exception thrown processing case {}. Processing postponed",
-              caze.getCaseId());
-          log.error(e.getStackTrace().toString());
+              "Exception {} thrown processing case {}. Processing postponed",
+              e.getMessage(), caze.getCaseId());
           failures++;
         }
       }

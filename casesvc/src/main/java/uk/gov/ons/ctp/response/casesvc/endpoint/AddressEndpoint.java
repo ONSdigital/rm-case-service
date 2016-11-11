@@ -39,7 +39,7 @@ public final class AddressEndpoint implements CTPEndpoint {
   @GET
   @Path("/{uprn}")
   public AddressDTO findAddressesByUprn(@PathParam("uprn") final Long uprn) throws CTPException {
-    log.debug("Entering findAddressesByUprn with {}", uprn);
+    log.info("Entering findAddressesByUprn with {}", uprn);
 
     Address address = addressService.findByUprn(uprn);
     log.debug("address = {}", address);
@@ -59,7 +59,7 @@ public final class AddressEndpoint implements CTPEndpoint {
   @GET
   @Path("/postcode/{postcode}")
   public List<AddressDTO> findAddressesByPostcode(@PathParam("postcode") final String postcode) throws CTPException {
-    log.debug("Entering findAddressesByPostcode with {}", postcode);
+    log.info("Entering findAddressesByPostcode with {}", postcode);
 
     List<Address> addresses = addressService.findByPostcode(postcode);
     log.debug("addresses = {}", addresses);

@@ -43,7 +43,7 @@ public final class SampleEndpoint implements CTPEndpoint {
   @GET
   @Path("/{sampleid}")
   public SampleDTO findSampleBySampleId(@PathParam("sampleid") final Integer sampleId) throws CTPException {
-    log.debug("Entering findSampleBySampleId with {}", sampleId);
+    log.info("Entering findSampleBySampleId with {}", sampleId);
     Sample sample = sampleService.findSampleBySampleId(sampleId);
     if (sample == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Sample not found for id %s", sampleId);
@@ -62,7 +62,7 @@ public final class SampleEndpoint implements CTPEndpoint {
   @Path("/{sampleId}")
   public SampleDTO createCases(@PathParam("sampleId") final int sampleId, final GeographyDTO geography)
           throws CTPException {
-    log.debug("Creating cases ");
+    log.info("Creating cases ");
     Sample sample = sampleService.findSampleBySampleId(sampleId);
     if (sample == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Sample not found for id %s", sampleId);

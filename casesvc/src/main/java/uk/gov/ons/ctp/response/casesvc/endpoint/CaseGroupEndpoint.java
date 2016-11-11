@@ -49,7 +49,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   @GET
   @Path("/{caseGroupId}")
   public CaseGroupDTO findCaseGroupById(@PathParam("caseGroupId") final Integer caseGroupId)  throws CTPException {
-    log.debug("Entering findCaseGroupById with {}", caseGroupId);
+    log.info("Entering findCaseGroupById with {}", caseGroupId);
     CaseGroup caseGroupObj = caseGroupService.findCaseGroupByCaseGroupId(caseGroupId);
     if (caseGroupObj == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
@@ -69,7 +69,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   @GET
   @Path("/uprn/{uprn}")
   public List<CaseGroupDTO> findCaseGroupsByUprn(@PathParam("uprn") final Long uprn)  throws CTPException {
-    log.debug("Entering findCaseGroupsByUprn with {}", uprn);
+    log.info("Entering findCaseGroupsByUprn with {}", uprn);
 
     Address address = addressService.findByUprn(uprn);
     if (address == null) {
