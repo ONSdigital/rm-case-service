@@ -13,7 +13,7 @@
 
     <!-- setup the jms queues -->
     <bean id="caseNotificationJMSQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Case.Notifications"/>
+        <constructor-arg value="Case.LifecycleEvents"/>
     </bean>
     <bean id="invalidCaseNotificationQueue" class="org.apache.activemq.command.ActiveMQQueue">
         <constructor-arg value="Case.InvalidNotifications"/>

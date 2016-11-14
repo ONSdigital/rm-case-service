@@ -41,8 +41,7 @@ import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.utility.CaseNotificationMessageListener;
 
 /**
- * Test publication of CaseNotification messages on integration flow to
- * Case.Notifications queue.
+ * Test publication of CaseNotification messages on integration flow to Case.LifecycleEvents queue.
  *
  */
 @Slf4j
