@@ -8,7 +8,7 @@
 
   <bean id="caseNotificationListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
     <property name="connectionFactory" ref="connectionFactory" />
-    <property name="destinationName" value="Case.Notifications" />
+    <property name="destinationName" value="Case.LifecycleEvents" />
     <property name="messageListener" ref="myMessageListener" />
     <property name="maxConcurrentConsumers" value="1" />
     <property name="concurrentConsumers" value="1" />
