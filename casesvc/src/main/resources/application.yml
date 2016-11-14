@@ -10,8 +10,8 @@ info:
 logging:
   level:
     ROOT: ERROR
-    org.springframework: WARN
-    org.springframework.integration: WARN
+    org.springframework: ERROR
+    org.springframework.integration: ERROR
     uk.gov.ons.ctp: INFO
 
 liquibase:
