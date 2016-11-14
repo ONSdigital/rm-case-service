@@ -19,3 +19,13 @@ databaseChangeLog:
             path: update_outbound_channel.sql
             relativeToChangelogFile: true
             splitStatements: false
+
+  - changeSet:
+      id: 9.29.0-3
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: new category for action_completed_disabled and action_completed_deactivated
+            path: category_changes.sql
+            relativeToChangelogFile: true
+            splitStatements: false
