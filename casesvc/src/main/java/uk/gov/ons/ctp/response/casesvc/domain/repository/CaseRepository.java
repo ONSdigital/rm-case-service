@@ -3,12 +3,13 @@ package uk.gov.ons.ctp.response.casesvc.domain.repository;
 import java.util.List;
 
 import javax.inject.Named;
-import javax.transaction.Transactional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
@@ -17,7 +18,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
  * JPA Data Repository.
  */
 @Named
-@Transactional
+@Transactional(readOnly = true)
 public interface CaseRepository extends JpaRepository<Case, Integer> {
 
   /**
@@ -39,6 +40,7 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
    * @return the number of cases updated
    */
   @Modifying
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   @Query(value = "UPDATE casesvc.case SET state = ?2 WHERE caseid = ?1", nativeQuery = true)
   int setState(Integer caseid, String state);
   
