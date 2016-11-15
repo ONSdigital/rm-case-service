@@ -1,6 +1,5 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
-import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.ADDRESS_EASTINGS;
 import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.ADDRESS_ESTABLISH_TYPE;
 import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.ADDRESS_HTC;
 import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.ADDRESS_LAD;
@@ -11,7 +10,6 @@ import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.ADDRESS_LOC
 import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.ADDRESS_LONGITUDE;
 import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.ADDRESS_LSOA;
 import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.ADDRESS_MSOA;
-import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.ADDRESS_NORTHINGS;
 import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.ADDRESS_ORG_NAME;
 import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.ADDRESS_OUTPUT_AREA;
 import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.ADDRESS_REGION_CODE;
@@ -32,7 +30,6 @@ import org.springframework.http.HttpStatus;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
 import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
-import uk.gov.ons.ctp.response.casesvc.endpoint.AddressEndpoint;
 import uk.gov.ons.ctp.response.casesvc.service.AddressService;
 import uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory;
 
@@ -70,8 +67,6 @@ public final class AddressEndpointUnitTest extends CTPJerseyTest {
         .assertStringInBody("$.msoaArea", ADDRESS_MSOA)
         .assertStringInBody("$.ladCode", ADDRESS_LAD)
         .assertStringInBody("$.regionCode", ADDRESS_REGION_CODE)
-        .assertIntegerInBody("$.eastings", ADDRESS_EASTINGS)
-        .assertIntegerInBody("$.northings", ADDRESS_NORTHINGS)
         .assertIntegerInBody("$.htc", ADDRESS_HTC)
         .assertDoubleInBody("$.latitude", ADDRESS_LATITUDE)
         .assertDoubleInBody("$.longitude", ADDRESS_LONGITUDE)
@@ -124,8 +119,6 @@ public final class AddressEndpointUnitTest extends CTPJerseyTest {
         .assertStringListInBody("$..msoaArea", ADDRESS_MSOA)
         .assertStringListInBody("$..ladCode", ADDRESS_LAD)
         .assertStringListInBody("$..regionCode", ADDRESS_REGION_CODE)
-        .assertIntegerListInBody("$..eastings", ADDRESS_EASTINGS)
-        .assertIntegerListInBody("$..northings", ADDRESS_NORTHINGS)
         .assertIntegerListInBody("$..htc", ADDRESS_HTC)
         .assertDoubleListInBody("$..latitude", ADDRESS_LATITUDE)
         .assertDoubleListInBody("$..longitude", ADDRESS_LONGITUDE)

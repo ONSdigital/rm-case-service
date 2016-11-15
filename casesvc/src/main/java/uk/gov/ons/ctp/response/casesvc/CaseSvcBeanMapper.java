@@ -46,11 +46,11 @@ public class CaseSvcBeanMapper extends ConfigurableMapper {
 
     factory
         .classMap(Address.class, AddressDTO.class)
-        .field("oa11cd", "outputArea")
-        .field("lsoa11cd", "lsoaArea")
-        .field("msoa11cd", "msoaArea")
-        .field("lad12cd", "ladCode")
-        .field("region11cd", "regionCode")
+        .field("oa", "outputArea")
+        .field("lsoa", "lsoaArea")
+        .field("msoa", "msoaArea")
+        .field("lad", "ladCode")
+        .field("region", "regionCode")
         .byDefault()
         .register();
 
@@ -94,7 +94,5 @@ public class CaseSvcBeanMapper extends ConfigurableMapper {
         .classMap(Sample.class, SampleDTO.class)
         .byDefault()
         .register();
-
-
   }
 }
