@@ -29,3 +29,16 @@ databaseChangeLog:
             path: category_changes.sql
             relativeToChangelogFile: true
             splitStatements: false
+
+  - changeSet:
+      id: 9.29.0-4
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: new address structure and genertae_initial_cases
+            path: address_changes.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+
+
