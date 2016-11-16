@@ -1,0 +1,79 @@
+<ins:actionInstruction xmlns:ins="http://ons.gov.uk/ctp/response/action/message/instruction">
+    <!--Note values of longitude and latitude -->
+    <actionRequests>
+        <!--Zero or more repetitions:-->
+        <actionRequest>
+            <responseRequired>false</responseRequired>
+            <actionId>201</actionId>
+            <actionPlan>string</actionPlan>
+            <actionType>string</actionType>
+            <questionSet>string</questionSet>
+            <!--Optional:-->
+            <contact>
+                <!--Optional:-->
+                <title>string</title>
+                <!--Optional:-->
+                <forename>string</forename>
+                <!--Optional:-->
+                <surname>string</surname>
+                <!--Optional:-->
+                <phoneNumber>string</phoneNumber>
+                <!--Optional:-->
+                <emailAddress>string</emailAddress>
+            </contact>
+            <address>
+                <uprn>201</uprn>
+                <!--Optional:-->
+                <type>string</type>
+                <!--Optional:-->
+                <estabType>string</estabType>
+                <!--Optional:-->
+                <locality>string</locality>
+                <!--Optional:-->
+                <organisationName>string</organisationName>
+                <!--Optional:-->
+                <category>string</category>
+                <!--Optional:-->
+                <line1>string</line1>
+                <!--Optional:-->
+                <line2>string</line2>
+                <!--Optional:-->
+                <townName>string</townName>
+                <postcode>string</postcode>
+                <latitude>string</latitude>
+                <longitude>string</longitude>
+            </address>
+            <caseId>201</caseId>
+            <!--Optional:-->
+            <priority>lower</priority>
+            <caseRef>string</caseRef>
+            <iac>string</iac>
+            <events>
+                <!--Zero or more repetitions:-->
+                <event>string</event>
+            </events>
+        </actionRequest>
+    </actionRequests>
+    <!--Optional:-->
+    <actionUpdates>
+        <!--Zero or more repetitions:-->
+        <actionUpdate>
+            <responseRequired>true</responseRequired>
+            <actionId>201</actionId>
+            <priority>lower</priority>
+            <events>
+                <!--Zero or more repetitions:-->
+                <event>string</event>
+            </events>
+        </actionUpdate>
+    </actionUpdates>
+    <!--Optional:-->
+    <actionCancels>
+        <!--Zero or more repetitions:-->
+        <actionCancel>
+            <responseRequired>true</responseRequired>
+            <actionId>201</actionId>
+            <reason>string</reason>
+        </actionCancel>
+    </actionCancels>
+</ins:actionInstruction>

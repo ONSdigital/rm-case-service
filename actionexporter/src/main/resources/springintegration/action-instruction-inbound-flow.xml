@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+       xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+  http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+  http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
+  http://www.springframework.org/schema/integration/xml
+  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
+
+    <bean id="instructionListenerContainer"
+          class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <property name="destinationName" value="${jms.queue.name}"/>
+        <property name="sessionTransacted" value="true"/>
+        <property name="maxConcurrentConsumers" value="1"/>
+        <property name="concurrentConsumers" value="1"/>
+        <property name="receiveTimeout" value="5000"/>
+        <property name="recoveryInterval" value="60000"/>
+        <property name="autoStartup" value="true"/>
+    </bean>
+
+    <int:channel id="instructionXml" />
+
+    <int-jms:message-driven-channel-adapter id="jmsIn" container="instructionListenerContainer" channel="instructionXml" />
+
+    <int:channel id="instructionXmlInvalid" />
+    <bean id="invalidActionInstructionQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Action.InvalidActionInstructions"/>
+    </bean>
+    <int-jms:outbound-channel-adapter id="invalidActionInstructionJmsOut" destination="invalidActionInstructionQueue" channel="instructionXmlInvalid"/>
+
+    <!-- validate XML against schema -->
+    <int-xml:validating-filter id="instructionValidator"
+                               input-channel="instructionXml" output-channel="instructionXmlValid"
+                               schema-location="classpath:xsd/actionInstruction.xsd" discard-channel="instructionXmlInvalid" />
+
+    <!-- Validated xml is transformed into the jaxb generated object model -->
+    <int:channel id="instructionTransformed" datatype="uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction" />
+    <int-xml:unmarshalling-transformer
+            input-channel="instructionXmlValid" output-channel="instructionTransformed"
+            unmarshaller="instructionUnmarshaller" />
+
+    <!-- The transformer uses this unmarshaller to do the heavy (un)lifting -->
+    <bean id="instructionUnmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath"
+                  value="uk.gov.ons.ctp.response.action.message.instruction" />
+    </bean>
+</beans>

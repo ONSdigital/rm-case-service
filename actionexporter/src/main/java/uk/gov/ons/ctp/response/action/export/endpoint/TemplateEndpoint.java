@@ -87,7 +87,7 @@ public class TemplateEndpoint {
     TemplateDocument templateDocument = templateService.storeTemplateDocument(templateName, fileContents);
 
     UriBuilder ub = uriInfo.getAbsolutePathBuilder();
-    URI templateDocumentUri = ub.path(templateName).build();
+    URI templateDocumentUri = ub.build();
     TemplateDocumentDTO templateDocumentDTO = mapperFacade.map(templateDocument, TemplateDocumentDTO.class);
     return Response.created(templateDocumentUri).entity(templateDocumentDTO).build();
   }

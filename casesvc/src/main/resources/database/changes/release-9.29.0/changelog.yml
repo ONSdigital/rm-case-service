@@ -40,5 +40,12 @@ databaseChangeLog:
             relativeToChangelogFile: true
             splitStatements: false
 
-
-
+  - changeSet:
+        id: 9.29.0-5
+        author: Philippe Brossier
+        changes:
+          - sqlFile:
+              comment: adding an id and increasing length of caseref
+              path: unlinkedcasereceipt_changes.sql
+              relativeToChangelogFile: true
+              splitStatements: false

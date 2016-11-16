@@ -33,7 +33,7 @@ import uk.gov.ons.ctp.response.action.export.endpoint.TemplateMappingEndpoint;
 @EnableAsync
 @EnableCaching
 @EnableScheduling
-@ImportResource("main-int.xml")
+@ImportResource("springintegration/main.xml")
 public class ActionExporterApplication {
 
   public static final String ACTION_DISTRIBUTION_MAP = "actionsvc.action.distribution";

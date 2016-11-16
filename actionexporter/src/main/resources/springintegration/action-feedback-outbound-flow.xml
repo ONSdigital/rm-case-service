@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+       xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+  http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+  http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
+  http://www.springframework.org/schema/integration/xml
+  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
+
+    <int:channel id="actionFeedbackXmlInvalid" />
+    <bean id="invalidActionFeedbackQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Action.InvalidActionFeedback"/>
+    </bean>
+    <int-jms:outbound-channel-adapter id="invalidActionFeedbackJmsOut" destination="invalidActionFeedbackQueue" channel="actionFeedbackXmlInvalid"/>
+
+    <bean id="actionFeedbackQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Action.Feedback"/>
+    </bean>
+
+
+    <!--  setup the outbound channels - note each queue needs a channel -->
+    <int:channel id="actionFeedbackOutbound" />
+    <int:channel id="actionFeedbackXml" />
+    <int:channel id="actionFeedback" />
+
+    <!--  the @Publisher sends to the marshalling-transformers input channel -->
+    <int-xml:marshalling-transformer
+            input-channel="actionFeedbackOutbound"
+            output-channel="actionFeedbackXml"
+            marshaller="actionFeedbackMarshaller"
+            result-transformer="actionFeedbackTransformer"/>
+
+    <!--  the actionFeedbackMarshaller turns java objects into xml dom -->
+    <bean id="actionFeedbackMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="uk.gov.ons.ctp.response.action.message.feedback" />
+    </bean>
+
+    <!--  the actionFeedbackTransformer turns the xml dom into a string -->
+    <bean id="actionFeedbackTransformer" class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
+
+    <!-- validate XML against schema -->
+    <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
+    <int-xml:validating-filter id="actionFeedbackValidator"
+                               input-channel="actionFeedbackXml"
+                               output-channel="actionFeedback"
+                               schema-location="classpath:xsd/actionFeedback.xsd"
+                               discard-channel="actionFeedbackXmlInvalid"/>
+
+    <!--  adapt the SI message to a JMS message -->
+    <int-jms:outbound-channel-adapter id="actionFeedbackJmsout" channel="actionFeedback" destination="actionFeedbackQueue"/>
+</beans>

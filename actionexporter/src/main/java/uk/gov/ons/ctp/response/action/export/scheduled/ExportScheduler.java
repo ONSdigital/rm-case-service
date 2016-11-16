@@ -25,7 +25,7 @@ public class ExportScheduler implements HealthIndicator {
   private SftpServicePublisher sftpService;
 
   @Inject
-  private ExportInfo exportInfo = new ExportInfo();
+  private ExportInfo exportInfo;
 
   @Override
   public Health health() {
