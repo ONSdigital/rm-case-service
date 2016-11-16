@@ -11,6 +11,7 @@ import javax.inject.Named;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 
+import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 
 /**
@@ -19,6 +20,7 @@ import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
  * details from the AppConfig
  */
 @Named
+@Slf4j
 public class CaseDistributionScheduler implements HealthIndicator {
 
   @Override
@@ -33,8 +35,6 @@ public class CaseDistributionScheduler implements HealthIndicator {
 
   private CaseDistributionInfo distribInfo = new CaseDistributionInfo();
 
-  private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-
   /**
    * Create the scheduler for the Case Distributor
    *
@@ -46,10 +46,15 @@ public class CaseDistributionScheduler implements HealthIndicator {
   public CaseDistributionScheduler(AppConfig applicationConfig) {
     final Runnable distributorRunnable = new Runnable() {
       @Override public void run() {
-        distribInfo = caseDistributorImpl.distribute();
+        try {
+          distribInfo = caseDistributorImpl.distribute();
+        } catch (Exception e) {
+          log.error("Exception in case distributor", e);
+        }
       }
     };
 
+    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     scheduler.scheduleAtFixedRate(distributorRunnable,
         applicationConfig.getCaseDistribution().getInitialDelaySeconds(),
         applicationConfig.getCaseDistribution().getSubsequentDelaySeconds(), SECONDS);
