@@ -12,9 +12,9 @@
 
     <context:property-placeholder location="classpath:/application-test.properties" />
 
-	<beans:import resource="flows-int.xml" />
-	<beans:import resource="test-broker-int.xml" />
-    <beans:import resource="test-action-instruction-int.xml" />
+	<beans:import resource="flows.xml" />
+	<beans:import resource="test-broker.xml" />
+    <beans:import resource="test-action-instruction.xml" />
 
 </beans:beans>
 

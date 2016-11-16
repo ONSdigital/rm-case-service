@@ -87,9 +87,6 @@ spring:
 export-schedule:
   cron-expression: "0 0/5 * * * ?"
 
-deadxml:
-  directory: /var/log/ctp/responsemanagement/actionexporter
-
 sftp:
   host: localhost
   port: 22
@@ -103,3 +100,8 @@ jms:
 
 freemarker:
   delayfornewtemplates: 86400000  # ie 24 hours in milliseconds
+
+redelivery-policy:
+  maxRedeliveries: 10
+  initialRedeliveryDelay: 1000
+  redeliveryDelay: 1000
