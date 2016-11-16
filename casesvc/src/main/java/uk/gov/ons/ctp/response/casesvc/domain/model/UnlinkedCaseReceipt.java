@@ -6,7 +6,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -26,6 +29,11 @@ import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 @Table(name = "unlinkedcasereceipt", schema = "casesvc")
 public class UnlinkedCaseReceipt {
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "unlinkedcasereceiptidseq_gen")
+  @SequenceGenerator(name = "unlinkedcasereceiptidseq_gen", sequenceName = "casesvc.unlinkedcasereceiptidseq")
+  @Column(name = "id")
+  private Integer id;
+
   @Column(name = "caseref")
   private String caseRef;
 
