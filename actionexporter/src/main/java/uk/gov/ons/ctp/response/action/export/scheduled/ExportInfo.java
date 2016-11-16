@@ -15,7 +15,7 @@ import lombok.Data;
 @Data
 public class ExportInfo {
 
-  private static final int OUTCOME_SIZE = 7;
+  private static final int OUTCOME_SIZE = 16;
   private LinkedList<String> outcomes = new LinkedList<String>();
 
   /**
