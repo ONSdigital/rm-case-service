@@ -33,12 +33,12 @@ import org.springframework.integration.channel.QueueChannel;
 import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.support.MessageBuilder;
 
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.ons.ctp.common.message.JmsHelper;
 import uk.gov.ons.ctp.response.action.export.service.ActionExportService;
+import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 
 /**
  * Test focusing on Spring Integration
@@ -69,6 +69,8 @@ public class ActionExportReceiverSITest {
   private int initialCounter;
 
   private static final int RECEIVE_TIMEOUT = 20000;
+  private static final String IAC_1 = "12345678930666392556";
+  private static final String IAC_2 = "12345678930666392557";
   private static final String INVALID_ACTION_INSTRUCTION_QUEUE = "Action.InvalidActionInstructions";
   private static final String PACKAGE_ACTION_INSTRUCTION = "uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction";
 
@@ -113,42 +115,36 @@ public class ActionExportReceiverSITest {
     assertEquals(0, finalCounter - initialCounter);
   }
 
-//  /**
-//   * Test whole SI flow with valid XML
-//   *
-//   * @throws InterruptedException if CountDownLatch interrupted
-//   */
-//  @Test
-//  public void testInstructionXmlValid() throws InterruptedException {
-//    String testMessage = VALIDXML_PART1
-//        + "<priority>highest</priority>"
-//        + VALIDXML_PART2;
-//
-//    // SetUp CountDownLatch for synchronisation with async call
-//    final CountDownLatch serviceInvoked = new CountDownLatch(1);
-//    // Release all waiting threads when mock
-//    // actionExportService.acceptInstruction method is called
-//    doAnswer(countsDownLatch(serviceInvoked)).when(actionExportService).acceptInstruction(any());
-//
-//    // Send message
-//    testOutbound.send(MessageBuilder.withPayload(testMessage).build());
-//    // Await synchronisation with the asynchronous message call
-//    serviceInvoked.await(RECEIVE_TIMEOUT, MILLISECONDS);
-//
-//    // Test not rejected to instructionXmlInvalid channel
-//    File logDir = new File(INVALID_ACTION_INSTRUCTION_LOG_DIRECTORY);
-//    File[] files = logDir.listFiles();
-//    assertEquals(0, files.length);
-//
-//    ArgumentCaptor<ActionInstruction> argumentCaptor = ArgumentCaptor.forClass(ActionInstruction.class);
-//    verify(actionExportService).acceptInstruction(argumentCaptor.capture());
-//
-//    assertEquals(argumentCaptor.getValue().getActionRequests().getActionRequests().get(0).getIac(),
-//        "12345678930666392556");
-//    assertEquals(argumentCaptor.getValue().getActionRequests().getActionRequests().get(1).getIac(),
-//        "12345678930666392557");
-//
-//  }
+  /**
+   * Test whole SI flow with valid XML
+   *
+   * @throws InterruptedException if CountDownLatch interrupted
+   */
+  @Test
+  public void testInstructionXmlValid() throws InterruptedException, IOException, JMSException {
+    // SetUp CountDownLatch for synchronisation with async call
+    final CountDownLatch serviceInvoked = new CountDownLatch(1);
+    // Release all waiting threads when mock actionExportService.acceptInstruction method is called
+    doAnswer(countsDownLatch(serviceInvoked)).when(actionExportService).acceptInstruction(any());
+
+    // Send message
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/validActionInstruction.xml"), "UTF-8");
+    testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
+
+    // Await synchronisation with the asynchronous message call
+    serviceInvoked.await(RECEIVE_TIMEOUT, MILLISECONDS);
+
+    /**
+     * We check that no xml ends up on the invalid queue.
+     */
+    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_ACTION_INSTRUCTION_QUEUE);
+    assertEquals(0, finalCounter - initialCounter);
+
+    ArgumentCaptor<ActionInstruction> argumentCaptor = ArgumentCaptor.forClass(ActionInstruction.class);
+    verify(actionExportService).acceptInstruction(argumentCaptor.capture());
+    assertEquals(argumentCaptor.getValue().getActionRequests().getActionRequests().get(0).getIac(), IAC_1);
+    assertEquals(argumentCaptor.getValue().getActionRequests().getActionRequests().get(1).getIac(), IAC_2);
+  }
 
   /**
    * Test invalid well formed XML should go to file
