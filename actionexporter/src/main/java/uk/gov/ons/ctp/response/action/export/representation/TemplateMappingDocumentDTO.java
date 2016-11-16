@@ -18,6 +18,5 @@ public class TemplateMappingDocumentDTO {
   @NotNull
   private String name;
   private String content;
-  private String type;
   private Date dateModified;
 }
