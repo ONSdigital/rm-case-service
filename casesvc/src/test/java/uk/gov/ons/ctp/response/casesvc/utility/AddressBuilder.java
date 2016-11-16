@@ -2,14 +2,9 @@ package uk.gov.ons.ctp.response.casesvc.utility;
 
 import uk.gov.ons.ctp.response.casesvc.domain.model.Address;
 
-/**
- * Created by philippe.brossier on 2/29/16.
- */
 public final class AddressBuilder {
 
-  public static final Integer ADDRESS_EASTINGS = 123456;
   public static final Integer ADDRESS_HTC = 11;
-  public static final Integer ADDRESS_NORTHINGS = 345000;
   public static final Double ADDRESS_LATITUDE = 100000d;
   public static final Double ADDRESS_LONGITUDE = 300000d;
   public static final String ADDRESS_ESTABLISH_TYPE = "EX";
