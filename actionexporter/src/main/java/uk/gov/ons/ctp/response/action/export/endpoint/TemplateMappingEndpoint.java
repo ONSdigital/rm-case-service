@@ -93,7 +93,7 @@ public class TemplateMappingEndpoint {
             templateMappingName, fileContents);
 
     UriBuilder ub = uriInfo.getAbsolutePathBuilder();
-    URI templateMappingDocumentUri = ub.path(templateMappingName).build();
+    URI templateMappingDocumentUri = ub.build();
     TemplateMappingDocumentDTO templateMappingDocumentDTO = mapperFacade.map(templateMappingDocument,
             TemplateMappingDocumentDTO.class);
     return Response.created(templateMappingDocumentUri).entity(templateMappingDocumentDTO).build();
