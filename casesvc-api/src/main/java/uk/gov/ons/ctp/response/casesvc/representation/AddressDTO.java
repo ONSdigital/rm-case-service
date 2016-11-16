@@ -42,10 +42,6 @@ public class AddressDTO {
 
   private String regionCode;
 
-  private Integer eastings;
-
-  private Integer northings;
-
   private Integer htc;
 
   private Double latitude;

@@ -50,19 +50,15 @@ public class Address implements Serializable {
 
   private String postcode;
 
-  private String oa11cd;
+  private String oa;
 
-  private String lsoa11cd;
+  private String lsoa;
 
-  private String msoa11cd;
+  private String msoa;
 
-  private String lad12cd;
+  private String lad;
 
-  private String region11cd;
-
-  private Integer eastings;
-
-  private Integer northings;
+  private String region;
 
   private Integer htc;
 
@@ -70,4 +66,6 @@ public class Address implements Serializable {
 
   private Double longitude;
 
+  private String sample;
+  
 }

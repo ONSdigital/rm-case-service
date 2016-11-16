@@ -318,24 +318,42 @@ public class CaseServiceImpl implements CaseService {
    * @return the new case
    */
   private Case createNewCaseFromEvent(CaseEvent caseEvent, Case targetCase, Case newCase, Category caseEventCategory) {
-    Case persistedCase = null;
-
-    newCase.setState(CaseDTO.CaseState.REPLACEMENT_INIT);
-    newCase.setCreatedDateTime(DateTimeUtil.nowUTC());
-    newCase.setCaseGroupId(targetCase.getCaseGroupId());
-    newCase.setCreatedBy(caseEvent.getCreatedBy());
-    newCase.setSourceCaseId(targetCase.getCaseId());
-    persistedCase = caseRepo.saveAndFlush(newCase);
-
+    Case persistedCase = saveNewCase(caseEvent, targetCase, newCase);
     // NOTE the action service does not need to be notified of the creation of
     // the new case - yet
     // That will be done when the CaseDistributor wakes up and assigns an IAC to
     // the newly created case
     // ie it might be created here, but it is not yet ready for prime time
     // without its IAC!
+    createCaseCreatedEvent(persistedCase, caseEventCategory);
+    return persistedCase;
+  } 
+  
+  /**
+   * Create a new case row for a replacement/new case
+   * @param caseEvent the event that lead to the creation of the new case
+   * @param targetCase the case the caseEvent was applied to
+   * @param newCase the case we have been asked to create off the back of the event
+   * @return the persisted case
+   */
+  private Case saveNewCase(CaseEvent caseEvent, Case targetCase, Case newCase) {
+    newCase.setState(CaseDTO.CaseState.REPLACEMENT_INIT);
+    newCase.setCreatedDateTime(DateTimeUtil.nowUTC());
+    newCase.setCaseGroupId(targetCase.getCaseGroupId());
+    newCase.setCreatedBy(caseEvent.getCreatedBy());
+    newCase.setSourceCaseId(targetCase.getCaseId());
+    return caseRepo.saveAndFlush(newCase);
+  }
 
+  /**
+   * Create an event for a newly created case
+   * @param caze the case for which we want to record the event
+   * @param caseEventCategory the category of the event that led to the creation of the case
+   * @return the created event
+   */
+  private CaseEvent createCaseCreatedEvent(Case caze, Category caseEventCategory) {
     CaseEvent newCaseCaseEvent = new CaseEvent();
-    newCaseCaseEvent.setCaseId(persistedCase.getCaseId());
+    newCaseCaseEvent.setCaseId(caze.getCaseId());
     newCaseCaseEvent.setCategory(CategoryDTO.CategoryType.CASE_CREATED);
     newCaseCaseEvent.setCreatedBy(Constants.SYSTEM);
     newCaseCaseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
@@ -343,6 +361,6 @@ public class CaseServiceImpl implements CaseService {
         .setDescription(String.format(CASE_CREATED_EVENT_DESCRIPTION, caseEventCategory.getShortDescription()));
 
     caseEventRepo.saveAndFlush(newCaseCaseEvent);
-    return persistedCase;
+    return newCaseCaseEvent;
   }
 }

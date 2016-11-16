@@ -59,7 +59,6 @@ public final class CategoryEndpoint implements CTPEndpoint {
    * @return the list of categories
    */
   @GET
-  @Path("/")
   public List<CategoryDTO> findCategories(@QueryParam("role") final String role, @QueryParam("group") final String group) {
     log.info("Entering findCategories with role {}", role);
     List<Category> categories = categoryService.findCategories(role, group);

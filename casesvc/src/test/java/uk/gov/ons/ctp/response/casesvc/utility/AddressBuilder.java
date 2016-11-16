@@ -2,14 +2,9 @@ package uk.gov.ons.ctp.response.casesvc.utility;
 
 import uk.gov.ons.ctp.response.casesvc.domain.model.Address;
 
-/**
- * Created by philippe.brossier on 2/29/16.
- */
 public final class AddressBuilder {
 
-  public static final Integer ADDRESS_EASTINGS = 123456;
   public static final Integer ADDRESS_HTC = 11;
-  public static final Integer ADDRESS_NORTHINGS = 345000;
   public static final Double ADDRESS_LATITUDE = 100000d;
   public static final Double ADDRESS_LONGITUDE = 300000d;
   public static final String ADDRESS_ESTABLISH_TYPE = "EX";
@@ -62,20 +57,18 @@ public final class AddressBuilder {
     Address address = new Address();
     address.setUprn(this.uprn);
     address.setPostcode(this.postcode);
-    address.setMsoa11cd(ADDRESS_MSOA);
-    address.setLad12cd(ADDRESS_LAD);
-    address.setRegion11cd(ADDRESS_REGION_CODE);
+    address.setMsoa(ADDRESS_MSOA);
+    address.setLad(ADDRESS_LAD);
+    address.setRegion(ADDRESS_REGION_CODE);
     address.setOrganisationName(ADDRESS_ORG_NAME);
     address.setLocality(ADDRESS_LOCALITY);
     address.setEstabType(ADDRESS_ESTABLISH_TYPE);
     address.setLine1(ADDRESS_LINE1);
     address.setLine2(ADDRESS_LINE2);
     address.setTownName(ADDRESS_TOWN_NAME);
-    address.setOa11cd(ADDRESS_OUTPUT_AREA);
-    address.setLsoa11cd(ADDRESS_LSOA);
+    address.setOa(ADDRESS_OUTPUT_AREA);
+    address.setLsoa(ADDRESS_LSOA);
     address.setType(ADDRESS_TYPE);
-    address.setEastings(ADDRESS_EASTINGS);
-    address.setNorthings(ADDRESS_NORTHINGS);
     address.setHtc(ADDRESS_HTC);
     address.setLatitude(ADDRESS_LATITUDE);
     address.setLongitude(ADDRESS_LONGITUDE);
