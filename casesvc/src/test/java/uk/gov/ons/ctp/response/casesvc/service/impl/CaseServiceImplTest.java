@@ -188,7 +188,7 @@ public class CaseServiceImplTest {
 
   /**
    * Tries to apply an actionable event against a case
-   * already inactionable. Should throw and not save anything
+   * already inactionable. Should allow
    * 
    * @throws Exception
    */
@@ -197,18 +197,17 @@ public class CaseServiceImplTest {
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryType.TRANSLATION_ARABIC, INACTIONABLE_HOUSEHOLD_CASE_ID);
 
-    try {
-      caseService.createCaseEvent(caseEvent, null);
-      fail();
-    } catch (RuntimeException re) {
-      assertThat(re.getMessage().startsWith(CASE_NO_LONGER_ACTIONABLE_EX));
-      verify(caseRepo).findOne(INACTIONABLE_HOUSEHOLD_CASE_ID);
-      verify(categoryRepo).findOne(CategoryDTO.CategoryType.TRANSLATION_ARABIC);
-      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-      verify(caseEventRepository, times(0)).save(caseEvent);
-      verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
-      verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class), any(String.class));
-    }
+    caseService.createCaseEvent(caseEvent, null);
+
+    verify(caseRepo).findOne(INACTIONABLE_HOUSEHOLD_CASE_ID);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryType.TRANSLATION_ARABIC);
+    // there was no change to case - no state transition
+    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
+    // event was saved
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, times(1)).createAndPostAction(any(String.class), any(Integer.class), any(String.class));
   }
 
   /**
