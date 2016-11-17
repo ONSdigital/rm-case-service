@@ -191,12 +191,6 @@ public class CaseServiceImpl implements CaseService {
       checkRespondentTypesMatch(WRONG_NEW_CASE_TYPE_MSG, category.getNewCaseRespondentType(),
           intendedCaseType.getRespondentType());
     }
-
-    if (!StringUtils.isEmpty(category.getGeneratedActionType())
-        && targetCase.getState().equals(CaseDTO.CaseState.INACTIONABLE)) {
-      throw new RuntimeException(String.format(CASE_NO_LONGER_ACTIONABLE_MSG, targetCase.getCaseId()));
-    }
-
   }
 
   /**
