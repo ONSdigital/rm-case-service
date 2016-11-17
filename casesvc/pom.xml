@@ -23,7 +23,6 @@
     <url>scm:git:git@192.168.11.106:ctp/responsemanagement-service.git</url>
   </scm>
 
-
   <dependencies>
 
     <dependency>
