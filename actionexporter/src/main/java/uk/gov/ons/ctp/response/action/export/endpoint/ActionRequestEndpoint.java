@@ -106,7 +106,7 @@ public class ActionRequestEndpoint {
     });
 
     UriBuilder ub = uriInfo.getAbsolutePathBuilder();
-    URI actionRequestDocumentUri = ub.path(actionId.toString()).build();
+    URI actionRequestDocumentUri = ub.build();
     ActionRequestDocumentDTO actionRequestDocumentDTO = mapperFacade.map(actionRequestDocument,
             ActionRequestDocumentDTO.class);
     return Response.created(actionRequestDocumentUri).entity(actionRequestDocumentDTO).build();
