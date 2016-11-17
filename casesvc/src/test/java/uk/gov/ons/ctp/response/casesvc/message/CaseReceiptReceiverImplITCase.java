@@ -41,8 +41,8 @@ import static org.mockito.Mockito.*;
  * Test focusing on Spring Integration
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = CaseReceiptReceiverImplSITestConfig.class)
-public class CaseReceiptReceiverImplSITest {
+@SpringBootTest(classes = CaseReceiptReceiverImplITcaseConfig.class)
+public class CaseReceiptReceiverImplITCase {
 
   private static final int RECEIVE_TIMEOUT = 20000;
   private static final String NONEXISTING_CASE_REF = "tiptop";

@@ -313,8 +313,8 @@ public class CaseServiceImpl implements CaseService {
    * 
    * @param caseEvent the basic event
    * @param targetCase the 'source' case the event is being created for
-   * @param newCase the details for the new case (if indeed one is required)
-   *          else null
+   * @param newCase the details for the new case (if indeed one is required) else null
+   * @param caseEventCategory the caseEventCategory
    * @return the new case
    */
   private Case createNewCaseFromEvent(CaseEvent caseEvent, Case targetCase, Case newCase, Category caseEventCategory) {
@@ -327,8 +327,8 @@ public class CaseServiceImpl implements CaseService {
     // without its IAC!
     createCaseCreatedEvent(persistedCase, caseEventCategory);
     return persistedCase;
-  } 
-  
+  }
+
   /**
    * Create a new case row for a replacement/new case
    * @param caseEvent the event that lead to the creation of the new case

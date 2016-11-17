@@ -33,8 +33,7 @@ public class InternetAccessCodeCaseContextDTO {
   
   @NotNull
   private Integer parentCaseId;
-  
+
   @NotNull
   private String questionSet;
-
 }
