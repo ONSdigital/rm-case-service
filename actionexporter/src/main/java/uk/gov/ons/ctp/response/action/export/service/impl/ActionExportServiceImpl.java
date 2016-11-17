@@ -1,6 +1,5 @@
 package uk.gov.ons.ctp.response.action.export.service.impl;
 
-import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -61,6 +60,10 @@ public class ActionExportServiceImpl implements ActionExportService {
     }
   }
 
+  /**
+   * To process a list of actionRequests
+   * @param actionRequests list to be processed
+   */
   private void processActionRequests(List<ActionRequest> actionRequests) {
     log.debug("Saving {} actionRequests", actionRequests.size());
     List<ActionRequestDocument> actionRequestDocs = mapperFacade.mapAsList(actionRequests, ActionRequestDocument.class);
@@ -79,11 +82,15 @@ public class ActionExportServiceImpl implements ActionExportService {
     });
   }
 
+  /**
+   * To process a list of actionCancels
+   * @param actionCancels list to be processed
+   */
   private void processActionCancels(List<ActionCancel> actionCancels) {
     log.debug("Processing {} actionCancels", actionCancels.size());
     String timeStamp = new SimpleDateFormat(DATE_FORMAT).format(new Date());
     boolean cancelled = false;
-    for (ActionCancel actionCancel : actionCancels ) {
+    for (ActionCancel actionCancel : actionCancels) {
       ActionRequestDocument actionRequest = actionRequestRepo.findOne(actionCancel.getActionId());
       if (actionRequest != null && actionRequest.getDateSent() == null) {
         actionRequestRepo.delete(actionCancel.getActionId());

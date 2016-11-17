@@ -23,16 +23,20 @@ import static org.testng.Assert.assertTrue;
 import static uk.gov.ons.ctp.response.action.export.utility.ObjectBuilder.buildListOfActionRequestDocuments;
 
 /**
+ *
+ * Note the name ending in ManualCase as we do NOT want it to be included with 'normal' integration tests.
+ *
  * This test focuses on the FreeMarker templating. It first stores a template in the MongoDB and then it uses the
  * TransformationService to verify that a list of ActionRequests can be filed or streamed using the template.
  *
  * Prerequisites:
  *    - a running MongoDB database (see application-test.properties for config)
+ *
  */
 @Slf4j
 @SpringBootTest(classes = {TemplateServiceImplITCaseConfig.class})
 @RunWith(SpringRunner.class)
-public class TemplateServiceImplITCase {
+public class TemplateServiceImplITManualCase {
 
   private static final int TEST_STRING_LENGTH_WHEN_50_ACTION_REQUESTS = 2614;
   private static final int TEST_STRING_LENGTH_WHEN_EMPTY_ACTION_REQUESTS =114;

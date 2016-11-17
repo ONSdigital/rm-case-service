@@ -4,6 +4,6 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.ImportResource;
 
 @SpringBootConfiguration
-@ImportResource(locations = { "classpath:springintegration/ActionExportReceiverSITest-context.xml" })
-public class ActionExportReceiverSITestConfig {
+@ImportResource(locations = { "classpath:springintegration/ActionExportReceiverITCase-context.xml" })
+public class ActionExportReceiverITCaseConfig {
 }

@@ -1,10 +1,8 @@
 package uk.gov.ons.ctp.response.action.export.message;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
@@ -18,34 +16,30 @@ import javax.inject.Inject;
 import javax.jms.Connection;
 import javax.jms.JMSException;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.jms.connection.CachingConnectionFactory;
-import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.ons.ctp.common.message.JmsHelper;
 import uk.gov.ons.ctp.response.action.export.service.ActionExportService;
-import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 
 /**
  * Test focusing on Spring Integration
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = ActionExportReceiverSITestConfig.class)
-public class ActionExportReceiverSITest {
+@SpringBootTest(classes = ActionExportReceiverITCaseConfig.class)
+public class ActionExportReceiverITCase {
   @Inject
   private MessageChannel testOutbound;
 
