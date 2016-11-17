@@ -46,8 +46,8 @@ import uk.gov.ons.ctp.response.casesvc.utility.CaseNotificationMessageListener;
  */
 @Slf4j
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = CaseNotificationPublisherSITestConfig.class)
-public class CaseNotificationPublisherSITest {
+@SpringBootTest(classes = CaseNotificationPublisherITCaseConfig.class)
+public class CaseNotificationPublisherITCase {
 
   @Inject
   private CaseNotificationPublisher caseNotificationPublisher;
