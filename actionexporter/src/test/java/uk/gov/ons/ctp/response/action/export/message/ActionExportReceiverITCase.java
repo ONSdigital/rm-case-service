@@ -1,8 +1,10 @@
 package uk.gov.ons.ctp.response.action.export.message;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
@@ -16,23 +18,27 @@ import javax.inject.Inject;
 import javax.jms.Connection;
 import javax.jms.JMSException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.jms.connection.CachingConnectionFactory;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.ons.ctp.common.message.JmsHelper;
 import uk.gov.ons.ctp.response.action.export.service.ActionExportService;
+import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 
 /**
  * Test focusing on Spring Integration
@@ -93,73 +99,73 @@ public class ActionExportReceiverITCase {
     assertTrue(true);
   }
 
-//  /**
-//   * SI sent badly formed XML to generate a parse error results in ActiveMQ dead
-//   * letter queue message. Local transaction should rollback and message should
-//   * be considered a poisoned bill.
-//   */
-//  @Test
-//  public void testInstructionXmlBadlyFormed() throws IOException, JMSException {
-//    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/badlyFormedActionInstruction.xml"), "UTF-8");
-//    testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
-//
-//    Message<?> message = activeMQDLQXml.receive(RECEIVE_TIMEOUT);
-//    String payload = (String) message.getPayload();
-//    assertEquals(testMessage, payload);
-//
-//    /**
-//     * We check that no badly formed xml ends up on the invalid queue.
-//     */
-//    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_ACTION_INSTRUCTION_QUEUE);
-//    assertEquals(0, finalCounter - initialCounter);
-//  }
-//
-//  /**
-//   * Test whole SI flow with valid XML
-//   *
-//   * @throws InterruptedException if CountDownLatch interrupted
-//   */
-//  @Test
-//  public void testInstructionXmlValid() throws InterruptedException, IOException, JMSException {
-//    // SetUp CountDownLatch for synchronisation with async call
-//    final CountDownLatch serviceInvoked = new CountDownLatch(1);
-//    // Release all waiting threads when mock actionExportService.acceptInstruction method is called
-//    doAnswer(countsDownLatch(serviceInvoked)).when(actionExportService).acceptInstruction(any());
-//
-//    // Send message
-//    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/validActionInstruction.xml"), "UTF-8");
-//    testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
-//
-//    // Await synchronisation with the asynchronous message call
-//    serviceInvoked.await(RECEIVE_TIMEOUT, MILLISECONDS);
-//
-//    /**
-//     * We check that no xml ends up on the invalid queue.
-//     */
-//    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_ACTION_INSTRUCTION_QUEUE);
-//    assertEquals(0, finalCounter - initialCounter);
-//
-//    ArgumentCaptor<ActionInstruction> argumentCaptor = ArgumentCaptor.forClass(ActionInstruction.class);
-//    verify(actionExportService).acceptInstruction(argumentCaptor.capture());
-//    assertEquals(argumentCaptor.getValue().getActionRequests().getActionRequests().get(0).getIac(), IAC_1);
-//    assertEquals(argumentCaptor.getValue().getActionRequests().getActionRequests().get(1).getIac(), IAC_2);
-//  }
-//
-//  /**
-//   * Test invalid well formed XML should go to file
-//   */
-//  @Test
-//  public void testInstructionXmlInvalid() throws IOException, JMSException {
-//    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/invalidActionInstruction.xml"), "UTF-8");
-//
-//    instructionXml.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
-//
-//    /**
-//     * We check that the invalid xml ends up on the invalid queue.
-//     */
-//    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_ACTION_INSTRUCTION_QUEUE);
-//    assertEquals(1, finalCounter - initialCounter);
-//  }
+  /**
+   * SI sent badly formed XML to generate a parse error results in ActiveMQ dead
+   * letter queue message. Local transaction should rollback and message should
+   * be considered a poisoned bill.
+   */
+  @Test
+  public void testInstructionXmlBadlyFormed() throws IOException, JMSException {
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/badlyFormedActionInstruction.xml"), "UTF-8");
+    testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
+
+    Message<?> message = activeMQDLQXml.receive(RECEIVE_TIMEOUT);
+    String payload = (String) message.getPayload();
+    assertEquals(testMessage, payload);
+
+    /**
+     * We check that no badly formed xml ends up on the invalid queue.
+     */
+    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_ACTION_INSTRUCTION_QUEUE);
+    assertEquals(0, finalCounter - initialCounter);
+  }
+
+  /**
+   * Test whole SI flow with valid XML
+   *
+   * @throws InterruptedException if CountDownLatch interrupted
+   */
+  @Test
+  public void testInstructionXmlValid() throws InterruptedException, IOException, JMSException {
+    // SetUp CountDownLatch for synchronisation with async call
+    final CountDownLatch serviceInvoked = new CountDownLatch(1);
+    // Release all waiting threads when mock actionExportService.acceptInstruction method is called
+    doAnswer(countsDownLatch(serviceInvoked)).when(actionExportService).acceptInstruction(any());
+
+    // Send message
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/validActionInstruction.xml"), "UTF-8");
+    testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
+
+    // Await synchronisation with the asynchronous message call
+    serviceInvoked.await(RECEIVE_TIMEOUT, MILLISECONDS);
+
+    /**
+     * We check that no xml ends up on the invalid queue.
+     */
+    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_ACTION_INSTRUCTION_QUEUE);
+    assertEquals(0, finalCounter - initialCounter);
+
+    ArgumentCaptor<ActionInstruction> argumentCaptor = ArgumentCaptor.forClass(ActionInstruction.class);
+    verify(actionExportService).acceptInstruction(argumentCaptor.capture());
+    assertEquals(argumentCaptor.getValue().getActionRequests().getActionRequests().get(0).getIac(), IAC_1);
+    assertEquals(argumentCaptor.getValue().getActionRequests().getActionRequests().get(1).getIac(), IAC_2);
+  }
+
+  /**
+   * Test invalid well formed XML should go to file
+   */
+  @Test
+  public void testInstructionXmlInvalid() throws IOException, JMSException {
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/invalidActionInstruction.xml"), "UTF-8");
+
+    instructionXml.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
+
+    /**
+     * We check that the invalid xml ends up on the invalid queue.
+     */
+    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_ACTION_INSTRUCTION_QUEUE);
+    assertEquals(1, finalCounter - initialCounter);
+  }
 
   /**
    * Should be called when mock method is called in asynchronous test to
