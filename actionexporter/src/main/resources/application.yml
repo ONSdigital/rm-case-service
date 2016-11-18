@@ -11,7 +11,7 @@ logging:
   level:
     ROOT: ERROR
     org.springframework: ERROR
-    uk.gov.ons.ctp: WARN
+    uk.gov.ons.ctp: DEBUG
 
 security:
   basic:

@@ -12,12 +12,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.concurrent.CountDownLatch;
 
 import javax.inject.Inject;
 import javax.jms.Connection;
 import javax.jms.JMSException;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
@@ -43,6 +45,7 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 /**
  * Test focusing on Spring Integration
  */
+@Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ActionExportReceiverITCaseConfig.class)
 public class ActionExportReceiverITCase {
@@ -78,6 +81,8 @@ public class ActionExportReceiverITCase {
 
   @Before
   public void setUp() throws Exception {
+    Date now = new Date();
+    long startSetUp = now.getTime();
     connection = connectionFactory.createConnection();
     connection.start();
     initialCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_ACTION_INSTRUCTION_QUEUE);
@@ -88,11 +93,22 @@ public class ActionExportReceiverITCase {
     reset(actionExportService);
 
     activeMQDLQXml.clear();
+
+    now = new Date();
+    long endSetUp = now.getTime();
+    log.debug("time takenBySetup: {}", endSetUp - startSetUp);
   }
 
   @After
   public void finishCleanly() throws JMSException {
+    Date now = new Date();
+    long startFinishCleanly = now.getTime();
+
     connection.close();
+
+    now = new Date();
+    long endFinishCleanly = now.getTime();
+    log.debug("time takenByFinishCleanly: {}", endFinishCleanly - startFinishCleanly);
   }
 
   /**
@@ -101,6 +117,9 @@ public class ActionExportReceiverITCase {
    */
   @Test
   public void testInstructionXmlBadlyFormed() throws IOException, JMSException {
+    Date now = new Date();
+    long startBadlyFormed = now.getTime();
+
     String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/badlyFormedActionInstruction.xml"), "UTF-8");
     testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
 
@@ -113,6 +132,10 @@ public class ActionExportReceiverITCase {
      */
     int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_ACTION_INSTRUCTION_QUEUE);
     assertEquals(0, finalCounter - initialCounter);
+
+    now = new Date();
+    long endBadlyFormed = now.getTime();
+    log.debug("time takenByBadlyFormed: {}", endBadlyFormed - startBadlyFormed);
   }
 
   /**
@@ -120,6 +143,9 @@ public class ActionExportReceiverITCase {
    */
   @Test
   public void testInstructionXmlInvalid() throws InterruptedException, IOException, JMSException {
+    Date now = new Date();
+    long startXmlInvalid = now.getTime();
+
     String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/invalidActionInstruction.xml"), "UTF-8");
 
     instructionXml.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
@@ -129,6 +155,10 @@ public class ActionExportReceiverITCase {
      */
     int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_ACTION_INSTRUCTION_QUEUE);
     assertEquals(1, finalCounter - initialCounter);
+
+    now = new Date();
+    long endXmlInvalid = now.getTime();
+    log.debug("time takenByXmlInvalid: {}", endXmlInvalid - startXmlInvalid);
   }
 
   /**
@@ -138,6 +168,9 @@ public class ActionExportReceiverITCase {
    */
   @Test
   public void testInstructionXmlValid() throws InterruptedException, IOException, JMSException {
+    Date now = new Date();
+    long startXmlValid = now.getTime();
+
     // SetUp CountDownLatch for synchronisation with async call
     final CountDownLatch serviceInvoked = new CountDownLatch(1);
     // Release all waiting threads when mock actionExportService.acceptInstruction method is called
@@ -160,6 +193,10 @@ public class ActionExportReceiverITCase {
     verify(actionExportService).acceptInstruction(argumentCaptor.capture());
     assertEquals(argumentCaptor.getValue().getActionRequests().getActionRequests().get(0).getIac(), IAC_1);
     assertEquals(argumentCaptor.getValue().getActionRequests().getActionRequests().get(1).getIac(), IAC_2);
+
+    now = new Date();
+    long endXmlValid = now.getTime();
+    log.debug("time takenByXmlValid: {}", endXmlValid - startXmlValid);
   }
 
   /**
