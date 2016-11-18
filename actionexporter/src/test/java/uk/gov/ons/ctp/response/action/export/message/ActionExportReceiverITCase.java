@@ -46,17 +46,18 @@ import uk.gov.ons.ctp.response.action.message.instruction.ActionInstruction;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ActionExportReceiverITCaseConfig.class)
 public class ActionExportReceiverITCase {
-  @Inject
-  private MessageChannel testOutbound;
 
   @Inject
-  private ActionExportService actionExportService;
+  private QueueChannel activeMQDLQXml;
+
+  @Inject
+  private MessageChannel testOutbound;
 
   @Inject
   private MessageChannel instructionXml;
 
   @Inject
-  private QueueChannel activeMQDLQXml;
+  private ActionExportService actionExportService;
 
   @Inject
   @Qualifier("instructionUnmarshaller")
@@ -94,15 +95,9 @@ public class ActionExportReceiverITCase {
     connection.close();
   }
 
-  @Test
-  public void dummyTest() {
-    assertTrue(true);
-  }
-
   /**
-   * SI sent badly formed XML to generate a parse error results in ActiveMQ dead
-   * letter queue message. Local transaction should rollback and message should
-   * be considered a poisoned bill.
+   * SI sends badly formed XML to generate a parse error. It results in an  ActiveMQ dead letter queue message. Local
+   * transaction should rollback and message should be considered a poisoned bill.
    */
   @Test
   public void testInstructionXmlBadlyFormed() throws IOException, JMSException {
@@ -118,6 +113,22 @@ public class ActionExportReceiverITCase {
      */
     int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_ACTION_INSTRUCTION_QUEUE);
     assertEquals(0, finalCounter - initialCounter);
+  }
+
+  /**
+   * Test invalid well formed XML should go to the invalid queue
+   */
+  @Test
+  public void testInstructionXmlInvalid() throws IOException, JMSException {
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/invalidActionInstruction.xml"), "UTF-8");
+
+    instructionXml.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
+
+    /**
+     * We check that the invalid xml ends up on the invalid queue.
+     */
+    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_ACTION_INSTRUCTION_QUEUE);
+    assertEquals(1, finalCounter - initialCounter);
   }
 
   /**
@@ -149,22 +160,6 @@ public class ActionExportReceiverITCase {
     verify(actionExportService).acceptInstruction(argumentCaptor.capture());
     assertEquals(argumentCaptor.getValue().getActionRequests().getActionRequests().get(0).getIac(), IAC_1);
     assertEquals(argumentCaptor.getValue().getActionRequests().getActionRequests().get(1).getIac(), IAC_2);
-  }
-
-  /**
-   * Test invalid well formed XML should go to file
-   */
-  @Test
-  public void testInstructionXmlInvalid() throws IOException, JMSException {
-    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/invalidActionInstruction.xml"), "UTF-8");
-
-    instructionXml.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
-
-    /**
-     * We check that the invalid xml ends up on the invalid queue.
-     */
-    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_ACTION_INSTRUCTION_QUEUE);
-    assertEquals(1, finalCounter - initialCounter);
   }
 
   /**
