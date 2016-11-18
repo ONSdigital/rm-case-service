@@ -119,7 +119,7 @@ public class ActionExportReceiverITCase {
    * Test invalid well formed XML should go to the invalid queue
    */
   @Test
-  public void testInstructionXmlInvalid() throws IOException, JMSException {
+  public void testInstructionXmlInvalid() throws InterruptedException, IOException, JMSException {
     String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/invalidActionInstruction.xml"), "UTF-8");
 
     instructionXml.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
