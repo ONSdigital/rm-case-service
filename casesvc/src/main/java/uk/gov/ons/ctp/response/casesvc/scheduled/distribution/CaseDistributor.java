@@ -23,7 +23,6 @@ import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.ons.ctp.common.state.StateTransitionException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.casesvc.CaseSvcApplication;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
@@ -49,11 +48,11 @@ import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientServic
  *
  * This class is scheduled to wake and looks for Cases in INIT state to send to
  * the action service. On each wake cycle, it fetches the first n cases, by
- * createddatetime. It loops through those n cases and fetches m IACs from the IAC service.
- * It then updates each case questionnaire with an IAC taken form the set of m codes 
- * and transitions the case state to ACTIVE. It takes each case and 
- * constructs a notification message to send to the action service - when it has x notifications
- * it publishes them.
+ * createddatetime. It loops through those n cases and fetches m IACs from the
+ * IAC service. It then updates each case questionnaire with an IAC taken form
+ * the set of m codes and transitions the case state to ACTIVE. It takes each
+ * case and constructs a notification message to send to the action service -
+ * when it has x notifications it publishes them.
  *
  */
 @Named
@@ -91,10 +90,9 @@ public class CaseDistributor {
 
   @Inject
   private CaseService caseService;
-  
+
   @Inject
   private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
-
 
   // single TransactionTemplate shared amongst all methods in this instance
   private final TransactionTemplate transactionTemplate;
@@ -177,12 +175,14 @@ public class CaseDistributor {
    * Get the oldest page of INIT cases to activate
    *
    * @param localUUID id for this instance in hazel cast
-   * @param caseMap the distributed map of case ids currently being examined by other casesvc instances
+   * @param caseMap the distributed map of case ids currently being examined by
+   *          other casesvc instances
    * @return list of cases
    */
   private List<Case> retrieveCases(String localUUID, IMap<Object, Object> caseMap) {
 
-    // using the distributed map of lists of cases that other nodes are processing
+    // using the distributed map of lists of cases that other nodes are
+    // processing
     // flatten them into a list of case ids to exclude from our query
     @SuppressWarnings("unchecked")
     List<Integer> excludedCases = caseMap.values().stream()
@@ -190,12 +190,14 @@ public class CaseDistributor {
         .collect(Collectors.toList());
     log.debug("retrieving while excluding cases {}", excludedCases);
 
-    // prepare and execute the query to find the oldest N cases that are in INIT states and not in the excluded list
+    // prepare and execute the query to find the oldest N cases that are in INIT
+    // states and not in the excluded list
     Pageable pageable = new PageRequest(0, appConfig.getCaseDistribution().getRetrievalMax(), new Sort(
         new Sort.Order(Direction.ASC, "createdDateTime")));
     excludedCases.add(Integer.valueOf(IMPOSSIBLE_CASE_ID));
     List<Case> cases = caseRepo
-        .findByStateInAndCaseIdNotIn(Arrays.asList(CaseState.SAMPLED_INIT, CaseState.REPLACEMENT_INIT), excludedCases, pageable);
+        .findByStateInAndCaseIdNotIn(Arrays.asList(CaseState.SAMPLED_INIT, CaseState.REPLACEMENT_INIT), excludedCases,
+            pageable);
     log.debug("RETRIEVED case ids {}", cases.stream().map(a -> a.getCaseId().toString())
         .collect(Collectors.joining(",")));
 
@@ -206,8 +208,6 @@ public class CaseDistributor {
             .collect(Collectors.toList()));
     return cases;
   }
-
-
 
   /**
    * Deal with a single case - the transaction boundary is here. The processing
@@ -263,12 +263,8 @@ public class CaseDistributor {
    * @return the transitioned case
    */
   private Case transitionCase(final Case caze, final CaseDTO.CaseEvent event) {
-    try {
-      CaseDTO.CaseState nextState = caseSvcStateTransitionManager.transition(caze.getState(), event);
-      caze.setState(nextState);
-    } catch (StateTransitionException ste) {
-      throw new RuntimeException(ste);
-    }
+    CaseDTO.CaseState nextState = caseSvcStateTransitionManager.transition(caze.getState(), event);
+    caze.setState(nextState);
     return caze;
   }
 

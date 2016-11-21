@@ -8,7 +8,6 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import uk.gov.ons.ctp.common.state.StateTransitionException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseEvent;
@@ -67,7 +66,7 @@ public class TestCaseStateTransitionManager {
       transitions.forEach((caseEvent, caseState) -> {
         try {
           Assert.assertEquals(caseState, stm.transition(sourceState, caseEvent));
-        } catch (StateTransitionException ste) {
+        } catch (RuntimeException ste) {
           Assert.fail("bad transition!", ste);
         }
       });
@@ -77,7 +76,7 @@ public class TestCaseStateTransitionManager {
           boolean caught = false;
           try {
             stm.transition(sourceState, event);
-          } catch (StateTransitionException ste) {
+          } catch (RuntimeException ste) {
             caught = true;
           }
           Assert.assertTrue(caught, "Transition " + sourceState + "(" + event + ") should be invalid");

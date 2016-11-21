@@ -41,4 +41,7 @@ public class SampleCaseType implements Serializable {
 
   @Column(name = "respondenttype")
   private String respondentType;
+
+  @Column(name = "isdefault")
+  private Boolean isDefault;
 }

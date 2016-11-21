@@ -60,3 +60,13 @@ databaseChangeLog:
               relativeToChangelogFile: true
               splitStatements: false
 
+  - changeSet:
+        id: 9.29.0-7
+        author: Phil Whiles
+        changes:
+          - sqlFile:
+              comment: adding optimistic locking version column to case
+              path: case_optlock_version.sql
+              relativeToChangelogFile: true
+              splitStatements: false
+

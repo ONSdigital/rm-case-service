@@ -19,6 +19,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.PostLoad;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
@@ -47,6 +48,10 @@ public class Case implements Serializable {
   @SequenceGenerator(name = "caseidseq_gen", sequenceName = "casesvc.caseidseq")
   @Column(name = "caseid")
   private Integer caseId;
+
+  @Version
+  @Column(name = "optlockversion")
+  private int optLockVersion;
 
   @Column(name = "casegroupid")
   private Integer caseGroupId;
