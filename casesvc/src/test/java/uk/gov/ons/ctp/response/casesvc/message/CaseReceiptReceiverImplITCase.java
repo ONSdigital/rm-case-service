@@ -116,8 +116,6 @@ public class CaseReceiptReceiverImplITCase {
     // Release all waiting threads when mock caseService.findCaseByCaseRef method is called
     doAnswer(countsDownLatch(caseServiceInvoked)).when(caseService).findCaseByCaseRef(any(String.class));
 
-    when(caseService.findCaseByCaseRef(NONEXISTING_CASE_REF)).thenReturn(null);
-
     String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/validCaseReceipt.xml"), "UTF-8");
     testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
 
@@ -125,7 +123,7 @@ public class CaseReceiptReceiverImplITCase {
     caseServiceInvoked.await(RECEIVE_TIMEOUT, MILLISECONDS);
 
     /**
-     * We check that no xml ends up on the invalid queue.
+     * We check that no additional xml ends up on the invalid queue.
      */
     int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_CASE_RECEIPTS_QUEUE);
     assertEquals(initialCounter, finalCounter);
@@ -133,7 +131,7 @@ public class CaseReceiptReceiverImplITCase {
     /**
      * We check that no xml ends up on the dead letter queue.
      */
-//    TODO This test passes inside IntelliJ but fails on the command line.
+//    TODO This test passes inside an IDE but fails on the command line.
 //    Message<?> message = activeMQDLQXml.receive(RECEIVE_TIMEOUT);
 //    assertNull(message);
 //
