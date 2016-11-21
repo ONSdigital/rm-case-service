@@ -1,0 +1,1 @@
+ALTER TABLE casesvc.case ADD COLUMN optlockversion int default 0;
