@@ -49,3 +49,14 @@ databaseChangeLog:
               path: unlinkedcasereceipt_changes.sql
               relativeToChangelogFile: true
               splitStatements: false
+
+  - changeSet:
+        id: 9.29.0-6
+        author: Narinder Birk
+        changes:
+          - sqlFile:
+              comment: adding column to decide intial casetype and to update existing data
+              path: samplecasetypeselector_isdefault.sql
+              relativeToChangelogFile: true
+              splitStatements: false
+

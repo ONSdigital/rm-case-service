@@ -196,7 +196,7 @@ public class ActionExportReceiverITCase {
 
     now = new Date();
     long endXmlValid = now.getTime();
-    log.debug("time takenByXmlValid: {}", endXmlValid - startXmlValid);
+    log.debug("time takenByXmlInvalid: {}", endXmlValid - startXmlValid);
   }
 
   /**
