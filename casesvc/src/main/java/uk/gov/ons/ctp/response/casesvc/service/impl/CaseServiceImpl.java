@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.ons.ctp.common.state.StateTransitionException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.casesvc.domain.model.ActionPlanMapping;
@@ -48,7 +47,6 @@ public class CaseServiceImpl implements CaseService {
   private static final String CASE_CREATED_EVENT_DESCRIPTION = "Case created when %s";
   private static final String IAC_OVERUSE_MSG = "More than one case found to be using IAC %s";
   private static final String MISSING_NEW_CASE_MSG = "New Case definition missing for case %s";
-  private static final String CASE_NO_LONGER_ACTIONABLE_MSG = "Case is no longer actionable (%s) - the requested event is invalid";
   private static final String WRONG_NEW_CASE_TYPE_MSG = "New Case definition has incorrect casetype (new respondent type '%s' is not required type '%s')";
   private static final String WRONG_OLD_CASE_TYPE_MSG = "Old Case definition has incorrect casetype (old respondent type '%s' is not expected type '%s')";
 
@@ -283,20 +281,16 @@ public class CaseServiceImpl implements CaseService {
     if (transitionEvent != null) {
       CaseDTO.CaseState oldState = targetCase.getState();
       CaseDTO.CaseState newState = null;
-      try {
-        // make the transition
-        newState = caseSvcStateTransitionManager.transition(targetCase.getState(), transitionEvent);
-        // was a state change effected?
-        if (oldState != newState) {
-          targetCase.setState(newState);
-          caseRepo.saveAndFlush(targetCase);
-          notificationPublisher.sendNotifications(Arrays.asList(prepareCaseNotification(targetCase, transitionEvent)));
-          if (transitionEvent == CaseDTO.CaseEvent.DISABLED) {
-            internetAccessCodeSvcClientService.disableIAC(targetCase.getIac());
-          }
+      // make the transition
+      newState = caseSvcStateTransitionManager.transition(targetCase.getState(), transitionEvent);
+      // was a state change effected?
+      if (oldState != newState) {
+        targetCase.setState(newState);
+        caseRepo.saveAndFlush(targetCase);
+        notificationPublisher.sendNotifications(Arrays.asList(prepareCaseNotification(targetCase, transitionEvent)));
+        if (transitionEvent == CaseDTO.CaseEvent.DISABLED) {
+          internetAccessCodeSvcClientService.disableIAC(targetCase.getIac());
         }
-      } catch (StateTransitionException ste) {
-        throw new RuntimeException(ste);
       }
     }
   }
@@ -307,7 +301,8 @@ public class CaseServiceImpl implements CaseService {
    * 
    * @param caseEvent the basic event
    * @param targetCase the 'source' case the event is being created for
-   * @param newCase the details for the new case (if indeed one is required) else null
+   * @param newCase the details for the new case (if indeed one is required)
+   *          else null
    * @param caseEventCategory the caseEventCategory
    * @return the new case
    */
@@ -325,9 +320,11 @@ public class CaseServiceImpl implements CaseService {
 
   /**
    * Create a new case row for a replacement/new case
+   * 
    * @param caseEvent the event that lead to the creation of the new case
    * @param targetCase the case the caseEvent was applied to
-   * @param newCase the case we have been asked to create off the back of the event
+   * @param newCase the case we have been asked to create off the back of the
+   *          event
    * @return the persisted case
    */
   private Case saveNewCase(CaseEvent caseEvent, Case targetCase, Case newCase) {
@@ -341,8 +338,10 @@ public class CaseServiceImpl implements CaseService {
 
   /**
    * Create an event for a newly created case
+   * 
    * @param caze the case for which we want to record the event
-   * @param caseEventCategory the category of the event that led to the creation of the case
+   * @param caseEventCategory the category of the event that led to the creation
+   *          of the case
    * @return the created event
    */
   private CaseEvent createCaseCreatedEvent(Case caze, Category caseEventCategory) {
