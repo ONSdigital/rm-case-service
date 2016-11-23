@@ -1,0 +1,44 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 9.30.0-1
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: change variant to upper case and use isdefault in generate cases
+            path: variant_and_generate_cases_change.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+            
+  - changeSet:
+      id: 9.30.0-2
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: set up data for welsh individuals
+            path: casesvc_setup_data_individual_wales.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 9.30.0-3
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: set up data for welsh replacements
+            path: casesvc_setup_data_replacements_wales.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 9.30.0-4
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: setup data for communal establishments
+            path: casesvc_setup_data_communals.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+
+
