@@ -14,47 +14,44 @@
     <appender name="FILE-AUDIT" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>/var/log/ctp/responsemanagement/actionexporter/debug.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- rollover daily -->
             <fileNamePattern>/var/log/ctp/responsemanagement/actionexporter/debug.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy
-                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>10MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
+            <!-- keep 7 days' worth of history -->
+            <maxHistory>7</maxHistory>
         </rollingPolicy>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg%n</pattern>
         </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
     </appender>
 
     <appender name="FILE-ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>/var/log/ctp/responsemanagement/actionexporter/error.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- daily rollover -->
-            <fileNamePattern>/var/log/ctp/responsemanagement/actionexporter/error.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <!-- keep 30 days' worth of history -->
-            <maxHistory>30</maxHistory>
+            <fileNamePattern>/var/log/ctp/responsemanagement/actionexporter/error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <!-- keep 7 days' worth of history -->
+            <maxHistory>7</maxHistory>
         </rollingPolicy>
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg%n</pattern>
         </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
     </appender>
 
-    <logger name="uk.gov.ons.ctp" level="DEBUG" additivity="false">
-        <appender-ref ref="FILE-ERROR" />
-        <appender-ref ref="FILE-AUDIT" />
+    <root level="WARN">
         <appender-ref ref="STDOUT" />
-    </logger>
-
-    <logger name="org.springframework" level="DEBUG" additivity="false">
-        <appender-ref ref="FILE-ERROR" />
+        <appender-ref ref="STDERR" />
         <appender-ref ref="FILE-AUDIT" />
-        <appender-ref ref="STDOUT" />
-    </logger>
-
-    <root level="DEBUG">
         <appender-ref ref="FILE-ERROR" />
-        <appender-ref ref="FILE-AUDIT" />
-        <appender-ref ref="STDOUT" />
     </root>
 
 </configuration>
