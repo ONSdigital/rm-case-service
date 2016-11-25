@@ -40,5 +40,15 @@ databaseChangeLog:
             relativeToChangelogFile: true
             splitStatements: false
 
+  - changeSet:
+      id: 9.30.0-5
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: distinguish between household and communal individuals
+            path: category_changes_for_communals.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
 
 
