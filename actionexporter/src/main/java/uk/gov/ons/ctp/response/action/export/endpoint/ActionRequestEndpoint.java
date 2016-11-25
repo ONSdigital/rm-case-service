@@ -1,15 +1,8 @@
 package uk.gov.ons.ctp.response.action.export.endpoint;
 
-import lombok.extern.slf4j.Slf4j;
-import ma.glasnost.orika.MapperFacade;
-import org.springframework.util.CollectionUtils;
-import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
-import uk.gov.ons.ctp.response.action.export.domain.ExportMessage;
-import uk.gov.ons.ctp.response.action.export.message.SftpServicePublisher;
-import uk.gov.ons.ctp.response.action.export.representation.ActionRequestDocumentDTO;
-import uk.gov.ons.ctp.response.action.export.service.ActionRequestService;
-import uk.gov.ons.ctp.response.action.export.service.TransformationService;
+import java.math.BigInteger;
+import java.net.URI;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -22,9 +15,18 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
-import java.math.BigInteger;
-import java.net.URI;
-import java.util.List;
+
+import org.springframework.util.CollectionUtils;
+
+import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.MapperFacade;
+import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
+import uk.gov.ons.ctp.response.action.export.domain.ExportMessage;
+import uk.gov.ons.ctp.response.action.export.message.SftpServicePublisher;
+import uk.gov.ons.ctp.response.action.export.representation.ActionRequestDocumentDTO;
+import uk.gov.ons.ctp.response.action.export.service.ActionRequestService;
+import uk.gov.ons.ctp.response.action.export.service.TransformationService;
 
 /**
  * The REST endpoint controller for ActionRequests.
@@ -35,6 +37,8 @@ import java.util.List;
 public class ActionRequestEndpoint {
 
   public static final String ACTION_REQUEST_NOT_FOUND = "ActionRequest not found for actionId";
+
+  public static final String ACTION_REQUEST_TRANSFORM_ERROR = "Error transforming ActionRequest for actionId";
 
   @Inject
   private ActionRequestService actionRequestService;
@@ -53,6 +57,7 @@ public class ActionRequestEndpoint {
 
   /**
    * To retrieve all ActionRequests
+   * 
    * @return a list of ActionRequests
    */
   @GET
@@ -61,12 +66,13 @@ public class ActionRequestEndpoint {
     log.debug("Entering findAllActionRequests ...");
     List<ActionRequestDocument> actionRequestDocuments = actionRequestService.retrieveAllActionRequestDocuments();
     List<ActionRequestDocumentDTO> results = mapperFacade.mapAsList(actionRequestDocuments,
-            ActionRequestDocumentDTO.class);
+        ActionRequestDocumentDTO.class);
     return CollectionUtils.isEmpty(results) ? null : results;
   }
 
   /**
    * To retrieve a specific ActionRequest
+   * 
    * @param actionId for the specific ActionRequest to retrieve
    * @return the specific ActionRequest
    * @throws CTPException if no ActionRequest found
@@ -74,18 +80,19 @@ public class ActionRequestEndpoint {
   @GET
   @Path("/{actionId}")
   public ActionRequestDocumentDTO findActionRequest(@PathParam("actionId") final BigInteger actionId)
-          throws CTPException {
+      throws CTPException {
     log.debug("Entering findActionRequest with {}", actionId);
     ActionRequestDocument result = actionRequestService.retrieveActionRequestDocument(actionId);
     if (result == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-              String.format("%s %d", ACTION_REQUEST_NOT_FOUND, actionId));
+          String.format("%s %d", ACTION_REQUEST_NOT_FOUND, actionId));
     }
     return mapperFacade.map(result, ActionRequestDocumentDTO.class);
   }
 
   /**
    * To export a specific ActionRequest
+   * 
    * @param actionId the actionId of the specific ActionRequest
    * @return 201 if successful
    * @throws CTPException if specific ActionRequest not found
@@ -97,10 +104,14 @@ public class ActionRequestEndpoint {
     ActionRequestDocument actionRequestDocument = actionRequestService.retrieveActionRequestDocument(actionId);
     if (actionRequestDocument == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-              String.format("%s %d", ACTION_REQUEST_NOT_FOUND, actionId));
+          String.format("%s %d", ACTION_REQUEST_NOT_FOUND, actionId));
     }
-
-    ExportMessage message = transformationService.processActionRequest(actionRequestDocument);
+    ExportMessage message = new ExportMessage();
+    transformationService.processActionRequest(message, actionRequestDocument);
+    if (message.isEmpty()) {
+      throw new CTPException(CTPException.Fault.SYSTEM_ERROR,
+          String.format("%s %d", ACTION_REQUEST_TRANSFORM_ERROR, actionId));
+    }
     message.getOutputStreams().forEach((fileName, stream) -> {
       sftpService.sendMessage(fileName, message.getActionRequestIds(fileName), stream);
     });
@@ -108,7 +119,7 @@ public class ActionRequestEndpoint {
     UriBuilder ub = uriInfo.getAbsolutePathBuilder();
     URI actionRequestDocumentUri = ub.build();
     ActionRequestDocumentDTO actionRequestDocumentDTO = mapperFacade.map(actionRequestDocument,
-            ActionRequestDocumentDTO.class);
+        ActionRequestDocumentDTO.class);
     return Response.created(actionRequestDocumentUri).entity(actionRequestDocumentDTO).build();
   }
 }
