@@ -15,9 +15,12 @@ import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
 @Repository
 public interface ActionRequestRepository extends MongoRepository<ActionRequestDocument, BigInteger> {
   /**
-   * Retrieve all action export requests not done.
+   * Retrieve all action export requests not done for an actionType.
+   * 
    * @return List ActionRequestDocuments not sent to external services
+   *         previously for actionType.
    */
-  List<ActionRequestDocument> findByDateSentIsNull();
+
+  List<ActionRequestDocument> findByDateSentIsNullAndActionType(String actionType);
 
 }

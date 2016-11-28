@@ -229,7 +229,7 @@
   },
   {
     "group": null,
-    "categoryType": "INDIVIDUAL_PAPER_REQUESTED",
+    "categoryType": "H_INDIVIDUAL_PAPER_REQUESTED",
     "longDescription": "Individual Paper Requested",
     "shortDescription": "Individual Paper Requested",
     "role": "collect-csos, collect-admins",
@@ -241,7 +241,7 @@
   },
   {
     "group": null,
-    "categoryType": "INDIVIDUAL_REPLACEMENT_IAC_REQUESTED",
+    "categoryType": "H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED",
     "longDescription": "Individual Replacement IAC Requested",
     "shortDescription": "Individual Replacement IAC Requested",
     "role": "collect-csos, collect-admins",
@@ -253,7 +253,7 @@
   },
   {
     "group": null,
-    "categoryType": "INDIVIDUAL_RESPONSE_REQUESTED",
+    "categoryType": "H_INDIVIDUAL_RESPONSE_REQUESTED",
     "longDescription": "Individual Response Requested",
     "shortDescription": "Individual Response Requested",
     "role": "collect-csos, collect-admins",
