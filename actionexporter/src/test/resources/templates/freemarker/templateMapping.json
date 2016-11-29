@@ -20,19 +20,19 @@
     "file": "ICLAD_2003"
   },
   {
-    "actionType": "IRL1_0504",
+    "actionType": "1RL1_0504",
     "template": "initialPrint", 
-    "file": "IRL1_0504"
+    "file": "1RL1_0504"
   },
   {
-    "actionType": "IRL2W_0504",
+    "actionType": "1RL2W_0504",
     "template": "initialPrint", 
-    "file": "IRL2W_0504"
+    "file": "1RL2W_0504"
   }, 
   {
-    "actionType": "IRLAD_0504",
+    "actionType": "1RLAD_0504",
     "template": "initialPrint", 
-    "file": "IRLAD_0504"
+    "file": "1RLAD_0504"
   },
   {
     "actionType": "2RL1_1804",
