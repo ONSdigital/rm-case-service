@@ -26,7 +26,7 @@ import uk.gov.ons.ctp.response.action.export.domain.TemplateDocument;
 import uk.gov.ons.ctp.response.action.export.repository.TemplateRepository;
 import uk.gov.ons.ctp.response.action.export.service.TemplateService;
 
-import static uk.gov.ons.ctp.common.util.InputStreamUtil.getStringFromInputStream;
+import static uk.gov.ons.ctp.common.util.InputStreamUtils.getStringFromInputStream;
 
 /**
  * The implementation of the TemplateService

@@ -1,7 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.representation;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import uk.gov.ons.ctp.common.util.EnumUtil;
+import uk.gov.ons.ctp.common.util.EnumUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -67,7 +67,7 @@ public class CategoryDTO {
 
     @JsonCreator
     public static CategoryType fromValue(String name) {
-      return EnumUtil.getEnumFromString(CategoryDTO.CategoryType.class, name);
+      return EnumUtils.getEnumFromString(CategoryDTO.CategoryType.class, name);
     }
   }
 

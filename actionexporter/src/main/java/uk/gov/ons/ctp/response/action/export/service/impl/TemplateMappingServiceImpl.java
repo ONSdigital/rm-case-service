@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static uk.gov.ons.ctp.common.util.InputStreamUtil.getStringFromInputStream;
+import static uk.gov.ons.ctp.common.util.InputStreamUtils.getStringFromInputStream;
 
 /**
  * The implementation of the TemplateMappingService

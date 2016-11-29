@@ -19,12 +19,9 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
-
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.ons.ctp.common.distributed.DistributedListManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
-import uk.gov.ons.ctp.response.casesvc.CaseSvcApplication;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
@@ -60,6 +57,7 @@ import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientServic
 public class CaseDistributor {
 
   private static final String CASE_DISTRIBUTOR_SPAN = "caseDistributor";
+  private static final String CASE_DISTRIBUTOR_LIST_ID = "case";
 
   // this is a bit of a kludge - jpa does not like having an IN clause with an
   // empty list
@@ -71,10 +69,10 @@ public class CaseDistributor {
   private static final long MILLISECONDS = 1000L;
 
   @Inject
-  private Tracer tracer;
+  private DistributedListManager<Integer> caseDistributionListManager;
 
   @Inject
-  private HazelcastInstance hazelcastInstance;
+  private Tracer tracer;
 
   @Inject
   private AppConfig appConfig;
@@ -121,13 +119,14 @@ public class CaseDistributor {
     CaseDistributionInfo distInfo = new CaseDistributionInfo();
 
     int successes = 0, failures = 0;
-    IMap<Object, Object> caseMap = hazelcastInstance.getMap(CaseSvcApplication.CASE_DISTRIBUTION_MAP);
-    String localUUID = hazelcastInstance.getLocalEndpoint().getUuid();
-    log.debug("Hazel name is {}", localUUID);
+    List<Integer> distributedCaseList = caseDistributionListManager.findListForAllInstances(CASE_DISTRIBUTOR_LIST_ID);
     try {
       List<CaseNotification> caseNotifications = new ArrayList<>();
+      List<Case> cases = retrieveCases(distributedCaseList);
 
-      List<Case> cases = retrieveCases(localUUID, caseMap);
+      caseDistributionListManager.saveList(CASE_DISTRIBUTOR_LIST_ID, cases.stream()
+            .map(caze -> caze.getCaseId())
+            .collect(Collectors.toList()));
 
       int iacPageSize = appConfig.getCaseDistribution().getIacMax();
       List<String> codes = null;
@@ -159,7 +158,7 @@ public class CaseDistributor {
       distInfo.setCasesFailed(failures);
 
       publishCases(caseNotifications);
-      caseMap.remove(localUUID);
+      caseDistributionListManager.deleteList(CASE_DISTRIBUTOR_LIST_ID);
     } catch (Exception e) {
       // something went wrong retrieving case types or cases
       log.error("Failed to process cases because {}", e);
@@ -174,38 +173,28 @@ public class CaseDistributor {
   /**
    * Get the oldest page of INIT cases to activate
    *
-   * @param localUUID id for this instance in hazel cast
-   * @param caseMap the distributed map of case ids currently being examined by
+   * @param excludedCaseList the distributed list of case ids currently being examined by
    *          other casesvc instances
    * @return list of cases
    */
-  private List<Case> retrieveCases(String localUUID, IMap<Object, Object> caseMap) {
+  private List<Case> retrieveCases(List<Integer> excludedCaseList) {
 
     // using the distributed map of lists of cases that other nodes are
     // processing
     // flatten them into a list of case ids to exclude from our query
-    @SuppressWarnings("unchecked")
-    List<Integer> excludedCases = caseMap.values().stream()
-        .flatMap(caze -> ((List<Integer>) caze).stream())
-        .collect(Collectors.toList());
-    log.debug("retrieving while excluding cases {}", excludedCases);
+    log.debug("retrieving while excluding cases {}", excludedCaseList);
 
     // prepare and execute the query to find the oldest N cases that are in INIT
     // states and not in the excluded list
     Pageable pageable = new PageRequest(0, appConfig.getCaseDistribution().getRetrievalMax(), new Sort(
         new Sort.Order(Direction.ASC, "createdDateTime")));
-    excludedCases.add(Integer.valueOf(IMPOSSIBLE_CASE_ID));
+    excludedCaseList.add(Integer.valueOf(IMPOSSIBLE_CASE_ID));
     List<Case> cases = caseRepo
-        .findByStateInAndCaseIdNotIn(Arrays.asList(CaseState.SAMPLED_INIT, CaseState.REPLACEMENT_INIT), excludedCases,
+        .findByStateInAndCaseIdNotIn(Arrays.asList(CaseState.SAMPLED_INIT, CaseState.REPLACEMENT_INIT), excludedCaseList,
             pageable);
     log.debug("RETRIEVED case ids {}", cases.stream().map(a -> a.getCaseId().toString())
         .collect(Collectors.joining(",")));
 
-    // put the list of cases just retrieved into the distributed map
-    caseMap.put(localUUID,
-        cases.stream()
-            .map(caze -> caze.getCaseId())
-            .collect(Collectors.toList()));
     return cases;
   }
 

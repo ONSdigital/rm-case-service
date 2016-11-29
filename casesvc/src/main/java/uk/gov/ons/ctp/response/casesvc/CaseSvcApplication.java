@@ -3,6 +3,9 @@ package uk.gov.ons.ctp.response.casesvc;
 import javax.inject.Named;
 
 import org.glassfish.jersey.server.ResourceConfig;
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
@@ -13,12 +16,8 @@ import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.hazelcast.config.Config;
-import com.hazelcast.config.JoinConfig;
-import com.hazelcast.config.MapConfig;
-import com.hazelcast.config.MulticastConfig;
-import com.hazelcast.config.NetworkConfig;
-
+import uk.gov.ons.ctp.common.distributed.DistributedListManager;
+import uk.gov.ons.ctp.common.distributed.DistributedListManagerRedissonImpl;
 import uk.gov.ons.ctp.common.jaxrs.CTPMessageBodyReader;
 import uk.gov.ons.ctp.common.jaxrs.JAXRSRegister;
 import uk.gov.ons.ctp.common.rest.RestClient;
@@ -47,7 +46,7 @@ import uk.gov.ons.ctp.response.casesvc.state.CaseSvcStateTransitionManagerFactor
 @ImportResource("springintegration/main.xml")
 public class CaseSvcApplication {
 
-  public static final String CASE_DISTRIBUTION_MAP = "actionsvc.case.distribution";
+  public static final String CASE_DISTRIBUTION_LIST = "casesvc.case.distribution";
 
   @Autowired
   private AppConfig appConfig;
@@ -65,23 +64,21 @@ public class CaseSvcApplication {
         CaseSvcStateTransitionManagerFactory.CASE_ENTITY);
   }
 
-  /**
-   * To config Hazelcast
-   * @return the config
-   */
   @Bean
-  public Config hazelcastConfig() {
-    Config hazelcastConfig = new Config();
-    hazelcastConfig.addMapConfig(new MapConfig().setName(CASE_DISTRIBUTION_MAP));
-    NetworkConfig networkConfig = hazelcastConfig.getNetworkConfig();
-
-    JoinConfig joinConfig = networkConfig.getJoin();
-    MulticastConfig multicastConfig = joinConfig.getMulticastConfig();
-    multicastConfig.setEnabled(true);
-
-    return hazelcastConfig;
+  public DistributedListManager<Integer> caseDistributionListManager(RedissonClient redissonClient) {
+    return new DistributedListManagerRedissonImpl<Integer>(CASE_DISTRIBUTION_LIST, redissonClient,
+        appConfig.getDataGrid().getListTimeToLiveSeconds());
   }
-  
+
+  @Bean
+  public RedissonClient redissonClient() {
+    Config config = new Config();
+    config.useSingleServer()
+        .setAddress(appConfig.getDataGrid().getAddress())
+        .setPassword(appConfig.getDataGrid().getPassword());
+    return Redisson.create(config);
+  }
+
   /**
    * The IAC service client bean
    * @return the RestClient for the IAC service

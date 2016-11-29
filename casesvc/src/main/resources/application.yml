@@ -100,6 +100,11 @@ spring:
   zipkin:
     enabled: false
 
+data-grid:
+  address: localhost:6379
+  password: redis
+  list-time-to-live-seconds: 600
+
 internet-access-code-svc:
   iac-post-path: /iacs
   iac-put-path: /iacs/{iac}

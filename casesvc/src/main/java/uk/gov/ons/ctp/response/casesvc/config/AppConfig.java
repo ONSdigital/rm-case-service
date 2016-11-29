@@ -16,4 +16,5 @@ public class AppConfig {
   private ActionSvc actionSvc;
   private InternetAccessCodeSvc internetAccessCodeSvc;
   private CaseDistribution caseDistribution;
+  private DataGrid dataGrid;
 }
