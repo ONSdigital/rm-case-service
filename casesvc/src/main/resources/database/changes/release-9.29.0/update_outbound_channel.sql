@@ -1,6 +1,5 @@
 
 --change outboundchannel to post instead of printer
-
 UPDATE CASESVC.ACTIONPLANMAPPING
 SET OUTBOUNDCHANNEL = 'POST'
 WHERE OUTBOUNDCHANNEL = 'PRINTER';

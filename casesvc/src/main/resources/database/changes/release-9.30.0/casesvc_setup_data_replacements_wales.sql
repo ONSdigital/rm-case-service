@@ -26,4 +26,3 @@ INSERT INTO casesvc.actionplanmapping(actionplanmappingid, actionplanid, casetyp
 INSERT INTO casesvc.actionplanmapping(actionplanmappingid, actionplanid, casetypeid, isdefault, inboundchannel, variant, outboundchannel ) VALUES (78,40, 16,false,'PAPER','WELSH','POST' );
 INSERT INTO casesvc.actionplanmapping(actionplanmappingid, actionplanid, casetypeid, isdefault, inboundchannel, variant, outboundchannel ) VALUES (79,46, 16,false,'PAPER','ENGLISH','POST' );
 INSERT INTO casesvc.actionplanmapping(actionplanmappingid, actionplanid, casetypeid, isdefault, inboundchannel, variant, outboundchannel ) VALUES (80,49, 16,false,'ONLINE','WELSH','SMS' );
-

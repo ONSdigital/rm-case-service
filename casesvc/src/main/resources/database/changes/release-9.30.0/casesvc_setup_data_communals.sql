@@ -30,5 +30,3 @@ INSERT INTO casesvc.samplecasetypeselector(samplecasetypeselectorid, sampleid, c
 INSERT INTO casesvc.samplecasetypeselector(samplecasetypeselectorid, sampleid, casetypeid, respondenttype, isdefault ) VALUES (46,23, 26,'HI', FALSE );
 INSERT INTO casesvc.samplecasetypeselector(samplecasetypeselectorid, sampleid, casetypeid, respondenttype, isdefault ) VALUES (47,24, 30,'C', TRUE );
 INSERT INTO casesvc.samplecasetypeselector(samplecasetypeselectorid, sampleid, casetypeid, respondenttype, isdefault ) VALUES (48,25, 31,'CI', TRUE );
-
-

@@ -1,7 +1,5 @@
 --update variant to uppercase on actionplanmapping
-
 UPDATE casesvc.actionplanmapping SET variant = UPPER(variant);
-
 
 -- Function: casesvc.generate_initial_cases(integer, character varying, character varying)
 
@@ -153,7 +151,3 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION casesvc.generate_initial_cases(integer, character varying, character varying)
-  OWNER TO postgres;
-
-

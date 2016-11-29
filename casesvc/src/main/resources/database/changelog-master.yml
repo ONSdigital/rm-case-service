@@ -2,7 +2,7 @@ databaseChangeLog:
 
   - preConditions:
     - runningAs:
-        username: postgres
+        username: casesvc
 
   - include:
       file: database/changes/release-9.27.0/changelog.yml
@@ -12,7 +12,6 @@ databaseChangeLog:
 
   - include:
       file: database/changes/release-9.29.0/changelog.yml
-
 
   - include:
       file: database/changes/release-9.30.0/changelog.yml
