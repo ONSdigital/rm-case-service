@@ -1,6 +1,4 @@
-﻿
-
---drop constraints on case table for actionplanmapping and casetype
+﻿--drop constraints on case table for actionplanmapping and casetype
 
 ALTER TABLE casesvc."case"  DROP CONSTRAINT actionplanmappingid_fkey;
 
@@ -32,15 +30,10 @@ INSERT INTO casesvc.respondenttype VALUES ('CI');
 
 --update category table with new respondenttype
 
-UPDATE casesvc.category
-SET newcaserespondenttype = 'HI' WHERE newcaserespondenttype = 'I';
-
-
-UPDATE casesvc.category
-SET oldcaserespondenttype = 'HI' where oldcaserespondenttype = 'I';
+UPDATE casesvc.category SET newcaserespondenttype = 'HI' WHERE newcaserespondenttype = 'I';
+UPDATE casesvc.category SET oldcaserespondenttype = 'HI' where oldcaserespondenttype = 'I';
 
 --add constraint to category for respondenttype
-
 ALTER TABLE casesvc.category
   ADD CONSTRAINT newcaserespondenttype_fkey FOREIGN KEY (newcaserespondenttype)
       REFERENCES casesvc.respondenttype (respondenttype);
@@ -49,9 +42,7 @@ ALTER TABLE casesvc.category
   ADD CONSTRAINT oldcaserespondenttype_fkey FOREIGN KEY (oldcaserespondenttype)
       REFERENCES casesvc.respondenttype (respondenttype);
 
-
 --remove redundant questionsets
-
 DELETE FROM casesvc.questionset WHERE questionset IN ('H2W','H2WS','I2','I2S','I2W','I2WS');
 
 --insert into casetype new casetypes
@@ -117,7 +108,3 @@ ALTER TABLE casesvc."case"
 ALTER TABLE casesvc."case"
   ADD CONSTRAINT casetypeid_fkey FOREIGN KEY (casetypeid)
       REFERENCES casesvc.casetype (casetypeid) ;
-
-
- 
-

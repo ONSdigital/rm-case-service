@@ -7,7 +7,5 @@ CREATE SEQUENCE unlinkedcasereceiptidseq
     MAXVALUE 999999999999
     CACHE 1;
 
-ALTER TABLE casesvc.unlinkedcasereceiptidseq OWNER TO postgres;
-
 ALTER TABLE casesvc.unlinkedcasereceipt ADD column id bigint NOT NULL DEFAULT nextval('casesvc.unlinkedcasereceiptidseq'::regclass);
 ALTER TABLE casesvc.unlinkedcasereceipt ALTER COLUMN caseref TYPE character varying(256);
