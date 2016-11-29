@@ -92,72 +92,72 @@
   {
     "actionType": "QGPOL",
     "template": "translation", 
-    "file": "TRANSLATIONS"
+    "file": "TRANSLATION"
   },
   {
     "actionType": "QGCAN",
     "template": "translation", 
-    "file": "TRANSLATIONS"
+    "file": "TRANSLATION"
   },
   {
     "actionType": "QGSPA",
     "template": "translation", 
-    "file": "TRANSLATIONS"
+    "file": "TRANSLATION"
   },
   {
     "actionType": "QGARA",
     "template": "translation", 
-    "file": "TRANSLATIONS"
+    "file": "TRANSLATION"
   },
   {
     "actionType": "QGSOM",
     "template": "translation", 
-    "file": "TRANSLATIONS"
+    "file": "TRANSLATION"
   },
   {
     "actionType": "QGMAN",
     "template": "translation", 
-    "file": "TRANSLATIONS"
+    "file": "TRANSLATION"
   },
   {
     "actionType": "QGBEN",
     "template": "translation", 
-    "file": "TRANSLATIONS"
+    "file": "TRANSLATION"
   },
   {
     "actionType": "QGPOR",
     "template": "translation", 
-    "file": "TRANSLATIONS"
+    "file": "TRANSLATION"
   },
   {
     "actionType": "QGGUR",
     "template": "translation", 
-    "file": "TRANSLATIONS"
+    "file": "TRANSLATION"
   },
   {
     "actionType": "QGSHA",
     "template": "translation", 
-    "file": "TRANSLATIONS"
+    "file": "TRANSLATION"
   },
   {
     "actionType": "QGTUR",
     "template": "translation", 
-    "file": "TRANSLATIONS"
+    "file": "TRANSLATION"
   },
   {
     "actionType": "QGLIT",
     "template": "translation", 
-    "file": "TRANSLATIONS"
+    "file": "TRANSLATION"
   },
   {
     "actionType": "QGURD",
     "template": "translation", 
-    "file": "TRANSLATIONS"
+    "file": "TRANSLATION"
   },
   {
     "actionType": "QGGUJ",
     "template": "translation", 
-    "file": "TRANSLATIONS"
+    "file": "TRANSLATION"
   },
   {
     "actionType": "I1S_OR",

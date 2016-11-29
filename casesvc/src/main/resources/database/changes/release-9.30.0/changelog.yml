@@ -50,5 +50,15 @@ databaseChangeLog:
             relativeToChangelogFile: true
             splitStatements: false
 
+  - changeSet:
+      id: 9.30.0-6
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: change category table to identify escalated and normal refusals
+            path: category_escalation_changes.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
 
 
