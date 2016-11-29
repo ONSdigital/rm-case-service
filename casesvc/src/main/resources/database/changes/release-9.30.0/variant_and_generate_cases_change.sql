@@ -1,3 +1,6 @@
+--update variant to uppercase on actionplanmapping
+UPDATE casesvc.actionplanmapping SET variant = UPPER(variant);
+
 -- Function: casesvc.generate_initial_cases(integer, character varying, character varying)
 
 -- DROP FUNCTION casesvc.generate_initial_cases(integer, character varying, character varying);
@@ -31,6 +34,11 @@ BEGIN
 
 --check that have a valid area type passed in
 
+ PERFORM casesvc.logmessage(p_messagetext :=  'generate_inital_cases started for sampleid ' || p_sampleid || ' : Area Type ' || p_geog_area_type || ' : Area Code ' || p_geog_area_code
+                             ,p_jobid := 0
+                             ,p_messagelevel := 'INFO'
+                             ,p_functionname := 'casesvc.generate_initial_cases');
+
 IF p_geog_area_type NOT IN ('MSOA','LA','REGION')
 THEN
  RAISE SQLSTATE 'Z0001' using message = p_geog_area_type ||' is not a valid geographic area type. Must be of type MSOA , LA or REGION' ;
@@ -43,33 +51,34 @@ END IF;
  SELECT name FROM casesvc.sample WHERE sampleid = p_sampleid INTO v_sample;
 
            SELECT CASE p_geog_area_type
-           WHEN 'OA' THEN   'oa11cd = ''' || p_geog_area_code ||''''
-           WHEN 'LSOA' THEN  'lsoa11cd = ''' || p_geog_area_code ||''''
-           WHEN 'MSOA' THEN 'msoa11cd = ''' || p_geog_area_code ||''''
-           WHEN 'LA' THEN 'lad12cd = ''' || p_geog_area_code ||''''
-           WHEN 'REGION' THEN 'region11cd = ''' || p_geog_area_code || ''''
+           WHEN 'OA' THEN   'oa = ''' || p_geog_area_code ||''''
+           WHEN 'LSOA' THEN  'lsoa = ''' || p_geog_area_code ||''''
+           WHEN 'MSOA' THEN 'msoa = ''' || p_geog_area_code ||''''
+           WHEN 'LA' THEN 'lad = ''' || p_geog_area_code ||''''
+           WHEN 'REGION' THEN 'region = ''' || p_geog_area_code || ''''
           ELSE '0=1' --not a valid area type
        END INTO v_geog_select_text ;
 
 
 --assign into variables for insert statement
-
+v_number_of_cases := 0 ;
 
 v_sampleid := p_sampleid;
 
 SELECT survey FROM casesvc.sample WHERE sampleid = v_sampleid INTO v_survey;
 
 SELECT name FROM casesvc.sample WHERE sampleid = v_sampleid INTO v_sample;
-select casetypeid
-from casesvc.samplecasetypeselector
-where sampleid = v_sampleid
-and respondenttype = 'H' into v_casetypeid;
 
-select actionplanmappingid
-from casesvc.actionplanmapping
-where casetypeid = v_casetypeid
-and isdefault = TRUE
-into v_actionplanmappingid;
+SELECT casetypeid
+FROM casesvc.samplecasetypeselector
+WHERE sampleid = v_sampleid
+AND isdefault = TRUE INTO v_casetypeid;
+
+SELECT actionplanmappingid
+FROM casesvc.actionplanmapping
+WHERE casetypeid = v_casetypeid
+AND isdefault = TRUE
+INTO v_actionplanmappingid;
 
 
 v_sql_text := 'SELECT uprn FROM casesvc.address where ' || v_geog_select_text || ' and sample = ''' || v_sample || '''';
@@ -107,6 +116,8 @@ v_sql_text := 'SELECT uprn FROM casesvc.address where ' || v_geog_select_text ||
     ,'SYSTEM'
     ,CURRENT_TIMESTAMP
     ,'CASE_CREATED');
+    
+    v_number_of_cases := v_number_of_cases + 1;
 
 
 END LOOP;
@@ -114,7 +125,7 @@ END LOOP;
     PERFORM casesvc.logmessage(p_messagetext := v_number_of_cases || ' cases generated for sampleid ' || v_sampleid || ' : Area Type ' || p_geog_area_type || ' : Area Code ' || p_geog_area_code
                              ,p_jobid := 0
                              ,p_messagelevel := 'INFO'
-                             ,p_functionname := 'casesvc.generate_cases');
+                             ,p_functionname := 'casesvc.generate_initial_cases');
 
 RETURN TRUE;
 
@@ -124,14 +135,14 @@ EXCEPTION
        PERFORM casesvc.logmessage(p_messagetext := 'EXCEPTION TRIGGERED ' || SQLERRM || ' SQLSTATE : ' || SQLSTATE
                                ,p_jobid := 0
                                ,p_messagelevel := 'WARNING'
-                               ,p_functionname := 'casesvc.generate_cases');
+                               ,p_functionname := 'casesvc.generate_initial_cases');
 RETURN FALSE;
 
   WHEN OTHERS THEN
     PERFORM casesvc.logmessage(p_messagetext := 'GENERATE CASES EXCEPTION TRIGGERED SQLERRM: ' || SQLERRM || ' SQLSTATE : ' || SQLSTATE
                              ,p_jobid := 0
                              ,p_messagelevel := 'FATAL'
-                             ,p_functionname := 'casesvc.generate_cases');
+                             ,p_functionname := 'casesvc.generate_initial_cases');
 
 
 RETURN FALSE;
@@ -140,5 +151,3 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION casesvc.generate_initial_cases(integer, character varying, character varying)
-  OWNER TO postgres;

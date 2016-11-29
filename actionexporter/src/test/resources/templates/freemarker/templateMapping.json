@@ -1,0 +1,237 @@
+[
+  {
+    "actionType": "ICL1_2003",
+    "template": "initialPrint", 
+    "file": "ICL1_2003"
+  },
+  {
+    "actionType": "ICL2W_2003",
+    "template": "initialPrint", 
+    "file": "ICL2W_2003"
+  },
+  {
+    "actionType": "ICL1_2703",
+    "template": "initialPrint", 
+    "file": "ICL1_2703"
+  },  
+  {
+    "actionType": "ICLAD_2003",
+    "template": "initialPrint", 
+    "file": "ICLAD_2003"
+  },
+  {
+    "actionType": "1RL1_0504",
+    "template": "initialPrint", 
+    "file": "1RL1_0504"
+  },
+  {
+    "actionType": "1RL2W_0504",
+    "template": "initialPrint", 
+    "file": "1RL2W_0504"
+  }, 
+  {
+    "actionType": "1RLAD_0504",
+    "template": "initialPrint", 
+    "file": "1RLAD_0504"
+  },
+  {
+    "actionType": "2RL1_1804",
+    "template": "initialPrint", 
+    "file": "2RL1_1804"
+  }, 
+  {
+    "actionType": "2RL2W_1804",
+    "template": "initialPrint", 
+    "file": "2RL2W_1804"
+  },  
+  {
+    "actionType": "2RLAD_1804",
+    "template": "initialPrint", 
+    "file": "2RLAD_1804"
+  },
+  {
+    "actionType": "3RL1_2604",
+    "template": "initialPrint", 
+    "file": "3RL1_2604"
+  },
+  {
+    "actionType": "3RL2W_2604",
+    "template": "initialPrint", 
+    "file": "3RL2W_2604"
+  },
+  {
+    "actionType": "3RLAD_2604",
+    "template": "initialPrint", 
+    "file": "3RLAD_2604"
+  },
+  {
+    "actionType": "H1S_2003",
+    "template": "initialPrint", 
+    "file": "H1S_2003"
+  },
+  {
+    "actionType": "H2S_2003",
+    "template": "initialPrint", 
+    "file": "H2S_2003"
+  },
+  {
+    "actionType": "H1_2003",
+    "template": "initialPrint", 
+    "file": "H1_2003"
+  },
+  {
+    "actionType": "H2_2003",
+    "template": "initialPrint", 
+    "file": "H2_2003"
+  },
+  {
+    "actionType": "H1_2604Q4",
+    "template": "initialPrint", 
+    "file": "H1_2604Q4"
+  },
+  {
+    "actionType": "QGPOL",
+    "template": "translation", 
+    "file": "TRANSLATION"
+  },
+  {
+    "actionType": "QGCAN",
+    "template": "translation", 
+    "file": "TRANSLATION"
+  },
+  {
+    "actionType": "QGSPA",
+    "template": "translation", 
+    "file": "TRANSLATION"
+  },
+  {
+    "actionType": "QGARA",
+    "template": "translation", 
+    "file": "TRANSLATION"
+  },
+  {
+    "actionType": "QGSOM",
+    "template": "translation", 
+    "file": "TRANSLATION"
+  },
+  {
+    "actionType": "QGMAN",
+    "template": "translation", 
+    "file": "TRANSLATION"
+  },
+  {
+    "actionType": "QGBEN",
+    "template": "translation", 
+    "file": "TRANSLATION"
+  },
+  {
+    "actionType": "QGPOR",
+    "template": "translation", 
+    "file": "TRANSLATION"
+  },
+  {
+    "actionType": "QGGUR",
+    "template": "translation", 
+    "file": "TRANSLATION"
+  },
+  {
+    "actionType": "QGSHA",
+    "template": "translation", 
+    "file": "TRANSLATION"
+  },
+  {
+    "actionType": "QGTUR",
+    "template": "translation", 
+    "file": "TRANSLATION"
+  },
+  {
+    "actionType": "QGLIT",
+    "template": "translation", 
+    "file": "TRANSLATION"
+  },
+  {
+    "actionType": "QGURD",
+    "template": "translation", 
+    "file": "TRANSLATION"
+  },
+  {
+    "actionType": "QGGUJ",
+    "template": "translation", 
+    "file": "TRANSLATION"
+  },
+  {
+    "actionType": "I1S_OR",
+    "template": "initialPrint", 
+    "file": "I1S_OR"
+  },
+  {
+    "actionType": "I1_OR",
+    "template": "initialPrint", 
+    "file": "I1_OR"
+  },
+  {
+    "actionType": "I1_OR",
+    "template": "initialPrint", 
+    "file": "I1_OR"
+  },
+  {
+    "actionType": "H1S_OR",
+    "template": "initialPrint", 
+    "file": "H1S_OR"
+  },
+  {
+    "actionType": "H1_OR",
+    "template": "initialPrint", 
+    "file": "H1_OR"
+  },
+  {
+    "actionType": "I2S_OR",
+    "template": "initialPrint", 
+    "file": "I2S_OR"
+  },
+  {
+    "actionType": "I2WS_OR",
+    "template": "initialPrint", 
+    "file": "I2WS_OR"
+  },
+  {
+    "actionType": "I2_OR",
+    "template": "initialPrint", 
+    "file": "I2_OR"
+  },
+  {
+    "actionType": "I2W_OR",
+    "template": "initialPrint", 
+    "file": "I2W_OR"
+  },
+  {
+    "actionType": "H2WS_OR",
+    "template": "initialPrint", 
+    "file": "H2WS_OR"
+  },
+  {
+    "actionType": "H2W_OR",
+    "template": "initialPrint", 
+    "file": "H2W_OR"
+  },
+  {
+    "actionType": "H2S_OR",
+    "template": "initialPrint", 
+    "file": "H2S_OR"
+  },
+  {
+    "actionType": "H2_OR",
+    "template": "initialPrint", 
+    "file": "H2_OR"
+  },
+  {
+    "actionType": "ICLH1_2003",
+    "template": "initialPrint", 
+    "file": "ICLH1_2003"
+  },
+  {
+    "actionType": "ICLHR1_2003",
+    "template": "initialPrint", 
+    "file": "ICLHR1_2003"
+  }
+]

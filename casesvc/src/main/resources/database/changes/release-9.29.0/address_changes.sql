@@ -1,13 +1,9 @@
 --make changes to address table to match new structure
 
-ALTER TABLE casesvc.address
-  DROP COLUMN eastings;
-ALTER TABLE casesvc.address
-  DROP COLUMN northings;
-ALTER TABLE casesvc.address
-  DROP COLUMN htc;
-ALTER TABLE casesvc.address
-  DROP COLUMN casetype;
+ALTER TABLE casesvc.address DROP COLUMN eastings;
+ALTER TABLE casesvc.address DROP COLUMN northings;
+ALTER TABLE casesvc.address DROP COLUMN htc;
+ALTER TABLE casesvc.address DROP COLUMN casetype;
 ALTER TABLE casesvc.address RENAME oa11cd  TO oa;
 ALTER TABLE casesvc.address RENAME lsoa11cd  TO lsoa;
 ALTER TABLE casesvc.address RENAME msoa11cd  TO msoa;
@@ -18,12 +14,6 @@ ALTER TABLE casesvc.address ADD column temp_sample character varying(20);
 UPDATE casesvc.address SET temp_sample = sample;
 ALTER TABLE casesvc.address DROP COLUMN sample;
 ALTER TABLE casesvc.address RENAME temp_sample TO sample;
-
-
-
--- Function: casesvc.generate_initial_cases(integer, character varying, character varying)
-
--- DROP FUNCTION casesvc.generate_initial_cases(integer, character varying, character varying);
 
 CREATE OR REPLACE FUNCTION casesvc.generate_initial_cases(
     p_sampleid integer,
@@ -48,8 +38,6 @@ DECLARE
     v_number_of_cases integer;
     v_survey character varying(20);
     v_sample character varying(20);
-
-
 BEGIN
 
 --check that have a valid area type passed in
@@ -171,7 +159,3 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION casesvc.generate_initial_cases(integer, character varying, character varying)
-  OWNER TO postgres;
-
-

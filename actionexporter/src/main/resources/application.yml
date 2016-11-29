@@ -9,8 +9,6 @@ info:
 # ie -Dlogging.level.org.springframework=DEBUG
 logging:
   level:
-    ROOT: ERROR
-    org.springframework: ERROR
     uk.gov.ons.ctp: DEBUG
 
 security:

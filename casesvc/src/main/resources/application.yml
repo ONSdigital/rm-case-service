@@ -9,14 +9,11 @@ info:
 # ie -Dlogging.level.org.springframework=DEBUG
 logging:
   level:
-    ROOT: ERROR
-    org.springframework: ERROR
-    org.springframework.integration: ERROR
     uk.gov.ons.ctp: DEBUG
 
 liquibase:
-  user: postgres
-  password: postgres
+  user: casesvc
+  password: casesvc
   default-schema: casesvc
   url: jdbc:postgresql://localhost:5432/postgres
   changeLog: classpath:/database/changelog-master.yml

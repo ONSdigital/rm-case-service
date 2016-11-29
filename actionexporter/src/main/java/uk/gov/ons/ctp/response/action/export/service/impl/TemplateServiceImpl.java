@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.action.export.service.impl;
 
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
@@ -15,10 +16,10 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import org.springframework.util.StringUtils;
 
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.action.export.domain.ActionRequestDocument;
@@ -29,8 +30,8 @@ import uk.gov.ons.ctp.response.action.export.service.TemplateService;
 import static uk.gov.ons.ctp.common.util.InputStreamUtils.getStringFromInputStream;
 
 /**
- * The implementation of the TemplateService
- * TODO Specific to FreeMarker at the moment with freemarker.template.Configuration, clearTemplateCache, etc.
+ * The implementation of the TemplateService TODO Specific to FreeMarker at the
+ * moment with freemarker.template.Configuration, clearTemplateCache, etc.
  */
 @Named
 @Slf4j
@@ -76,7 +77,7 @@ public class TemplateServiceImpl implements TemplateService {
 
   @Override
   public File file(List<ActionRequestDocument> actionRequestDocumentList, String templateName, String path)
-          throws CTPException {
+      throws CTPException {
     File resultFile = new File(path);
     Writer fileWriter = null;
     try {
@@ -104,7 +105,7 @@ public class TemplateServiceImpl implements TemplateService {
 
   @Override
   public ByteArrayOutputStream stream(List<ActionRequestDocument> actionRequestDocumentList, String templateName)
-          throws CTPException {
+      throws CTPException {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     Writer outputStreamWriter = null;
     try {
@@ -113,10 +114,10 @@ public class TemplateServiceImpl implements TemplateService {
       template.process(buildDataModel(actionRequestDocumentList), outputStreamWriter);
       outputStreamWriter.close();
     } catch (IOException e) {
-      log.error("IOException thrown while templating for stream...", e.getMessage());
+      log.error("IOException thrown while templating for stream... {}", e.getMessage());
       throw new CTPException(CTPException.Fault.SYSTEM_ERROR, e.getMessage());
     } catch (TemplateException f) {
-      log.error("TemplateException thrown while templating for stream...", f.getMessage());
+      log.error("TemplateException thrown while templating for stream... {}", f.getMessage());
       throw new CTPException(CTPException.Fault.SYSTEM_ERROR, f.getMessage());
     } finally {
       if (outputStreamWriter != null) {
