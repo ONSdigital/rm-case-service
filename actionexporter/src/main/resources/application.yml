@@ -82,6 +82,12 @@ spring:
   zipkin:
     enabled: false
 
+data-grid:
+  address: localhost:6379
+  password: redis
+  list-time-to-live-seconds: 600
+  lock-time-to-live-seconds: 600
+
 export-schedule:
   cron-expression: "0 0/5 * * * ?"
 
