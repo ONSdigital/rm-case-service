@@ -40,12 +40,13 @@
       <artifactId>activemq-broker</artifactId>
     </dependency>
 
+<!--
     <dependency>
        <groupId>org.redisson</groupId>
         <artifactId>redisson</artifactId>
         <version>3.2.0</version>
     </dependency>
-
+  -->
 	<!-- Packages spring-boot-starter, spring-boot-starter-aop, spring-integration-core, spring-integration-java-dsl, spring-integration-jmx -->
     <dependency>
       <groupId>org.springframework.boot</groupId>

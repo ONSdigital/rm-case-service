@@ -130,17 +130,6 @@
       <optional>true</optional>
     </dependency>
 
-    <dependency>
-       <groupId>org.redisson</groupId>
-        <artifactId>redisson</artifactId>
-        <version>3.2.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.cache</groupId>
-                    <artifactId>cache-api</artifactId>
-                </exclusion>
-            </exclusions>
-    </dependency>
   </dependencies>
 
   <build>
