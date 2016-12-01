@@ -60,5 +60,35 @@ databaseChangeLog:
             relativeToChangelogFile: true
             splitStatements: false
 
+  - changeSet:
+      id: 9.30.0-7
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: function to copy to csv
+            path: copy_csv.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 9.30.0-8
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: create operational MI views
+            path: create_mi_operational_views.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 9.30.0-9
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: function to refresh views and call function copy to CSV
+            path: generate_operational_mi_reports.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
 
 
