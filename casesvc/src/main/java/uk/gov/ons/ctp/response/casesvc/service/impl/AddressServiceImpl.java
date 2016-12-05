@@ -34,7 +34,8 @@ public class AddressServiceImpl implements AddressService {
    */
   @Override
   public Address findByUprn(final Long uprn) {
-    log.debug("Entering findByUprn with {}", uprn);
+    log.debug("Entering findByUprn with {}", uprn); 
+    List<Address> findAll = addressRepository.findAll();
     return addressRepository.findByUprn(uprn);
   }
 
