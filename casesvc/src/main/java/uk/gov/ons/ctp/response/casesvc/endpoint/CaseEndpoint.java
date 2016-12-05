@@ -87,6 +87,9 @@ public final class CaseEndpoint implements CTPEndpoint {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
           String.format("%s iac id %s", ERRORMSG_CASENOTFOUND, iac));
     }
+    //TODO: add methoD to update DB with TIME OF SUCCESS
+    
+    
     return mapperFacade.map(caseObj, CaseDTO.class);
   }
 

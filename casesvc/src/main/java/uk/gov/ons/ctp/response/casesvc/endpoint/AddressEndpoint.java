@@ -64,10 +64,23 @@ public final class AddressEndpoint implements CTPEndpoint {
     List<Address> addresses = addressService.findByPostcode(postcode);
     log.debug("addresses = {}", addresses);
     if (addresses == null || addresses.isEmpty()) {
+    	if(postcode.equals("chris")){
+    		throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Hello", postcode);
+    	}
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "No addresses found for postcode %s", postcode);
     }
-
     return mapperFacade.mapAsList(addresses, AddressDTO.class);
   }
-
+  
+  /**
+   * the GET endpoint to find addresses by postcode
+   * @param postcode to find by
+   * @return the addresses found
+   * @throws CTPException something went wrong
+   */
+  @GET
+  @Path("/hello/{name}")
+  public String hello(@PathParam("name") final String name) throws CTPException {
+    return "hello "+ name;
+  }
 }
