@@ -90,5 +90,26 @@ databaseChangeLog:
             relativeToChangelogFile: true
             splitStatements: false
 
+  - changeSet:
+      id: 9.30.0-10
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: correct space character in filename for copy
+            path: copy_csv_correct_space.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 9.30.0-11
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: correct join to address table for sample size
+            path: create_mi_operational_views_correct_join.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+
 
 
