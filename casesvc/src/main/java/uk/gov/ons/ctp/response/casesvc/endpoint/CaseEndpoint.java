@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
@@ -27,9 +28,11 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Contact;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
+import uk.gov.ons.ctp.response.casesvc.utility.Constants;
 
 /**
  * The REST endpoint controller for CaseSvc Cases
@@ -86,11 +89,23 @@ public final class CaseEndpoint implements CTPEndpoint {
   public Response findCaseByIac(@PathParam("iac") final String iac) throws CTPException {
     log.info("Entering findCaseByIac with {}", iac);
     Case caseObj = caseService.findCaseByIac(iac);
+    Category cat = categoryService.findCategory(CategoryDTO.CategoryType.IAC_AUTHENTICATED);
+    CaseEvent caseEvent = new CaseEvent();
+
     if (caseObj == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
           String.format("%s iac id %s", ERRORMSG_CASENOTFOUND, iac));
     }
-    return Response.ok(mapperFacade.map(caseObj, CaseDTO.class)).build();
+    
+    caseEvent.setCaseId(caseObj.getCaseId());
+    caseEvent.setCategory(CategoryDTO.CategoryType.IAC_AUTHENTICATED);
+    caseEvent.setCreatedBy(Constants.SYSTEM);
+    caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
+    caseEvent.setDescription(cat.getShortDescription());
+    
+    caseService.createCaseEvent(caseEvent,caseObj);
+    
+    return mapperFacade.map(caseObj, CaseDTO.class);
   }
 
   /**
