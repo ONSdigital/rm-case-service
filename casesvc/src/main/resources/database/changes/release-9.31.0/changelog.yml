@@ -9,6 +9,25 @@ databaseChangeLog:
             path: casesvc_setup_v10.sql
             relativeToChangelogFile: true
             splitStatements: false
+
+  - changeSet:
+      id: 9.31.0-2
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: add header parameter
+            path: generate_operational_mi_reports_add_header.sql
+            relativeToChangelogFile: true
+            splitStatements: false
             
+ - changeSet:
+      id: 9.31.0-3
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: add header parameter and change owner to postgres
+            path: copy_csv_change_owner.sql
+            relativeToChangelogFile: true
+            splitStatements: false
 
 
