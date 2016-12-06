@@ -45,6 +45,15 @@ public final class CategoryEndpointUnitTest extends CTPJerseyTest {
     return super.init(CategoryEndpoint.class, CategoryService.class, MockCategoryServiceFactory.class,
         new CaseSvcBeanMapper());
   }
+  /**
+   * A test
+   */
+  @Test
+  public void findCategoriesNotFound() {
+    with("http://localhost:9998/categories/%s", "Felix The Cat")
+        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
+        .andClose();
+  }
 
   /**
    * A test

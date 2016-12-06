@@ -7,6 +7,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 
 import org.apache.commons.collections.CollectionUtils;
 
@@ -46,13 +47,13 @@ public final class ActionPlanMappingEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/{mappingId}")
-  public ActionPlanMappingDTO findActionPlanMappingByActionPlanMappingId(@PathParam("mappingId") final Integer actionPlanMappingId) throws CTPException {
+  public Response findActionPlanMappingByActionPlanMappingId(@PathParam("mappingId") final Integer actionPlanMappingId) throws CTPException {
     log.info("Entering findActionPlanMappingByActionPlanMappingId with {}", actionPlanMappingId);
     ActionPlanMapping actionPlanMapping = actionPlanMappingService.findActionPlanMapping(actionPlanMappingId);
     if (actionPlanMapping == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "ActionPlanMapping not found for id %s", actionPlanMappingId);
     }
-    return mapperFacade.map(actionPlanMapping, ActionPlanMappingDTO.class);
+    return Response.ok(mapperFacade.map(actionPlanMapping, ActionPlanMappingDTO.class)).build();
   }
   
   /**
@@ -63,7 +64,7 @@ public final class ActionPlanMappingEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/casetype/{caseTypeId}")
-  public List<ActionPlanMappingDTO> findActionPlanMappingByCaseTypeId(@PathParam("caseTypeId") final Integer caseTypeId) throws CTPException {
+  public Response findActionPlanMappingByCaseTypeId(@PathParam("caseTypeId") final Integer caseTypeId) throws CTPException {
     log.info("Entering findActionPlanMappingByCaseTypeId with {}", caseTypeId);
     CaseType caseType = caseTypeService.findCaseTypeByCaseTypeId(caseTypeId);
     if (caseType == null) {
@@ -71,7 +72,7 @@ public final class ActionPlanMappingEndpoint implements CTPEndpoint {
     }
     List<ActionPlanMapping> actionPlanMappings = actionPlanMappingService.findActionPlanMappingsForCaseType(caseTypeId);
     List<ActionPlanMappingDTO> actionPlanMappingDTOs = mapperFacade.mapAsList(actionPlanMappings, ActionPlanMappingDTO.class);
-    return CollectionUtils.isEmpty(actionPlanMappingDTOs) ? null : actionPlanMappingDTOs;
+    return Response.ok(CollectionUtils.isEmpty(actionPlanMappingDTOs) ? null : actionPlanMappingDTOs).build();
   }
 
 }

@@ -13,6 +13,7 @@ import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CAS
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CREATEDBY;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CREATEDDATE_VALUE;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.NON_EXISTING_ID;
+import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.EXISTING_ID_NO_EVENTS;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.OUR_EXCEPTION_MESSAGE;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.UNCHECKED_EXCEPTION;
 
@@ -109,6 +110,16 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
    * a test
    */
   @Test
+  public void findCaseEventsByCaseIdFoundButNoEvents() {
+    with("http://localhost:9998/cases/%s/events", EXISTING_ID_NO_EVENTS)
+        .assertResponseCodeIs(HttpStatus.NO_CONTENT)
+        .andClose();
+  }
+
+  /**
+   * a test
+   */
+  @Test
   public void findCaseEventsByCaseIdNotFound() {
     with("http://localhost:9998/cases/%s/events", NON_EXISTING_ID)
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
@@ -147,7 +158,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
   @Test
   public void createCaseEventGoodJson() {
     with("http://localhost:9998/cases/%s/events", CASEID).post(MediaType.APPLICATION_JSON_TYPE, CASEEVENT_VALIDJSON)
-        .assertResponseCodeIs(HttpStatus.OK)
+        .assertResponseCodeIs(HttpStatus.CREATED)
         .assertIntegerInBody("$.caseEventId", 1)
         .assertIntegerInBody("$.caseId", CASEID)
         .assertStringInBody("$.description", CASEEVENT_DESC1)

@@ -5,6 +5,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -37,13 +38,13 @@ public final class CaseTypeEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/{casetypeid}")
-  public CaseTypeDTO findCaseTypeByCaseTypeId(@PathParam("casetypeid") final Integer caseTypeId) throws CTPException {
+  public Response findCaseTypeByCaseTypeId(@PathParam("casetypeid") final Integer caseTypeId) throws CTPException {
     log.info("Entering findCaseTypeByCaseTypeId with {}", caseTypeId);
     CaseType caseType = caseTypeService.findCaseTypeByCaseTypeId(caseTypeId);
     if (caseType == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "CaseType not found for id %s", caseTypeId);
     }
-    return mapperFacade.map(caseType, CaseTypeDTO.class);
+    return Response.ok(mapperFacade.map(caseType, CaseTypeDTO.class)).build();
   }
 
 }

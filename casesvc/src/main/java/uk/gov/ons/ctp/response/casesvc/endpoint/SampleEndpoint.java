@@ -7,6 +7,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -42,13 +43,13 @@ public final class SampleEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/{sampleid}")
-  public SampleDTO findSampleBySampleId(@PathParam("sampleid") final Integer sampleId) throws CTPException {
+  public Response findSampleBySampleId(@PathParam("sampleid") final Integer sampleId) throws CTPException {
     log.info("Entering findSampleBySampleId with {}", sampleId);
     Sample sample = sampleService.findSampleBySampleId(sampleId);
     if (sample == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Sample not found for id %s", sampleId);
     }
-    return mapperFacade.map(sample, SampleDTO.class);
+    return Response.ok(mapperFacade.map(sample, SampleDTO.class)).build();
   }
 
   /**
@@ -60,7 +61,7 @@ public final class SampleEndpoint implements CTPEndpoint {
    */
   @PUT
   @Path("/{sampleId}")
-  public SampleDTO createCases(@PathParam("sampleId") final int sampleId, final GeographyDTO geography)
+  public Response createCases(@PathParam("sampleId") final int sampleId, final GeographyDTO geography)
           throws CTPException {
     log.info("Creating cases ");
     Sample sample = sampleService.findSampleBySampleId(sampleId);
@@ -68,6 +69,6 @@ public final class SampleEndpoint implements CTPEndpoint {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Sample not found for id %s", sampleId);
     }
     sampleService.generateCases(sampleId, geography.getType(), geography.getCode());
-    return mapperFacade.map(sample, SampleDTO.class);
+    return Response.ok(mapperFacade.map(sample, SampleDTO.class)).build();
   }
 }

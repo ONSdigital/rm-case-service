@@ -32,6 +32,7 @@ public final class MockCaseServiceFactory implements Factory<CaseService> {
   public static final Timestamp CREATEDDATE_TIMESTAMP = Timestamp.valueOf("2016-02-26 18:30:00");
   public static final String CREATEDBY = "UnitTester";
   public static final Integer EXISTING_ID = 991;
+  public static final Integer EXISTING_ID_NO_EVENTS = 992;
   public static final Integer NON_EXISTING_ID = 998;
   public static final Integer UNCHECKED_EXCEPTION = 999;
   public static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
@@ -74,6 +75,19 @@ public final class MockCaseServiceFactory implements Factory<CaseService> {
         public List<CaseEvent> answer(final InvocationOnMock invocation)
             throws Throwable {
           return caseEvents;
+        }
+      });
+            
+      Mockito.when(mockedService.findCaseByCaseId(EXISTING_ID_NO_EVENTS)).thenAnswer(new Answer<Case>() {
+        public Case answer(final InvocationOnMock invocation)
+            throws Throwable {
+          return cases.get(0);
+        }
+      });
+      Mockito.when(mockedService.findCaseEventsByCaseId(EXISTING_ID_NO_EVENTS)).thenAnswer(new Answer<List<CaseEvent>>() {
+        public List<CaseEvent> answer(final InvocationOnMock invocation)
+            throws Throwable {
+          return new ArrayList<CaseEvent> ();
         }
       });
 

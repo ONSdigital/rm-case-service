@@ -9,6 +9,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
 
 import org.springframework.util.CollectionUtils;
 
@@ -61,14 +64,14 @@ public final class CaseEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/{caseId}")
-  public CaseDTO findCaseByCaseId(@PathParam("caseId") final Integer caseId) throws CTPException {
+  public Response findCaseByCaseId(@PathParam("caseId") final Integer caseId) throws CTPException {
     log.info("Entering findCaseByCaseId with {}", caseId);
     Case caseObj = caseService.findCaseByCaseId(caseId);
     if (caseObj == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
           String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseId));
     }
-    return mapperFacade.map(caseObj, CaseDTO.class);
+    return Response.ok(mapperFacade.map(caseObj, CaseDTO.class)).build();
   }
 
   /**
@@ -80,14 +83,14 @@ public final class CaseEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/iac/{iac}")
-  public CaseDTO findCaseByIac(@PathParam("iac") final String iac) throws CTPException {
+  public Response findCaseByIac(@PathParam("iac") final String iac) throws CTPException {
     log.info("Entering findCaseByIac with {}", iac);
     Case caseObj = caseService.findCaseByIac(iac);
     if (caseObj == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
           String.format("%s iac id %s", ERRORMSG_CASENOTFOUND, iac));
     }
-    return mapperFacade.map(caseObj, CaseDTO.class);
+    return Response.ok(mapperFacade.map(caseObj, CaseDTO.class)).build();
   }
 
   /**
@@ -99,7 +102,7 @@ public final class CaseEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/casegroup/{caseGroupId}")
-  public List<CaseDTO> findCasesInCaseGroup(@PathParam("caseGroupId") final Integer caseGroupId) throws CTPException {
+  public Response findCasesInCaseGroup(@PathParam("caseGroupId") final Integer caseGroupId) throws CTPException {
     log.info("Entering findCasesInCaseGroup with {}", caseGroupId);
     CaseGroup caseGroup = caseGroupService.findCaseGroupByCaseGroupId(caseGroupId);
     if (caseGroup == null) {
@@ -108,7 +111,7 @@ public final class CaseEndpoint implements CTPEndpoint {
     }
     List<Case> cases = caseService.findCasesByCaseGroupId(caseGroupId);
     List<CaseDTO> caseDTOs = mapperFacade.mapAsList(cases, CaseDTO.class);
-    return CollectionUtils.isEmpty(caseDTOs) ? null : caseDTOs;
+    return Response.ok(CollectionUtils.isEmpty(caseDTOs) ? null : caseDTOs).build();
   }
 
   /**
@@ -120,7 +123,7 @@ public final class CaseEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/{caseId}/events")
-  public List<CaseEventDTO> findCaseEventsByCaseId(@PathParam("caseId") final Integer caseId) throws CTPException {
+  public Response findCaseEventsByCaseId(@PathParam("caseId") final Integer caseId) throws CTPException {
     log.info("Entering findCaseEventsByCaseId with {}", caseId);
     Case caseObj = caseService.findCaseByCaseId(caseId);
     if (caseObj == null) {
@@ -129,7 +132,10 @@ public final class CaseEndpoint implements CTPEndpoint {
     }
     List<CaseEvent> caseEvents = caseService.findCaseEventsByCaseId(caseId);
     List<CaseEventDTO> caseEventDTOs = mapperFacade.mapAsList(caseEvents, CaseEventDTO.class);
-    return CollectionUtils.isEmpty(caseEventDTOs) ? null : caseEventDTOs;
+    
+    ResponseBuilder responseBuilder = Response.ok(CollectionUtils.isEmpty(caseEventDTOs) ? null : caseEventDTOs);
+    responseBuilder.status(CollectionUtils.isEmpty(caseEventDTOs) ? Status.NO_CONTENT : Status.OK);
+    return responseBuilder.build();
   }
 
   /**
@@ -144,7 +150,7 @@ public final class CaseEndpoint implements CTPEndpoint {
    */
   @POST
   @Path("/{caseId}/events")
-  public CaseEventDTO createCaseEvent(@PathParam("caseId") final Integer caseId,
+  public Response createCaseEvent(@PathParam("caseId") final Integer caseId,
       @Valid final CaseEventCreationRequestDTO caseEventCreationRequestDTO) throws CTPException {
     log.info("Entering createCaseEvent with caseId {} and requestObject {}", caseId, caseEventCreationRequestDTO);
     caseEventCreationRequestDTO.setCaseId(caseId);
@@ -167,7 +173,7 @@ public final class CaseEndpoint implements CTPEndpoint {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
           String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseId));
     }
-    return mapperFacade.map(createdCaseEvent, CaseEventDTO.class);
+    return Response.ok(mapperFacade.map(createdCaseEvent, CaseEventDTO.class)).status(Status.CREATED).build();
   }
 
 }

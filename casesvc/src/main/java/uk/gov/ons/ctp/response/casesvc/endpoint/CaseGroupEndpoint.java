@@ -7,6 +7,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 
 import org.springframework.util.CollectionUtils;
 
@@ -48,15 +49,16 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/{caseGroupId}")
-  public CaseGroupDTO findCaseGroupById(@PathParam("caseGroupId") final Integer caseGroupId)  throws CTPException {
+  public Response findCaseGroupById(@PathParam("caseGroupId") final Integer caseGroupId)  throws CTPException {
     log.info("Entering findCaseGroupById with {}", caseGroupId);
     CaseGroup caseGroupObj = caseGroupService.findCaseGroupByCaseGroupId(caseGroupId);
     if (caseGroupObj == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
               String.format("%s casegroup id %s", ERRORMSG_CASEGROUPNOTFOUND, caseGroupId));
     }
-    return mapperFacade.map(caseGroupObj, CaseGroupDTO.class);
+    return Response.ok(mapperFacade.map(caseGroupObj, CaseGroupDTO.class)).build();
   }
+  
     
     
   /**
@@ -68,7 +70,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/uprn/{uprn}")
-  public List<CaseGroupDTO> findCaseGroupsByUprn(@PathParam("uprn") final Long uprn)  throws CTPException {
+  public Response findCaseGroupsByUprn(@PathParam("uprn") final Long uprn)  throws CTPException {
     log.info("Entering findCaseGroupsByUprn with {}", uprn);
 
     Address address = addressService.findByUprn(uprn);
@@ -78,6 +80,6 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
     }
     List<CaseGroup> groups = caseGroupService.findCaseGroupsByUprn(uprn);
     List<CaseGroupDTO> groupDTOs = mapperFacade.mapAsList(groups, CaseGroupDTO.class);
-    return CollectionUtils.isEmpty(groupDTOs) ? null : groupDTOs;
+    return Response.ok(CollectionUtils.isEmpty(groupDTOs) ? null : groupDTOs).build();
   }
 }

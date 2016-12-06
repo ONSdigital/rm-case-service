@@ -7,6 +7,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -38,7 +39,7 @@ public final class AddressEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/{uprn}")
-  public AddressDTO findAddressesByUprn(@PathParam("uprn") final Long uprn) throws CTPException {
+  public Response findAddressesByUprn(@PathParam("uprn") final Long uprn) throws CTPException {
     log.info("Entering findAddressesByUprn with {}", uprn);
 
     Address address = addressService.findByUprn(uprn);
@@ -47,7 +48,7 @@ public final class AddressEndpoint implements CTPEndpoint {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "No addresses found for uprn %d", uprn);
     }
 
-    return mapperFacade.map(address, AddressDTO.class);
+    return Response.ok(mapperFacade.map(address, AddressDTO.class)).build();
   }
 
   /**
@@ -58,7 +59,7 @@ public final class AddressEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/postcode/{postcode}")
-  public List<AddressDTO> findAddressesByPostcode(@PathParam("postcode") final String postcode) throws CTPException {
+  public Response findAddressesByPostcode(@PathParam("postcode") final String postcode) throws CTPException {
     log.info("Entering findAddressesByPostcode with {}", postcode);
 
     List<Address> addresses = addressService.findByPostcode(postcode);
@@ -67,7 +68,7 @@ public final class AddressEndpoint implements CTPEndpoint {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "No addresses found for postcode %s", postcode);
     }
 
-    return mapperFacade.mapAsList(addresses, AddressDTO.class);
+    return Response.ok(mapperFacade.mapAsList(addresses, AddressDTO.class)).build();
   }
 
 }

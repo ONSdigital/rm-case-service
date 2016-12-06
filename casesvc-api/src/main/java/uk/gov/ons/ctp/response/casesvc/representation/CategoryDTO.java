@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.representation;
 
+import java.util.Optional;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import uk.gov.ons.ctp.common.util.EnumUtils;
 import lombok.AccessLevel;
@@ -70,6 +72,10 @@ public class CategoryDTO {
     @JsonCreator
     public static CategoryType fromValue(String name) {
       return EnumUtils.getEnumFromString(CategoryDTO.CategoryType.class, name);
+    }
+    
+    public static Optional<CategoryType> fromString(String name) {
+      return EnumUtils.getOptionalEnumFromString(CategoryDTO.CategoryType.class, name);
     }
   }
 
