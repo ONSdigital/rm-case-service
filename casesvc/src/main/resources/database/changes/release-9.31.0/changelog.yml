@@ -1,0 +1,13 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 9.31.0-1
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: set up data for behavioural insight casetypr ( v10)
+            path: casesvc_setup_v10.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+
