@@ -87,14 +87,22 @@ public final class CaseEndpoint implements CTPEndpoint {
   public CaseDTO findCaseByIac(@PathParam("iac") final String iac) throws CTPException {
     log.info("Entering findCaseByIac with {}", iac);
     Case caseObj = caseService.findCaseByIac(iac);
-    Category cat = categoryService.findCategory(CategoryDTO.CategoryType.IAC_AUTHENTICATED);
-    CaseEvent caseEvent = new CaseEvent();
+
 
     if (caseObj == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
           String.format("%s iac id %s", ERRORMSG_CASENOTFOUND, iac));
     }
     
+    createNewEventForIACAuthenticated(caseObj);
+    
+    return mapperFacade.map(caseObj, CaseDTO.class);
+  }
+
+private void createNewEventForIACAuthenticated(Case caseObj) {
+	
+	Category cat = categoryService.findCategory(CategoryDTO.CategoryType.IAC_AUTHENTICATED);
+    CaseEvent caseEvent = new CaseEvent();
     caseEvent.setCaseId(caseObj.getCaseId());
     caseEvent.setCategory(CategoryDTO.CategoryType.IAC_AUTHENTICATED);
     caseEvent.setCreatedBy(Constants.SYSTEM);
@@ -102,9 +110,7 @@ public final class CaseEndpoint implements CTPEndpoint {
     caseEvent.setDescription(cat.getShortDescription());
     
     caseService.createCaseEvent(caseEvent,caseObj);
-    
-    return mapperFacade.map(caseObj, CaseDTO.class);
-  }
+}
 
   /**
    * the GET endpoint to find case events by case id
