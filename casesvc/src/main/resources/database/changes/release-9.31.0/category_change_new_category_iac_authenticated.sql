@@ -1,2 +1,2 @@
 INSERT INTO casesvc.category (name, longdescription, eventtype, manual, role, generatedactiontype, "group", shortdescription, newcaserespondenttype, oldcaserespondenttype) 
-VALUES ('IAC_AUTHENTICATED', 'Access Code Authenticated By Respondent', 'NULL', false, NULL, NULL, NULL, 'Access Code Authenticated', NULL, NULL);
+VALUES ('IAC_AUTHENTICATED', 'Access Code Authenticated By Respondent', NULL, false, NULL, NULL, NULL, 'Access Code Authenticated', NULL, NULL);
