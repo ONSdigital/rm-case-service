@@ -10,4 +10,35 @@ databaseChangeLog:
             relativeToChangelogFile: true
             splitStatements: false
 
+  - changeSet:
+      id: 9.31.0-2
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: add header parameter
+            path: generate_operational_mi_reports_add_header.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 9.31.0-3
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: combine in line views within code
+            path: create_mi_operational_views_new format.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 9.31.0-4
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: add header parameter to copy csv function
+            path: copy_csv_add_header.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+
 
