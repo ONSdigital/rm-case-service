@@ -21,5 +21,3 @@ END;
 $BODY$
   LANGUAGE plpgsql VOLATILE SECURITY DEFINER
   COST 100;
-ALTER FUNCTION casesvc.copy_csv(character varying, character varying, character varying, character varying)
-  OWNER TO postgres;
