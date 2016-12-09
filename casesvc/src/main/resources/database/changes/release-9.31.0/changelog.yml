@@ -26,7 +26,7 @@ databaseChangeLog:
       changes:
         - sqlFile:
             comment: combine in line views within code
-            path: create_mi_operational_views_new format.sql
+            path: create_mi_operational_views_new_format.sql
             relativeToChangelogFile: true
             splitStatements: false
 
