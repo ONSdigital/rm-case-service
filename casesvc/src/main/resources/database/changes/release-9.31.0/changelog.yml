@@ -40,5 +40,35 @@ databaseChangeLog:
             relativeToChangelogFile: true
             splitStatements: false
 
+  - changeSet:
+      id: 9.31.0-5
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: create view for helpline daily mi
+            path: helpline_mi_daily_calls_view.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 9.31.0-6
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: function to generate helpline daily report
+            path: generate_helpline_mi_daily_report.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+
+  - changeSet:
+      id: 9.31.0-7
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: function to generate university report
+            path: generate_university_report.sql 
+            relativeToChangelogFile: true
+            splitStatements: false
 
 
