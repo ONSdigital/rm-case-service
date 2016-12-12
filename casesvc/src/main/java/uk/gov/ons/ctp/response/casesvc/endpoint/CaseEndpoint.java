@@ -38,7 +38,7 @@ import uk.gov.ons.ctp.response.casesvc.utility.Constants;
  * The REST endpoint controller for CaseSvc Cases
  */
 @Path("/cases")
-@Produces({"application/json"})
+@Produces({ "application/json" })
 @Slf4j
 public final class CaseEndpoint implements CTPEndpoint {
 

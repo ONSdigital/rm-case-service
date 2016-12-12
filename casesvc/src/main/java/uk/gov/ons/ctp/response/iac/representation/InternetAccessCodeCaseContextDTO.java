@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.iac.representation;
 
+import java.sql.Timestamp;
+
 import javax.validation.constraints.NotNull;
 
 import lombok.AccessLevel;
@@ -36,4 +38,6 @@ public class InternetAccessCodeCaseContextDTO {
 
   @NotNull
   private String questionSet;
+  
+  private Timestamp lastUsedDateTime;
 }
