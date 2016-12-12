@@ -43,7 +43,7 @@ public class CaseEndpointMockTest {
 	}
 
 	@Test
-	public void whenAValidIacIsUsed_ConfirmThatACaseEventIsCreated() throws CTPException {
+	public void whenAValidIacIsUsedConfirmThatACaseEventIsCreated() throws CTPException {
 
 		Case newCase = new Case();
 		newCase.setCaseId(1234);
