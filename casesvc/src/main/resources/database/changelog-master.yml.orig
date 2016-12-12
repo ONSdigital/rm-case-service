@@ -1,0 +1,26 @@
+databaseChangeLog:
+
+  - preConditions:
+    - runningAs:
+        username: casesvc
+
+  - include:
+      file: database/changes/release-9.27.0/changelog.yml
+
+  - include:
+      file: database/changes/release-9.28.0/changelog.yml
+
+  - include:
+      file: database/changes/release-9.29.0/changelog.yml
+
+  - include:
+      file: database/changes/release-9.30.0/changelog.yml
+<<<<<<< HEAD
+
+  - include:
+      file: database/changes/release-9.31.0/changelog.yml
+=======
+  
+  - include:
+      file: database/changes/release-9.31.0/changelog.yml
+>>>>>>> CTPA-948: updated with new code to add new case category to the IAC when its it used

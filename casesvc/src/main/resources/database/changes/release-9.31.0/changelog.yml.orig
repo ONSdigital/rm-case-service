@@ -1,0 +1,23 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 9.31.0-1
+<<<<<<< HEAD
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: set up data for behavioural insight casetypr ( v10)
+            path: casesvc_setup_v10.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+
+=======
+      author: Chris Hardman, Edward Stevens
+      changes:
+        - sqlFile:
+            comment: casesvc adding new row
+            path: category_change_new_category_iac_authenticated.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+>>>>>>> CTPA-948: updated with new code to add new case category to the IAC when its it used
