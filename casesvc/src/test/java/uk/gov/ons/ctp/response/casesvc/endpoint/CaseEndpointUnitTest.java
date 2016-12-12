@@ -169,4 +169,20 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
         .andClose();
   }
 
+  /**
+   * a test providing good json
+   */
+  @Test
+  public void createCaseEventCaseNotFound() {
+    with("http://localhost:9998/cases/%s/events", NON_EXISTING_ID).post(MediaType.APPLICATION_JSON_TYPE, CASEEVENT_VALIDJSON)
+        .assertResponseCodeIs(HttpStatus.CREATED)
+        .assertIntegerInBody("$.caseEventId", 1)
+        .assertIntegerInBody("$.caseId", CASEID)
+        .assertStringInBody("$.description", CASEEVENT_DESC1)
+        .assertStringInBody("$.createdBy", CREATEDBY)
+        .assertStringInBody("$.createdDateTime", CREATEDDATE_VALUE)
+        .assertStringInBody("$.category", CASEEVENT_CATEGORY.name())
+        .assertStringInBody("$.subCategory", CASEEVENT_SUBCATEGORY)
+        .andClose();
+  }
 }
