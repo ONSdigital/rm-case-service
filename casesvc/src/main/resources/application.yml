@@ -137,3 +137,5 @@ redelivery-policy:
   maxRedeliveries: 10
   initialRedeliveryDelay: 1000
   redeliveryDelay: 1000
+
+# Tag to verify latest code ends up in artifactory (zzz)
