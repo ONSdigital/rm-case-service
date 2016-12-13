@@ -15,12 +15,6 @@ databaseChangeLog:
 
   - include:
       file: database/changes/release-9.30.0/changelog.yml
-<<<<<<< HEAD
-
-  - include:
-      file: database/changes/release-9.31.0/changelog.yml
-=======
   
   - include:
       file: database/changes/release-9.31.0/changelog.yml
->>>>>>> 9dfb945dfd577365519348b76f278cfa4b7413c4

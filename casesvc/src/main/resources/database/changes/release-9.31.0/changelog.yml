@@ -2,7 +2,6 @@ databaseChangeLog:
 
   - changeSet:
       id: 9.31.0-1
-<<<<<<< HEAD
       author: Narinder Birk
       changes:
         - sqlFile:
@@ -13,16 +12,10 @@ databaseChangeLog:
 
   - changeSet:
       id: 9.31.0-2
-=======
->>>>>>> 9dfb945dfd577365519348b76f278cfa4b7413c4
       author: Chris Hardman, Edward Stevens
       changes:
         - sqlFile:
             comment: casesvc adding new row
             path: category_change_new_category_iac_authenticated.sql
             relativeToChangelogFile: true
-<<<<<<< HEAD
             splitStatements: false
-=======
-            splitStatements: false
->>>>>>> 9dfb945dfd577365519348b76f278cfa4b7413c4
