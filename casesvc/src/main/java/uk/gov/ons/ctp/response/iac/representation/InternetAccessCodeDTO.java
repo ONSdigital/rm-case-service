@@ -26,5 +26,6 @@ public class InternetAccessCodeDTO {
   private String updatedBy;
 
   private Timestamp updatedDateTime;
-
+  
+  private Timestamp lastUsedDateTime;
 }

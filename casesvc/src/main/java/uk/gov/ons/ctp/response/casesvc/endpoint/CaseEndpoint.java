@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
@@ -27,15 +28,17 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Contact;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
+import uk.gov.ons.ctp.response.casesvc.utility.Constants;
 
 /**
  * The REST endpoint controller for CaseSvc Cases
  */
 @Path("/cases")
-@Produces({"application/json"})
+@Produces({ "application/json" })
 @Slf4j
 public final class CaseEndpoint implements CTPEndpoint {
 
@@ -86,12 +89,30 @@ public final class CaseEndpoint implements CTPEndpoint {
   public Response findCaseByIac(@PathParam("iac") final String iac) throws CTPException {
     log.info("Entering findCaseByIac with {}", iac);
     Case caseObj = caseService.findCaseByIac(iac);
+
+
     if (caseObj == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
           String.format("%s iac id %s", ERRORMSG_CASENOTFOUND, iac));
     }
+    
+    createNewEventForIACAuthenticated(caseObj);
+    
     return Response.ok(mapperFacade.map(caseObj, CaseDTO.class)).build();
   }
+
+private void createNewEventForIACAuthenticated(Case caseObj) {
+	
+	Category cat = categoryService.findCategory(CategoryDTO.CategoryType.IAC_AUTHENTICATED);
+    CaseEvent caseEvent = new CaseEvent();
+    caseEvent.setCaseId(caseObj.getCaseId());
+    caseEvent.setCategory(CategoryDTO.CategoryType.IAC_AUTHENTICATED);
+    caseEvent.setCreatedBy(Constants.SYSTEM);
+    caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
+    caseEvent.setDescription(cat.getShortDescription());
+    
+    caseService.createCaseEvent(caseEvent,caseObj);
+}
 
   /**
    * the GET endpoint to find case events by case id

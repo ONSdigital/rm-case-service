@@ -71,4 +71,13 @@ databaseChangeLog:
             relativeToChangelogFile: true
             splitStatements: false
 
+  - changeSet:
+      id: 9.31.0-8
+      author: Edward Stevens, Chris Hardman
+      changes:
+        - sqlFile:
+            comment: casesvc adding new row
+            path: category_change_new_category_iac_authenticated.sql
+            relativeToChangelogFile: true
+            splitStatements: false
 
