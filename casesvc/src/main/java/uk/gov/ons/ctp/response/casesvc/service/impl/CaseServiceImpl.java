@@ -109,7 +109,7 @@ public class CaseServiceImpl implements CaseService {
   @Override
   public List<Case> findCasesByCaseGroupId(final Integer caseGroupId) {
     log.debug("Entering findCasesByCaseGroupId");
-    return caseRepo.findByCaseGroupId(caseGroupId);
+    return caseRepo.findByCaseGroupIdOrderByCreatedDateTimeDesc(caseGroupId);
   }
 
   @Override
