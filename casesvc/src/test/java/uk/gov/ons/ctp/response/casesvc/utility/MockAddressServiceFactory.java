@@ -18,6 +18,7 @@ public final class MockAddressServiceFactory implements Factory<AddressService> 
 
   public static final Long ADDRESS_NON_EXISTING_UPRN = 999L;
   public static final Long ADDRESS_UPRN = 123L;
+  public static final Long ADDRESS_UPRN_NO_CASEGROUP = 124L;
   public static final Long ADDRESS_WITH_UPRN_CHECKED_EXCEPTION = 666L;
 
   public static final String ADDRESS_NON_EXISTING_POSTCODE = "PORANDOM";
@@ -31,6 +32,14 @@ public final class MockAddressServiceFactory implements Factory<AddressService> 
   public AddressService provide() {
     final AddressService mockedService = Mockito.mock(AddressService.class);
     Mockito.when(mockedService.findByUprn(ADDRESS_UPRN)).thenAnswer(new Answer<Address>() {
+      public Address answer(final InvocationOnMock invocation)
+          throws Throwable {
+        Long addressUprn = (Long) invocation.getArguments()[0];
+        Address address = AddressBuilder.address().uprn(addressUprn).buildAddress();
+        return address;
+      }
+    }); 
+    Mockito.when(mockedService.findByUprn(ADDRESS_UPRN_NO_CASEGROUP)).thenAnswer(new Answer<Address>() {
       public Address answer(final InvocationOnMock invocation)
           throws Throwable {
         Long addressUprn = (Long) invocation.getArguments()[0];
