@@ -8,6 +8,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
 
 import org.springframework.util.CollectionUtils;
 
@@ -80,6 +82,8 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
     }
     List<CaseGroup> groups = caseGroupService.findCaseGroupsByUprn(uprn);
     List<CaseGroupDTO> groupDTOs = mapperFacade.mapAsList(groups, CaseGroupDTO.class);
-    return Response.ok(CollectionUtils.isEmpty(groupDTOs) ? null : groupDTOs).build();
+    ResponseBuilder responseBuilder = Response.ok(CollectionUtils.isEmpty(groupDTOs) ? null : groupDTOs);
+    responseBuilder.status(CollectionUtils.isEmpty(groupDTOs) ? Status.NO_CONTENT : Status.OK);
+    return responseBuilder.build();
   }
 }

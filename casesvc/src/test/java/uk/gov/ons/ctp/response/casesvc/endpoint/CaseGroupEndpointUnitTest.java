@@ -4,8 +4,9 @@ package uk.gov.ons.ctp.response.casesvc.endpoint;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseGroupServiceFactory.CASE_GROUP_ID;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseGroupServiceFactory.NON_EXISTENT_CASE_GROUP_ID;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseGroupServiceFactory.SAMPLE_ID;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseGroupServiceFactory.UPRN;
-
+import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.ADDRESS_NON_EXISTING_UPRN;
+import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.ADDRESS_UPRN_NO_CASEGROUP;
+import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.ADDRESS_UPRN;
 import javax.ws.rs.core.Application;
 
 import org.junit.Test;
@@ -45,7 +46,7 @@ public final class CaseGroupEndpointUnitTest extends CTPJerseyTest {
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerInBody("$.caseGroupId", CASE_GROUP_ID)
         .assertIntegerInBody("$.sampleId", SAMPLE_ID)
-        .assertLongInBody("$.uprn", UPRN)
+        .assertLongInBody("$.uprn", ADDRESS_UPRN)
         .andClose();
   }
 
@@ -63,15 +64,40 @@ public final class CaseGroupEndpointUnitTest extends CTPJerseyTest {
   }
   
   /**
+   * a test 
+   */
+  @Test
+  public void findCaseGroupByUprnNotFound() {
+    with("http://localhost:9998/casegroups/uprn/%s", ADDRESS_NON_EXISTING_UPRN)
+        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
+        .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
+        .assertTimestampExists()
+        .assertMessageEquals(CaseGroupEndpoint.ERRORMSG_ADDRESSNOTFOUND + " UPRN %s", ADDRESS_NON_EXISTING_UPRN)
+        .andClose();
+  }
+  
+  /**
    * a test
    */
   @Test
-  public void findCaseGroupByUprn() {
-    with("http://localhost:9998/casegroups/uprn/%s", UPRN)
-        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
+  public void findCaseGroupsByUprnFound() {
+    with("http://localhost:9998/casegroups/uprn/%s", ADDRESS_UPRN)
+        .assertResponseCodeIs(HttpStatus.OK)
         .assertArrayLengthInBodyIs(1)
-        .assertIntegerOccursThroughoutListInBody("$..caseGroupId", CASE_GROUP_ID)
-        .assertIntegerOccursThroughoutListInBody("$..sampleId", SAMPLE_ID)
-        .assertLongOccursThroughoutListInBody("$..uprn", UPRN);
+        .assertIntegerListInBody("$..caseGroupId", CASE_GROUP_ID)
+        .assertIntegerListInBody("$..sampleId", SAMPLE_ID)
+        .assertLongOccursThroughoutListInBody("$..uprn", ADDRESS_UPRN)
+        .andClose();
   }
+  
+  /**
+   * a test
+   */
+  @Test
+  public void findCaseGroupsByUprnFoundButNoCaseGroups() {
+    with("http://localhost:9998/casegroups/uprn/%s", ADDRESS_UPRN_NO_CASEGROUP)
+        .assertResponseCodeIs(HttpStatus.NO_CONTENT)
+        .andClose();
+  }
+  
 }
