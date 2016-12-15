@@ -17,8 +17,6 @@ liquibase:
   default-schema: casesvc
   url: jdbc:postgresql://localhost:5432/postgres
   changeLog: classpath:/database/changelog-master.yml
-  
-  
 
 security:
   basic:
@@ -109,6 +107,8 @@ internet-access-code-svc:
     scheme: http
     host: localhost
     port: 8121
+    username: admin
+    password: secret
     retry-attempts: 1
     retry-pause-milli-seconds: 5000
     connect-timeout-milli-seconds: 5000
