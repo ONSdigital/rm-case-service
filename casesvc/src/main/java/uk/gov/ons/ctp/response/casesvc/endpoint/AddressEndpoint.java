@@ -64,10 +64,7 @@ public final class AddressEndpoint implements CTPEndpoint {
 
     List<Address> addresses = addressService.findByPostcode(postcode);
     log.debug("addresses = {}", addresses);
-    if (addresses == null || addresses.isEmpty()) {
-    	if(postcode.equals("chris")){
-    		throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Hello", postcode);
-    	}
+    if (addresses == null || addresses.isEmpty()){
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "No addresses found for postcode %s", postcode);
     }
 
