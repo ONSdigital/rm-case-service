@@ -107,8 +107,6 @@ internet-access-code-svc:
     scheme: http
     host: localhost
     port: 8121
-    username: admin
-    password: secret
     retry-attempts: 1
     retry-pause-milli-seconds: 5000
     connect-timeout-milli-seconds: 5000
