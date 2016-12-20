@@ -125,20 +125,26 @@ public class CaseDistributor {
       List<Case> cases = retrieveCases(distributedCaseList);
 
       caseDistributionListManager.saveList(CASE_DISTRIBUTOR_LIST_ID, cases.stream()
-            .map(caze -> caze.getCaseId())
-            .collect(Collectors.toList()));
+          .map(caze -> caze.getCaseId())
+          .collect(Collectors.toList()));
 
       int iacPageSize = appConfig.getCaseDistribution().getIacMax();
       List<String> codes = null;
       for (int idx = 0; idx < cases.size(); idx++) {
         Case caze = cases.get(idx);
-        try {
-          if (idx % iacPageSize == 0) {
-            int codesToRequest = (idx < cases.size() / iacPageSize * iacPageSize) ? iacPageSize
-                : (cases.size() % iacPageSize);
+        if (idx % iacPageSize == 0) {
+          int codesToRequest = (idx < cases.size() / iacPageSize * iacPageSize) ? iacPageSize
+              : (cases.size() % iacPageSize);
+          try {
             codes = internetAccessCodeSvcClientService.generateIACs(codesToRequest);
+          } catch (Exception e) {
+            log.error("Failed to obtain IAC block");
+            // exit case loop and send notifications of cases activated so far to action svc
+            break;
           }
+        }
 
+        try {
           caseNotifications.add(processCase(caze, codes.get(idx % iacPageSize)));
           if (caseNotifications.size() == appConfig.getCaseDistribution().getDistributionMax()) {
             publishCases(caseNotifications);
@@ -173,8 +179,8 @@ public class CaseDistributor {
   /**
    * Get the oldest page of INIT cases to activate
    *
-   * @param excludedCaseList the distributed list of case ids currently being examined by
-   *          other casesvc instances
+   * @param excludedCaseList the distributed list of case ids currently being
+   *          examined by other casesvc instances
    * @return list of cases
    */
   private List<Case> retrieveCases(List<Integer> excludedCaseList) {
@@ -182,7 +188,7 @@ public class CaseDistributor {
     // using the distributed map of lists of cases that other nodes are
     // processing
     // flatten them into a list of case ids to exclude from our query
-    log.debug("retrieving while excluding cases {}", excludedCaseList);
+    log.debug("retrieve cases excluding {}", excludedCaseList);
 
     // prepare and execute the query to find the oldest N cases that are in INIT
     // states and not in the excluded list
@@ -190,7 +196,8 @@ public class CaseDistributor {
         new Sort.Order(Direction.ASC, "createdDateTime")));
     excludedCaseList.add(Integer.valueOf(IMPOSSIBLE_CASE_ID));
     List<Case> cases = caseRepo
-        .findByStateInAndCaseIdNotIn(Arrays.asList(CaseState.SAMPLED_INIT, CaseState.REPLACEMENT_INIT), excludedCaseList,
+        .findByStateInAndCaseIdNotIn(Arrays.asList(CaseState.SAMPLED_INIT, CaseState.REPLACEMENT_INIT),
+            excludedCaseList,
             pageable);
     log.debug("RETRIEVED case ids {}", cases.stream().map(a -> a.getCaseId().toString())
         .collect(Collectors.joining(",")));
