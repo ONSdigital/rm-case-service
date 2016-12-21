@@ -66,7 +66,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findCaseByCaseIdFound() {
-    with("http://localhost:9998/cases/%s", CASEID)
+    with("/cases/%s", CASEID)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertStringInBody("$.state", CASE_STATE.name())
         .assertIntegerInBody("$.caseTypeId", CASE1_TYPEID)
@@ -81,7 +81,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findCaseByCaseIdNotFound() {
-    with("http://localhost:9998/cases/%s", NON_EXISTING_ID)
+    with("/cases/%s", NON_EXISTING_ID)
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
@@ -94,7 +94,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findCaseEventsByCaseIdFound() {
-    with("http://localhost:9998/cases/%s/events", CASEID)
+    with("/cases/%s/events", CASEID)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertArrayLengthInBodyIs(3)
         .assertIntegerOccursThroughoutListInBody("$..caseId", CASEID)
@@ -111,7 +111,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findCaseEventsByCaseIdFoundButNoEvents() {
-    with("http://localhost:9998/cases/%s/events", EXISTING_ID_NO_EVENTS)
+    with("/cases/%s/events", EXISTING_ID_NO_EVENTS)
         .assertResponseCodeIs(HttpStatus.NO_CONTENT)
         .andClose();
   }
@@ -121,7 +121,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findCaseEventsByCaseIdNotFound() {
-    with("http://localhost:9998/cases/%s/events", NON_EXISTING_ID)
+    with("/cases/%s/events", NON_EXISTING_ID)
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
@@ -134,7 +134,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findCaseByCaseIdUnCheckedException() {
-    with("http://localhost:9998/cases/%s", UNCHECKED_EXCEPTION)
+    with("/cases/%s", UNCHECKED_EXCEPTION)
         .assertResponseCodeIs(HttpStatus.INTERNAL_SERVER_ERROR)
         .assertFaultIs(CTPException.Fault.SYSTEM_ERROR)
         .assertTimestampExists()
@@ -147,7 +147,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void createCaseEventBadJson() {
-    with("http://localhost:9998/cases/%s/events", CASEID).post(MediaType.APPLICATION_JSON_TYPE, CASEEVENT_INVALIDJSON)
+    with("/cases/%s/events", CASEID).post(MediaType.APPLICATION_JSON_TYPE, CASEEVENT_INVALIDJSON)
         .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
         .andClose();
   }
@@ -157,7 +157,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void createCaseEventGoodJson() {
-    with("http://localhost:9998/cases/%s/events", CASEID).post(MediaType.APPLICATION_JSON_TYPE, CASEEVENT_VALIDJSON)
+    with("/cases/%s/events", CASEID).post(MediaType.APPLICATION_JSON_TYPE, CASEEVENT_VALIDJSON)
         .assertResponseCodeIs(HttpStatus.CREATED)
         .assertIntegerInBody("$.caseEventId", 1)
         .assertIntegerInBody("$.caseId", CASEID)
@@ -174,7 +174,7 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void createCaseEventCaseNotFound() {
-    with("http://localhost:9998/cases/%s/events", NON_EXISTING_ID).post(MediaType.APPLICATION_JSON_TYPE, CASEEVENT_VALIDJSON)
+    with("/cases/%s/events", NON_EXISTING_ID).post(MediaType.APPLICATION_JSON_TYPE, CASEEVENT_VALIDJSON)
         .assertResponseCodeIs(HttpStatus.CREATED)
         .assertIntegerInBody("$.caseEventId", 1)
         .assertIntegerInBody("$.caseId", CASEID)

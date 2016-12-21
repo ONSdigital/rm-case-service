@@ -42,7 +42,7 @@ public final class CaseGroupEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findCaseGroupByCaseGroupIdFound() {
-    with("http://localhost:9998/casegroups/%s", CASE_GROUP_ID)
+    with("/casegroups/%s", CASE_GROUP_ID)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerInBody("$.caseGroupId", CASE_GROUP_ID)
         .assertIntegerInBody("$.sampleId", SAMPLE_ID)
@@ -55,7 +55,7 @@ public final class CaseGroupEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findCaseGroupByCaseGroupIdNotFound() {
-    with("http://localhost:9998/casegroups/%s", NON_EXISTENT_CASE_GROUP_ID)
+    with("/casegroups/%s", NON_EXISTENT_CASE_GROUP_ID)
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
@@ -68,7 +68,7 @@ public final class CaseGroupEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findCaseGroupByUprnNotFound() {
-    with("http://localhost:9998/casegroups/uprn/%s", ADDRESS_NON_EXISTING_UPRN)
+    with("/casegroups/uprn/%s", ADDRESS_NON_EXISTING_UPRN)
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
@@ -81,7 +81,7 @@ public final class CaseGroupEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findCaseGroupsByUprnFound() {
-    with("http://localhost:9998/casegroups/uprn/%s", ADDRESS_UPRN)
+    with("/casegroups/uprn/%s", ADDRESS_UPRN)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertArrayLengthInBodyIs(1)
         .assertIntegerListInBody("$..caseGroupId", CASE_GROUP_ID)
@@ -95,7 +95,7 @@ public final class CaseGroupEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findCaseGroupsByUprnFoundButNoCaseGroups() {
-    with("http://localhost:9998/casegroups/uprn/%s", ADDRESS_UPRN_NO_CASEGROUP)
+    with("/casegroups/uprn/%s", ADDRESS_UPRN_NO_CASEGROUP)
         .assertResponseCodeIs(HttpStatus.NO_CONTENT)
         .andClose();
   }

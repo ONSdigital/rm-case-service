@@ -52,7 +52,7 @@ public final class AddressEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findByUprnPositiveScenario() {
-    with("http://localhost:9998/addresses/%s", ADDRESS_UPRN)
+    with("/addresses/%s", ADDRESS_UPRN)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerInBody("$.uprn", ADDRESS_UPRN.intValue())
         .assertStringInBody("$.type", ADDRESS_TYPE)
@@ -78,7 +78,7 @@ public final class AddressEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findByUprnScenarioNotFound() {
-    with("http://localhost:9998/addresses/%s", ADDRESS_NON_EXISTING_UPRN)
+    with("/addresses/%s", ADDRESS_NON_EXISTING_UPRN)
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertStringInBody("$.error.code", CTPException.Fault.RESOURCE_NOT_FOUND.toString())
         .assertTimestampExists()
@@ -92,7 +92,7 @@ public final class AddressEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findByUprnScenarioThrowCheckedException() {
-    with("http://localhost:9998/addresses/%s", ADDRESS_WITH_UPRN_CHECKED_EXCEPTION)
+    with("/addresses/%s", ADDRESS_WITH_UPRN_CHECKED_EXCEPTION)
         .assertResponseCodeIs(HttpStatus.INTERNAL_SERVER_ERROR)
         .assertStringInBody("$.error.code", CTPException.Fault.SYSTEM_ERROR.toString())
         .assertTimestampExists()
@@ -105,7 +105,7 @@ public final class AddressEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findByPostcodePositiveScenario() {
-    with("http://localhost:9998/addresses/postcode/%s", ADDRESS_POSTCODE)
+    with("/addresses/postcode/%s", ADDRESS_POSTCODE)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertArrayLengthInBodyIs(1)
         .assertStringListInBody("$..postcode", ADDRESS_POSTCODE)
@@ -130,7 +130,7 @@ public final class AddressEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findByPostcodeScenarioNotFound() {
-    with("http://localhost:9998/addresses/postcode/%s", ADDRESS_NON_EXISTING_POSTCODE)
+    with("/addresses/postcode/%s", ADDRESS_NON_EXISTING_POSTCODE)
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertStringInBody("$.error.code", CTPException.Fault.RESOURCE_NOT_FOUND.toString())
         .assertTimestampExists()

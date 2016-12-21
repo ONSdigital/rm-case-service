@@ -42,7 +42,7 @@ public final class ActionPlanMappingEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findMappingFound() {
-    with("http://localhost:9998/actionplanmappings/%s", MAPPING_ID)
+    with("/actionplanmappings/%s", MAPPING_ID)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerInBody("$.actionPlanMappingId", MAPPING_ID)
         .assertIntegerInBody("$.actionPlanId", 1)
@@ -59,7 +59,7 @@ public final class ActionPlanMappingEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findMappingNotFound() {
-    with("http://localhost:9998/actionplanmappings/%s", NON_EXISTENT_MAPPING_ID)
+    with("/actionplanmappings/%s", NON_EXISTENT_MAPPING_ID)
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
@@ -72,7 +72,7 @@ public final class ActionPlanMappingEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findMappingsByCaseTypeId() {
-    with("http://localhost:9998/actionplanmappings/casetype/%d", CASE_TYPE_ID)
+    with("/actionplanmappings/casetype/%d", CASE_TYPE_ID)
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertArrayLengthInBodyIs(1)
         .assertIntegerOccursThroughoutListInBody("$..actionPlanMappingId", MAPPING_ID)
