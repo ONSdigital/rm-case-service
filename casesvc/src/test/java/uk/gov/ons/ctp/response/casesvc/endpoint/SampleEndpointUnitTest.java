@@ -44,7 +44,7 @@ public final class SampleEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findSampleBySampleIdFound() {
-    with("http://localhost:9998/samples/%s", SAMPLEID)
+    with("/samples/%s", SAMPLEID)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertArrayLengthInBodyIs(6)
         .assertStringListInBody("$..name", SAMPLE3_NAME)
@@ -59,7 +59,7 @@ public final class SampleEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findSampleBySampleIdNotFound() {
-    with("http://localhost:9998/samples/%s", NON_EXISTING_SAMPLEID)
+    with("/samples/%s", NON_EXISTING_SAMPLEID)
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
@@ -72,7 +72,7 @@ public final class SampleEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findSampleBySampleIdUnCheckedException() {
-    with("http://localhost:9998/samples/%s", UNCHECKED_EXCEPTION)
+    with("/samples/%s", UNCHECKED_EXCEPTION)
         .assertResponseCodeIs(HttpStatus.INTERNAL_SERVER_ERROR)
         .assertFaultIs(CTPException.Fault.SYSTEM_ERROR)
         .assertTimestampExists()
@@ -84,7 +84,7 @@ public final class SampleEndpointUnitTest extends CTPJerseyTest {
   public void createCasesValidJsonSampleFound() {
     String putBody = "{\"type\":\"LA\",\"code\":\"E07000163\"}";
 
-    with("http://localhost:9998/samples/%s", SAMPLEID)
+    with("/samples/%s", SAMPLEID)
             .put(MediaType.APPLICATION_JSON_TYPE, putBody)
             .assertResponseCodeIs(HttpStatus.OK)
             .assertArrayLengthInBodyIs(6)
@@ -97,7 +97,7 @@ public final class SampleEndpointUnitTest extends CTPJerseyTest {
 
   @Test
   public void createCasesValidJsonSampleNotFound() {
-    with("http://localhost:9998/samples/%s", NON_EXISTING_SAMPLEID)
+    with("/samples/%s", NON_EXISTING_SAMPLEID)
             .assertResponseCodeIs(HttpStatus.NOT_FOUND)
             .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
             .assertTimestampExists()
@@ -109,7 +109,7 @@ public final class SampleEndpointUnitTest extends CTPJerseyTest {
   public void createCasesBadJson() {
     String putBody = "{\"badtype\":\"LA\",\"code\":\"E07000163\"}";
 
-    with("http://localhost:9998/samples/%s", SAMPLEID)
+    with("/samples/%s", SAMPLEID)
             .put(MediaType.APPLICATION_JSON_TYPE, putBody)
             .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
             .assertFaultIs(CTPException.Fault.VALIDATION_FAILED)

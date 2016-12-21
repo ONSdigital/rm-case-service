@@ -50,7 +50,7 @@ public final class CategoryEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findCategoriesNotFound() {
-    with("http://localhost:9998/categories/%s", "Felix The Cat")
+    with("/categories/%s", "Felix The Cat")
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .andClose();
   }
@@ -60,7 +60,7 @@ public final class CategoryEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findCategoriesFoundNoRoleSpecified() {
-    with("http://localhost:9998/categories")
+    with("/categories")
         .assertResponseCodeIs(HttpStatus.OK)
         .assertArrayLengthInBodyIs(3)
         .assertStringListInBody("$..name", CATEGORY1_TYPE, CATEGORY2_TYPE, CATEGORY3_TYPE)
@@ -77,7 +77,7 @@ public final class CategoryEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findCategoriesFoundAdminRoleSpecified() {
-    String serviceUrl = String.format("http://localhost:9998/categories?role=%s", ADMIN_ROLE);
+    String serviceUrl = String.format("/categories?role=%s", ADMIN_ROLE);
     with(serviceUrl)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertArrayLengthInBodyIs(1)

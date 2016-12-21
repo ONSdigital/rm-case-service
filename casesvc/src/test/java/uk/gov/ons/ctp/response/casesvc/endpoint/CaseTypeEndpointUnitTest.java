@@ -38,7 +38,7 @@ public final class CaseTypeEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findCaseTypeByCaseTypeIdFound() {
-    with("http://localhost:9998/casetypes/%s", CASETYPEID)
+    with("/casetypes/%s", CASETYPEID)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertIntegerInBody("$.caseTypeId", 3)
         .assertStringInBody("$.name", CASETYPE3_NAME)
@@ -52,7 +52,7 @@ public final class CaseTypeEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findCaseTypeByCaseTypeIdNotFound() {
-    with("http://localhost:9998/casetypes/%s", NON_EXISTING_CASETYPEID)
+    with("/casetypes/%s", NON_EXISTING_CASETYPEID)
         .assertResponseCodeIs(HttpStatus.NOT_FOUND)
         .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
         .assertTimestampExists()
@@ -65,7 +65,7 @@ public final class CaseTypeEndpointUnitTest extends CTPJerseyTest {
    */
   @Test
   public void findCaseTypeByCaseTypeIdUnCheckedException() {
-    with("http://localhost:9998/casetypes/%s", UNCHECKED_EXCEPTION)
+    with("/casetypes/%s", UNCHECKED_EXCEPTION)
         .assertResponseCodeIs(HttpStatus.INTERNAL_SERVER_ERROR)
         .assertFaultIs(CTPException.Fault.SYSTEM_ERROR)
         .assertTimestampExists()
