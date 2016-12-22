@@ -114,8 +114,8 @@ public class CaseDistributor {
    *         performed
    */
   public final CaseDistributionInfo distribute() {
+    log.info("CaseDistributor awoken");
     Span distribSpan = tracer.createSpan(CASE_DISTRIBUTOR_SPAN);
-    log.info("CaseDistributor is on the ... case");
     CaseDistributionInfo distInfo = new CaseDistributionInfo();
 
     int successes = 0, failures = 0;
@@ -150,7 +150,6 @@ public class CaseDistributor {
             publishCases(caseNotifications);
           }
           successes++;
-          log.debug("dealt with case {}", caze.getCaseId());
         } catch (Exception e) {
           // single case/questionnaire db changes rolled back
           log.error(
@@ -164,16 +163,15 @@ public class CaseDistributor {
       distInfo.setCasesFailed(failures);
 
       publishCases(caseNotifications);
+
       caseDistributionListManager.deleteList(CASE_DISTRIBUTOR_LIST_ID);
+      tracer.close(distribSpan);
     } catch (Exception e) {
       // something went wrong retrieving case types or cases
       log.error("Failed to process cases because {}", e);
-      // we will be back after a short snooze
     }
-    log.info("CaseDistributor going back to sleep");
-    tracer.close(distribSpan);
+    log.info("CaseDistributor sleeping");
     return distInfo;
-
   }
 
   /**
