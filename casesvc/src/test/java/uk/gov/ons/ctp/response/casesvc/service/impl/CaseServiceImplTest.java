@@ -57,7 +57,6 @@ public class CaseServiceImplTest {
   private static final String IAC_SVC_PUT_PATH = "iacs/123";
   private static final String IAC_SVC_POST_PATH = "iacs/123";
   private static final String NEW_CASE_MISSING_EX = "New Case definition missing";
-  private static final String CASE_NO_LONGER_ACTIONABLE_EX = "Case is no longer actionable";
   private static final String WRONG_NEW_CASE_TYPE_EX = "New Case definition has incorrect casetype";
   private static final String WRONG_OLD_CASE_TYPE_EX = "Old Case definition has incorrect casetype";
 

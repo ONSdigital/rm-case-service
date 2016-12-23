@@ -1,12 +1,13 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
 
+import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.ADDRESS_NON_EXISTING_UPRN;
+import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.ADDRESS_UPRN;
+import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.ADDRESS_UPRN_NO_CASEGROUP;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseGroupServiceFactory.CASE_GROUP_ID;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseGroupServiceFactory.NON_EXISTENT_CASE_GROUP_ID;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseGroupServiceFactory.SAMPLE_ID;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.ADDRESS_NON_EXISTING_UPRN;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.ADDRESS_UPRN_NO_CASEGROUP;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.ADDRESS_UPRN;
+
 import javax.ws.rs.core.Application;
 
 import org.junit.Test;

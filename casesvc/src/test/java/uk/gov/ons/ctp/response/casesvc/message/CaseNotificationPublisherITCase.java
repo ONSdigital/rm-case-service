@@ -109,7 +109,7 @@ public class CaseNotificationPublisherITCase {
 
   @Test
   public void testPublishInvalidNotification() throws IOException, JMSException {
-    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/invalidCaseNotification.xml"), "UTF-8");
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/invalidCaseNotification.xml.txt"), "UTF-8");
     caseNotificationXml.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
 
     /**

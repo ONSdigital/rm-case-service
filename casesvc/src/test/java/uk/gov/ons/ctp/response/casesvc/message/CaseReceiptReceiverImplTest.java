@@ -126,13 +126,4 @@ public class CaseReceiptReceiverImplTest {
     return caseEvent;
   }
 
-  private UnlinkedCaseReceipt buildUnlinkedCaseReceipt(CaseReceipt caseReceipt,
-                                                       uk.gov.ons.ctp.response.casesvc.representation.InboundChannel inboundChannel) {
-    UnlinkedCaseReceipt unlinkedCaseReceipt = new UnlinkedCaseReceipt();
-    unlinkedCaseReceipt.setCaseRef(UNLINKED_CASE_REF);
-    unlinkedCaseReceipt.setInboundChannel(inboundChannel);
-    unlinkedCaseReceipt.setResponseDateTime(
-            new Timestamp(caseReceipt.getResponseDateTime().toGregorianCalendar().getTimeInMillis()));
-    return unlinkedCaseReceipt;
-  }
 }

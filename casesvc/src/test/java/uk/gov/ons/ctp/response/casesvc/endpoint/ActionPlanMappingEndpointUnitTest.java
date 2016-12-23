@@ -1,6 +1,11 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
 
+import static uk.gov.ons.ctp.response.casesvc.utility.MockActionPlanMappingServiceFactory.CASE_TYPE_ID;
+import static uk.gov.ons.ctp.response.casesvc.utility.MockActionPlanMappingServiceFactory.MAPPING_ID;
+import static uk.gov.ons.ctp.response.casesvc.utility.MockActionPlanMappingServiceFactory.NON_EXISTENT_MAPPING_ID;
+import static uk.gov.ons.ctp.response.casesvc.utility.MockActionPlanMappingServiceFactory.VARIANT_ENG;
+
 import javax.ws.rs.core.Application;
 
 import org.junit.Test;
@@ -15,10 +20,6 @@ import uk.gov.ons.ctp.response.casesvc.service.ActionPlanMappingService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseTypeService;
 import uk.gov.ons.ctp.response.casesvc.utility.MockActionPlanMappingServiceFactory;
 import uk.gov.ons.ctp.response.casesvc.utility.MockCaseTypeServiceFactory;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockActionPlanMappingServiceFactory.MAPPING_ID;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockActionPlanMappingServiceFactory.VARIANT_ENG;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockActionPlanMappingServiceFactory.NON_EXISTENT_MAPPING_ID;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockActionPlanMappingServiceFactory.CASE_TYPE_ID;
 
 /**
  */

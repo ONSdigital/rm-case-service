@@ -1,12 +1,13 @@
 package uk.gov.ons.ctp.response.casesvc.utility;
 
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.activemq.command.ActiveMQTextMessage;
-
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
+
+import org.apache.activemq.command.ActiveMQTextMessage;
+
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Data

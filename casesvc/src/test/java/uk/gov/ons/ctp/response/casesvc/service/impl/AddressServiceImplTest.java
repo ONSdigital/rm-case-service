@@ -4,7 +4,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import uk.gov.ons.ctp.common.TestHelper;
-import uk.gov.ons.ctp.response.casesvc.service.impl.AddressServiceImpl;
 
 /**
  * tests for the address service postcode formatting method

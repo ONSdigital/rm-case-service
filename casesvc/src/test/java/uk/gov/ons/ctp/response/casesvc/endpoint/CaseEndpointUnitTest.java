@@ -12,8 +12,8 @@ import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CAS
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASE_STATE;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CREATEDBY;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CREATEDDATE_VALUE;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.NON_EXISTING_ID;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.EXISTING_ID_NO_EVENTS;
+import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.NON_EXISTING_ID;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.OUR_EXCEPTION_MESSAGE;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.UNCHECKED_EXCEPTION;
 
@@ -25,7 +25,6 @@ import org.springframework.http.HttpStatus;
 
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.jaxrs.CTPMessageBodyReader;
-import uk.gov.ons.ctp.common.jaxrs.GeneralExceptionMapper;
 import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
 import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;

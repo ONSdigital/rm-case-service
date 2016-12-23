@@ -1,5 +1,8 @@
 package uk.gov.ons.ctp.response.casesvc.utility;
 
+import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.ADDRESS_UPRN;
+import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.ADDRESS_UPRN_NO_CASEGROUP;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,10 +13,6 @@ import org.mockito.stubbing.Answer;
 
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
-
-import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.ADDRESS_NON_EXISTING_UPRN;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.ADDRESS_UPRN_NO_CASEGROUP;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.ADDRESS_UPRN;
 
 /**
  */

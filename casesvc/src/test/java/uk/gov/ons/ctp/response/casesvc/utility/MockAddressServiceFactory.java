@@ -1,5 +1,8 @@
 package uk.gov.ons.ctp.response.casesvc.utility;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.glassfish.hk2.api.Factory;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -7,9 +10,6 @@ import org.mockito.stubbing.Answer;
 
 import uk.gov.ons.ctp.response.casesvc.domain.model.Address;
 import uk.gov.ons.ctp.response.casesvc.service.AddressService;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by philippe.brossier on 2/23/16.

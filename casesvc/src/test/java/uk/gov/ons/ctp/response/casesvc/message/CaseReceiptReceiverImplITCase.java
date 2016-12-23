@@ -1,5 +1,25 @@
 package uk.gov.ons.ctp.response.casesvc.message;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.concurrent.CountDownLatch;
+
+import javax.inject.Inject;
+import javax.jms.Connection;
+import javax.jms.JMSException;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
@@ -18,24 +38,9 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.test.context.junit4.SpringRunner;
+
 import uk.gov.ons.ctp.common.message.JmsHelper;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
-
-import javax.inject.Inject;
-import javax.jms.Connection;
-import javax.jms.JMSException;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.concurrent.CountDownLatch;
-
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static junit.framework.TestCase.assertNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
 
 /**
  * Test focusing on Spring Integration
@@ -45,7 +50,6 @@ import static org.mockito.Mockito.*;
 public class CaseReceiptReceiverImplITCase {
 
   private static final int RECEIVE_TIMEOUT = 20000;
-  private static final String NONEXISTING_CASE_REF = "tiptop";
   private static final String NONEXISTING_CASE_REF_FOR_EXCEPION = "tiptopException";
 
   @Inject
@@ -98,7 +102,7 @@ public class CaseReceiptReceiverImplITCase {
 
   @Test
   public void testReceivingCaseReceiptInvalidXml() throws IOException, JMSException {
-    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/invalidCaseReceipt.xml"), "UTF-8");
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/invalidCaseReceipt.xml.txt"), "UTF-8");
 
     caseReceiptXml.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
 
@@ -116,7 +120,7 @@ public class CaseReceiptReceiverImplITCase {
     // Release all waiting threads when mock caseService.findCaseByCaseRef method is called
     doAnswer(countsDownLatch(caseServiceInvoked)).when(caseService).findCaseByCaseRef(any(String.class));
 
-    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/validCaseReceipt.xml"), "UTF-8");
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/validCaseReceipt.xml.txt"), "UTF-8");
     testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
 
     // Await synchronisation with the asynchronous message call
@@ -153,7 +157,7 @@ public class CaseReceiptReceiverImplITCase {
 
     when(caseService.findCaseByCaseRef(any(String.class))).thenThrow(new RuntimeException());
 
-    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/validCaseReceiptForException.xml"), "UTF-8");
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/validCaseReceiptForException.xml.txt"), "UTF-8");
     testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
 
     // Await synchronisation with the asynchronous message call
@@ -182,7 +186,7 @@ public class CaseReceiptReceiverImplITCase {
 
   @Test
   public void testReceivingCaseReceiptXmlBadlyFormed() throws IOException, JMSException {
-    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/badlyFormedCaseReceipt.xml"), "UTF-8");
+    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/badlyFormedCaseReceipt.xml.txt"), "UTF-8");
     testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
 
     /**
