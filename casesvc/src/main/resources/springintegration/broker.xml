@@ -4,25 +4,25 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
 
-	<bean id="redeliveryPolicy" class="org.apache.activemq.RedeliveryPolicy">
-		<property name="maximumRedeliveries" value="${redelivery-policy.maxRedeliveries}"/>
-		<property name="initialRedeliveryDelay" value="${redelivery-policy.initialRedeliveryDelay}"/>
-		<property name="redeliveryDelay" value="${redelivery-policy.redeliveryDelay}"/>
-	</bean>
-	<bean id="redeliveryPolicyMap" class="org.apache.activemq.broker.region.policy.RedeliveryPolicyMap">
-		<property name="defaultEntry" ref="redeliveryPolicy" />
-	</bean>
-	<bean id="connectionFactory"
-		class="org.springframework.jms.connection.CachingConnectionFactory">
-		<property name="targetConnectionFactory">
-			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
-				<property name="brokerURL" value="tcp://localhost:53445" />
-				<property name="userName" value="smx" />
-				<property name="password" value="smx" />
-				<property name="redeliveryPolicyMap" ref="redeliveryPolicyMap" />
-			</bean>
-		</property>
-		<property name="sessionCacheSize" value="10" />
-	</bean>
+<!--   <bean id="redeliveryPolicy" class="org.apache.activemq.RedeliveryPolicy">
+    <property name="maximumRedeliveries" value="${redelivery-policy.maxRedeliveries}"/>
+    <property name="initialRedeliveryDelay" value="${redelivery-policy.initialRedeliveryDelay}"/>
+    <property name="redeliveryDelay" value="${redelivery-policy.redeliveryDelay}"/>
+  </bean>
+  <bean id="redeliveryPolicyMap" class="org.apache.activemq.broker.region.policy.RedeliveryPolicyMap">
+    <property name="defaultEntry" ref="redeliveryPolicy" />
+  </bean> -->
+  <bean id="connectionFactory"
+    class="org.springframework.jms.connection.CachingConnectionFactory">
+    <property name="targetConnectionFactory">
+            <bean class="com.rabbitmq.jms.admin.RMQConnectionFactory">
+                <property name="username" value="${RABBITMQ_USERNAME}"/>
+                <property name="password" value="${RABBITMQ_PASSWORD}"/>
+                <property name="host" value="${RABBITMQ_HOST}"/>
+                <property name="virtualHost" value="${RABBITMQ_VIRTUALHOST}"/>
+            </bean>
+    </property>
+    <property name="sessionCacheSize" value="10" />
+  </bean>
 
 </beans>

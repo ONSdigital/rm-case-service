@@ -138,4 +138,8 @@ redelivery-policy:
   initialRedeliveryDelay: 1000
   redeliveryDelay: 1000
 
-# Tag to verify latest code ends up in artifactory (zzz)
+RABBITMQ_USERNAME: guest
+RABBITMQ_PASSWORD: guest
+RABBITMQ_HOST: localhost
+RABBITMQ_VIRTUALHOST: /
+
