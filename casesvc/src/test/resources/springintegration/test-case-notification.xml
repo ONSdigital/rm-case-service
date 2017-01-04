@@ -1,22 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="http://www.springframework.org/schema/beans
-  http://www.springframework.org/schema/beans/spring-beans-4.2.xsd" >
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
 
-  <bean id="caseNotificationPublisher" class="uk.gov.ons.ctp.response.casesvc.message.impl.CaseNotificationPublisherImpl"/>
+	<bean id="caseNotificationPublisher"
+		class="uk.gov.ons.ctp.response.casesvc.message.impl.CaseNotificationPublisherImpl" />
 
-  <bean id="caseNotificationListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
-    <property name="connectionFactory" ref="connectionFactory" />
-    <property name="destinationName" value="Case.LifecycleEvents" />
-    <property name="messageListener" ref="myMessageListener" />
-    <property name="maxConcurrentConsumers" value="1" />
-    <property name="concurrentConsumers" value="1" />
-    <property name="receiveTimeout" value="5000" />
-    <property name="recoveryInterval" value="60000" />
-    <property name="autoStartup" value="true" />
-  </bean>
+	<bean id="caseNotificationListenerContainer"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="destinationName" value="Case.LifecycleEvents" />
+		<property name="messageListener" ref="myMessageListener" />
+		<property name="maxConcurrentConsumers" value="1" />
+		<property name="concurrentConsumers" value="1" />
+		<property name="receiveTimeout" value="5000" />
+		<property name="recoveryInterval" value="60000" />
+		<property name="autoStartup" value="true" />
+	</bean>
 
-  <bean id="myMessageListener" class="uk.gov.ons.ctp.response.casesvc.utility.CaseNotificationMessageListener"/>
-
+	<bean id="myMessageListener"
+		class="uk.gov.ons.ctp.response.casesvc.utility.CaseNotificationMessageListener" />
+	<bean id="caseNotificationJMSQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg value="Case.LifecycleEvents" />
+	</bean>
+	<bean id="invalidCaseNotificationQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg value="Case.InvalidNotifications" />
+	</bean>
 </beans>
