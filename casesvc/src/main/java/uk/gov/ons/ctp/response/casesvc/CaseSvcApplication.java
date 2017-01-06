@@ -30,6 +30,7 @@ import uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint;
 import uk.gov.ons.ctp.response.casesvc.endpoint.CaseGroupEndpoint;
 import uk.gov.ons.ctp.response.casesvc.endpoint.CaseTypeEndpoint;
 import uk.gov.ons.ctp.response.casesvc.endpoint.CategoryEndpoint;
+import uk.gov.ons.ctp.response.casesvc.endpoint.ReportEndpoint;
 import uk.gov.ons.ctp.response.casesvc.endpoint.SampleEndpoint;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
@@ -120,6 +121,7 @@ public class CaseSvcApplication {
       register(CaseTypeEndpoint.class);
       register(CategoryEndpoint.class);
       register(SampleEndpoint.class);
+      register(ReportEndpoint.class);
 
       register(new CTPMessageBodyReader<GeographyDTO>(GeographyDTO.class) {
       });
