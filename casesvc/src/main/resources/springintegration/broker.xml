@@ -4,14 +4,6 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
 
-<!--   <bean id="redeliveryPolicy" class="org.apache.activemq.RedeliveryPolicy">
-    <property name="maximumRedeliveries" value="${redelivery-policy.maxRedeliveries}"/>
-    <property name="initialRedeliveryDelay" value="${redelivery-policy.initialRedeliveryDelay}"/>
-    <property name="redeliveryDelay" value="${redelivery-policy.redeliveryDelay}"/>
-  </bean>
-  <bean id="redeliveryPolicyMap" class="org.apache.activemq.broker.region.policy.RedeliveryPolicyMap">
-    <property name="defaultEntry" ref="redeliveryPolicy" />
-  </bean> -->
   <bean id="connectionFactory"
     class="org.springframework.jms.connection.CachingConnectionFactory">
     <property name="targetConnectionFactory">
