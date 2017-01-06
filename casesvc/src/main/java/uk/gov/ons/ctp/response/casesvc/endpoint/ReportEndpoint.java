@@ -2,7 +2,6 @@ package uk.gov.ons.ctp.response.casesvc.endpoint;
 
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
