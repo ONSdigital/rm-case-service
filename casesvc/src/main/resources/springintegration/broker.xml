@@ -8,10 +8,10 @@
     class="org.springframework.jms.connection.CachingConnectionFactory">
     <property name="targetConnectionFactory">
             <bean class="com.rabbitmq.jms.admin.RMQConnectionFactory">
-                <property name="username" value="${RABBITMQ_USERNAME}"/>
-                <property name="password" value="${RABBITMQ_PASSWORD}"/>
-                <property name="host" value="${RABBITMQ_HOST}"/>
-                <property name="virtualHost" value="${RABBITMQ_VIRTUALHOST}"/>
+                <property name="username" value="${rabbitmq.username}"/>
+                <property name="password" value="${rabbitmq.password}"/>
+                <property name="host" value="${rabbitmq.host}"/>
+                <property name="virtualHost" value="${rabbitmq.virtualhost}"/>
             </bean>
     </property>
     <property name="sessionCacheSize" value="10" />
