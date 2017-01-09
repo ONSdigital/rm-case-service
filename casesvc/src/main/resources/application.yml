@@ -138,8 +138,10 @@ redelivery-policy:
   initialRedeliveryDelay: 1000
   redeliveryDelay: 1000
 
-RABBITMQ_USERNAME: guest
-RABBITMQ_PASSWORD: guest
-RABBITMQ_HOST: localhost
-RABBITMQ_VIRTUALHOST: /
+rabbitmq:
+  username: guest
+  password: guest
+  host: localhost
+  virtualhost: /
+  
 
