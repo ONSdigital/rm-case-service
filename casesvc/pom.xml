@@ -156,6 +156,9 @@
 	</build>
 =======
       <version>9.31.0-SNAPSHOT</version>
+=======
+      <version>9.32.0-SNAPSHOT</version>
+>>>>>>> CTPA-1019 pom vers
     </dependency>
 
     <dependency>
