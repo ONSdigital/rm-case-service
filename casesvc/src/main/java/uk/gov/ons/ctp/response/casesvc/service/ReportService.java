@@ -1,12 +1,11 @@
 package uk.gov.ons.ctp.response.casesvc.service;
 
-import java.sql.Date;
 import java.util.List;
 
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.service.CTPService;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Report;
-import uk.gov.ons.ctp.response.casesvc.domain.model.ReportType;
+import uk.gov.ons.ctp.response.casesvc.representation.ReportDTO;
 
 public interface ReportService extends CTPService {
 
@@ -16,7 +15,7 @@ public interface ReportService extends CTPService {
    * @return List of report types
    * @throws CTPException something went wrong
    */
-  List<ReportType> findTypes();
+  List<ReportDTO.ReportType> findTypes();
 
   /**
    * find report dates by reportType.
@@ -24,7 +23,7 @@ public interface ReportService extends CTPService {
    * @param reportType to find by
    * @return list of report dates by reportType or null if not found
    */
-  List<Report> findReportDatesByReportType(String reportType);
+  List<Report> findReportDatesByReportType(ReportDTO.ReportType reportType);
 
   /**
    * find Report by reportType and reportDate.
@@ -32,6 +31,6 @@ public interface ReportService extends CTPService {
    * @param reportType and reportDate to find by
    * @return the report or null if not found
    */
-  Report findByReportTypeAndReportDate(String reportType, Date reportDate);
+  Report findByReportId(Integer reportId);
 
 }

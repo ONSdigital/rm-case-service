@@ -1,7 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.representation;
 
-import java.sql.Date;
-import java.sql.Timestamp;
+
+import java.util.Date;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -20,7 +20,13 @@ public class ReportDTO {
    * enum for case state
    */
   public enum ReportType {
-    UNIVERSITY;
+    UNIVERSITY,
+    LA_RETURN_METRICS, 
+    SAMPLE_RETURN_METRICS,
+    HH_NORETURN_METRICS,
+    HH_RETURN_METRICS, 
+    CE_RETURN_METRICS_HOTEL,
+    CE_RETURN_METRICS_UNI;
   }
 
   private Integer reportId;
@@ -31,6 +37,6 @@ public class ReportDTO {
   
   private String contents;
   
-  private Timestamp createddatetime;
+  private Date createddatetime;
   
 }
