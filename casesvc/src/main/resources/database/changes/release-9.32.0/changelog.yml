@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 9.32.0-1
+      author: Edward Stevens
+      changes:
+        - sqlFile:
+            comment: Create report and report_type table
+            path: create_report_and_reporttype_tables.sql
+            relativeToChangelogFile: true
+            splitStatements: false
