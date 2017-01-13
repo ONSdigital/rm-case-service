@@ -48,10 +48,14 @@ public final class ReportEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/types")
-  public Response findReportTypes() {
+  public Response findReportTypes() throws CTPException {
     log.info("Finding Report Types");
     List<ReportDTO.ReportType> reportTypes = reportService.findTypes();
 
+    if (reportTypes == null) {
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Report types not found");
+    }
+    
     return Response.ok(reportTypes).build();
   }
 
@@ -64,13 +68,17 @@ public final class ReportEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/{reportType}/details")
-  public Response findReportDatesByReportType(@PathParam("reportType") final ReportDTO.ReportType reportType) {
+  public Response findReportDatesByReportType(@PathParam("reportType") final ReportDTO.ReportType reportType) throws CTPException {
     log.info("Entering findReportDatesByReportType with {}", reportType);
 
-    List<Report> reports = reportService.findReportDatesByReportType(reportType);
+    List<Report> reports = reportService.findReportWithoutContentByReportType(reportType);
     List<ReportDetailDTO> reportList = mapperFacade.mapAsList(reports, ReportDetailDTO.class);
 
-
+    if (reportList == null) {
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
+          String.format("%s report type %s", ERRORMSG_REPORTSNOTFOUND, reportType));
+    }
+    
     ResponseBuilder responseBuilder = Response.ok(CollectionUtils.isEmpty(reportList) ? null : reportList);
     responseBuilder.status(CollectionUtils.isEmpty(reportList) ? Status.NO_CONTENT : Status.OK);
     return responseBuilder.build();
@@ -79,9 +87,8 @@ public final class ReportEndpoint implements CTPEndpoint {
   /**
    * the GET endpoint to find report by reporttype and reportdate
    *
-   * @param reporttype to find by
-   * @param reportdate to find by
-   * @return csv of the report found
+   * @param reportId to find by
+   * @return the report found
    * @throws CTPException something went wrong
    */
   @GET
@@ -95,7 +102,7 @@ public final class ReportEndpoint implements CTPEndpoint {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
           String.format("%s report type %s", ERRORMSG_REPORTNOTFOUND, reportId));
     }
-    return Response.ok(report.getContents()).build();
+    return Response.ok(report).build();
   }
 
 }

@@ -9,3 +9,13 @@ databaseChangeLog:
             path: create_report_and_reporttype_tables.sql
             relativeToChangelogFile: true
             splitStatements: false
+            
+  - changeSet:
+      id: 9.32.0-2
+      author: Edward Stevens & Kieran Wardle
+      changes:
+        - sqlFile:
+            comment: Drop reportdate column in reportrepository
+            path: drop_reportdate_column_in_reportrepository.sql
+            relativeToChangelogFile: true
+            splitStatements: false

@@ -33,21 +33,21 @@ public class ReportServiceImpl implements ReportService {
     }
 
     /**
-     * Find report dates by reportType.
+     * Find reports by reportType.
      *
-     * @param reportType String
-     * @return Report object or null
+     * @param reportType String enum
+     * @return Report list object or null
      */
     @Override
-    public List<Report> findReportDatesByReportType(final ReportDTO.ReportType reportType) {
+    public List<Report> findReportWithoutContentByReportType(final ReportDTO.ReportType reportType) {
       log.debug("Entering findReportDatesByReportType with {}", reportType);
       return reportRepository.findByReportTypeWithoutContents(ReportDTO.ReportType.valueOf(reportType.toString()));
     }
 
     /**
-     * Find Report entity by reportType.
+     * Find Report entity by reportId.
      *
-     * @param reportType String
+     * @param reportId Integer
      * @return Report object or null
      */
     @Override

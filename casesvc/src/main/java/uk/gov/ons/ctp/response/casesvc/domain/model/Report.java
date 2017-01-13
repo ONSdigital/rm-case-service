@@ -35,9 +35,6 @@ public class Report {
   @Enumerated(EnumType.STRING)
   private ReportDTO.ReportType reportType;
 
-  @Column(name = "reportdate")
-  private Date reportDate;
-
   private String contents;
 
   @Column(name = "createddatetime")

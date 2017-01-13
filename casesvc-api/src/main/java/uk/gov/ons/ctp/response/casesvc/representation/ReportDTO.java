@@ -32,8 +32,6 @@ public class ReportDTO {
   private Integer reportId;
   
   private ReportType reportType;
-
-  private Date reportDate;
   
   private String contents;
   
