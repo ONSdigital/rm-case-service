@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -134,6 +135,16 @@ public class CaseServiceImpl implements CaseService {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
   public CaseEvent createCaseEvent(final CaseEvent caseEvent, final Case newCase) {
+    return caaseEventCreation(caseEvent, newCase, DateTimeUtil.nowUTC());
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
+  @Override
+  public CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase, Timestamp timestamp) {
+    return caaseEventCreation(caseEvent, newCase, timestamp);
+  }
+
+  private CaseEvent caaseEventCreation(CaseEvent caseEvent, Case newCase, Timestamp timestamp) {
     log.debug("Entering createCaseEvent with caseEvent {}", caseEvent);
 
     CaseEvent createdCaseEvent = null;
@@ -150,7 +161,7 @@ public class CaseServiceImpl implements CaseService {
       createdCaseEvent = caseEventRepo.save(caseEvent);
 
       // do we need to record a response?
-      recordCaseResponse(category, targetCase);
+      recordCaseResponse(category, targetCase, timestamp);
 
       // does the event transition the case?
       effectTargetCaseStateTransition(category, targetCase);
@@ -227,24 +238,25 @@ public class CaseServiceImpl implements CaseService {
    * 
    * @param category the category details of the event
    * @param targetCase the 'source' case the event is being created for
+   * @param timestamp timestamp the timestamp of the CaseResponse
    */
-  private void recordCaseResponse(Category category, Case targetCase) {
+  private void recordCaseResponse(Category category, Case targetCase, Timestamp timestamp) {
     InboundChannel channel = null;
     switch (category.getCategoryType()) {
-    case ONLINE_QUESTIONNAIRE_RESPONSE:
-      channel = InboundChannel.ONLINE;
-      break;
-    case PAPER_QUESTIONNAIRE_RESPONSE:
-      channel = InboundChannel.PAPER;
-      break;
-    default:
-      break;
+      case ONLINE_QUESTIONNAIRE_RESPONSE:
+        channel = InboundChannel.ONLINE;
+        break;
+      case PAPER_QUESTIONNAIRE_RESPONSE:
+        channel = InboundChannel.PAPER;
+        break;
+      default:
+        break;
     }
     if (channel != null) {
       Response response = Response.builder()
           .inboundChannel(channel)
           .caseId(targetCase.getCaseId())
-          .dateTime(DateTimeUtil.nowUTC()).build();
+          .dateTime(timestamp).build();
 
       targetCase.getResponses().add(response);
       caseRepo.save(targetCase);

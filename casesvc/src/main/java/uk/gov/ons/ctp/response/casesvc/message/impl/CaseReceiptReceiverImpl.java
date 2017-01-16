@@ -47,6 +47,7 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
     log.debug("entering process with caseReceipt {}", caseReceipt);
     String caseRef = caseReceipt.getCaseRef();
     InboundChannel inboundChannel = caseReceipt.getInboundChannel();
+    Timestamp responseTimestamp = new Timestamp(caseReceipt.getResponseDateTime().toGregorianCalendar().getTimeInMillis());
 
     Case existingCase = caseService.findCaseByCaseRef(caseRef);
     log.debug("existingCase is {}", existingCase);
@@ -56,8 +57,7 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
       unlinkedCaseReceipt.setCaseRef(caseRef);
       unlinkedCaseReceipt.setInboundChannel(
               uk.gov.ons.ctp.response.casesvc.representation.InboundChannel.valueOf(inboundChannel.name()));
-      XMLGregorianCalendar responseDateTime = caseReceipt.getResponseDateTime();
-      unlinkedCaseReceipt.setResponseDateTime(new Timestamp(responseDateTime.toGregorianCalendar().getTimeInMillis()));
+      unlinkedCaseReceipt.setResponseDateTime(responseTimestamp);
       unlinkedCaseReceiptService.createUnlinkedCaseReceipt(unlinkedCaseReceipt);
     } else {
       CaseEvent caseEvent = new CaseEvent();
@@ -67,7 +67,7 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
       caseEvent.setCreatedBy(SYSTEM);
       caseEvent.setDescription(QUESTIONNAIRE_RESPONSE);
       log.debug("about to invoke the event creation...");
-      caseService.createCaseEvent(caseEvent, null);
+      caseService.createCaseEvent(caseEvent, null, responseTimestamp);
     }
   }
 }

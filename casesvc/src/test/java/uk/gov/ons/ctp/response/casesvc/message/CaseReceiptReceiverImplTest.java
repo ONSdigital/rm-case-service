@@ -12,7 +12,9 @@ import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 import java.sql.Timestamp;
 
 import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.json.XML;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -56,10 +58,11 @@ public class CaseReceiptReceiverImplTest {
     existingCase.setCaseId(LINKED_CASE_ID);
     Mockito.when(caseService.findCaseByCaseRef(LINKED_CASE_REF)).thenReturn(existingCase);
 
-    caseReceiptReceiver.process(buildCaseReceipt(LINKED_CASE_REF, InboundChannel.ONLINE));
+    XMLGregorianCalendar calendar = DateTimeUtil.giveMeCalendarForNow();
+    caseReceiptReceiver.process(buildCaseReceipt(LINKED_CASE_REF, InboundChannel.ONLINE, calendar));
 
     verify(caseService, times(1)).createCaseEvent(eq(buildCaseEvent(LINKED_CASE_ID, ONLINE_QUESTIONNAIRE_RESPONSE)),
-            eq(null));
+            eq(null), eq(new Timestamp(calendar.toGregorianCalendar().getTimeInMillis())));
     verify(unlinkedCaseReceiptService, times(0)).createUnlinkedCaseReceipt(any(UnlinkedCaseReceipt.class));
   }
 
@@ -69,10 +72,11 @@ public class CaseReceiptReceiverImplTest {
     existingCase.setCaseId(LINKED_CASE_ID);
     Mockito.when(caseService.findCaseByCaseRef(LINKED_CASE_REF)).thenReturn(existingCase);
 
-    caseReceiptReceiver.process(buildCaseReceipt(LINKED_CASE_REF, InboundChannel.PAPER));
+    XMLGregorianCalendar calendar = DateTimeUtil.giveMeCalendarForNow();
+    caseReceiptReceiver.process(buildCaseReceipt(LINKED_CASE_REF, InboundChannel.PAPER, calendar));
 
     verify(caseService, times(1)).createCaseEvent(eq(buildCaseEvent(LINKED_CASE_ID, PAPER_QUESTIONNAIRE_RESPONSE)),
-            eq(null));
+            eq(null), eq(new Timestamp(calendar.toGregorianCalendar().getTimeInMillis())));
     verify(unlinkedCaseReceiptService, times(0)).createUnlinkedCaseReceipt(any(UnlinkedCaseReceipt.class));
   }
 
@@ -80,7 +84,8 @@ public class CaseReceiptReceiverImplTest {
   public void testProcessUnlinkedOnlineCaseReceipt() throws DatatypeConfigurationException {
     Mockito.when(caseService.findCaseByCaseRef(UNLINKED_CASE_REF)).thenReturn(null);
 
-    CaseReceipt caseReceipt = buildCaseReceipt(UNLINKED_CASE_REF, InboundChannel.ONLINE);
+    XMLGregorianCalendar calendar = DateTimeUtil.giveMeCalendarForNow();
+    CaseReceipt caseReceipt = buildCaseReceipt(UNLINKED_CASE_REF, InboundChannel.ONLINE, calendar);
     caseReceiptReceiver.process(caseReceipt);
 
     verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class), any(Case.class));
@@ -88,7 +93,7 @@ public class CaseReceiptReceiverImplTest {
     UnlinkedCaseReceipt unlinkedCaseReceipt = new UnlinkedCaseReceipt();
     unlinkedCaseReceipt.setCaseRef(UNLINKED_CASE_REF);
     unlinkedCaseReceipt.setInboundChannel(uk.gov.ons.ctp.response.casesvc.representation.InboundChannel.ONLINE);
-    unlinkedCaseReceipt.setResponseDateTime(new Timestamp(caseReceipt.getResponseDateTime().toGregorianCalendar().getTimeInMillis()));
+    unlinkedCaseReceipt.setResponseDateTime(new Timestamp(calendar.toGregorianCalendar().getTimeInMillis()));
     verify(unlinkedCaseReceiptService, times(1)).createUnlinkedCaseReceipt(eq(unlinkedCaseReceipt));
   }
 
@@ -96,7 +101,8 @@ public class CaseReceiptReceiverImplTest {
   public void testProcessUnlinkedPaperCaseReceipt() throws DatatypeConfigurationException {
     Mockito.when(caseService.findCaseByCaseRef(UNLINKED_CASE_REF)).thenReturn(null);
 
-    CaseReceipt caseReceipt = buildCaseReceipt(UNLINKED_CASE_REF, InboundChannel.PAPER);
+    XMLGregorianCalendar calendar = DateTimeUtil.giveMeCalendarForNow();
+    CaseReceipt caseReceipt = buildCaseReceipt(UNLINKED_CASE_REF, InboundChannel.PAPER, calendar);
     caseReceiptReceiver.process(caseReceipt);
 
     verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class), any(Case.class));
@@ -104,16 +110,16 @@ public class CaseReceiptReceiverImplTest {
     UnlinkedCaseReceipt unlinkedCaseReceipt = new UnlinkedCaseReceipt();
     unlinkedCaseReceipt.setCaseRef(UNLINKED_CASE_REF);
     unlinkedCaseReceipt.setInboundChannel(uk.gov.ons.ctp.response.casesvc.representation.InboundChannel.PAPER);
-    unlinkedCaseReceipt.setResponseDateTime(new Timestamp(caseReceipt.getResponseDateTime().toGregorianCalendar().getTimeInMillis()));
+    unlinkedCaseReceipt.setResponseDateTime(new Timestamp(calendar.toGregorianCalendar().getTimeInMillis()));
     verify(unlinkedCaseReceiptService, times(1)).createUnlinkedCaseReceipt(eq(unlinkedCaseReceipt));
   }
 
-  private CaseReceipt buildCaseReceipt(String caseRef, InboundChannel inboundChannel)
+  private CaseReceipt buildCaseReceipt(String caseRef, InboundChannel inboundChannel, XMLGregorianCalendar xmlGregorianCalendar)
           throws DatatypeConfigurationException {
     CaseReceipt caseReceipt = new CaseReceipt();
     caseReceipt.setCaseRef(caseRef);
     caseReceipt.setInboundChannel(inboundChannel);
-    caseReceipt.setResponseDateTime(DateTimeUtil.giveMeCalendarForNow());
+    caseReceipt.setResponseDateTime(xmlGregorianCalendar);
     return caseReceipt;
   }
 
