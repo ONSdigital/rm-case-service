@@ -549,7 +549,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /reports/{reportType}/details:
+  /reports/types/{reportType}:
     get:
       summary: Get list of reports
       description: Return a list of reports from the reporttype table ommitting the contents
@@ -561,7 +561,7 @@ paths:
         type: string
       - name: reportType
         in: path
-        description: response type used to search responserepoitory table .
+        description: response type used to search responserepository table .
         required: true
         type: string
       tags:
