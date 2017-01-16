@@ -4,39 +4,39 @@ info:
   description: The Case service manages Cases and associated address frame data and forms part of the Response Management product.
   version: 9.27.4
 schemes:
-  - http
+- http
 basePath: /
 produces:
-  - application/json
+- application/json
 tags:
-  - name: Case
-    description: Management of case information
-  - name: Frame
-    description: Navigation of address frame information
+- name: Case
+  description: Management of case information
+- name: Frame
+  description: Navigation of address frame information
 paths:
   /actionplanmappings/{mappingId}:
     get:
       summary: Get the action plan mapping identified by the id
       description: Return the action plan mapping identified by the supplied id
       parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-        - name: mappingId
-          description: The unique identifier for the action plan mapping
-          in: path
-          required: true
-          type: integer
+      - name: Accept
+        in: header
+        description: Response type, application/json.
+        required: false
+        type: string
+      - name: mappingId
+        description: The unique identifier for the action plan mapping
+        in: path
+        required: true
+        type: integer
       tags:
-        - Case
+      - Case
       responses:
-        200:
+        '200':
           description: ActionPlanMapping details for the supplied id
           schema:
             $ref: '#/definitions/ActionPlanMapping'
-        404:
+        '404':
           description: ActionPlanMapping not found
           schema:
             $ref: '#/definitions/Error'
@@ -49,26 +49,26 @@ paths:
       summary: Get the mappings associated with the provided case type
       description: Returns the Action Plan Mappings linked to the given case type
       parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-        - name: caseTypeId
-          description: Uniques identifier of the case type linked to the mappings
-          in: path
-          required: true
-          type: integer
+      - name: Accept
+        in: header
+        description: Response type, application/json.
+        required: false
+        type: string
+      - name: caseTypeId
+        description: Uniques identifier of the case type linked to the mappings
+        in: path
+        required: true
+        type: integer
       tags:
-        - Case
+      - Case
       responses:
-        200:
+        '200':
           description: ActionPlanMappings details associated with the case type
           schema:
             type: array
             items:
               $ref: '#/definitions/ActionPlanMapping'
-        404:
+        '404':
           description: CaseType not found
           schema:
             $ref: '#/definitions/Error'
@@ -81,26 +81,26 @@ paths:
       summary: Get the casegroups for the provided UPRN
       description: Return the casegroups associated with a UPRN
       parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-        - name: uprn
-          description: The UPRN of the address the casegroups were created for
-          in: path
-          required: true
-          type: integer
+      - name: Accept
+        in: header
+        description: Response type, application/json.
+        required: false
+        type: string
+      - name: uprn
+        description: The UPRN of the address the casegroups were created for
+        in: path
+        required: true
+        type: integer
       tags:
-        - Case
+      - Case
       responses:
-        200:
+        '200':
           description: CaseGroup details for all groups associated with the UPRN
           schema:
             type: array
             items:
               $ref: '#/definitions/CaseGroup'
-        404:
+        '404':
           description: CaseGroup not found
           schema:
             $ref: '#/definitions/Error'
@@ -113,24 +113,24 @@ paths:
       summary: Get the casegroup for the provided id
       description: Return the casegroup associated with a case group id
       parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-        - name: caseGroupId
-          description: The caseGroupId of the casegroup to be fetched
-          in: path
-          required: true
-          type: integer
+      - name: Accept
+        in: header
+        description: Response type, application/json.
+        required: false
+        type: string
+      - name: caseGroupId
+        description: The caseGroupId of the casegroup to be fetched
+        in: path
+        required: true
+        type: integer
       tags:
-        - Case
+      - Case
       responses:
-        200:
+        '200':
           description: CaseGroup details for the requested group id
           schema:
             $ref: '#/definitions/CaseGroup'
-        404:
+        '404':
           description: CaseGroup not found
           schema:
             $ref: '#/definitions/Error'
@@ -140,29 +140,29 @@ paths:
             $ref: '#/definitions/Error'
   /cases/casegroup/{caseGroupId}:
     get:
-      summary:  Get the cases for a given casegroup
+      summary: Get the cases for a given casegroup
       description: Return details of cases for the supplied case group
       parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-        - name: caseGroupId
-          description: The id of the casegroup
-          in: path
-          required: true
-          type: integer
+      - name: Accept
+        in: header
+        description: Response type, application/json.
+        required: false
+        type: string
+      - name: caseGroupId
+        description: The id of the casegroup
+        in: path
+        required: true
+        type: integer
       tags:
-        - Case
+      - Case
       responses:
-        200:
+        '200':
           description: Case details for supplied CaseGroup.
           schema:
             type: array
             items:
               $ref: '#/definitions/Case'
-        404:
+        '404':
           description: CaseGroup not found
           schema:
             $ref: '#/definitions/Error'
@@ -172,27 +172,27 @@ paths:
             $ref: '#/definitions/Error'
   /cases/iac/{iac}:
     get:
-      summary:  Get the case information for the specified case.
+      summary: Get the case information for the specified case.
       description: Return details of a case for the supplied internet access code
       parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-        - name: iac
-          description: Unique case IAC
-          in: path
-          required: true
-          type: string
+      - name: Accept
+        in: header
+        description: Response type, application/json.
+        required: false
+        type: string
+      - name: iac
+        description: Unique case IAC
+        in: path
+        required: true
+        type: string
       tags:
-        - Case
+      - Case
       responses:
-        200:
+        '200':
           description: Case details for supplied IAC
           schema:
-              $ref: '#/definitions/Case'
-        404:
+            $ref: '#/definitions/Case'
+        '404':
           description: Case not found
           schema:
             $ref: '#/definitions/Error'
@@ -202,27 +202,27 @@ paths:
             $ref: '#/definitions/Error'
   /cases/{caseId}:
     get:
-      summary:  Get the case information for the specified case.
+      summary: Get the case information for the specified case.
       description: Return details of a case for the supplied case ID.
       parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-        - name: caseId
-          description: Unique case ID.
-          in: path
-          required: true
-          type: integer
+      - name: Accept
+        in: header
+        description: Response type, application/json.
+        required: false
+        type: string
+      - name: caseId
+        description: Unique case ID.
+        in: path
+        required: true
+        type: integer
       tags:
-        - Case
+      - Case
       responses:
-        200:
+        '200':
           description: Case details for supplied case ID.
           schema:
-              $ref: '#/definitions/Case'
-        404:
+            $ref: '#/definitions/Case'
+        '404':
           description: Case not found
           schema:
             $ref: '#/definitions/Error'
@@ -232,31 +232,31 @@ paths:
             $ref: '#/definitions/Error'
   /cases/{caseId}/events:
     get:
-      summary:  Get the events that occurred on a specified case.
+      summary: Get the events that occurred on a specified case.
       description: Return all events for the supplied case ID.
       parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-        - name: caseId
-          description: Unique case ID.
-          in: path
-          required: true
-          type: integer
+      - name: Accept
+        in: header
+        description: Response type, application/json.
+        required: false
+        type: string
+      - name: caseId
+        description: Unique case ID.
+        in: path
+        required: true
+        type: integer
       tags:
-        - Case
+      - Case
       responses:
-        200:
+        '200':
           description: All event details for supplied case ID.
           schema:
             type: array
             items:
               $ref: '#/definitions/CaseEvent'
-        204:
+        '204':
           description: No case events
-        404:
+        '404':
           description: Case not found
           schema:
             $ref: '#/definitions/Error'
@@ -268,34 +268,34 @@ paths:
       summary: Creates a case event.
       description: Creates a case event from the mandatory description, category and createdBy properties. Certain types of events will require the optional embedded CaseCreationRequest to be provided.
       consumes:
-        - application/json
+      - application/json
       parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json
-          required: false
-          type: string
-        - name: caseId
-          description: Unique case ID.
-          in: path
-          required: true
-          type: integer
-        - in: body
-          name: caseEvent
-          description: Case event to create
-          required: true
-          schema:
-            $ref: '#/definitions/CaseEventCreationRequest'
+      - name: Accept
+        in: header
+        description: Response type, application/json
+        required: false
+        type: string
+      - name: caseId
+        description: Unique case ID.
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: caseEvent
+        description: Case event to create
+        required: true
+        schema:
+          $ref: '#/definitions/CaseEventCreationRequest'
       tags:
-        - Case
+      - Case
       responses:
-        201:
+        '201':
           description: Case event created
           schema:
             $ref: '#/definitions/CaseEvent'
-        400:
+        '400':
           description: Invalid input
-        404:
+        '404':
           description: Case not found
           schema:
             $ref: '#/definitions/Error'
@@ -308,24 +308,24 @@ paths:
       summary: Get information for the specified case type.
       description: Return information for the supplied case type code.
       parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-        - name: caseTypeId
-          in: path
-          description: Unique case type ID.
-          required: true
-          type: integer
+      - name: Accept
+        in: header
+        description: Response type, application/json.
+        required: false
+        type: string
+      - name: caseTypeId
+        in: path
+        description: Unique case type ID.
+        required: true
+        type: integer
       tags:
-        - Case
+      - Case
       responses:
-        200:
+        '200':
           description: A single case type.
           schema:
-              $ref: '#/definitions/CaseType'
-        404:
+            $ref: '#/definitions/CaseType'
+        '404':
           description: Case type not found
           schema:
             $ref: '#/definitions/Error'
@@ -338,25 +338,25 @@ paths:
       summary: Get all case event categories.
       description: Return all case event categories, optionally filtered by security role.
       parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-        - name: role
-          in: query
-          description: Security role to filter by
-          required: false
-          type: string
-        - name: group
-          in: query
-          description: The Category Group to filter by
-          required: false
-          type: string
+      - name: Accept
+        in: header
+        description: Response type, application/json.
+        required: false
+        type: string
+      - name: role
+        in: query
+        description: Security role to filter by
+        required: false
+        type: string
+      - name: group
+        in: query
+        description: The Category Group to filter by
+        required: false
+        type: string
       tags:
-        - Case
+      - Case
       responses:
-        200:
+        '200':
           description: An array of case event categories
           schema:
             type: array
@@ -371,24 +371,24 @@ paths:
       summary: Get information for the specified category.
       description: Return information for the supplied category name.
       parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-        - name: categoryName
-          in: path
-          description: Unique category name.
-          required: true
-          type: integer
+      - name: Accept
+        in: header
+        description: Response type, application/json.
+        required: false
+        type: string
+      - name: categoryName
+        in: path
+        description: Unique category name.
+        required: true
+        type: integer
       tags:
-        - Case
+      - Case
       responses:
-        200:
+        '200':
           description: A single category.
           schema:
-              $ref: '#/definitions/Category'
-        404:
+            $ref: '#/definitions/Category'
+        '404':
           description: Category not found
           schema:
             $ref: '#/definitions/Error'
@@ -401,24 +401,24 @@ paths:
       summary: Get information for the specified sample.
       description: Return information for the supplied sample code.
       parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-        - name: sampleId
-          in: path
-          description: Unique sample ID.
-          required: true
-          type: integer
+      - name: Accept
+        in: header
+        description: Response type, application/json.
+        required: false
+        type: string
+      - name: sampleId
+        in: path
+        description: Unique sample ID.
+        required: true
+        type: integer
       tags:
-        - Case
+      - Case
       responses:
-        200:
+        '200':
           description: A single sample.
           schema:
-              $ref: '#/definitions/Sample'
-        404:
+            $ref: '#/definitions/Sample'
+        '404':
           description: Sample not found
           schema:
             $ref: '#/definitions/Error'
@@ -431,30 +431,30 @@ paths:
       description: |
         Update the supplied sample by creating the cases for the provided geography type and code.
       parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-        - name: sampleId
-          in: path
-          description: Unique sample ID.
-          required: true
-          type: integer
-        - name: geographyDetails
-          in: body
-          description: Geography for which to create cases.
-          required: true
-          schema:
-            $ref: '#/definitions/GeographyDetails'
+      - name: Accept
+        in: header
+        description: Response type, application/json.
+        required: false
+        type: string
+      - name: sampleId
+        in: path
+        description: Unique sample ID.
+        required: true
+        type: integer
+      - name: geographyDetails
+        in: body
+        description: Geography for which to create cases.
+        required: true
+        schema:
+          $ref: '#/definitions/GeographyDetails'
       tags:
-        - Case
+      - Case
       responses:
-        200:
+        '200':
           description: Cases created.
           schema:
             $ref: '#/definitions/Sample'
-        404:
+        '404':
           description: Sample not found
           schema:
             $ref: '#/definitions/Error'
@@ -464,27 +464,27 @@ paths:
             $ref: '#/definitions/Error'
   /addresses/{uprn}:
     get:
-      summary:  Get the address information for the specified UPRN.
+      summary: Get the address information for the specified UPRN.
       description: Return the full address details for the supplied Unique Property Reference Number (UPRN).
       parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-        - name: uprn
-          description: Unique Property Reference Number for which to return address details.
-          in: path
-          required: true
-          type: integer
+      - name: Accept
+        in: header
+        description: Response type, application/json.
+        required: false
+        type: string
+      - name: uprn
+        description: Unique Property Reference Number for which to return address details.
+        in: path
+        required: true
+        type: integer
       tags:
-        - Frame
+      - Frame
       responses:
-        200:
+        '200':
           description: Address details for supplied UPRN.
           schema:
             $ref: '#/definitions/Address'
-        404:
+        '404':
           description: UPRN not found
           schema:
             $ref: '#/definitions/Error'
@@ -494,29 +494,29 @@ paths:
             $ref: '#/definitions/Error'
   /addresses/postcode/{postcode}:
     get:
-      summary:  Get address information for a postcode.
+      summary: Get address information for a postcode.
       description: Return all address details for the supplied postcode.
       parameters:
-        - name: Accept
-          in: header
-          description: Response type, application/json.
-          required: false
-          type: string
-        - name: postcode
-          description: Postal code.
-          in: path
-          required: true
-          type: string
+      - name: Accept
+        in: header
+        description: Response type, application/json.
+        required: false
+        type: string
+      - name: postcode
+        description: Postal code.
+        in: path
+        required: true
+        type: string
       tags:
-        - Frame
+      - Frame
       responses:
-        200:
+        '200':
           description: Address details for supplied postcode.
           schema:
             type: array
             items:
               $ref: '#/definitions/Address'
-        404:
+        '404':
           description: Postcode not found
           schema:
             $ref: '#/definitions/Error'
@@ -524,6 +524,91 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  /reports/types:
+    get:
+      summary: Get list of report types
+      description: Return a list of report types from the reporttype table
+      parameters:
+      - name: Accept
+        in: header
+        description: Response type, application/json.
+        required: false
+        type: string
+      tags:
+      - Reports
+      responses:
+        '200':
+          description: List of report types
+          schema:
+            $ref: '#/definitions/ReportTypeListRequest'
+        '404':
+          description: Report types not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /reports/{reportType}/details:
+    get:
+      summary: Get list of reports
+      description: Return a list of reports from the reporttype table ommitting the contents
+      parameters:
+      - name: Accept
+        in: header
+        description: Response type, application/json.
+        required: false
+        type: string
+      - name: reportType
+        in: path
+        description: response type used to search responserepoitory table .
+        required: true
+        type: string
+      tags:
+      - Reports
+      responses:
+        200:
+          description: List of reports
+          schema:
+            $ref: '#/definitions/ReportDetailsRequest'
+        404:
+          description: Report type not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'  
+  /reports/{reportId}:
+    get:
+      summary: Get report by Id
+      description: Return a report associated with specific Id
+      parameters:
+      - name: Accept
+        in: header
+        description: Response type, application/json.
+        required: false
+        type: string
+      - name: reportId
+        in: path
+        description: Id used to search for report
+        required: true
+        type: integer
+      tags:
+      - Reports
+      responses:
+        200:
+          description: Return contents of report
+          schema:
+            $ref: '#/definitions/ReportContentsRequest'
+        404:
+          description: Report type not found
+          schema:
+            $ref: '#/definitions/Error'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'           
 definitions:
   Address:
     type: object
@@ -535,8 +620,8 @@ definitions:
         type: string
         description: only if care home or hotel
         enum:
-         - HOTEL
-         - CARE HOME
+        - HOTEL
+        - CARE HOME
       type:
         type: string
         description: Address type CE, HH, I.
@@ -620,11 +705,11 @@ definitions:
         description: State of case.
         default: SAMPLED_INIT
         enum:
-          - SAMPLED_INIT
-          - REPLACEMENT_INIT
-          - ACTIVE
-          - INACTIVE
-          - RESPONDED
+        - SAMPLED_INIT
+        - REPLACEMENT_INIT
+        - ACTIVE
+        - INACTIVE
+        - RESPONDED
       iac:
         type: string
         description: Internet Access Code
@@ -644,11 +729,11 @@ definitions:
   CaseCreationRequest:
     type: object
     required:
-      - caseTypeId
-      - actionPlanMappingId
-      - title
-      - forename
-      - surname
+    - caseTypeId
+    - actionPlanMappingId
+    - title
+    - forename
+    - surname
     properties:
       caseTypeId:
         type: integer
@@ -674,12 +759,12 @@ definitions:
   CaseEvent:
     type: object
     required:
-      - caseEventId
-      - caseId
-      - description
-      - category
-      - createdDateTime
-      - createdBy
+    - caseEventId
+    - caseId
+    - description
+    - category
+    - createdDateTime
+    - createdBy
     properties:
       caseEventId:
         type: integer
@@ -706,9 +791,9 @@ definitions:
   CaseEventCreationRequest:
     type: object
     required:
-      - description
-      - category
-      - createdBy
+    - description
+    - category
+    - createdBy
     properties:
       description:
         type: string
@@ -873,8 +958,41 @@ definitions:
         description: Error code
         type: string
       timestamp:
-        description:  Unique error timestamp that can be searched for in logs
+        description: Unique error timestamp that can be searched for in logs
         type: integer
       message:
         description: Error message
         type: string
+  ReportTypeListRequest:
+    type: object
+    properties:
+      reporttype:
+        type: string
+        description: Report Type
+  ReportDetailsRequest:
+    type: object
+    properties:
+      reporttype:
+        type: string
+        description: Report Type
+      creatdedatetime:
+        type: string
+        description: Date created for report
+      reportid:
+        type: integer
+        description: id of the report
+  ReportContentsRequest:
+    type: object
+    properties:
+      reportId:
+        type: integer
+        description: Id associated with report.
+      reportType:
+        type: string
+        description: Type of report returned.
+      contents:
+        type: string
+        description: Content of report.
+      createdDateTime:
+        type: string
+        description: Date and time report was created.

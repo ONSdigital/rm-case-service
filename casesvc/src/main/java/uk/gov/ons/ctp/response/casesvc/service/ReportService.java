@@ -4,6 +4,7 @@ import java.util.List;
 
 import uk.gov.ons.ctp.common.service.CTPService;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Report;
+import uk.gov.ons.ctp.response.casesvc.domain.model.ReportSummary;
 import uk.gov.ons.ctp.response.casesvc.representation.ReportDTO;
 
 public interface ReportService extends CTPService {
@@ -21,7 +22,7 @@ public interface ReportService extends CTPService {
    * @param reportType String enum
    * @return Report list object or null
    */
-  List<Report> findReportWithoutContentByReportType(ReportDTO.ReportType reportType);
+  List<ReportSummary> getReportSummary(ReportDTO.ReportType reportType);
 
   /**
    * Find Report entity by reportId.

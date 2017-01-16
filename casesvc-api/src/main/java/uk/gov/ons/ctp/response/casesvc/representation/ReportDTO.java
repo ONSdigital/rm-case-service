@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class ReportDTO {
 
   /**
-   * enum for case state
+   * enum for ReportType
    */
   public enum ReportType {
     UNIVERSITY,
@@ -35,6 +35,6 @@ public class ReportDTO {
   
   private String contents;
   
-  private Date createddatetime;
+  private Date createdDateTime;
   
 }

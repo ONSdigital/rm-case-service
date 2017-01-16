@@ -18,8 +18,9 @@ import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Report;
+import uk.gov.ons.ctp.response.casesvc.domain.model.ReportSummary;
 import uk.gov.ons.ctp.response.casesvc.representation.ReportDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.ReportDetailDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.ReportSummaryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.ReportService;
 
 /**
@@ -67,12 +68,12 @@ public final class ReportEndpoint implements CTPEndpoint {
    * @throws CTPException something went wrong
    */
   @GET
-  @Path("/{reportType}/details")
+  @Path("/types/{reportType}")
   public Response findReportDatesByReportType(@PathParam("reportType") final ReportDTO.ReportType reportType) throws CTPException {
     log.info("Entering findReportDatesByReportType with {}", reportType);
 
-    List<Report> reports = reportService.findReportWithoutContentByReportType(reportType);
-    List<ReportDetailDTO> reportList = mapperFacade.mapAsList(reports, ReportDetailDTO.class);
+    List<ReportSummary> reports = reportService.getReportSummary(reportType);
+    List<ReportSummaryDTO> reportList = mapperFacade.mapAsList(reports, ReportSummaryDTO.class);
 
     if (reportList == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
@@ -97,12 +98,13 @@ public final class ReportEndpoint implements CTPEndpoint {
     log.info("Entering findReportByReportId with {}", reportId);
 
     Report report = reportService.findByReportId(reportId);
-
+    ReportDTO reportDTO = mapperFacade.map(report, ReportDTO.class);
+    
     if (report == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
           String.format("%s report type %s", ERRORMSG_REPORTNOTFOUND, reportId));
     }
-    return Response.ok(report).build();
+    return Response.ok(reportDTO).build();
   }
 
 }

@@ -40,11 +40,9 @@ public class Report {
   @Column(name = "createddatetime")
   private Date createdDateTime;
 
-  
   public Report(int reportId, ReportDTO.ReportType reportType, Date createdDateTime){
     this.reportId = reportId;
     this.reportType = reportType;
-    this.createdDateTime = createdDateTime;
-    
+    this.createdDateTime = createdDateTime;    
   }
 }

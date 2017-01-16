@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class ReportDetailDTO {
+public class ReportSummaryDTO {
   
   private String reportType;
 

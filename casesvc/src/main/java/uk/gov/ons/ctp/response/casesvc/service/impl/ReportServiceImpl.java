@@ -8,6 +8,7 @@ import javax.inject.Named;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Report;
+import uk.gov.ons.ctp.response.casesvc.domain.model.ReportSummary;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.ReportRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.ReportDTO;
 import uk.gov.ons.ctp.response.casesvc.service.ReportService;
@@ -39,9 +40,9 @@ public class ReportServiceImpl implements ReportService {
      * @return Report list object or null
      */
     @Override
-    public List<Report> findReportWithoutContentByReportType(final ReportDTO.ReportType reportType) {
+    public List<ReportSummary> getReportSummary(final ReportDTO.ReportType reportType) {
       log.debug("Entering findReportDatesByReportType with {}", reportType);
-      return reportRepository.findByReportTypeWithoutContents(ReportDTO.ReportType.valueOf(reportType.toString()));
+      return reportRepository.getReportSummary(ReportDTO.ReportType.valueOf(reportType.toString()));
     }
 
     /**
