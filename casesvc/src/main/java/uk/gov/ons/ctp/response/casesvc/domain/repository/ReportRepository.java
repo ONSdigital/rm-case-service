@@ -22,7 +22,7 @@ public interface ReportRepository extends JpaRepository<Report, Integer> {
    * @param reportType to find by
    * @return reportSummary list or null if not found
    */
-  @Query(value = "select new uk.gov.ons.ctp.response.casesvc.domain.model.ReportSummary(r.reportId, r.reportType, r.createdDateTime)  from Report r where r.reportType = :reportType")
+  @Query(value = "select new uk.gov.ons.ctp.response.casesvc.domain.model.ReportSummary(r.reportId, r.reportType, r.createdDateTime)  from Report r where r.reportType = :reportType ORDER BY createdDateTime DESC")
   List<ReportSummary> getReportSummary(@Param("reportType") ReportDTO.ReportType reportType);
  
 }

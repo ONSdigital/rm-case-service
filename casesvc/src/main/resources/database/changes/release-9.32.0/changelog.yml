@@ -49,3 +49,13 @@ databaseChangeLog:
             path: university_helpline_reports.sql
             relativeToChangelogFile: true
             splitStatements: false
+
+  - changeSet:
+      id: 9.32.0-6
+      author: Edward Stevens
+      changes:
+        - sqlFile:
+            comment: Add orderId and groupId columns to reporttype table
+            path: add_orderId_groupId_columns_reporttype.sql
+            relativeToChangelogFile: true
+            splitStatements: false

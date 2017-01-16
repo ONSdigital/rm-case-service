@@ -19,6 +19,7 @@ import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Report;
 import uk.gov.ons.ctp.response.casesvc.domain.model.ReportSummary;
+import uk.gov.ons.ctp.response.casesvc.domain.model.ReportType;
 import uk.gov.ons.ctp.response.casesvc.representation.ReportDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.ReportSummaryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.ReportService;
@@ -51,7 +52,7 @@ public final class ReportEndpoint implements CTPEndpoint {
   @Path("/types")
   public Response findReportTypes() throws CTPException {
     log.info("Finding Report Types");
-    List<ReportDTO.ReportType> reportTypes = reportService.findTypes();
+    List<ReportType> reportTypes = reportService.findTypes();
 
     if (reportTypes == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Report types not found");

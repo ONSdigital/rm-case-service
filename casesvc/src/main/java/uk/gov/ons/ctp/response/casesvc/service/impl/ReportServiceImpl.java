@@ -1,6 +1,5 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -9,7 +8,9 @@ import javax.inject.Named;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Report;
 import uk.gov.ons.ctp.response.casesvc.domain.model.ReportSummary;
+import uk.gov.ons.ctp.response.casesvc.domain.model.ReportType;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.ReportRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.ReportTypeRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.ReportDTO;
 import uk.gov.ons.ctp.response.casesvc.service.ReportService;
 
@@ -23,18 +24,21 @@ public class ReportServiceImpl implements ReportService {
     @Inject
     private ReportRepository reportRepository;
 
+    @Inject
+    private ReportTypeRepository reportTypeRepository;
+    
     /**
      * find all available report types
      *
      * @return List of report types
      */
-    public List<ReportDTO.ReportType> findTypes() {
-      List<ReportDTO.ReportType> reportTypes = Arrays.asList(ReportDTO.ReportType.values());
+    public List<ReportType> findTypes() {
+      List<ReportType> reportTypes = reportTypeRepository.findReportTypeByOrderByOrderId();
       return reportTypes;
     }
 
     /**
-     * Find reports by reportType.
+     * Find reportSummary by reportType.
      *
      * @param reportType String enum
      * @return Report list object or null

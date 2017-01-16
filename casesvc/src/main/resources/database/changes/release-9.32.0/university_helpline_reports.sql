@@ -21,7 +21,8 @@ PERFORM casesvc.logmessage(p_messagetext := 'insert_university_report_into_repor
                              ,p_messagelevel := 'INFO'
                              ,p_functionname := 'casesvc.insert_university_report_into_reportrepository');
 
-v_reporttype := 'UNIVERSITY';
+--v_reporttype := 'UNIVERSITY';
+v_reporttype := 'CE_RETURNRATE_UNI';
 v_createddatetime := current_timestamp;
 v_record_count := 0;
 --build up header
