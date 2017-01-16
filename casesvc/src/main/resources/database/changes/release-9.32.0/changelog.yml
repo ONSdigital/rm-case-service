@@ -29,3 +29,13 @@ databaseChangeLog:
             path: generate_operational_mi_reports.sql
             relativeToChangelogFile: true
             splitStatements: false
+            
+  - changeSet:
+      id: 9.32.0-4
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: insert operational mi reporttype
+            path: operational_MI_reporttype_inserts.sql
+            relativeToChangelogFile: true
+            splitStatements: false
