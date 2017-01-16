@@ -39,3 +39,13 @@ databaseChangeLog:
             path: operational_MI_reporttype_inserts.sql
             relativeToChangelogFile: true
             splitStatements: false
+            
+  - changeSet:
+      id: 9.32.0-5
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: university and helpline report generation
+            path: university_helpline_reports.sql
+            relativeToChangelogFile: true
+            splitStatements: false
