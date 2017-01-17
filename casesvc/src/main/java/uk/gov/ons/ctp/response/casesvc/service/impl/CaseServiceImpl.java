@@ -135,16 +135,12 @@ public class CaseServiceImpl implements CaseService {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
   public CaseEvent createCaseEvent(final CaseEvent caseEvent, final Case newCase) {
-    return caaseEventCreation(caseEvent, newCase, DateTimeUtil.nowUTC());
+    return createCaseEvent(caseEvent, newCase, DateTimeUtil.nowUTC());
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
   public CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase, Timestamp timestamp) {
-    return caaseEventCreation(caseEvent, newCase, timestamp);
-  }
-
-  private CaseEvent caaseEventCreation(CaseEvent caseEvent, Case newCase, Timestamp timestamp) {
     log.debug("Entering createCaseEvent with caseEvent {}", caseEvent);
 
     CaseEvent createdCaseEvent = null;
