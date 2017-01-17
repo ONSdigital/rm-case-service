@@ -78,3 +78,12 @@ databaseChangeLog:
             path: modify_university_helpline_reports.sql
             relativeToChangelogFile: true
             splitStatements: false
+  - changeSet:
+      id: 9.32.0-9
+      author: Edward Stevens
+      changes:
+        - sqlFile:
+            comment: Uppercase all reporttypes and remove 'HELPLINE' reporttype
+            path: uppercase_reporttype_remove_helpline.sql
+            relativeToChangelogFile: true
+            splitStatements: false
