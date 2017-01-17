@@ -19,7 +19,7 @@ public class CaseEventDTO {
 
   private static final int DESC_MAX = 350;
   private static final int DESC_MIN = 2;
-  private static final int CREATED_BY_MAX = 20;
+  private static final int CREATED_BY_MAX = 50;
   private static final int CREATED_BY_MIN = 2;
 
   private Date createdDateTime;

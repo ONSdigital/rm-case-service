@@ -1,6 +1,5 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
-import java.sql.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -8,6 +7,7 @@ import javax.inject.Named;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Report;
+import uk.gov.ons.ctp.response.casesvc.domain.model.ReportSummary;
 import uk.gov.ons.ctp.response.casesvc.domain.model.ReportType;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.ReportRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.ReportTypeRepository;
@@ -22,43 +22,43 @@ public class ReportServiceImpl implements ReportService {
    * Spring Data Repository for CSV Report entities.
    */
     @Inject
-    ReportRepository reportRepository;
+    private ReportRepository reportRepository;
 
     @Inject
-    ReportTypeRepository reportTypeRepository;
-
+    private ReportTypeRepository reportTypeRepository;
+    
     /**
      * find all available report types
      *
      * @return List of report types
      */
     public List<ReportType> findTypes() {
-      List<ReportType> reportTypes = reportTypeRepository.findAll();
+      List<ReportType> reportTypes = reportTypeRepository.findReportTypeByOrderByOrderId();
       return reportTypes;
     }
 
     /**
-     * Find report dates by reportType.
+     * Find reportSummary by reportType.
      *
-     * @param reportType String
-     * @return Report object or null
+     * @param reportType String enum
+     * @return Report list object or null
      */
     @Override
-    public List<Report> findReportDatesByReportType(final String reportType) {
+    public List<ReportSummary> getReportSummary(final ReportDTO.ReportType reportType) {
       log.debug("Entering findReportDatesByReportType with {}", reportType);
-      return reportRepository.findByReportType(ReportDTO.ReportType.valueOf(reportType));
+      return reportRepository.getReportSummary(ReportDTO.ReportType.valueOf(reportType.toString()));
     }
 
     /**
-     * Find Report entity by reportType.
+     * Find Report entity by reportId.
      *
-     * @param reportType String
+     * @param reportId Integer
      * @return Report object or null
      */
     @Override
-    public Report findByReportTypeAndReportDate(final String reportType, final Date reportDate) {
-      log.debug("Entering findByReportTypeAndReportDate with {}", reportType + " " + reportDate);
-      return reportRepository.findByReportTypeAndReportDate(ReportDTO.ReportType.valueOf(reportType), reportDate);
+    public Report findByReportId(final Integer reportId) {
+      log.debug("Entering findByReportTypeAndReportDate with {}", reportId);
+      return reportRepository.findOne(reportId);
     }
 
 }

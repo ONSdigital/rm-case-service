@@ -1,7 +1,5 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
-import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -16,11 +14,14 @@ import javax.ws.rs.core.Response.Status;
 import org.springframework.util.CollectionUtils;
 
 import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Report;
+import uk.gov.ons.ctp.response.casesvc.domain.model.ReportSummary;
 import uk.gov.ons.ctp.response.casesvc.domain.model.ReportType;
-import uk.gov.ons.ctp.response.casesvc.representation.ReportListDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.ReportDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.ReportSummaryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.ReportService;
 
 /**
@@ -37,6 +38,9 @@ public final class ReportEndpoint implements CTPEndpoint {
 
   @Inject
   private ReportService reportService;
+  
+  @Inject
+  private MapperFacade mapperFacade;
 
   /**
    * the GET endpoint to find all available report types
@@ -46,10 +50,14 @@ public final class ReportEndpoint implements CTPEndpoint {
    */
   @GET
   @Path("/types")
-  public Response findReportTypes() {
+  public Response findReportTypes() throws CTPException {
     log.info("Finding Report Types");
     List<ReportType> reportTypes = reportService.findTypes();
 
+    if (reportTypes == null) {
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Report types not found");
+    }
+    
     return Response.ok(reportTypes).build();
   }
 
@@ -61,44 +69,43 @@ public final class ReportEndpoint implements CTPEndpoint {
    * @throws CTPException something went wrong
    */
   @GET
-  @Path("/{reportType}")
-  public Response findReportDatesByReportType(@PathParam("reportType") final String reportType) {
+  @Path("/types/{reportType}")
+  public Response findReportDatesByReportType(@PathParam("reportType") final ReportDTO.ReportType reportType) throws CTPException {
     log.info("Entering findReportDatesByReportType with {}", reportType);
 
-    List<Report> reportList = reportService.findReportDatesByReportType(reportType);
+    List<ReportSummary> reports = reportService.getReportSummary(reportType);
+    List<ReportSummaryDTO> reportList = mapperFacade.mapAsList(reports, ReportSummaryDTO.class);
 
-    List<ReportListDTO> reportDTOList = new ArrayList<ReportListDTO>();
-
-    reportList.forEach(report -> reportDTOList.add(new ReportListDTO(report.getReportType().toString(), report.getReportDate())));
-
-    ResponseBuilder responseBuilder = Response.ok(CollectionUtils.isEmpty(reportDTOList) ? null : reportDTOList);
-    responseBuilder.status(CollectionUtils.isEmpty(reportDTOList) ? Status.NO_CONTENT : Status.OK);
+    if (reportList == null) {
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
+          String.format("%s report type %s", ERRORMSG_REPORTSNOTFOUND, reportType));
+    }
+    
+    ResponseBuilder responseBuilder = Response.ok(CollectionUtils.isEmpty(reportList) ? null : reportList);
+    responseBuilder.status(CollectionUtils.isEmpty(reportList) ? Status.NO_CONTENT : Status.OK);
     return responseBuilder.build();
   }
 
   /**
    * the GET endpoint to find report by reporttype and reportdate
    *
-   * @param reporttype to find by
-   * @param reportdate to find by
-   * @return csv of the report found
+   * @param reportId to find by
+   * @return the report found
    * @throws CTPException something went wrong
    */
   @GET
-  @Path("/{reportType}/{reportDate}")
-  public Response findReportByReportTypeAndReportDate(@PathParam("reportType") final String reportType,
-      @PathParam("reportDate") final Date reportDate) throws CTPException {
-    log.info("Entering findReportByReportTypeAndReportDate with {} and {}", reportType, reportDate);
+  @Path("/{reportId}")
+  public Response findReportByReportId(@PathParam("reportId") final int reportId) throws CTPException {
+    log.info("Entering findReportByReportId with {}", reportId);
 
-    Report reportObj = reportService.findByReportTypeAndReportDate(reportType, reportDate);
-
-    if (reportObj == null) {
+    Report report = reportService.findByReportId(reportId);
+    ReportDTO reportDTO = mapperFacade.map(report, ReportDTO.class);
+    
+    if (report == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-          String.format("%s report type %s", ERRORMSG_REPORTNOTFOUND, reportType, reportDate.toString()));
+          String.format("%s report type %s", ERRORMSG_REPORTNOTFOUND, reportId));
     }
-
-    return Response.ok(reportObj.getContents()).header("Content-Disposition",
-        "attachment; filename=" + reportObj.getReportType() + "_" + reportObj.getReportDate() + ".csv").build();
+    return Response.ok(reportDTO).build();
   }
 
 }

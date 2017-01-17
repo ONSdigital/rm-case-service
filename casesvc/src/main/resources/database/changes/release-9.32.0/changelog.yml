@@ -9,3 +9,111 @@ databaseChangeLog:
             path: create_report_and_reporttype_tables.sql
             relativeToChangelogFile: true
             splitStatements: false
+            
+  - changeSet:
+      id: 9.32.0-2
+      author: Edward Stevens & Kieran Wardle
+      changes:
+        - sqlFile:
+            comment: Drop reportdate column in reportrepository
+            path: drop_reportdate_column_in_reportrepository.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+            
+  - changeSet:
+      id: 9.32.0-3
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: refactor operational MI function to use report table
+            path: generate_operational_mi_reports.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+            
+  - changeSet:
+      id: 9.32.0-4
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: insert operational mi reporttype
+            path: operational_MI_reporttype_inserts.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+            
+  - changeSet:
+      id: 9.32.0-5
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: university and helpline report generation
+            path: university_helpline_reports.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 9.32.0-6
+      author: Edward Stevens
+      changes:
+        - sqlFile:
+            comment: Add orderId and groupId columns to reporttype table
+            path: add_orderId_groupId_columns_reporttype.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+            
+  - changeSet:
+      id: 9.32.0-7
+      author: Edward Stevens
+      changes:
+        - sqlFile:
+            comment: Modify helpline reports changeset to include new reporttype
+            path: modify_helpline_reports_changeset.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+  - changeSet:
+      id: 9.32.0-8
+      author: Edward Stevens
+      changes:
+        - sqlFile:
+            comment: Modify university reports changeset to include new reporttype + modify HH_ReturnRate displayName 
+            path: modify_university_helpline_reports.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+  - changeSet:
+      id: 9.32.0-9
+      author: Edward Stevens
+      changes:
+        - sqlFile:
+            comment: Uppercase all reporttypes and remove 'HELPLINE' reporttype
+            path: uppercase_reporttype_remove_helpline.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 9.32.0-10
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Changes to operational MI views for social housing
+            path: create_mi_operational_views_sh_change.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 9.32.0-11
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Changes to operational MI reports for social housing
+            path: generate_operational_mi_reports_sh_change.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 9.32.0-12
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: Reports for outstanding household and sheltered housing
+            path: household_shousing_reports.sql
+            relativeToChangelogFile: true
+            splitStatements: false
