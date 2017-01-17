@@ -107,3 +107,13 @@ databaseChangeLog:
             path: generate_operational_mi_reports_sh_change.sql
             relativeToChangelogFile: true
             splitStatements: false
+
+  - changeSet:
+      id: 9.32.0-12
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: Reports for outstanding household and sheltered housing
+            path: household_shousing_reports.sql
+            relativeToChangelogFile: true
+            splitStatements: false
