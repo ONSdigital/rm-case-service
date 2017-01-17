@@ -29,7 +29,3 @@ INSERT INTO casesvc.reporttype(reporttype, orderid) VALUES('PRINT_VOLUMES', 80);
 INSERT INTO casesvc.reporttype(reporttype, orderid) VALUES('HH_OUTSTANDING_CASES', 90);
 INSERT INTO casesvc.reporttype(reporttype, orderid) VALUES('SH_OUTSTANDING_CASES', 100);
 INSERT INTO casesvc.reporttype(reporttype, orderid) VALUES('CE_OUTSTANDING_CASES', 110);
-
-select * from casesvc.insert_university_report_into_reportrepository();
-select * from casesvc.insert_university_report_into_reportrepository();
-select * from casesvc.insert_university_report_into_reportrepository();
