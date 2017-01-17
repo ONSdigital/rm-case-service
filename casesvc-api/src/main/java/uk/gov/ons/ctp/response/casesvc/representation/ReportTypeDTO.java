@@ -18,6 +18,8 @@ public class ReportTypeDTO {
   
   private String reportType;
   
-  private Integer orderId;;
+  private Integer orderId;
+  
+  private String displayName;
   
 }

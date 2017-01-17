@@ -36,4 +36,7 @@ public class ReportType {
   @Column(name = "orderid")
   private Integer orderId;
   
+  @Column(name = "displayname")
+  private String displayName;
+  
 }
