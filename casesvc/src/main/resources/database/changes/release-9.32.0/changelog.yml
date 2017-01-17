@@ -59,3 +59,13 @@ databaseChangeLog:
             path: add_orderId_groupId_columns_reporttype.sql
             relativeToChangelogFile: true
             splitStatements: false
+            
+  - changeSet:
+      id: 9.32.0-7
+      author: Edward Stevens
+      changes:
+        - sqlFile:
+            comment: Modify helpline reports changeset to include new reporttype
+            path: modify_helpline_reports_changeset.sql
+            relativeToChangelogFile: true
+            splitStatements: false
