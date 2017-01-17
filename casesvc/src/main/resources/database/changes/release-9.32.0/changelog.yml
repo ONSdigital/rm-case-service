@@ -69,3 +69,12 @@ databaseChangeLog:
             path: modify_helpline_reports_changeset.sql
             relativeToChangelogFile: true
             splitStatements: false
+  - changeSet:
+      id: 9.32.0-8
+      author: Edward Stevens
+      changes:
+        - sqlFile:
+            comment: Modify university reports changeset to include new reporttype + modify HH_ReturnRate displayName 
+            path: modify_university_helpline_reports.sql
+            relativeToChangelogFile: true
+            splitStatements: false
