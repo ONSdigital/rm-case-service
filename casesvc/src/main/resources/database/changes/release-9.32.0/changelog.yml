@@ -87,3 +87,23 @@ databaseChangeLog:
             path: uppercase_reporttype_remove_helpline.sql
             relativeToChangelogFile: true
             splitStatements: false
+
+  - changeSet:
+      id: 9.32.0-10
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Changes to operational MI views for social housing
+            path: create_mi_operational_views_sh_change.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 9.32.0-11
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Changes to operational MI reports for social housing
+            path: generate_operational_mi_reports_sh_change.sql
+            relativeToChangelogFile: true
+            splitStatements: false
