@@ -1,6 +1,6 @@
-﻿UPDATE casesvc.reporttype set displayname='HH Returnrate' where reporttype = 'HH_RETURNRATE';
+UPDATE casesvc.reporttype set displayname='HH Returnrate' where reporttype = 'HH_RETURNRATE';
 
-﻿UPDATE casesvc.reporttype set displayname='HH Returnrate LA' where reporttype = 'HH_RETURNRATE_LA';
+UPDATE casesvc.reporttype set displayname='HH Returnrate LA' where reporttype = 'HH_RETURNRATE_LA';
 
 INSERT INTO casesvc.reporttype(reporttype, orderid, displayname) VALUES('CE_ReturnRate_SHousing', 51, 'CE ReturnRate SHousing');
 
