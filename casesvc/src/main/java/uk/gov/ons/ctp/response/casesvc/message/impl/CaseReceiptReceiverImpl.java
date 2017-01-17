@@ -15,7 +15,6 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.UnlinkedCaseReceiptService;
 
 import javax.inject.Inject;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 import java.sql.Timestamp;
 
