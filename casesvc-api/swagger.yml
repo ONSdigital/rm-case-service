@@ -570,7 +570,7 @@ paths:
         200:
           description: List of reports
           schema:
-            $ref: '#/definitions/ReportDetailsRequest'
+            $ref: '#/definitions/ReportSummaryRequest'
         404:
           description: Report type not found
           schema:
@@ -969,7 +969,16 @@ definitions:
       reporttype:
         type: string
         description: Report Type
-  ReportDetailsRequest:
+      reporttypeid:
+        type: integer
+        description: Report Type Id
+      orderid:
+        type: integer
+        description: Order Id
+      displayname:
+        type: string
+        description: Report Type Display Name
+  ReportSummaryRequest:
     type: object
     properties:
       reporttype:
