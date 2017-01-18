@@ -46,9 +46,22 @@
       <version>1.4.7</version>
     </dependency>
 
-    <dependency>
+	 <dependency>
+		<groupId>org.springframework.amqp</groupId>
+		<artifactId>spring-rabbit</artifactId>
+	 </dependency>
+
+	  <dependency>
+		<groupId>com.rabbitmq.jms</groupId>
+		<artifactId>rabbitmq-jms</artifactId>
+		<version>1.4.7</version>
+		<scope>test</scope>
+	  </dependency>
+		
+	<dependency>
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-broker</artifactId>
+<<<<<<< HEAD
       <scope>test</scope>
     </dependency>
 
