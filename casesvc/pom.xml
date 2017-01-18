@@ -61,7 +61,6 @@
 	<dependency>
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-broker</artifactId>
-<<<<<<< HEAD
       <scope>test</scope>
     </dependency>
 
