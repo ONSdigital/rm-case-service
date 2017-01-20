@@ -117,3 +117,23 @@ databaseChangeLog:
             path: household_shousing_reports.sql
             relativeToChangelogFile: true
             splitStatements: false
+
+  - changeSet:
+      id: 9.32.0-13
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: Names changed to new reporttypes, sort order added
+            path: new_reporttype_names.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 9.32.0-14
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: Drop redundant copy function and old report generation functions
+            path: drop_redundant_functions.sql
+            relativeToChangelogFile: true
+            splitStatements: false
