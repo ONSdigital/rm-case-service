@@ -1,0 +1,13 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 9.33.0-1
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: Set up data for DTM test addresses
+            path: DTM_test_setup_data.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+            
+
