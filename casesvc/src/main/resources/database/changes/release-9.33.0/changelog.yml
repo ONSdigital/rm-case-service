@@ -9,5 +9,13 @@ databaseChangeLog:
             path: DTM_test_setup_data.sql
             relativeToChangelogFile: true
             splitStatements: false
-            
 
+  - changeSet:
+      id: 9.33.0-2
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Exclude DTM test data from operational MI
+            path: create_mi_operational_views_exclude_testdata.sql
+            relativeToChangelogFile: true
+            splitStatements: false
