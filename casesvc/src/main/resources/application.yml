@@ -30,11 +30,11 @@ management:
   context-path: /mgmt
   security:
     roles: SUPERUSER
-    enabled: false
+    enabled: true
 
 server:
   port: 8171
-  servlet-path: /mgmt
+  servlet-path: /
 
 endpoints:
   autoconfig:
