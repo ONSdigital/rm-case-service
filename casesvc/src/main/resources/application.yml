@@ -30,14 +30,14 @@ management:
   context-path: /mgmt
   security:
     roles: SUPERUSER
-    enabled: false
+    enabled: true
   health:
     rabbit:
       enabled: false
 
 server:
   port: 8171
-  servlet-path: /mgmt
+  servlet-path: /
 
 endpoints:
   autoconfig:
