@@ -31,6 +31,9 @@ management:
   security:
     roles: SUPERUSER
     enabled: false
+  health:
+    rabbit:
+      enabled: false
 
 server:
   port: 8171
