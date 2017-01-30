@@ -19,3 +19,13 @@ databaseChangeLog:
             path: create_mi_operational_views_exclude_testdata.sql
             relativeToChangelogFile: true
             splitStatements: false
+
+  - changeSet:
+      id: 9.33.0-3
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: print volumes report is in actionexporter schema so remove from casesvc
+            path: remove_reporttype_print_volumes.sql
+            relativeToChangelogFile: true
+            splitStatements: false
