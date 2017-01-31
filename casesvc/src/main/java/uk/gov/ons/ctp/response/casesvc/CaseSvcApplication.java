@@ -10,8 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -30,7 +33,7 @@ import uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint;
 import uk.gov.ons.ctp.response.casesvc.endpoint.CaseGroupEndpoint;
 import uk.gov.ons.ctp.response.casesvc.endpoint.CaseTypeEndpoint;
 import uk.gov.ons.ctp.response.casesvc.endpoint.CategoryEndpoint;
-import uk.gov.ons.ctp.response.casesvc.endpoint.ReportEndpoint;
+import uk.gov.ons.ctp.response.report.endpoint.ReportEndpoint;
 import uk.gov.ons.ctp.response.casesvc.endpoint.SampleEndpoint;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
@@ -43,6 +46,9 @@ import uk.gov.ons.ctp.response.casesvc.state.CaseSvcStateTransitionManagerFactor
 @SpringBootApplication
 @EnableTransactionManagement
 @IntegrationComponentScan
+@ComponentScan(basePackages = {"uk.gov.ons.ctp.response"})
+@EnableJpaRepositories(basePackages = {"uk.gov.ons.ctp.response"})
+@EntityScan("uk.gov.ons.ctp.response")
 @EnableAsync
 @ImportResource("springintegration/main.xml")
 public class CaseSvcApplication {
