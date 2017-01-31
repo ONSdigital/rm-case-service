@@ -19,3 +19,66 @@ databaseChangeLog:
             path: create_mi_operational_views_exclude_testdata.sql
             relativeToChangelogFile: true
             splitStatements: false
+
+  - changeSet:
+      id: 9.33.0-3
+      author: Phil Whiles
+      changes:
+        - sqlFile:
+            comment: Rename reportrepository table
+            path: rename_reportrepository.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 9.33.0-4
+      author: Phil Whiles
+      changes:
+        - sqlFile:
+            comment: ReportRepository renamed to Report
+            path: helpline_report.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 9.33.0-5
+      author: Phil Whiles
+      changes:
+        - sqlFile:
+            comment: ReportRepository renamed to Report
+            path: university_report.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 9.33.0-6
+      author: Phil Whiles
+      changes:
+        - sqlFile:
+            comment: ReportRepository renamed to Report
+            path: shousing_report.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 9.33.0-7
+      author: Phil Whiles
+      changes:
+        - sqlFile:
+            comment: ReportRepository renamed to Report
+            path: operational_mi_report.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+            
+  - changeSet:
+      id: 9.33.0-8
+      author: Phil Whiles
+      changes:
+        - sqlFile:
+            comment: ReportRepository renamed to Report
+            path: household_report.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+
+
