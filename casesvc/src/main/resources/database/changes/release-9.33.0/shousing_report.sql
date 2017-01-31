@@ -1,6 +1,6 @@
 -- Function: casesvc.insert_shousing_report_into_report()
 
--- DROP FUNCTION casesvc.insert_shousing_report_into_report();
+DROP FUNCTION casesvc.insert_shousing_report_into_reportrepository();
 
 CREATE OR REPLACE FUNCTION casesvc.insert_shousing_report_into_report()
   RETURNS boolean AS
