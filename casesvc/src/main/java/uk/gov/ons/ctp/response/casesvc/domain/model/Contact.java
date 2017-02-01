@@ -7,8 +7,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,18 +32,21 @@ public class Contact implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "casecontactseq_gen")
-  @SequenceGenerator(name = "casecontactseq_gen", sequenceName = "casesvc.contactidseq")
+  @GenericGenerator(name = "casecontactseq_gen", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
+      @Parameter(name = "sequence_name", value = "casesvc.contactidseq"),
+      @Parameter(name = "increment_size", value = "1")
+  })
   @Column(name = "contactid")
   private Integer contactId;
-  
+
   private String title;
 
   @Column(name = "forename")
   private String forename;
-  
+
   @Column(name = "surname")
   private String surname;
-   
+
   @Column(name = "phonenumber")
   private String phoneNumber;
 

@@ -10,6 +10,8 @@ info:
 logging:
   level:
     uk.gov.ons.ctp: DEBUG
+    org.springframework.cloud.sleuth.instrument.messaging.MessagingSpanExtractor: ERROR
+    org.springframework.context.annotation.ConfigurationClassPostProcessor: ERROR
 
 liquibase:
   user: casesvc

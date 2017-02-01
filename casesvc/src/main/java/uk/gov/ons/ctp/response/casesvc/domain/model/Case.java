@@ -17,12 +17,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PostLoad;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,7 +46,10 @@ public class Case implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "caseidseq_gen")
-  @SequenceGenerator(name = "caseidseq_gen", sequenceName = "casesvc.caseidseq")
+  @GenericGenerator(name = "caseidseq_gen", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
+      @Parameter(name = "sequence_name", value = "casesvc.caseidseq"),
+      @Parameter(name = "increment_size", value = "1")
+  })
   @Column(name = "caseid")
   private Integer caseId;
 
@@ -60,7 +64,7 @@ public class Case implements Serializable {
   private Integer sourceCaseId;
 
   @Generated(GenerationTime.INSERT)
-  @Column(name = "caseref", nullable=false, unique = true, insertable = false, updatable = false, columnDefinition = "VARCHAR DEFAULT nextval('casesvc.caserefseq')")
+  @Column(name = "caseref", nullable = false, unique = true, insertable = false, updatable = false, columnDefinition = "VARCHAR DEFAULT nextval('casesvc.caserefseq')")
   private String caseRef;
 
   @Enumerated(EnumType.STRING)

@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -27,7 +26,6 @@ public class CaseGroup implements Serializable {
   private static final long serialVersionUID = -2971565755952967983L;
 
   @Id
-  @GeneratedValue
   @Column(name = "casegroupid")
   private Integer caseGroupId;
   
