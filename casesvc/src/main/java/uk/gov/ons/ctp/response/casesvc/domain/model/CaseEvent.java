@@ -10,9 +10,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,7 +34,10 @@ public class CaseEvent implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "caseeventseq_gen")
-  @SequenceGenerator(name = "caseeventseq_gen", sequenceName = "casesvc.caseeventidseq")
+  @GenericGenerator(name = "caseeventseq_gen", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
+      @Parameter(name = "sequence_name", value = "casesvc.caseeventidseq"),
+      @Parameter(name = "increment_size", value = "1")
+  })
   @Column(name = "caseeventid")
   private Integer caseEventId;
 
