@@ -147,42 +147,6 @@ public class CaseReceiptReceiverImplITCase {
 //    assertEquals(argumentCaptor.getValue(), NONEXISTING_CASE_REF);
   }
 
-  @Test
-  public void testReceivingCaseReceiptValidXmlExceptionThrownInProcessing()
-          throws InterruptedException, IOException, JMSException {
-    // Set up CountDownLatch for synchronisation with async call
-    final CountDownLatch caseServiceInvoked = new CountDownLatch(1);
-    // Release all waiting threads when mock caseService.findCaseByCaseRef method is called
-    doAnswer(countsDownLatch(caseServiceInvoked)).when(caseService).findCaseByCaseRef(any(String.class));
-
-    when(caseService.findCaseByCaseRef(any(String.class))).thenThrow(new RuntimeException());
-
-    String testMessage = FileUtils.readFileToString(provideTempFile("/xmlSampleFiles/validCaseReceiptForException.xml.txt"), "UTF-8");
-    testOutbound.send(org.springframework.messaging.support.MessageBuilder.withPayload(testMessage).build());
-
-    // Await synchronisation with the asynchronous message call
-    caseServiceInvoked.await(RECEIVE_TIMEOUT, MILLISECONDS);
-
-    /**
-     * We check that no xml ends up on the invalid queue.
-     */
-    int finalCounter = JmsHelper.numberOfMessagesOnQueue(connection, INVALID_CASE_RECEIPTS_QUEUE);
-    assertEquals(initialCounter, finalCounter);
-
-    /**
-     * We check that the xml ends up on the dead letter queue.
-     */
-    Message<?> message = activeMQDLQXml.receive(RECEIVE_TIMEOUT);
-    String payload = (String) message.getPayload();
-    assertEquals(testMessage, payload);
-
-    /**
-     * We check the message was processed
-     */
-    ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
-    verify(caseService, atLeastOnce()).findCaseByCaseRef(argumentCaptor.capture());
-    assertEquals(argumentCaptor.getValue(), NONEXISTING_CASE_REF_FOR_EXCEPION);
-  }
 
   @Test
   public void testReceivingCaseReceiptXmlBadlyFormed() throws IOException, JMSException {

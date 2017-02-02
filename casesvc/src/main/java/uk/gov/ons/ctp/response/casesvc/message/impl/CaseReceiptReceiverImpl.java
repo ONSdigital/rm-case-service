@@ -1,10 +1,23 @@
 package uk.gov.ons.ctp.response.casesvc.message.impl;
 
-import lombok.extern.slf4j.Slf4j;
+import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryType.ONLINE_QUESTIONNAIRE_RESPONSE;
+import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryType.PAPER_QUESTIONNAIRE_RESPONSE;
+import static uk.gov.ons.ctp.response.casesvc.utility.Constants.QUESTIONNAIRE_RESPONSE;
+import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
+
+import java.sql.Timestamp;
+
+import javax.inject.Inject;
+
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.oxm.Marshaller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import lombok.extern.slf4j.Slf4j;
+import uk.gov.ons.ctp.common.util.DeadLetterLogCommand;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.UnlinkedCaseReceipt;
@@ -14,21 +27,16 @@ import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.UnlinkedCaseReceiptService;
 
-import javax.inject.Inject;
-
-import java.sql.Timestamp;
-
-import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryType.PAPER_QUESTIONNAIRE_RESPONSE;
-import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryType.ONLINE_QUESTIONNAIRE_RESPONSE;
-import static uk.gov.ons.ctp.response.casesvc.utility.Constants.QUESTIONNAIRE_RESPONSE;
-import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
-
 /**
  * The reader of CaseReceipts from queue
  */
 @Slf4j
 @MessageEndpoint
 public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
+
+  @Inject
+  @Qualifier("caseReceiptUnmarshaller")
+  Marshaller marshaller;
 
   @Inject
   private CaseService caseService;
@@ -43,6 +51,15 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   @ServiceActivator(inputChannel = "caseReceiptTransformed")
   public void process(CaseReceipt caseReceipt) {
+    DeadLetterLogCommand<CaseReceipt> command = new DeadLetterLogCommand<CaseReceipt>(marshaller, caseReceipt);
+    command.run((CaseReceipt x)->processCaseReceipt(x));
+  }
+
+  /**
+   * this is where the processing is really done
+   * @param caseReceipt to process
+   */
+  private void processCaseReceipt(CaseReceipt caseReceipt) {
     log.debug("entering process with caseReceipt {}", caseReceipt);
     String caseRef = caseReceipt.getCaseRef();
     InboundChannel inboundChannel = caseReceipt.getInboundChannel();
