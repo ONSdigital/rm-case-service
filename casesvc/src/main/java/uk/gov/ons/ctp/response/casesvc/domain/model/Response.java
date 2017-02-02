@@ -10,8 +10,10 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,17 +36,20 @@ public class Response implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "responseseq_gen")
-  @SequenceGenerator(name = "responseseq_gen", sequenceName = "casesvc.responseidseq")
+  @GenericGenerator(name = "responseseq_gen", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
+      @Parameter(name = "sequence_name", value = "casesvc.responseidseq"),
+      @Parameter(name = "increment_size", value = "1")
+  })
   @Column(name = "responseid")
   private Integer responseId;
-  
+
   @Column(name = "caseid")
   private Integer caseId;
 
   @Column(name = "inboundchannel")
   @Enumerated(EnumType.STRING)
   private InboundChannel inboundChannel;
-  
+
   @Column(name = "datetime")
   private Timestamp dateTime;
 }
