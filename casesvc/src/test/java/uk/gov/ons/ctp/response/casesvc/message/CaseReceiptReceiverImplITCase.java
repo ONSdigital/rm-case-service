@@ -4,11 +4,8 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,7 +23,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -50,7 +46,6 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 public class CaseReceiptReceiverImplITCase {
 
   private static final int RECEIVE_TIMEOUT = 20000;
-  private static final String NONEXISTING_CASE_REF_FOR_EXCEPION = "tiptopException";
 
   @Inject
   private MessageChannel testOutbound;
