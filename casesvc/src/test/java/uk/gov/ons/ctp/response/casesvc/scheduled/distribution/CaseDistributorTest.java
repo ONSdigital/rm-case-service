@@ -75,8 +75,8 @@ public class CaseDistributorTest {
   public void setup() {
     InternetAccessCodeSvc internetAccessCodeSvc = new InternetAccessCodeSvc();
     CaseDistribution caseDistributionConfig = new CaseDistribution();
-    caseDistributionConfig.setInitialDelaySeconds(I_HATE_CHECKSTYLE_TEN);
-    caseDistributionConfig.setSubsequentDelaySeconds(I_HATE_CHECKSTYLE_TEN);
+    caseDistributionConfig.setInitialDelayMilliSeconds(I_HATE_CHECKSTYLE_TEN);
+    caseDistributionConfig.setSubsequentDelayMilliSeconds(I_HATE_CHECKSTYLE_TEN);
     caseDistributionConfig.setRetrySleepSeconds(I_HATE_CHECKSTYLE_TEN);
     caseDistributionConfig.setRetrievalMax(10);
     caseDistributionConfig.setDistributionMax(2);
