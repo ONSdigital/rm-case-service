@@ -1,0 +1,12 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 9.34.0-1
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: Add indexes to casesvc
+            path: casesvc_schema_indexes.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
