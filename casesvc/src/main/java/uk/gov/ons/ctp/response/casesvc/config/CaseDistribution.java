@@ -12,6 +12,5 @@ public class CaseDistribution {
   private Integer retrievalMax;
   private Integer distributionMax;
   private Integer retrySleepSeconds;
-  private Integer initialDelayMilliSeconds;
-  private Integer subsequentDelayMilliSeconds;
+  private Long delayMilliSeconds;
 }

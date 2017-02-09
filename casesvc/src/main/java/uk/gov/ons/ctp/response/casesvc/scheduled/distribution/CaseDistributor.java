@@ -21,6 +21,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.distributed.DistributedListManager;
+import uk.gov.ons.ctp.common.distributed.LockingException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
@@ -119,52 +120,50 @@ public class CaseDistributor {
     CaseDistributionInfo distInfo = new CaseDistributionInfo();
 
     int successes = 0, failures = 0;
-    List<Integer> distributedCaseList = caseDistributionListManager.findListForAllInstances(CASE_DISTRIBUTOR_LIST_ID);
     try {
       List<CaseNotification> caseNotifications = new ArrayList<>();
-      List<Case> cases = retrieveCases(distributedCaseList);
+      List<Case> cases = retrieveCases();
 
-      caseDistributionListManager.saveList(CASE_DISTRIBUTOR_LIST_ID, cases.stream()
-          .map(caze -> caze.getCaseId())
-          .collect(Collectors.toList()));
+      if (cases.size() > 0) {
+        int iacPageSize = appConfig.getCaseDistribution().getIacMax();
+        List<String> codes = null;
+        for (int idx = 0; idx < cases.size(); idx++) {
+          Case caze = cases.get(idx);
+          if (idx % iacPageSize == 0) {
+            int codesToRequest = (idx < cases.size() / iacPageSize * iacPageSize) ? iacPageSize
+                : (cases.size() % iacPageSize);
+            try {
+              codes = internetAccessCodeSvcClientService.generateIACs(codesToRequest);
+            } catch (Exception e) {
+              log.error("Failed to obtain IAC block");
+              // exit case loop and send notifications of cases activated so far
+              // to action svc
+              break;
+            }
+          }
 
-      int iacPageSize = appConfig.getCaseDistribution().getIacMax();
-      List<String> codes = null;
-      for (int idx = 0; idx < cases.size(); idx++) {
-        Case caze = cases.get(idx);
-        if (idx % iacPageSize == 0) {
-          int codesToRequest = (idx < cases.size() / iacPageSize * iacPageSize) ? iacPageSize
-              : (cases.size() % iacPageSize);
           try {
-            codes = internetAccessCodeSvcClientService.generateIACs(codesToRequest);
+            caseNotifications.add(processCase(caze, codes.get(idx % iacPageSize)));
+            if (caseNotifications.size() == appConfig.getCaseDistribution().getDistributionMax()) {
+              publishCases(caseNotifications);
+            }
+            successes++;
           } catch (Exception e) {
-            log.error("Failed to obtain IAC block");
-            // exit case loop and send notifications of cases activated so far to action svc
-            break;
+            // single case/questionnaire db changes rolled back
+            log.error(
+                "Exception {} thrown processing case {}. Processing postponed",
+                e.getMessage(), caze.getCaseId());
+            failures++;
           }
         }
 
-        try {
-          caseNotifications.add(processCase(caze, codes.get(idx % iacPageSize)));
-          if (caseNotifications.size() == appConfig.getCaseDistribution().getDistributionMax()) {
-            publishCases(caseNotifications);
-          }
-          successes++;
-        } catch (Exception e) {
-          // single case/questionnaire db changes rolled back
-          log.error(
-              "Exception {} thrown processing case {}. Processing postponed",
-              e.getMessage(), caze.getCaseId());
-          failures++;
-        }
+        distInfo.setCasesSucceeded(successes);
+        distInfo.setCasesFailed(failures);
+
+        publishCases(caseNotifications);
+
+        caseDistributionListManager.deleteList(CASE_DISTRIBUTOR_LIST_ID, true);
       }
-
-      distInfo.setCasesSucceeded(successes);
-      distInfo.setCasesFailed(failures);
-
-      publishCases(caseNotifications);
-
-      caseDistributionListManager.deleteList(CASE_DISTRIBUTOR_LIST_ID);
       tracer.close(distribSpan);
     } catch (Exception e) {
       // something went wrong retrieving case types or cases
@@ -175,31 +174,39 @@ public class CaseDistributor {
   }
 
   /**
-   * Get the oldest page of INIT cases to activate
+   * Get the oldest page of INIT cases to activate - but do not retrieve the
+   * same cases as other CaseSvc' in the cluster
    *
-   * @param excludedCaseList the distributed list of case ids currently being
-   *          examined by other casesvc instances
    * @return list of cases
    */
-  private List<Case> retrieveCases(List<Integer> excludedCaseList) {
+  private List<Case> retrieveCases() throws LockingException {
+    List<Case> cases = new ArrayList<>();
+
+    List<Integer> excludedCases = caseDistributionListManager.findList(CASE_DISTRIBUTOR_LIST_ID, false);
 
     // using the distributed map of lists of cases that other nodes are
     // processing
     // flatten them into a list of case ids to exclude from our query
-    log.debug("retrieve cases excluding {}", excludedCaseList);
+    log.debug("retrieve cases excluding {}", excludedCases);
 
-    // prepare and execute the query to find the oldest N cases that are in INIT
-    // states and not in the excluded list
+    // prepare and execute the query to find the oldest N cases that are in
+    // INIT states and not in the excluded list
     Pageable pageable = new PageRequest(0, appConfig.getCaseDistribution().getRetrievalMax(), new Sort(
         new Sort.Order(Direction.ASC, "createdDateTime")));
-    excludedCaseList.add(Integer.valueOf(IMPOSSIBLE_CASE_ID));
-    List<Case> cases = caseRepo
+    excludedCases.add(Integer.valueOf(IMPOSSIBLE_CASE_ID));
+    cases = caseRepo
         .findByStateInAndCaseIdNotIn(Arrays.asList(CaseState.SAMPLED_INIT, CaseState.REPLACEMENT_INIT),
-            excludedCaseList,
+            excludedCases,
             pageable);
+
     log.debug("RETRIEVED case ids {}", cases.stream().map(a -> a.getCaseId().toString())
         .collect(Collectors.joining(",")));
-
+    // try and save our list to the distributed store
+    if (cases.size() > 0) {
+      caseDistributionListManager.saveList(CASE_DISTRIBUTOR_LIST_ID, cases.stream()
+          .map(caze -> caze.getCaseId())
+          .collect(Collectors.toList()), true);
+    }
     return cases;
   }
 
@@ -282,9 +289,11 @@ public class CaseDistributor {
           published = true;
         } catch (Exception e) {
           // broker not there ? sleep then retry
-          log.warn("Failed to send notifications {}", caseNotifications.stream().map(a -> a.getCaseId().toString())
-              .collect(Collectors.joining(",")));
-          log.warn("CaseDistibution will sleep and retry publish");
+          log.warn("Failed to send notifications {} because {}",
+              caseNotifications.stream().map(a -> a.getCaseId().toString())
+                  .collect(Collectors.joining(",")),
+              e.getMessage());
+          log.warn("CaseDistribution will sleep and retry publish");
           try {
             Thread.sleep(appConfig.getCaseDistribution().getRetrySleepSeconds() * MILLISECONDS);
           } catch (InterruptedException ie) {
