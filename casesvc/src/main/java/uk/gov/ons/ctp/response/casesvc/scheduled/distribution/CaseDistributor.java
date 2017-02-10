@@ -164,6 +164,11 @@ public class CaseDistributor {
 
         caseDistributionListManager.deleteList(CASE_DISTRIBUTOR_LIST_ID, true);
       }
+      try {
+        caseDistributionListManager.unlockContainer();
+      } catch (LockingException le) {
+        // oh well - will time out or we never had the lock
+      }
       tracer.close(distribSpan);
     } catch (Exception e) {
       // something went wrong retrieving case types or cases
