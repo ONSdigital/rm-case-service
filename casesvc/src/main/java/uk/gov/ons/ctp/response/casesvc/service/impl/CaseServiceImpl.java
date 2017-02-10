@@ -142,6 +142,12 @@ public class CaseServiceImpl implements CaseService {
   @Override
   public CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase, Timestamp timestamp) {
     log.debug("Entering createCaseEvent with caseEvent {}", caseEvent);
+    log.info("SPLUNK: CaseEventCreation: caseId={}, category={}, subCategory={}, description={}, createdBy={}",
+        caseEvent.getCaseId(),
+        caseEvent.getCategory(),
+        caseEvent.getSubCategory(),
+        caseEvent.getDescription(),
+        caseEvent.getCreatedBy());
 
     CaseEvent createdCaseEvent = null;
     Case targetCase = caseRepo.findOne(caseEvent.getCaseId());

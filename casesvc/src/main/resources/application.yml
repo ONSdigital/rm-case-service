@@ -10,6 +10,7 @@ info:
 logging:
   level:
     uk.gov.ons.ctp: WARN
+    uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl: INFO
     org.springframework.cloud.sleuth.instrument.messaging.MessagingSpanExtractor: ERROR
     org.springframework.context.annotation.ConfigurationClassPostProcessor: ERROR
 
