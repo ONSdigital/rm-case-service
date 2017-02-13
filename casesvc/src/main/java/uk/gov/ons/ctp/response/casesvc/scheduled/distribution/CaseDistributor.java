@@ -172,7 +172,7 @@ public class CaseDistributor {
       tracer.close(distribSpan);
     } catch (Exception e) {
       // something went wrong retrieving case types or cases
-      log.error("Failed to process cases because {}", e);
+      log.error("Failed to process cases because {}", e.getMessage());
     }
     log.info("CaseDistributor sleeping");
     return distInfo;
