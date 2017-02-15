@@ -12,7 +12,12 @@
     <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" />
 
     <!-- Start of Queues -->
-    <rabbit:queue name="Case.LifecycleEvents" durable="true" />
+    <rabbit:queue name="Case.LifecycleEvents" durable="true">
+        <rabbit:queue-arguments value-type="java.lang.String">
+            <entry key="x-dead-letter-exchange" value="case-deadletter-exchange" />
+            <entry key="x-dead-letter-routing-key" value="Case.LifecycleEvents.binding" />
+        </rabbit:queue-arguments>
+    </rabbit:queue>
 
     <rabbit:queue name="Case.Responses" durable="true">
         <rabbit:queue-arguments value-type="java.lang.String">
