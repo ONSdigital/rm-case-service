@@ -2,55 +2,65 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:int="http://www.springframework.org/schema/integration"
-       xmlns:int-jms="http://www.springframework.org/schema/integration/jms"
+       xmlns:int-amqp="http://www.springframework.org/schema/integration/amqp"
        xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
   http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
-  http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd
+  http://www.springframework.org/schema/integration/amqp http://www.springframework.org/schema/integration/amqp/spring-integration-amqp.xsd
   http://www.springframework.org/schema/integration/xml
   http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
 
-    <!-- The inbound message container config - the inbound queue is defined here. We will listen for caseReceipts
-    coming from the SDX Gateway. -->
-    <bean id="caseReceiptMessageListenerContainer"
-          class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+    <bean id="transactionManager" class="org.springframework.integration.transaction.PseudoTransactionManager" />
+
+    <bean id="caseReceiptMessageListenerContainer" class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
         <property name="connectionFactory" ref="connectionFactory" />
-        <property name="destinationName" value="Case.Responses" />
-        <property name="maxConcurrentConsumers" value="1" />
-        <property name="concurrentConsumers" value="1" />
-        <property name="receiveTimeout" value="5000" />
-        <property name="recoveryInterval" value="60000" />
-        <property name="autoStartup" value="true" />
-        <property name="sessionTransacted" value="true" />
+        <property name="queueNames" value="Case.Responses" />
+        <property name="concurrentConsumers" value="${messaging.consumingThreads}" />
+        <property name="prefetchCount" value="${messaging.prefetchCount}" />
+        <property name="txSize" value="${messaging.txSize}" />
+        <property name="channelTransacted" value="true" />
+        <property name="transactionManager" ref="transactionManager" />
     </bean>
 
-    <!-- need an input channel defined for MQ adapter to input to -->
+    <!-- Xml msg is taken off the queue Case.Responses and put on the channel caseReceiptXml -->
     <int:channel id="caseReceiptXml" />
+    <bean id="simpleMessageConverter" class="org.springframework.amqp.support.converter.SimpleMessageConverter" />
+    <int-amqp:inbound-channel-adapter id="caseReceiptInboundAmqp" listener-container="caseReceiptMessageListenerContainer"
+                                      message-converter="simpleMessageConverter" channel="caseReceiptXml" />
 
-    <!-- the MQ channel adapter reads from the Case.Responses Queue (see the container above) and inputs to caseReceiptXml -->
-    <int-jms:message-driven-channel-adapter id="jmsInCaseReceipt" container="caseReceiptMessageListenerContainer" channel="caseReceiptXml" />
-
-    <!-- First the SI message provided by the channel adapter is validated against the inbound schema -->
+    <!-- Xml validated against the inbound schema -->
+    <int:channel id="caseReceiptInvalidXml" />
+    <int-amqp:outbound-channel-adapter id="invalidCaseReceiptOutboundAmqp" channel="caseReceiptInvalidXml" exchange-name="case-invalid-exchange" routing-key="Case.Responses.binding" />
     <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
-    <int:channel id="caseReceiptXmlInvalid" />
-    <bean id="invalidCaseReceiptQueue" class="com.rabbitmq.jms.admin.RMQDestination">
-        <constructor-arg name="destName" value="Case.InvalidCaseReceipts"/>
-        <constructor-arg name="isQueue" value="true"/>
-        <constructor-arg name="isTemporary" value="false"/>
-    </bean>
-    <int-jms:outbound-channel-adapter id="invalidCaseReceiptJmsOut" destination="invalidCaseReceiptQueue" channel="caseReceiptXmlInvalid"/>
     <int-xml:validating-filter id="caseReceiptValidator" input-channel="caseReceiptXml"
-                               output-channel="caseReceiptXmlValid" schema-location="classpath:xsd/caseReceipt.xsd" discard-channel="caseReceiptXmlInvalid"/>
+                               output-channel="caseReceiptXmlValid" schema-location="classpath:xsd/caseReceipt.xsd" discard-channel="caseReceiptInvalidXml"/>
 
-    <!-- Secondly the now validated xml is transformed into the jaxb generated object model -->
-    <int:channel id="caseReceiptTransformed" datatype="uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt">
-    </int:channel>
+    <!-- The now validated xml is transformed into the jaxb generated object model -->
+    <int:channel id="caseReceiptTransformed" datatype="uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt" />
     <int-xml:unmarshalling-transformer
             input-channel="caseReceiptXmlValid" output-channel="caseReceiptTransformed"
-            unmarshaller="caseReceiptUnmarshaller" />
-    <bean id="caseReceiptUnmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+            unmarshaller="caseReceiptMarshaller" />
+    <bean id="caseReceiptMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
         <property name="contextPath" value="uk.gov.ons.ctp.response.casesvc.message.feedback" />
     </bean>
+
     <!-- Finally see the @ServiceActivator(inputChannel="caseReceiptTransformed") -->
+
+    <!-- Start of section to deal with retries and DLQ after max attempts -->
+    <int:channel id="caseReceiptDlqChannel" />
+    <int:handler-retry-advice id="caseReceiptRetryAdvice" recovery-channel="caseReceiptDlqChannel" max-attempts="${messaging.maxAttempts}"/>
+
+    <int:channel id="caseReceiptDlqInterimChannel" />
+    <int:transformer input-channel="caseReceiptDlqChannel" output-channel="caseReceiptDlqInterimChannel" expression="payload.failedMessage.payload" />
+
+    <int:channel id="caseReceiptDlqChannelXml" />
+    <int-xml:marshalling-transformer
+            input-channel="caseReceiptDlqInterimChannel" output-channel="caseReceiptDlqChannelXml"
+            marshaller="caseReceiptMarshaller"
+            result-transformer="caseReceiptOutboundTransformer"/>
+    <bean id="caseReceiptOutboundTransformer" class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
+
+    <int-amqp:outbound-channel-adapter id="caseReceiptDlqAmqp" channel="caseReceiptDlqChannelXml" exchange-name="case-deadletter-exchange" routing-key="Case.Responses.binding" />
+    <!-- End of section to deal with retries and DLQ after max attempts -->
 </beans>

@@ -9,8 +9,8 @@ info:
 # ie -Dlogging.level.org.springframework=DEBUG
 logging:
   level:
-    uk.gov.ons.ctp: WARN
-    uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl: INFO
+    uk.gov.ons.ctp: DEBUG
+    uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl: DEBUG
     org.springframework.cloud.sleuth.instrument.messaging.MessagingSpanExtractor: ERROR
     org.springframework.context.annotation.ConfigurationClassPostProcessor: ERROR
 
@@ -151,5 +151,11 @@ rabbitmq:
   password: guest
   host: localhost
   virtualhost: /
+
+messaging:
+  consumingThreads: 1
+  maxAttempts: 3
+  prefetchCount: 10
+  txSize: 1
   
 

@@ -1,5 +1,0 @@
-<feed:caseReceipt xmlns:feed="http://ons.gov.uk/ctp/response/casesvc/message/feedback">
-    <caseRef>tiptop</caseRef>
-    <inboundChannel>PAPER</inboundChannel>
-    <responseDateTime>2007-10-26T07:36:28</responseDateTime>
-</feed:caseReceipt>
