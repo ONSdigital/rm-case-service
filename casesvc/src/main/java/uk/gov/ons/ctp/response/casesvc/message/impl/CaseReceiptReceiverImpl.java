@@ -61,7 +61,7 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
    */
   private void processCaseReceipt(CaseReceipt caseReceipt) {
     log.debug("entering process with caseReceipt {}", caseReceipt);
-    String caseRef = caseReceipt.getCaseRef();
+    String caseRef = caseReceipt.getCaseRef().trim();
     InboundChannel inboundChannel = caseReceipt.getInboundChannel();
     Timestamp responseTimestamp = new Timestamp(caseReceipt.getResponseDateTime().toGregorianCalendar().getTimeInMillis());
 
