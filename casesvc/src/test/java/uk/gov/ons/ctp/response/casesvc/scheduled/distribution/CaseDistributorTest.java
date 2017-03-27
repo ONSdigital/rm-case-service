@@ -30,6 +30,7 @@ import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientServic
 @RunWith(MockitoJUnitRunner.class)
 public class CaseDistributorTest {
   private static final int I_HATE_CHECKSTYLE_TEN = 10;
+  private static final long I_HATE_CHECKSTYLE_TEN_LONG = 10L;
 
 
   @Spy
@@ -75,8 +76,7 @@ public class CaseDistributorTest {
   public void setup() {
     InternetAccessCodeSvc internetAccessCodeSvc = new InternetAccessCodeSvc();
     CaseDistribution caseDistributionConfig = new CaseDistribution();
-    caseDistributionConfig.setInitialDelaySeconds(I_HATE_CHECKSTYLE_TEN);
-    caseDistributionConfig.setSubsequentDelaySeconds(I_HATE_CHECKSTYLE_TEN);
+    caseDistributionConfig.setDelayMilliSeconds(I_HATE_CHECKSTYLE_TEN_LONG);
     caseDistributionConfig.setRetrySleepSeconds(I_HATE_CHECKSTYLE_TEN);
     caseDistributionConfig.setRetrievalMax(10);
     caseDistributionConfig.setDistributionMax(2);

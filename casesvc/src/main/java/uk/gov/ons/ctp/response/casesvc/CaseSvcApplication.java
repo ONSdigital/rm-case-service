@@ -74,6 +74,7 @@ public class CaseSvcApplication {
   @Bean
   public DistributedListManager<Integer> caseDistributionListManager(RedissonClient redissonClient) {
     return new DistributedListManagerRedissonImpl<Integer>(CASE_DISTRIBUTION_LIST, redissonClient,
+        appConfig.getDataGrid().getListTimeToWaitSeconds(),
         appConfig.getDataGrid().getListTimeToLiveSeconds());
   }
 

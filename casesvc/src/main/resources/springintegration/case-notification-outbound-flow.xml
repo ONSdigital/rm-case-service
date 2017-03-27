@@ -12,11 +12,16 @@
   http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
 
     <!-- setup the jms queues -->
-    <bean id="caseNotificationJMSQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Case.LifecycleEvents"/>
+    <bean id="caseNotificationJMSQueue" class="com.rabbitmq.jms.admin.RMQDestination">
+        <constructor-arg name="destName" value="Case.LifecycleEvents"/>
+        <constructor-arg name="isQueue" value="true"/>
+        <constructor-arg name="isTemporary" value="false"/>
     </bean>
-    <bean id="invalidCaseNotificationQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Case.InvalidNotifications"/>
+    
+	<bean id="invalidCaseNotificationQueue" class="com.rabbitmq.jms.admin.RMQDestination">
+        <constructor-arg name="destName" value="Case.InvalidNotifications"/>
+        <constructor-arg name="isQueue" value="true"/>
+        <constructor-arg name="isTemporary" value="false"/>
     </bean>
 
     <!--  setup the channels - note each queue needs a channel -->

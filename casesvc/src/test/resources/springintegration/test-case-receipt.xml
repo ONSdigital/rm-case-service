@@ -31,6 +31,9 @@
     <bean id="caseReceiptJMSQueue" class="org.apache.activemq.command.ActiveMQQueue">
         <constructor-arg value="Case.Responses"/>
     </bean>
+    <bean id="invalidCaseReceiptQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="Case.InvalidCaseReceipts"/>
+    </bean>
 
     <int:channel id="testOutbound" />
 

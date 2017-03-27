@@ -34,8 +34,10 @@
     <!-- First the SI message provided by the channel adapter is validated against the inbound schema -->
     <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
     <int:channel id="caseReceiptXmlInvalid" />
-    <bean id="invalidCaseReceiptQueue" class="org.apache.activemq.command.ActiveMQQueue">
-        <constructor-arg value="Case.InvalidCaseReceipts"/>
+    <bean id="invalidCaseReceiptQueue" class="com.rabbitmq.jms.admin.RMQDestination">
+        <constructor-arg name="destName" value="Case.InvalidCaseReceipts"/>
+        <constructor-arg name="isQueue" value="true"/>
+        <constructor-arg name="isTemporary" value="false"/>
     </bean>
     <int-jms:outbound-channel-adapter id="invalidCaseReceiptJmsOut" destination="invalidCaseReceiptQueue" channel="caseReceiptXmlInvalid"/>
     <int-xml:validating-filter id="caseReceiptValidator" input-channel="caseReceiptXml"

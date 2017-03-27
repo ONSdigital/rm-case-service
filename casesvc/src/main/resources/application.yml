@@ -9,7 +9,8 @@ info:
 # ie -Dlogging.level.org.springframework=DEBUG
 logging:
   level:
-    uk.gov.ons.ctp: DEBUG
+    uk.gov.ons.ctp: WARN
+    uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl: INFO
     org.springframework.cloud.sleuth.instrument.messaging.MessagingSpanExtractor: ERROR
     org.springframework.context.annotation.ConfigurationClassPostProcessor: ERROR
 
@@ -33,6 +34,9 @@ management:
   security:
     roles: SUPERUSER
     enabled: true
+  health:
+    rabbit:
+      enabled: false
 
 server:
   port: 8171
@@ -71,6 +75,9 @@ endpoints:
     sensitive: true
 
 spring:
+  output:
+    ansi:
+      enabled: never
   application:
     name: ONS CaseService
   sleuth:
@@ -100,6 +107,7 @@ spring:
 data-grid:
   address: localhost:6379
   list-time-to-live-seconds: 600
+  list-time-to-wait-seconds: 600
 
 internet-access-code-svc:
   iac-post-path: /iacs
@@ -110,7 +118,7 @@ internet-access-code-svc:
     port: 8121
     username: admin
     password: secret
-    retry-attempts: 5
+    retry-attempts: 10
     retry-pause-milli-seconds: 5000
     connect-timeout-milli-seconds: 5000
     read-timeout-milli-seconds: 5000
@@ -128,15 +136,20 @@ action-svc:
 
 case-distribution:
   iac-max: 50
-  retrieval-max: 200
-  distribution-max: 50
+  retrieval-max: 50
+  distribution-max: 10
   retry-sleep-seconds: 30
-  initial-delay-seconds: 30
-  subsequent-delay-seconds: 30
+  delay-milli-seconds: 500
 
 redelivery-policy:
   maxRedeliveries: 10
   initialRedeliveryDelay: 1000
   redeliveryDelay: 1000
 
-# Tag to verify latest code ends up in artifactory (zzz)
+rabbitmq:
+  username: guest
+  password: guest
+  host: localhost
+  virtualhost: /
+  
+
