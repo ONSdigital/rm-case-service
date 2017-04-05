@@ -1,18 +1,13 @@
 package uk.gov.ons.ctp.response.casesvc.scheduled.distribution;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 
 /**
  * This bean will have the caseDistributor injected into it by spring on
@@ -38,25 +33,15 @@ public class CaseDistributionScheduler implements HealthIndicator {
   /**
    * Create the scheduler for the Case Distributor
    *
-   * @param applicationConfig injected app config needs injecting as cannot use
-   *          the class appConfig - is not injected until this class created -
-   *          chicken meet egg
    */
-  @Inject
-  public CaseDistributionScheduler(AppConfig applicationConfig) {
-    final Runnable distributorRunnable = new Runnable() {
-      @Override public void run() {
-        try {
-          distribInfo = caseDistributorImpl.distribute();
-        } catch (Exception e) {
-          log.error("Exception in case distributor", e);
-        }
-      }
-    };
 
-    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    scheduler.scheduleWithFixedDelay(distributorRunnable,
-        applicationConfig.getCaseDistribution().getInitialDelaySeconds(),
-        applicationConfig.getCaseDistribution().getSubsequentDelaySeconds(), SECONDS);
+  @Scheduled(fixedDelayString = "#{appConfig.caseDistribution.delayMilliSeconds}")
+  public void run() {
+    try {
+      distribInfo = caseDistributorImpl.distribute();
+    } catch (Exception e) {
+      log.error("Exception in case distributor", e);
+    }
   }
+
 }
