@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.ons.ctp.common.util.DeadLetterLogCommand;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.UnlinkedCaseReceipt;
@@ -35,10 +34,6 @@ import uk.gov.ons.ctp.response.casesvc.service.UnlinkedCaseReceiptService;
 public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
 
   @Inject
-  @Qualifier("caseReceiptUnmarshaller")
-  Marshaller marshaller;
-
-  @Inject
   private CaseService caseService;
 
   @Inject
@@ -48,18 +43,9 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
    * To process CaseReceipts read from queue
    * @param caseReceipt to process
    */
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  @ServiceActivator(inputChannel = "caseReceiptTransformed")
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false, value = "transactionManager")
+  @ServiceActivator(inputChannel = "caseReceiptTransformed", adviceChain = "caseReceiptRetryAdvice")
   public void process(CaseReceipt caseReceipt) {
-    DeadLetterLogCommand<CaseReceipt> command = new DeadLetterLogCommand<CaseReceipt>(marshaller, caseReceipt);
-    command.run((CaseReceipt x)->processCaseReceipt(x));
-  }
-
-  /**
-   * this is where the processing is really done
-   * @param caseReceipt to process
-   */
-  private void processCaseReceipt(CaseReceipt caseReceipt) {
     log.debug("entering process with caseReceipt {}", caseReceipt);
     String caseRef = caseReceipt.getCaseRef().trim();
     InboundChannel inboundChannel = caseReceipt.getInboundChannel();

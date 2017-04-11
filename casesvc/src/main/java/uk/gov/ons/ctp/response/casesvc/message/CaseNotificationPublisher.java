@@ -16,7 +16,6 @@ public interface CaseNotificationPublisher {
   /**
    * To put CaseNotifications on the outbound channel caseNotificationOutbound
    * @param caseNotifications the list of CaseNotification to put on the outbound channel
-   * @return CaseNotifications the wrapper object containing the notifications
    */
-  CaseNotifications sendNotifications(List<CaseNotification> caseNotifications);
+  void sendNotifications(List<CaseNotification> caseNotifications);
 }
