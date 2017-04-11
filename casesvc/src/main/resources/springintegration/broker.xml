@@ -2,14 +2,31 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:rabbit="http://www.springframework.org/schema/rabbit"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-  http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
-  http://www.springframework.org/schema/rabbit
-  http://www.springframework.org/schema/rabbit/spring-rabbit-1.6.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd 
+  http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.6.xsd">
 
-    <rabbit:connection-factory id="connectionFactory" host="${rabbitmq.host}" />
+    <rabbit:connection-factory id="connectionFactory" 
+                               host="${rabbitmq.host}"
+	                           username="${rabbitmq.username}" 
+	                           password="${rabbitmq.password}"/>
 
-    <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" />
+    <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" retry-template="retryTemplate" />
+
+	<!-- Retry policy for a failed publish -->
+	<bean id="retryTemplate" class="org.springframework.retry.support.RetryTemplate">
+      <property name="backOffPolicy">
+        <bean class="org.springframework.retry.backoff.ExponentialBackOffPolicy">
+          <property name="initialInterval" value="1000" />
+          <property name="multiplier" value="3" />
+          <property name="maxInterval" value="30000" />
+        </bean>
+      </property>
+      <property name="retryPolicy">
+        <bean class="org.springframework.retry.policy.SimpleRetryPolicy">
+          <property name="maxAttempts" value="${messaging.pubMaxAttempts}" />
+        </bean>
+      </property>
+   </bean>
 
     <!-- Start of Queues -->
     <rabbit:queue name="Case.LifecycleEvents" durable="true">

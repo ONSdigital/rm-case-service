@@ -154,8 +154,8 @@ rabbitmq:
 
 messaging:
   consumingThreads: 1
-  maxAttempts: 3
+  pubMaxAttempts: 3
+  conMaxAttempts: 3
   prefetchCount: 10
   txSize: 1
-  
 

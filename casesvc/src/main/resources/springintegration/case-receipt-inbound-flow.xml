@@ -11,8 +11,6 @@
   http://www.springframework.org/schema/integration/xml
   http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
 
-    <bean id="transactionManager" class="org.springframework.integration.transaction.PseudoTransactionManager" />
-
     <bean id="caseReceiptMessageListenerContainer" class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
         <property name="connectionFactory" ref="connectionFactory" />
         <property name="queueNames" value="Case.Responses" />
@@ -20,7 +18,6 @@
         <property name="prefetchCount" value="${messaging.prefetchCount}" />
         <property name="txSize" value="${messaging.txSize}" />
         <property name="channelTransacted" value="true" />
-        <property name="transactionManager" ref="transactionManager" />
     </bean>
 
     <!-- Xml msg is taken off the queue Case.Responses and put on the channel caseReceiptXml -->
@@ -49,7 +46,7 @@
 
     <!-- Start of section to deal with retries and DLQ after max attempts -->
     <int:channel id="caseReceiptDlqChannel" />
-    <int:handler-retry-advice id="caseReceiptRetryAdvice" recovery-channel="caseReceiptDlqChannel" max-attempts="${messaging.maxAttempts}"/>
+    <int:handler-retry-advice id="caseReceiptRetryAdvice" recovery-channel="caseReceiptDlqChannel" max-attempts="${messaging.conMaxAttempts}"/>
 
     <int:channel id="caseReceiptDlqInterimChannel" />
     <int:transformer input-channel="caseReceiptDlqChannel" output-channel="caseReceiptDlqInterimChannel" expression="payload.failedMessage.payload" />
