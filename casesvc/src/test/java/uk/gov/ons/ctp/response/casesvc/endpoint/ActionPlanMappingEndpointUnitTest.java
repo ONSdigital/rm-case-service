@@ -1,6 +1,8 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
 import static org.hamcrest.core.Is.is;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockActionPlanMappingServiceFactory.CASE_TYPE_ID;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockActionPlanMappingServiceFactory.MAPPING_ID;
@@ -8,27 +10,24 @@ import static uk.gov.ons.ctp.response.casesvc.utility.MockActionPlanMappingServi
 import static uk.gov.ons.ctp.response.casesvc.utility.MockActionPlanMappingServiceFactory.VARIANT_ENG;
 import static uk.gov.ons.ctp.common.MvcHelper.getJson;
 
+import ma.glasnost.orika.MapperFacade;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpStatus;
-
+import org.mockito.Spy;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
+import uk.gov.ons.ctp.response.casesvc.domain.model.ActionPlanMapping;
 import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.representation.OutboundChannel;
 import uk.gov.ons.ctp.response.casesvc.service.ActionPlanMappingService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseTypeService;
-import uk.gov.ons.ctp.response.casesvc.utility.MockActionPlanMappingServiceFactory;
-import uk.gov.ons.ctp.response.casesvc.utility.MockCaseTypeServiceFactory;
 
-/**
- */
 public final class ActionPlanMappingEndpointUnitTest {
 
   @InjectMocks
@@ -40,6 +39,9 @@ public final class ActionPlanMappingEndpointUnitTest {
   @Mock
   private CaseTypeService caseTypeService;
 
+  @Spy
+  private MapperFacade mapperFacade = new CaseSvcBeanMapper();
+
   private MockMvc mockMvc;
 
   @Before
@@ -49,9 +51,6 @@ public final class ActionPlanMappingEndpointUnitTest {
     this.mockMvc = MockMvcBuilders
             .standaloneSetup(actionPlanMappingEndpoint)
             .build();
-
-    actionPlanMappingService = MockActionPlanMappingServiceFactory.provide();
-    caseTypeService = MockCaseTypeServiceFactory.provide();
   }
 
   /**
@@ -70,6 +69,15 @@ public final class ActionPlanMappingEndpointUnitTest {
 //        .assertStringInBody("$.variant", VARIANT_ENG)
 //        .assertStringInBody("$.outboundChannel", OutboundChannel.POST.name())
 //        .andClose();
+    ActionPlanMapping actionPlanMapping = new ActionPlanMapping();
+    actionPlanMapping.setActionPlanMappingId(MAPPING_ID);
+    actionPlanMapping.setActionPlanId(1);
+    actionPlanMapping.setCaseTypeId(1);
+    actionPlanMapping.setIsDefault(true);
+    actionPlanMapping.setInboundChannel(InboundChannel.ONLINE);
+    actionPlanMapping.setVariant(VARIANT_ENG);
+    actionPlanMapping.setOutboundChannel(OutboundChannel.POST);
+    when(actionPlanMappingService.findActionPlanMapping(MAPPING_ID)).thenReturn(actionPlanMapping);
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/actionplanmappings/%s", MAPPING_ID)));
 
