@@ -3,8 +3,7 @@ package uk.gov.ons.ctp.response.casesvc.state;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.inject.Named;
-
+import org.springframework.stereotype.Component;
 import uk.gov.ons.ctp.common.state.BasicStateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
@@ -16,7 +15,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseState;
  * that this will be refactored into a common framework class and that it
  * initialises each entities manager from database held transitions.
  */
-@Named
+@Component
 public class CaseSvcStateTransitionManagerFactory implements StateTransitionManagerFactory {
 
   public static final String CASE_ENTITY = "Case";

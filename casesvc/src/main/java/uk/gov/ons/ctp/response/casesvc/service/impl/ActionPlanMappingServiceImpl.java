@@ -2,10 +2,9 @@ package uk.gov.ons.ctp.response.casesvc.service.impl;
 
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import uk.gov.ons.ctp.response.casesvc.domain.model.ActionPlanMapping;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.ActionPlanMappingRepository;
 import uk.gov.ons.ctp.response.casesvc.service.ActionPlanMappingService;
@@ -14,14 +13,14 @@ import uk.gov.ons.ctp.response.casesvc.service.ActionPlanMappingService;
  * An ActionPlanMappingService implementation which encapsulates all business logic
  * operating on the ActionPlanMapping entity model.
  */
-@Named
+@Service
 @Slf4j
 public class ActionPlanMappingServiceImpl implements ActionPlanMappingService {
 
   /**
    * Spring Data Repository for ActionPlanMapping entities.
    */
-  @Inject
+  @Autowired
   private ActionPlanMappingRepository actionPlanMappingRepo;
 
   /**

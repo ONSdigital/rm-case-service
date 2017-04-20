@@ -2,9 +2,8 @@ package uk.gov.ons.ctp.response.casesvc.service.impl;
 
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,17 +17,16 @@ import uk.gov.ons.ctp.response.casesvc.service.SampleService;
  * A SampleService implementation which encapsulates all business logic
  * operating on the Sample entity model.
  */
-@Named
+@Service
 @Slf4j
 public class SampleServiceImpl implements SampleService {
 
   private static final int TRANSACTION_TIMEOUT = 300;
 
-
-  @Inject
+  @Autowired
   private SampleRepository sampleRepo;
 
-  @Inject
+  @Autowired
   private CaseLifeCycleRepository caseLifeCycleRepo;
 
   @Override

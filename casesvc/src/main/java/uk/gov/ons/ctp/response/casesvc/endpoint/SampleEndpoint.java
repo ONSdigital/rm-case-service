@@ -1,16 +1,12 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
-
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Sample;
@@ -22,17 +18,15 @@ import uk.gov.ons.ctp.response.casesvc.service.SampleService;
  * Sample endpoint including functionality to create cases for a given sample
  * ID, geography type and geography code
  */
-
-@Path("/samples")
-@Consumes({ "application/json" })
-@Produces({ "application/json" })
+@RestController
+@RequestMapping(value = "/samples", consumes = "application/json", produces = "application/json")
 @Slf4j
 public final class SampleEndpoint implements CTPEndpoint {
 
-  @Inject
+  @Autowired
   private SampleService sampleService;
 
-  @Inject
+  @Autowired
   private MapperFacade mapperFacade;
 
   /**
@@ -41,15 +35,14 @@ public final class SampleEndpoint implements CTPEndpoint {
    * @return the sample representation
    * @throws CTPException something went wrong
    */
-  @GET
-  @Path("/{sampleid}")
-  public Response findSampleBySampleId(@PathParam("sampleid") final Integer sampleId) throws CTPException {
+  @RequestMapping(value = "/{sampleid}", method = RequestMethod.GET)
+  public SampleDTO findSampleBySampleId(@PathVariable("sampleid") final Integer sampleId) throws CTPException {
     log.info("Entering findSampleBySampleId with {}", sampleId);
     Sample sample = sampleService.findSampleBySampleId(sampleId);
     if (sample == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Sample not found for id %s", sampleId);
     }
-    return Response.ok(mapperFacade.map(sample, SampleDTO.class)).build();
+    return mapperFacade.map(sample, SampleDTO.class);
   }
 
   /**
@@ -59,9 +52,8 @@ public final class SampleEndpoint implements CTPEndpoint {
    * @return the sample representation
    * @throws CTPException something went wrong
    */
-  @PUT
-  @Path("/{sampleId}")
-  public Response createCases(@PathParam("sampleId") final int sampleId, final GeographyDTO geography)
+  @RequestMapping(value = "/{sampleid}", method = RequestMethod.PUT)
+  public SampleDTO createCases(@PathVariable("sampleId") final int sampleId, final GeographyDTO geography)
           throws CTPException {
     log.info("Creating cases ");
     Sample sample = sampleService.findSampleBySampleId(sampleId);
@@ -69,6 +61,6 @@ public final class SampleEndpoint implements CTPEndpoint {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Sample not found for id %s", sampleId);
     }
     sampleService.generateCases(sampleId, geography.getType(), geography.getCode());
-    return Response.ok(mapperFacade.map(sample, SampleDTO.class)).build();
+    return mapperFacade.map(sample, SampleDTO.class);
   }
 }

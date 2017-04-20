@@ -2,15 +2,13 @@ package uk.gov.ons.ctp.response.casesvc.endpoint;
 
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
-
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Address;
@@ -20,15 +18,15 @@ import uk.gov.ons.ctp.response.casesvc.service.AddressService;
 /**
  * The REST endpoint controller for Addresses
  */
-@Path("/addresses")
-@Produces({ "application/json" })
+@RestController
+@RequestMapping(value = "/addresses", produces = "application/json")
 @Slf4j
 public final class AddressEndpoint implements CTPEndpoint {
 
-  @Inject
+  @Autowired
   private AddressService addressService;
 
-  @Inject
+  @Autowired
   private MapperFacade mapperFacade;
 
   /**
@@ -37,9 +35,8 @@ public final class AddressEndpoint implements CTPEndpoint {
    * @return the DTO representation
    * @throws CTPException something went wrong
    */
-  @GET
-  @Path("/{uprn}")
-  public Response findAddressesByUprn(@PathParam("uprn") final Long uprn) throws CTPException {
+  @RequestMapping(value = "/{uprn}", method = RequestMethod.GET)
+  public AddressDTO findAddressesByUprn(@PathVariable("uprn") final Long uprn) throws CTPException {
     log.info("Entering findAddressesByUprn with {}", uprn);
 
     Address address = addressService.findByUprn(uprn);
@@ -48,7 +45,7 @@ public final class AddressEndpoint implements CTPEndpoint {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "No addresses found for uprn %d", uprn);
     }
 
-    return Response.ok(mapperFacade.map(address, AddressDTO.class)).build();
+    return mapperFacade.map(address, AddressDTO.class);
   }
 
   /**
@@ -57,9 +54,8 @@ public final class AddressEndpoint implements CTPEndpoint {
    * @return the addresses found
    * @throws CTPException something went wrong
    */
-  @GET
-  @Path("/postcode/{postcode}")
-  public Response findAddressesByPostcode(@PathParam("postcode") final String postcode) throws CTPException {
+  @RequestMapping(value = "/postcode/{postcode}", method = RequestMethod.GET)
+  public List<AddressDTO> findAddressesByPostcode(@PathVariable("postcode") final String postcode) throws CTPException {
     log.info("Entering findAddressesByPostcode with {}", postcode);
 
     List<Address> addresses = addressService.findByPostcode(postcode);
@@ -68,7 +64,7 @@ public final class AddressEndpoint implements CTPEndpoint {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "No addresses found for postcode %s", postcode);
     }
 
-    return Response.ok(mapperFacade.mapAsList(addresses, AddressDTO.class)).build();
+    return mapperFacade.mapAsList(addresses, AddressDTO.class);
   }
 
 }

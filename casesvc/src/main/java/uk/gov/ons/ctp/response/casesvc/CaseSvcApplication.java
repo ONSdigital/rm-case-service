@@ -1,8 +1,5 @@
 package uk.gov.ons.ctp.response.casesvc;
 
-import javax.inject.Named;
-
-import org.glassfish.jersey.server.ResourceConfig;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -21,23 +18,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import uk.gov.ons.ctp.common.distributed.DistributedListManager;
 import uk.gov.ons.ctp.common.distributed.DistributedListManagerRedissonImpl;
-import uk.gov.ons.ctp.common.jaxrs.CTPMessageBodyReader;
-import uk.gov.ons.ctp.common.jaxrs.JAXRSRegister;
 import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
-import uk.gov.ons.ctp.response.casesvc.endpoint.ActionPlanMappingEndpoint;
-import uk.gov.ons.ctp.response.casesvc.endpoint.AddressEndpoint;
-import uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint;
-import uk.gov.ons.ctp.response.casesvc.endpoint.CaseGroupEndpoint;
-import uk.gov.ons.ctp.response.casesvc.endpoint.CaseTypeEndpoint;
-import uk.gov.ons.ctp.response.casesvc.endpoint.CategoryEndpoint;
-import uk.gov.ons.ctp.response.report.endpoint.ReportEndpoint;
-import uk.gov.ons.ctp.response.casesvc.endpoint.SampleEndpoint;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.GeographyDTO;
 import uk.gov.ons.ctp.response.casesvc.state.CaseSvcStateTransitionManagerFactory;
 
 /**
@@ -107,34 +92,6 @@ public class CaseSvcApplication {
   public RestClient actionServiceClient() {
     RestClient restHelper = new RestClient(appConfig.getActionSvc().getConnectionConfig());
     return restHelper;
-  }
-
-  /**
-   * The JerseyConfig class used to config the JAX RS implementation.
-   */
-  @Named
-  public static class JerseyConfig extends ResourceConfig {
-    /**
-     * Required default constructor.
-     */
-    public JerseyConfig() {
-      JAXRSRegister.listCommonTypes().forEach(t->register(t));
-
-      // Register JAX-RS components
-      register(ActionPlanMappingEndpoint.class);
-      register(AddressEndpoint.class);
-      register(CaseEndpoint.class);
-      register(CaseGroupEndpoint.class);
-      register(CaseTypeEndpoint.class);
-      register(CategoryEndpoint.class);
-      register(SampleEndpoint.class);
-      register(ReportEndpoint.class);
-
-      register(new CTPMessageBodyReader<GeographyDTO>(GeographyDTO.class) {
-      });
-      register(new CTPMessageBodyReader<CaseEventDTO>(CaseEventDTO.class) {
-      });
-    }
   }
 
   /**
