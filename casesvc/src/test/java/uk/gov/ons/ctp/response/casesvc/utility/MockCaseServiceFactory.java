@@ -6,7 +6,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.glassfish.hk2.api.Factory;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -21,7 +20,7 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 /**
  * Mock CaseService response HK2 JSE JSR-330 dependency injection factory
  */
-public final class MockCaseServiceFactory implements Factory<CaseService> {
+public final class MockCaseServiceFactory {
 
   public static final CaseDTO.CaseState CASE_STATE = CaseDTO.CaseState.SAMPLED_INIT;
   public static final Integer CASE1_ACTIONPLANMAPPINGID = 1;
@@ -49,7 +48,7 @@ public final class MockCaseServiceFactory implements Factory<CaseService> {
    *
    * @return mocked service
    */
-  public CaseService provide() {
+  public static CaseService provide() {
 
     final CaseService mockedService = Mockito.mock(CaseService.class);
 
@@ -112,13 +111,5 @@ public final class MockCaseServiceFactory implements Factory<CaseService> {
       throw new RuntimeException(t);
     }
     return mockedService;
-  }
-
-  /**
-   * dispose method
-   *
-   * @param t service to dispose
-   */
-  public void dispose(final CaseService t) {
   }
 }

@@ -6,7 +6,6 @@ import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.
 import java.util.ArrayList;
 import java.util.List;
 
-import org.glassfish.hk2.api.Factory;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -16,7 +15,7 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 
 /**
  */
-public final class MockCaseGroupServiceFactory implements Factory<CaseGroupService> {
+public final class MockCaseGroupServiceFactory {
 
   public static final Integer NON_EXISTENT_CASE_GROUP_ID = 99;
   public static final Integer CASE_GROUP_ID = 1;
@@ -25,7 +24,7 @@ public final class MockCaseGroupServiceFactory implements Factory<CaseGroupServi
    * provide method
    * @return mocked service
    */
-  public CaseGroupService provide() {
+  public static CaseGroupService provide() {
 
     final CaseGroupService mockedService = Mockito.mock(CaseGroupService.class);
 
@@ -54,12 +53,5 @@ public final class MockCaseGroupServiceFactory implements Factory<CaseGroupServi
       }
     });
     return mockedService;
-  }
-
-  /**
-   * dispose method
-   * @param t service to dispose
-   */
-  public void dispose(final CaseGroupService t) {
   }
 }

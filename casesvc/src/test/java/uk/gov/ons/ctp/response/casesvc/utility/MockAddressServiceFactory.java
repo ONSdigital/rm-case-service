@@ -3,7 +3,6 @@ package uk.gov.ons.ctp.response.casesvc.utility;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.glassfish.hk2.api.Factory;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -11,10 +10,7 @@ import org.mockito.stubbing.Answer;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Address;
 import uk.gov.ons.ctp.response.casesvc.service.AddressService;
 
-/**
- * Created by philippe.brossier on 2/23/16.
- */
-public final class MockAddressServiceFactory implements Factory<AddressService> {
+public final class MockAddressServiceFactory {
 
   public static final Long ADDRESS_NON_EXISTING_UPRN = 999L;
   public static final Long ADDRESS_UPRN = 123L;
@@ -29,7 +25,7 @@ public final class MockAddressServiceFactory implements Factory<AddressService> 
    * provide method
    * @return mocked service
    */
-  public AddressService provide() {
+  public static AddressService provide() {
     final AddressService mockedService = Mockito.mock(AddressService.class);
     Mockito.when(mockedService.findByUprn(ADDRESS_UPRN)).thenAnswer(new Answer<Address>() {
       public Address answer(final InvocationOnMock invocation)
@@ -68,12 +64,5 @@ public final class MockAddressServiceFactory implements Factory<AddressService> 
         .thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
 
     return mockedService;
-  }
-
-  /**
-   * dispose method
-   * @param t service to dispose
-   */
-  public void dispose(final AddressService t) {
   }
 }

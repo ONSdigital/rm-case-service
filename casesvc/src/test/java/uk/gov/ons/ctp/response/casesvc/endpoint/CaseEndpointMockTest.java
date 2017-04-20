@@ -61,7 +61,5 @@ public class CaseEndpointMockTest {
 		caseEndpoint.findCaseByIac("1234");
 
 		verify(caseService).createCaseEvent(any(CaseEvent.class), any(Case.class));
-
 	}
-
 }

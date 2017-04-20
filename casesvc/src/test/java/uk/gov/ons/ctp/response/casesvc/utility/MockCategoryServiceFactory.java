@@ -3,7 +3,6 @@ package uk.gov.ons.ctp.response.casesvc.utility;
 import java.util.Arrays;
 import java.util.List;
 
-import org.glassfish.hk2.api.Factory;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -16,7 +15,7 @@ import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
 /**
  * Created by Chris Parker 23.3.2016
  */
-public final class MockCategoryServiceFactory implements Factory<CategoryService> {
+public final class MockCategoryServiceFactory {
   public static final String CATEGORY1_TYPE = "GENERAL_ENQUIRY";
   public static final String CATEGORY2_TYPE = "ONLINE_QUESTIONNAIRE_RESPONSE";
   public static final String CATEGORY3_TYPE = "GENERAL_ENQUIRY_ESCALATED";
@@ -44,7 +43,7 @@ public final class MockCategoryServiceFactory implements Factory<CategoryService
    * 
    * @return mocked service
    */
-  public CategoryService provide() {
+  public static CategoryService provide() {
 
     final CategoryService mockedService = Mockito.mock(CategoryService.class);
 
@@ -73,13 +72,5 @@ public final class MockCategoryServiceFactory implements Factory<CategoryService
       throw new RuntimeException(t);
     }
     return mockedService;
-  }
-
-  /**
-   * dispose method
-   * 
-   * @param t service to dispose
-   */
-  public void dispose(final CategoryService t) {
   }
 }

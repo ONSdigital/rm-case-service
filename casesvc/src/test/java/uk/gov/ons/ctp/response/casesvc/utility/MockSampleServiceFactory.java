@@ -2,7 +2,6 @@ package uk.gov.ons.ctp.response.casesvc.utility;
 
 import java.util.List;
 
-import org.glassfish.hk2.api.Factory;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -14,7 +13,7 @@ import uk.gov.ons.ctp.response.casesvc.service.SampleService;
 /**
  * Created by Martin.Humphrey on 23/2/2016.
  */
-public final class MockSampleServiceFactory implements Factory<SampleService> {
+public final class MockSampleServiceFactory {
 
   public static final String SAMPLE1_NAME = "Residential";
   public static final String SAMPLE2_NAME = "Hotels_Guest_Houses";
@@ -43,7 +42,7 @@ public final class MockSampleServiceFactory implements Factory<SampleService> {
    * 
    * @return mocked service
    */
-  public SampleService provide() {
+  public static SampleService provide() {
 
     final SampleService mockedService = Mockito.mock(SampleService.class);
 
@@ -79,13 +78,5 @@ public final class MockSampleServiceFactory implements Factory<SampleService> {
       throw new RuntimeException(t);
     }
     return mockedService;
-  }
-
-  /**
-   * dispose method
-   * 
-   * @param t service to dispose
-   */
-  public void dispose(final SampleService t) {
   }
 }
