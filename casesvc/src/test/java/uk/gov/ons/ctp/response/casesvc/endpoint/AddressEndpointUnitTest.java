@@ -22,6 +22,7 @@ import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.
 import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.ADDRESS_UPRN;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.ADDRESS_WITH_UPRN_CHECKED_EXCEPTION;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.OUR_EXCEPTION_MESSAGE;
+import static uk.gov.ons.ctp.response.casesvc.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -56,6 +57,7 @@ public final class AddressEndpointUnitTest {
 
     this.mockMvc = MockMvcBuilders
             .standaloneSetup(addressEndpoint)
+            .setHandlerExceptionResolvers(mockAdviceFor(RestExceptionHandler.class))
             .build();
 
     addressService = MockAddressServiceFactory.provide();
