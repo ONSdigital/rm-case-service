@@ -1,16 +1,20 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.Is.isA;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.isNotNull;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockActionPlanMappingServiceFactory.CASE_TYPE_ID;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockActionPlanMappingServiceFactory.MAPPING_ID;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockActionPlanMappingServiceFactory.NON_EXISTENT_MAPPING_ID;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockActionPlanMappingServiceFactory.VARIANT_ENG;
+import static uk.gov.ons.ctp.response.casesvc.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
 import static uk.gov.ons.ctp.common.MvcHelper.getJson;
 
 import ma.glasnost.orika.MapperFacade;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,12 +25,17 @@ import org.mockito.Spy;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
 import uk.gov.ons.ctp.response.casesvc.domain.model.ActionPlanMapping;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseType;
 import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.representation.OutboundChannel;
 import uk.gov.ons.ctp.response.casesvc.service.ActionPlanMappingService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseTypeService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class ActionPlanMappingEndpointUnitTest {
 
@@ -44,12 +53,18 @@ public final class ActionPlanMappingEndpointUnitTest {
 
   private MockMvc mockMvc;
 
+  private static final Integer ONE = 1;
+  private static final Integer CASE_TYPE_ID = 1;
+  private static final Integer NON_EXISTENT_MAPPING_ID = 9;
+  private static final String VARIANT_ENG = "ENGLISH";
+
   @Before
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
 
     this.mockMvc = MockMvcBuilders
             .standaloneSetup(actionPlanMappingEndpoint)
+            .setHandlerExceptionResolvers(mockAdviceFor(RestExceptionHandler.class))
             .build();
   }
 
@@ -58,68 +73,74 @@ public final class ActionPlanMappingEndpointUnitTest {
    */
   @Test
   public void findMappingFound() throws Exception {
-//    with("/actionplanmappings/%s", MAPPING_ID)
-//        .assertResponseCodeIs(HttpStatus.OK)
+    when(actionPlanMappingService.findActionPlanMapping(ONE)).thenReturn(buildActionPlanMapping());
 
-//        .assertIntegerInBody("$.actionPlanMappingId", MAPPING_ID)
-//        .assertIntegerInBody("$.actionPlanId", 1)
-//        .assertIntegerInBody("$.caseTypeId", 1)
-//        .assertBooleanInBody("$.isDefault", true)
-//        .assertStringInBody("$.inboundChannel",InboundChannel.ONLINE.name())
-//        .assertStringInBody("$.variant", VARIANT_ENG)
-//        .assertStringInBody("$.outboundChannel", OutboundChannel.POST.name())
-//        .andClose();
-    ActionPlanMapping actionPlanMapping = new ActionPlanMapping();
-    actionPlanMapping.setActionPlanMappingId(MAPPING_ID);
-    actionPlanMapping.setActionPlanId(1);
-    actionPlanMapping.setCaseTypeId(1);
-    actionPlanMapping.setIsDefault(true);
-    actionPlanMapping.setInboundChannel(InboundChannel.ONLINE);
-    actionPlanMapping.setVariant(VARIANT_ENG);
-    actionPlanMapping.setOutboundChannel(OutboundChannel.POST);
-    when(actionPlanMappingService.findActionPlanMapping(MAPPING_ID)).thenReturn(actionPlanMapping);
-
-    ResultActions actions = mockMvc.perform(getJson(String.format("/actionplanmappings/%s", MAPPING_ID)));
+    ResultActions actions = mockMvc.perform(getJson(String.format("/actionplanmappings/%s", ONE)));
 
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(ActionPlanMappingEndpoint.class));
     actions.andExpect(handler().methodName("findActionPlanMappingByActionPlanMappingId"));
-    actions.andExpect(jsonPath("$.actionPlanMappingId", is(MAPPING_ID)));
-    actions.andExpect(jsonPath("$.actionPlanId", is(1)));
-    actions.andExpect(jsonPath("$.caseTypeId", is(1)));
+    actions.andExpect(jsonPath("$.actionPlanMappingId", is(ONE)));
+    actions.andExpect(jsonPath("$.actionPlanId", is(ONE)));
+    actions.andExpect(jsonPath("$.caseTypeId", is(ONE)));
     actions.andExpect(jsonPath("$.isDefault", is(true)));
     actions.andExpect(jsonPath("$.inboundChannel", is(InboundChannel.ONLINE.name())));
     actions.andExpect(jsonPath("$.variant", is(VARIANT_ENG)));
     actions.andExpect(jsonPath("$.outboundChannel", is(OutboundChannel.POST.name())));
   }
 
-//  /**
-//   * a test
-//   */
-//  @Test
-//  public void findMappingNotFound() {
-//    with("/actionplanmappings/%s", NON_EXISTENT_MAPPING_ID)
-//        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
-//        .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
-//        .assertTimestampExists()
-//        .assertMessageEquals("ActionPlanMapping not found for id %s", NON_EXISTENT_MAPPING_ID)
-//        .andClose();
-//  }
-//
-//  /**
-//   * a test
-//   */
-//  @Test
-//  public void findMappingsByCaseTypeId() {
-//    with("/actionplanmappings/casetype/%d", CASE_TYPE_ID)
-//        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
-//        .assertArrayLengthInBodyIs(1)
-//        .assertIntegerOccursThroughoutListInBody("$..actionPlanMappingId", MAPPING_ID)
-//        .assertIntegerOccursThroughoutListInBody("$..actionPlanId", 1)
-//        .assertIntegerOccursThroughoutListInBody("$..caseTypeId", 1)
-//        .assertStringOccursThroughoutListInBody("$..inboundChannel",InboundChannel.ONLINE.name())
-//        .assertStringOccursThroughoutListInBody("$..variant", VARIANT_ENG)
-//        .assertStringOccursThroughoutListInBody("$..outboundChannel", OutboundChannel.POST.name())
-//        .andClose();
-//  }
+  /**
+   * a test
+   */
+  @Test
+  public void findMappingNotFound() throws Exception {
+    when(actionPlanMappingService.findActionPlanMapping(NON_EXISTENT_MAPPING_ID)).thenReturn(null);
+
+    ResultActions actions = mockMvc.perform(getJson(String.format("/actionplanmappings/%s", NON_EXISTENT_MAPPING_ID)));
+
+    actions.andExpect(status().isNotFound());
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
+    actions.andExpect(jsonPath("$.error.message", is(String.format("ActionPlanMapping not found for id %s", NON_EXISTENT_MAPPING_ID))));
+    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+  }
+
+  /**
+   * a test
+   */
+  @Test
+  public void findMappingsByCaseTypeId() throws Exception {
+    CaseType caseType = new CaseType();
+    when(caseTypeService.findCaseTypeByCaseTypeId(CASE_TYPE_ID)).thenReturn(caseType);
+
+    List<ActionPlanMapping> list = new ArrayList<>();
+    list.add(buildActionPlanMapping());
+    when(actionPlanMappingService.findActionPlanMappingsForCaseType(CASE_TYPE_ID)).thenReturn(list);
+
+    ResultActions actions = mockMvc.perform(getJson(String.format("/actionplanmappings/casetype/%d", CASE_TYPE_ID)));
+
+    actions.andExpect(status().isOk());
+    actions.andExpect(handler().handlerType(ActionPlanMappingEndpoint.class));
+    actions.andExpect(handler().methodName("findActionPlanMappingByCaseTypeId"));
+    actions.andExpect(jsonPath("$", Matchers.hasSize(1)));
+    actions.andExpect(jsonPath("$[0].actionPlanMappingId", is(ONE)));
+    actions.andExpect(jsonPath("$[0].actionPlanId", is(ONE)));
+    actions.andExpect(jsonPath("$[0].caseTypeId", is(ONE)));
+    actions.andExpect(jsonPath("$[0].isDefault", is(true)));
+    actions.andExpect(jsonPath("$[0].inboundChannel", is(InboundChannel.ONLINE.name())));
+    actions.andExpect(jsonPath("$[0].variant", is(VARIANT_ENG)));
+    actions.andExpect(jsonPath("$[0].outboundChannel", is(OutboundChannel.POST.name())));
+  }
+
+  private ActionPlanMapping buildActionPlanMapping() {
+    ActionPlanMapping actionPlanMapping = new ActionPlanMapping();
+    actionPlanMapping.setActionPlanMappingId(ONE);
+    actionPlanMapping.setActionPlanId(ONE);
+    actionPlanMapping.setCaseTypeId(ONE);
+    actionPlanMapping.setIsDefault(true);
+    actionPlanMapping.setInboundChannel(InboundChannel.ONLINE);
+    actionPlanMapping.setVariant(VARIANT_ENG);
+    actionPlanMapping.setOutboundChannel(OutboundChannel.POST);
+    return actionPlanMapping;
+  }
+
 }
