@@ -1,42 +1,35 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
-import static org.junit.Assert.assertTrue;
-import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.ADDRESS_ESTABLISH_TYPE;
-import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.ADDRESS_HTC;
-import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.ADDRESS_LAD;
-import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.ADDRESS_LATITUDE;
-import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.ADDRESS_LINE1;
-import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.ADDRESS_LINE2;
-import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.ADDRESS_LOCALITY;
-import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.ADDRESS_LONGITUDE;
-import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.ADDRESS_LSOA;
-import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.ADDRESS_MSOA;
-import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.ADDRESS_ORG_NAME;
-import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.ADDRESS_OUTPUT_AREA;
-import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.ADDRESS_REGION_CODE;
-import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.ADDRESS_TOWN_NAME;
-import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.ADDRESS_TYPE;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.ADDRESS_NON_EXISTING_POSTCODE;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.ADDRESS_NON_EXISTING_UPRN;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.ADDRESS_POSTCODE;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.ADDRESS_UPRN;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.ADDRESS_WITH_UPRN_CHECKED_EXCEPTION;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.OUR_EXCEPTION_MESSAGE;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.Is.isA;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.ons.ctp.common.MvcHelper.getJson;
+import static uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder.*;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
 
+import ma.glasnost.orika.MapperFacade;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpStatus;
+import org.mockito.Spy;
 
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
+import uk.gov.ons.ctp.response.casesvc.domain.model.Address;
 import uk.gov.ons.ctp.response.casesvc.service.AddressService;
-import uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory;
+import uk.gov.ons.ctp.response.casesvc.utility.AddressBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Unit Tests for the Address Endpoint
@@ -49,7 +42,12 @@ public final class AddressEndpointUnitTest {
   @Mock
   private AddressService addressService;
 
+  @Spy
+  private MapperFacade mapperFacade = new CaseSvcBeanMapper();
+
   private MockMvc mockMvc;
+
+  private static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
 
   @Before
   public void setUp() throws Exception {
@@ -59,103 +57,112 @@ public final class AddressEndpointUnitTest {
             .standaloneSetup(addressEndpoint)
             .setHandlerExceptionResolvers(mockAdviceFor(RestExceptionHandler.class))
             .build();
-
-    addressService = MockAddressServiceFactory.provide();
   }
 
   /**
    * a test
    */
   @Test
-  public void findByUprnPositiveScenario() {
-    assertTrue(true);
-//    with("/addresses/%s", ADDRESS_UPRN)
-//        .assertResponseCodeIs(HttpStatus.OK)
-//        .assertIntegerInBody("$.uprn", ADDRESS_UPRN.intValue())
-//        .assertStringInBody("$.type", ADDRESS_TYPE)
-//        .assertStringInBody("$.organisationName", ADDRESS_ORG_NAME)
-//        .assertStringInBody("$.locality", ADDRESS_LOCALITY)
-//        .assertStringInBody("$.estabType", ADDRESS_ESTABLISH_TYPE)
-//        .assertStringInBody("$.line1", ADDRESS_LINE1)
-//        .assertStringInBody("$.line2", ADDRESS_LINE2)
-//        .assertStringInBody("$.townName", ADDRESS_TOWN_NAME)
-//        .assertStringInBody("$.outputArea", ADDRESS_OUTPUT_AREA)
-//        .assertStringInBody("$.lsoaArea", ADDRESS_LSOA)
-//        .assertStringInBody("$.msoaArea", ADDRESS_MSOA)
-//        .assertStringInBody("$.ladCode", ADDRESS_LAD)
-//        .assertStringInBody("$.regionCode", ADDRESS_REGION_CODE)
-//        .assertIntegerInBody("$.htc", ADDRESS_HTC)
-//        .assertDoubleInBody("$.latitude", ADDRESS_LATITUDE)
-//        .assertDoubleInBody("$.longitude", ADDRESS_LONGITUDE)
-//        .andClose();
+  public void findByUprnPositiveScenario() throws Exception {
+    when(addressService.findByUprn(ADDRESS_UPRN)).thenReturn(AddressBuilder.address().uprn(ADDRESS_UPRN).buildAddress());
+
+    ResultActions actions = mockMvc.perform(getJson(String.format("/addresses/%s", ADDRESS_UPRN)));
+
+    actions.andExpect(status().isOk());
+    actions.andExpect(handler().handlerType(AddressEndpoint.class));
+    actions.andExpect(handler().methodName("findAddressesByUprn"));
+    actions.andExpect(jsonPath("$.uprn", is(ADDRESS_UPRN.intValue())));
+    actions.andExpect(jsonPath("$.type", is(ADDRESS_TYPE)));
+    actions.andExpect(jsonPath("$.organisationName", is(ADDRESS_ORG_NAME)));
+    actions.andExpect(jsonPath("$.locality", is(ADDRESS_LOCALITY)));
+    actions.andExpect(jsonPath("$.estabType", is(ADDRESS_ESTABLISH_TYPE)));
+    actions.andExpect(jsonPath("$.line1", is(ADDRESS_LINE1)));
+    actions.andExpect(jsonPath("$.line2", is(ADDRESS_LINE2)));
+    actions.andExpect(jsonPath("$.townName", is(ADDRESS_TOWN_NAME)));
+    actions.andExpect(jsonPath("$.outputArea", is(ADDRESS_OUTPUT_AREA)));
+    actions.andExpect(jsonPath("$.lsoaArea", is(ADDRESS_LSOA)));
+    actions.andExpect(jsonPath("$.msoaArea", is(ADDRESS_MSOA)));
+    actions.andExpect(jsonPath("$.ladCode", is(ADDRESS_LAD)));
+    actions.andExpect(jsonPath("$.regionCode", is(ADDRESS_REGION_CODE)));
+    actions.andExpect(jsonPath("$.htc", is(ADDRESS_HTC)));
+    actions.andExpect(jsonPath("$.latitude", is(ADDRESS_LATITUDE)));
+    actions.andExpect(jsonPath("$.longitude", is(ADDRESS_LONGITUDE)));
   }
 
-//  /**
-//   * a test
-//   */
-//  @Test
-//  public void findByUprnScenarioNotFound() {
-//    with("/addresses/%s", ADDRESS_NON_EXISTING_UPRN)
-//        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
-//        .assertStringInBody("$.error.code", CTPException.Fault.RESOURCE_NOT_FOUND.toString())
-//        .assertTimestampExists()
-//        .assertStringInBody("$.error.message",
-//            String.format("No addresses found for uprn %s", ADDRESS_NON_EXISTING_UPRN))
-//        .andClose();
-//  }
-//
-//  /**
-//   * a test
-//   */
-//  @Test
-//  public void findByUprnScenarioThrowCheckedException() {
-//    with("/addresses/%s", ADDRESS_WITH_UPRN_CHECKED_EXCEPTION)
-//        .assertResponseCodeIs(HttpStatus.INTERNAL_SERVER_ERROR)
-//        .assertStringInBody("$.error.code", CTPException.Fault.SYSTEM_ERROR.toString())
-//        .assertTimestampExists()
-//        .assertStringInBody("$.error.message", OUR_EXCEPTION_MESSAGE)
-//        .andClose();
-//  }
-//
-//  /**
-//   * a test
-//   */
-//  @Test
-//  public void findByPostcodePositiveScenario() {
-//    with("/addresses/postcode/%s", ADDRESS_POSTCODE)
-//        .assertResponseCodeIs(HttpStatus.OK)
-//        .assertArrayLengthInBodyIs(1)
-//        .assertStringListInBody("$..postcode", ADDRESS_POSTCODE)
-//        .assertStringListInBody("$..type", ADDRESS_TYPE)
-//        .assertStringListInBody("$..estabType", ADDRESS_ESTABLISH_TYPE)
-//        .assertStringListInBody("$..line1", ADDRESS_LINE1)
-//        .assertStringListInBody("$..line2", ADDRESS_LINE2)
-//        .assertStringListInBody("$..townName", ADDRESS_TOWN_NAME)
-//        .assertStringListInBody("$..outputArea", ADDRESS_OUTPUT_AREA)
-//        .assertStringListInBody("$..lsoaArea", ADDRESS_LSOA)
-//        .assertStringListInBody("$..msoaArea", ADDRESS_MSOA)
-//        .assertStringListInBody("$..ladCode", ADDRESS_LAD)
-//        .assertStringListInBody("$..regionCode", ADDRESS_REGION_CODE)
-//        .assertIntegerListInBody("$..htc", ADDRESS_HTC)
-//        .assertDoubleListInBody("$..latitude", ADDRESS_LATITUDE)
-//        .assertDoubleListInBody("$..longitude", ADDRESS_LONGITUDE)
-//        .andClose();
-//  }
-//
-//  /**
-//   * a test
-//   */
-//  @Test
-//  public void findByPostcodeScenarioNotFound() {
-//    with("/addresses/postcode/%s", ADDRESS_NON_EXISTING_POSTCODE)
-//        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
-//        .assertStringInBody("$.error.code", CTPException.Fault.RESOURCE_NOT_FOUND.toString())
-//        .assertTimestampExists()
-//        .assertStringInBody("$.error.message",
-//            String.format("No addresses found for postcode %s",
-//                ADDRESS_NON_EXISTING_POSTCODE))
-//        .andClose();
-//  }
+  /**
+   * a test
+   */
+  @Test
+  public void findByUprnScenarioNotFound() throws Exception {
+    when(addressService.findByUprn(ADDRESS_NON_EXISTING_UPRN)).thenReturn(null);
 
+    ResultActions actions = mockMvc.perform(getJson(String.format("/addresses/%s", ADDRESS_NON_EXISTING_UPRN)));
 
+    actions.andExpect(status().isNotFound());
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
+    actions.andExpect(jsonPath("$.error.message", is(String.format("No addresses found for uprn %s", ADDRESS_NON_EXISTING_UPRN))));
+    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+  }
+
+  /**
+   * a test
+   */
+  @Test
+  public void findByUprnScenarioThrowCheckedException() throws Exception {
+    when(addressService.findByUprn(ADDRESS_WITH_UPRN_CHECKED_EXCEPTION)).thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
+
+    ResultActions actions = mockMvc.perform(getJson(String.format("/addresses/%s", ADDRESS_WITH_UPRN_CHECKED_EXCEPTION)));
+
+    actions.andExpect(status().is5xxServerError());
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.SYSTEM_ERROR.name())));
+    actions.andExpect(jsonPath("$.error.message", is(OUR_EXCEPTION_MESSAGE)));
+    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+  }
+
+  /**
+   * a test
+   */
+  @Test
+  public void findByPostcodePositiveScenario() throws Exception {
+    List<Address> result = new ArrayList<>();
+    result.add(AddressBuilder.address().postcode(ADDRESS_POSTCODE).buildAddress());
+    when(addressService.findByPostcode(ADDRESS_POSTCODE)).thenReturn(result);
+
+    ResultActions actions = mockMvc.perform(getJson(String.format("/addresses/postcode/%s", ADDRESS_POSTCODE)));
+
+    actions.andExpect(status().isOk());
+    actions.andExpect(handler().handlerType(AddressEndpoint.class));
+    actions.andExpect(handler().methodName("findAddressesByPostcode"));
+    actions.andExpect(jsonPath("$", Matchers.hasSize(1)));
+    actions.andExpect(jsonPath("$[0].postcode", is(ADDRESS_POSTCODE)));
+    actions.andExpect(jsonPath("$[0].type", is(ADDRESS_TYPE)));
+    actions.andExpect(jsonPath("$[0].estabType", is(ADDRESS_ESTABLISH_TYPE)));
+    actions.andExpect(jsonPath("$[0].line1", is(ADDRESS_LINE1)));
+    actions.andExpect(jsonPath("$[0].line2", is(ADDRESS_LINE2)));
+    actions.andExpect(jsonPath("$[0].townName", is(ADDRESS_TOWN_NAME)));
+    actions.andExpect(jsonPath("$[0].outputArea", is(ADDRESS_OUTPUT_AREA)));
+    actions.andExpect(jsonPath("$[0].lsoaArea", is(ADDRESS_LSOA)));
+    actions.andExpect(jsonPath("$[0].msoaArea", is(ADDRESS_MSOA)));
+    actions.andExpect(jsonPath("$[0].ladCode", is(ADDRESS_LAD)));
+    actions.andExpect(jsonPath("$[0].regionCode", is(ADDRESS_REGION_CODE)));
+    actions.andExpect(jsonPath("$[0].htc", is(ADDRESS_HTC)));
+    actions.andExpect(jsonPath("$[0].latitude", is(ADDRESS_LATITUDE)));
+    actions.andExpect(jsonPath("$[0].longitude", is(ADDRESS_LONGITUDE)));
+  }
+
+  /**
+   * a test
+   */
+  @Test
+  public void findByPostcodeScenarioNotFound() throws Exception {
+    when(addressService.findByPostcode(ADDRESS_NON_EXISTING_POSTCODE)).thenReturn(null);
+
+    ResultActions actions = mockMvc.perform(getJson(String.format("/addresses/postcode/%s", ADDRESS_NON_EXISTING_POSTCODE)));
+
+    actions.andExpect(status().isNotFound());
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
+    actions.andExpect(jsonPath("$.error.message", is(String.format("No addresses found for postcode %s",
+            ADDRESS_NON_EXISTING_POSTCODE))));
+    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+  }
 }

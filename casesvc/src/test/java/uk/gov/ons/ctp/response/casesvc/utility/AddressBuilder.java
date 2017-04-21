@@ -5,6 +5,9 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Address;
 public final class AddressBuilder {
 
   public static final Integer ADDRESS_HTC = 11;
+  public static final Long ADDRESS_UPRN = 123L;
+  public static final Long ADDRESS_NON_EXISTING_UPRN = 999L;
+  public static final Long ADDRESS_WITH_UPRN_CHECKED_EXCEPTION = 666L;
   public static final Double ADDRESS_LATITUDE = 100000d;
   public static final Double ADDRESS_LONGITUDE = 300000d;
   public static final String ADDRESS_ESTABLISH_TYPE = "EX";
@@ -19,6 +22,8 @@ public final class AddressBuilder {
   public static final String ADDRESS_LAD = "lad123";
   public static final String ADDRESS_MSOA = "msoa123";
   public static final String ADDRESS_REGION_CODE = "reg123";
+  public static final String ADDRESS_POSTCODE = "PO15 5RR";
+  public static final String ADDRESS_NON_EXISTING_POSTCODE = "PORANDOM";
 
   private Long uprn;
   private String postcode;

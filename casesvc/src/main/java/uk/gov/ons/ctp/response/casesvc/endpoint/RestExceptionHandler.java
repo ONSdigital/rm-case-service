@@ -41,4 +41,10 @@ public class RestExceptionHandler {
         return new ResponseEntity<>(exception, status);
     }
 
+    @ExceptionHandler(Throwable.class)
+    public ResponseEntity<?> handleGeneralException(Throwable t) {
+        log.error("General exception is {}", t);
+        return new ResponseEntity<>(new CTPException(CTPException.Fault.SYSTEM_ERROR, t, t.getMessage()),
+                HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
