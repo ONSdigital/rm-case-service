@@ -92,6 +92,8 @@ public final class ActionPlanMappingEndpointUnitTest {
     ResultActions actions = mockMvc.perform(getJson(String.format("/actionplanmappings/%s", NON_EXISTENT_MAPPING_ID)));
 
     actions.andExpect(status().isNotFound());
+    actions.andExpect(handler().handlerType(ActionPlanMappingEndpoint.class));
+    actions.andExpect(handler().methodName("findActionPlanMappingByActionPlanMappingId"));
     actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
     actions.andExpect(jsonPath("$.error.message", is(String.format("ActionPlanMapping not found for id %s", NON_EXISTENT_MAPPING_ID))));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));

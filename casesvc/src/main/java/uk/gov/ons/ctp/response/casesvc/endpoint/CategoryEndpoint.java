@@ -59,8 +59,8 @@ public final class CategoryEndpoint implements CTPEndpoint {
    * @return the list of categories
    */
   @RequestMapping(method = RequestMethod.GET)
-  public List<CategoryDTO> findCategories(@RequestParam("role") final String role,
-                                          @RequestParam("group") final String group) {
+  public List<CategoryDTO> findCategories(@RequestParam(value = "role", required = false) final String role,
+                                          @RequestParam(value = "group", required = false) final String group) {
     log.info("Entering findCategories with role {}", role);
     List<Category> categories = categoryService.findCategories(role, group);
     List<CategoryDTO> categoryDTOs = mapperFacade.mapAsList(categories, CategoryDTO.class);

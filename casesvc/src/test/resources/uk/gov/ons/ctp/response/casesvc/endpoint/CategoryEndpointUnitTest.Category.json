@@ -1,0 +1,38 @@
+[
+  {
+    "group": "general",
+    "categoryType": "ACCESSIBILITY_MATERIALS",
+    "longDescription": "Accessibility Materials",
+    "shortDescription": "Accessibility Materials",
+    "role": "collect-csos, collect-admins",
+    "generatedActionType": null,
+    "newCaseRespondentType": null,
+    "oldCaseRespondentType": null,
+    "eventType": null,
+    "manual": true
+  },
+  {
+    "group": null,
+    "categoryType": "ACTION_CANCELLATION_COMPLETED",
+    "longDescription": "Action Cancellation Completed",
+    "shortDescription": "Action Cancellation Completed",
+    "role": null,
+    "generatedActionType": null,
+    "newCaseRespondentType": null,
+    "oldCaseRespondentType": null,
+    "eventType": null,
+    "manual": false
+  },
+  {
+    "group": null,
+    "categoryType": "ACTION_CANCELLATION_CREATED",
+    "longDescription": "Action Cancellation Created",
+    "shortDescription": "Action Cancellation Created",
+    "role": null,
+    "generatedActionType": null,
+    "newCaseRespondentType": null,
+    "oldCaseRespondentType": null,
+    "eventType": null,
+    "manual": false
+  }
+]

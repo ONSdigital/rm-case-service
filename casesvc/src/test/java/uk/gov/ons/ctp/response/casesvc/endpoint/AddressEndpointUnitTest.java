@@ -99,6 +99,8 @@ public final class AddressEndpointUnitTest {
     ResultActions actions = mockMvc.perform(getJson(String.format("/addresses/%s", ADDRESS_NON_EXISTING_UPRN)));
 
     actions.andExpect(status().isNotFound());
+    actions.andExpect(handler().handlerType(AddressEndpoint.class));
+    actions.andExpect(handler().methodName("findAddressesByUprn"));
     actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
     actions.andExpect(jsonPath("$.error.message", is(String.format("No addresses found for uprn %s", ADDRESS_NON_EXISTING_UPRN))));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
@@ -114,6 +116,8 @@ public final class AddressEndpointUnitTest {
     ResultActions actions = mockMvc.perform(getJson(String.format("/addresses/%s", ADDRESS_WITH_UPRN_CHECKED_EXCEPTION)));
 
     actions.andExpect(status().is5xxServerError());
+    actions.andExpect(handler().handlerType(AddressEndpoint.class));
+    actions.andExpect(handler().methodName("findAddressesByUprn"));
     actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.SYSTEM_ERROR.name())));
     actions.andExpect(jsonPath("$.error.message", is(OUR_EXCEPTION_MESSAGE)));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
@@ -160,6 +164,8 @@ public final class AddressEndpointUnitTest {
     ResultActions actions = mockMvc.perform(getJson(String.format("/addresses/postcode/%s", ADDRESS_NON_EXISTING_POSTCODE)));
 
     actions.andExpect(status().isNotFound());
+    actions.andExpect(handler().handlerType(AddressEndpoint.class));
+    actions.andExpect(handler().methodName("findAddressesByPostcode"));
     actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
     actions.andExpect(jsonPath("$.error.message", is(String.format("No addresses found for postcode %s",
             ADDRESS_NON_EXISTING_POSTCODE))));
