@@ -3,11 +3,13 @@ package uk.gov.ons.ctp.response.casesvc.endpoint;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.ons.ctp.common.MvcHelper.getJson;
+import static uk.gov.ons.ctp.common.MvcHelper.postJson;
 import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.ERRORMSG_CASENOTFOUND;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
 
@@ -28,7 +30,9 @@ import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
+import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
@@ -71,6 +75,11 @@ public final class CaseEndpointUnitTest {
   private static final String CASE3_SUBCATEGORY = "subcat 3";
   private static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
 
+  private static final String CASEEVENT_INVALIDJSON =
+          "{\"description\":\"a\",\"category\":\"BAD_CAT\",\"createdBy\":\"u\"}";
+  private static final String CASEEVENT_VALIDJSON =
+          "{\"description\":\"sometest\",\"category\":\"GENERAL_ENQUIRY\",\"createdBy\":\"unittest\"}";
+
   @InjectMocks
   private CaseEndpoint caseEndpoint;
 
@@ -89,6 +98,7 @@ public final class CaseEndpointUnitTest {
   private MockMvc mockMvc;
   private List<Case> caseResults;
   private List<CaseEvent> caseEventsResults;
+  private List<Category> categoryResults;
 
   @Before
   public void setUp() throws Exception {
@@ -101,6 +111,7 @@ public final class CaseEndpointUnitTest {
 
     this.caseResults = FixtureHelper.loadClassFixtures(Case[].class);
     this.caseEventsResults = FixtureHelper.loadClassFixtures(CaseEvent[].class);
+    this.categoryResults = FixtureHelper.loadClassFixtures(Category[].class);
   }
 
   /**
@@ -206,49 +217,41 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.error.message", is(OUR_EXCEPTION_MESSAGE)));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
-//
-//  /**
-//   * a test providing bad json
-//   */
-//  @Test
-//  public void createCaseEventBadJson() {
-//
-//    with("/cases/%s/events", CASEID).post(MediaType.APPLICATION_JSON_TYPE, CASEEVENT_INVALIDJSON)
-//        .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
-//        .andClose();
-//  }
-//
-//  /**
-//   * a test providing good json
-//   */
-//  @Test
-//  public void createCaseEventGoodJson() {
-//    with("/cases/%s/events", CASEID).post(MediaType.APPLICATION_JSON_TYPE, CASEEVENT_VALIDJSON)
-//        .assertResponseCodeIs(HttpStatus.CREATED)
-//        .assertIntegerInBody("$.caseEventId", 1)
-//        .assertIntegerInBody("$.caseId", CASEID)
-//        .assertStringInBody("$.description", CASEEVENT_DESC1)
-//        .assertStringInBody("$.createdBy", CREATEDBY)
-//        .assertStringInBody("$.createdDateTime", CREATEDDATE_VALUE)
-//        .assertStringInBody("$.category", CASEEVENT_CATEGORY.name())
-//        .assertStringInBody("$.subCategory", CASEEVENT_SUBCATEGORY)
-//        .andClose();
-//  }
-//
-//  /**
-//   * a test providing good json
-//   */
-//  @Test
-//  public void createCaseEventCaseNotFound() {
-//    with("/cases/%s/events", NON_EXISTING_CASE_ID).post(MediaType.APPLICATION_JSON_TYPE, CASEEVENT_VALIDJSON)
-//        .assertResponseCodeIs(HttpStatus.CREATED)
-//        .assertIntegerInBody("$.caseEventId", 1)
-//        .assertIntegerInBody("$.caseId", CASEID)
-//        .assertStringInBody("$.description", CASEEVENT_DESC1)
-//        .assertStringInBody("$.createdBy", CREATEDBY)
-//        .assertStringInBody("$.createdDateTime", CREATEDDATE_VALUE)
-//        .assertStringInBody("$.category", CASEEVENT_CATEGORY.name())
-//        .assertStringInBody("$.subCategory", CASEEVENT_SUBCATEGORY)
-//        .andClose();
-//  }
+
+  /**
+   * a test providing bad json
+   */
+  @Test
+  public void createCaseEventBadJson() throws Exception {
+    ResultActions actions = mockMvc.perform(postJson(String.format("/cases/%s/events", CASE_ID), CASEEVENT_INVALIDJSON));
+
+    actions.andExpect(status().isBadRequest());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("createCaseEvent"));
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())));
+    actions.andExpect(jsonPath("$.error.message", isA(String.class)));
+    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+  }
+
+  /**
+   * a test providing good json
+   */
+  @Test
+  public void createCaseEventGoodJson() throws Exception {
+    when(categoryService.findCategory(CategoryDTO.CategoryType.GENERAL_ENQUIRY)).thenReturn(categoryResults.get(0));
+    when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class))).thenReturn(caseEventsResults.get(0));
+
+    ResultActions actions = mockMvc.perform(postJson(String.format("/cases/%s/events", CASE_ID), CASEEVENT_VALIDJSON));
+
+    actions.andExpect(status().isCreated());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("createCaseEvent"));
+    actions.andExpect(jsonPath("$.caseEventId", is(CASE1_ID)));
+    actions.andExpect(jsonPath("$.caseId", is(CASE1_ID)));
+    actions.andExpect(jsonPath("$.description", is(CASE1_DESCRIPTION)));
+    actions.andExpect(jsonPath("$.createdBy", is(CASE1_CREATEDBY)));
+    actions.andExpect(jsonPath("$.createdDateTime", is(CASE1_CREATED_DATE)));
+    actions.andExpect(jsonPath("$.category", is(CASE1_CATEGORY)));
+    actions.andExpect(jsonPath("$.subCategory", is(CASE1_SUBCATEGORY)));
+  }
 }

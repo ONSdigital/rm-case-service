@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
+import java.net.URI;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -10,10 +11,8 @@ import org.springframework.util.CollectionUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
@@ -22,6 +21,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Contact;
+import uk.gov.ons.ctp.response.casesvc.error.InvalidRequestException;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
@@ -160,9 +160,15 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @throws CTPException on failure to create CaseEvent
    */
   @RequestMapping(value = "/{caseId}/events", method = RequestMethod.POST)
-  public CaseEventDTO createCaseEvent(@PathVariable("caseId") final Integer caseId,
-      @Valid final CaseEventCreationRequestDTO caseEventCreationRequestDTO) throws CTPException {
+  public ResponseEntity<?> createCaseEvent(@PathVariable("caseId") final Integer caseId,
+                                      @RequestBody @Valid final CaseEventCreationRequestDTO caseEventCreationRequestDTO,
+                                      BindingResult bindingResult) throws CTPException {
     log.info("Entering createCaseEvent with caseId {} and requestObject {}", caseId, caseEventCreationRequestDTO);
+
+    if (bindingResult.hasErrors()) {
+      throw new InvalidRequestException("Binding errors for customer creation: ", bindingResult);
+    }
+
     caseEventCreationRequestDTO.setCaseId(caseId);
 
     CaseEvent caseEvent = mapperFacade.map(caseEventCreationRequestDTO, CaseEvent.class);
@@ -183,7 +189,8 @@ public final class CaseEndpoint implements CTPEndpoint {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
           String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseId));
     }
-    return mapperFacade.map(createdCaseEvent, CaseEventDTO.class);
+    // TODO Define URI
+    return ResponseEntity.created(URI.create("TODO")).body(mapperFacade.map(createdCaseEvent, CaseEventDTO.class));
   }
 
 }
