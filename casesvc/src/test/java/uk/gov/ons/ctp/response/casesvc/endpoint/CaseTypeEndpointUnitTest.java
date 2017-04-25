@@ -24,7 +24,7 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseTypeService;
 import uk.gov.ons.ctp.response.casesvc.utility.MockCaseTypeServiceFactory;
 
 /**
- * Created by Martin.Humphrey on 26/2/2016.
+ * Leave commented out as will be deleted in BRES
  */
 public final class CaseTypeEndpointUnitTest {
 

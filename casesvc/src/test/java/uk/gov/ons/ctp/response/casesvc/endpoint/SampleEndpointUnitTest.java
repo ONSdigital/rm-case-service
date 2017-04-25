@@ -28,7 +28,7 @@ import uk.gov.ons.ctp.response.casesvc.utility.MockCategoryServiceFactory;
 import uk.gov.ons.ctp.response.casesvc.utility.MockSampleServiceFactory;
 
 /**
- * A set of tests for the Sample Endpoint
+ * Leave commented out as will be deleted in BRES
  */
 public final class SampleEndpointUnitTest {
 
