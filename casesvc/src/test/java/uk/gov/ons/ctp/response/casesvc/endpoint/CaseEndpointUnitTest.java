@@ -3,7 +3,6 @@ package uk.gov.ons.ctp.response.casesvc.endpoint;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -30,11 +29,11 @@ import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,7 +49,9 @@ public final class CaseEndpointUnitTest {
   private static final Integer CASE1_ID = 1;
   private static final Integer CASE2_ID = 2;
   private static final Integer CASE3_ID = 3;
-  private static final Integer NON_EXISTING_ID = 998;
+  private static final Integer EXISTING_CASE_ID_NO_EVENTS = 992;
+  private static final Integer NON_EXISTING_CASE_ID = 998;
+  private static final Integer UNCHECKED_EXCEPTION_CASE_ID = 999;
 
   private static final Long CASE1_CREATED_DATE = 1460736159699L;
   private static final Long CASE2_CREATED_DATE = 1460736159799L;
@@ -68,6 +69,7 @@ public final class CaseEndpointUnitTest {
   private static final String CASE1_SUBCATEGORY = "subcat 1";
   private static final String CASE2_SUBCATEGORY = "subcat 2";
   private static final String CASE3_SUBCATEGORY = "subcat 3";
+  private static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
 
   @InjectMocks
   private CaseEndpoint caseEndpoint;
@@ -125,13 +127,13 @@ public final class CaseEndpointUnitTest {
    */
   @Test
   public void findCaseByCaseIdNotFound() throws Exception {
-    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s", NON_EXISTING_ID)));
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s", NON_EXISTING_CASE_ID)));
 
     actions.andExpect(status().isNotFound());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCaseByCaseId"));
     actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
-    actions.andExpect(jsonPath("$.error.message", is(String.format("%s case id %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_ID))));
+    actions.andExpect(jsonPath("$.error.message", is(String.format("%s case id %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_CASE_ID))));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
@@ -156,48 +158,61 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$[*].category", containsInAnyOrder(CASE1_CATEGORY, CASE2_CATEGORY, CASE3_CATEGORY)));
     actions.andExpect(jsonPath("$[*].subCategory", containsInAnyOrder(CASE1_SUBCATEGORY, CASE2_SUBCATEGORY, CASE3_SUBCATEGORY)));
   }
-//
-//  /**
-//   * a test
-//   */
-//  @Test
-//  public void findCaseEventsByCaseIdFoundButNoEvents() {
-//    with("/cases/%s/events", EXISTING_ID_NO_EVENTS)
-//        .assertResponseCodeIs(HttpStatus.NO_CONTENT)
-//        .andClose();
-//  }
-//
-//  /**
-//   * a test
-//   */
-//  @Test
-//  public void findCaseEventsByCaseIdNotFound() {
-//    with("/cases/%s/events", NON_EXISTING_ID)
-//        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
-//        .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
-//        .assertTimestampExists()
-//        .assertMessageEquals(String.format("%s case id %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_ID))
-//        .andClose();
-//  }
-//
-//  /**
-//   * a test
-//   */
-//  @Test
-//  public void findCaseByCaseIdUnCheckedException() {
-//    with("/cases/%s", UNCHECKED_EXCEPTION)
-//        .assertResponseCodeIs(HttpStatus.INTERNAL_SERVER_ERROR)
-//        .assertFaultIs(CTPException.Fault.SYSTEM_ERROR)
-//        .assertTimestampExists()
-//        .assertMessageEquals(OUR_EXCEPTION_MESSAGE)
-//        .andClose();
-//  }
+
+  /**
+   * a test
+   */
+  @Test
+  public void findCaseEventsByCaseIdFoundButNoEvents() throws Exception {
+    when(caseService.findCaseByCaseId(EXISTING_CASE_ID_NO_EVENTS)).thenReturn(caseResults.get(0));
+    when(caseService.findCaseEventsByCaseId(EXISTING_CASE_ID_NO_EVENTS)).thenReturn(new ArrayList<>());
+
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s/events", EXISTING_CASE_ID_NO_EVENTS)));
+
+    actions.andExpect(status().isNoContent());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("findCaseEventsByCaseId"));
+  }
+
+
+  /**
+   * a test
+   */
+  @Test
+  public void findCaseEventsByCaseIdNotFound() throws Exception {
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s/events", NON_EXISTING_CASE_ID)));
+
+    actions.andExpect(status().isNotFound());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("findCaseEventsByCaseId"));
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
+    actions.andExpect(jsonPath("$.error.message", is(String.format("%s case id %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_CASE_ID))));
+    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+  }
+
+  /**
+   * a test
+   */
+  @Test
+  public void findCaseByCaseIdUnCheckedException() throws Exception {
+    when(caseService.findCaseByCaseId(UNCHECKED_EXCEPTION_CASE_ID)).thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
+
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s", UNCHECKED_EXCEPTION_CASE_ID)));
+
+    actions.andExpect(status().is5xxServerError());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("findCaseByCaseId"));
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.SYSTEM_ERROR.name())));
+    actions.andExpect(jsonPath("$.error.message", is(OUR_EXCEPTION_MESSAGE)));
+    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+  }
 //
 //  /**
 //   * a test providing bad json
 //   */
 //  @Test
 //  public void createCaseEventBadJson() {
+//
 //    with("/cases/%s/events", CASEID).post(MediaType.APPLICATION_JSON_TYPE, CASEEVENT_INVALIDJSON)
 //        .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
 //        .andClose();
@@ -225,7 +240,7 @@ public final class CaseEndpointUnitTest {
 //   */
 //  @Test
 //  public void createCaseEventCaseNotFound() {
-//    with("/cases/%s/events", NON_EXISTING_ID).post(MediaType.APPLICATION_JSON_TYPE, CASEEVENT_VALIDJSON)
+//    with("/cases/%s/events", NON_EXISTING_CASE_ID).post(MediaType.APPLICATION_JSON_TYPE, CASEEVENT_VALIDJSON)
 //        .assertResponseCodeIs(HttpStatus.CREATED)
 //        .assertIntegerInBody("$.caseEventId", 1)
 //        .assertIntegerInBody("$.caseId", CASEID)

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -135,7 +136,7 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @throws CTPException something went wrong
    */
   @RequestMapping(value = "/{caseId}/events", method = RequestMethod.GET)
-  public List<CaseEventDTO> findCaseEventsByCaseId(@PathVariable("caseId") final Integer caseId) throws CTPException {
+  public ResponseEntity<?> findCaseEventsByCaseId(@PathVariable("caseId") final Integer caseId) throws CTPException {
     log.info("Entering findCaseEventsByCaseId with {}", caseId);
     Case caseObj = caseService.findCaseByCaseId(caseId);
     if (caseObj == null) {
@@ -144,8 +145,8 @@ public final class CaseEndpoint implements CTPEndpoint {
     }
     List<CaseEvent> caseEvents = caseService.findCaseEventsByCaseId(caseId);
     List<CaseEventDTO> caseEventDTOs = mapperFacade.mapAsList(caseEvents, CaseEventDTO.class);
-
-    return CollectionUtils.isEmpty(caseEventDTOs) ? null : caseEventDTOs;
+    return CollectionUtils.isEmpty(caseEventDTOs) ?
+            ResponseEntity.noContent().build() : ResponseEntity.ok(caseEventDTOs);
   }
 
   /**
