@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.response.casesvc.error.InvalidRequestException;
+import uk.gov.ons.ctp.common.error.InvalidRequestException;
 
 import java.util.Iterator;
 import java.util.List;
