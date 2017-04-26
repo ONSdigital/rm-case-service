@@ -5,6 +5,8 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -55,7 +57,7 @@ public final class AddressEndpoint implements CTPEndpoint {
    * @throws CTPException something went wrong
    */
   @RequestMapping(value = "/postcode/{postcode}", method = RequestMethod.GET)
-  public List<AddressDTO> findAddressesByPostcode(@PathVariable("postcode") final String postcode) throws CTPException {
+  public ResponseEntity<?> findAddressesByPostcode(@PathVariable("postcode") final String postcode) throws CTPException {
     log.info("Entering findAddressesByPostcode with {}", postcode);
 
     List<Address> addresses = addressService.findByPostcode(postcode);
@@ -64,7 +66,9 @@ public final class AddressEndpoint implements CTPEndpoint {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "No addresses found for postcode %s", postcode);
     }
 
-    return mapperFacade.mapAsList(addresses, AddressDTO.class);
+    List<AddressDTO> addressesDTOs = mapperFacade.mapAsList(addresses, AddressDTO.class);
+    return CollectionUtils.isEmpty(addressesDTOs) ?
+            ResponseEntity.noContent().build() : ResponseEntity.ok(addressesDTOs);
   }
 
 }

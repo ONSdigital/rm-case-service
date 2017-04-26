@@ -116,7 +116,7 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @throws CTPException something went wrong
    */
   @RequestMapping(value = "/casegroup/{caseGroupId}", method = RequestMethod.GET)
-  public List<CaseDTO> findCasesInCaseGroup(@PathVariable("caseGroupId") final Integer caseGroupId) throws CTPException {
+  public ResponseEntity<?> findCasesInCaseGroup(@PathVariable("caseGroupId") final Integer caseGroupId) throws CTPException {
     log.info("Entering findCasesInCaseGroup with {}", caseGroupId);
     CaseGroup caseGroup = caseGroupService.findCaseGroupByCaseGroupId(caseGroupId);
     if (caseGroup == null) {
@@ -125,7 +125,8 @@ public final class CaseEndpoint implements CTPEndpoint {
     }
     List<Case> cases = caseService.findCasesByCaseGroupId(caseGroupId);
     List<CaseDTO> caseDTOs = mapperFacade.mapAsList(cases, CaseDTO.class);
-    return CollectionUtils.isEmpty(caseDTOs) ? null : caseDTOs;
+    return CollectionUtils.isEmpty(caseDTOs) ?
+            ResponseEntity.noContent().build() : ResponseEntity.ok(caseDTOs);
   }
 
   /**

@@ -5,6 +5,8 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -58,7 +60,7 @@ public final class ActionPlanMappingEndpoint implements CTPEndpoint {
    * @throws CTPException something went wrong
    */
   @RequestMapping(value = "/casetype/{caseTypeId}", method = RequestMethod.GET)
-  public List<ActionPlanMappingDTO> findActionPlanMappingByCaseTypeId(@PathVariable("caseTypeId") final Integer caseTypeId) throws CTPException {
+  public ResponseEntity<?> findActionPlanMappingByCaseTypeId(@PathVariable("caseTypeId") final Integer caseTypeId) throws CTPException {
     log.info("Entering findActionPlanMappingByCaseTypeId with {}", caseTypeId);
     CaseType caseType = caseTypeService.findCaseTypeByCaseTypeId(caseTypeId);
     if (caseType == null) {
@@ -66,7 +68,8 @@ public final class ActionPlanMappingEndpoint implements CTPEndpoint {
     }
     List<ActionPlanMapping> actionPlanMappings = actionPlanMappingService.findActionPlanMappingsForCaseType(caseTypeId);
     List<ActionPlanMappingDTO> actionPlanMappingDTOs = mapperFacade.mapAsList(actionPlanMappings, ActionPlanMappingDTO.class);
-    return actionPlanMappingDTOs;
+    return CollectionUtils.isEmpty(actionPlanMappingDTOs) ?
+            ResponseEntity.noContent().build() : ResponseEntity.ok(actionPlanMappingDTOs);
   }
 
 }

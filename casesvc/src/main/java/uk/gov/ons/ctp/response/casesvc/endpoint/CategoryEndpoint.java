@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -59,11 +60,12 @@ public final class CategoryEndpoint implements CTPEndpoint {
    * @return the list of categories
    */
   @RequestMapping(method = RequestMethod.GET)
-  public List<CategoryDTO> findCategories(@RequestParam(value = "role", required = false) final String role,
+  public ResponseEntity<?> findCategories(@RequestParam(value = "role", required = false) final String role,
                                           @RequestParam(value = "group", required = false) final String group) {
     log.info("Entering findCategories with role {}", role);
     List<Category> categories = categoryService.findCategories(role, group);
     List<CategoryDTO> categoryDTOs = mapperFacade.mapAsList(categories, CategoryDTO.class);
-    return CollectionUtils.isEmpty(categoryDTOs) ? null : categoryDTOs;
+    return CollectionUtils.isEmpty(categoryDTOs) ?
+            ResponseEntity.noContent().build() : ResponseEntity.ok(categoryDTOs);
   }
 }
