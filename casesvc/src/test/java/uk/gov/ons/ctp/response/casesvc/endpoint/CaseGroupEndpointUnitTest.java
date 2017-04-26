@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.ons.ctp.common.MvcHelper.getJson;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.ADDRESS_UPRN;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
 
 import ma.glasnost.orika.MapperFacade;
@@ -142,7 +141,7 @@ public final class CaseGroupEndpointUnitTest {
    */
   @Test
   public void findCaseGroupsByUprnFoundButNoCaseGroups() throws Exception {
-    when(addressService.findByUprn(ADDRESS_UPRN)).thenReturn(AddressBuilder.address().uprn(AddressBuilder.ADDRESS_UPRN).buildAddress());
+    when(addressService.findByUprn(ADDRESS_UPRN_NO_CASEGROUP)).thenReturn(AddressBuilder.address().uprn(AddressBuilder.ADDRESS_UPRN).buildAddress());
     List<CaseGroup> result = new ArrayList<>();
     when(caseGroupService.findCaseGroupsByUprn(ADDRESS_UPRN_NO_CASEGROUP)).thenReturn(result);
 

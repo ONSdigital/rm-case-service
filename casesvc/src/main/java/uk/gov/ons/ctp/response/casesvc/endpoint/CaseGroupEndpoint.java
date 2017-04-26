@@ -3,6 +3,7 @@ package uk.gov.ons.ctp.response.casesvc.endpoint;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -65,7 +66,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
    * @throws CTPException something went wrong
    */
   @RequestMapping(value = "/uprn/{uprn}", method = RequestMethod.GET)
-  public List<CaseGroupDTO> findCaseGroupsByUprn(@PathVariable("uprn") final Long uprn)  throws CTPException {
+  public ResponseEntity<?> findCaseGroupsByUprn(@PathVariable("uprn") final Long uprn)  throws CTPException {
     log.info("Entering findCaseGroupsByUprn with {}", uprn);
 
     Address address = addressService.findByUprn(uprn);
@@ -75,6 +76,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
     }
     List<CaseGroup> groups = caseGroupService.findCaseGroupsByUprn(uprn);
     List<CaseGroupDTO> groupDTOs = mapperFacade.mapAsList(groups, CaseGroupDTO.class);
-    return CollectionUtils.isEmpty(groupDTOs) ? null : groupDTOs;
+    return CollectionUtils.isEmpty(groupDTOs) ?
+              ResponseEntity.noContent().build() : ResponseEntity.ok(groupDTOs);
   }
 }
