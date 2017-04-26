@@ -167,7 +167,7 @@ public final class CaseEndpoint implements CTPEndpoint {
     log.info("Entering createCaseEvent with caseId {} and requestObject {}", caseId, caseEventCreationRequestDTO);
 
     if (bindingResult.hasErrors()) {
-      throw new InvalidRequestException("Binding errors for customer creation: ", bindingResult);
+      throw new InvalidRequestException("Binding errors for case event creation: ", bindingResult);
     }
 
     caseEventCreationRequestDTO.setCaseId(caseId);
