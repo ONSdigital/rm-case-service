@@ -1,27 +1,16 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
 import static org.junit.Assert.assertTrue;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseTypeServiceFactory.CASETYPE3_DESC;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseTypeServiceFactory.CASETYPE3_NAME;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseTypeServiceFactory.CASETYPE3_QUESTIONSET;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseTypeServiceFactory.CASETYPEID;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseTypeServiceFactory.NON_EXISTING_CASETYPEID;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseTypeServiceFactory.OUR_EXCEPTION_MESSAGE;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseTypeServiceFactory.UNCHECKED_EXCEPTION;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpStatus;
 
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
 import uk.gov.ons.ctp.response.casesvc.service.CaseTypeService;
-import uk.gov.ons.ctp.response.casesvc.utility.MockCaseTypeServiceFactory;
 
 /**
  * Leave commented out as will be deleted in BRES
@@ -43,8 +32,6 @@ public final class CaseTypeEndpointUnitTest {
     this.mockMvc = MockMvcBuilders
             .standaloneSetup(caseTypeEndpoint)
             .build();
-
-    caseTypeService = MockCaseTypeServiceFactory.provide();
   }
 
   /**
