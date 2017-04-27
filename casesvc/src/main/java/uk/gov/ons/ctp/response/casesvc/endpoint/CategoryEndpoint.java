@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 
@@ -28,6 +29,7 @@ public final class CategoryEndpoint implements CTPEndpoint {
   @Autowired
   private CategoryService categoryService;
 
+  @Qualifier("caseSvcBeanMapper")
   @Autowired
   private MapperFacade mapperFacade;
 

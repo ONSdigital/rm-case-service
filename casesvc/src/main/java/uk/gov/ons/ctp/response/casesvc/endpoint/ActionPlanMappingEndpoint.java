@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,7 +34,8 @@ public final class ActionPlanMappingEndpoint implements CTPEndpoint {
   @Autowired
   private CaseTypeService caseTypeService;
 
-  @Autowired
+  @Qualifier("caseSvcBeanMapper")
+  @Autowired()
   private MapperFacade mapperFacade;
 
 

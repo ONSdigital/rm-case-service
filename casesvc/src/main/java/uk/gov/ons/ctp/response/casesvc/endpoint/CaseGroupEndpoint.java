@@ -3,6 +3,7 @@ package uk.gov.ons.ctp.response.casesvc.endpoint;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 
@@ -37,6 +38,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   @Autowired
   private AddressService addressService;
 
+  @Qualifier("caseSvcBeanMapper")
   @Autowired
   private MapperFacade mapperFacade;
 

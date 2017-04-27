@@ -6,6 +6,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 
@@ -52,6 +53,7 @@ public final class CaseEndpoint implements CTPEndpoint {
   @Autowired
   private CaseService caseService;
 
+  @Qualifier("caseSvcBeanMapper")
   @Autowired
   private MapperFacade mapperFacade;
 
