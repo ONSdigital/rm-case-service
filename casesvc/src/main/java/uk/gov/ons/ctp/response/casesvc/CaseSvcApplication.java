@@ -16,8 +16,10 @@ import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import uk.gov.ons.ctp.common.distributed.DistributedListManager;
 import uk.gov.ons.ctp.common.distributed.DistributedListManagerRedissonImpl;
+import uk.gov.ons.ctp.common.error.RestExceptionHandler;
 import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
@@ -92,6 +94,11 @@ public class CaseSvcApplication {
   public RestClient actionServiceClient() {
     RestClient restHelper = new RestClient(appConfig.getActionSvc().getConnectionConfig());
     return restHelper;
+  }
+
+  @Bean
+  public RestExceptionHandler restExceptionHandler() {
+    return new RestExceptionHandler();
   }
 
   /**
