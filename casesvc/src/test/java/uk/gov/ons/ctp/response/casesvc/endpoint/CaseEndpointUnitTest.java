@@ -22,12 +22,14 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.gov.ons.ctp.common.FixtureHelper;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.error.RestExceptionHandler;
+import uk.gov.ons.ctp.common.jackson.CustomObjectMapper;
 import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
@@ -70,9 +72,9 @@ public final class CaseEndpointUnitTest {
   private static final String CASE1_SUBCATEGORY = "subcat 1";
   private static final String CASE2_SUBCATEGORY = "subcat 2";
   private static final String CASE3_SUBCATEGORY = "subcat 3";
-  private static final String CREATEDDATE_VALUE = "2016-04-15T16:02:39.699+0000";
-  private static final String CREATEDDATE_VALUE1 = "2016-04-15T16:02:39.799+0000";
-  private static final String CREATEDDATE_VALUE2 = "2016-04-15T16:02:39.899+0000";
+  private static final String CREATEDDATE_VALUE = "2016-04-15T17:02:39.699+0100";
+  private static final String CREATEDDATE_VALUE1 = "2016-04-15T17:02:39.799+0100";
+  private static final String CREATEDDATE_VALUE2 = "2016-04-15T17:02:39.899+0100";
   private static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
 
   private static final String CASEEVENT_INVALIDJSON =
@@ -107,6 +109,7 @@ public final class CaseEndpointUnitTest {
     this.mockMvc = MockMvcBuilders
             .standaloneSetup(caseEndpoint)
             .setHandlerExceptionResolvers(mockAdviceFor(RestExceptionHandler.class))
+            .setMessageConverters(new MappingJackson2HttpMessageConverter(new CustomObjectMapper()))
             .build();
 
     this.caseResults = FixtureHelper.loadClassFixtures(Case[].class);

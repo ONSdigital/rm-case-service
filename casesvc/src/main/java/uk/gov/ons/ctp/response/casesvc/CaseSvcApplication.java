@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import uk.gov.ons.ctp.common.distributed.DistributedListManager;
 import uk.gov.ons.ctp.common.distributed.DistributedListManagerRedissonImpl;
 import uk.gov.ons.ctp.common.error.RestExceptionHandler;
+import uk.gov.ons.ctp.common.jackson.CustomObjectMapper;
 import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
@@ -99,6 +101,12 @@ public class CaseSvcApplication {
   @Bean
   public RestExceptionHandler restExceptionHandler() {
     return new RestExceptionHandler();
+  }
+
+
+  @Bean @Primary
+  public CustomObjectMapper CustomObjectMapper() {
+    return new CustomObjectMapper();
   }
 
   /**
