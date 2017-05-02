@@ -56,7 +56,7 @@ public final class SampleEndpoint implements CTPEndpoint {
    * @throws CTPException something went wrong
    */
   @RequestMapping(value = "/{sampleid}", method = RequestMethod.PUT, consumes = "application/json")
-  public SampleDTO createCases(@PathVariable("sampleId") final int sampleId,
+  public SampleDTO createCases(@PathVariable("sampleid") final int sampleId,
                                @RequestBody @Valid final GeographyDTO geography, BindingResult bindingResult)
           throws CTPException {
     log.info("Creating cases ");

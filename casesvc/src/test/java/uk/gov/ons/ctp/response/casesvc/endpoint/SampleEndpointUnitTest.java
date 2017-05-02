@@ -1,15 +1,26 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
 import static org.junit.Assert.assertTrue;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.ons.ctp.common.MvcHelper.putJson;
+import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
 
+import ma.glasnost.orika.MapperFacade;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import org.mockito.Spy;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import uk.gov.ons.ctp.common.FixtureHelper;
+import uk.gov.ons.ctp.common.error.RestExceptionHandler;
+import uk.gov.ons.ctp.common.jackson.CustomObjectMapper;
+import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
 import uk.gov.ons.ctp.response.casesvc.service.SampleService;
 
 /**
@@ -23,7 +34,12 @@ public final class SampleEndpointUnitTest {
   @Mock
   private SampleService sampleService;
 
+  @Spy
+  private MapperFacade mapperFacade = new CaseSvcBeanMapper();
+
   private MockMvc mockMvc;
+
+  private static final Integer SAMPLEID = 3;
 
   @Before
   public void setUp() throws Exception {
@@ -31,6 +47,8 @@ public final class SampleEndpointUnitTest {
 
     this.mockMvc = MockMvcBuilders
             .standaloneSetup(sampleEndpoint)
+            .setHandlerExceptionResolvers(mockAdviceFor(RestExceptionHandler.class))
+            .setMessageConverters(new MappingJackson2HttpMessageConverter(new CustomObjectMapper()))
             .build();
   }
 
@@ -77,12 +95,14 @@ public final class SampleEndpointUnitTest {
 //        .andClose();
 //  }
 //
-//  @Test
-//  public void createCasesValidJsonSampleFound() {
-//    String putBody = "{\"type\":\"LA\",\"code\":\"E07000163\"}";
-//
-//    with("/samples/%s", SAMPLEID)
-//            .put(MediaType.APPLICATION_JSON_TYPE, putBody)
+  @Test
+  public void createCasesValidJsonSampleFound() throws Exception {
+    String putBody = "{\"type\":\"LA\",\"code\":\"E07000163\"}";
+
+    ResultActions actions = mockMvc.perform(putJson(String.format("/samples/%s", SAMPLEID), putBody));
+
+    actions.andExpect(status().isNotFound());
+
 //            .assertResponseCodeIs(HttpStatus.OK)
 //            .assertArrayLengthInBodyIs(6)
 //            .assertStringListInBody("$..name", SAMPLE3_NAME)
@@ -90,7 +110,7 @@ public final class SampleEndpointUnitTest {
 //            .assertStringListInBody("$..addressCriteria", SAMPLE3_CRITERIA)
 //            .assertStringListInBody("$..survey", SURVEY3_NAME)
 //            .andClose();
-//  }
+  }
 //
 //  @Test
 //  public void createCasesValidJsonSampleNotFound() {
