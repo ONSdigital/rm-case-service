@@ -1,8 +1,5 @@
 package uk.gov.ons.ctp.response.casesvc.utility;
 
-import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.ADDRESS_UPRN;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockAddressServiceFactory.ADDRESS_UPRN_NO_CASEGROUP;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,27 +29,27 @@ public final class MockCaseGroupServiceFactory implements Factory<CaseGroupServi
     Mockito.when(mockedService.findCaseGroupByCaseGroupId(CASE_GROUP_ID)).thenAnswer(new Answer<CaseGroup>() {
       public CaseGroup answer(final InvocationOnMock invocation)
           throws Throwable {
-        CaseGroup result = CaseGroup.builder().caseGroupId(CASE_GROUP_ID).sampleId(SAMPLE_ID).uprn(ADDRESS_UPRN).build();
+        CaseGroup result = CaseGroup.builder().caseGroupId(CASE_GROUP_ID).sampleId(SAMPLE_ID).build();
         return result;
       }
     });
 
-    Mockito.when(mockedService.findCaseGroupsByUprn(ADDRESS_UPRN)).thenAnswer(new Answer<List<CaseGroup>>() {
-      public List<CaseGroup> answer(final InvocationOnMock invocation)
-          throws Throwable {
-        List<CaseGroup> result = new ArrayList<>();
-        result.add(CaseGroup.builder().caseGroupId(CASE_GROUP_ID).sampleId(SAMPLE_ID).uprn(ADDRESS_UPRN).build());
-        return result;
-      }
-    });
+//    Mockito.when(mockedService.findCaseGroupsByUprn(ADDRESS_UPRN)).thenAnswer(new Answer<List<CaseGroup>>() {
+//      public List<CaseGroup> answer(final InvocationOnMock invocation)
+//          throws Throwable {
+//        List<CaseGroup> result = new ArrayList<>();
+//        result.add(CaseGroup.builder().caseGroupId(CASE_GROUP_ID).sampleId(SAMPLE_ID).uprn(ADDRESS_UPRN).build());
+//        return result;
+//      }
+//    });
 
-    Mockito.when(mockedService.findCaseGroupsByUprn(ADDRESS_UPRN_NO_CASEGROUP)).thenAnswer(new Answer<List<CaseGroup>>() {
-      public List<CaseGroup> answer(final InvocationOnMock invocation)
-          throws Throwable {
-        List<CaseGroup> result = new ArrayList<>();
-        return result;
-      }
-    });
+//    Mockito.when(mockedService.findCaseGroupsByUprn(ADDRESS_UPRN_NO_CASEGROUP)).thenAnswer(new Answer<List<CaseGroup>>() {
+//      public List<CaseGroup> answer(final InvocationOnMock invocation)
+//          throws Throwable {
+//        List<CaseGroup> result = new ArrayList<>();
+//        return result;
+//      }
+//    });
     return mockedService;
   }
 

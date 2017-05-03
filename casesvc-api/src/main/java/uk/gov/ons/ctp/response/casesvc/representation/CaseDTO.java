@@ -23,7 +23,7 @@ public class CaseDTO {
   }
 
   /**
-   * enum for Case event
+   * enum for Case event 
    */
   public enum CaseEvent {
     ACTIVATED, REPLACED, DEACTIVATED, DISABLED
@@ -33,13 +33,11 @@ public class CaseDTO {
 
   private Integer caseGroupId;
 
+  private Integer actionPlanId;
+
   private String caseRef;
 
   private CaseState state;
-
-  private Integer caseTypeId;
-
-  private Integer actionPlanMappingId;
 
   private Date createdDateTime;
 
@@ -49,6 +47,5 @@ public class CaseDTO {
   
   private ResponseDTO[] responses;
 
-  private ContactDTO contact;
 
 }

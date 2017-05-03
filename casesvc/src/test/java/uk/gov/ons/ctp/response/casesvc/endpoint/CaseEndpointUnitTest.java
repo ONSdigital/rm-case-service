@@ -1,8 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
 import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.ERRORMSG_CASENOTFOUND;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASE1_ACTIONPLANMAPPINGID;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASE1_TYPEID;
+import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASE1_ACTIONPLANID;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASEEVENT_CATEGORY;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASEEVENT_DESC1;
 import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASEEVENT_DESC2;
@@ -68,10 +67,11 @@ public final class CaseEndpointUnitTest extends CTPJerseyTest {
     with("/cases/%s", CASEID)
         .assertResponseCodeIs(HttpStatus.OK)
         .assertStringInBody("$.state", CASE_STATE.name())
-        .assertIntegerInBody("$.caseTypeId", CASE1_TYPEID)
+        // TODO BRES replace with sampleUnitRef and sampleUnitType
+        //.assertIntegerInBody("$.caseTypeId", CASE1_TYPEID)
         .assertStringInBody("$.createdDateTime", CREATEDDATE_VALUE)
         .assertStringInBody("$.createdBy", CREATEDBY)
-        .assertIntegerInBody("$.actionPlanMappingId", CASE1_ACTIONPLANMAPPINGID)
+        .assertIntegerInBody("$.actionPlanId", CASE1_ACTIONPLANID)
         .andClose();
   }
 

@@ -28,15 +28,11 @@ import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.config.InternetAccessCodeSvc;
-import uk.gov.ons.ctp.response.casesvc.domain.model.ActionPlanMapping;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseType;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.ActionPlanMappingRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseTypeRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
@@ -130,12 +126,6 @@ public class CaseServiceImplTest {
   private CategoryRepository categoryRepo;
 
   @Mock
-  private ActionPlanMappingRepository actionPlanMappingRepo;
-
-  @Mock
-  private CaseTypeRepository caseTypeRepo;
-
-  @Mock
   private AppConfig appConfig;
 
   @Mock
@@ -164,8 +154,6 @@ public class CaseServiceImplTest {
     mockStateTransitions();
     mockupCaseRepo();
     mockupCategoryRepo();
-    mockupCaseTypeRepo();
-    mockupActionPlanMappingRepo();
     mockAppConfigUse();
     mockupCaseEventRepo();
     mockupIacServiceClient();
@@ -484,64 +472,65 @@ public class CaseServiceImplTest {
 
     verify(internetAccessCodeSvcClientService, times(1)).disableIAC(oldCase.getIac());
   }
+
   /**
    * Tries to create an individual response requested against an individual case
    * - should be household case so should throw and not do anything
    * 
    * @throws Exception
    */
-  @Test
-  public void testIndividualResponseRequestedAgainstIndividualCaseNotAllowed() throws Exception {
-    // now kick it off
-    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryType.H_INDIVIDUAL_RESPONSE_REQUESTED,
-        ACTIONABLE_H_INDIVIDUAL_CASE_ID);
-    Case indCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_ID);
-    try {
-      caseService.createCaseEvent(caseEvent, indCase);
-      fail();
-    } catch (RuntimeException re) {
-      assertThat(re.getMessage().startsWith(WRONG_OLD_CASE_TYPE_EX));
-      // one of the caseRepo calls is the test loading indCase
-      verify(caseRepo, times(2)).findOne(ACTIONABLE_H_INDIVIDUAL_CASE_ID);
-      verify(categoryRepo).findOne(CategoryDTO.CategoryType.H_INDIVIDUAL_RESPONSE_REQUESTED);
-      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-      // IAC should not be disabled
-      verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
-      verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
-      verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
-          any(String.class));
-      verify(caseEventRepository, times(0)).save(caseEvent);
-    }
-  }
-
-  /**
-   * Tries to apply a Household event against an Individual Case NOT ALLOWED!.
-   * Should throw and not save anything
-   * 
-   * @throws Exception
-   */
-  @Test
-  public void testHouseholdPaperRequestedAgainstIndividualCaseNotAllowed() throws Exception {
-    // now kick it off
-    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryType.HOUSEHOLD_PAPER_REQUESTED,
-        ACTIONABLE_H_INDIVIDUAL_CASE_ID);
-    Case indCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_ID);
-    try {
-      caseService.createCaseEvent(caseEvent, indCase);
-      fail();
-    } catch (RuntimeException re) {
-      assertThat(re.getMessage().startsWith(WRONG_NEW_CASE_TYPE_EX));
-      // one of the caseRepo calls is the test loading indCase
-      verify(caseRepo, times(2)).findOne(ACTIONABLE_H_INDIVIDUAL_CASE_ID);
-      verify(categoryRepo).findOne(CategoryDTO.CategoryType.HOUSEHOLD_PAPER_REQUESTED);
-      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-      verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
-      verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
-          any(String.class));
-      verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
-      verify(caseEventRepository, times(0)).save(caseEvent);
-    }
-  }
+//  @Test
+//  public void testIndividualResponseRequestedAgainstIndividualCaseNotAllowed() throws Exception {
+//    // now kick it off
+//    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryType.H_INDIVIDUAL_RESPONSE_REQUESTED,
+//        ACTIONABLE_H_INDIVIDUAL_CASE_ID);
+//    Case indCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_ID);
+//    try {
+//      caseService.createCaseEvent(caseEvent, indCase);
+//      fail();
+//    } catch (RuntimeException re) {
+//      assertThat(re.getMessage().startsWith(WRONG_OLD_CASE_TYPE_EX));
+//      // one of the caseRepo calls is the test loading indCase
+//      verify(caseRepo, times(2)).findOne(ACTIONABLE_H_INDIVIDUAL_CASE_ID);
+//      verify(categoryRepo).findOne(CategoryDTO.CategoryType.H_INDIVIDUAL_RESPONSE_REQUESTED);
+//      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+//      // IAC should not be disabled
+//      verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
+//      verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
+//      verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+//          any(String.class));
+//      verify(caseEventRepository, times(0)).save(caseEvent);
+//    }
+//  }
+//
+//  /**
+//   * Tries to apply a Household event against an Individual Case NOT ALLOWED!.
+//   * Should throw and not save anything
+//   * 
+//   * @throws Exception
+//   */
+//  @Test
+//  public void testHouseholdPaperRequestedAgainstIndividualCaseNotAllowed() throws Exception {
+//    // now kick it off
+//    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryType.HOUSEHOLD_PAPER_REQUESTED,
+//        ACTIONABLE_H_INDIVIDUAL_CASE_ID);
+//    Case indCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_ID);
+//    try {
+//      caseService.createCaseEvent(caseEvent, indCase);
+//      fail();
+//    } catch (RuntimeException re) {
+//      assertThat(re.getMessage().startsWith(WRONG_NEW_CASE_TYPE_EX));
+//      // one of the caseRepo calls is the test loading indCase
+//      verify(caseRepo, times(2)).findOne(ACTIONABLE_H_INDIVIDUAL_CASE_ID);
+//      verify(categoryRepo).findOne(CategoryDTO.CategoryType.HOUSEHOLD_PAPER_REQUESTED);
+//      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+//      verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
+//      verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+//          any(String.class));
+//      verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
+//      verify(caseEventRepository, times(0)).save(caseEvent);
+//    }
+//  }
 
   /**
    * Tries to create a individual request with providing the individual case.
@@ -701,13 +690,13 @@ public class CaseServiceImplTest {
    * @return list of mock cases types
    * @throws Exception oops
    */
-  private List<CaseType> mockupCaseTypeRepo() throws Exception {
-    List<CaseType> caseTypes = FixtureHelper.loadClassFixtures(CaseType[].class);
-    for (int i = 1; i <= 4; i++) {
-      Mockito.when(caseTypeRepo.findOne(i)).thenReturn(caseTypes.get(i - 1));
-    }
-    return caseTypes;
-  }
+//  private List<CaseType> mockupCaseTypeRepo() throws Exception {
+//    List<CaseType> caseTypes = FixtureHelper.loadClassFixtures(CaseType[].class);
+//    for (int i = 1; i <= 4; i++) {
+//      Mockito.when(caseTypeRepo.findOne(i)).thenReturn(caseTypes.get(i - 1));
+//    }
+//    return caseTypes;
+//  }
 
   /**
    * mock loading data
@@ -781,19 +770,6 @@ public class CaseServiceImplTest {
         .thenReturn(CaseState.INACTIONABLE);
   }
 
-  /**
-   * mock loading data
-   *
-   * @return a mock action plan mapping
-   * @throws Exception oops
-   */
-  private List<ActionPlanMapping> mockupActionPlanMappingRepo() throws Exception {
-    List<ActionPlanMapping> actionPlanMappings = FixtureHelper.loadClassFixtures(ActionPlanMapping[].class);
-    for (int i = 1; i <= 12; i++) {
-      Mockito.when(actionPlanMappingRepo.findOne(i)).thenReturn(actionPlanMappings.get(i - 1));
-    }
-    return actionPlanMappings;
-  }
 
   /**
    * mock loading data

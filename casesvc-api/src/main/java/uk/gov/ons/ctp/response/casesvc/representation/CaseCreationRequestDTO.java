@@ -13,9 +13,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class CaseCreationRequestDTO {
 
-  private Integer caseTypeId;
+//  private Integer caseTypeId;
 
-  private Integer actionPlanMappingId;
+//  private Integer actionPlanMappingId;
 
   private String title;
 

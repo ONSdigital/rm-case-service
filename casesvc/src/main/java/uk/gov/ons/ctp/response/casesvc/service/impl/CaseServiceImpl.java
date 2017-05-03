@@ -15,20 +15,15 @@ import org.springframework.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
-import uk.gov.ons.ctp.response.casesvc.domain.model.ActionPlanMapping;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseType;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Response;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.ActionPlanMappingRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseTypeRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
-import uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
@@ -60,13 +55,7 @@ public class CaseServiceImpl implements CaseService {
   private StateTransitionManager<CaseDTO.CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
   @Inject
-  private ActionPlanMappingRepository actionPlanMappingRepo;
-
-  @Inject
   private CaseEventRepository caseEventRepo;
-
-  @Inject
-  private CaseTypeRepository caseTypeRepo;
 
   @Inject
   private CategoryRepository categoryRepo;
@@ -121,9 +110,12 @@ public class CaseServiceImpl implements CaseService {
 
   @Override
   public CaseNotification prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent) {
-    ActionPlanMapping actionPlanMapping = actionPlanMappingRepo.findOne(caze.getActionPlanMappingId());
-    NotificationType notifType = NotificationType.valueOf(transitionEvent.name());
-    return new CaseNotification(caze.getCaseId(), actionPlanMapping.getActionPlanId(), notifType);
+    //TODO BRES reinstate this method, filling in the action plan id from case itself?
+    
+//    ActionPlanMapping actionPlanMapping = actionPlanMappingRepo.findOne(caze.getActionPlanMappingId());
+//    NotificationType notifType = NotificationType.valueOf(transitionEvent.name());
+//    return new CaseNotification(caze.getCaseId(), actionPlanMapping.getActionPlanId(), notifType);
+    return null;
   }
 
   /**
@@ -193,13 +185,14 @@ public class CaseServiceImpl implements CaseService {
       if (newCase == null) {
         throw new RuntimeException(String.format(MISSING_NEW_CASE_MSG, targetCase.getCaseId()));
       }
-      CaseType targetCaseType = caseTypeRepo.findOne(targetCase.getCaseTypeId());
-      checkRespondentTypesMatch(WRONG_OLD_CASE_TYPE_MSG,
-          targetCaseType.getRespondentType(), category.getOldCaseRespondentType());
-
-      CaseType intendedCaseType = caseTypeRepo.findOne(newCase.getCaseTypeId());
-      checkRespondentTypesMatch(WRONG_NEW_CASE_TYPE_MSG, category.getNewCaseRespondentType(),
-          intendedCaseType.getRespondentType());
+      // TODO BRES replace with code to compare sampleCaseType from Case itself?
+//      CaseType targetCaseType = caseTypeRepo.findOne(targetCase.getCaseTypeId());
+//      checkRespondentTypesMatch(WRONG_OLD_CASE_TYPE_MSG,
+//          targetCaseType.getRespondentType(), category.getOldCaseRespondentType());
+//
+//      CaseType intendedCaseType = caseTypeRepo.findOne(newCase.getCaseTypeId());
+//      checkRespondentTypesMatch(WRONG_NEW_CASE_TYPE_MSG, category.getNewCaseRespondentType(),
+//          intendedCaseType.getRespondentType());
     }
   }
 

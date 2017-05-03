@@ -27,18 +27,13 @@ import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
-import uk.gov.ons.ctp.response.casesvc.endpoint.ActionPlanMappingEndpoint;
-import uk.gov.ons.ctp.response.casesvc.endpoint.AddressEndpoint;
 import uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint;
 import uk.gov.ons.ctp.response.casesvc.endpoint.CaseGroupEndpoint;
-import uk.gov.ons.ctp.response.casesvc.endpoint.CaseTypeEndpoint;
 import uk.gov.ons.ctp.response.casesvc.endpoint.CategoryEndpoint;
-import uk.gov.ons.ctp.response.report.endpoint.ReportEndpoint;
-import uk.gov.ons.ctp.response.casesvc.endpoint.SampleEndpoint;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.GeographyDTO;
 import uk.gov.ons.ctp.response.casesvc.state.CaseSvcStateTransitionManagerFactory;
+import uk.gov.ons.ctp.response.report.endpoint.ReportEndpoint;
 
 /**
  * The 'main' entry point for the CaseSvc SpringBoot Application.
@@ -121,17 +116,11 @@ public class CaseSvcApplication {
       JAXRSRegister.listCommonTypes().forEach(t->register(t));
 
       // Register JAX-RS components
-      register(ActionPlanMappingEndpoint.class);
-      register(AddressEndpoint.class);
       register(CaseEndpoint.class);
       register(CaseGroupEndpoint.class);
-      register(CaseTypeEndpoint.class);
       register(CategoryEndpoint.class);
-      register(SampleEndpoint.class);
       register(ReportEndpoint.class);
 
-      register(new CTPMessageBodyReader<GeographyDTO>(GeographyDTO.class) {
-      });
       register(new CTPMessageBodyReader<CaseEventDTO>(CaseEventDTO.class) {
       });
     }

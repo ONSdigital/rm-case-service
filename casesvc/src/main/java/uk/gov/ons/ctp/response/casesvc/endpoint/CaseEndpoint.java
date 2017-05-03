@@ -24,7 +24,6 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
-import uk.gov.ons.ctp.response.casesvc.domain.model.Contact;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
@@ -178,10 +177,9 @@ private void createNewEventForIACAuthenticated(Case caseObj) {
 
     CaseEvent caseEvent = mapperFacade.map(caseEventCreationRequestDTO, CaseEvent.class);
     Case caze = mapperFacade.map(caseEventCreationRequestDTO.getCaseCreationRequest(), Case.class);
-    if (caze != null) {
-      Contact contact = mapperFacade.map(caseEventCreationRequestDTO.getCaseCreationRequest(), Contact.class);
-      caze.setContact(contact);
-    }
+//    if (caze != null) {
+// BRES new case id to be passed in?
+//    }
 
     Category category = categoryService.findCategory(caseEvent.getCategory());
     if (category.getNewCaseRespondentType() != null && caze == null) {

@@ -24,7 +24,7 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 public final class MockCaseServiceFactory implements Factory<CaseService> {
 
   public static final CaseDTO.CaseState CASE_STATE = CaseDTO.CaseState.SAMPLED_INIT;
-  public static final Integer CASE1_ACTIONPLANMAPPINGID = 1;
+  public static final Integer CASE1_ACTIONPLANID = 1;
   public static final Integer CASE1_TYPEID = 1;
   public static final Integer CASE2_TYPEID = 2;
   public static final Integer CASE3_TYPEID = 3;
