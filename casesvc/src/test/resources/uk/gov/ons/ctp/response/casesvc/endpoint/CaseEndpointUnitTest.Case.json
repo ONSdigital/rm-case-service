@@ -1,110 +1,123 @@
 [
-  {
-    "caseId":1,
-    "state":"SAMPLED_INIT",
-    "caseTypeId":1,
-    "createdDateTime":1460736159699,
-    "createdBy":"me 1",
-    "iac":"bbbb cccc dddd",
-    "actionPlanMappingId":1,
-    "responses":[
-    ]
-  },
-  {
-    "caseId":2,
-    "state":"INACTIONABLE",
-    "caseTypeId":2,
-    "createdDateTime":1460732606544,
-    "createdBy":"me 2",
-    "iac": "cccc dddd ffff",
-    "actionPlanMappingId":2,
-    "responses":[
-      {
-        "dateTime":1460732606544,
-        "inboundChannel":"ONLINE"
-      }
-    ]
-  },
-  {
-    "caseId":3,
-    "state":"ACTIONABLE",
-    "caseTypeId":3,
-    "createdDateTime":1460732606544,
-    "createdBy":"me 3",
-    "iac": "dddd ffff gggg",
-    "actionPlanMappingId":3,
-    "responses":[
-    ]
-  },
-  {
-    "caseId":4,
-    "state":"INACTIONABLE",
-    "caseTypeId":4,
-    "createdDateTime":1460732606544,
-    "createdBy":"me",
-    "iac": "ffff gggg hhhh",
-    "actionPlanMappingId":4,
-    "responses":[
-      {
-        "dateTime":1460732606544,
-        "inboundChannel":"ONLINE"
-      }
-    ]
-  },
-  {
-    "caseId":5,
-    "state":"ACTIONABLE",
-    "caseTypeId":1,
-    "createdDateTime":1460732606544,
-    "createdBy":"me",
-    "iac": "gggg hhhh jjjj",
-    "actionPlanMappingId":1,
-    "responses":[
-      {
-        "dateTime":1460732606544,
-        "inboundChannel":"ONLINE"
-      }
-    ]
-  },
-  {
-    "caseId":6,
-    "state":"INACTIONABLE",
-    "caseTypeId":2,
-    "createdDateTime":1460732606544,
-    "createdBy":"me",
-    "iac": "hhhh jjjj kkkk",
-    "actionPlanMappingId":2,
-    "responses":[
-      {
-        "dateTime":1460732606544,
-        "inboundChannel":"ONLINE"
-      }
-    ]
-  },
-  {
-    "caseId":7,
-    "state":"ACTIONABLE",
-    "caseTypeId":3,
-    "createdDateTime":1460732606544,
-    "createdBy":"me",
-    "iac": "jjjj kkkk llll",
-    "actionPlanMappingId":3,
-    "responses":[
-    ]
-  },
-  {
-    "caseId":7,
-    "state":"INACTIONABLE",
-    "caseTypeId":4,
-    "createdDateTime":1460732606544,
-    "createdBy":"me",
-    "iac": "kkkk llll mmmm",
-    "actionPlanMappingId":4,
-    "responses":[
-      {
-        "dateTime":1460732606544,
-        "inboundChannel":"ONLINE"
-      }
-    ]
-  }
+	{
+		"caseId": 1,
+		"state": "SAMPLED_INIT",
+		"sampleUnitType": "H",
+		"sampleUnitRef": "12345678",
+		"partyId": 1,
+		"createdDateTime": 1460736159699,
+		"createdBy": "me 1",
+		"iac": "bbbb cccc dddd",
+		"actionPlanId": 1,
+		"responses": []
+	},
+	{
+		"caseId": 2,
+		"state": "INACTIONABLE",
+		"sampleUnitType": "H",
+		"sampleUnitRef": "12345678",
+		"partyId": 1,
+		"createdDateTime": 1460732606544,
+		"createdBy": "me 2",
+		"iac": "cccc dddd ffff",
+		"actionPlanId": 2,
+		"responses": [
+			{
+				"dateTime": 1460732606544,
+				"inboundChannel": "ONLINE"
+			}
+		]
+	},
+	{
+		"caseId": 3,
+		"state": "ACTIONABLE",
+		"sampleUnitType": "H",
+		"sampleUnitRef": "12345678",
+		"partyId": 1,
+		"createdDateTime": 1460732606544,
+		"createdBy": "me 3",
+		"iac": "dddd ffff gggg",
+		"actionPlanId": 3,
+		"responses": []
+	},
+	{
+		"caseId": 4,
+		"state": "INACTIONABLE",
+		"sampleUnitType": "H",
+		"sampleUnitRef": "12345678",
+		"partyId": 1,
+		"createdDateTime": 1460732606544,
+		"createdBy": "me",
+		"iac": "ffff gggg hhhh",
+		"actionPlanId": 4,
+		"responses": [
+			{
+				"dateTime": 1460732606544,
+				"inboundChannel": "ONLINE"
+			}
+		]
+	},
+	{
+		"caseId": 5,
+		"state": "ACTIONABLE",
+		"sampleUnitType": "H",
+		"sampleUnitRef": "12345678",
+		"partyId": 1,
+		"createdDateTime": 1460732606544,
+		"createdBy": "me",
+		"iac": "gggg hhhh jjjj",
+		"actionPlanId": 1,
+		"responses": [
+			{
+				"dateTime": 1460732606544,
+				"inboundChannel": "ONLINE"
+			}
+		]
+	},
+	{
+		"caseId": 6,
+		"state": "INACTIONABLE",
+		"sampleUnitType": "H",
+		"sampleUnitRef": "12345678",
+		"partyId": 1,
+		"createdDateTime": 1460732606544,
+		"createdBy": "me",
+		"iac": "hhhh jjjj kkkk",
+		"actionPlanId": 2,
+		"responses": [
+			{
+				"dateTime": 1460732606544,
+				"inboundChannel": "ONLINE"
+			}
+		]
+	},
+	{
+		"caseId": 7,
+		"state": "ACTIONABLE",
+		"sampleUnitType": "H",
+		"sampleUnitRef": "12345678",
+		"partyId": 1,
+		"createdDateTime": 1460732606544,
+		"createdBy": "me",
+		"iac": "jjjj kkkk llll",
+		"actionPlanId": 3,
+		"responses": []
+	},
+	{
+		"caseId": 7,
+		"state": "INACTIONABLE",
+		"sampleUnitType": "H",
+		"sampleUnitRef": "12345678",
+		"partyId": 1,
+		"createdDateTime": 1460732606544,
+		"createdBy": "me",
+		"iac": "kkkk llll mmmm",
+		"actionPlanId": 4,
+		"responses": [
+			{
+				"dateTime": 1460732606544,
+				"inboundChannel": "ONLINE"
+			}
+		]
+	}
 ]

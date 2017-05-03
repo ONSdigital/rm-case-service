@@ -10,28 +10,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static uk.gov.ons.ctp.common.MvcHelper.getJson;
 import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
 
-import ma.glasnost.orika.MapperFacade;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
-
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.error.RestExceptionHandler;
 import uk.gov.ons.ctp.common.jackson.CustomObjectMapper;
 import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  */
@@ -51,9 +47,6 @@ public final class CaseGroupEndpointUnitTest {
   private static final Integer CASE_GROUP_ID = 1;
   private static final Integer SAMPLE_ID = 2;
   private static final Integer NON_EXISTENT_CASE_GROUP_ID = 99;
-  private static final Long ADDRESS_UPRN = 123L;
-  private static final Long ADDRESS_UPRN_NO_CASEGROUP = 124L;
-  private static final Long ADDRESS_NON_EXISTING_UPRN = 999L;
 
   @Before
   public void setUp() throws Exception {
@@ -79,7 +72,6 @@ public final class CaseGroupEndpointUnitTest {
     actions.andExpect(handler().handlerType(CaseGroupEndpoint.class));
     actions.andExpect(handler().methodName("findCaseGroupById"));
     actions.andExpect(jsonPath("$.caseGroupId", is(CASE_GROUP_ID)));
-    actions.andExpect(jsonPath("$.sampleId", is(SAMPLE_ID)));
   }
 
   /**

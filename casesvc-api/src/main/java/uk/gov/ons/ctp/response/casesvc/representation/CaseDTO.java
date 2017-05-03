@@ -34,6 +34,12 @@ public class CaseDTO {
   private Integer caseGroupId;
 
   private Integer actionPlanId;
+  
+  private String sampleUnitType;
+  
+  private String sampleUnitRef;
+  
+  private String partyId;
 
   private String caseRef;
 
