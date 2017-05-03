@@ -5,15 +5,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.sleuth.Span;
 import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
@@ -53,7 +52,7 @@ import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientServic
  * when it has x notifications it publishes them.
  *
  */
-@Named
+@Component
 @Slf4j
 public class CaseDistributor {
 
@@ -69,28 +68,28 @@ public class CaseDistributor {
 
   private static final long MILLISECONDS = 1000L;
 
-  @Inject
+  @Autowired
   private DistributedListManager<Integer> caseDistributionListManager;
 
-  @Inject
+  @Autowired
   private Tracer tracer;
 
-  @Inject
+  @Autowired
   private AppConfig appConfig;
 
-  @Inject
+  @Autowired
   private StateTransitionManager<CaseDTO.CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
-  @Inject
+  @Autowired
   private CaseNotificationPublisher notificationPublisher;
 
-  @Inject
+  @Autowired
   private CaseRepository caseRepo;
 
-  @Inject
+  @Autowired
   private CaseService caseService;
 
-  @Inject
+  @Autowired
   private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
 
   // single TransactionTemplate shared amongst all methods in this instance
@@ -101,7 +100,7 @@ public class CaseDistributor {
    *
    * @param transactionManager provided by Spring
    */
-  @Inject
+  @Autowired
   public CaseDistributor(final PlatformTransactionManager transactionManager) {
     this.transactionTemplate = new TransactionTemplate(transactionManager);
   }

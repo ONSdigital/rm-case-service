@@ -1,187 +1,260 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.Is.isA;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.ons.ctp.common.MvcHelper.getJson;
+import static uk.gov.ons.ctp.common.MvcHelper.postJson;
+import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
 import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.ERRORMSG_CASENOTFOUND;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASE1_ACTIONPLANID;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASEEVENT_CATEGORY;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASEEVENT_DESC1;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASEEVENT_DESC2;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASEEVENT_DESC3;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASEEVENT_SUBCATEGORY;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASEID;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CASE_STATE;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CREATEDBY;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.CREATEDDATE_VALUE;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.EXISTING_ID_NO_EVENTS;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.NON_EXISTING_ID;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.OUR_EXCEPTION_MESSAGE;
-import static uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory.UNCHECKED_EXCEPTION;
 
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
-
+import ma.glasnost.orika.MapperFacade;
+import org.hamcrest.Matchers;
+import org.junit.Before;
 import org.junit.Test;
-import org.springframework.http.HttpStatus;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import uk.gov.ons.ctp.common.FixtureHelper;
 import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.common.jaxrs.CTPMessageBodyReader;
-import uk.gov.ons.ctp.common.jersey.CTPJerseyTest;
+import uk.gov.ons.ctp.common.error.RestExceptionHandler;
+import uk.gov.ons.ctp.common.jackson.CustomObjectMapper;
 import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
+import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
+import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
-import uk.gov.ons.ctp.response.casesvc.utility.MockCaseGroupServiceFactory;
-import uk.gov.ons.ctp.response.casesvc.utility.MockCaseServiceFactory;
-import uk.gov.ons.ctp.response.casesvc.utility.MockCategoryServiceFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Case Endpoint Unit tests
  */
-public final class CaseEndpointUnitTest extends CTPJerseyTest {
+public final class CaseEndpointUnitTest {
+
+  private static final CaseDTO.CaseState CASE1_STATE = CaseDTO.CaseState.SAMPLED_INIT;
+
+  private static final Integer CASE_ID = 124;
+  private static final Integer CASE_TYPEID = 1;
+  private static final Integer CASE1_ACTIONPLANMAPPINGID = 1;
+  private static final Integer CASE1_ID = 1;
+  private static final Integer CASE2_ID = 2;
+  private static final Integer CASE3_ID = 3;
+  private static final Integer EXISTING_CASE_ID_NO_EVENTS = 992;
+  private static final Integer NON_EXISTING_CASE_ID = 998;
+  private static final Integer UNCHECKED_EXCEPTION_CASE_ID = 999;
+
+  private static final String CASE1_DESCRIPTION = "desc 1";
+  private static final String CASE2_DESCRIPTION = "desc 2";
+  private static final String CASE3_DESCRIPTION = "desc 3";
+  private static final String CASE1_CREATEDBY = "me 1";
+  private static final String CASE2_CREATEDBY = "me 2";
+  private static final String CASE3_CREATEDBY = "me 3";
+  private static final String CASE1_CATEGORY = "ONLINE_QUESTIONNAIRE_RESPONSE";
+  private static final String CASE2_CATEGORY = "CLASSIFICATION_INCORRECT";
+  private static final String CASE3_CATEGORY = "REFUSAL";
+  private static final String CASE1_SUBCATEGORY = "subcat 1";
+  private static final String CASE2_SUBCATEGORY = "subcat 2";
+  private static final String CASE3_SUBCATEGORY = "subcat 3";
+  private static final String CREATEDDATE_VALUE = "2016-04-15T17:02:39.699+0100";
+  private static final String CREATEDDATE_VALUE1 = "2016-04-15T17:02:39.799+0100";
+  private static final String CREATEDDATE_VALUE2 = "2016-04-15T17:02:39.899+0100";
+  private static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
 
   private static final String CASEEVENT_INVALIDJSON =
-      "{\"description\":\"a\",\"category\":\"BAD_CAT\",\"createdBy\":\"u\"}";
+          "{\"description\":\"a\",\"category\":\"BAD_CAT\",\"createdBy\":\"u\"}";
   private static final String CASEEVENT_VALIDJSON =
-      "{\"description\":\"sometest\",\"category\":\"GENERAL_ENQUIRY\",\"createdBy\":\"unittest\"}";
+          "{\"description\":\"sometest\",\"category\":\"GENERAL_ENQUIRY\",\"createdBy\":\"unittest\"}";
 
-  /**
-   * configure the test
-   */
-  @Override
-  public Application configure() {
-    return super.init(CaseEndpoint.class,
-        new ServiceFactoryPair [] {
-        new ServiceFactoryPair(CategoryService.class, MockCategoryServiceFactory.class),
-        new ServiceFactoryPair(CaseService.class, MockCaseServiceFactory.class),
-        new ServiceFactoryPair(CaseGroupService.class, MockCaseGroupServiceFactory.class)
-        },
-        new CaseSvcBeanMapper(),
-        new CTPMessageBodyReader<CaseEventDTO>(CaseEventDTO.class));
+  @InjectMocks
+  private CaseEndpoint caseEndpoint;
+
+  @Mock
+  private CategoryService categoryService;
+
+  @Mock
+  private CaseService caseService;
+
+  @Mock
+  private CaseGroupService caseGroupService;
+
+  @Spy
+  private MapperFacade mapperFacade = new CaseSvcBeanMapper();
+
+  private MockMvc mockMvc;
+  private List<Case> caseResults;
+  private List<CaseEvent> caseEventsResults;
+  private List<Category> categoryResults;
+
+  @Before
+  public void setUp() throws Exception {
+    MockitoAnnotations.initMocks(this);
+
+    this.mockMvc = MockMvcBuilders
+            .standaloneSetup(caseEndpoint)
+            .setHandlerExceptionResolvers(mockAdviceFor(RestExceptionHandler.class))
+            .setMessageConverters(new MappingJackson2HttpMessageConverter(new CustomObjectMapper()))
+            .build();
+
+    this.caseResults = FixtureHelper.loadClassFixtures(Case[].class);
+    this.caseEventsResults = FixtureHelper.loadClassFixtures(CaseEvent[].class);
+    this.categoryResults = FixtureHelper.loadClassFixtures(Category[].class);
   }
 
   /**
    * a test
    */
   @Test
-  public void findCaseByCaseIdFound() {
-    with("/cases/%s", CASEID)
-        .assertResponseCodeIs(HttpStatus.OK)
-        .assertStringInBody("$.state", CASE_STATE.name())
-        // TODO BRES replace with sampleUnitRef and sampleUnitType
-        //.assertIntegerInBody("$.caseTypeId", CASE1_TYPEID)
-        .assertStringInBody("$.createdDateTime", CREATEDDATE_VALUE)
-        .assertStringInBody("$.createdBy", CREATEDBY)
-        .assertIntegerInBody("$.actionPlanId", CASE1_ACTIONPLANID)
-        .andClose();
+  public void findCaseByCaseIdFound() throws Exception {
+    when(caseService.findCaseByCaseId(CASE_ID)).thenReturn(caseResults.get(0));
+
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s", CASE_ID)));
+
+    actions.andExpect(status().isOk());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("findCaseByCaseId"));
+    actions.andExpect(jsonPath("$.state", is(CASE1_STATE.name())));
+    actions.andExpect(jsonPath("$.caseTypeId", is(CASE_TYPEID)));
+    actions.andExpect(jsonPath("$.createdDateTime", is(CREATEDDATE_VALUE)));
+    actions.andExpect(jsonPath("$.createdBy", is(CASE1_CREATEDBY)));
+    actions.andExpect(jsonPath("$.actionPlanMappingId", is(CASE1_ACTIONPLANMAPPINGID)));
   }
 
   /**
    * a test
    */
   @Test
-  public void findCaseByCaseIdNotFound() {
-    with("/cases/%s", NON_EXISTING_ID)
-        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
-        .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
-        .assertTimestampExists()
-        .assertMessageEquals(String.format("%s case id %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_ID))
-        .andClose();
+  public void findCaseByCaseIdNotFound() throws Exception {
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s", NON_EXISTING_CASE_ID)));
+
+    actions.andExpect(status().isNotFound());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("findCaseByCaseId"));
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
+    actions.andExpect(jsonPath("$.error.message", is(String.format("%s case id %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_CASE_ID))));
+    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
   /**
    * a test
    */
   @Test
-  public void findCaseEventsByCaseIdFound() {
-    with("/cases/%s/events", CASEID)
-        .assertResponseCodeIs(HttpStatus.OK)
-        .assertArrayLengthInBodyIs(3)
-        .assertIntegerOccursThroughoutListInBody("$..caseId", CASEID)
-        .assertStringListInBody("$..description", CASEEVENT_DESC1, CASEEVENT_DESC2, CASEEVENT_DESC3)
-        .assertStringOccursThroughoutListInBody("$..createdBy", CREATEDBY)
-        .assertStringOccursThroughoutListInBody("$..createdDateTime", CREATEDDATE_VALUE)
-        .assertStringOccursThroughoutListInBody("$..category", CASEEVENT_CATEGORY.name())
-        .assertStringOccursThroughoutListInBody("$..subcategory", CASEEVENT_SUBCATEGORY)
-        .andClose();
+  public void findCaseEventsByCaseIdFound() throws Exception {
+    when(caseService.findCaseByCaseId(CASE_ID)).thenReturn(caseResults.get(0));
+    when(caseService.findCaseEventsByCaseId(CASE_ID)).thenReturn(caseEventsResults);
+
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s/events", CASE_ID)));
+
+    actions.andExpect(status().isOk());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("findCaseEventsByCaseId"));
+    actions.andExpect(jsonPath("$", Matchers.hasSize(3)));
+    actions.andExpect(jsonPath("$[*].caseId", containsInAnyOrder(CASE1_ID, CASE2_ID, CASE3_ID)));
+    actions.andExpect(jsonPath("$[*].description", containsInAnyOrder(CASE1_DESCRIPTION, CASE2_DESCRIPTION, CASE3_DESCRIPTION)));
+    actions.andExpect(jsonPath("$[*].createdBy", containsInAnyOrder(CASE1_CREATEDBY, CASE2_CREATEDBY, CASE3_CREATEDBY)));
+    actions.andExpect(jsonPath("$[*].createdDateTime", containsInAnyOrder(CREATEDDATE_VALUE, CREATEDDATE_VALUE1, CREATEDDATE_VALUE2)));
+    actions.andExpect(jsonPath("$[*].category", containsInAnyOrder(CASE1_CATEGORY, CASE2_CATEGORY, CASE3_CATEGORY)));
+    actions.andExpect(jsonPath("$[*].subCategory", containsInAnyOrder(CASE1_SUBCATEGORY, CASE2_SUBCATEGORY, CASE3_SUBCATEGORY)));
   }
 
   /**
    * a test
    */
   @Test
-  public void findCaseEventsByCaseIdFoundButNoEvents() {
-    with("/cases/%s/events", EXISTING_ID_NO_EVENTS)
-        .assertResponseCodeIs(HttpStatus.NO_CONTENT)
-        .andClose();
+  public void findCaseEventsByCaseIdFoundButNoEvents() throws Exception {
+    when(caseService.findCaseByCaseId(EXISTING_CASE_ID_NO_EVENTS)).thenReturn(caseResults.get(0));
+    when(caseService.findCaseEventsByCaseId(EXISTING_CASE_ID_NO_EVENTS)).thenReturn(new ArrayList<>());
+
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s/events", EXISTING_CASE_ID_NO_EVENTS)));
+
+    actions.andExpect(status().isNoContent());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("findCaseEventsByCaseId"));
+  }
+
+
+  /**
+   * a test
+   */
+  @Test
+  public void findCaseEventsByCaseIdNotFound() throws Exception {
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s/events", NON_EXISTING_CASE_ID)));
+
+    actions.andExpect(status().isNotFound());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("findCaseEventsByCaseId"));
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
+    actions.andExpect(jsonPath("$.error.message", is(String.format("%s case id %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_CASE_ID))));
+    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
   /**
    * a test
    */
   @Test
-  public void findCaseEventsByCaseIdNotFound() {
-    with("/cases/%s/events", NON_EXISTING_ID)
-        .assertResponseCodeIs(HttpStatus.NOT_FOUND)
-        .assertFaultIs(CTPException.Fault.RESOURCE_NOT_FOUND)
-        .assertTimestampExists()
-        .assertMessageEquals(String.format("%s case id %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_ID))
-        .andClose();
-  }
+  public void findCaseByCaseIdUnCheckedException() throws Exception {
+    when(caseService.findCaseByCaseId(UNCHECKED_EXCEPTION_CASE_ID)).thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
 
-  /**
-   * a test
-   */
-  @Test
-  public void findCaseByCaseIdUnCheckedException() {
-    with("/cases/%s", UNCHECKED_EXCEPTION)
-        .assertResponseCodeIs(HttpStatus.INTERNAL_SERVER_ERROR)
-        .assertFaultIs(CTPException.Fault.SYSTEM_ERROR)
-        .assertTimestampExists()
-        .assertMessageEquals(OUR_EXCEPTION_MESSAGE)
-        .andClose();
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s", UNCHECKED_EXCEPTION_CASE_ID)));
+
+    actions.andExpect(status().is5xxServerError());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("findCaseByCaseId"));
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.SYSTEM_ERROR.name())));
+    actions.andExpect(jsonPath("$.error.message", is(OUR_EXCEPTION_MESSAGE)));
+    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
   /**
    * a test providing bad json
    */
   @Test
-  public void createCaseEventBadJson() {
-    with("/cases/%s/events", CASEID).post(MediaType.APPLICATION_JSON_TYPE, CASEEVENT_INVALIDJSON)
-        .assertResponseCodeIs(HttpStatus.BAD_REQUEST)
-        .andClose();
+  public void createCaseEventBadJson() throws Exception {
+    ResultActions actions = mockMvc.perform(postJson(String.format("/cases/%s/events", CASE_ID), CASEEVENT_INVALIDJSON));
+
+    actions.andExpect(status().isBadRequest());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("createCaseEvent"));
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())));
+    actions.andExpect(jsonPath("$.error.message", isA(String.class)));
+    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
   /**
    * a test providing good json
    */
   @Test
-  public void createCaseEventGoodJson() {
-    with("/cases/%s/events", CASEID).post(MediaType.APPLICATION_JSON_TYPE, CASEEVENT_VALIDJSON)
-        .assertResponseCodeIs(HttpStatus.CREATED)
-        .assertIntegerInBody("$.caseEventId", 1)
-        .assertIntegerInBody("$.caseId", CASEID)
-        .assertStringInBody("$.description", CASEEVENT_DESC1)
-        .assertStringInBody("$.createdBy", CREATEDBY)
-        .assertStringInBody("$.createdDateTime", CREATEDDATE_VALUE)
-        .assertStringInBody("$.category", CASEEVENT_CATEGORY.name())
-        .assertStringInBody("$.subCategory", CASEEVENT_SUBCATEGORY)
-        .andClose();
-  }
+  public void createCaseEventGoodJson() throws Exception {
+    when(categoryService.findCategory(CategoryDTO.CategoryType.GENERAL_ENQUIRY)).thenReturn(categoryResults.get(0));
+    when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class))).thenReturn(caseEventsResults.get(0));
 
-  /**
-   * a test providing good json
-   */
-  @Test
-  public void createCaseEventCaseNotFound() {
-    with("/cases/%s/events", NON_EXISTING_ID).post(MediaType.APPLICATION_JSON_TYPE, CASEEVENT_VALIDJSON)
-        .assertResponseCodeIs(HttpStatus.CREATED)
-        .assertIntegerInBody("$.caseEventId", 1)
-        .assertIntegerInBody("$.caseId", CASEID)
-        .assertStringInBody("$.description", CASEEVENT_DESC1)
-        .assertStringInBody("$.createdBy", CREATEDBY)
-        .assertStringInBody("$.createdDateTime", CREATEDDATE_VALUE)
-        .assertStringInBody("$.category", CASEEVENT_CATEGORY.name())
-        .assertStringInBody("$.subCategory", CASEEVENT_SUBCATEGORY)
-        .andClose();
+    ResultActions actions = mockMvc.perform(postJson(String.format("/cases/%s/events", CASE_ID), CASEEVENT_VALIDJSON));
+
+    actions.andExpect(status().isCreated());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("createCaseEvent"));
+    actions.andExpect(jsonPath("$.caseEventId", is(CASE1_ID)));
+    actions.andExpect(jsonPath("$.caseId", is(CASE1_ID)));
+    actions.andExpect(jsonPath("$.description", is(CASE1_DESCRIPTION)));
+    actions.andExpect(jsonPath("$.createdBy", is(CASE1_CREATEDBY)));
+    actions.andExpect(jsonPath("$.createdDateTime", is(CREATEDDATE_VALUE)));
+    actions.andExpect(jsonPath("$.category", is(CASE1_CATEGORY)));
+    actions.andExpect(jsonPath("$.subCategory", is(CASE1_SUBCATEGORY)));
   }
 }

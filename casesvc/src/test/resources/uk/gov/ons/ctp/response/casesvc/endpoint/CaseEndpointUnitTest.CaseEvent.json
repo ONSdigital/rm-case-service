@@ -1,0 +1,29 @@
+[
+  {
+    "createdDateTime":1460736159699,
+    "caseEventId":1,
+    "caseId":1,
+    "category":"ONLINE_QUESTIONNAIRE_RESPONSE",
+    "subCategory":"subcat 1",
+    "createdBy":"me 1",
+    "description":"desc 1"
+  },
+  {
+    "createdDateTime":1460736159799,
+    "caseEventId":2,
+    "caseId":2,
+    "category":"CLASSIFICATION_INCORRECT",
+    "subCategory":"subcat 2",
+    "createdBy":"me 2",
+    "description":"desc 2"
+  },
+  {
+    "createdDateTime":1460736159899,
+    "caseEventId":3,
+    "caseId":3,
+    "category":"REFUSAL",
+    "subCategory":"subcat 3",
+    "createdBy":"me 3",
+    "description":"desc 3"
+  }
+]

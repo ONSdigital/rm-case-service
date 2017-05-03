@@ -1,7 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc;
 
-import javax.inject.Named;
-
+import org.springframework.stereotype.Component;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.ConfigurableMapper;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
@@ -19,7 +18,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.ResponseDTO;
  * The bean mapper that maps to/from DTOs and JPA entity types.
  *
  */
-@Named
+@Component
 public class CaseSvcBeanMapper extends ConfigurableMapper {
 
   /**

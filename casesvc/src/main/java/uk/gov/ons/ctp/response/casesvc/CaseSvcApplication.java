@@ -1,8 +1,5 @@
 package uk.gov.ons.ctp.response.casesvc;
 
-import javax.inject.Named;
-
-import org.glassfish.jersey.server.ResourceConfig;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -14,24 +11,22 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import uk.gov.ons.ctp.common.distributed.DistributedListManager;
 import uk.gov.ons.ctp.common.distributed.DistributedListManagerRedissonImpl;
-import uk.gov.ons.ctp.common.jaxrs.CTPMessageBodyReader;
-import uk.gov.ons.ctp.common.jaxrs.JAXRSRegister;
+import uk.gov.ons.ctp.common.error.RestExceptionHandler;
+import uk.gov.ons.ctp.common.jackson.CustomObjectMapper;
 import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
-import uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint;
-import uk.gov.ons.ctp.response.casesvc.endpoint.CaseGroupEndpoint;
-import uk.gov.ons.ctp.response.casesvc.endpoint.CategoryEndpoint;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
 import uk.gov.ons.ctp.response.casesvc.state.CaseSvcStateTransitionManagerFactory;
 import uk.gov.ons.ctp.response.report.endpoint.ReportEndpoint;
 
@@ -104,26 +99,15 @@ public class CaseSvcApplication {
     return restHelper;
   }
 
-  /**
-   * The JerseyConfig class used to config the JAX RS implementation.
-   */
-  @Named
-  public static class JerseyConfig extends ResourceConfig {
-    /**
-     * Required default constructor.
-     */
-    public JerseyConfig() {
-      JAXRSRegister.listCommonTypes().forEach(t->register(t));
+  @Bean
+  public RestExceptionHandler restExceptionHandler() {
+    return new RestExceptionHandler();
+  }
 
-      // Register JAX-RS components
-      register(CaseEndpoint.class);
-      register(CaseGroupEndpoint.class);
-      register(CategoryEndpoint.class);
-      register(ReportEndpoint.class);
 
-      register(new CTPMessageBodyReader<CaseEventDTO>(CaseEventDTO.class) {
-      });
-    }
+  @Bean @Primary
+  public CustomObjectMapper CustomObjectMapper() {
+    return new CustomObjectMapper();
   }
 
   /**

@@ -1,8 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import uk.gov.ons.ctp.response.casesvc.domain.model.UnlinkedCaseReceipt;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.UnlinkedCaseReceiptRepository;
 import uk.gov.ons.ctp.response.casesvc.service.UnlinkedCaseReceiptService;
@@ -10,10 +9,10 @@ import uk.gov.ons.ctp.response.casesvc.service.UnlinkedCaseReceiptService;
 /**
  * The service to deal with unlinkedCaseReceipts.
  */
-@Named
+@Service
 public class UnlinkedCaseReceiptServiceImpl implements UnlinkedCaseReceiptService {
 
-  @Inject
+  @Autowired
   private UnlinkedCaseReceiptRepository unlinkedCaseReceiptRepository;
 
   /**

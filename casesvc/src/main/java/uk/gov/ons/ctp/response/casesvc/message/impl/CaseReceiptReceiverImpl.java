@@ -7,12 +7,9 @@ import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
 import java.sql.Timestamp;
 
-import javax.inject.Inject;
-
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
-import org.springframework.oxm.Marshaller;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,10 +30,10 @@ import uk.gov.ons.ctp.response.casesvc.service.UnlinkedCaseReceiptService;
 @MessageEndpoint
 public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
 
-  @Inject
+  @Autowired
   private CaseService caseService;
 
-  @Inject
+  @Autowired
   private UnlinkedCaseReceiptService unlinkedCaseReceiptService;
 
   /**

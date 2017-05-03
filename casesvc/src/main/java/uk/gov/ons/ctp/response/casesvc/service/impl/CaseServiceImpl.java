@@ -4,10 +4,9 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -36,7 +35,7 @@ import uk.gov.ons.ctp.response.casesvc.utility.Constants;
  * A CaseService implementation which encapsulates all business logic operating
  * on the Case entity model.
  */
-@Named
+@Service
 @Slf4j
 public class CaseServiceImpl implements CaseService {
 
@@ -48,25 +47,25 @@ public class CaseServiceImpl implements CaseService {
 
   private static final int TRANSACTION_TIMEOUT = 30;
 
-  @Inject
+  @Autowired
   private CaseRepository caseRepo;
 
-  @Inject
+  @Autowired
   private StateTransitionManager<CaseDTO.CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
-  @Inject
+  @Autowired
   private CaseEventRepository caseEventRepo;
 
-  @Inject
+  @Autowired
   private CategoryRepository categoryRepo;
 
-  @Inject
+  @Autowired
   private ActionSvcClientService actionSvcClientService;
 
-  @Inject
+  @Autowired
   private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
 
-  @Inject
+  @Autowired
   private CaseNotificationPublisher notificationPublisher;
 
   @Override

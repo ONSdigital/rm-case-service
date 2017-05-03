@@ -3,9 +3,8 @@ package uk.gov.ons.ctp.response.casesvc.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -18,14 +17,14 @@ import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
  * A CategoryService implementation which encapsulates all business logic
  * operating on the Category entity model.
  */
-@Named
+@Service
 @Slf4j
 public class CategoryServiceImpl implements CategoryService {
 
   /**
    * Spring Data Repository for CaseType entities.
    **/
-  @Inject
+  @Autowired
   private CategoryRepository categoryRepo;
 
   @Override

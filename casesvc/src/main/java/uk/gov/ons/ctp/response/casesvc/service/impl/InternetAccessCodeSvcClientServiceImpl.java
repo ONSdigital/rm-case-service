@@ -3,12 +3,11 @@ package uk.gov.ons.ctp.response.casesvc.service.impl;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 
@@ -24,13 +23,13 @@ import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
  *
  */
 @Slf4j
-@Named
+@Service
 public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCodeSvcClientService {
 
-  @Inject
+  @Autowired
   private AppConfig appConfig;
 
-  @Inject
+  @Autowired
   @Qualifier("internetAccessCodeServiceClient")
   private RestClient internetAccessClientServiceClient;
 
