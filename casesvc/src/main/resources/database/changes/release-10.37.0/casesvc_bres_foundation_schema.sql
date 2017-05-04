@@ -41,18 +41,18 @@ CREATE SEQUENCE responseidseq
 CREATE TABLE "case" (
     caseid bigint NOT NULL,
     casegroupid bigint NOT NULL,
-	caseref character varying(16),
+    caseref character varying(16),
     partyid character varying(128),
     sampleunitref  character varying(20),
-	sampleunittype character varying(2),
-	collectioninstrumentid character varying(128),
+    sampleunittype character varying(2),
+    collectioninstrumentid character varying(128),
     state character varying(20),
     actionplanid integer,
     createddatetime timestamp with time zone,
     createdby character varying(50),
     iac character varying(20),
-	sourcecaseid bigint,    
-	optlockversion integer DEFAULT 0
+    sourcecaseid bigint,
+    optlockversion integer DEFAULT 0
 );
 
 
@@ -85,8 +85,8 @@ CREATE TABLE casegroup (
     casegroupid bigint NOT NULL,
     partyid character varying(128),
     sampleunitref  character varying(20),
-	sampleunittype character varying(2),
-	collectioninstrumentid character varying(128),
+    sampleunittype character varying(2),
+    collectioninstrumentid character varying(128)
 );
 
 

@@ -28,11 +28,5 @@ public class CaseGroupServiceImpl implements CaseGroupService {
     log.debug("Entering findCaseGroupByCaseGroupId with {}", caseGroupId);
     return caseGroupRepo.findOne(caseGroupId);
   }
-  
-  @Override
-  public List<CaseGroup> findCaseGroupsByUprn(final Long uprn) {
-    log.debug("Entering findCaseGroupsByUprn with {}", uprn);
-    return caseGroupRepo.findByUprn(uprn);
-  }
 
 }
