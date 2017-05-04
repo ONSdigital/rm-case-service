@@ -13,9 +13,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Version;
@@ -30,6 +28,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
 
 /**
  * Domain model object.
@@ -70,15 +69,22 @@ public class Case implements Serializable {
   @Enumerated(EnumType.STRING)
   private CaseDTO.CaseState state;
 
-  @Column(name = "casetypeid")
-  private Integer caseTypeId;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "sampleunittype")
+  private SampleUnitDTO.SampleUnitType sampleUnitType;
 
-  @Column(name = "actionplanmappingid")
-  private Integer actionPlanMappingId;
+  @Column(name = "partyid")
+  private String partyId;
 
-  @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-  @JoinColumn(name = "contactid")
-  private Contact contact;
+  @Column(name = "collectioninstrumentid")
+  private String collectionInstrumentId;
+  
+  @Column(name = "sampleunitref")
+  private String sampleUnitRef;
+
+  @Column(name = "actionplanid")
+  private Integer actionPlanId;
+
 
   @Column(name = "createddatetime")
   private Timestamp createdDateTime;

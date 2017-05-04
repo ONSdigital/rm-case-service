@@ -5,7 +5,7 @@
    "caseTypeId": 1,
    "createdDateTime": 1460736159699,
    "createdBy": "UnitTester",
-   "actionPlanMappingId": 1
+   "actionPlanId": 1
 },
 {
    "caseId":2,
@@ -13,7 +13,7 @@
    "caseTypeId":2,
    "createdDateTime":1460736159699,
    "createdBy":"UnitTester",
-   "actionPlanMappingId":2
+   "actionPlanId":2
 },
 {
    "caseId":3,
@@ -21,6 +21,6 @@
    "caseTypeId":3,
    "createdDateTime":1460736159699,
    "createdBy":"UnitTester",
-   "actionPlanMappingId":3
+   "actionPlanId":3
 }
 ]

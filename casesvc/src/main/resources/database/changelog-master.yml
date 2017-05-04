@@ -5,25 +5,4 @@ databaseChangeLog:
         username: casesvc
 
   - include:
-      file: database/changes/release-9.27.0/changelog.yml
-
-  - include:
-      file: database/changes/release-9.28.0/changelog.yml
-
-  - include:
-      file: database/changes/release-9.29.0/changelog.yml
-
-  - include:
-      file: database/changes/release-9.30.0/changelog.yml
-  
-  - include:
-      file: database/changes/release-9.31.0/changelog.yml
-      
-  - include:
-      file: database/changes/release-9.32.0/changelog.yml
-
-  - include:
-      file: database/changes/release-9.33.0/changelog.yml
-
-  - include:
-      file: database/changes/release-9.34.0/changelog.yml
+      file: database/changes/release-10.37.0/changelog.yml

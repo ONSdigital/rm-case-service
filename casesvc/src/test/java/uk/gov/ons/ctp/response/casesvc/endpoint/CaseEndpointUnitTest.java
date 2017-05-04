@@ -13,7 +13,9 @@ import static uk.gov.ons.ctp.common.MvcHelper.postJson;
 import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
 import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.ERRORMSG_CASENOTFOUND;
 
-import ma.glasnost.orika.MapperFacade;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,11 +23,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
-
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.common.FixtureHelper;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.error.RestExceptionHandler;
@@ -40,9 +43,6 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Case Endpoint Unit tests
  */
@@ -51,8 +51,8 @@ public final class CaseEndpointUnitTest {
   private static final CaseDTO.CaseState CASE1_STATE = CaseDTO.CaseState.SAMPLED_INIT;
 
   private static final Integer CASE_ID = 124;
-  private static final Integer CASE_TYPEID = 1;
-  private static final Integer CASE1_ACTIONPLANMAPPINGID = 1;
+  private static final String SAMPLEUNIT_TYPE = "H";
+  private static final Integer CASE1_ACTIONPLANID = 1;
   private static final Integer CASE1_ID = 1;
   private static final Integer CASE2_ID = 2;
   private static final Integer CASE3_ID = 3;
@@ -130,10 +130,10 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCaseByCaseId"));
     actions.andExpect(jsonPath("$.state", is(CASE1_STATE.name())));
-    actions.andExpect(jsonPath("$.caseTypeId", is(CASE_TYPEID)));
+    actions.andExpect(jsonPath("$.sampleUnitType", is(SAMPLEUNIT_TYPE)));
     actions.andExpect(jsonPath("$.createdDateTime", is(CREATEDDATE_VALUE)));
     actions.andExpect(jsonPath("$.createdBy", is(CASE1_CREATEDBY)));
-    actions.andExpect(jsonPath("$.actionPlanMappingId", is(CASE1_ACTIONPLANMAPPINGID)));
+    actions.andExpect(jsonPath("$.actionPlanId", is(CASE1_ACTIONPLANID)));
   }
 
   /**
