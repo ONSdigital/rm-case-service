@@ -15,7 +15,11 @@ public class CaseGroupDTO {
 
   private Integer caseGroupId;
 
-//  private Integer sampleId;
+  private String sampleUnitType;
+
+  private String sampleUnitRef;
+
+  private String partyId;
   
-//  private Long uprn;
+  private String collectionExerciseId;
 }

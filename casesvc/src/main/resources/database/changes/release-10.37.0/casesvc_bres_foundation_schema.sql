@@ -41,11 +41,11 @@ CREATE SEQUENCE responseidseq
 CREATE TABLE "case" (
     caseid bigint NOT NULL,
     casegroupid bigint NOT NULL,
-    partyid character varying(20),
 	caseref character varying(16),
+    partyid character varying(128),
     sampleunitref  character varying(20),
 	sampleunittype character varying(2),
-	collectioninstrumentid integer,
+	collectioninstrumentid character varying(128),
     state character varying(20),
     actionplanid integer,
     createddatetime timestamp with time zone,
@@ -83,8 +83,10 @@ ALTER TABLE casesvc.caseevent OWNER TO casesvc;
 
 CREATE TABLE casegroup (
     casegroupid bigint NOT NULL,
-    partyid character varying(20),
-    collectionexerciseid integer
+    partyid character varying(128),
+    sampleunitref  character varying(20),
+	sampleunittype character varying(2),
+	collectioninstrumentid character varying(128),
 );
 
 

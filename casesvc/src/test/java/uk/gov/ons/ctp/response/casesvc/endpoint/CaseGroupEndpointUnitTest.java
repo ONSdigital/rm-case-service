@@ -45,7 +45,6 @@ public final class CaseGroupEndpointUnitTest {
   private MockMvc mockMvc;
 
   private static final Integer CASE_GROUP_ID = 1;
-  private static final Integer SAMPLE_ID = 2;
   private static final Integer NON_EXISTENT_CASE_GROUP_ID = 99;
 
   @Before
@@ -64,7 +63,8 @@ public final class CaseGroupEndpointUnitTest {
    */
   @Test
   public void findCaseGroupByCaseGroupIdFound() throws Exception {
-    when(caseGroupService.findCaseGroupByCaseGroupId(CASE_GROUP_ID)).thenReturn(CaseGroup.builder().caseGroupId(CASE_GROUP_ID).sampleId(SAMPLE_ID).build());
+    // TODO BRES add in new attribs
+    when(caseGroupService.findCaseGroupByCaseGroupId(CASE_GROUP_ID)).thenReturn(CaseGroup.builder().caseGroupId(CASE_GROUP_ID).build());
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/casegroups/%s", CASE_GROUP_ID)));
 
