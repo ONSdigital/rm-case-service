@@ -72,9 +72,9 @@ public final class CaseEndpointUnitTest {
   private static final String CASE1_SUBCATEGORY = "subcat 1";
   private static final String CASE2_SUBCATEGORY = "subcat 2";
   private static final String CASE3_SUBCATEGORY = "subcat 3";
-  private static final String CREATEDDATE_VALUE = "2016-04-15T17:02:39.699+0100";
-  private static final String CREATEDDATE_VALUE1 = "2016-04-15T17:02:39.799+0100";
-  private static final String CREATEDDATE_VALUE2 = "2016-04-15T17:02:39.899+0100";
+  private static final String CREATEDDATE_VALUE = "2016-04-15T16:02:39.699+0000";
+  private static final String CREATEDDATE_VALUE1 = "2016-04-15T16:02:39.799+0000";
+  private static final String CREATEDDATE_VALUE2 = "2016-04-15T16:02:39.899+0000";
   private static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
 
   private static final String CASEEVENT_INVALIDJSON =
