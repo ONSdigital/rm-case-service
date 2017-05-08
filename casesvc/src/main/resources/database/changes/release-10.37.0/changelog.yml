@@ -1,13 +1,14 @@
 databaseChangeLog:
 
   - changeSet:
-      id: 9.28.0-1
+      id: 10.37.0-1
       author: Narinder Birk
       changes:
         - sqlFile:
-            comment: version 3 setup data ( Individuals for England)
-            path: casesvc_setup_data_v3.sql
+            comment: new foundation schema for casesvc
+            path: casesvc_bres_foundation_schema.sql
             relativeToChangelogFile: true
             splitStatements: false
             
+
 

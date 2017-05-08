@@ -25,5 +25,6 @@ public interface CaseGroupService extends CTPService {
    * @param uprn of the case groups to find
    * @return List of CaseGroup entities or empty list if none
    */
-   List<CaseGroup> findCaseGroupsByUprn(Long uprn);
+   // TODO BRES - replace with?
+   //List<CaseGroup> findCaseGroupsByUprn(Long uprn);
 }

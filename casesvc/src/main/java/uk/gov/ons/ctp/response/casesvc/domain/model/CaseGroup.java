@@ -29,8 +29,16 @@ public class CaseGroup implements Serializable {
   @Column(name = "casegroupid")
   private Integer caseGroupId;
   
-  @Column(name = "sampleid")
-  private Integer sampleId;
+  @Column(name = "partyid")
+  private String partyId;
 
-  private Long uprn;
+  @Column(name = "sampleunitref")
+  private String sampleUnitRef;
+
+  @Column(name = "sampleunittype")
+  private String sampleUnitType;
+
+  @Column(name = "collectionexerciseid")
+  private String collectionExerciseId;
+
 }

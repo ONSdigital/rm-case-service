@@ -17,7 +17,6 @@ import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import uk.gov.ons.ctp.common.distributed.DistributedListManager;
 import uk.gov.ons.ctp.common.distributed.DistributedListManagerRedissonImpl;
 import uk.gov.ons.ctp.common.error.RestExceptionHandler;

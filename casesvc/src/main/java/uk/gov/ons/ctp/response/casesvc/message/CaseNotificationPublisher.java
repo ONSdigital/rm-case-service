@@ -4,7 +4,6 @@ package uk.gov.ons.ctp.response.casesvc.message;
 import java.util.List;
 
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
-import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotifications;
 
 /**
  * Service responsible for publishing case lifecycle events to notification
