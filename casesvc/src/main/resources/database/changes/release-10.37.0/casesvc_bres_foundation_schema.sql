@@ -37,7 +37,7 @@ CREATE SEQUENCE responseidseq
     MAXVALUE 999999999999
     CACHE 1;
 
- 
+
 CREATE TABLE "case" (
     caseid bigint NOT NULL,
     casegroupid bigint NOT NULL,
@@ -56,11 +56,9 @@ CREATE TABLE "case" (
 );
 
 
-ALTER TABLE casesvc."case" OWNER TO casesvc;
-
 --
 -- TOC entry 527 (class 1259 OID 76317)
--- Name: caseevent; Type: TABLE; Schema: casesvc; Owner: casesvc; Tablespace: 
+-- Name: caseevent; Type: TABLE; Schema: casesvc; Owner: casesvc; Tablespace:
 --
 
 CREATE TABLE caseevent (
@@ -74,11 +72,9 @@ CREATE TABLE caseevent (
 );
 
 
-ALTER TABLE casesvc.caseevent OWNER TO casesvc;
-
 --
 -- TOC entry 528 (class 1259 OID 76324)
--- Name: casegroup; Type: TABLE; Schema: casesvc; Owner: casesvc; Tablespace: 
+-- Name: casegroup; Type: TABLE; Schema: casesvc; Owner: casesvc; Tablespace:
 --
 
 CREATE TABLE casegroup (
@@ -90,23 +86,18 @@ CREATE TABLE casegroup (
 );
 
 
-ALTER TABLE casesvc.casegroup OWNER TO casesvc;
-
 --
 -- TOC entry 530 (class 1259 OID 76329)
--- Name: casestate; Type: TABLE; Schema: casesvc; Owner: casesvc; Tablespace: 
+-- Name: casestate; Type: TABLE; Schema: casesvc; Owner: casesvc; Tablespace:
 --
 
 CREATE TABLE casestate (
     state character varying(20) NOT NULL
 );
 
-
-ALTER TABLE casesvc.casestate OWNER TO casesvc;
-
 --
 -- TOC entry 532 (class 1259 OID 76335)
--- Name: category; Type: TABLE; Schema: casesvc; Owner: casesvc; Tablespace: 
+-- Name: category; Type: TABLE; Schema: casesvc; Owner: casesvc; Tablespace:
 --
 
 CREATE TABLE category (
@@ -122,12 +113,11 @@ CREATE TABLE category (
     newcasesampleunittype character varying(10)
 );
 
-ALTER TABLE casesvc.category OWNER TO casesvc;
 
 
 --
 -- TOC entry 540 (class 1259 OID 76361)
--- Name: response; Type: TABLE; Schema: casesvc; Owner: casesvc; Tablespace: 
+-- Name: response; Type: TABLE; Schema: casesvc; Owner: casesvc; Tablespace:
 --
 
 CREATE TABLE response (
@@ -138,12 +128,9 @@ CREATE TABLE response (
 );
 
 
-ALTER TABLE casesvc.response OWNER TO casesvc;
-
-
 --
 -- TOC entry 4075 (class 2606 OID 76382)
--- Name: case_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: casesvc; Tablespace: 
+-- Name: case_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: casesvc; Tablespace:
 --
 
 ALTER TABLE ONLY "case"
@@ -152,7 +139,7 @@ ALTER TABLE ONLY "case"
 
 --
 -- TOC entry 4079 (class 2606 OID 76384)
--- Name: caseevent_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: casesvc; Tablespace: 
+-- Name: caseevent_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: casesvc; Tablespace:
 --
 
 ALTER TABLE ONLY caseevent
@@ -161,7 +148,7 @@ ALTER TABLE ONLY caseevent
 
 --
 -- TOC entry 4081 (class 2606 OID 76386)
--- Name: casegroup_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: casesvc; Tablespace: 
+-- Name: casegroup_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: casesvc; Tablespace:
 --
 
 ALTER TABLE ONLY casegroup
@@ -169,7 +156,7 @@ ALTER TABLE ONLY casegroup
 
 --
 -- TOC entry 4087 (class 2606 OID 76392)
--- Name: category_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: casesvc; Tablespace: 
+-- Name: category_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: casesvc; Tablespace:
 --
 
 ALTER TABLE ONLY category
@@ -177,7 +164,7 @@ ALTER TABLE ONLY category
 
 --
 -- TOC entry 4097 (class 2606 OID 76402)
--- Name: response_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: casesvc; Tablespace: 
+-- Name: response_pkey; Type: CONSTRAINT; Schema: casesvc; Owner: casesvc; Tablespace:
 --
 
 ALTER TABLE ONLY response
@@ -207,4 +194,3 @@ ALTER TABLE ONLY caseevent
 
 ALTER TABLE ONLY response
     ADD CONSTRAINT caseid_fkey FOREIGN KEY (caseid) REFERENCES "case"(caseid);
-
