@@ -19,6 +19,17 @@
 
   <dependencies>
     <dependency>
+       <groupId>org.springframework.cloud</groupId>
+       <artifactId>spring-cloud-spring-service-connector</artifactId>
+       <version>1.2.3.RELEASE</version>
+   </dependency>
+   <!-- If you intend to deploy the app on Cloud Foundry, add the following -->
+   <dependency>
+       <groupId>org.springframework.cloud</groupId>
+       <artifactId>spring-cloud-cloudfoundry-connector</artifactId>
+       <version>1.2.3.RELEASE</version>
+   </dependency>
+    <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-zipkin</artifactId>
     </dependency>
@@ -52,7 +63,7 @@
       <version>10.37.0-SNAPSHOT</version>
     </dependency>
 
-    <!-- Packages spring-boot-starter, spring-boot-starter-aop, spring-integration-core, 
+    <!-- Packages spring-boot-starter, spring-boot-starter-aop, spring-integration-core,
       spring-integration-java-dsl, spring-integration-jmx -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
