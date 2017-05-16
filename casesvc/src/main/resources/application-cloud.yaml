@@ -1,0 +1,152 @@
+info:
+  contactEmail: philip.whiles@ons.gov.uk
+  version: ${project.version}
+  commit: ${buildNumber}
+  branch: ${scmBranch}
+  buildTime: ${timestamp}
+
+# logging config here as a reminder as to how to override logback from cmd line
+# ie -Dlogging.level.org.springframework=DEBUG
+logging:
+  level:
+    uk.gov.ons.ctp: DEBUG
+
+liquibase:
+  user: ${cloud.services.postgresql.connection.username}
+  password: ${cloud.services.postgresql.connection.password}
+  default-schema: public
+  url: ${cloud.services.postgresql.connection.jdbcurl}
+  changeLog: classpath:/database/changelog-master.yml
+
+
+
+security:
+  basic:
+    enabled: false
+  user:
+    name: admin
+    password: secret
+
+management:
+  port: 8271
+  context-path: /mgmt
+  security:
+    roles: SUPERUSER
+    enabled: true
+  health:
+    rabbit:
+      enabled: false
+
+server:
+  port: 8171
+  servlet-path: /
+
+endpoints:
+  autoconfig:
+    enabled: true
+    sensitive: true
+  beans:
+    enabled: true
+    sensitive: true
+  configprops:
+    enabled: true
+    sensitive: true
+  dump:
+    enabled: true
+    sensitive: true
+  env:
+    enabled: true
+    sensitive: true
+  info:
+    enabled: true
+    sensitive: true
+  metrics:
+    enabled: true
+    sensitive: true
+  mappings:
+    enabled: true
+    sensitive: true
+  shutdown:
+    enabled: true
+    sensitive: true
+  trace:
+    enabled: true
+    sensitive: true
+
+spring:
+  application:
+    name: ONS CaseService
+  sleuth:
+    sampler:
+      percentage: 10
+  datasource:
+    driverClassName: org.postgresql.Driver
+    tomcat:
+      initial-size: 5
+      max-active: 10
+      max-idle: 5
+      min-idle: 3
+    continue-on-error: true
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+    properties:
+      hibernate:
+        ddl-auto: update
+
+  zipkin:
+    enabled: false
+
+data-grid:
+  address: ${cloud.services.redis.connection.host}:${cloud.services.redis.connection.port}
+  password: ${cloud.services.redis.connection.password}
+  list-time-to-live-seconds: 600
+
+internet-access-code-svc:
+  iac-post-path: /iacs
+  iac-put-path: /iacs/{iac}
+  connection-config:
+    scheme: http
+    host: iacsvc.apps.onsdigital.uk
+    port: ${cloud.application.port}
+    retry-attempts: 1
+    retry-pause-milli-seconds: 5000
+    connect-timeout-milli-seconds: 5000
+    read-timeout-milli-seconds: 5000
+
+action-svc:
+  actions-path: /actions
+  connection-config:
+    scheme: http
+    host: actionsvc.apps.onsdigital.uk
+    port: ${cloud.application.port}
+    retry-attempts: 10
+    retry-pause-milli-seconds: 5000
+    connect-timeout-milli-seconds: 5000
+    read-timeout-milli-seconds: 5000
+
+case-distribution:
+  iac-max: 50
+  retrieval-max: 50
+  distribution-max: 10
+  retry-sleep-seconds: 3
+  delay-milli-seconds: 500
+
+redelivery-policy:
+  maxRedeliveries: 10
+  initialRedeliveryDelay: 1000
+  redeliveryDelay: 1000
+
+rabbitmq:
+  username: ${cloud.services.rabbitmq.connection.user}
+  password: ${cloud.services.rabbitmq.connection.password}
+  host: ${cloud.services.rabbitmq.connection.host}
+  virtualhost: /
+
+messaging:
+  consumingThreads: 1
+  pubMaxAttempts: 3
+  conMaxAttempts: 3
+  prefetchCount: 10
+  txSize: 1

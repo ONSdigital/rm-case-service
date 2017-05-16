@@ -1,0 +1,10 @@
+applications:
+- name: casesvc
+  buildpack: https://github.com/cloudfoundry/java-buildpack.git
+  instances: 1
+  memory: 1024M
+  path: target/casesvc-10.37.0-SNAPSHOT.jar
+  services:
+    - casesvc_pg_db
+    - redis
+    - rabbit
