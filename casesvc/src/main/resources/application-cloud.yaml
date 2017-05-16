@@ -14,7 +14,7 @@ logging:
 liquibase:
   user: ${cloud.services.postgresql.connection.username}
   password: ${cloud.services.postgresql.connection.password}
-  default-schema: public
+  default-schema: casesvc
   url: ${cloud.services.postgresql.connection.jdbcurl}
   changeLog: classpath:/database/changelog-master.yml
 
@@ -100,7 +100,6 @@ spring:
 
 data-grid:
   address: ${cloud.services.redis.connection.host}:${cloud.services.redis.connection.port}
-  password: ${cloud.services.redis.connection.password}
   list-time-to-live-seconds: 600
 
 internet-access-code-svc:
@@ -139,9 +138,9 @@ redelivery-policy:
   redeliveryDelay: 1000
 
 rabbitmq:
-  username: ${cloud.services.rabbitmq.connection.user}
-  password: ${cloud.services.rabbitmq.connection.password}
-  host: ${cloud.services.rabbitmq.connection.host}
+  username: ${cloud.services.rabbit.connection.username}
+  password: ${cloud.services.rabbit.connection.password}
+  host: ${cloud.services.rabbit.connection.host}
   virtualhost: /
 
 messaging:
