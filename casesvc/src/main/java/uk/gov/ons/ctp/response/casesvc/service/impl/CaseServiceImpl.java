@@ -23,6 +23,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
+import uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
@@ -109,12 +110,8 @@ public class CaseServiceImpl implements CaseService {
 
   @Override
   public CaseNotification prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent) {
-    //TODO BRES reinstate this method, filling in the action plan id from case itself?
-    
-//    ActionPlanMapping actionPlanMapping = actionPlanMappingRepo.findOne(caze.getActionPlanMappingId());
-//    NotificationType notifType = NotificationType.valueOf(transitionEvent.name());
-//    return new CaseNotification(caze.getCaseId(), actionPlanMapping.getActionPlanId(), notifType);
-    return null;
+    return new CaseNotification(caze.getCaseId(), caze.getActionPlanId(),
+            NotificationType.valueOf(transitionEvent.name()));
   }
 
   /**
