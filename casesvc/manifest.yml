@@ -7,4 +7,4 @@ applications:
   services:
     - casesvc_pg_db
     - redis
-    - rabbit
+    - rabbitmq
