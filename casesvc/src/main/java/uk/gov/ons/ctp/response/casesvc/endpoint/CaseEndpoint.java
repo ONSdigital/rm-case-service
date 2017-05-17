@@ -180,7 +180,7 @@ public final class CaseEndpoint implements CTPEndpoint {
 //    }
 
     Category category = categoryService.findCategory(caseEvent.getCategory());
-    if (category.getNewCaseRespondentType() != null && caze == null) {
+    if (category.getNewCaseSampleUnitType() != null && caze == null) {
       throw new CTPException(CTPException.Fault.VALIDATION_FAILED,
           String.format(EVENT_REQUIRES_NEW_CASE, caseId));
     }

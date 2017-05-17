@@ -43,8 +43,8 @@ public class CaseServiceImpl implements CaseService {
   private static final String CASE_CREATED_EVENT_DESCRIPTION = "Case created when %s";
   private static final String IAC_OVERUSE_MSG = "More than one case found to be using IAC %s";
   private static final String MISSING_NEW_CASE_MSG = "New Case definition missing for case %s";
-//  private static final String WRONG_NEW_CASE_TYPE_MSG = "New Case definition has incorrect casetype (new respondent type '%s' is not required type '%s')";
-//  private static final String WRONG_OLD_CASE_TYPE_MSG = "Old Case definition has incorrect casetype (old respondent type '%s' is not expected type '%s')";
+  private static final String WRONG_NEW_SAMPLE_UNIT_TYPE_MSG = "New Case definition has incorrect sampleUnitType (new sampleUnitType '%s' is not required type '%s')";
+  private static final String WRONG_OLD_SAMPLE_UNIT_TYPE_MSG = "Old Case definition has incorrect sampleUnitType (old sampleUnitType '%s' is not expected type '%s')";
 
   private static final int TRANSACTION_TIMEOUT = 30;
 
@@ -177,18 +177,16 @@ public class CaseServiceImpl implements CaseService {
   private void validateCaseEventRequest(Category category, CaseEvent caseEvent, Case targetCase,
       Case newCase) {
 
-    if (category.getNewCaseRespondentType() != null) {
+    if (category.getNewCaseSampleUnitType() != null) {
       if (newCase == null) {
         throw new RuntimeException(String.format(MISSING_NEW_CASE_MSG, targetCase.getCaseId()));
       }
-      // TODO BRES replace with code to compare sampleCaseType from Case itself?
-//      CaseType targetCaseType = caseTypeRepo.findOne(targetCase.getCaseTypeId());
-//      checkRespondentTypesMatch(WRONG_OLD_CASE_TYPE_MSG,
-//          targetCaseType.getRespondentType(), category.getOldCaseRespondentType());
-//
-//      CaseType intendedCaseType = caseTypeRepo.findOne(newCase.getCaseTypeId());
-//      checkRespondentTypesMatch(WRONG_NEW_CASE_TYPE_MSG, category.getNewCaseRespondentType(),
-//          intendedCaseType.getRespondentType());
+
+      checkRespondentTypesMatch(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, targetCase.getSampleUnitType().name(),
+              category.getOldCaseSampleUnitType());
+
+      checkRespondentTypesMatch(WRONG_NEW_SAMPLE_UNIT_TYPE_MSG, category.getNewCaseSampleUnitType(),
+              newCase.getSampleUnitType().name());
     }
   }
 
@@ -199,11 +197,11 @@ public class CaseServiceImpl implements CaseService {
    * @param newRespondentType the type on the left
    * @param expectedRespondentType the type on the right
    */
-//  private void checkRespondentTypesMatch(String msg, String newRespondentType, String expectedRespondentType) {
-//    if (!newRespondentType.equals(expectedRespondentType)) {
-//      throw new RuntimeException(String.format(msg, newRespondentType, expectedRespondentType));
-//    }
-//  }
+  private void checkRespondentTypesMatch(String msg, String newRespondentType, String expectedRespondentType) {
+    if (!newRespondentType.equals(expectedRespondentType)) {
+      throw new RuntimeException(String.format(msg, newRespondentType, expectedRespondentType));
+    }
+  }
 
   /**
    * Check to see if a new case creation is indicated by the event category and
@@ -217,7 +215,7 @@ public class CaseServiceImpl implements CaseService {
    */
   private void createNewCase(Category category, CaseEvent caseEvent, Case targetCase,
       Case newCase) {
-    if (category.getNewCaseRespondentType() != null) {
+    if (category.getNewCaseSampleUnitType() != null) {
       createNewCaseFromEvent(caseEvent, targetCase, newCase, category);
     }
   }

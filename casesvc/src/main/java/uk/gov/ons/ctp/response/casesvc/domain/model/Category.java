@@ -49,14 +49,11 @@ public class Category implements Serializable {
   private CaseDTO.CaseEvent eventType;
 
   @Column(name = "oldcaserespondenttype")
-  private String oldCaseRespondentType;
+  private String oldCaseSampleUnitType;
 
   @Column(name = "newcaserespondenttype")
-  private String newCaseRespondentType;
+  private String newCaseSampleUnitType;
 
   @Column(name = "generatedactiontype")
   private String generatedActionType;
-
-  private Boolean manual;
-
 }
