@@ -48,10 +48,10 @@ public class Category implements Serializable {
   @Enumerated(EnumType.STRING)
   private CaseDTO.CaseEvent eventType;
 
-  @Column(name = "oldcaserespondenttype")
+  @Column(name = "oldcasesampleunittype")
   private String oldCaseSampleUnitType;
 
-  @Column(name = "newcaserespondenttype")
+  @Column(name = "newcasesampleunittype")
   private String newCaseSampleUnitType;
 
   @Column(name = "generatedactiontype")

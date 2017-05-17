@@ -182,24 +182,24 @@ public class CaseServiceImpl implements CaseService {
         throw new RuntimeException(String.format(MISSING_NEW_CASE_MSG, targetCase.getCaseId()));
       }
 
-      checkRespondentTypesMatch(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, targetCase.getSampleUnitType().name(),
+      checkSampleUnitTypesMatch(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, targetCase.getSampleUnitType().name(),
               category.getOldCaseSampleUnitType());
 
-      checkRespondentTypesMatch(WRONG_NEW_SAMPLE_UNIT_TYPE_MSG, category.getNewCaseSampleUnitType(),
+      checkSampleUnitTypesMatch(WRONG_NEW_SAMPLE_UNIT_TYPE_MSG, category.getNewCaseSampleUnitType(),
               newCase.getSampleUnitType().name());
     }
   }
 
   /**
-   * Simple method to compare two respondent types and complain if they don't
+   * Simple method to compare two sample unit types and complain if they don't
    * 
    * @param msg the error message to use if they mismatch
-   * @param newRespondentType the type on the left
-   * @param expectedRespondentType the type on the right
+   * @param newSampleUnitType the type on the left
+   * @param expectedSampleUnitType the type on the right
    */
-  private void checkRespondentTypesMatch(String msg, String newRespondentType, String expectedRespondentType) {
-    if (!newRespondentType.equals(expectedRespondentType)) {
-      throw new RuntimeException(String.format(msg, newRespondentType, expectedRespondentType));
+  private void checkSampleUnitTypesMatch(String msg, String newSampleUnitType, String expectedSampleUnitType) {
+    if (!newSampleUnitType.equals(expectedSampleUnitType)) {
+      throw new RuntimeException(String.format(msg, newSampleUnitType, expectedSampleUnitType));
     }
   }
 
@@ -230,6 +230,7 @@ public class CaseServiceImpl implements CaseService {
    */
   private void recordCaseResponse(Category category, Case targetCase, Timestamp timestamp) {
     InboundChannel channel = null;
+    // TODO BRES new category type for when a BI responds?
     switch (category.getCategoryType()) {
       case ONLINE_QUESTIONNAIRE_RESPONSE:
         channel = InboundChannel.ONLINE;
