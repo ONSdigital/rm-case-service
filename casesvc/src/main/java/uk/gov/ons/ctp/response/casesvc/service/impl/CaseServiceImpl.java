@@ -286,10 +286,11 @@ public class CaseServiceImpl implements CaseService {
       if (transitionEvent == CaseDTO.CaseEvent.DISABLED) {
         internetAccessCodeSvcClientService.disableIAC(targetCase.getIac());
       }
+
       CaseDTO.CaseState oldState = targetCase.getState();
       CaseDTO.CaseState newState = null;
       // make the transition
-      newState = caseSvcStateTransitionManager.transition(targetCase.getState(), transitionEvent);
+      newState = caseSvcStateTransitionManager.transition(oldState, transitionEvent);
       // was a state change effected?
       if (oldState != newState) {
         targetCase.setState(newState);
