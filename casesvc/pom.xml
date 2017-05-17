@@ -4,35 +4,19 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>casesvc</artifactId>
-  <version>10.37.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>CTP : ResponseManagement : CaseSvc</name>
-  <description>CTP : ResponseManagement : CaseSvc</description>
+  <name>CTP : CaseService: CaseSvc</name>
+  <description>CTP : CaseService: CaseSvc</description>
 
   <parent>
     <groupId>uk.gov.ons.ctp.product</groupId>
-    <artifactId>responsemanagement</artifactId>
-    <version>10.37.0-SNAPSHOT</version>
+    <artifactId>caseservice</artifactId>
+    <version>10.38.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <dependencies>
-    <dependency>
-       <groupId>org.springframework.cloud</groupId>
-       <artifactId>spring-cloud-spring-service-connector</artifactId>
-       <version>1.2.3.RELEASE</version>
-   </dependency>
-   <!-- If you intend to deploy the app on Cloud Foundry, add the following -->
-   <dependency>
-       <groupId>org.springframework.cloud</groupId>
-       <artifactId>spring-cloud-cloudfoundry-connector</artifactId>
-       <version>1.2.3.RELEASE</version>
-   </dependency>
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-zipkin</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>uk.gov.ons.ctp.product</groupId>
@@ -49,18 +33,56 @@
     <dependency>
       <groupId>uk.gov.ons.ctp.product</groupId>
       <artifactId>casesvc-api</artifactId>
-      <version>10.37.0-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework.amqp</groupId>
-      <artifactId>spring-rabbit</artifactId>
+      <version>10.38.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>uk.gov.ons.ctp.product</groupId>
       <artifactId>reportmodule</artifactId>
-      <version>10.37.0-SNAPSHOT</version>
+      <version>10.38.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>uk.gov.ons.ctp.common</groupId>
+      <artifactId>framework</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>uk.gov.ons.ctp.common</groupId>
+      <artifactId>test-framework</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>6.9.10</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+       <groupId>org.springframework.cloud</groupId>
+       <artifactId>spring-cloud-spring-service-connector</artifactId>
+   </dependency>
+   <!-- If you intend to deploy the app on Cloud Foundry, add the following -->
+   <dependency>
+       <groupId>org.springframework.cloud</groupId>
+       <artifactId>spring-cloud-cloudfoundry-connector</artifactId>
+   </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-zipkin</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.amqp</groupId>
+      <artifactId>spring-rabbit</artifactId>
     </dependency>
 
     <!-- Packages spring-boot-starter, spring-boot-starter-aop, spring-integration-core,
@@ -111,6 +133,23 @@
       <artifactId>spring-boot-configuration-processor</artifactId>
       <optional>true</optional>
     </dependency>
+
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>ma.glasnost.orika</groupId>
+      <artifactId>orika-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>ma.glasnost.orika</groupId>
+      <artifactId>orika-eclipse-tools</artifactId>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -118,7 +157,6 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>${springboot.version}</version>
         <configuration>
           <executable>true</executable>
           <requiresUnpack>
