@@ -38,7 +38,7 @@ public class CaseGroup implements Serializable {
   @Column(name = "sampleunittype")
   private String sampleUnitType;
 
-  @Column(name = "collectionexerciseid")
+  @Column(name = "collectioninstrumentid")
   private String collectionExerciseId;
 
 }

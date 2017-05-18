@@ -18,6 +18,7 @@ import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
 import org.hibernate.annotations.GenericGenerator;
@@ -105,3 +106,4 @@ public class Case implements Serializable {
   }
 
 }
+

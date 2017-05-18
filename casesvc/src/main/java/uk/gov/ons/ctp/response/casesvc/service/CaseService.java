@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import uk.gov.ons.ctp.common.service.CTPService;
+import uk.gov.ons.ctp.response.casesvc.definition.CaseCreation;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
@@ -85,4 +86,15 @@ public interface CaseService extends CTPService {
    * @return the newly created notification object
    */
   CaseNotification prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent);
+
+  /**
+   * Create a CaseEvent from the details provided in the passed CaseEvent. Some events will also as a side effect
+   * create a new case - if so the details must be provided in the newCase argument, otherwise it may remain null.
+   * If the newCase is passed it must also contain the contact details for the new case.
+   *
+   * @param caseEvent CaseEvent to be created
+   * @param newCase optional case object containing partial details of the case to be created by this event.
+   * @return the created CaseEvent
+   */
+  void createInitialCase(CaseCreation caseData);
 }

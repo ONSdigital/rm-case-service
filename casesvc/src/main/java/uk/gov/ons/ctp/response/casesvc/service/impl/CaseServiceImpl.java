@@ -14,8 +14,10 @@ import org.springframework.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
+import uk.gov.ons.ctp.response.casesvc.definition.CaseCreation;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Response;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
@@ -360,5 +362,42 @@ public class CaseServiceImpl implements CaseService {
 
     caseEventRepo.saveAndFlush(newCaseCaseEvent);
     return newCaseCaseEvent;
+  }
+  
+  @Override
+  public void createInitialCase(CaseCreation caseData) {
+    
+	  createNewCaseGroup(caseData);
+	  createNewCase(caseData);
+
+  }
+  
+  private void createNewCaseGroup(CaseCreation caseData)
+  {
+	   CaseGroup newCaseGroup = new CaseGroup();
+	   
+	   newCaseGroup.setCaseGroupId(caseData.getCaseId());
+	   //newCaseGroup.setPartyId(caseData.getPartyId());
+	   newCaseGroup.setSampleUnitRef(caseData.getSampleUnitRef());
+	   newCaseGroup.setSampleUnitType(caseData.getSampleUnitType());
+	   
+	   
+	   caseGroupRepo.saveAndFlush(newCaseGroup);
+	   log.info("SetCaseGroupData");
+  }
+  
+  private void createNewCase(CaseCreation caseData)
+  {
+		Case newCase = new Case(); 
+		newCase.setCaseId(caseData.getCaseId());
+		newCase.setCaseGroupId(caseData.getCaseGroupId());		
+		newCase.setActionPlanId(caseData.getActionPlanId());
+		newCase.setActionPlanId(caseData.getActionPlanId());
+		Timestamp dateTime = new Timestamp(caseData.getCreatedDateTime().toGregorianCalendar().getTimeInMillis());
+		newCase.setCreatedDateTime(dateTime);
+		
+		
+		caseRepo.saveAndFlush(newCase);
+		log.info("SetCaseData");
   }
 }
