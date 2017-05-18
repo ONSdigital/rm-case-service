@@ -21,6 +21,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Response;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
@@ -51,6 +52,9 @@ public class CaseServiceImpl implements CaseService {
 
   @Autowired
   private CaseRepository caseRepo;
+  
+  @Autowired
+  private CaseGroupRepository caseGroupRepo;
 
   @Autowired
   private StateTransitionManager<CaseDTO.CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
