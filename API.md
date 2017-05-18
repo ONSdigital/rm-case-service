@@ -12,7 +12,7 @@ For the endpoints that return the details of a case:
 
 * `GET /cases/partyid/3b136c4b-7a14-4904-9e01-13364dd7b972?caseevents=true`
 
-If this query parameter is omitted these case events **will not** be returned with the case details. In this scenario case events for a case can be retrieved separately using the `GET /cases/<case_id>/events` endpoint. The JSON examples provided for the three endpoints mentioned above that return the details of a case include the case events for illustration purposes.
+If this query parameter is omitted these case events **will not** be returned with the case details. In this scenario case events for a case can be retrieved separately using the `GET /cases/<case_id>/events` endpoint. The JSON examples provided for the three endpoints mentioned above include the case events for illustration purposes.
 
 ## Get Case Group
 * `GET /casegroups/9a5f2be5-f944-41f9-982c-3517cfcfef3c` will return the details of the case group with an ID of `9a5f2be5-f944-41f9-982c-3517cfcfef3c`.
