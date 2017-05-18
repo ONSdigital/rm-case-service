@@ -14,11 +14,14 @@ import org.springframework.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
+import uk.gov.ons.ctp.response.casesvc.definition.CaseCreation;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Response;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
@@ -43,13 +46,15 @@ public class CaseServiceImpl implements CaseService {
   private static final String CASE_CREATED_EVENT_DESCRIPTION = "Case created when %s";
   private static final String IAC_OVERUSE_MSG = "More than one case found to be using IAC %s";
   private static final String MISSING_NEW_CASE_MSG = "New Case definition missing for case %s";
-//  private static final String WRONG_NEW_CASE_TYPE_MSG = "New Case definition has incorrect casetype (new respondent type '%s' is not required type '%s')";
-//  private static final String WRONG_OLD_CASE_TYPE_MSG = "Old Case definition has incorrect casetype (old respondent type '%s' is not expected type '%s')";
+  private static final String WRONG_OLD_SAMPLE_UNIT_TYPE_MSG = "Old Case definition has incorrect sampleUnitType (old sampleUnitType '%s' is not expected type '%s')";
 
   private static final int TRANSACTION_TIMEOUT = 30;
 
   @Autowired
   private CaseRepository caseRepo;
+  
+  @Autowired
+  private CaseGroupRepository caseGroupRepo;
 
   @Autowired
   private StateTransitionManager<CaseDTO.CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
@@ -177,33 +182,28 @@ public class CaseServiceImpl implements CaseService {
   private void validateCaseEventRequest(Category category, CaseEvent caseEvent, Case targetCase,
       Case newCase) {
 
-    if (category.getNewCaseRespondentType() != null) {
+    if (category.getNewCaseSampleUnitType() != null) {
       if (newCase == null) {
         throw new RuntimeException(String.format(MISSING_NEW_CASE_MSG, targetCase.getCaseId()));
       }
-      // TODO BRES replace with code to compare sampleCaseType from Case itself?
-//      CaseType targetCaseType = caseTypeRepo.findOne(targetCase.getCaseTypeId());
-//      checkRespondentTypesMatch(WRONG_OLD_CASE_TYPE_MSG,
-//          targetCaseType.getRespondentType(), category.getOldCaseRespondentType());
-//
-//      CaseType intendedCaseType = caseTypeRepo.findOne(newCase.getCaseTypeId());
-//      checkRespondentTypesMatch(WRONG_NEW_CASE_TYPE_MSG, category.getNewCaseRespondentType(),
-//          intendedCaseType.getRespondentType());
+
+      checkSampleUnitTypesMatch(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, targetCase.getSampleUnitType().name(),
+              category.getOldCaseSampleUnitType());
     }
   }
 
   /**
-   * Simple method to compare two respondent types and complain if they don't
+   * Simple method to compare two sample unit types and complain if they don't
    * 
    * @param msg the error message to use if they mismatch
-   * @param newRespondentType the type on the left
-   * @param expectedRespondentType the type on the right
+   * @param newSampleUnitType the type on the left
+   * @param expectedSampleUnitType the type on the right
    */
-//  private void checkRespondentTypesMatch(String msg, String newRespondentType, String expectedRespondentType) {
-//    if (!newRespondentType.equals(expectedRespondentType)) {
-//      throw new RuntimeException(String.format(msg, newRespondentType, expectedRespondentType));
-//    }
-//  }
+  private void checkSampleUnitTypesMatch(String msg, String newSampleUnitType, String expectedSampleUnitType) {
+    if (!newSampleUnitType.equals(expectedSampleUnitType)) {
+      throw new RuntimeException(String.format(msg, newSampleUnitType, expectedSampleUnitType));
+    }
+  }
 
   /**
    * Check to see if a new case creation is indicated by the event category and
@@ -217,7 +217,7 @@ public class CaseServiceImpl implements CaseService {
    */
   private void createNewCase(Category category, CaseEvent caseEvent, Case targetCase,
       Case newCase) {
-    if (category.getNewCaseRespondentType() != null) {
+    if (category.getNewCaseSampleUnitType() != null) {
       createNewCaseFromEvent(caseEvent, targetCase, newCase, category);
     }
   }
@@ -232,6 +232,7 @@ public class CaseServiceImpl implements CaseService {
    */
   private void recordCaseResponse(Category category, Case targetCase, Timestamp timestamp) {
     InboundChannel channel = null;
+    // TODO BRES new category type for when a BI responds?
     switch (category.getCategoryType()) {
       case ONLINE_QUESTIONNAIRE_RESPONSE:
         channel = InboundChannel.ONLINE;
@@ -287,10 +288,11 @@ public class CaseServiceImpl implements CaseService {
       if (transitionEvent == CaseDTO.CaseEvent.DISABLED) {
         internetAccessCodeSvcClientService.disableIAC(targetCase.getIac());
       }
+
       CaseDTO.CaseState oldState = targetCase.getState();
       CaseDTO.CaseState newState = null;
       // make the transition
-      newState = caseSvcStateTransitionManager.transition(targetCase.getState(), transitionEvent);
+      newState = caseSvcStateTransitionManager.transition(oldState, transitionEvent);
       // was a state change effected?
       if (oldState != newState) {
         targetCase.setState(newState);
@@ -360,5 +362,42 @@ public class CaseServiceImpl implements CaseService {
 
     caseEventRepo.saveAndFlush(newCaseCaseEvent);
     return newCaseCaseEvent;
+  }
+  
+  @Override
+  public void createInitialCase(CaseCreation caseData) {
+    
+	  createNewCaseGroup(caseData);
+	  createNewCase(caseData);
+
+  }
+  
+  private void createNewCaseGroup(CaseCreation caseData)
+  {
+	   CaseGroup newCaseGroup = new CaseGroup();
+	   
+	   newCaseGroup.setCaseGroupId(caseData.getCaseId());
+	   //newCaseGroup.setPartyId(caseData.getPartyId());
+	   newCaseGroup.setSampleUnitRef(caseData.getSampleUnitRef());
+	   newCaseGroup.setSampleUnitType(caseData.getSampleUnitType());
+	   
+	   
+	   caseGroupRepo.saveAndFlush(newCaseGroup);
+	   log.info("SetCaseGroupData");
+  }
+  
+  private void createNewCase(CaseCreation caseData)
+  {
+		Case newCase = new Case(); 
+		newCase.setCaseId(caseData.getCaseId());
+		newCase.setCaseGroupId(caseData.getCaseGroupId());		
+		newCase.setActionPlanId(caseData.getActionPlanId());
+		newCase.setActionPlanId(caseData.getActionPlanId());
+		Timestamp dateTime = new Timestamp(caseData.getCreatedDateTime().toGregorianCalendar().getTimeInMillis());
+		newCase.setCreatedDateTime(dateTime);
+		
+		
+		caseRepo.saveAndFlush(newCase);
+		log.info("SetCaseData");
   }
 }

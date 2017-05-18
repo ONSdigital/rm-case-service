@@ -50,6 +50,6 @@ public class Response implements Serializable {
   @Enumerated(EnumType.STRING)
   private InboundChannel inboundChannel;
 
-  @Column(name = "datetime")
+  @Column(name = "responsedatetime")
   private Timestamp dateTime;
 }

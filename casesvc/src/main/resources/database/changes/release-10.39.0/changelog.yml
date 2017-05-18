@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 10.39.0-1
+      author: P Brossier
+      changes:
+        - sqlFile:
+            comment: amending category reflecting new naming
+            path: table_category.sql
+            relativeToChangelogFile: true
+            splitStatements: false
