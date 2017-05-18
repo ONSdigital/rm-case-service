@@ -288,7 +288,7 @@ An `HTTP 201 Created` status code is returned if the case event creation was a s
 ]
 ```
 
-An HTTP 204 No Content status code is returned if there are no available categories.
+An `HTTP 204 No Content` status code is returned if there are no available categories.
 
 ## Get Category
 * `GET /categories/name/case_created` will return the details of the category with the name `case_created`.
