@@ -43,7 +43,6 @@ public class CaseServiceImpl implements CaseService {
   private static final String CASE_CREATED_EVENT_DESCRIPTION = "Case created when %s";
   private static final String IAC_OVERUSE_MSG = "More than one case found to be using IAC %s";
   private static final String MISSING_NEW_CASE_MSG = "New Case definition missing for case %s";
-  private static final String WRONG_NEW_SAMPLE_UNIT_TYPE_MSG = "New Case definition has incorrect sampleUnitType (new sampleUnitType '%s' is not required type '%s')";
   private static final String WRONG_OLD_SAMPLE_UNIT_TYPE_MSG = "Old Case definition has incorrect sampleUnitType (old sampleUnitType '%s' is not expected type '%s')";
 
   private static final int TRANSACTION_TIMEOUT = 30;
@@ -184,9 +183,6 @@ public class CaseServiceImpl implements CaseService {
 
       checkSampleUnitTypesMatch(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, targetCase.getSampleUnitType().name(),
               category.getOldCaseSampleUnitType());
-
-      checkSampleUnitTypesMatch(WRONG_NEW_SAMPLE_UNIT_TYPE_MSG, category.getNewCaseSampleUnitType(),
-              newCase.getSampleUnitType().name());
     }
   }
 
