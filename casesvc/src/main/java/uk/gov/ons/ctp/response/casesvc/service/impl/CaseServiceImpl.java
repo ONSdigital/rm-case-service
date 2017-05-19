@@ -28,12 +28,14 @@ import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.utility.Constants;
+import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO.SampleUnitType;
 
 /**
  * A CaseService implementation which encapsulates all business logic operating
@@ -367,35 +369,44 @@ public class CaseServiceImpl implements CaseService {
   @Override
   public void createInitialCase(CaseCreation caseData) {
     
-	  createNewCaseGroup(caseData);
-	  createNewCase(caseData);
+	  CaseGroup newCaseGroup = createNewCaseGroup(caseData);
+	  createNewCase(caseData,newCaseGroup);
 
   }
   
-  private void createNewCaseGroup(CaseCreation caseData)
+  private CaseGroup createNewCaseGroup(CaseCreation caseGroupData)
   {
 	   CaseGroup newCaseGroup = new CaseGroup();
 	   
-	   newCaseGroup.setCaseGroupId(caseData.getCaseId());
-	   //newCaseGroup.setPartyId(caseData.getPartyId());
-	   newCaseGroup.setSampleUnitRef(caseData.getSampleUnitRef());
-	   newCaseGroup.setSampleUnitType(caseData.getSampleUnitType());
+	   //newCaseGroup.setCaseGroupId(1);
+	   newCaseGroup.setPartyId(String.valueOf(caseGroupData.getPartyId()));
+	   newCaseGroup.setCollectionExerciseId(String.valueOf(caseGroupData.getCollectionExerciseId()));
 	   
-	   
+	   //maybe take this out later
+	   newCaseGroup.setSampleUnitRef(caseGroupData.getSampleUnitRef());
 	   caseGroupRepo.saveAndFlush(newCaseGroup);
 	   log.info("SetCaseGroupData");
+	   return newCaseGroup;
   }
   
-  private void createNewCase(CaseCreation caseData)
+  private void createNewCase(CaseCreation caseData, CaseGroup caseGroup)
   {
 		Case newCase = new Case(); 
-		newCase.setCaseId(caseData.getCaseId());
-		newCase.setCaseGroupId(caseData.getCaseGroupId());		
-		newCase.setActionPlanId(caseData.getActionPlanId());
-		newCase.setActionPlanId(caseData.getActionPlanId());
-		Timestamp dateTime = new Timestamp(caseData.getCreatedDateTime().toGregorianCalendar().getTimeInMillis());
-		newCase.setCreatedDateTime(dateTime);
 		
+		//values from case group
+		newCase.setCaseGroupId(caseGroup.getCaseGroupId());
+		newCase.setPartyId(caseGroup.getPartyId());
+		
+		//Values from collection exercise
+		newCase.setActionPlanId(caseData.getActionPlanId());
+		newCase.setSampleUnitRef(caseData.getSampleUnitRef());
+		newCase.setSampleUnitType(SampleUnitType.valueOf(caseData.getSampleUnitType()));
+		newCase.setCollectionInstrumentId(String.valueOf(caseData.getCollectionInstrumentId()));
+		
+		//HardCode values
+		newCase.setState(CaseState.SAMPLED_INIT);
+		newCase.setCreatedDateTime(DateTimeUtil.nowUTC());
+		newCase.setCreatedBy("Constants.SYSTEM");
 		
 		caseRepo.saveAndFlush(newCase);
 		log.info("SetCaseData");
