@@ -27,4 +27,9 @@ public class CaseGroupServiceImpl implements CaseGroupService {
     return caseGroupRepo.findOne(caseGroupId);
   }
 
+  @Override
+  public CaseGroup findCaseGroupById(final String id) {
+    log.debug("Entering findCaseGroupById with {}", id);
+    return caseGroupRepo.findById(id);
+  }
 }

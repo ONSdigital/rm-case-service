@@ -2,7 +2,6 @@ package uk.gov.ons.ctp.response.casesvc.endpoint;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -37,17 +36,19 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
  /**
    * the GET endpoint to find CaseGroups by caseGroupId
    *
-   * @param caseGroupId to find by
+   * @param id to find by
    * @return the casegroups found
    * @throws CTPException something went wrong
    */
-  @RequestMapping(value = "/{caseGroupId}", method = RequestMethod.GET)
-  public ResponseEntity<?> findCaseGroupById(@PathVariable("caseGroupId") final Integer caseGroupId)  throws CTPException {
-    log.info("Entering findCaseGroupById with {}", caseGroupId);
-    CaseGroup caseGroupObj = caseGroupService.findCaseGroupByCaseGroupId(caseGroupId);
-    // TODO String.format("%s casegroup id %s", ERRORMSG_CASEGROUPNOTFOUND, caseGroupId))
-    return caseGroupObj == null ?
-              ResponseEntity.notFound().build() : ResponseEntity.ok(mapperFacade.map(caseGroupObj, CaseGroupDTO.class));
+  @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+  public CaseGroupDTO findCaseGroupById(@PathVariable("id") final String id)  throws CTPException {
+    log.info("Entering findCaseGroupById with {}", id);
+    CaseGroup caseGroupObj = caseGroupService.findCaseGroupById(id);
+    if (caseGroupObj == null) {
+        throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
+                String.format("%s casegroup id %s", ERRORMSG_CASEGROUPNOTFOUND, id));
+      }
+      return mapperFacade.map(caseGroupObj, CaseGroupDTO.class);
   }
 
 }
