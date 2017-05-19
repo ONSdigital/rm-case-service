@@ -28,6 +28,7 @@
       <artifactId>test-framework</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
@@ -74,10 +75,52 @@
             <configuration>
               <bindingDirectory>src/main/resources/xsd</bindingDirectory>
               <bindingIncludes>
+                <include>caseCreation.xjb</include>
+              </bindingIncludes>
+              <bindingExcludes>
+                <include>caseNotification.xjb</include>
+                <include>caseReceipt.xjb</include>
+              </bindingExcludes>
+              
+              <schemaDirectory>src/main/resources/xsd</schemaDirectory>
+              <schemaIncludes>
+                <include>caseCreation.xsd</include>
+              </schemaIncludes>
+              <generateDirectory>${project.build.directory}/generated-sources/xjc/creation</generateDirectory>
+              <args>
+                <arg>-Xvalue-constructor</arg>
+                <arg>-Xfluent-builder</arg>
+                <arg>-generateTools=n</arg>
+              </args>
+              <plugins>
+                <plugin>
+                  <groupId>net.codesup.util</groupId>
+                  <artifactId>jaxb2-rich-contract-plugin</artifactId>
+                  <version>1.15.0</version>
+                </plugin>
+                <plugin>
+                  <groupId>org.jvnet.jaxb2_commons</groupId>
+                  <artifactId>jaxb2-value-constructor</artifactId>
+                  <version>3.0</version>
+                </plugin>
+              </plugins>
+            </configuration>
+          </execution>
+            
+            <execution>
+            <phase>generate-sources</phase>
+            <id>inboundReceipt</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <bindingDirectory>src/main/resources/xsd</bindingDirectory>
+              <bindingIncludes>
                 <include>caseReceipt.xjb</include>
               </bindingIncludes>
               <bindingExcludes>
                 <include>caseNotification.xjb</include>
+                <include>caseCreation.xjb</include>
               </bindingExcludes>
               <schemaDirectory>src/main/resources/xsd</schemaDirectory>
               <schemaIncludes>
@@ -103,6 +146,7 @@
               </plugins>
             </configuration>
           </execution>
+          
           <execution>
             <phase>generate-sources</phase>
             <id>outbound</id>
@@ -116,6 +160,7 @@
               </bindingIncludes>
               <bindingExcludes>
                 <include>caseReceipt.xjb</include>
+                <include>caseCreation.xjb</include>
               </bindingExcludes>
               <schemaDirectory>src/main/resources/xsd</schemaDirectory>
               <schemaIncludes>

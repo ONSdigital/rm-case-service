@@ -1,72 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
+<<<<<<< HEAD
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:rabbit="http://www.springframework.org/schema/rabbit"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
   http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.6.xsd">
 
     <rabbit:connection-factory id="connectionFactory"
-                               host="${rabbitmq.host}"
-	                           username="${rabbitmq.username}"
-	                           password="${rabbitmq.password}"/>
+    host="${rabbitmq.host}" username="${rabbitmq.username}" password="${rabbitmq.password}" />
 
     <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" retry-template="retryTemplate" />
     <rabbit:admin id="amqpAdmin" connection-factory="connectionFactory"/>
 
 	<!-- Retry policy for a failed publish -->
 	<bean id="retryTemplate" class="org.springframework.retry.support.RetryTemplate">
-      <property name="backOffPolicy">
-        <bean class="org.springframework.retry.backoff.ExponentialBackOffPolicy">
-          <property name="initialInterval" value="1000" />
-          <property name="multiplier" value="3" />
-          <property name="maxInterval" value="30000" />
-        </bean>
-      </property>
-      <property name="retryPolicy">
-        <bean class="org.springframework.retry.policy.SimpleRetryPolicy">
-          <property name="maxAttempts" value="${messaging.pubMaxAttempts}" />
-        </bean>
-      </property>
-   </bean>
+		<property name="backOffPolicy">
+			<bean class="org.springframework.retry.backoff.ExponentialBackOffPolicy">
+				<property name="initialInterval" value="1000" />
+				<property name="multiplier" value="3" />
+				<property name="maxInterval" value="30000" />
+			</bean>
+		</property>
+		<property name="retryPolicy">
+			<bean class="org.springframework.retry.policy.SimpleRetryPolicy">
+				<property name="maxAttempts" value="${messaging.pubMaxAttempts}" />
+			</bean>
+		</property>
+	</bean>
 
-    <!-- Start of Queues -->
-    <rabbit:queue name="Case.LifecycleEvents" durable="true">
-        <rabbit:queue-arguments value-type="java.lang.String">
-            <entry key="x-dead-letter-exchange" value="case-deadletter-exchange" />
-            <entry key="x-dead-letter-routing-key" value="Case.LifecycleEvents.binding" />
-        </rabbit:queue-arguments>
-    </rabbit:queue>
+	<!-- Start of Queues -->
+	<rabbit:queue name="Case.LifecycleEvents" durable="true">
+		<rabbit:queue-arguments value-type="java.lang.String">
+			<entry key="x-dead-letter-exchange" value="case-deadletter-exchange" />
+			<entry key="x-dead-letter-routing-key" value="Case.LifecycleEvents.binding" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
 
-    <rabbit:queue name="Case.Responses" durable="true">
-        <rabbit:queue-arguments value-type="java.lang.String">
-            <entry key="x-dead-letter-exchange" value="case-deadletter-exchange" />
-            <entry key="x-dead-letter-routing-key" value="Case.Responses.binding" />
-        </rabbit:queue-arguments>
-    </rabbit:queue>
+	<rabbit:queue name="Case.Responses" durable="true">
+		<rabbit:queue-arguments value-type="java.lang.String">
+			<entry key="x-dead-letter-exchange" value="case-deadletter-exchange" />
+			<entry key="x-dead-letter-routing-key" value="Case.Responses.binding" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
 
-    <rabbit:queue name="Case.InvalidResponses" durable="true" />
+	<rabbit:queue name="Case.CaseDelivery" durable="true">
+		<rabbit:queue-arguments value-type="java.lang.String">
+			<entry key="x-dead-letter-exchange" value="case-deadletter-exchange" />
+			<entry key="x-dead-letter-routing-key" value="Case.CaseDelivery.binding" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
 
-    <rabbit:queue name="Case.ResponsesDLQ" durable="true" />
-    <!-- End of Queues -->
 
-    <!-- Start of Exchanges -->
-    <rabbit:direct-exchange name="case-outbound-exchange">
-        <rabbit:bindings>
-            <rabbit:binding queue="Case.LifecycleEvents" key="Case.LifecycleEvents.binding" />
-        </rabbit:bindings>
-    </rabbit:direct-exchange>
+	<rabbit:queue name="Case.InvalidResponses" durable="true" />
 
-    <rabbit:direct-exchange name="case-deadletter-exchange">
-        <rabbit:bindings>
-            <rabbit:binding queue="Case.ResponsesDLQ" key="Case.Responses.binding" />
-        </rabbit:bindings>
-    </rabbit:direct-exchange>
+	<rabbit:queue name="Case.ResponsesDLQ" durable="true" />
 
-    <rabbit:direct-exchange name="case-invalid-exchange">
-        <rabbit:bindings>
-            <rabbit:binding queue="Case.InvalidResponses" key="Case.Responses.binding" />
-        </rabbit:bindings>
-    </rabbit:direct-exchange>
-    <!-- End of Exchanges -->
+	<rabbit:queue name="Case.InvalidCaseInstructions" durable="true" />
+	<!-- End of Queues -->
 
+	<!-- Start of Exchanges -->
+	<rabbit:direct-exchange name="case-outbound-exchange">
+		<rabbit:bindings>
+			<rabbit:binding queue="Case.LifecycleEvents" key="Case.LifecycleEvents.binding" />
+		</rabbit:bindings>
+	</rabbit:direct-exchange>
+
+	<rabbit:direct-exchange name="case-deadletter-exchange">
+		<rabbit:bindings>
+			<rabbit:binding queue="Case.ResponsesDLQ" key="Case.Responses.binding" />
+		</rabbit:bindings>
+	</rabbit:direct-exchange>
+
+	<rabbit:direct-exchange name="case-invalid-exchange">
+		<rabbit:bindings>
+			<rabbit:binding queue="Case.InvalidResponses" key="Case.Responses.binding" />
+		</rabbit:bindings>
+	</rabbit:direct-exchange>
+
+
+	<rabbit:direct-exchange name="collection-inbound-exchange">
+		<rabbit:bindings>
+			<rabbit:binding queue="Case.CaseDelivery" key="Case.CaseDelivery.binding" />
+		</rabbit:bindings>
+	</rabbit:direct-exchange>
+
+	<rabbit:direct-exchange name="collection-invalid-exchange">
+		<rabbit:bindings>
+			<rabbit:binding queue="Case.InvalidCaseInstructions"
+				key="Case.CaseDelivery.binding" />
+		</rabbit:bindings>
+	</rabbit:direct-exchange>
+
+	<!-- End of Exchanges -->
 </beans>
