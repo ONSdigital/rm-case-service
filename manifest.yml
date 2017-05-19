@@ -3,7 +3,7 @@ applications:
   buildpack: https://github.com/cloudfoundry/java-buildpack.git
   instances: 1
   memory: 1024M
-  path: target/casesvc-10.38.0-SNAPSHOT.jar
+  path: casesvc/target/casesvc-10.38.0-SNAPSHOT.jar
   services:
     - casesvc_pg_db
     - redis

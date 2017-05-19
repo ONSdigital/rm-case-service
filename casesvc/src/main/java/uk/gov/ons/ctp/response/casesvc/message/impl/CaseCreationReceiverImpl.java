@@ -23,7 +23,7 @@ public class CaseCreationReceiverImpl implements CaseCreationReceiver
 	@ServiceActivator(inputChannel = "caseTransformed", adviceChain = "caseRetryAdvice")
 	public void process(CaseCreation caseCreation) 
 	{
-		log.info("received from queue" + caseCreation.getCaseId());
+		log.info("received from queue");
 		caseService.createInitialCase(caseCreation);
 		log.info("done");
 	}

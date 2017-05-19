@@ -87,6 +87,7 @@ spring:
       max-idle: 5
       min-idle: 3
     continue-on-error: true
+    schema: classpath:/schema-cloud.sql
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
