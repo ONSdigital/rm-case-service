@@ -3,9 +3,7 @@ package uk.gov.ons.ctp.response.casesvc.service.impl;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -345,6 +343,7 @@ public class CaseServiceImpl implements CaseService {
    * @return the persisted case
    */
   private Case saveNewCase(CaseEvent caseEvent, Case targetCase, Case newCase) {
+    newCase.setId(String.valueOf(UUID.randomUUID()));
     newCase.setState(CaseDTO.CaseState.REPLACEMENT_INIT);
     newCase.setCreatedDateTime(DateTimeUtil.nowUTC());
     newCase.setCaseGroupId(targetCase.getCaseGroupId());
@@ -376,19 +375,15 @@ public class CaseServiceImpl implements CaseService {
   
   @Override
   public void createInitialCase(CaseCreation caseData) {
-    
 	  CaseGroup newCaseGroup = createNewCaseGroup(caseData);
 	  createNewCase(caseData,newCaseGroup);
-
   }
   
-  private CaseGroup createNewCaseGroup(CaseCreation caseGroupData)
-  {
+  private CaseGroup createNewCaseGroup(CaseCreation caseGroupData) {
 	   CaseGroup newCaseGroup = new CaseGroup();
-	   
-	  
-	   newCaseGroup.setPartyId(String.valueOf(caseGroupData.getPartyId()));
-	   newCaseGroup.setCollectionExerciseId(String.valueOf(caseGroupData.getCollectionExerciseId()));
+	   newCaseGroup.setId(String.valueOf(UUID.randomUUID()));
+	   newCaseGroup.setPartyID(String.valueOf(caseGroupData.getPartyId()));
+	   newCaseGroup.setCollectionExerciseID(String.valueOf(caseGroupData.getCollectionExerciseId()));
 	   newCaseGroup.setSampleUnitRef(caseGroupData.getSampleUnitRef());
 	   newCaseGroup.setSampleUnitType(caseGroupData.getSampleUnitType());
 	   
@@ -397,26 +392,24 @@ public class CaseServiceImpl implements CaseService {
 	   return newCaseGroup;
   }
   
-  private void createNewCase(CaseCreation caseData, CaseGroup caseGroup)
-  {
-		Case newCase = new Case(); 
+  private void createNewCase(CaseCreation caseData, CaseGroup caseGroup) {
+		Case newCase = new Case();
+		newCase.setId(String.valueOf(UUID.randomUUID()));
 		
 		//values from case group
 		newCase.setCaseGroupId(caseGroup.getCaseGroupId());
-		newCase.setPartyId(caseGroup.getPartyId());
+		newCase.setPartyId(caseGroup.getPartyID());
+		newCase.setSampleUnitType(SampleUnitType.valueOf(caseGroup.getSampleUnitType()));
 		
 		//Values from collection exercise
 		newCase.setActionPlanId(caseData.getActionPlanId());
-		
 		//newCase.setSampleUnitRef(caseData.getSampleUnitRef());
-		
-		newCase.setSampleUnitType(SampleUnitType.valueOf(caseGroup.getSampleUnitType()));
 		newCase.setCollectionInstrumentId(String.valueOf(caseData.getCollectionInstrumentId()));
 		
-		//HardCode values
+		//HardCoded values
 		newCase.setState(CaseState.SAMPLED_INIT);
 		newCase.setCreatedDateTime(DateTimeUtil.nowUTC());
-		newCase.setCreatedBy("Constants.SYSTEM");
+		newCase.setCreatedBy(Constants.SYSTEM);
 		
 		caseRepo.saveAndFlush(newCase);
 		log.info("SetCaseData");

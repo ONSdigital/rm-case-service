@@ -53,6 +53,8 @@ public class Case implements Serializable {
   @Column(name = "caseid")
   private Integer caseId;
 
+  private String id;
+
   @Version
   @Column(name = "optlockversion")
   private int optLockVersion;

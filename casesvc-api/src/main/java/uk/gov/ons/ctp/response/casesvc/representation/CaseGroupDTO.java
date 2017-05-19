@@ -12,14 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CaseGroupDTO {
-
-  private Integer caseGroupId;
-
+  private String collectionExerciseID;
+  private String id;
+  private String partyID;
   private String sampleUnitType;
-
   private String sampleUnitRef;
-
-  private String partyId;
-  
-  private String collectionExerciseId;
 }
