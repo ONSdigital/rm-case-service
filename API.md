@@ -22,7 +22,6 @@ If this query parameter is omitted these case events **will not** be returned wi
 {
   "id": "9a5f2be5-f944-41f9-982c-3517cfcfef3c",
   "collectionExerciseID": "dab9db7f-3aa0-4866-be20-54d72ee185fb",
-  "collectionInstrumentID": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
   "partyID": "3b136c4b-7a14-4904-9e01-13364dd7b972",
   "sampleUnitRef": "0123456789",
   "sampleUnitType": "B"
@@ -68,7 +67,6 @@ An `HTTP 404 Not Found` status code is returned if the case group with the speci
   "caseGroup": {
     "id": "9a5f2be5-f944-41f9-982c-3517cfcfef3c",
     "collectionExerciseID": "dab9db7f-3aa0-4866-be20-54d72ee185fb",
-    "collectionInstrumentID": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
     "partyID": "3b136c4b-7a14-4904-9e01-13364dd7b972",
     "sampleUnitRef": "0123456789",
     "sampleUnitType": "B",
@@ -119,7 +117,6 @@ An `HTTP 404 Not Found` status code is returned if the case with the specified I
   "caseGroup": {
     "id": "9a5f2be5-f944-41f9-982c-3517cfcfef3c",
     "collectionExerciseID": "dab9db7f-3aa0-4866-be20-54d72ee185fb",
-    "collectionInstrumentID": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
     "partyID": "3b136c4b-7a14-4904-9e01-13364dd7b972",
     "sampleUnitRef": "0123456789",
     "sampleUnitType": "B",
@@ -170,7 +167,6 @@ An `HTTP 404 Not Found` status code is returned if the case with the specified p
   "caseGroup": {
     "id": "9a5f2be5-f944-41f9-982c-3517cfcfef3c",
     "collectionExerciseID": "dab9db7f-3aa0-4866-be20-54d72ee185fb",
-    "collectionInstrumentID": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
     "partyID": "3b136c4b-7a14-4904-9e01-13364dd7b972",
     "sampleUnitRef": "0123456789",
     "sampleUnitType": "B",
