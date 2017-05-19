@@ -9,3 +9,13 @@ databaseChangeLog:
             path: table_category.sql
             relativeToChangelogFile: true
             splitStatements: false
+
+  - changeSet:
+      id: 10.39.0-2
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: adding uuid fields
+            path: add_uuid_fields.sql
+            relativeToChangelogFile: true
+            splitStatements: false
