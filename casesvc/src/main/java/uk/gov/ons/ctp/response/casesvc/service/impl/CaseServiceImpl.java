@@ -194,6 +194,9 @@ public class CaseServiceImpl implements CaseService {
 
       checkSampleUnitTypesMatch(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, targetCase.getSampleUnitType().name(),
               category.getOldCaseSampleUnitType());
+
+      // TODO Validate the new sample unit type: call to the PartySvc to verify our partyID's sample unit type
+      // TODO matches the category's new sample unit type.
     }
   }
 
@@ -223,6 +226,8 @@ public class CaseServiceImpl implements CaseService {
   private void createNewCase(Category category, CaseEvent caseEvent, Case targetCase,
       Case newCase) {
     if (category.getNewCaseSampleUnitType() != null) {
+      // TODO Use the value recalcCollectionInstrument in Category: true = we need to call the Collection Exercise
+      // TODO service to set the collectionInstrumentId on the new case - false = we use the value on the target case.
       createNewCaseFromEvent(caseEvent, targetCase, newCase, category);
     }
   }
