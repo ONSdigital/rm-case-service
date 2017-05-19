@@ -2,15 +2,16 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:rabbit="http://www.springframework.org/schema/rabbit"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd 
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
   http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.6.xsd">
 
-    <rabbit:connection-factory id="connectionFactory" 
+    <rabbit:connection-factory id="connectionFactory"
                                host="${rabbitmq.host}"
-	                           username="${rabbitmq.username}" 
+	                           username="${rabbitmq.username}"
 	                           password="${rabbitmq.password}"/>
 
     <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" retry-template="retryTemplate" />
+    <rabbit:admin id="amqpAdmin" connection-factory="connectionFactory"/>
 
 	<!-- Retry policy for a failed publish -->
 	<bean id="retryTemplate" class="org.springframework.retry.support.RetryTemplate">
