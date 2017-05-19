@@ -46,7 +46,7 @@ import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientServic
  * This class is scheduled to wake and looks for Cases in INIT state to send to
  * the action service. On each wake cycle, it fetches the first n cases, by
  * createddatetime. It loops through those n cases and fetches m IACs from the
- * IAC service. It then updates each case questionnaire with an IAC taken form
+ * IAC service. It then updates each case with an IAC taken from
  * the set of m codes and transitions the case state to ACTIVE. It takes each
  * case and constructs a notification message to send to the action service -
  * when it has x notifications it publishes them.
@@ -107,7 +107,7 @@ public class CaseDistributor {
 
   /**
    * wake up on schedule and check for cases that are in INIT state - fetch IACs
-   * for them, addign the IAC to the case questionnaire, and send a notificaiton
+   * for them, adding the IAC to the case questionnaire, and send a notificaiton
    * of the activation to the action service
    *
    * @return the info for the health endpoint regarding the distribution just
@@ -216,13 +216,13 @@ public class CaseDistributor {
 
   /**
    * Deal with a single case - the transaction boundary is here. The processing
-   * requires a call to the IAC service and to write to our own case and
-   * questionaire tables. The rollback most likely to be triggered by either
+   * requires a call to the IAC service and to write to our own case 
+   * table. The rollback is most likely to be triggered by either
    * failing to find the IAC service, or if it sends back an http error status
    * code.
    *
    * @param caze the case to deal with
-   * @param iac the newly minted IAC to assign to the Case Questionnaire
+   * @param iac the newly minted IAC to assign to the Case 
    * @return The resulting CaseNotification that will be added to the outbound
    *         CaseNotifications sent to the action service
    */
