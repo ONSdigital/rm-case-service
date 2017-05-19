@@ -112,7 +112,6 @@ public final class CategoryEndpointUnitTest {
     actions.andExpect(jsonPath("$[*].longDescription", containsInAnyOrder(CATEGORY1_LONG_DESC, CATEGORY2_LONG_DESC, CATEGORY3_LONG_DESC)));
     actions.andExpect(jsonPath("$[*].shortDescription", containsInAnyOrder(CATEGORY1_SHORT_DESC, CATEGORY2_SHORT_DESC, CATEGORY3_SHORT_DESC)));
     actions.andExpect(jsonPath("$[*].role", containsInAnyOrder(CATEGORY1_ROLE, null, null)));
-    actions.andExpect(jsonPath("$[*].manual", containsInAnyOrder(true, false, false)));
   }
 
   /**
@@ -135,7 +134,6 @@ public final class CategoryEndpointUnitTest {
     actions.andExpect(jsonPath("$[0].longDescription", is(CATEGORY1_LONG_DESC)));
     actions.andExpect(jsonPath("$[0].shortDescription", is(CATEGORY1_SHORT_DESC)));
     actions.andExpect(jsonPath("$[0].role", is(CATEGORY1_ROLE)));
-    actions.andExpect(jsonPath("$[0].manual", is(true)));
   }
 
 }

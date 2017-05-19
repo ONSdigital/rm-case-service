@@ -6,10 +6,9 @@
     "shortDescription": "Accessibility Materials",
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": null,
@@ -18,10 +17,9 @@
     "shortDescription": "Action Cancellation Completed",
     "role": null,
     "generatedActionType": null,
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": false
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": null,
@@ -30,9 +28,8 @@
     "shortDescription": "Action Cancellation Created",
     "role": null,
     "generatedActionType": null,
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": false
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   }
 ]

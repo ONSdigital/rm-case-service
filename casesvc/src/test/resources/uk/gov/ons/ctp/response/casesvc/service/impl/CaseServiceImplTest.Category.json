@@ -6,10 +6,9 @@
     "shortDescription": "Accessibility Materials",
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": null,
@@ -18,10 +17,9 @@
     "shortDescription": "Action Cancellation Completed",
     "role": null,
     "generatedActionType": null,
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": false
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": null,
@@ -30,10 +28,9 @@
     "shortDescription": "Action Cancellation Created",
     "role": null,
     "generatedActionType": null,
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": false
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": null,
@@ -42,10 +39,9 @@
     "shortDescription": "Action Completed",
     "role": null,
     "generatedActionType": null,
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": false
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": null,
@@ -54,10 +50,9 @@
     "shortDescription": "Action Created",
     "role": null,
     "generatedActionType": null,
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": false
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": null,
@@ -66,10 +61,9 @@
     "shortDescription": "Action Updated",
     "role": null,
     "generatedActionType": null,
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": false
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": "general",
@@ -78,10 +72,9 @@
     "shortDescription": "Address Details Incorrect",
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": null,
@@ -90,10 +83,9 @@
     "shortDescription": "Case Created",
     "role": null,
     "generatedActionType": null,
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": false
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": "general",
@@ -102,10 +94,9 @@
     "shortDescription": "Classification Incorrect",
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": "general",
@@ -114,10 +105,9 @@
     "shortDescription": "Close Escalation",
     "role": "collect-field-escalate, collect-general-escalate, collect-admins",
     "generatedActionType": null,
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": "general",
@@ -126,10 +116,9 @@
     "shortDescription": "Field Complaint Escalated",
     "role": "collect-field-escalate, collect-csos, collect-admins",
     "generatedActionType": "FC_ESCALATION",
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": "general",
@@ -138,10 +127,9 @@
     "shortDescription": "Field Emergency Escalated",
     "role": "collect-field-escalate, collect-csos, collect-admins",
     "generatedActionType": "FC_ESCALATION",
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": "general",
@@ -150,10 +138,9 @@
     "shortDescription": "General Complaint",
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": "DEACTIVATED",
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": "DEACTIVATED"
   },
   {
     "group": "general",
@@ -162,10 +149,9 @@
     "shortDescription": "General Complaint - Escalated",
     "role": "collect-general-escalate, collect-csos, collect-admins",
     "generatedActionType": "GC_ESCALATION",
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": "general",
@@ -174,10 +160,9 @@
     "shortDescription": "General Enquiry",
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": "general",
@@ -186,10 +171,9 @@
     "shortDescription": "General Enquiry - Escalated",
     "role": "collect-general-escalate, collect-csos, collect-admins",
     "generatedActionType": "GE_ESCALATION",
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": null,
@@ -198,10 +182,9 @@
     "shortDescription": "Household Paper Requested",
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
-    "newCaseRespondentType": "H",
-    "oldCaseRespondentType": "H",
-    "eventType": "DEACTIVATED",
-    "manual": true
+    "newCaseSampleUnitType": "H",
+    "oldCaseSampleUnitType": "H",
+    "eventType": "DEACTIVATED"
   },
   {
     "group": null,
@@ -210,10 +193,9 @@
     "shortDescription": "Household Replacement IAC Requested",
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
-    "newCaseRespondentType": "H",
-    "oldCaseRespondentType": "H",
-    "eventType": "DISABLED",
-    "manual": true
+    "newCaseSampleUnitType": "H",
+    "oldCaseSampleUnitType": "H",
+    "eventType": "DISABLED"
   },
   {
     "group": "general",
@@ -222,10 +204,9 @@
     "shortDescription": "Incorrect Escalation",
     "role": "collect-field-escalate, collect-general-escalate, collect_admins",
     "generatedActionType": null,
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": null,
@@ -234,10 +215,9 @@
     "shortDescription": "Individual Paper Requested",
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
-    "newCaseRespondentType": "I",
-    "oldCaseRespondentType": "I",
-    "eventType": "DEACTIVATED",
-    "manual": true
+    "newCaseSampleUnitType": "I",
+    "oldCaseSampleUnitType": "I",
+    "eventType": "DEACTIVATED"
   },
   {
     "group": null,
@@ -246,10 +226,9 @@
     "shortDescription": "Individual Replacement IAC Requested",
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
-    "newCaseRespondentType": "I",
-    "oldCaseRespondentType": "I",
-    "eventType": "DISABLED",
-    "manual": true
+    "newCaseSampleUnitType": "I",
+    "oldCaseSampleUnitType": "I",
+    "eventType": "DISABLED"
   },
   {
     "group": null,
@@ -258,10 +237,9 @@
     "shortDescription": "Individual Response Requested",
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
-    "newCaseRespondentType": "I",
-    "oldCaseRespondentType": "H",
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": "I",
+    "oldCaseSampleUnitType": "H",
+    "eventType": null
   },
   {
     "group": "general",
@@ -270,10 +248,9 @@
     "shortDescription": "Miscellaneous",
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": null,
@@ -282,10 +259,9 @@
     "shortDescription": "Online Questionnaire Response",
     "role": null,
     "generatedActionType": null,
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": "DISABLED",
-    "manual": false
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": "DISABLED"
   },
   {
     "group": null,
@@ -294,10 +270,9 @@
     "shortDescription": "Paper Questionnaire Response",
     "role": null,
     "generatedActionType": null,
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": "DEACTIVATED",
-    "manual": false
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": "DEACTIVATED"
   },
   {
     "group": "general",
@@ -306,10 +281,9 @@
     "shortDescription": "Pending",
     "role": "collect-field-escalate, collect-general-escalate, collect-admins",
     "generatedActionType": null,
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": "general",
@@ -318,10 +292,9 @@
     "shortDescription": "Refusal",
     "role": "collect-csos, collect-field-escalate, collect-general-escalate, collect-admins",
     "generatedActionType": null,
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": "DEACTIVATED",
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": "DEACTIVATED"
   },
   {
     "group": "general",
@@ -330,10 +303,9 @@
     "shortDescription": "Technical Query",
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": "translation",
@@ -342,10 +314,9 @@
     "shortDescription": "Arabic",
     "role": "collect-csos, collect-admins",
     "generatedActionType": "QGARA",
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": "translation",
@@ -354,10 +325,9 @@
     "shortDescription": "Bengali",
     "role": "collect-csos, collect-admins",
     "generatedActionType": "QGBEN",
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": "translation",
@@ -366,10 +336,9 @@
     "shortDescription": "Cantonese",
     "role": "collect-csos, collect-admins",
     "generatedActionType": "QGCAN",
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": "translation",
@@ -378,10 +347,9 @@
     "shortDescription": "Gujarati",
     "role": "collect-csos, collect-admins",
     "generatedActionType": "QGGUJ",
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": "translation",
@@ -390,10 +358,9 @@
     "shortDescription": "Lithuanian",
     "role": "collect-csos, collect-admins",
     "generatedActionType": "QGLIT",
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": "translation",
@@ -402,10 +369,9 @@
     "shortDescription": "Mandarin",
     "role": "collect-csos, collect-admins",
     "generatedActionType": "QGMAN",
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": "translation",
@@ -414,10 +380,9 @@
     "shortDescription": "Polish",
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": "translation",
@@ -426,10 +391,9 @@
     "shortDescription": "Portuguese",
     "role": "collect-csos, collect-admins",
     "generatedActionType": "QGPOL",
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": "translation",
@@ -438,10 +402,9 @@
     "shortDescription": "Punjabi (Gurmukhi)",
     "role": "collect-csos, collect-admins",
     "generatedActionType": "QGGUR",
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": "translation",
@@ -450,10 +413,9 @@
     "shortDescription": "Punjabi (Shahmuki)",
     "role": "collect-csos, collect-admins",
     "generatedActionType": "QGSHA",
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": "translation",
@@ -462,10 +424,9 @@
     "shortDescription": "Somali",
     "role": "collect-csos, collect-admins",
     "generatedActionType": "QGSOM",
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": "translation",
@@ -474,10 +435,9 @@
     "shortDescription": "Spanish",
     "role": "collect-csos, collect-admins",
     "generatedActionType": "QGSPA",
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": "translation",
@@ -486,10 +446,9 @@
     "shortDescription": "Turkish",
     "role": "collect-csos, collect-admins",
     "generatedActionType": "QGTUR",
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": "translation",
@@ -498,10 +457,9 @@
     "shortDescription": "Urdu",
     "role": "collect-csos, collect-admins",
     "generatedActionType": "QGURD",
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": null,
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   },
   {
     "group": "general",
@@ -510,9 +468,8 @@
     "shortDescription": "Undeliverable",
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
-    "newCaseRespondentType": null,
-    "oldCaseRespondentType": null,
-    "eventType": "DEACTIVATED",
-    "manual": true
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": "DEACTIVATED"
   }
 ]
