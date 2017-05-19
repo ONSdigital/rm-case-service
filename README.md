@@ -4,6 +4,7 @@ This repository contains the Case service. This microservice is a RESTful web se
 ## Running
 
     mvn clean install
+    cd casesvc
     ./mvnw spring-boot:run
 
 ## API

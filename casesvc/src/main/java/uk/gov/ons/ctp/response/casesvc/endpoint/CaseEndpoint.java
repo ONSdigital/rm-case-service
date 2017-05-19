@@ -64,13 +64,23 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @throws CTPException something went wrong
    */
   @RequestMapping(value = "/{caseId}", method = RequestMethod.GET)
-  public CaseDTO findCaseByCaseId(@PathVariable("caseId") final Integer caseId) throws CTPException {
+  public CaseDTO findCaseByCaseId(@PathVariable("caseId") final Integer caseId,
+                                  @RequestParam(value = "caseevents", required = false) boolean caseevents)
+          throws CTPException {
     log.info("Entering findCaseByCaseId with {}", caseId);
     Case caseObj = caseService.findCaseByCaseId(caseId);
     if (caseObj == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
           String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseId));
     }
+
+    // TODO find the CaseGroup info
+    if (caseevents) {
+      List<CaseEvent> caseEvents = caseService.findCaseEventsByCaseId(caseId);
+
+    }
+    // TODO Build the full DTO
+
     return mapperFacade.map(caseObj, CaseDTO.class);
   }
 
