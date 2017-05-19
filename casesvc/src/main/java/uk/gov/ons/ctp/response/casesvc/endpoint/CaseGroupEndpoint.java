@@ -36,7 +36,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
  /**
    * the GET endpoint to find CaseGroups by caseGroupId
    *
-   * @param id to find by
+   * @param id UUID to find by
    * @return the casegroups found
    * @throws CTPException something went wrong
    */

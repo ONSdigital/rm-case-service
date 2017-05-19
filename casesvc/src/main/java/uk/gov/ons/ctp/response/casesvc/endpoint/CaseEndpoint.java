@@ -120,21 +120,22 @@ public final class CaseEndpoint implements CTPEndpoint {
   }
 
   /**
-   * the GET endpoint to find case events by case group id
+   * the GET endpoint to find cases by case group UUID
    *
-   * @param caseGroupId to find by
+   * @param id UUID to find by
    * @return the case events found
    * @throws CTPException something went wrong
    */
-  @RequestMapping(value = "/casegroup/{caseGroupId}", method = RequestMethod.GET)
-  public ResponseEntity<?> findCasesInCaseGroup(@PathVariable("caseGroupId") final Integer caseGroupId) throws CTPException {
-    log.info("Entering findCasesInCaseGroup with {}", caseGroupId);
-    CaseGroup caseGroup = caseGroupService.findCaseGroupByCaseGroupId(caseGroupId);
+  @RequestMapping(value = "/casegroupid/{id}", method = RequestMethod.GET)
+  public ResponseEntity<?> findCasesInCaseGroup(@PathVariable("id") final String id) throws CTPException {
+    log.info("Entering findCasesInCaseGroup with {}", id);
+    CaseGroup caseGroup = caseGroupService.findCaseGroupById(id);
     if (caseGroup == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-          String.format("%s casegroup id %s", ERRORMSG_CASEGROUPNOTFOUND, caseGroupId));
+          String.format("%s casegroup id %s", ERRORMSG_CASEGROUPNOTFOUND, id));
     }
-    List<Case> cases = caseService.findCasesByCaseGroupId(caseGroupId);
+
+    List<Case> cases = caseService.findCasesByCaseGroupId(caseGroup.getCaseGroupId());
     List<CaseDTO> caseDTOs = mapperFacade.mapAsList(cases, CaseDTO.class);
     return CollectionUtils.isEmpty(caseDTOs) ?
             ResponseEntity.noContent().build() : ResponseEntity.ok(caseDTOs);
