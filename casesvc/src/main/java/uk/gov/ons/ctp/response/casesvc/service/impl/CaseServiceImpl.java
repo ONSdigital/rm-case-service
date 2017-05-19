@@ -4,6 +4,9 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -378,12 +381,12 @@ public class CaseServiceImpl implements CaseService {
   {
 	   CaseGroup newCaseGroup = new CaseGroup();
 	   
-	   //newCaseGroup.setCaseGroupId(1);
+	  
 	   newCaseGroup.setPartyId(String.valueOf(caseGroupData.getPartyId()));
 	   newCaseGroup.setCollectionExerciseId(String.valueOf(caseGroupData.getCollectionExerciseId()));
-	   
-	   //maybe take this out later
 	   newCaseGroup.setSampleUnitRef(caseGroupData.getSampleUnitRef());
+	   newCaseGroup.setSampleUnitType(caseGroupData.getSampleUnitType());
+	   
 	   caseGroupRepo.saveAndFlush(newCaseGroup);
 	   log.info("SetCaseGroupData");
 	   return newCaseGroup;
@@ -399,8 +402,10 @@ public class CaseServiceImpl implements CaseService {
 		
 		//Values from collection exercise
 		newCase.setActionPlanId(caseData.getActionPlanId());
-		newCase.setSampleUnitRef(caseData.getSampleUnitRef());
-		newCase.setSampleUnitType(SampleUnitType.valueOf(caseData.getSampleUnitType()));
+		
+		//newCase.setSampleUnitRef(caseData.getSampleUnitRef());
+		
+		newCase.setSampleUnitType(SampleUnitType.valueOf(caseGroup.getSampleUnitType()));
 		newCase.setCollectionInstrumentId(String.valueOf(caseData.getCollectionInstrumentId()));
 		
 		//HardCode values
