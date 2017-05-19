@@ -4,6 +4,9 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,12 +31,14 @@ import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.utility.Constants;
+import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO.SampleUnitType;
 
 /**
  * A CaseService implementation which encapsulates all business logic operating
@@ -189,6 +194,9 @@ public class CaseServiceImpl implements CaseService {
 
       checkSampleUnitTypesMatch(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, targetCase.getSampleUnitType().name(),
               category.getOldCaseSampleUnitType());
+
+      // TODO Validate the new sample unit type: call to the PartySvc to verify our partyID's sample unit type
+      // TODO matches the category's new sample unit type.
     }
   }
 
@@ -218,6 +226,8 @@ public class CaseServiceImpl implements CaseService {
   private void createNewCase(Category category, CaseEvent caseEvent, Case targetCase,
       Case newCase) {
     if (category.getNewCaseSampleUnitType() != null) {
+      // TODO Use the value recalcCollectionInstrument in Category: true = we need to call the Collection Exercise
+      // TODO service to set the collectionInstrumentId on the new case - false = we use the value on the target case.
       createNewCaseFromEvent(caseEvent, targetCase, newCase, category);
     }
   }
@@ -367,35 +377,46 @@ public class CaseServiceImpl implements CaseService {
   @Override
   public void createInitialCase(CaseCreation caseData) {
     
-	  createNewCaseGroup(caseData);
-	  createNewCase(caseData);
+	  CaseGroup newCaseGroup = createNewCaseGroup(caseData);
+	  createNewCase(caseData,newCaseGroup);
 
   }
   
-  private void createNewCaseGroup(CaseCreation caseData)
+  private CaseGroup createNewCaseGroup(CaseCreation caseGroupData)
   {
 	   CaseGroup newCaseGroup = new CaseGroup();
 	   
-	   newCaseGroup.setCaseGroupId(caseData.getCaseId());
-	   //newCaseGroup.setPartyId(caseData.getPartyId());
-	   newCaseGroup.setSampleUnitRef(caseData.getSampleUnitRef());
-	   newCaseGroup.setSampleUnitType(caseData.getSampleUnitType());
-	   
+	  
+	   newCaseGroup.setPartyId(String.valueOf(caseGroupData.getPartyId()));
+	   newCaseGroup.setCollectionExerciseId(String.valueOf(caseGroupData.getCollectionExerciseId()));
+	   newCaseGroup.setSampleUnitRef(caseGroupData.getSampleUnitRef());
+	   newCaseGroup.setSampleUnitType(caseGroupData.getSampleUnitType());
 	   
 	   caseGroupRepo.saveAndFlush(newCaseGroup);
 	   log.info("SetCaseGroupData");
+	   return newCaseGroup;
   }
   
-  private void createNewCase(CaseCreation caseData)
+  private void createNewCase(CaseCreation caseData, CaseGroup caseGroup)
   {
 		Case newCase = new Case(); 
-		newCase.setCaseId(caseData.getCaseId());
-		newCase.setCaseGroupId(caseData.getCaseGroupId());		
-		newCase.setActionPlanId(caseData.getActionPlanId());
-		newCase.setActionPlanId(caseData.getActionPlanId());
-		Timestamp dateTime = new Timestamp(caseData.getCreatedDateTime().toGregorianCalendar().getTimeInMillis());
-		newCase.setCreatedDateTime(dateTime);
 		
+		//values from case group
+		newCase.setCaseGroupId(caseGroup.getCaseGroupId());
+		newCase.setPartyId(caseGroup.getPartyId());
+		
+		//Values from collection exercise
+		newCase.setActionPlanId(caseData.getActionPlanId());
+		
+		//newCase.setSampleUnitRef(caseData.getSampleUnitRef());
+		
+		newCase.setSampleUnitType(SampleUnitType.valueOf(caseGroup.getSampleUnitType()));
+		newCase.setCollectionInstrumentId(String.valueOf(caseData.getCollectionInstrumentId()));
+		
+		//HardCode values
+		newCase.setState(CaseState.SAMPLED_INIT);
+		newCase.setCreatedDateTime(DateTimeUtil.nowUTC());
+		newCase.setCreatedBy("Constants.SYSTEM");
 		
 		caseRepo.saveAndFlush(newCase);
 		log.info("SetCaseData");
