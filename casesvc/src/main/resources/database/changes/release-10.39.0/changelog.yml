@@ -2,11 +2,11 @@ databaseChangeLog:
 
   - changeSet:
       id: 10.39.0-1
-      author: P Brossier
+      author: Narinder Birk
       changes:
         - sqlFile:
-            comment: amending category reflecting new naming
-            path: table_category.sql
+            comment: new foundation schema for casesvc
+            path: casesvc_foundation_schema.sql
             relativeToChangelogFile: true
             splitStatements: false
 
@@ -15,7 +15,7 @@ databaseChangeLog:
       author: Narinder Birk
       changes:
         - sqlFile:
-            comment: adding uuid fields
-            path: add_uuid_fields.sql
+            comment: inserting standing data into category
+            path: table_category_initial_data.sql
             relativeToChangelogFile: true
             splitStatements: false
