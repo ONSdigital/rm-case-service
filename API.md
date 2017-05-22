@@ -238,7 +238,7 @@ An `HTTP 404 Not Found` status code is returned if the case with the specified I
 
 **Required parameters:** `description` as the description of the case event, `category` as the category of the case event and `createdBy` as the creator of the case event.
 
-*Optional parameters:* `subCategory` as additional free text to describe the case event, `partyID` as the ID of the party to create a new case for, as a side effect of a case creation event.
+*Optional parameters:* `subCategory` as additional free text to describe the case event, `partyId` as the ID of the party to create a new case for, as a side effect of a case creation event.
 
 
 ### Example JSON Request

@@ -41,12 +41,12 @@ public class CaseGroup implements Serializable {
   private int caseGroupPK;
   
   @Column(name = "collectionexerciseid")
-  private String collectionExerciseID;
+  private String collectionExerciseId;
 
   private String id;
   
   @Column(name = "partyid")
-  private String partyID;
+  private String partyId;
 
   @Column(name = "sampleunitref")
   private String sampleUnitRef;

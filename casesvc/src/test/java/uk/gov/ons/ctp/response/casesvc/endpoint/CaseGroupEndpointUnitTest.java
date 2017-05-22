@@ -60,26 +60,26 @@ public final class CaseGroupEndpointUnitTest {
             .build();
   }
 
-//  @Test
-//  public void findCaseGroupByIdFound() throws Exception {
-//    CaseGroup result = CaseGroup.builder().id(CASE_GROUP_UUID)
-//            .collectionExerciseID(CASE_GROUP_CE_ID)
-//            .partyID(CASE_GROUP_PARTY_ID)
-//            .sampleUnitRef(CASE_GROUP_SU_REF)
-//            .sampleUnitType(CASE_GROUP_SU_TYPE).build();
-//    when(caseGroupService.findCaseGroupById(CASE_GROUP_UUID)).thenReturn(result);
-//
-//    ResultActions actions = mockMvc.perform(getJson(String.format("/casegroups/%s", CASE_GROUP_UUID)));
-//
-//    actions.andExpect(status().isOk());
-//    actions.andExpect(handler().handlerType(CaseGroupEndpoint.class));
-//    actions.andExpect(handler().methodName("findCaseGroupById"));
-//    actions.andExpect(jsonPath("$.id", is(CASE_GROUP_UUID)));
-//    actions.andExpect(jsonPath("$.collectionExerciseID", is(CASE_GROUP_CE_ID)));
-//    actions.andExpect(jsonPath("$.partyID", is(CASE_GROUP_PARTY_ID)));
-//    actions.andExpect(jsonPath("$.sampleUnitRef", is(CASE_GROUP_SU_REF)));
-//    actions.andExpect(jsonPath("$.sampleUnitType", is(CASE_GROUP_SU_TYPE)));
-//  }
+  @Test
+  public void findCaseGroupById() throws Exception {
+    CaseGroup result = CaseGroup.builder().id(CASE_GROUP_UUID)
+            .collectionExerciseId(CASE_GROUP_CE_ID)
+            .partyId(CASE_GROUP_PARTY_ID)
+            .sampleUnitRef(CASE_GROUP_SU_REF)
+            .sampleUnitType(CASE_GROUP_SU_TYPE).build();
+    when(caseGroupService.findCaseGroupById(CASE_GROUP_UUID)).thenReturn(result);
+
+    ResultActions actions = mockMvc.perform(getJson(String.format("/casegroups/%s", CASE_GROUP_UUID)));
+
+    actions.andExpect(status().isOk());
+    actions.andExpect(handler().handlerType(CaseGroupEndpoint.class));
+    actions.andExpect(handler().methodName("findCaseGroupById"));
+    actions.andExpect(jsonPath("$.id", is(CASE_GROUP_UUID)));
+    actions.andExpect(jsonPath("$.collectionExerciseId", is(CASE_GROUP_CE_ID)));
+    actions.andExpect(jsonPath("$.partyId", is(CASE_GROUP_PARTY_ID)));
+    actions.andExpect(jsonPath("$.sampleUnitRef", is(CASE_GROUP_SU_REF)));
+    actions.andExpect(jsonPath("$.sampleUnitType", is(CASE_GROUP_SU_TYPE)));
+  }
 
   @Test
   public void findCaseGroupByIdNotFound() throws Exception {
