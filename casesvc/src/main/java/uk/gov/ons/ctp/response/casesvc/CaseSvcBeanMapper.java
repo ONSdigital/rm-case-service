@@ -29,9 +29,10 @@ public class CaseSvcBeanMapper extends ConfigurableMapper {
   protected final void configure(final MapperFactory factory) {
 
     factory
-        .classMap(Case.class, CaseDTO.class)
-        .byDefault()
-        .register();
+            .classMap(Case.class, CaseDTO.class)
+            .field("collectionInstrumentId", "collectionInstrumentID")
+            .byDefault()
+            .register();
 
     factory
         .classMap(CaseGroup.class, CaseGroupDTO.class)

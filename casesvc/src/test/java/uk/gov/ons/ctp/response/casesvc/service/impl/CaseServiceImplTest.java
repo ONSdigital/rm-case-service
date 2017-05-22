@@ -701,7 +701,8 @@ public class CaseServiceImplTest {
   /**
    * mock loading data
    *
-   * @param caseEventIndex which case event to load
+   * @param categoryType which category type to load
+   * @param caseId the associated Case
    * @return a mock case event
    * @throws Exception oops
    */
