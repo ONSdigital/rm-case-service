@@ -5,6 +5,7 @@ This page documents the Case service API endpoints. These endpoints will be secu
 For the endpoints that return the details of a case:
 
 * `GET /cases/<case_id>`
+* `GET /cases/casegroupid/<casegroup_id>`
 * `GET /cases/partyid/<party_id>`
 * `GET /cases/iac/<iac>`
 
