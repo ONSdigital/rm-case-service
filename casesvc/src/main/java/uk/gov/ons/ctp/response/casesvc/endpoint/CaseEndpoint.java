@@ -31,6 +31,8 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
 import uk.gov.ons.ctp.response.casesvc.utility.Constants;
 
+import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseGroupEndpoint.ERRORMSG_CASEGROUPNOTFOUND;
+
 /**
  * The REST endpoint controller for CaseSvc Cases
  */
@@ -40,7 +42,6 @@ import uk.gov.ons.ctp.response.casesvc.utility.Constants;
 public final class CaseEndpoint implements CTPEndpoint {
 
   public static final String ERRORMSG_CASENOTFOUND = "Case not found for";
-  public static final String ERRORMSG_CASEGROUPNOTFOUND = "CaseGroup not found for";
   public static final String EVENT_REQUIRES_NEW_CASE = "Event requested for case %s requires additional data - new Case details";
 
   @Autowired
@@ -129,6 +130,7 @@ public final class CaseEndpoint implements CTPEndpoint {
   @RequestMapping(value = "/casegroupid/{id}", method = RequestMethod.GET)
   public ResponseEntity<?> findCasesInCaseGroup(@PathVariable("id") final String id) throws CTPException {
     log.info("Entering findCasesInCaseGroup with {}", id);
+
     CaseGroup caseGroup = caseGroupService.findCaseGroupById(id);
     if (caseGroup == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,

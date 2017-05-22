@@ -41,7 +41,6 @@ import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
 @NoArgsConstructor
 @Table(name = "case", schema = "casesvc")
 public class Case implements Serializable {
-
   private static final long serialVersionUID = 7778360895016862176L;
 
   @Id
@@ -93,7 +92,6 @@ public class Case implements Serializable {
   @Column(name = "actionplanid")
   private Integer actionPlanId;
 
-
   @Column(name = "createddatetime")
   private Timestamp createdDateTime;
 
@@ -111,6 +109,5 @@ public class Case implements Serializable {
       iac = iac.trim();
     }
   }
-
 }
 

@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class CaseDTO {
-
   /**
    * enum for case state
    */
@@ -29,27 +28,18 @@ public class CaseDTO {
     ACTIVATED, DEACTIVATED, DISABLED, HOUSEHOLD_PAPER_REQUESTED, INDIVIDUAL_RESPONSE_REQUESTED, REPLACED
   }
 
-  private Integer caseGroupId;
-
-  private Integer actionPlanId;
-
+  private String actionPlanID;
+  private String caseGroupID;
+  private String collectionInstrumentID;
+  private String createdBy;
   private String id;
-  
+  private String partyID;
   private String sampleUnitType;
-  
   private String sampleUnitRef;
-  
-  private String partyId;
-
-  private String caseRef;
 
   private CaseState state;
 
   private Date createdDateTime;
 
-  private String createdBy;
-
-  private String iac;
-  
   private ResponseDTO[] responses;
 }
