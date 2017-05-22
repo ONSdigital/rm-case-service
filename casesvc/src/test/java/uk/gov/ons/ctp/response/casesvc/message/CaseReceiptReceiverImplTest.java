@@ -54,7 +54,7 @@ public class CaseReceiptReceiverImplTest {
   @Test
   public void testProcessLinkedOnlineCaseReceipt() throws DatatypeConfigurationException {
     Case existingCase = new Case();
-    existingCase.setCaseId(LINKED_CASE_ID);
+    existingCase.setCasePK(LINKED_CASE_ID);
     Mockito.when(caseService.findCaseByCaseRef(LINKED_CASE_REF)).thenReturn(existingCase);
 
     XMLGregorianCalendar calendar = DateTimeUtil.giveMeCalendarForNow();
@@ -68,7 +68,7 @@ public class CaseReceiptReceiverImplTest {
   @Test
   public void testProcessLinkedPaperCaseReceipt() throws DatatypeConfigurationException {
     Case existingCase = new Case();
-    existingCase.setCaseId(LINKED_CASE_ID);
+    existingCase.setCasePK(LINKED_CASE_ID);
     Mockito.when(caseService.findCaseByCaseRef(LINKED_CASE_REF)).thenReturn(existingCase);
 
     XMLGregorianCalendar calendar = DateTimeUtil.giveMeCalendarForNow();

@@ -118,7 +118,7 @@ public class CaseServiceImpl implements CaseService {
 
   @Override
   public CaseNotification prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent) {
-    return new CaseNotification(caze.getCaseId(), caze.getActionPlanId(),
+    return new CaseNotification(caze.getCasePK(), caze.getActionPlanId(),
             NotificationType.valueOf(transitionEvent.name()));
   }
 
@@ -187,7 +187,7 @@ public class CaseServiceImpl implements CaseService {
 
     if (category.getNewCaseSampleUnitType() != null) {
       if (newCase == null) {
-        throw new RuntimeException(String.format(MISSING_NEW_CASE_MSG, targetCase.getCaseId()));
+        throw new RuntimeException(String.format(MISSING_NEW_CASE_MSG, targetCase.getCasePK()));
       }
 
       checkSampleUnitTypesMatch(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, targetCase.getSampleUnitType().name(),
@@ -254,7 +254,7 @@ public class CaseServiceImpl implements CaseService {
     if (channel != null) {
       Response response = Response.builder()
           .inboundChannel(channel)
-          .caseId(targetCase.getCaseId())
+          .caseId(targetCase.getCasePK())
           .dateTime(timestamp).build();
 
       targetCase.getResponses().add(response);
@@ -348,7 +348,7 @@ public class CaseServiceImpl implements CaseService {
     newCase.setCreatedDateTime(DateTimeUtil.nowUTC());
     newCase.setCaseGroupId(targetCase.getCaseGroupId());
     newCase.setCreatedBy(caseEvent.getCreatedBy());
-    newCase.setSourceCaseId(targetCase.getCaseId());
+    newCase.setSourceCaseId(targetCase.getCasePK());
     return caseRepo.saveAndFlush(newCase);
   }
 
@@ -362,7 +362,7 @@ public class CaseServiceImpl implements CaseService {
    */
   private CaseEvent createCaseCreatedEvent(Case caze, Category caseEventCategory) {
     CaseEvent newCaseCaseEvent = new CaseEvent();
-    newCaseCaseEvent.setCaseId(caze.getCaseId());
+    newCaseCaseEvent.setCaseId(caze.getCasePK());
     newCaseCaseEvent.setCategory(CategoryDTO.CategoryType.CASE_CREATED);
     newCaseCaseEvent.setCreatedBy(Constants.SYSTEM);
     newCaseCaseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
@@ -383,7 +383,7 @@ public class CaseServiceImpl implements CaseService {
 	   CaseGroup newCaseGroup = new CaseGroup();
 	   newCaseGroup.setId(String.valueOf(UUID.randomUUID()));
 	   newCaseGroup.setPartyID(String.valueOf(caseGroupData.getPartyId()));
-	   newCaseGroup.setCollectionExerciseID(String.valueOf(caseGroupData.getCollectionExerciseId()));
+	   newCaseGroup.setCollectionExerciseID(caseGroupData.getCollectionExerciseId());
 	   newCaseGroup.setSampleUnitRef(caseGroupData.getSampleUnitRef());
 	   newCaseGroup.setSampleUnitType(caseGroupData.getSampleUnitType());
 	   
@@ -397,14 +397,15 @@ public class CaseServiceImpl implements CaseService {
 		newCase.setId(String.valueOf(UUID.randomUUID()));
 		
 		//values from case group
-		newCase.setCaseGroupId(caseGroup.getCaseGroupId());
+		newCase.setCaseGroupFK(caseGroup.getCaseGroupPK());
+		newCase.setCaseGroupId(caseGroup.getId());
 		newCase.setPartyId(caseGroup.getPartyID());
 		newCase.setSampleUnitType(SampleUnitType.valueOf(caseGroup.getSampleUnitType()));
 		
 		//Values from collection exercise
 		newCase.setActionPlanId(caseData.getActionPlanId());
 		//newCase.setSampleUnitRef(caseData.getSampleUnitRef());
-		newCase.setCollectionInstrumentId(String.valueOf(caseData.getCollectionInstrumentId()));
+		newCase.setCollectionInstrumentId(caseData.getCollectionInstrumentId());
 		
 		//HardCoded values
 		newCase.setState(CaseState.SAMPLED_INIT);

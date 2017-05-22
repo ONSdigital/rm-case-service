@@ -46,7 +46,7 @@ public class CaseEndpointMockTest {
 	public void whenAValidIacIsUsedConfirmThatACaseEventIsCreated() throws CTPException {
 
 		Case newCase = new Case();
-		newCase.setCaseId(1234);
+		newCase.setCasePK(1234);
 
 		Category newCategory = new Category();
 		newCategory.setShortDescription("desc");

@@ -151,7 +151,7 @@ public class CaseDistributor {
             // single case/questionnaire db changes rolled back
             log.error(
                 "Exception {} thrown processing case {}. Processing postponed",
-                e.getMessage(), caze.getCaseId());
+                e.getMessage(), caze.getCasePK());
             failures++;
           }
         }
@@ -203,12 +203,12 @@ public class CaseDistributor {
             excludedCases,
             pageable);
 
-    log.debug("RETRIEVED case ids {}", cases.stream().map(a -> a.getCaseId().toString())
+    log.debug("RETRIEVED case ids {}", cases.stream().map(a -> a.getCasePK().toString())
         .collect(Collectors.joining(",")));
     // try and save our list to the distributed store
     if (cases.size() > 0) {
       caseDistributionListManager.saveList(CASE_DISTRIBUTOR_LIST_ID, cases.stream()
-          .map(caze -> caze.getCaseId())
+          .map(caze -> caze.getCasePK())
           .collect(Collectors.toList()), true);
     }
     return cases;
@@ -227,7 +227,7 @@ public class CaseDistributor {
    *         CaseNotifications sent to the action service
    */
   private CaseNotification processCase(final Case caze, String iac) {
-    log.info("processing caseid {}", caze.getCaseId());
+    log.info("processing caseid {}", caze.getCasePK());
     return transactionTemplate.execute(new TransactionCallback<CaseNotification>() {
       // the code in this method executes in a transactional context
       public CaseNotification doInTransaction(final TransactionStatus status) {
@@ -242,7 +242,7 @@ public class CaseDistributor {
           event = CaseDTO.CaseEvent.REPLACED;
           break;
         default:
-          String msg = String.format("Case %d has incorrect state %s", caze.getCaseId(), caze.getState());
+          String msg = String.format("Case %d has incorrect state %s", caze.getCasePK(), caze.getState());
           log.error(msg);
           throw new RuntimeException(msg);
         }

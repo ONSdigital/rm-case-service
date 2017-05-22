@@ -110,7 +110,7 @@ public final class CaseEndpoint implements CTPEndpoint {
   private void createNewEventForIACAuthenticated(Case caseObj) {
 	Category cat = categoryService.findCategory(CategoryDTO.CategoryType.IAC_AUTHENTICATED);
     CaseEvent caseEvent = new CaseEvent();
-    caseEvent.setCaseId(caseObj.getCaseId());
+    caseEvent.setCaseId(caseObj.getCasePK());
     caseEvent.setCategory(CategoryDTO.CategoryType.IAC_AUTHENTICATED);
     caseEvent.setCreatedBy(Constants.SYSTEM);
     caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
@@ -126,20 +126,20 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @return the case events found
    * @throws CTPException something went wrong
    */
-  @RequestMapping(value = "/casegroupid/{id}", method = RequestMethod.GET)
-  public ResponseEntity<?> findCasesInCaseGroup(@PathVariable("id") final String id) throws CTPException {
-    log.info("Entering findCasesInCaseGroup with {}", id);
-    CaseGroup caseGroup = caseGroupService.findCaseGroupById(id);
-    if (caseGroup == null) {
-      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-          String.format("%s casegroup id %s", ERRORMSG_CASEGROUPNOTFOUND, id));
-    }
-
-    List<Case> cases = caseService.findCasesByCaseGroupId(caseGroup.getCaseGroupId());
-    List<CaseDTO> caseDTOs = mapperFacade.mapAsList(cases, CaseDTO.class);
-    return CollectionUtils.isEmpty(caseDTOs) ?
-            ResponseEntity.noContent().build() : ResponseEntity.ok(caseDTOs);
-  }
+//  @RequestMapping(value = "/casegroupid/{id}", method = RequestMethod.GET)
+//  public ResponseEntity<?> findCasesInCaseGroup(@PathVariable("id") final String id) throws CTPException {
+//    log.info("Entering findCasesInCaseGroup with {}", id);
+//    CaseGroup caseGroup = caseGroupService.findCaseGroupById(id);
+//    if (caseGroup == null) {
+//      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
+//          String.format("%s casegroup id %s", ERRORMSG_CASEGROUPNOTFOUND, id));
+//    }
+//
+//    List<Case> cases = caseService.findCasesByCaseGroupId(caseGroup.getCaseGroupId());
+//    List<CaseDTO> caseDTOs = mapperFacade.mapAsList(cases, CaseDTO.class);
+//    return CollectionUtils.isEmpty(caseDTOs) ?
+//            ResponseEntity.noContent().build() : ResponseEntity.ok(caseDTOs);
+//  }
 
   /**
    * the GET endpoint to find case events by case id

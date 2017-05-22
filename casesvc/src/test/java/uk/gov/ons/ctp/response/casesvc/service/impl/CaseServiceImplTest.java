@@ -173,7 +173,8 @@ public class CaseServiceImplTest {
     verify(caseRepo).findOne(NON_EXISTING_PARENT_CASE_ID);
     assertNull(result);
   }
-
+  
+  
   /**
    * Tries to apply an actionable event against a case already inactionable.
    * Should allow

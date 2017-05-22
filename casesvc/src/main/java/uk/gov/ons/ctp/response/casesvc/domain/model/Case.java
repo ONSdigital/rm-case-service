@@ -50,8 +50,8 @@ public class Case implements Serializable {
       @Parameter(name = "sequence_name", value = "casesvc.caseidseq"),
       @Parameter(name = "increment_size", value = "1")
   })
-  @Column(name = "caseid")
-  private Integer caseId;
+  @Column(name = "casePK")
+  private Integer casePK;
 
   private String id;
 
@@ -59,9 +59,12 @@ public class Case implements Serializable {
   @Column(name = "optlockversion")
   private int optLockVersion;
 
-  @Column(name = "casegroupid")
-  private Integer caseGroupId;
+  @Column(name = "casegroupFK")
+  private Integer caseGroupFK;
 
+  @Column(name = "casegroupid")
+  private String caseGroupId;
+  
   @Column(name = "sourcecaseid")
   private Integer sourceCaseId;
 

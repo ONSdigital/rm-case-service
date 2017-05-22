@@ -60,7 +60,7 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
       unlinkedCaseReceiptService.createUnlinkedCaseReceipt(unlinkedCaseReceipt);
     } else {
       CaseEvent caseEvent = new CaseEvent();
-      caseEvent.setCaseId(existingCase.getCaseId());
+      caseEvent.setCaseId(existingCase.getCasePK());
       caseEvent.setCategory(
               inboundChannel == InboundChannel.ONLINE ? ONLINE_QUESTIONNAIRE_RESPONSE : PAPER_QUESTIONNAIRE_RESPONSE);
       caseEvent.setCreatedBy(SYSTEM);
