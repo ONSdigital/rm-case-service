@@ -52,6 +52,4 @@ public class CaseDTO {
   private String iac;
   
   private ResponseDTO[] responses;
-
-
 }

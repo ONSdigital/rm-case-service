@@ -29,8 +29,6 @@ import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 
-/**
- */
 public final class CaseGroupEndpointUnitTest {
 
   @InjectMocks
