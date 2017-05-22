@@ -52,7 +52,7 @@ public final class CaseEndpointUnitTest {
 
   private static final Integer CASE1_ACTIONPLANID = 1;
 
-  private static final Integer EXISTING_CASE_GROUP_ID = 13;
+  private static final Integer EXISTING_CASE_GROUP_PK = 13;
   private static final Integer EXISTING_CASE_ID_NO_EVENTS = 992;
   private static final Integer NON_EXISTING_CASE_ID = 998;
   private static final Integer UNCHECKED_EXCEPTION_CASE_ID = 999;
@@ -66,6 +66,12 @@ public final class CaseEndpointUnitTest {
   private static final String CASE6_ID = "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd6";
   private static final String CASE7_ID = "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd7";
   private static final String CASE8_ID = "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd8";
+  private static final String CASE_CI_ID = "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e";
+  private static final String CASE_PARTY_ID = "3b136c4b-7a14-4904-9e01-13364dd7b972";
+  private static final String CASE_ACTIONPLAN_ID_1 = "5381731e-e386-41a1-8462-26373744db81";
+  private static final String CASE_ACTIONPLAN_ID_2 = "5381731e-e386-41a1-8462-26373744db82";
+  private static final String CASE_ACTIONPLAN_ID_3 = "5381731e-e386-41a1-8462-26373744db83";
+  private static final String CASE_ACTIONPLAN_ID_4  = "5381731e-e386-41a1-8462-26373744db84";
   private static final String CASE1_DESCRIPTION = "desc 1";
   private static final String CASE2_DESCRIPTION = "desc 2";
   private static final String CASE3_DESCRIPTION = "desc 3";
@@ -84,7 +90,6 @@ public final class CaseEndpointUnitTest {
 
   private static final String EXISTING_CASE_GROUP_UUID = "9a5f2be5-f944-41f9-982c-3517cfcfeabc";
   private static final String CASE_GROUP_CE_ID = "dab9db7f-3aa0-4866-be20-54d72ee185fb";
-  private static final String CASE_GROUP_CI_ID = "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e";
   private static final String CASE_GROUP_PARTY_ID = "3b136c4b-7a14-4904-9e01-13364dd7b972";
   private static final String CASE_GROUP_SU_REF = "0123456789";
   private static final String CASE_GROUP_SU_TYPE = "B";
@@ -148,14 +153,14 @@ public final class CaseEndpointUnitTest {
   @Test
   public void findCasesByCaseGroupId() throws Exception {
     CaseGroup result = CaseGroup.builder().id(EXISTING_CASE_GROUP_UUID)
-            .caseGroupPK(EXISTING_CASE_GROUP_ID)
+            .caseGroupPK(EXISTING_CASE_GROUP_PK)
             .collectionExerciseId(CASE_GROUP_CE_ID)
             .partyId(CASE_GROUP_PARTY_ID)
             .sampleUnitRef(CASE_GROUP_SU_REF)
             .sampleUnitType(CASE_GROUP_SU_TYPE).build();
     when(caseGroupService.findCaseGroupById(EXISTING_CASE_GROUP_UUID)).thenReturn(result);
 
-    when(caseService.findCasesByCaseGroupId(EXISTING_CASE_GROUP_ID)).thenReturn(caseResults);
+    when(caseService.findCasesByCaseGroupFK(EXISTING_CASE_GROUP_PK)).thenReturn(caseResults);
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/cases/casegroupid/%s", EXISTING_CASE_GROUP_UUID)));
 
@@ -164,9 +169,9 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(handler().methodName("findCasesInCaseGroup"));
     actions.andExpect(jsonPath("$", Matchers.hasSize(8)));
     actions.andExpect(jsonPath("$[*].id", containsInAnyOrder(CASE1_ID, CASE2_ID, CASE3_ID, CASE4_ID, CASE5_ID, CASE6_ID, CASE7_ID, CASE8_ID)));
-//    actions.andExpect(jsonPath("$[*].collectionInstrumentId", containsInAnyOrder(CASE_GROUP_CI_ID, CASE_GROUP_CI_ID, CASE_GROUP_CI_ID, CASE_GROUP_CI_ID, CASE_GROUP_CI_ID, CASE_GROUP_CI_ID, CASE_GROUP_CI_ID, CASE_GROUP_CI_ID)));
-//    actions.andExpect(jsonPath("$[*].description", containsInAnyOrder(CASE1_DESCRIPTION, CASE2_DESCRIPTION, CASE3_DESCRIPTION)));
-//    actions.andExpect(jsonPath("$[*].createdBy", containsInAnyOrder(CASE1_CREATEDBY, CASE2_CREATEDBY, CASE3_CREATEDBY)));
+    actions.andExpect(jsonPath("$[*].collectionInstrumentId", containsInAnyOrder(CASE_CI_ID, CASE_CI_ID, CASE_CI_ID, CASE_CI_ID, CASE_CI_ID, CASE_CI_ID, CASE_CI_ID, CASE_CI_ID)));
+    actions.andExpect(jsonPath("$[*].partyId", containsInAnyOrder(CASE_PARTY_ID, CASE_PARTY_ID, CASE_PARTY_ID, CASE_PARTY_ID, CASE_PARTY_ID, CASE_PARTY_ID, CASE_PARTY_ID, CASE_PARTY_ID)));
+    actions.andExpect(jsonPath("$[*].actionPlanId", containsInAnyOrder(CASE_ACTIONPLAN_ID_1, CASE_ACTIONPLAN_ID_2, CASE_ACTIONPLAN_ID_3, CASE_ACTIONPLAN_ID_4, CASE_ACTIONPLAN_ID_1, CASE_ACTIONPLAN_ID_2, CASE_ACTIONPLAN_ID_3, CASE_ACTIONPLAN_ID_4)));
 ////    actions.andExpect(jsonPath("$[*].createdDateTime", containsInAnyOrder(CREATEDDATE_VALUE, CREATEDDATE_VALUE1, CREATEDDATE_VALUE2)));
 //    actions.andExpect(jsonPath("$[*].category", containsInAnyOrder(CASE1_CATEGORY, CASE2_CATEGORY, CASE3_CATEGORY)));
 //    actions.andExpect(jsonPath("$[*].subCategory", containsInAnyOrder(CASE1_SUBCATEGORY, CASE2_SUBCATEGORY, CASE3_SUBCATEGORY)));
@@ -190,7 +195,7 @@ public final class CaseEndpointUnitTest {
 //    actions.andExpect(jsonPath("$.sampleUnitType", is(SAMPLEUNIT_TYPE)));
 ////    actions.andExpect(jsonPath("$.createdDateTime", is(CREATEDDATE_VALUE)));
 //    actions.andExpect(jsonPath("$.createdBy", is(CASE1_CREATEDBY)));
-//    actions.andExpect(jsonPath("$.actionPlanID", is(CASE1_ACTIONPLANID)));
+//    actions.andExpect(jsonPath("$.actionPlanId", is(CASE1_ACTIONPLANID)));
 //  }
 
   /**

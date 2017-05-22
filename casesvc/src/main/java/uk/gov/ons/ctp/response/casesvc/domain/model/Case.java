@@ -93,7 +93,7 @@ public class Case implements Serializable {
   private String sampleUnitRef;
 
   @Column(name = "actionplanid")
-  private Integer actionPlanId;
+  private String actionPlanId;
 
   @Column(name = "createddatetime")
   private Timestamp createdDateTime;

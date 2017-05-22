@@ -18,10 +18,10 @@ public interface CaseService extends CTPService {
 
   /**
    * Find the cases in a casegroup
-   * @param caseGroupId the group
+   * @param caseGroupFK the group
    * @return the cases in the group
    */
-  List<Case> findCasesByCaseGroupId(final Integer caseGroupId);
+  List<Case> findCasesByCaseGroupFK(final Integer caseGroupFK);
 
   /**
    * Find Case entity by unique Id.

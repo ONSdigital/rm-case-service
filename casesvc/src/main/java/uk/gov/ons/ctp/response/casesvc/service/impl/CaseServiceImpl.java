@@ -105,9 +105,9 @@ public class CaseServiceImpl implements CaseService {
   }
 
   @Override
-  public List<Case> findCasesByCaseGroupId(final Integer caseGroupId) {
-    log.debug("Entering findCasesByCaseGroupId");
-    return caseRepo.findByCaseGroupIdOrderByCreatedDateTimeDesc(caseGroupId);
+  public List<Case> findCasesByCaseGroupFK(final Integer caseGroupFK) {
+    log.debug("Entering findCasesByCaseGroupFK");
+    return caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(caseGroupFK);
   }
 
   @Override
@@ -118,8 +118,7 @@ public class CaseServiceImpl implements CaseService {
 
   @Override
   public CaseNotification prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent) {
-    return new CaseNotification(caze.getCasePK(), caze.getActionPlanId(),
-            NotificationType.valueOf(transitionEvent.name()));
+    return new CaseNotification(caze.getId(), caze.getActionPlanId(), NotificationType.valueOf(transitionEvent.name()));
   }
 
   /**

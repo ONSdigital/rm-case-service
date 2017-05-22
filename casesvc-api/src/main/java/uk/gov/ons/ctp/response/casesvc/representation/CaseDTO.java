@@ -28,12 +28,12 @@ public class CaseDTO {
     ACTIVATED, DEACTIVATED, DISABLED, HOUSEHOLD_PAPER_REQUESTED, INDIVIDUAL_RESPONSE_REQUESTED, REPLACED
   }
 
-  private String actionPlanID;
-  private String caseGroupID;
-  private String collectionInstrumentID;
+  private String actionPlanId;
+  private String caseGroupId;
+  private String collectionInstrumentId;
   private String createdBy;
   private String id;
-  private String partyID;
+  private String partyId;
   private String sampleUnitType;
   private String sampleUnitRef;
 

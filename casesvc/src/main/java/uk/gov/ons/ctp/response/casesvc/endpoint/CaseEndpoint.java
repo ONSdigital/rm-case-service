@@ -141,7 +141,7 @@ public final class CaseEndpoint implements CTPEndpoint {
 
     // TODO return the case group details
     // TODO play with caseevents
-    List<Case> cases = caseService.findCasesByCaseGroupId(caseGroup.getCaseGroupPK());
+    List<Case> cases = caseService.findCasesByCaseGroupFK(caseGroup.getCaseGroupPK());
     List<CaseDTO> caseDTOs = mapperFacade.mapAsList(cases, CaseDTO.class);
     return CollectionUtils.isEmpty(caseDTOs) ?
             ResponseEntity.noContent().build() : ResponseEntity.ok(caseDTOs);
