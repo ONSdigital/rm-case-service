@@ -12,6 +12,7 @@ import static uk.gov.ons.ctp.common.MvcHelper.getJson;
 import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
 import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.ERRORMSG_CASENOTFOUND;
 import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseGroupEndpoint.ERRORMSG_CASEGROUPNOTFOUND;
+import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
@@ -72,6 +74,10 @@ public final class CaseEndpointUnitTest {
   private static final String CASE_ACTIONPLAN_ID_2 = "5381731e-e386-41a1-8462-26373744db82";
   private static final String CASE_ACTIONPLAN_ID_3 = "5381731e-e386-41a1-8462-26373744db83";
   private static final String CASE_ACTIONPLAN_ID_4  = "5381731e-e386-41a1-8462-26373744db84";
+  private static final String CASE_SAMPLE_UNIT_TYPE_B = "B";
+  private static final String CASE_SAMPLE_UNIT_TYPE_BI = "BI";
+  private static final String CASE_SAMPLE_UNIT_TYPE_H = "H";
+  private static final String CASE_SAMPLE_UNIT_TYPE_HI = "HI";
   private static final String CASE1_DESCRIPTION = "desc 1";
   private static final String CASE2_DESCRIPTION = "desc 2";
   private static final String CASE3_DESCRIPTION = "desc 3";
@@ -84,9 +90,7 @@ public final class CaseEndpointUnitTest {
   private static final String CASE1_SUBCATEGORY = "subcat 1";
   private static final String CASE2_SUBCATEGORY = "subcat 2";
   private static final String CASE3_SUBCATEGORY = "subcat 3";
-  private static final String CREATEDDATE_VALUE = "2016-04-15T17:02:39.699+0000";
-  private static final String CREATEDDATE_VALUE1 = "2016-04-15T17:02:39.799+0000";
-  private static final String CREATEDDATE_VALUE2 = "2016-04-15T17:02:39.899+0000";
+  private static final String CREATEDDATE_VALUE = "2016-04-15T17:02:39.699+0100";
 
   private static final String EXISTING_CASE_GROUP_UUID = "9a5f2be5-f944-41f9-982c-3517cfcfeabc";
   private static final String CASE_GROUP_CE_ID = "dab9db7f-3aa0-4866-be20-54d72ee185fb";
@@ -172,10 +176,12 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$[*].collectionInstrumentId", containsInAnyOrder(CASE_CI_ID, CASE_CI_ID, CASE_CI_ID, CASE_CI_ID, CASE_CI_ID, CASE_CI_ID, CASE_CI_ID, CASE_CI_ID)));
     actions.andExpect(jsonPath("$[*].partyId", containsInAnyOrder(CASE_PARTY_ID, CASE_PARTY_ID, CASE_PARTY_ID, CASE_PARTY_ID, CASE_PARTY_ID, CASE_PARTY_ID, CASE_PARTY_ID, CASE_PARTY_ID)));
     actions.andExpect(jsonPath("$[*].actionPlanId", containsInAnyOrder(CASE_ACTIONPLAN_ID_1, CASE_ACTIONPLAN_ID_2, CASE_ACTIONPLAN_ID_3, CASE_ACTIONPLAN_ID_4, CASE_ACTIONPLAN_ID_1, CASE_ACTIONPLAN_ID_2, CASE_ACTIONPLAN_ID_3, CASE_ACTIONPLAN_ID_4)));
-////    actions.andExpect(jsonPath("$[*].createdDateTime", containsInAnyOrder(CREATEDDATE_VALUE, CREATEDDATE_VALUE1, CREATEDDATE_VALUE2)));
-//    actions.andExpect(jsonPath("$[*].category", containsInAnyOrder(CASE1_CATEGORY, CASE2_CATEGORY, CASE3_CATEGORY)));
-//    actions.andExpect(jsonPath("$[*].subCategory", containsInAnyOrder(CASE1_SUBCATEGORY, CASE2_SUBCATEGORY, CASE3_SUBCATEGORY)));
-
+    actions.andExpect(jsonPath("$[*].sampleUnitType", containsInAnyOrder(CASE_SAMPLE_UNIT_TYPE_B, CASE_SAMPLE_UNIT_TYPE_BI, CASE_SAMPLE_UNIT_TYPE_H, CASE_SAMPLE_UNIT_TYPE_HI, CASE_SAMPLE_UNIT_TYPE_B, CASE_SAMPLE_UNIT_TYPE_BI, CASE_SAMPLE_UNIT_TYPE_H, CASE_SAMPLE_UNIT_TYPE_HI)));
+    actions.andExpect(jsonPath("$[*].state", containsInAnyOrder(CaseDTO.CaseState.SAMPLED_INIT.name(), CaseDTO.CaseState.INACTIONABLE.name(), CaseDTO.CaseState.ACTIONABLE.name(), CaseDTO.CaseState.INACTIONABLE.name(), CaseDTO.CaseState.ACTIONABLE.name(), CaseDTO.CaseState.INACTIONABLE.name(), CaseDTO.CaseState.ACTIONABLE.name(), CaseDTO.CaseState.INACTIONABLE.name())));
+    actions.andExpect(jsonPath("$[*].createdBy", containsInAnyOrder(SYSTEM, SYSTEM, SYSTEM, SYSTEM, SYSTEM, SYSTEM, SYSTEM, SYSTEM)));
+    actions.andExpect(jsonPath("$[*].createdDateTime", containsInAnyOrder(CREATEDDATE_VALUE, CREATEDDATE_VALUE, CREATEDDATE_VALUE, CREATEDDATE_VALUE, CREATEDDATE_VALUE, CREATEDDATE_VALUE, CREATEDDATE_VALUE, CREATEDDATE_VALUE)));
+    actions.andExpect(jsonPath("$[*].responses[*].inboundChannel", containsInAnyOrder(InboundChannel.PAPER.name(), InboundChannel.ONLINE.name(), InboundChannel.PAPER.name(), InboundChannel.ONLINE.name(), InboundChannel.PAPER.name(), InboundChannel.ONLINE.name(), InboundChannel.PAPER.name(), InboundChannel.ONLINE.name())));
+    actions.andExpect(jsonPath("$[*].responses[*].dateTime", containsInAnyOrder(CREATEDDATE_VALUE, CREATEDDATE_VALUE, CREATEDDATE_VALUE, CREATEDDATE_VALUE, CREATEDDATE_VALUE, CREATEDDATE_VALUE, CREATEDDATE_VALUE, CREATEDDATE_VALUE)));
   }
 
   // TODO
