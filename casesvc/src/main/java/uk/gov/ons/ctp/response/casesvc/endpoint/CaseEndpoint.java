@@ -31,6 +31,8 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
 import uk.gov.ons.ctp.response.casesvc.utility.Constants;
 
+import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseGroupEndpoint.ERRORMSG_CASEGROUPNOTFOUND;
+
 /**
  * The REST endpoint controller for CaseSvc Cases
  */
@@ -40,7 +42,6 @@ import uk.gov.ons.ctp.response.casesvc.utility.Constants;
 public final class CaseEndpoint implements CTPEndpoint {
 
   public static final String ERRORMSG_CASENOTFOUND = "Case not found for";
-  public static final String ERRORMSG_CASEGROUPNOTFOUND = "CaseGroup not found for";
   public static final String EVENT_REQUIRES_NEW_CASE = "Event requested for case %s requires additional data - new Case details";
 
   @Autowired
@@ -126,20 +127,25 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @return the case events found
    * @throws CTPException something went wrong
    */
-//  @RequestMapping(value = "/casegroupid/{id}", method = RequestMethod.GET)
-//  public ResponseEntity<?> findCasesInCaseGroup(@PathVariable("id") final String id) throws CTPException {
-//    log.info("Entering findCasesInCaseGroup with {}", id);
-//    CaseGroup caseGroup = caseGroupService.findCaseGroupById(id);
-//    if (caseGroup == null) {
-//      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-//          String.format("%s casegroup id %s", ERRORMSG_CASEGROUPNOTFOUND, id));
-//    }
-//
-//    List<Case> cases = caseService.findCasesByCaseGroupId(caseGroup.getCaseGroupId());
-//    List<CaseDTO> caseDTOs = mapperFacade.mapAsList(cases, CaseDTO.class);
-//    return CollectionUtils.isEmpty(caseDTOs) ?
-//            ResponseEntity.noContent().build() : ResponseEntity.ok(caseDTOs);
-//  }
+  @RequestMapping(value = "/casegroupid/{id}", method = RequestMethod.GET)
+  public ResponseEntity<?> findCasesInCaseGroup(@PathVariable("id") final String id,
+                                                @RequestParam(name = "caseevents", defaultValue = "false") final boolean caseevents)
+          throws CTPException {
+    log.info("Entering findCasesInCaseGroup with {}", id);
+
+    CaseGroup caseGroup = caseGroupService.findCaseGroupById(id);
+    if (caseGroup == null) {
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
+          String.format("%s casegroup id %s", ERRORMSG_CASEGROUPNOTFOUND, id));
+    }
+
+    // TODO return the case group details
+    // TODO play with caseevents
+    List<Case> cases = caseService.findCasesByCaseGroupId(caseGroup.getCaseGroupPK());
+    List<CaseDTO> caseDTOs = mapperFacade.mapAsList(cases, CaseDTO.class);
+    return CollectionUtils.isEmpty(caseDTOs) ?
+            ResponseEntity.noContent().build() : ResponseEntity.ok(caseDTOs);
+  }
 
   /**
    * the GET endpoint to find case events by case id

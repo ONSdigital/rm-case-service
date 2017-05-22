@@ -7,14 +7,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * Domain model object
  */
 @Data
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class CaseGroupDTO {
-  private String collectionExerciseId;
+  private String collectionExerciseID;
   private String id;
-  private String partyId;
-  private String sampleUnitType;
+  private String partyID;
   private String sampleUnitRef;
+  private String sampleUnitType;
 }
