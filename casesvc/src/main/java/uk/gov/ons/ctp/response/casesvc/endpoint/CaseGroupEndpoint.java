@@ -16,7 +16,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 
 /**
- * The REST endpoint controller for CaseSvc Cases
+ * The REST endpoint controller for CaseSvc CaseGroups
  */
 @RestController
 @RequestMapping(value = "/casegroups", produces = "application/json")
@@ -24,7 +24,6 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 public final class CaseGroupEndpoint implements CTPEndpoint {
 
   public static final String ERRORMSG_CASEGROUPNOTFOUND = "CaseGroup not found for";
-  public static final String ERRORMSG_ADDRESSNOTFOUND = "Address not found for";
 
   @Autowired
   private CaseGroupService caseGroupService;
@@ -43,12 +42,14 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   @RequestMapping(value = "/{id}", method = RequestMethod.GET)
   public CaseGroupDTO findCaseGroupById(@PathVariable("id") final String id)  throws CTPException {
     log.info("Entering findCaseGroupById with {}", id);
+
     CaseGroup caseGroupObj = caseGroupService.findCaseGroupById(id);
     if (caseGroupObj == null) {
-        throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-                String.format("%s casegroup id %s", ERRORMSG_CASEGROUPNOTFOUND, id));
-      }
-      return mapperFacade.map(caseGroupObj, CaseGroupDTO.class);
+        throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, String.format("%s casegroup id %s",
+                ERRORMSG_CASEGROUPNOTFOUND, id));
+    }
+
+    return mapperFacade.map(caseGroupObj, CaseGroupDTO.class);
   }
 
 }
