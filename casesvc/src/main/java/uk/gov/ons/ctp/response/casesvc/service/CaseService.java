@@ -24,12 +24,20 @@ public interface CaseService extends CTPService {
   List<Case> findCasesByCaseGroupFK(final Integer caseGroupFK);
 
   /**
-   * Find Case entity by unique Id.
+   * Find Case entity by Unique Case PK.
    *
-   * @param caseId Unique Case Id
+   * @param casePK Unique Case PK
    * @return Case object or null
    */
-  Case findCaseByCaseId(Integer caseId);
+  Case findCaseByCasePK(Integer casePK);
+
+  /**
+   * Find Case entity by UUID.
+   *
+   * @param id Unique Case UUID
+   * @return Case object or null
+   */
+  Case findCaseById(String id);
 
   /**
    * Find Case entity by unique caseRef.

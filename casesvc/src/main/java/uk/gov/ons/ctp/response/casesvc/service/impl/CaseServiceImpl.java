@@ -78,9 +78,15 @@ public class CaseServiceImpl implements CaseService {
   private CaseNotificationPublisher notificationPublisher;
 
   @Override
-  public Case findCaseByCaseId(final Integer caseId) {
-    log.debug("Entering findCaseByCaseId");
+  public Case findCaseByCasePK(final Integer caseId) {
+    log.debug("Entering findCaseByCasePK");
     return caseRepo.findOne(caseId);
+  }
+
+  @Override
+  public Case findCaseById(final String id) {
+    log.debug("Entering findCaseById");
+    return caseRepo.findById(id);
   }
 
   @Override
