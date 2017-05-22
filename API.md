@@ -22,8 +22,8 @@ If this query parameter is omitted these case events **will not** be returned wi
 ```json
 {
   "id": "9a5f2be5-f944-41f9-982c-3517cfcfef3c",
-  "collectionExerciseID": "dab9db7f-3aa0-4866-be20-54d72ee185fb",
-  "partyID": "3b136c4b-7a14-4904-9e01-13364dd7b972",
+  "collectionExerciseId": "dab9db7f-3aa0-4866-be20-54d72ee185fb",
+  "partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
   "sampleUnitRef": "0123456789",
   "sampleUnitType": "B"
 }
@@ -39,9 +39,9 @@ An `HTTP 404 Not Found` status code is returned if the case group with the speci
 [
   {
     "id": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fdb",
-    "collectionInstrumentID": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
-    "partyID": "3b136c4b-7a14-4904-9e01-13364dd7b972",
-    "actionPlanID": "5381731e-e386-41a1-8462-26373744db86",
+    "collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
+    "partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
+    "actionPlanId": "5381731e-e386-41a1-8462-26373744db86",
     "sampleUnitType": "BI",
     "state": "INACTIONABLE",
     "createdBy": "SYSTEM",
@@ -66,16 +66,16 @@ An `HTTP 404 Not Found` status code is returned if the case group with the speci
 {
   "caseGroup": {
     "id": "9a5f2be5-f944-41f9-982c-3517cfcfef3c",
-    "collectionExerciseID": "dab9db7f-3aa0-4866-be20-54d72ee185fb",
-    "partyID": "3b136c4b-7a14-4904-9e01-13364dd7b972",
+    "collectionExerciseId": "dab9db7f-3aa0-4866-be20-54d72ee185fb",
+    "partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
     "sampleUnitRef": "0123456789",
     "sampleUnitType": "B",
   },
   "case": {
     "id": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fdb",
-    "collectionInstrumentID": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
-    "partyID": "3b136c4b-7a14-4904-9e01-13364dd7b972",
-    "actionPlanID": "5381731e-e386-41a1-8462-26373744db86",
+    "collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
+    "partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
+    "actionPlanId": "5381731e-e386-41a1-8462-26373744db86",
     "sampleUnitType": "BI",
     "state": "INACTIONABLE",
     "createdBy": "SYSTEM",
@@ -116,16 +116,16 @@ An `HTTP 404 Not Found` status code is returned if the case with the specified I
 {
   "caseGroup": {
     "id": "9a5f2be5-f944-41f9-982c-3517cfcfef3c",
-    "collectionExerciseID": "dab9db7f-3aa0-4866-be20-54d72ee185fb",
-    "partyID": "3b136c4b-7a14-4904-9e01-13364dd7b972",
+    "collectionExerciseId": "dab9db7f-3aa0-4866-be20-54d72ee185fb",
+    "partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
     "sampleUnitRef": "0123456789",
     "sampleUnitType": "B",
   },
   "case": {
     "id": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fdb",
-    "collectionInstrumentID": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
-    "partyID": "3b136c4b-7a14-4904-9e01-13364dd7b972",
-    "actionPlanID": "5381731e-e386-41a1-8462-26373744db86",
+    "collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
+    "partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
+    "actionPlanId": "5381731e-e386-41a1-8462-26373744db86",
     "sampleUnitType": "BI",
     "state": "INACTIONABLE",
     "createdBy": "SYSTEM",
@@ -166,16 +166,16 @@ An `HTTP 404 Not Found` status code is returned if the case with the specified p
 {
   "caseGroup": {
     "id": "9a5f2be5-f944-41f9-982c-3517cfcfef3c",
-    "collectionExerciseID": "dab9db7f-3aa0-4866-be20-54d72ee185fb",
-    "partyID": "3b136c4b-7a14-4904-9e01-13364dd7b972",
+    "collectionExerciseId": "dab9db7f-3aa0-4866-be20-54d72ee185fb",
+    "partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
     "sampleUnitRef": "0123456789",
     "sampleUnitType": "B",
   },
   "case": {
     "id": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fdb",
-    "collectionInstrumentID": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
-    "partyID": "3b136c4b-7a14-4904-9e01-13364dd7b972",
-    "actionPlanID": "5381731e-e386-41a1-8462-26373744db86",
+    "collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
+    "partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
+    "actionPlanId": "5381731e-e386-41a1-8462-26373744db86",
     "sampleUnitType": "BI",
     "state": "INACTIONABLE",
     "createdBy": "SYSTEM",
@@ -247,7 +247,7 @@ An `HTTP 404 Not Found` status code is returned if the case with the specified I
   "description": "Initial creation of case",
   "category": "CASE_CREATED",
   "subCategory": null,
-  "partyID": "3b136c4b-7a14-4904-9e01-13364dd7b972",
+  "partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
   "createdBy": "Fred Bloggs"
 }
 ```
@@ -255,11 +255,11 @@ An `HTTP 404 Not Found` status code is returned if the case with the specified I
 ### Example JSON Response
 ```json
 {
-  "caseID": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fdb",
+  "caseId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fdb",
   "description": "Initial creation of case",
   "category": "CASE_CREATED",
   "subCategory": null,
-  "partyID": "3b136c4b-7a14-4904-9e01-13364dd7b972",
+  "partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
   "createdBy": "Fred Bloggs",
   "createdDateTime": "2017-04-10T08:48:49Z"  
 }
