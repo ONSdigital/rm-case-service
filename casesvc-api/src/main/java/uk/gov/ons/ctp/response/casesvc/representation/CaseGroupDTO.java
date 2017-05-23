@@ -13,9 +13,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class CaseGroupDTO {
-  private String collectionExerciseID;
+  private String collectionExerciseId;
   private String id;
-  private String partyID;
+  private String partyId;
   private String sampleUnitRef;
   private String sampleUnitType;
 }

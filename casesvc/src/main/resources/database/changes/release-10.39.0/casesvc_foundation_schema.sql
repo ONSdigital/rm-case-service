@@ -2,14 +2,14 @@ SET schema 'casesvc';
 
 --create sequences, all defaults taken off tables
 
-CREATE SEQUENCE caseeventidseq
+CREATE SEQUENCE caseeventseq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     MAXVALUE 999999999999
     CACHE 1;
 
-CREATE SEQUENCE caseidseq
+CREATE SEQUENCE caseseq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -23,14 +23,14 @@ CREATE SEQUENCE caserefseq
     MAXVALUE 9999999999999999
     CACHE 1;
 
-CREATE SEQUENCE casegroupidseq
+CREATE SEQUENCE casegroupseq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     MAXVALUE 999999999999
     CACHE 1;
 
-CREATE SEQUENCE responseidseq
+CREATE SEQUENCE responseseq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -40,25 +40,26 @@ CREATE SEQUENCE responseidseq
 --Create tables  
 
 CREATE TABLE "case" (
-    caseid bigint NOT NULL,
+    casePK bigint NOT NULL,
     id uuid NOT NULL,
-    casegroupid bigint NOT NULL,
     caseref character varying(16),
-    partyid uuid,
-    sampleunittype character varying(2),
-    collectioninstrumentid uuid,
+    caseGroupFK bigint NOT NULL,
+    caseGroupid uuid NOT NULL,
+    partyId uuid,
+    sampleUnitType character varying(2),
+    collectionInstrumentId uuid,
     state character varying(20),
-    actionplanid integer,
-    createddatetime timestamp with time zone,
-    createdby character varying(50),
+    actionPlanId uuid,
+    createdDateYime timestamp with time zone,
+    createdBy character varying(50),
     iac character varying(20),
-    sourcecaseid bigint,
+    sourcecase bigint,
     optlockversion integer DEFAULT 0
 );
 
 CREATE TABLE caseevent (
-    caseeventid bigint NOT NULL,
-    caseid bigint NOT NULL,
+    caseEventPK bigint NOT NULL,
+    caseFK bigint NOT NULL,
     description character varying(350),
     createdby character varying(50),
     createddatetime timestamp with time zone,
@@ -67,10 +68,10 @@ CREATE TABLE caseevent (
 );
 
 CREATE TABLE casegroup (
-    casegroupid bigint NOT NULL,
+    casegroupPK bigint NOT NULL,
     id uuid NOT NULL,
-    partyid uuid,
-    collectionexerciseid uuid,
+    partyId uuid,
+    collectionExerciseId uuid,
     sampleunitref  character varying(20),
     sampleunittype character varying(2)
 );
@@ -93,32 +94,39 @@ CREATE TABLE category (
 );
 
 CREATE TABLE response (
-    responseid bigint DEFAULT nextval('responseidseq'::regclass) NOT NULL,
-    caseid bigint,
-    inboundchannel character varying(10),
-    responsedatetime timestamp with time zone
+    responsePK bigint NOT NULL,
+    caseFK bigint NOT NULL,
+    inboundChannel character varying(10),
+    responseDateTime timestamp with time zone
 );
 
 ALTER TABLE ONLY "case"
-    ADD CONSTRAINT case_pkey PRIMARY KEY (caseid);
+    ADD CONSTRAINT case_pkey PRIMARY KEY (casePK);
 
 ALTER TABLE ONLY caseevent
-    ADD CONSTRAINT caseevent_pkey PRIMARY KEY (caseeventid);
+    ADD CONSTRAINT caseevent_pkey PRIMARY KEY (caseeventPK);
 
 ALTER TABLE ONLY casegroup
-    ADD CONSTRAINT casegroup_pkey PRIMARY KEY (casegroupid);
+    ADD CONSTRAINT casegroup_pkey PRIMARY KEY (casegroupPK);
 
 ALTER TABLE ONLY category
     ADD CONSTRAINT category_pkey PRIMARY KEY (name);
 
 ALTER TABLE ONLY response
-    ADD CONSTRAINT response_pkey PRIMARY KEY (responseid);
+    ADD CONSTRAINT response_pkey PRIMARY KEY (responsePK);
 
 ALTER TABLE ONLY "case"
-    ADD CONSTRAINT casegroupid_fkey FOREIGN KEY (casegroupid) REFERENCES casegroup(casegroupid);
+    ADD CONSTRAINT casegroup_fkey FOREIGN KEY (casegroupFK) REFERENCES casegroup(casegroupPK);
 
 ALTER TABLE ONLY caseevent
-    ADD CONSTRAINT caseid_fkey FOREIGN KEY (caseid) REFERENCES "case"(caseid);
+    ADD CONSTRAINT case_fkey FOREIGN KEY (caseFK) REFERENCES "case"(casePK);
 
 ALTER TABLE ONLY response
-    ADD CONSTRAINT caseid_fkey FOREIGN KEY (caseid) REFERENCES "case"(caseid);
+    ADD CONSTRAINT case_fkey FOREIGN KEY (caseFK) REFERENCES "case"(casePK);
+
+ALTER TABLE ONLY "case"
+    ADD CONSTRAINT case_uuid_key UNIQUE (id);
+
+ALTER TABLE ONLY casegroup
+    ADD CONSTRAINT casegroup_uuid_key UNIQUE (id);
+

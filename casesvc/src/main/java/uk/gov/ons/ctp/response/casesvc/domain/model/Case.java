@@ -44,25 +44,23 @@ public class Case implements Serializable {
   private static final long serialVersionUID = 7778360895016862176L;
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "caseidseq_gen")
-  @GenericGenerator(name = "caseidseq_gen", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
-      @Parameter(name = "sequence_name", value = "casesvc.caseidseq"),
+  @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "caseseq_gen")
+  @GenericGenerator(name = "caseseq_gen", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
+      @Parameter(name = "sequence_name", value = "casesvc.caseseq"),
       @Parameter(name = "increment_size", value = "1")
   })
-  @Column(name = "casePK")
+  @Column(name = "casepk")
   private Integer casePK;
 
+  @Column(name = "id")
   private UUID id;
 
   @Version
   @Column(name = "optlockversion")
   private int optLockVersion;
 
-  @Column(name = "casegroupFK")
+  @Column(name = "casegroupfk")
   private Integer caseGroupFK;
-
-  @Column(name = "casegroupid")
-  private UUID caseGroupId;
   
   @Column(name = "sourcecaseid")
   private Integer sourceCaseId;

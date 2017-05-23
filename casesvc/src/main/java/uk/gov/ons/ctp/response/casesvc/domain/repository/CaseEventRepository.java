@@ -14,10 +14,10 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 public interface CaseEventRepository extends JpaRepository<CaseEvent, Integer> {
 
   /**
-   * find the caseevent by id.
-   * @param casePK to find by
+   * find the caseevent by FK.
+   * @param caseFK to find by
    * @return the case event or null if not found
    */
-  List<CaseEvent> findByCaseIdOrderByCreatedDateTimeDesc(Integer casePK);
+  List<CaseEvent> findByCaseFKOrderByCreatedDateTimeDesc(Integer caseFK);
 
 }

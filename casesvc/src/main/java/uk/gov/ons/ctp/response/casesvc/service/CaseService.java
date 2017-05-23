@@ -2,6 +2,7 @@ package uk.gov.ons.ctp.response.casesvc.service;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.UUID;
 
 import uk.gov.ons.ctp.common.service.CTPService;
 import uk.gov.ons.ctp.response.casesvc.definition.CaseCreation;
@@ -18,18 +19,26 @@ public interface CaseService extends CTPService {
 
   /**
    * Find the cases in a casegroup
-   * @param caseGroupId the group
+   * @param caseGroupFK the group
    * @return the cases in the group
    */
   List<Case> findCasesByCaseGroupFK(final Integer caseGroupFK);
 
   /**
-   * Find Case entity by unique Id.
+   * Find Case entity by Unique Case PK.
    *
    * @param casePK Unique Case Id
    * @return Case object or null
    */
   Case findCaseByCasePK(Integer casePK);
+
+  /**
+   * Find Case entity by UUID.
+   *
+   * @param id Unique Case UUID
+   * @return Case object or null
+   */
+  Case findCaseById(UUID id);
 
   /**
    * Find Case entity by unique caseRef.

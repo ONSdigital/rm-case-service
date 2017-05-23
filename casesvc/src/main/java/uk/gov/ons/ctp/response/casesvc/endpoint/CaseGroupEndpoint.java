@@ -35,7 +35,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   private MapperFacade mapperFacade;
 
  /**
-   * the GET endpoint to find CaseGroups by caseGroupID
+   * the GET endpoint to find CaseGroups by caseGroupId
    *
    * @param id UUID to find by
    * @return the casegroups found
