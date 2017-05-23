@@ -43,8 +43,8 @@ public class Response implements Serializable {
   @Column(name = "responseid")
   private Integer responseId;
 
-  @Column(name = "caseid")
-  private Integer caseId;
+  @Column(name = "casePK")
+  private Integer casePK;
 
   @Column(name = "inboundchannel")
   @Enumerated(EnumType.STRING)

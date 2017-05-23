@@ -21,15 +21,15 @@ public interface CaseService extends CTPService {
    * @param caseGroupId the group
    * @return the cases in the group
    */
-  List<Case> findCasesByCaseGroupId(final Integer caseGroupId);
+  List<Case> findCasesByCaseGroupFK(final Integer caseGroupFK);
 
   /**
    * Find Case entity by unique Id.
    *
-   * @param caseId Unique Case Id
+   * @param casePK Unique Case Id
    * @return Case object or null
    */
-  Case findCaseByCaseId(Integer caseId);
+  Case findCaseByCasePK(Integer casePK);
 
   /**
    * Find Case entity by unique caseRef.
@@ -50,10 +50,10 @@ public interface CaseService extends CTPService {
   /**
    * Find CaseEvent entities associated with a Case.
    *
-   * @param caseId Case Id
+   * @param casePK Case Id
    * @return List of CaseEvent entities or empty List
    */
-  List<CaseEvent> findCaseEventsByCaseId(Integer caseId);
+  List<CaseEvent> findCaseEventsByCasePK(Integer casePK);
 
   /**
    * Create a CaseEvent from the details provided in the passed CaseEvent. Some events will also as a side effect

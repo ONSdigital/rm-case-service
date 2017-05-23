@@ -3,6 +3,7 @@ package uk.gov.ons.ctp.response.casesvc.domain.model;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,7 +18,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Version;
-
 
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
@@ -52,7 +52,7 @@ public class Case implements Serializable {
   @Column(name = "casePK")
   private Integer casePK;
 
-  private String id;
+  private UUID id;
 
   @Version
   @Column(name = "optlockversion")
@@ -62,7 +62,7 @@ public class Case implements Serializable {
   private Integer caseGroupFK;
 
   @Column(name = "casegroupid")
-  private String caseGroupId;
+  private UUID caseGroupId;
   
   @Column(name = "sourcecaseid")
   private Integer sourceCaseId;
@@ -93,7 +93,7 @@ public class Case implements Serializable {
   private String sampleUnitRef;
 
   @Column(name = "actionplanid")
-  private Integer actionPlanId;
+  private String actionPlanId;
 
   @Column(name = "createddatetime")
   private Timestamp createdDateTime;
@@ -101,7 +101,7 @@ public class Case implements Serializable {
   @Column(name = "createdby")
   private String createdBy;
 
-  @OneToMany(mappedBy = "caseId", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "casePK", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   private List<Response> responses;
 
   private String iac;

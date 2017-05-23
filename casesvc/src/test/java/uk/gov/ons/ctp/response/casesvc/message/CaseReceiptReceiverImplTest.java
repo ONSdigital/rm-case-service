@@ -122,9 +122,9 @@ public class CaseReceiptReceiverImplTest {
     return caseReceipt;
   }
 
-  private CaseEvent buildCaseEvent(int caseId, CategoryDTO.CategoryType categoryType) {
+  private CaseEvent buildCaseEvent(int casePK, CategoryDTO.CategoryType categoryType) {
     CaseEvent caseEvent = new CaseEvent();
-    caseEvent.setCaseId(caseId);
+    caseEvent.setCaseFK(casePK);
     caseEvent.setCategory(categoryType);
     caseEvent.setCreatedBy(SYSTEM);
     caseEvent.setDescription(QUESTIONNAIRE_RESPONSE);

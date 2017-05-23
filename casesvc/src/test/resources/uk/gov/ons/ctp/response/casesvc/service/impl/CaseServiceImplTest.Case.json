@@ -1,6 +1,6 @@
 [
 	{
-		"caseId": 1,
+		"casePK": 1,
 		"state": "ACTIONABLE",
 		"sampleUnitType": "H",
 		"sampleUnitRef": "12345678",
@@ -12,7 +12,7 @@
 		"responses": []
 	},
 	{
-		"caseId": 2,
+		"casePK": 2,
 		"state": "INACTIONABLE",
 		"sampleUnitType": "H",
 		"sampleUnitRef": "12345678",
@@ -29,7 +29,7 @@
 		]
 	},
 	{
-		"caseId": 3,
+		"casePK": 3,
 		"state": "ACTIONABLE",
 		"sampleUnitType": "H",
 		"sampleUnitRef": "12345678",
@@ -41,7 +41,7 @@
 		"responses": []
 	},
 	{
-		"caseId": 4,
+		"casePK": 4,
 		"state": "INACTIONABLE",
 		"sampleUnitType": "H",
 		"sampleUnitRef": "12345678",
@@ -58,7 +58,7 @@
 		]
 	},
 	{
-		"caseId": 5,
+		"casePK": 5,
 		"state": "ACTIONABLE",
 		"sampleUnitType": "H",
 		"sampleUnitRef": "12345678",
@@ -75,7 +75,7 @@
 		]
 	},
 	{
-		"caseId": 6,
+		"casePK": 6,
 		"state": "INACTIONABLE",
 		"sampleUnitType": "H",
 		"sampleUnitRef": "12345678",
@@ -92,7 +92,7 @@
 		]
 	},
 	{
-		"caseId": 7,
+		"casePK": 7,
 		"state": "ACTIONABLE",
 		"sampleUnitType": "H",
 		"sampleUnitRef": "12345678",
@@ -104,7 +104,7 @@
 		"responses": []
 	},
 	{
-		"caseId": 7,
+		"casePK": 7,
 		"state": "INACTIONABLE",
 		"sampleUnitType": "H",
 		"sampleUnitRef": "12345678",

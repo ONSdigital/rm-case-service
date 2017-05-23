@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,7 +42,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
    * @throws CTPException something went wrong
    */
   @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-  public CaseGroupDTO findCaseGroupById(@PathVariable("id") final String id)  throws CTPException {
+  public CaseGroupDTO findCaseGroupById(@PathVariable("id") final UUID id)  throws CTPException {
     log.info("Entering findCaseGroupById with {}", id);
 
     CaseGroup caseGroupObj = caseGroupService.findCaseGroupById(id);

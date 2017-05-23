@@ -1,6 +1,6 @@
 [
 {
-   "caseId": 1,
+   "casePK": 1,
    "state": "SAMPLED_INIT",
    "caseTypeId": 1,
    "createdDateTime": 1460736159699,
@@ -8,7 +8,7 @@
    "actionPlanId": 1
 },
 {
-   "caseId":2,
+   "casePK":2,
    "state":"SAMPLED_INIT",
    "caseTypeId":2,
    "createdDateTime":1460736159699,
@@ -16,7 +16,7 @@
    "actionPlanId":2
 },
 {
-   "caseId":3,
+   "casePK":3,
    "state":"SAMPLED_INIT",
    "caseTypeId":3,
    "createdDateTime":1460736159699,

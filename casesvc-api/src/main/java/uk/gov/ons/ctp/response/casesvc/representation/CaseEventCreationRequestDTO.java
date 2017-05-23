@@ -26,7 +26,7 @@ public class CaseEventCreationRequestDTO {
 
   private Integer caseEventId;
 
-  private Integer caseId;
+  private Integer caseFK;
 
   @NotNull
   private CategoryDTO.CategoryType category;

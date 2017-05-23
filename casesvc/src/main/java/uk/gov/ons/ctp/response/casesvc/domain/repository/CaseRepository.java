@@ -29,7 +29,7 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
    * @param pageable the paging info for the query
    * @return List<Action> returns all cases in states, for the given page
    */
-  List<Case> findByStateInAndCaseIdNotIn(List<CaseDTO.CaseState> states, List<Integer> caseIds, Pageable pageable);
+  List<Case> findByStateInAndCaseIdNotIn(List<CaseDTO.CaseState> states, List<Integer> casePKs, Pageable pageable);
 
   /**
    * set the case state for a given case.
@@ -41,7 +41,7 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
   @Modifying
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   @Query(value = "UPDATE casesvc.case SET state = ?2 WHERE caseid = ?1", nativeQuery = true)
-  int setState(Integer caseid, String state);
+  int setState(Integer casePK, String state);
   
   
   /**
@@ -49,7 +49,7 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
    * @param caseGroupId the group id
    * @return the cases in the group
    */
-  List<Case> findByCaseGroupIdOrderByCreatedDateTimeDesc(Integer caseGroupId);
+  List<Case> findByCaseGroupIdOrderByCreatedDateTimeDesc(Integer caseGroupPK);
   
   /**
    * Find cases assigned to the given iac

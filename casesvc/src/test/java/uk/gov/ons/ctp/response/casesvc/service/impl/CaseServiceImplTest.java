@@ -703,13 +703,13 @@ public class CaseServiceImplTest {
    * mock loading data
    *
    * @param categoryType which category type to load
-   * @param caseId the associated Case
+   * @param casePK the associated Case
    * @return a mock case event
    * @throws Exception oops
    */
-  private CaseEvent fabricateEvent(CategoryDTO.CategoryType categoryType, int caseId) throws Exception {
+  private CaseEvent fabricateEvent(CategoryDTO.CategoryType categoryType, int casePK) throws Exception {
     CaseEvent caseEvent = new CaseEvent();
-    caseEvent.setCaseId(caseId);
+    caseEvent.setCaseFK(casePK);
     caseEvent.setCategory(categoryType);
     caseEvent.setCreatedBy(CASEEVENT_CREATEDBY);
     caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());

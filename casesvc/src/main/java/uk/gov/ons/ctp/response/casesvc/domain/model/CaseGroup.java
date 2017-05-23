@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.domain.model;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -43,7 +44,7 @@ public class CaseGroup implements Serializable {
   @Column(name = "collectionexerciseid")
   private String collectionExerciseID;
 
-  private String id;
+  private UUID id;
   
   @Column(name = "partyid")
   private String partyID;

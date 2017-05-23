@@ -78,9 +78,9 @@ public class CaseServiceImpl implements CaseService {
   private CaseNotificationPublisher notificationPublisher;
 
   @Override
-  public Case findCaseByCaseId(final Integer caseId) {
+  public Case findCaseByCasePK(final Integer casePK) {
     log.debug("Entering findCaseByCaseId");
-    return caseRepo.findOne(caseId);
+    return caseRepo.findOne(casePK);
   }
 
   @Override
@@ -105,15 +105,15 @@ public class CaseServiceImpl implements CaseService {
   }
 
   @Override
-  public List<Case> findCasesByCaseGroupId(final Integer caseGroupId) {
+  public List<Case> findCasesByCaseGroupFK(final Integer caseGroupFK) {
     log.debug("Entering findCasesByCaseGroupId");
-    return caseRepo.findByCaseGroupIdOrderByCreatedDateTimeDesc(caseGroupId);
+    return caseRepo.findByCaseGroupIdOrderByCreatedDateTimeDesc(caseGroupFK);
   }
 
   @Override
-  public List<CaseEvent> findCaseEventsByCaseId(final Integer caseId) {
+  public List<CaseEvent> findCaseEventsByCasePK(final Integer casePK) {
     log.debug("Entering findCaseEventsByCaseId");
-    return caseEventRepo.findByCaseIdOrderByCreatedDateTimeDesc(caseId);
+    return caseEventRepo.findByCaseIdOrderByCreatedDateTimeDesc(casePK);
   }
 
   @Override
@@ -138,14 +138,14 @@ public class CaseServiceImpl implements CaseService {
   @Override
   public CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase, Timestamp timestamp) {
     log.debug("Entering createCaseEvent with caseEvent {}", caseEvent);
-    log.info("SPLUNK: CaseEventCreation: caseId={}, category={}, subCategory={}, createdBy={}",
-        caseEvent.getCaseId(),
+    log.info("SPLUNK: CaseEventCreation: casePK={}, category={}, subCategory={}, createdBy={}",
+        caseEvent.getCaseFK(),
         caseEvent.getCategory(),
         caseEvent.getSubCategory(),
         caseEvent.getCreatedBy());
 
     CaseEvent createdCaseEvent = null;
-    Case targetCase = caseRepo.findOne(caseEvent.getCaseId());
+    Case targetCase = caseRepo.findOne(caseEvent.getCaseFK());
 
     if (targetCase != null) {
       Category category = categoryRepo.findOne(caseEvent.getCategory());
@@ -254,7 +254,7 @@ public class CaseServiceImpl implements CaseService {
     if (channel != null) {
       Response response = Response.builder()
           .inboundChannel(channel)
-          .caseId(targetCase.getCasePK())
+          .casePK(targetCase.getCasePK())
           .dateTime(timestamp).build();
 
       targetCase.getResponses().add(response);
@@ -273,7 +273,7 @@ public class CaseServiceImpl implements CaseService {
     String actionType = category.getGeneratedActionType();
     log.debug("actionType = {}", actionType);
     if (!StringUtils.isEmpty(actionType)) {
-      actionSvcClientService.createAndPostAction(actionType, caseEvent.getCaseId(), caseEvent.getCreatedBy());
+      actionSvcClientService.createAndPostAction(actionType, caseEvent.getCaseFK(), caseEvent.getCreatedBy());
     }
   }
 
@@ -343,7 +343,7 @@ public class CaseServiceImpl implements CaseService {
    * @return the persisted case
    */
   private Case saveNewCase(CaseEvent caseEvent, Case targetCase, Case newCase) {
-    newCase.setId(String.valueOf(UUID.randomUUID()));
+    newCase.setId(UUID.randomUUID());
     newCase.setState(CaseDTO.CaseState.REPLACEMENT_INIT);
     newCase.setCreatedDateTime(DateTimeUtil.nowUTC());
     newCase.setCaseGroupId(targetCase.getCaseGroupId());
@@ -362,7 +362,7 @@ public class CaseServiceImpl implements CaseService {
    */
   private CaseEvent createCaseCreatedEvent(Case caze, Category caseEventCategory) {
     CaseEvent newCaseCaseEvent = new CaseEvent();
-    newCaseCaseEvent.setCaseId(caze.getCasePK());
+    newCaseCaseEvent.setCaseFK(caze.getCasePK());
     newCaseCaseEvent.setCategory(CategoryDTO.CategoryType.CASE_CREATED);
     newCaseCaseEvent.setCreatedBy(Constants.SYSTEM);
     newCaseCaseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
@@ -381,7 +381,7 @@ public class CaseServiceImpl implements CaseService {
   
   private CaseGroup createNewCaseGroup(CaseCreation caseGroupData) {
 	   CaseGroup newCaseGroup = new CaseGroup();
-	   newCaseGroup.setId(String.valueOf(UUID.randomUUID()));
+	   newCaseGroup.setId(UUID.randomUUID());
 	   newCaseGroup.setPartyID(String.valueOf(caseGroupData.getPartyId()));
 	   newCaseGroup.setCollectionExerciseID(caseGroupData.getCollectionExerciseId());
 	   newCaseGroup.setSampleUnitRef(caseGroupData.getSampleUnitRef());
@@ -394,7 +394,7 @@ public class CaseServiceImpl implements CaseService {
   
   private void createNewCase(CaseCreation caseData, CaseGroup caseGroup) {
 		Case newCase = new Case();
-		newCase.setId(String.valueOf(UUID.randomUUID()));
+		newCase.setId(UUID.randomUUID());
 		
 		//values from case group
 		newCase.setCaseGroupFK(caseGroup.getCaseGroupPK());

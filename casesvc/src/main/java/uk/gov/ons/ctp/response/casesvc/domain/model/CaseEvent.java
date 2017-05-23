@@ -41,8 +41,8 @@ public class CaseEvent implements Serializable {
   @Column(name = "caseeventid")
   private Integer caseEventId;
 
-  @Column(name = "caseid")
-  private Integer caseId;
+  @Column(name = "caseFK")
+  private Integer caseFK;
 
   private String description;
 

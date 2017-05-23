@@ -1,6 +1,6 @@
 [
 	{
-		"caseId": 1,
+		"casePK": 1,
 		"state": "SAMPLED_INIT",
 		"sampleUnitType": "H",
 		"sampleUnitRef": "12345678",
@@ -13,7 +13,7 @@
 		"questionSet": "survey01"
 	},
 	{
-		"caseId": 2,
+		"casePK": 2,
 		"state": "SAMPLED_INIT",
 		"sampleUnitType": "H",
 		"sampleUnitRef": "12345678",
@@ -26,7 +26,7 @@
 		"questionSet": "survey01"
 	},
 	{
-		"caseId": 3,
+		"casePK": 3,
 		"state": "SAMPLED_INIT",
 		"sampleUnitType": "H",
 		"sampleUnitRef": "12345678",
@@ -39,7 +39,7 @@
 		"questionSet": "survey01"
 	},
 	{
-		"caseId": 4,
+		"casePK": 4,
 		"state": "SAMPLED_INIT",
 		"sampleUnitType": "H",
 		"sampleUnitRef": "12345678",
@@ -52,7 +52,7 @@
 		"questionSet": "survey01"
 	},
 	{
-		"caseId": 5,
+		"casePK": 5,
 		"state": "SAMPLED_INIT",
 		"sampleUnitType": "H",
 		"sampleUnitRef": "12345678",
@@ -65,7 +65,7 @@
 		"questionSet": "survey01"
 	},
 	{
-		"caseId": 6,
+		"casePK": 6,
 		"state": "SAMPLED_INIT",
 		"sampleUnitType": "H",
 		"sampleUnitRef": "12345678",
@@ -78,7 +78,7 @@
 		"questionSet": "survey01"
 	},
 	{
-		"caseId": 7,
+		"casePK": 7,
 		"state": "SAMPLED_INIT",
 		"sampleUnitType": "H",
 		"sampleUnitRef": "12345678",
@@ -91,7 +91,7 @@
 		"questionSet": "survey01"
 	},
 	{
-		"caseId": 8,
+		"casePK": 8,
 		"state": "SAMPLED_INIT",
 		"sampleUnitType": "H",
 		"sampleUnitRef": "12345678",
@@ -104,7 +104,7 @@
 		"questionSet": "survey01"
 	},
 	{
-		"caseId": 9,
+		"casePK": 9,
 		"state": "SAMPLED_INIT",
 		"sampleUnitType": "H",
 		"sampleUnitRef": "12345678",
@@ -117,7 +117,7 @@
 		"questionSet": "survey01"
 	},
 	{
-		"caseId": 10,
+		"casePK": 10,
 		"state": "SAMPLED_INIT",
 		"sampleUnitType": "H",
 		"sampleUnitRef": "12345678",

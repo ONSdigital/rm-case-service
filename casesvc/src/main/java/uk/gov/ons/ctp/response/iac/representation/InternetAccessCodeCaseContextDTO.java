@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class InternetAccessCodeCaseContextDTO {
 
   @NotNull
-  private Integer caseId;
+  private Integer casePK;
 
   @NotNull
   private String iac;

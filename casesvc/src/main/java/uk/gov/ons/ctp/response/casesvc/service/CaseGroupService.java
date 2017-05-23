@@ -1,6 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.service;
 
-import java.util.List;
+import java.util.UUID;
 
 import uk.gov.ons.ctp.common.service.CTPService;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
@@ -25,7 +25,7 @@ public interface CaseGroupService extends CTPService {
    * @param id UUID of the case group to find
    * @return CaseGroup entity or null
    */
-  CaseGroup findCaseGroupById(String id);
+  CaseGroup findCaseGroupById(UUID id);
 
   /**
    * Find CaseGroup by uprn

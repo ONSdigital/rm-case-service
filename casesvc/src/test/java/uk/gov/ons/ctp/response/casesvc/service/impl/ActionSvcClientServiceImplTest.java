@@ -68,7 +68,7 @@ public class ActionSvcClientServiceImplTest {
     mockServer.expect(requestTo("http://localhost:8080/actions"))
         .andExpect(method(HttpMethod.POST))
         .andExpect(content().string(containsString("\"actionTypeName\":" + "\"GeneralEscalation\"" + ",")))
-        .andExpect(content().string(containsString("\"caseId\":" + "123,")))
+        .andExpect(content().string(containsString("\"casePK\":" + "123,")))
         .andExpect(content().string(containsString("\"createdBy\":" + "\"SYSTEM\"")))
         .andRespond(withSuccess());
 

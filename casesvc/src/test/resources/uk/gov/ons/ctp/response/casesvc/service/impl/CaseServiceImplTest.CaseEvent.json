@@ -2,7 +2,7 @@
 {  
    "createdDateTime":1460736159699,
    "caseEventId":1,
-   "caseId":2,
+   "casePK":2,
    "category":"ONLINE_QUESTIONNAIRE_RESPONSE",
    "subCategory":"subcat",
    "createdBy":"me",
@@ -11,7 +11,7 @@
 {  
    "createdDateTime":1460736159699,
    "caseEventId":2,
-   "caseId":2,
+   "casePK":2,
    "category":"CLASSIFICATION_INCORRECT",
    "subCategory":"subcat",
    "createdBy":"me",
@@ -20,7 +20,7 @@
 {  
    "createdDateTime":1460736159699,
    "caseEventId":3,
-   "caseId":2,
+   "casePK":2,
    "category":"REFUSAL",
    "subCategory":"subcat",
    "createdBy":"me",
@@ -29,7 +29,7 @@
 {  
    "createdDateTime":1460736159699,
    "caseEventId":4,
-   "caseId":2,
+   "casePK":2,
    "category":"UNDELIVERABLE",
    "subCategory":"subcat",
    "createdBy":"me",
@@ -38,7 +38,7 @@
 {  
    "createdDateTime":1460736159699,
    "caseEventId":5,
-   "caseId":1,
+   "casePK":1,
    "category":"ONLINE_QUESTIONNAIRE_RESPONSE",
    "subCategory":"subcat",
    "createdBy":"me",
@@ -47,7 +47,7 @@
 {  
    "createdDateTime":1460736159699,
    "caseEventId":6,
-   "caseId":1,
+   "casePK":1,
    "category":"TRANSLATION_ARABIC",
    "subCategory":"subcat",
    "createdBy":"me",

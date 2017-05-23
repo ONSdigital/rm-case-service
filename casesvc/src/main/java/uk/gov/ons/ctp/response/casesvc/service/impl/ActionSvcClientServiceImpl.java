@@ -26,9 +26,9 @@ public class ActionSvcClientServiceImpl implements ActionSvcClientService {
   private RestClient actionServiceClient;
 
   @Override
-  public void createAndPostAction(String actionType, int caseId, String createdBy) {
+  public void createAndPostAction(String actionType, int casePK, String createdBy) {
       ActionDTO actionDTO = new ActionDTO();
-      actionDTO.setCaseId(caseId);
+      actionDTO.setCaseId(casePK);
       actionDTO.setActionTypeName(actionType);
       actionDTO.setCreatedBy(createdBy);
       log.debug("about to post to the Action SVC with {}", actionDTO);
