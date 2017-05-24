@@ -62,7 +62,7 @@ public interface CaseService extends CTPService {
    * @param casePK Case Id
    * @return List of CaseEvent entities or empty List
    */
-  List<CaseEvent> findCaseEventsByCaseId(UUID caseId);
+  List<CaseEvent> findCaseEventsByCaseFK(Integer caseFK);
 
   /**
    * Create a CaseEvent from the details provided in the passed CaseEvent. Some events will also as a side effect

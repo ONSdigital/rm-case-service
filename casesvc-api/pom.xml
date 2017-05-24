@@ -86,7 +86,7 @@
               <schemaIncludes>
                 <include>caseCreation.xsd</include>
               </schemaIncludes>
-              <generateDirectory>${project.build.directory}/generated-sources/xjc/creation</generateDirectory>
+              <generateDirectory>${project.build.directory}/generated-sources/xjc/inbound/creation</generateDirectory>
               <args>
                 <arg>-Xvalue-constructor</arg>
                 <arg>-Xfluent-builder</arg>
@@ -126,7 +126,7 @@
               <schemaIncludes>
                 <include>caseReceipt.xsd</include>
               </schemaIncludes>
-              <generateDirectory>${project.build.directory}/generated-sources/xjc/inbound</generateDirectory>
+              <generateDirectory>${project.build.directory}/generated-sources/xjc/inbound/receipt</generateDirectory>
               <args>
                 <arg>-Xvalue-constructor</arg>
                 <arg>-Xfluent-builder</arg>

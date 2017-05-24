@@ -55,6 +55,7 @@ public final class CaseEndpointUnitTest {
   private static final Integer CASE1_ACTIONPLANID = 1;
 
   private static final Integer EXISTING_CASE_GROUP_PK = 13;
+  private static final Integer EXISTING_CASE_PK_NO_EVENTS = 12;
   private static final UUID EXISTING_CASE_ID_NO_EVENTS = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3999");
   private static final String NON_EXISTING_CASE_ID = "9bc9d99b-9999-99b9-ba99-99f9d9cf9999";
  
@@ -274,9 +275,9 @@ public final class CaseEndpointUnitTest {
    * a test
    */
   @Test
-  public void findCaseEventsByCaseIdFoundButNoEvents() throws Exception {
+  public void findCaseEventsByCaseFKFoundButNoEvents() throws Exception {
     when(caseService.findCaseById(EXISTING_CASE_ID_NO_EVENTS)).thenReturn(caseResults.get(0));
-    when(caseService.findCaseEventsByCaseId(EXISTING_CASE_ID_NO_EVENTS)).thenReturn(new ArrayList<>());
+    when(caseService.findCaseEventsByCaseFK(EXISTING_CASE_PK_NO_EVENTS)).thenReturn(new ArrayList<>());
 
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s/events", EXISTING_CASE_ID_NO_EVENTS)));
@@ -292,11 +293,11 @@ public final class CaseEndpointUnitTest {
    */
   @Test
   public void findCaseEventsByCaseIdNotFound() throws Exception {
-    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s/events", NON_EXISTING_CASE_ID)));
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s/events", EXISTING_CASE_ID_NO_EVENTS)));
 
     actions.andExpect(status().isNotFound());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
-    actions.andExpect(handler().methodName("findCaseEventsByCaseId"));
+    actions.andExpect(handler().methodName("findCaseEventsByCaseFK"));
     actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
     actions.andExpect(jsonPath("$.error.message", is(String.format("%s case id %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_CASE_ID))));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
