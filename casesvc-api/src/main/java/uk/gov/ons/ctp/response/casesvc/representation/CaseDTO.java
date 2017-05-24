@@ -29,17 +29,20 @@ public class CaseDTO {
     ACTIVATED, DEACTIVATED, DISABLED, HOUSEHOLD_PAPER_REQUESTED, INDIVIDUAL_RESPONSE_REQUESTED, REPLACED
   }
 
-  private String actionPlanId;
-  private String caseGroupId;
-  private String collectionInstrumentId;
-  private String createdBy;
-  private String id;
-  private String partyId;
+  private UUID id;
+  private CaseState state;
+  private String iac;
+  private String caseRef;
+
+  private UUID actionPlanId;
+  private UUID caseGroupId;
+  private UUID collectionInstrumentId;
+  private UUID partyId;
+  
   private String sampleUnitType;
   private String sampleUnitRef;
 
-  private CaseState state;
-
+  private String createdBy;
   private Date createdDateTime;
 
   private ResponseDTO[] responses;
