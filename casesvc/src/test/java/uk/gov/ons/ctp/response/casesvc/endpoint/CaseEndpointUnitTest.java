@@ -13,8 +13,14 @@ import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.ERRORMSG_CAS
 import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseGroupEndpoint.ERRORMSG_CASEGROUPNOTFOUND;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import org.hamcrest.Matchers;
@@ -90,7 +96,7 @@ public final class CaseEndpointUnitTest {
   private static final String CASE1_SUBCATEGORY = "subcat 1";
   private static final String CASE2_SUBCATEGORY = "subcat 2";
   private static final String CASE3_SUBCATEGORY = "subcat 3";
-  private static final String CREATEDDATE_VALUE = "2016-04-15T17:02:39.699+0100";
+  private static final String CREATEDDATE_VALUE = createTestDate("2016-04-15T17:02:39.699+0100");
 
   private static final UUID EXISTING_CASE_GROUP_UUID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfeabc");
   private static final String CASE_GROUP_CE_ID = "dab9db7f-3aa0-4866-be20-54d72ee185fb";
@@ -342,4 +348,33 @@ public final class CaseEndpointUnitTest {
 //    actions.andExpect(jsonPath("$.category", is(CASE1_CATEGORY)));
 //    actions.andExpect(jsonPath("$.subCategory", is(CASE1_SUBCATEGORY)));
 //  }
+
+
+  private static void printDate(ZonedDateTime zdt) {
+    TimeZone gmt = TimeZone.getTimeZone("GMT");
+    TimeZone utc = TimeZone.getTimeZone("UTC");
+    TimeZone cet = TimeZone.getTimeZone("CET");
+    System.out.println(CREATEDDATE_VALUE);
+    System.out.println(zdt);
+    LocalDateTime ldt = zdt.toLocalDateTime();
+    ZonedDateTime gmtTime = ldt.atZone(ZoneId.of(gmt.getID()));
+    System.out.println("gmt:" + gmtTime);
+    ZonedDateTime utcTime = ldt.atZone(ZoneId.of(utc.getID()));
+    System.out.println("utc:" + utcTime);
+    ZonedDateTime cetTime = ldt.atZone(ZoneId.of(cet.getID()));
+    System.out.println("cet:" + cetTime);
+    ZonedDateTime bstTime = ldt.atZone(ZoneId.of("Europe/London"));
+    System.out.println("bst:" + bstTime);
+    System.out.println(Calendar.getInstance().getTimeZone().getID());
+  }
+  
+  private static String createTestDate(String date){
+    String zoneId = Calendar.getInstance().getTimeZone().getID();
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    ZonedDateTime zdt = ZonedDateTime.parse(CREATEDDATE_VALUE, formatter);
+    LocalDateTime ldt = zdt.toLocalDateTime();
+    ZonedDateTime compareDate = ldt.atZone(ZoneId.of(zoneId));
+    return compareDate.toString();
+    
+  }
 }
