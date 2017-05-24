@@ -1,25 +1,25 @@
 [
-{  
+{
    "createdDateTime":1460736159699,
-   "caseEventId":1,
+   "caseEventPK":1,
    "casePK":124,
    "category":"GENERAL_ENQUIRY",
    "subCategory":"subcat",
    "createdBy":"UnitTester",
    "description":"Test Event 1"
 },
-{  
+{
    "createdDateTime":1460736159699,
-   "caseEventId":2,
+   "caseEventPK":2,
    "casePK":124,
    "category":"GENERAL_ENQUIRY",
    "subCategory":"subcat",
    "createdBy":"UnitTester",
    "description":"Test Event 2"
 },
-{  
+{
    "createdDateTime":1460736159699,
-   "caseEventId":3,
+   "caseEventPK":3,
    "casePK":124,
    "category":"GENERAL_ENQUIRY",
    "subCategory":"subcat",

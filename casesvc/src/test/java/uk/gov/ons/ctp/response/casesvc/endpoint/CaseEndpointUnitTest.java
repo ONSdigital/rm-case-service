@@ -339,7 +339,7 @@ public final class CaseEndpointUnitTest {
 //    actions.andExpect(status().isCreated());
 //    actions.andExpect(handler().handlerType(CaseEndpoint.class));
 //    actions.andExpect(handler().methodName("createCaseEvent"));
-//    actions.andExpect(jsonPath("$.caseEventId", is(CASE1_ID)));
+//    actions.andExpect(jsonPath("$.caseEventPK", is(CASE1_ID)));
 //    actions.andExpect(jsonPath("$.casePK", is(CASE1_ID)));
 //    actions.andExpect(jsonPath("$.description", is(CASE1_DESCRIPTION)));
 //    actions.andExpect(jsonPath("$.createdBy", is(CASE1_CREATEDBY)));
