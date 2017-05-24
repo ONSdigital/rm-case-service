@@ -117,9 +117,9 @@ public class CaseServiceImpl implements CaseService {
   }
 
   @Override
-  public List<CaseEvent> findCaseEventsByCasePK(final Integer casePK) {
+  public List<CaseEvent> findCaseEventsByCaseId(final UUID caseId) {
     log.debug("Entering findCaseEventsByCaseId");
-    return caseEventRepo.findByCaseFKOrderByCreatedDateTimeDesc(casePK);
+    return caseEventRepo.findByCaseIdOrderByCreatedDateTimeDesc(caseId);
   }
 
   @Override
