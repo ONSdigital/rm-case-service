@@ -38,10 +38,10 @@ public class CaseEvent implements Serializable {
       @Parameter(name = "sequence_name", value = "casesvc.caseeventidseq"),
       @Parameter(name = "increment_size", value = "1")
   })
-  @Column(name = "caseeventid")
-  private Integer caseEventId;
+  @Column(name = "caseeventpk")
+  private Integer caseEventPK;
 
-  @Column(name = "caseFK")
+  @Column(name = "casefk")
   private Integer caseFK;
 
   private String description;

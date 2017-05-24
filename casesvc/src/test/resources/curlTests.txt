@@ -118,7 +118,7 @@ curl -H "Accept: application/json" -H "Content-Type: application/json" http://lo
 
 
 curl -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/cases/1/events -v -X POST -d "{\"description\":\"mytest\", \"category\":\"Complaint - Escalated\", \"subCategory\":\"ABC\", \"createdBy\":\"philippe\"}"
-200 {"createdDateTime":"2016-09-12T15:28:25.681+0000","caseEventId":763,"casePK":1,"category":"Complaint - Escalated","subCategory":"ABC","createdBy":"philippe","description":"mytest"}
+200 {"createdDateTime":"2016-09-12T15:28:25.681+0000","caseEventPK":763,"casePK":1,"category":"Complaint - Escalated","subCategory":"ABC","createdBy":"philippe","description":"mytest"}
 
 
 curl -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/cases/1234/events -v -X POST -d "{\"description\":\"mytest\", \"category\":\"Complaint - Escalated\", \"subCategory\":\"ABC\", \"createdBy\":\"philippe\"}"

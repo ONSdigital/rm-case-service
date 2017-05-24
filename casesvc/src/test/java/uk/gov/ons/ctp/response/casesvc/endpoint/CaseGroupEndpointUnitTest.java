@@ -78,7 +78,7 @@ public final class CaseGroupEndpointUnitTest {
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CaseGroupEndpoint.class));
     actions.andExpect(handler().methodName("findCaseGroupById"));
-    actions.andExpect(jsonPath("$.id", is(CASE_GROUP_UUID)));
+    actions.andExpect(jsonPath("$.id", is(CASE_GROUP_UUID.toString())));
     actions.andExpect(jsonPath("$.collectionExerciseId", is(CASE_GROUP_CE_ID)));
     actions.andExpect(jsonPath("$.partyId", is(CASE_GROUP_PARTY_ID)));
     actions.andExpect(jsonPath("$.sampleUnitRef", is(CASE_GROUP_SU_REF)));
