@@ -50,7 +50,7 @@ CREATE TABLE "case" (
     collectionInstrumentId uuid,
     state character varying(20),
     actionPlanId uuid,
-    createdDateYime timestamp with time zone,
+    createdDateTime timestamp with time zone,
     createdBy character varying(50),
     iac character varying(20),
     sourcecase bigint,
@@ -63,7 +63,7 @@ CREATE TABLE caseevent (
     description character varying(350),
     createdby character varying(50),
     createddatetime timestamp with time zone,
-    category character varying(40),
+    categoryFK character varying(40),
     subcategory character varying(100)
 );
 
@@ -81,7 +81,7 @@ CREATE TABLE casestate (
 );
 
 CREATE TABLE category (
-    name character varying(40) NOT NULL,
+    categoryPK character varying(40) NOT NULL,
     shortdescription character varying(50),
     longdescription character varying(50),
     eventtype character varying(20),
@@ -99,6 +99,7 @@ CREATE TABLE response (
     inboundChannel character varying(10),
     responseDateTime timestamp with time zone
 );
+--add primary keys to tables
 
 ALTER TABLE ONLY "case"
     ADD CONSTRAINT case_pkey PRIMARY KEY (casePK);
@@ -110,13 +111,20 @@ ALTER TABLE ONLY casegroup
     ADD CONSTRAINT casegroup_pkey PRIMARY KEY (casegroupPK);
 
 ALTER TABLE ONLY category
-    ADD CONSTRAINT category_pkey PRIMARY KEY (name);
+    ADD CONSTRAINT category_pkey PRIMARY KEY (categoryPK);
 
 ALTER TABLE ONLY response
     ADD CONSTRAINT response_pkey PRIMARY KEY (responsePK);
 
+ALTER TABLE ONLY casestate
+    ADD CONSTRAINT state_pkey PRIMARY KEY (state);
+-- add foreign key constraints
+
 ALTER TABLE ONLY "case"
     ADD CONSTRAINT casegroup_fkey FOREIGN KEY (casegroupFK) REFERENCES casegroup(casegroupPK);
+
+ALTER TABLE ONLY "case"
+    ADD CONSTRAINT state_fkey FOREIGN KEY (state) REFERENCES casestate(state);
 
 ALTER TABLE ONLY caseevent
     ADD CONSTRAINT case_fkey FOREIGN KEY (caseFK) REFERENCES "case"(casePK);
@@ -124,6 +132,7 @@ ALTER TABLE ONLY caseevent
 ALTER TABLE ONLY response
     ADD CONSTRAINT case_fkey FOREIGN KEY (caseFK) REFERENCES "case"(casePK);
 
+-- add constraints to ensure uuid fields are unique
 ALTER TABLE ONLY "case"
     ADD CONSTRAINT case_uuid_key UNIQUE (id);
 

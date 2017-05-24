@@ -19,3 +19,13 @@ databaseChangeLog:
             path: table_category_initial_data.sql
             relativeToChangelogFile: true
             splitStatements: false
+
+  - changeSet:
+      id: 10.39.0-3
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: inserting standing data into casestate
+            path: table_casestate_initial_data.sql
+            relativeToChangelogFile: true
+            splitStatements: false
