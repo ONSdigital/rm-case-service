@@ -73,7 +73,7 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <bindingDirectory>src/main/resources/xsd/inbound</bindingDirectory>
+              <bindingDirectory>src/main/resources/xsd/Inbound</bindingDirectory>
               <bindingIncludes>
                 <include>caseCreation.xjb</include>
               </bindingIncludes>
@@ -81,7 +81,7 @@
                 <include>caseReceipt.xjb</include>
               </bindingExcludes>
               
-              <schemaDirectory>src/main/resources/xsd/inbound</schemaDirectory>
+              <schemaDirectory>src/main/resources/xsd/Inbound</schemaDirectory>
               <schemaIncludes>
                 <include>caseCreation.xsd</include>
               </schemaIncludes>
@@ -113,14 +113,14 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <bindingDirectory>src/main/resources/xsd/inbound</bindingDirectory>
+              <bindingDirectory>src/main/resources/xsd/Inbound</bindingDirectory>
               <bindingIncludes>
                 <include>caseReceipt.xjb</include>
               </bindingIncludes>
               <bindingExcludes>
                 <include>caseCreation.xjb</include>
               </bindingExcludes>
-              <schemaDirectory>src/main/resources/xsd/inbound</schemaDirectory>
+              <schemaDirectory>src/main/resources/xsd/Inbound</schemaDirectory>
               <schemaIncludes>
                 <include>caseReceipt.xsd</include>
               </schemaIncludes>
@@ -152,11 +152,11 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <bindingDirectory>src/main/resources/xsd/outbound</bindingDirectory>
+              <bindingDirectory>src/main/resources/xsd/Outbound</bindingDirectory>
               <bindingIncludes>
                 <include>caseNotification.xjb</include>
               </bindingIncludes>
-              <schemaDirectory>src/main/resources/xsd/outbound</schemaDirectory>
+              <schemaDirectory>src/main/resources/xsd/Outbound</schemaDirectory>
               <schemaIncludes>
                 <include>caseNotification.xsd</include>
               </schemaIncludes>

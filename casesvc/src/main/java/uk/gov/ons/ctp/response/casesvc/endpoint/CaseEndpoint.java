@@ -80,7 +80,7 @@ public final class CaseEndpoint implements CTPEndpoint {
     Case caseObj = caseService.findCaseById(caseId);
     if (caseObj == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-          String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseId));
+          String.format("%s case id %s", ERRORMSG_CASENOTFOUND, id));
     }
     // TODO find the CaseGroup info
 //    if (caseevents) {
@@ -167,7 +167,7 @@ public final class CaseEndpoint implements CTPEndpoint {
 	
     if (caseX == null) {
         throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-            String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseX));
+            String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseId.toString()));
       }
 	
 	Integer casePK = caseX.getCasePK();

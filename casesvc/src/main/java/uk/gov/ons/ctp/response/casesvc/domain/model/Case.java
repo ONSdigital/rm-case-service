@@ -59,10 +59,13 @@ public class Case implements Serializable {
   @Column(name = "optlockversion")
   private int optLockVersion;
 
+  @Column(name = "casegroupid")
+  private UUID caseGroupId;
+  
   @Column(name = "casegroupfk")
   private Integer caseGroupFK;
   
-  @Column(name = "sourcecaseid")
+  @Column(name = "sourcecase")
   private Integer sourceCaseId;
 
   @Generated(GenerationTime.INSERT)
@@ -86,9 +89,6 @@ public class Case implements Serializable {
 
   @Column(name = "collectioninstrumentid")
   private String collectionInstrumentId;
-  
-  @Column(name = "sampleunitref")
-  private String sampleUnitRef;
 
   @Column(name = "actionplanid")
   private String actionPlanId;
