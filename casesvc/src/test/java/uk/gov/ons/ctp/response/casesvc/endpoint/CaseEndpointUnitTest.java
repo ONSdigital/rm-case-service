@@ -96,7 +96,8 @@ public final class CaseEndpointUnitTest {
   private static final String CASE1_SUBCATEGORY = "subcat 1";
   private static final String CASE2_SUBCATEGORY = "subcat 2";
   private static final String CASE3_SUBCATEGORY = "subcat 3";
-  private static final String CREATEDDATE_VALUE = createTestDate("2016-04-15T17:02:39.699+0100");
+//  private static final String CREATEDDATE_VALUE = createTestDate("2016-04-15T17:02:39.699+0100");
+  private static final String CREATEDDATE_VALUE = "2016-04-15T17:02:39.699+0100";
 
   private static final UUID EXISTING_CASE_GROUP_UUID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfeabc");
   private static final String CASE_GROUP_CE_ID = "dab9db7f-3aa0-4866-be20-54d72ee185fb";
