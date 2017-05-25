@@ -124,7 +124,7 @@ public class CaseServiceImpl implements CaseService {
 
   @Override
   public CaseNotification prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent) {
-    return new CaseNotification(caze.getCasePK(), caze.getActionPlanId(), NotificationType.valueOf(transitionEvent.name()));
+    return new CaseNotification(caze.getId().toString(), caze.getActionPlanId(), NotificationType.valueOf(transitionEvent.name()));
   }
 
   /**
