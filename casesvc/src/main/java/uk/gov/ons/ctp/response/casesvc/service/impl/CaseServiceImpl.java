@@ -404,14 +404,13 @@ public class CaseServiceImpl implements CaseService {
 		newCase.setId(UUID.randomUUID());
 		
 		//values from case group
-		newCase.setCaseGroupId(caseGroup.getId());
+
 		newCase.setCaseGroupFK(caseGroup.getCaseGroupPK());
 		newCase.setPartyId(UUID.fromString(caseGroup.getPartyId()));
 		newCase.setSampleUnitType(SampleUnitType.valueOf(caseGroup.getSampleUnitType()));
 		
 		//Values from collection exercise
 		newCase.setActionPlanId(UUID.fromString(caseData.getActionPlanId()));
-		newCase.setSampleUnitRef(caseData.getSampleUnitRef());
 		newCase.setCollectionInstrumentId(UUID.fromString(caseData.getCollectionInstrumentId()));
 		
 		//HardCoded values
