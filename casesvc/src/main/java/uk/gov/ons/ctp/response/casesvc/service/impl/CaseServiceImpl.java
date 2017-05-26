@@ -404,6 +404,7 @@ public class CaseServiceImpl implements CaseService {
 		newCase.setId(UUID.randomUUID());
 		
 		//values from case group
+		newCase.setCaseGroupId(caseGroup.getId());
 		newCase.setCaseGroupFK(caseGroup.getCaseGroupPK());
 		newCase.setPartyId(UUID.fromString(caseGroup.getPartyId()));
 		newCase.setSampleUnitType(SampleUnitType.valueOf(caseGroup.getSampleUnitType()));

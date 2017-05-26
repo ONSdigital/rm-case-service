@@ -5,8 +5,12 @@
 		"casePK": 1,
 		"state": "ACTIONABLE",
 		"sampleUnitType": "H",
+<<<<<<< HEAD
 		"sampleUnitRef": "12345678",
 		"partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
+=======
+		"partyId": 1,
+>>>>>>> 7f9f30cce4a4db2e2e42e06137b23b37bb91491a
 		"createdDateTime": 1460732606544,
 		"createdBy": "me",
 		"iac": "bbbb cccc dddd",
@@ -19,8 +23,12 @@
 		"casePK": 2,
 		"state": "INACTIONABLE",
 		"sampleUnitType": "H",
+<<<<<<< HEAD
 		"sampleUnitRef": "12345678",
 		"partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
+=======
+		"partyId": 1,
+>>>>>>> 7f9f30cce4a4db2e2e42e06137b23b37bb91491a
 		"createdDateTime": 1460732606544,
 		"createdBy": "me",
 		"iac": "cccc dddd ffff",
@@ -38,8 +46,12 @@
 		"casePK": 3,
 		"state": "ACTIONABLE",
 		"sampleUnitType": "H",
+<<<<<<< HEAD
 		"sampleUnitRef": "12345678",
 		"partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
+=======
+		"partyId": 1,
+>>>>>>> 7f9f30cce4a4db2e2e42e06137b23b37bb91491a
 		"createdDateTime": 1460732606544,
 		"createdBy": "me",
 		"iac": "dddd ffff gggg",
@@ -52,8 +64,12 @@
 		"casePK": 4,
 		"state": "INACTIONABLE",
 		"sampleUnitType": "H",
+<<<<<<< HEAD
 		"sampleUnitRef": "12345678",
 		"partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
+=======
+		"partyId": 1,
+>>>>>>> 7f9f30cce4a4db2e2e42e06137b23b37bb91491a
 		"createdDateTime": 1460732606544,
 		"createdBy": "me",
 		"iac": "ffff gggg hhhh",
@@ -71,8 +87,12 @@
 		"casePK": 5,
 		"state": "ACTIONABLE",
 		"sampleUnitType": "H",
+<<<<<<< HEAD
 		"sampleUnitRef": "12345678",
 		"partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
+=======
+		"partyId": 1,
+>>>>>>> 7f9f30cce4a4db2e2e42e06137b23b37bb91491a
 		"createdDateTime": 1460732606544,
 		"createdBy": "me",
 		"iac": "gggg hhhh jjjj",
@@ -90,8 +110,12 @@
 		"casePK": 6,
 		"state": "INACTIONABLE",
 		"sampleUnitType": "H",
+<<<<<<< HEAD
 		"sampleUnitRef": "12345678",
 		"partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
+=======
+		"partyId": 1,
+>>>>>>> 7f9f30cce4a4db2e2e42e06137b23b37bb91491a
 		"createdDateTime": 1460732606544,
 		"createdBy": "me",
 		"iac": "hhhh jjjj kkkk",
@@ -109,8 +133,12 @@
 		"casePK": 7,
 		"state": "ACTIONABLE",
 		"sampleUnitType": "H",
+<<<<<<< HEAD
 		"sampleUnitRef": "12345678",
 		"partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
+=======
+		"partyId": 1,
+>>>>>>> 7f9f30cce4a4db2e2e42e06137b23b37bb91491a
 		"createdDateTime": 1460732606544,
 		"createdBy": "me",
 		"iac": "jjjj kkkk llll",
@@ -123,8 +151,12 @@
 		"casePK": 7,
 		"state": "INACTIONABLE",
 		"sampleUnitType": "H",
+<<<<<<< HEAD
 		"sampleUnitRef": "12345678",
 		"partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
+=======
+		"partyId": 1,
+>>>>>>> 7f9f30cce4a4db2e2e42e06137b23b37bb91491a
 		"createdDateTime": 1460732606544,
 		"createdBy": "me",
 		"iac": "kkkk llll mmmm",

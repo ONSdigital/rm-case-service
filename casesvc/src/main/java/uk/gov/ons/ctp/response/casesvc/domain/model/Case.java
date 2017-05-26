@@ -62,7 +62,7 @@ public class Case implements Serializable {
   @Column(name = "casegroupfk")
   private Integer caseGroupFK;
   
-  @Column(name = "sourcecaseid")
+  @Column(name = "sourcecase")
   private Integer sourceCaseId;
 
   @Generated(GenerationTime.INSERT)
@@ -87,9 +87,6 @@ public class Case implements Serializable {
   @Column(name = "collectioninstrumentid")
   private UUID collectionInstrumentId;
   
-  @Column(name = "sampleunitref")
-  private String sampleUnitRef;
-
   @Column(name = "actionplanid")
   private UUID actionPlanId;
 
