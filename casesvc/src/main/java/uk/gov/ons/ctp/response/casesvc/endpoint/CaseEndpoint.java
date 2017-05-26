@@ -208,7 +208,7 @@ public final class CaseEndpoint implements CTPEndpoint {
     caseEventCreationRequestDTO.setCaseId(caseId);
 
     CaseEvent caseEvent = mapperFacade.map(caseEventCreationRequestDTO, CaseEvent.class);
-    Case caze = mapperFacade.map(caseEventCreationRequestDTO.getCaseCreationRequest(), Case.class);
+    Case caze = mapperFacade.map(caseEventCreationRequestDTO.getPartyId(), Case.class);
 //    if (caze != null) {
 // BRES new case id to be passed in?
 //    }

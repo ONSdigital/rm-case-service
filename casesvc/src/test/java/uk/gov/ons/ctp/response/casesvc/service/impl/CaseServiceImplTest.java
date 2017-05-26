@@ -31,8 +31,10 @@ import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.config.InternetAccessCodeSvc;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
@@ -41,7 +43,9 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
+import uk.gov.ons.ctp.response.casesvc.service.CollectionExerciseSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
+import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.iac.representation.InternetAccessCodeDTO;
 
 /**
@@ -84,22 +88,23 @@ public class CaseServiceImplTest {
   private static final int CAT_PAPER_QUESTIONNAIRE_RESPONSE = 24;
   private static final int CAT_PENDING = 25;
   private static final int CAT_REFUSAL = 26;
-  private static final int CAT_TECHNICAL_QUERY = 27;
-  private static final int CAT_TRANSLATION_ARABIC = 28;
-  private static final int CAT_TRANSLATION_BENGALI = 29;
-  private static final int CAT_TRANSLATION_CANTONESE = 30;
-  private static final int CAT_TRANSLATION_GUJARATI = 31;
-  private static final int CAT_TRANSLATION_LITHUANIAN = 32;
-  private static final int CAT_TRANSLATION_MANDARIN = 33;
-  private static final int CAT_TRANSLATION_POLISH = 34;
-  private static final int CAT_TRANSLATION_PORTUGUESE = 35;
-  private static final int CAT_TRANSLATION_PUNJABI_GURMUKHI = 36;
-  private static final int CAT_TRANSLATION_PUNJABI_SHAHMUKI = 37;
-  private static final int CAT_TRANSLATION_SOMALI = 38;
-  private static final int CAT_TRANSLATION_SPANISH = 39;
-  private static final int CAT_TRANSLATION_TURKISH = 40;
-  private static final int CAT_TRANSLATION_URDU = 41;
-  private static final int CAT_UNDELIVERABLE = 42;
+  private static final int CAT_RESPONDENT_ENROLLED = 27;
+  private static final int CAT_TECHNICAL_QUERY = 28;
+  private static final int CAT_TRANSLATION_ARABIC = 29;
+  private static final int CAT_TRANSLATION_BENGALI = 30;
+  private static final int CAT_TRANSLATION_CANTONESE = 31;
+  private static final int CAT_TRANSLATION_GUJARATI = 32;
+  private static final int CAT_TRANSLATION_LITHUANIAN = 33;
+  private static final int CAT_TRANSLATION_MANDARIN = 34;
+  private static final int CAT_TRANSLATION_POLISH = 35;
+  private static final int CAT_TRANSLATION_PORTUGUESE = 36;
+  private static final int CAT_TRANSLATION_PUNJABI_GURMUKHI = 37;
+  private static final int CAT_TRANSLATION_PUNJABI_SHAHMUKI = 38;
+  private static final int CAT_TRANSLATION_SOMALI = 39;
+  private static final int CAT_TRANSLATION_SPANISH = 40;
+  private static final int CAT_TRANSLATION_TURKISH = 41;
+  private static final int CAT_TRANSLATION_URDU = 42;
+  private static final int CAT_UNDELIVERABLE = 43;
 
   
   private static final UUID CASE1_ID = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd1");
@@ -112,8 +117,12 @@ public class CaseServiceImplTest {
   private static final Integer ACTIONABLE_H_INDIVIDUAL_CASE_ID = 3;
   private static final Integer INACTIONABLE_H_INDIVIDUAL_CASE_ID = 4;
   private static final Integer NEW_H_INDIVIDUAL_CASE_ID = 7;
+  private static final Integer ENROLLMENT_CASE_INDIVIDUAL_FK = 9;
+  private static final Integer ENROLLMENT_CASE_FK = 10;
 
   private static final Integer NON_EXISTING_PARENT_CASE_ID = 1;
+  
+  private static final Integer CASEGROUP_PK = 1;
 
   private static final String CASEEVENT_CREATEDBY = "unit test";
   private static final String CASEEVENT_DESCRIPTION = "a desc";
@@ -127,6 +136,9 @@ public class CaseServiceImplTest {
 
   @Mock
   private CategoryRepository categoryRepo;
+  
+  @Mock
+  private CaseGroupRepository caseGroupRepo;
 
   @Mock
   private AppConfig appConfig;
@@ -136,6 +148,9 @@ public class CaseServiceImplTest {
 
   @Mock
   private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
+  
+  @Mock
+  private CollectionExerciseSvcClientService collectionExerciseSvcClientService;
 
   @Mock
   private ActionSvcClientService actionSvcClientService;
@@ -157,9 +172,11 @@ public class CaseServiceImplTest {
     mockStateTransitions();
     mockupCaseRepo();
     mockupCategoryRepo();
+    mockupCaseGroupRepo();
     mockAppConfigUse();
     mockupCaseEventRepo();
     mockupIacServiceClient();
+    mockupCollectionExerciseServiceClient();
   }
 
   /**
@@ -406,10 +423,30 @@ public class CaseServiceImplTest {
     		ACTIONABLE_HOUSEHOLD_CASE_FK);
     Case oldCase = caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
     Case newCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_ID);
+//    caseService.createCaseEvent(caseEvent, newCase);
+//    // one of the caseRepo calls is the test loading indCase
+//    verify(caseRepo, times(2)).findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
+//    verify(categoryRepo).findOne(CategoryDTO.CategoryType.H_INDIVIDUAL_RESPONSE_REQUESTED);
+//    verify(caseRepo, times(1)).saveAndFlush(any(Case.class));
+//    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(oldCase.getIac());
+//    // action service should be told of case state change
+//    verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
+//    // no new action to be created
+//    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+//        any(String.class));
+//    verify(caseEventRepository, times(1)).save(caseEvent);
+  }
+  
+  @Test
+  public void testBlueSkyEnrollment() throws Exception {
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryType.RESPONDENT_ENROLLED,
+        ENROLLMENT_CASE_FK);
+    Case oldCase = caseRepo.findOne(ENROLLMENT_CASE_FK);
+    Case newCase = caseRepo.findOne(ENROLLMENT_CASE_INDIVIDUAL_FK);
     caseService.createCaseEvent(caseEvent, newCase);
     // one of the caseRepo calls is the test loading indCase
-    verify(caseRepo, times(2)).findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryType.H_INDIVIDUAL_RESPONSE_REQUESTED);
+    verify(caseRepo, times(2)).findOne(ENROLLMENT_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryType.RESPONDENT_ENROLLED);
     verify(caseRepo, times(1)).saveAndFlush(any(Case.class));
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(oldCase.getIac());
     // action service should be told of case state change
@@ -587,10 +624,29 @@ public class CaseServiceImplTest {
         .thenReturn(cases.get(NEW_HOUSEHOLD_CASE_ID - 1));
     Mockito.when(caseRepo.findOne(NEW_H_INDIVIDUAL_CASE_ID))
         .thenReturn(cases.get(NEW_H_INDIVIDUAL_CASE_ID - 1));
+    Mockito.when(caseRepo.findOne(ENROLLMENT_CASE_FK))
+        .thenReturn(cases.get(ENROLLMENT_CASE_FK - 1));
+    Mockito.when(caseRepo.findOne(ENROLLMENT_CASE_INDIVIDUAL_FK))
+        .thenReturn(cases.get(ENROLLMENT_CASE_INDIVIDUAL_FK - 1));
 
     Mockito.when(caseRepo.saveAndFlush(any(Case.class)))
         .thenReturn(cases.get(ACTIONABLE_HOUSEHOLD_CASE_FK - 1));
     return cases;
+  }
+  
+  /**
+   * mock loading caseGroup data
+   *
+   * @return list of mock caseGroups
+   * @throws Exception oops
+   */
+  private List<CaseGroup> mockupCaseGroupRepo() throws Exception {
+    List<CaseGroup> caseGroups = FixtureHelper.loadClassFixtures(CaseGroup[].class);
+
+    Mockito.when(caseGroupRepo.findOne(CASEGROUP_PK))
+        .thenReturn(caseGroups.get(CASEGROUP_PK - 1));
+
+    return caseGroups;
   }
 
   /**
@@ -686,6 +742,8 @@ public class CaseServiceImplTest {
         .thenReturn(categories.get(CAT_HOUSEHOLD_REPLACEMENT_IAC_REQUESTED));
     Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.HOUSEHOLD_PAPER_REQUESTED))
         .thenReturn(categories.get(CAT_HOUSEHOLD_PAPER_REQUESTED));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.RESPONDENT_ENROLLED))
+        .thenReturn(categories.get(CAT_RESPONDENT_ENROLLED));
 
     return categories;
   }
@@ -749,6 +807,20 @@ public class CaseServiceImplTest {
     Mockito.when(internetAccessCodeSvcClientService.disableIAC(any(String.class))).thenAnswer(new Answer<InternetAccessCodeDTO>() {
       public InternetAccessCodeDTO answer(InvocationOnMock invocation) {
         return iacDTOs.get(0);
+      }
+    });
+  }
+  
+  /**
+   * mock the collection exercise service
+   * 
+   * @throws Exception
+   */
+  private void mockupCollectionExerciseServiceClient() throws Exception {
+    List<CollectionExerciseDTO> collectionExerciseDTOs = FixtureHelper.loadClassFixtures(CollectionExerciseDTO[].class);
+    Mockito.when(collectionExerciseSvcClientService.getCollectionExercise(any())).thenAnswer(new Answer<CollectionExerciseDTO>() {
+      public CollectionExerciseDTO answer(InvocationOnMock invocation) {
+        return collectionExerciseDTOs.get(0);
       }
     });
   }

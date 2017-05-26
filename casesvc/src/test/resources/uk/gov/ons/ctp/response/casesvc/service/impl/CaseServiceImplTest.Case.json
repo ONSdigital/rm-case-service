@@ -1,6 +1,7 @@
 [
 	{
 		"casePK": 1,
+		"caseGroupFK":1,
 		"state": "ACTIONABLE",
 		"sampleUnitType": "H",
 		"partyId": 1,
@@ -12,6 +13,7 @@
 	},
 	{
 		"casePK": 2,
+		"caseGroupFK":1,
 		"state": "INACTIONABLE",
 		"sampleUnitType": "H",
 		"partyId": 1,
@@ -28,6 +30,7 @@
 	},
 	{
 		"casePK": 3,
+		"caseGroupFK":1,
 		"state": "ACTIONABLE",
 		"sampleUnitType": "H",
 		"partyId": 1,
@@ -39,6 +42,7 @@
 	},
 	{
 		"casePK": 4,
+		"caseGroupFK":1,
 		"state": "INACTIONABLE",
 		"sampleUnitType": "H",
 		"partyId": 1,
@@ -55,6 +59,7 @@
 	},
 	{
 		"casePK": 5,
+		"caseGroupFK":1,
 		"state": "ACTIONABLE",
 		"sampleUnitType": "H",
 		"partyId": 1,
@@ -71,6 +76,7 @@
 	},
 	{
 		"casePK": 6,
+		"caseGroupFK": 1,
 		"state": "INACTIONABLE",
 		"sampleUnitType": "H",
 		"partyId": 1,
@@ -87,6 +93,7 @@
 	},
 	{
 		"casePK": 7,
+		"caseGroupFK":1,
 		"state": "ACTIONABLE",
 		"sampleUnitType": "H",
 		"partyId": 1,
@@ -97,7 +104,8 @@
 		"responses": []
 	},
 	{
-		"casePK": 7,
+		"casePK": 8,
+		"caseGroupFK":1,
 		"state": "INACTIONABLE",
 		"sampleUnitType": "H",
 		"partyId": 1,
@@ -111,5 +119,22 @@
 				"inboundChannel": "ONLINE"
 			}
 		]
+	},
+		{
+		"casePK": 9,
+		"partyId": 1,
+		"responses": []
+	},
+	{
+		"casePK": 10,
+		"caseGroupFK":1,
+		"state": "INACTIONABLE",
+		"sampleUnitType": "B",
+		"partyId": 1,
+		"createdDateTime": 1460732606544,
+		"createdBy": "me",
+		"iac": "kkkk llll mmmm",
+		"actionPlanId": 4,
+		"responses": []
 	}
 ]
