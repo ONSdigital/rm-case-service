@@ -82,16 +82,16 @@ public class Case implements Serializable {
   private SampleUnitDTO.SampleUnitType sampleUnitType;
 
   @Column(name = "partyid")
-  private String partyId;
+  private UUID partyId;
 
   @Column(name = "collectioninstrumentid")
-  private String collectionInstrumentId;
+  private UUID collectionInstrumentId;
   
   @Column(name = "sampleunitref")
   private String sampleUnitRef;
 
   @Column(name = "actionplanid")
-  private String actionPlanId;
+  private UUID actionPlanId;
 
   @Column(name = "createddatetime")
   private Timestamp createdDateTime;

@@ -124,7 +124,7 @@ public class CaseServiceImpl implements CaseService {
 
   @Override
   public CaseNotification prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent) {
-    return new CaseNotification(caze.getId().toString(), caze.getActionPlanId(), NotificationType.valueOf(transitionEvent.name()));
+    return new CaseNotification(caze.getId().toString(), caze.getActionPlanId().toString(), NotificationType.valueOf(transitionEvent.name()));
   }
 
   /**
@@ -405,13 +405,13 @@ public class CaseServiceImpl implements CaseService {
 		
 		//values from case group
 		newCase.setCaseGroupFK(caseGroup.getCaseGroupPK());
-		newCase.setPartyId(caseGroup.getPartyId());
+		newCase.setPartyId(UUID.fromString(caseGroup.getPartyId()));
 		newCase.setSampleUnitType(SampleUnitType.valueOf(caseGroup.getSampleUnitType()));
 		
 		//Values from collection exercise
-		newCase.setActionPlanId(caseData.getActionPlanId());
+		newCase.setActionPlanId(UUID.fromString(caseData.getActionPlanId()));
 		newCase.setSampleUnitRef(caseData.getSampleUnitRef());
-		newCase.setCollectionInstrumentId(caseData.getCollectionInstrumentId());
+		newCase.setCollectionInstrumentId(UUID.fromString(caseData.getCollectionInstrumentId()));
 		
 		//HardCoded values
 		newCase.setState(CaseState.SAMPLED_INIT);
