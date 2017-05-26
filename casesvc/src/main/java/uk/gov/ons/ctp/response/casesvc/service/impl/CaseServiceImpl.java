@@ -388,8 +388,8 @@ public class CaseServiceImpl implements CaseService {
 	   CaseGroup newCaseGroup = new CaseGroup();
 
 	   newCaseGroup.setId(UUID.randomUUID());
-	   newCaseGroup.setPartyId(String.valueOf(caseGroupData.getPartyId()));
-	   newCaseGroup.setCollectionExerciseId(caseGroupData.getCollectionExerciseId());
+	   newCaseGroup.setPartyId(UUID.fromString(caseGroupData.getPartyId()));
+	   newCaseGroup.setCollectionExerciseId(UUID.fromString(caseGroupData.getCollectionExerciseId()));
 
 	   newCaseGroup.setSampleUnitRef(caseGroupData.getSampleUnitRef());
 	   newCaseGroup.setSampleUnitType(caseGroupData.getSampleUnitType());
@@ -406,7 +406,7 @@ public class CaseServiceImpl implements CaseService {
 		//values from case group
 
 		newCase.setCaseGroupFK(caseGroup.getCaseGroupPK());
-		newCase.setPartyId(UUID.fromString(caseGroup.getPartyId()));
+		newCase.setPartyId(caseGroup.getPartyId());
 		newCase.setSampleUnitType(SampleUnitType.valueOf(caseGroup.getSampleUnitType()));
 		
 		//Values from collection exercise

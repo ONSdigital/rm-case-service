@@ -100,8 +100,8 @@ public final class CaseEndpointUnitTest {
 
 
   private static final UUID EXISTING_CASE_GROUP_UUID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfeabc");
-  private static final String CASE_GROUP_CE_ID = "dab9db7f-3aa0-4866-be20-54d72ee185fb";
-  private static final String CASE_GROUP_PARTY_ID = "3b136c4b-7a14-4904-9e01-13364dd7b972";
+  private static final UUID CASE_GROUP_CE_ID = UUID.fromString("dab9db7f-3aa0-4866-be20-54d72ee185fb");
+  private static final UUID CASE_GROUP_PARTY_ID = UUID.fromString("3b136c4b-7a14-4904-9e01-13364dd7b972");
   private static final String CASE_GROUP_SU_REF = "0123456789";
   private static final String CASE_GROUP_SU_TYPE = "B";
 
