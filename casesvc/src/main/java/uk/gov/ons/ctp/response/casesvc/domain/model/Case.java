@@ -59,9 +59,6 @@ public class Case implements Serializable {
   @Column(name = "optlockversion")
   private int optLockVersion;
 
-  @Column(name = "casegroupid")
-  private UUID caseGroupId;
-  
   @Column(name = "casegroupfk")
   private Integer caseGroupFK;
   
@@ -85,13 +82,13 @@ public class Case implements Serializable {
   private SampleUnitDTO.SampleUnitType sampleUnitType;
 
   @Column(name = "partyid")
-  private String partyId;
+  private UUID partyId;
 
   @Column(name = "collectioninstrumentid")
-  private String collectionInstrumentId;
-
+  private UUID collectionInstrumentId;
+  
   @Column(name = "actionplanid")
-  private String actionPlanId;
+  private UUID actionPlanId;
 
   @Column(name = "createddatetime")
   private Timestamp createdDateTime;

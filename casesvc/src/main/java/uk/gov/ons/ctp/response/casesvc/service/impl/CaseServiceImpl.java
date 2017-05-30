@@ -39,7 +39,6 @@ import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientServic
 import uk.gov.ons.ctp.response.casesvc.utility.Constants;
 import uk.gov.ons.ctp.response.collection.exercise.representation.CaseTypeDTO;
 import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
-import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
 import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO.SampleUnitType;
 
 /**
@@ -418,40 +417,41 @@ public class CaseServiceImpl implements CaseService {
   }
 
   private CaseGroup createNewCaseGroup(CaseCreation caseGroupData) {
-    CaseGroup newCaseGroup = new CaseGroup();
 
-    newCaseGroup.setId(UUID.randomUUID());
-    newCaseGroup.setPartyId(String.valueOf(caseGroupData.getPartyId()));
-    newCaseGroup.setCollectionExerciseId(caseGroupData.getCollectionExerciseId());
+	   CaseGroup newCaseGroup = new CaseGroup();
 
-    newCaseGroup.setSampleUnitRef(caseGroupData.getSampleUnitRef());
-    newCaseGroup.setSampleUnitType(caseGroupData.getSampleUnitType());
+	   newCaseGroup.setId(UUID.randomUUID());
+	   newCaseGroup.setPartyId(UUID.fromString(caseGroupData.getPartyId()));
+	   newCaseGroup.setCollectionExerciseId(UUID.fromString(caseGroupData.getCollectionExerciseId()));
 
-    caseGroupRepo.saveAndFlush(newCaseGroup);
-    log.info("SetCaseGroupData");
-    return newCaseGroup;
+	   newCaseGroup.setSampleUnitRef(caseGroupData.getSampleUnitRef());
+	   newCaseGroup.setSampleUnitType(caseGroupData.getSampleUnitType());
+	   
+	   caseGroupRepo.saveAndFlush(newCaseGroup);
+	   log.info("SetCaseGroupData");
+	   return newCaseGroup;
   }
 
   private void createNewCase(CaseCreation caseData, CaseGroup caseGroup) {
-    Case newCase = new Case();
-    newCase.setId(UUID.randomUUID());
+		Case newCase = new Case();
+		newCase.setId(UUID.randomUUID());
+		
+		//values from case group
 
-    // values from case group
-    newCase.setCaseGroupId(caseGroup.getId());
-    newCase.setCaseGroupFK(caseGroup.getCaseGroupPK());
-    newCase.setPartyId(caseGroup.getPartyId());
-    newCase.setSampleUnitType(SampleUnitType.valueOf(caseGroup.getSampleUnitType()));
-
-    // Values from collection exercise
-    newCase.setActionPlanId(caseData.getActionPlanId());
-    newCase.setCollectionInstrumentId(caseData.getCollectionInstrumentId());
-
-    // HardCoded values
-    newCase.setState(CaseState.SAMPLED_INIT);
-    newCase.setCreatedDateTime(DateTimeUtil.nowUTC());
-    newCase.setCreatedBy(Constants.SYSTEM);
-
-    caseRepo.saveAndFlush(newCase);
-    log.info("SetCaseData");
+		newCase.setCaseGroupFK(caseGroup.getCaseGroupPK());
+		newCase.setPartyId(caseGroup.getPartyId());
+		newCase.setSampleUnitType(SampleUnitType.valueOf(caseGroup.getSampleUnitType()));
+		
+		//Values from collection exercise
+		newCase.setActionPlanId(UUID.fromString(caseData.getActionPlanId()));
+		newCase.setCollectionInstrumentId(UUID.fromString(caseData.getCollectionInstrumentId()));
+		
+		//HardCoded values
+		newCase.setState(CaseState.SAMPLED_INIT);
+		newCase.setCreatedDateTime(DateTimeUtil.nowUTC());
+		newCase.setCreatedBy(Constants.SYSTEM);
+		
+		caseRepo.saveAndFlush(newCase);
+		log.info("SetCaseData");
   }
 }

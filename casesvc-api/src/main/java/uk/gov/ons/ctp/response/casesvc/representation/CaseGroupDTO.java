@@ -1,6 +1,8 @@
 package uk.gov.ons.ctp.response.casesvc.representation;
 
 
+import java.util.UUID;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,9 +15,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class CaseGroupDTO {
-  private String collectionExerciseId;
-  private String id;
-  private String partyId;
+  private UUID collectionExerciseId;
+  private UUID id;
+  private UUID partyId;
   private String sampleUnitRef;
   private String sampleUnitType;
 }

@@ -75,7 +75,7 @@ public final class CaseEndpoint implements CTPEndpoint {
                                   @RequestParam(value = "caseevents", required = false) boolean caseevents)
           throws CTPException {
 	  
-	UUID caseId = UUID.fromString(id);
+    UUID caseId = UUID.fromString(id);
     log.info("Entering findCaseByCasePK with {}", caseId);
     Case caseObj = caseService.findCaseById(caseId);
     if (caseObj == null) {
@@ -162,23 +162,18 @@ public final class CaseEndpoint implements CTPEndpoint {
   @RequestMapping(value = "/{caseId}/events", method = RequestMethod.GET)
   public ResponseEntity<?> findCaseEventsByCaseId(@PathVariable("caseId") final UUID caseId) throws CTPException {
     
-	log.info("Entering findCaseByCaseId with {}", caseId);
-	Case caseX = caseService.findCaseById(caseId);
+    log.info("Entering findCaseByCaseId with {}", caseId);
+    Case caze = caseService.findCaseById(caseId);
 	
-    if (caseX == null) {
+    if (caze == null) {
         throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
             String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseId.toString()));
       }
 	
-	Integer casePK = caseX.getCasePK();
+    Integer casePK = caze.getCasePK();
 	
-	log.info("Entering findCaseEventsByCaseId with {}", casePK);
-    Case caseObj = caseService.findCaseByCasePK(casePK);
-
-    if (caseObj == null) {
-      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-          String.format("%s case id %s", ERRORMSG_CASENOTFOUND, casePK));
-    }
+    log.info("Entering findCaseEventsByCaseId with {}", casePK);
+ 
     List<CaseEvent> caseEvents = caseService.findCaseEventsByCaseFK(casePK);
     List<CaseEventDTO> caseEventDTOs = mapperFacade.mapAsList(caseEvents, CaseEventDTO.class);
     return CollectionUtils.isEmpty(caseEventDTOs) ?
@@ -227,5 +222,6 @@ public final class CaseEndpoint implements CTPEndpoint {
     // TODO Define URI
     return ResponseEntity.created(URI.create("TODO")).body(mapperFacade.map(createdCaseEvent, CaseEventDTO.class));
   }
+
 
 }

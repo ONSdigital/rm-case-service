@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,7 @@ public class CollectionExerciseSvcClientServiceImpl implements CollectionExercis
 
 
   @Override
-  public CollectionExerciseDTO getCollectionExercise(String collectionExerciseId) {
+  public CollectionExerciseDTO getCollectionExercise(UUID collectionExerciseId) {
     CollectionExerciseDTO collectionExerciseDTO = collectionExerciseServiceClient.getResource(appConfig.getCollectionExerciseSvc().getCollectionExercisePath(),
         CollectionExerciseDTO.class, collectionExerciseId);
     return collectionExerciseDTO;
