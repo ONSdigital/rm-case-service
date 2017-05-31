@@ -1,10 +1,10 @@
 The test data to use for this version of the scheme can be found here :
-http://192.168.11.11:8001/chef/scripts/postgresql/9.28.0/
+http://filestore.rmdev.onsdigital.uk/chef/scripts/postgresql/9.28.0/
 
 
 To maintain this data :
-ssh centos@192.168.11.11
-cd /srv/filestore/chef/scripts/postgresql/9.28.0
+ssh into artifactory server - files are held on mounted ebs volume
+cd /data/nginx/html/chef/scripts/postgresql/9.28.0
 
 If you add a new file/directory to the filestore don't forget to set the group and ownership to be apache and also execute :
 
