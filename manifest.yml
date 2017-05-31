@@ -2,9 +2,14 @@ applications:
 - name: casesvc
   buildpack: https://github.com/cloudfoundry/java-buildpack.git
   instances: 1
+  host: casesvc
   memory: 1024M
-  path: casesvc/target/casesvc-10.38.0-SNAPSHOT.jar
+  path: casesvc/target/casesvc.jar
   services:
     - casesvc_pg_db
     - redis
     - rabbitmq
+  env:
+    internetAccessCodeSvc_connectionConfig_host: iacsvc.apps.mvp.onsclofo.uk
+    internetAccessCodeSvc_connectionConfig_port: "443"
+    internetAccessCodeSvc_connectionConfig_scheme: https
