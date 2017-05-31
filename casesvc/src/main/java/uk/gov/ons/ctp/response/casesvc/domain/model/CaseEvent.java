@@ -2,6 +2,7 @@ package uk.gov.ons.ctp.response.casesvc.domain.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -43,6 +44,9 @@ public class CaseEvent implements Serializable {
 
   @Column(name = "casefk")
   private Integer caseFK;
+  
+  @Column(name = "partyid")
+  private UUID partyId;
 
   private String description;
 

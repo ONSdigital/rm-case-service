@@ -28,6 +28,8 @@ public class CaseEventDTO {
   private UUID caseEventId;
 
   private UUID caseId;
+  
+  private UUID partyId;
 
   @NotNull
   private CategoryDTO.CategoryType category;
