@@ -62,6 +62,9 @@ public class Case implements Serializable {
   @Column(name = "casegroupfk")
   private Integer caseGroupFK;
   
+  @Column(name = "casegroupid")
+  private UUID caseGroupId;
+  
   @Column(name = "sourcecase")
   private Integer sourceCaseId;
 
@@ -86,7 +89,7 @@ public class Case implements Serializable {
 
   @Column(name = "collectioninstrumentid")
   private UUID collectionInstrumentId;
-  
+
   @Column(name = "actionplanid")
   private UUID actionPlanId;
 
@@ -96,7 +99,7 @@ public class Case implements Serializable {
   @Column(name = "createdby")
   private String createdBy;
 
-  @OneToMany(mappedBy = "casePK", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "caseFK", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   private List<Response> responses;
 
   private String iac;

@@ -1,10 +1,13 @@
 package uk.gov.ons.ctp.response.casesvc;
 
+import java.util.UUID;
+
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -25,7 +28,9 @@ import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
+import uk.gov.ons.ctp.response.casesvc.definition.CaseCreation;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+import uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl;
 import uk.gov.ons.ctp.response.casesvc.state.CaseSvcStateTransitionManagerFactory;
 
 /**
@@ -46,8 +51,10 @@ public class CaseSvcApplication {
   @Autowired
   private AppConfig appConfig;
 
+  
   @Autowired
   private StateTransitionManagerFactory caseSvcStateTransitionManagerFactory;
+
 
   /**
    * Bean to allow application to make controlled state transitions of Actions
@@ -108,6 +115,8 @@ public class CaseSvcApplication {
     return restHelper;
   }
 
+
+
   @Bean
   public RestExceptionHandler restExceptionHandler() {
     return new RestExceptionHandler();
@@ -118,7 +127,7 @@ public class CaseSvcApplication {
   public CustomObjectMapper CustomObjectMapper() {
     return new CustomObjectMapper();
   }
-
+  
   /**
    * The main entry point for this applicaion.
    *
