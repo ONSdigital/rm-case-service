@@ -96,11 +96,12 @@ public final class CaseEndpointUnitTest {
   private static final String CASE1_SUBCATEGORY = "subcat 1";
   private static final String CASE2_SUBCATEGORY = "subcat 2";
   private static final String CASE3_SUBCATEGORY = "subcat 3";
-  private static final String CREATEDDATE_VALUE = "2016-04-15T17:02:39.699+0100";
+  private static final String CREATEDDATE_VALUE = createTestDate("2016-04-15T17:02:39.699+0100");
+
 
   private static final UUID EXISTING_CASE_GROUP_UUID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfeabc");
-  private static final String CASE_GROUP_CE_ID = "dab9db7f-3aa0-4866-be20-54d72ee185fb";
-  private static final String CASE_GROUP_PARTY_ID = "3b136c4b-7a14-4904-9e01-13364dd7b972";
+  private static final UUID CASE_GROUP_CE_ID = UUID.fromString("dab9db7f-3aa0-4866-be20-54d72ee185fb");
+  private static final UUID CASE_GROUP_PARTY_ID = UUID.fromString("3b136c4b-7a14-4904-9e01-13364dd7b972");
   private static final String CASE_GROUP_SU_REF = "0123456789";
   private static final String CASE_GROUP_SU_TYPE = "B";
 
@@ -164,8 +165,8 @@ public final class CaseEndpointUnitTest {
   public void findCasesByCaseGroup() throws Exception {
     CaseGroup result = CaseGroup.builder().id(EXISTING_CASE_GROUP_UUID)
             .caseGroupPK(EXISTING_CASE_GROUP_PK)
-            .collectionExerciseId(UUID.fromString(CASE_GROUP_CE_ID))
-            .partyId(UUID.fromString(CASE_GROUP_PARTY_ID))
+            .collectionExerciseId(CASE_GROUP_CE_ID)
+            .partyId(CASE_GROUP_PARTY_ID)
             .sampleUnitRef(CASE_GROUP_SU_REF)
             .sampleUnitType(CASE_GROUP_SU_TYPE).build();
     when(caseGroupService.findCaseGroupById(EXISTING_CASE_GROUP_UUID)).thenReturn(result);
@@ -285,7 +286,6 @@ public final class CaseEndpointUnitTest {
     when(caseService.findCaseById(EXISTING_CASE_ID_NO_EVENTS)).thenReturn(caseResults.get(0));
     when(caseService.findCaseEventsByCaseFK(EXISTING_CASE_PK_NO_EVENTS)).thenReturn(new ArrayList<>());
 
-
     ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s/events", EXISTING_CASE_ID_NO_EVENTS)));
 
     actions.andExpect(status().isNoContent());
@@ -303,9 +303,9 @@ public final class CaseEndpointUnitTest {
 
     actions.andExpect(status().isNotFound());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
-    actions.andExpect(handler().methodName("findCaseEventsByCaseFK"));
+    actions.andExpect(handler().methodName("findCaseEventsByCaseId"));
     actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
-    actions.andExpect(jsonPath("$.error.message", is(String.format("%s case id %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_CASE_ID))));
+    actions.andExpect(jsonPath("$.error.message", is(String.format("%s case id %s", ERRORMSG_CASENOTFOUND, EXISTING_CASE_ID_NO_EVENTS))));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
@@ -371,10 +371,11 @@ public final class CaseEndpointUnitTest {
   private static String createTestDate(String date){
     String zoneId = Calendar.getInstance().getTimeZone().getID();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-    ZonedDateTime zdt = ZonedDateTime.parse(CREATEDDATE_VALUE, formatter);
+    ZonedDateTime zdt = ZonedDateTime.parse(date, formatter);
     LocalDateTime ldt = zdt.toLocalDateTime();
     ZonedDateTime compareDate = ldt.atZone(ZoneId.of(zoneId));
-    return compareDate.toString();
+    return formatter.format(compareDate);
+    //return compareDate.toString();
     
   }
 }

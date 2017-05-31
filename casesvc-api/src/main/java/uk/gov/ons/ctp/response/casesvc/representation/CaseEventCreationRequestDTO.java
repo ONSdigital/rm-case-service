@@ -40,5 +40,5 @@ public class CaseEventCreationRequestDTO {
   @NotNull @Size(min = DESC_MIN, max = DESC_MAX)
   private String description;
   
-  private CaseCreationRequestDTO caseCreationRequest;
+  private UUID partyId;
 }

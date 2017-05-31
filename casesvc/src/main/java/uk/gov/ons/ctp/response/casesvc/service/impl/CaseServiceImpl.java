@@ -124,7 +124,8 @@ public class CaseServiceImpl implements CaseService {
 
   @Override
   public CaseNotification prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent) {
-    return new CaseNotification(caze.getId().toString(), caze.getActionPlanId().toString(), NotificationType.valueOf(transitionEvent.name()));
+    return new CaseNotification(caze.getId().toString(), caze.getActionPlanId().toString(),
+     NotificationType.valueOf(transitionEvent.name()));
   }
 
   /**
@@ -198,7 +199,8 @@ public class CaseServiceImpl implements CaseService {
       checkSampleUnitTypesMatch(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, targetCase.getSampleUnitType().name(),
               category.getOldCaseSampleUnitType());
 
-      // TODO Validate the new sample unit type: call to the PartySvc to verify our partyId's sample unit type
+      // TODO Validate the new sample unit type: call to the PartySvc to verify
+      // our partyId's sample unit type
       // TODO matches the category's new sample unit type.
     }
   }
@@ -382,7 +384,6 @@ public class CaseServiceImpl implements CaseService {
   public void createInitialCase(CaseCreation caseData) {
 	  
 	  CaseGroup newCaseGroup = createNewCaseGroup(caseData);
-	  
 	  createNewCase(caseData,newCaseGroup);
   }
   

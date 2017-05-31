@@ -103,6 +103,19 @@ public class CaseSvcApplication {
     RestClient restHelper = new RestClient(appConfig.getActionSvc().getConnectionConfig());
     return restHelper;
   }
+  
+  /**
+   * The collectionExercise service client bean
+   * @return the RestClient for the collectionExercise service
+   */
+  @Bean
+  @Qualifier("collectionExerciseSvcClient")
+  public RestClient collectionExerciseServiceClient() {
+    RestClient restHelper = new RestClient(appConfig.getCollectionExerciseSvc().getConnectionConfig());
+    return restHelper;
+  }
+
+
 
   @Bean
   public RestExceptionHandler restExceptionHandler() {

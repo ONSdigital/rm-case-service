@@ -215,8 +215,8 @@
     "shortDescription": "Individual Paper Requested",
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
-    "newCaseSampleUnitType": "I",
-    "oldCaseSampleUnitType": "I",
+    "newCaseSampleUnitType": "HI",
+    "oldCaseSampleUnitType": "HI",
     "eventType": "DEACTIVATED"
   },
   {
@@ -226,8 +226,8 @@
     "shortDescription": "Individual Replacement IAC Requested",
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
-    "newCaseSampleUnitType": "I",
-    "oldCaseSampleUnitType": "I",
+    "newCaseSampleUnitType": "HI",
+    "oldCaseSampleUnitType": "HI",
     "eventType": "DISABLED"
   },
   {
@@ -237,7 +237,7 @@
     "shortDescription": "Individual Response Requested",
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
-    "newCaseSampleUnitType": "I",
+    "newCaseSampleUnitType": "HI",
     "oldCaseSampleUnitType": "H",
     "eventType": null
   },
@@ -295,6 +295,18 @@
     "newCaseSampleUnitType": null,
     "oldCaseSampleUnitType": null,
     "eventType": "DEACTIVATED"
+  },
+  {
+    "group": null,
+    "categoryType": "RESPONDENT_ENROLLED",
+    "longDescription": "Respondent Enrolled",
+    "shortDescription": "Respondent Enrolled",
+    "role": null,
+    "generatedActionType": null,
+    "newCaseSampleUnitType": "BI",
+    "oldCaseSampleUnitType": "B",
+    "eventType": "DEACTIVATED",
+    "recalcCollectionInstrument": false
   },
   {
     "group": "general",

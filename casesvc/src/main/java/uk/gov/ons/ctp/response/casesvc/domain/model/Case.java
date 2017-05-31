@@ -59,11 +59,11 @@ public class Case implements Serializable {
   @Column(name = "optlockversion")
   private int optLockVersion;
 
-  @Column(name = "casegroupid")
-  private UUID caseGroupId;
-  
   @Column(name = "casegroupfk")
   private Integer caseGroupFK;
+  
+  @Column(name = "casegroupid")
+  private UUID caseGroupId;
   
   @Column(name = "sourcecase")
   private Integer sourceCaseId;

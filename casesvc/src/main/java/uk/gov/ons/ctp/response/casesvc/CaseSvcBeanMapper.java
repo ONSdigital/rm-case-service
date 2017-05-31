@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc;
 
+import java.util.UUID;
+
 import org.springframework.stereotype.Component;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.ConfigurableMapper;
@@ -53,5 +55,6 @@ public class CaseSvcBeanMapper extends ConfigurableMapper {
         .classMap(Response.class, ResponseDTO.class)
         .byDefault()
         .register();
+
   }
 }
