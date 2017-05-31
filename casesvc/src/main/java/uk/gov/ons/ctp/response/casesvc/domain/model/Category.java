@@ -56,4 +56,7 @@ public class Category implements Serializable {
 
   @Column(name = "generatedactiontype")
   private String generatedActionType;
+  
+  @Column(name = "recalccollectioninstrument")
+  private Boolean recalcCollectionInstrument;
 }

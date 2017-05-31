@@ -73,20 +73,19 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <bindingDirectory>src/main/resources/xsd</bindingDirectory>
+              <bindingDirectory>src/main/resources/xsd/inbound</bindingDirectory>
               <bindingIncludes>
-                <include>caseCreation.xjb</include>
+                <include>caseReceipt.xjb</include>
               </bindingIncludes>
               <bindingExcludes>
-                <include>caseNotification.xjb</include>
-                <include>caseReceipt.xjb</include>
+                <include>caseCreation.xjb</include>
               </bindingExcludes>
               
-              <schemaDirectory>src/main/resources/xsd</schemaDirectory>
+              <schemaDirectory>src/main/resources/xsd/inbound</schemaDirectory>
               <schemaIncludes>
-                <include>caseCreation.xsd</include>
+                <include>caseReceipt.xsd</include>
               </schemaIncludes>
-              <generateDirectory>${project.build.directory}/generated-sources/xjc/creation</generateDirectory>
+              <generateDirectory>${project.build.directory}/generated-sources/xjc/inbound/receipt</generateDirectory>
               <args>
                 <arg>-Xvalue-constructor</arg>
                 <arg>-Xfluent-builder</arg>
@@ -114,19 +113,18 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <bindingDirectory>src/main/resources/xsd</bindingDirectory>
+              <bindingDirectory>src/main/resources/xsd/inbound</bindingDirectory>
               <bindingIncludes>
-                <include>caseReceipt.xjb</include>
+                <include>caseCreation.xjb</include>
               </bindingIncludes>
               <bindingExcludes>
-                <include>caseNotification.xjb</include>
-                <include>caseCreation.xjb</include>
+                <include>caseReceipt.xjb</include>
               </bindingExcludes>
-              <schemaDirectory>src/main/resources/xsd</schemaDirectory>
+              <schemaDirectory>src/main/resources/xsd/inbound</schemaDirectory>
               <schemaIncludes>
-                <include>caseReceipt.xsd</include>
+                <include>caseCreation.xsd</include>
               </schemaIncludes>
-              <generateDirectory>${project.build.directory}/generated-sources/xjc/inbound</generateDirectory>
+              <generateDirectory>${project.build.directory}/generated-sources/xjc/inbound/creation</generateDirectory>
               <args>
                 <arg>-Xvalue-constructor</arg>
                 <arg>-Xfluent-builder</arg>
@@ -154,15 +152,11 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <bindingDirectory>src/main/resources/xsd</bindingDirectory>
+              <bindingDirectory>src/main/resources/xsd/outbound</bindingDirectory>
               <bindingIncludes>
                 <include>caseNotification.xjb</include>
               </bindingIncludes>
-              <bindingExcludes>
-                <include>caseReceipt.xjb</include>
-                <include>caseCreation.xjb</include>
-              </bindingExcludes>
-              <schemaDirectory>src/main/resources/xsd</schemaDirectory>
+              <schemaDirectory>src/main/resources/xsd/outbound</schemaDirectory>
               <schemaIncludes>
                 <include>caseNotification.xsd</include>
               </schemaIncludes>

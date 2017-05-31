@@ -294,7 +294,7 @@ public class CaseDistributor {
         } catch (Exception e) {
           // broker not there ? sleep then retry
           log.warn("Failed to send notifications {} because {}",
-              caseNotifications.stream().map(a -> a.getCasePK().toString())
+              caseNotifications.stream().map(a -> a.getCaseId().toString())
                   .collect(Collectors.joining(",")),
               e.getMessage());
           log.warn("CaseDistribution will sleep and retry publish");

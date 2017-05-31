@@ -1,26 +1,30 @@
 [
 	{
+		"id": "1bc5d41b-0549-40b3-ba76-42f6d4cf3fd1",
+		"collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
 		"casePK": 1,
+		"caseGroupFK":1,
 		"state": "ACTIONABLE",
 		"sampleUnitType": "H",
-		"sampleUnitRef": "12345678",
-		"partyId": 1,
+		"partyId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd1",
 		"createdDateTime": 1460732606544,
 		"createdBy": "me",
 		"iac": "bbbb cccc dddd",
-		"actionPlanId": 1,
+		"actionPlanId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fa1",
 		"responses": []
 	},
 	{
+		"id": "2bc5d41b-0549-40b3-ba76-42f6d4cf3fd1",
+		"collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
 		"casePK": 2,
+		"caseGroupFK":1,
 		"state": "INACTIONABLE",
 		"sampleUnitType": "H",
-		"sampleUnitRef": "12345678",
-		"partyId": 1,
+		"partyId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd2",
 		"createdDateTime": 1460732606544,
 		"createdBy": "me",
 		"iac": "cccc dddd ffff",
-		"actionPlanId": 2,
+		"actionPlanId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fa2",
 		"responses": [
 			{
 				"dateTime": 1460732606544,
@@ -29,27 +33,31 @@
 		]
 	},
 	{
+		"id": "3bc5d41b-0549-40b3-ba76-42f6d4cf3fd1",
+		"collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
 		"casePK": 3,
+		"caseGroupFK":1,
 		"state": "ACTIONABLE",
 		"sampleUnitType": "H",
-		"sampleUnitRef": "12345678",
-		"partyId": 1,
+		"partyId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd3",
 		"createdDateTime": 1460732606544,
 		"createdBy": "me",
 		"iac": "dddd ffff gggg",
-		"actionPlanId": 3,
+		"actionPlanId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fa3",
 		"responses": []
 	},
 	{
+		"id": "4bc5d41b-0549-40b3-ba76-42f6d4cf3fd1",
+		"collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
 		"casePK": 4,
+		"caseGroupFK":1,
 		"state": "INACTIONABLE",
 		"sampleUnitType": "H",
-		"sampleUnitRef": "12345678",
-		"partyId": 1,
+		"partyId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd4",
 		"createdDateTime": 1460732606544,
 		"createdBy": "me",
 		"iac": "ffff gggg hhhh",
-		"actionPlanId": 4,
+		"actionPlanId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fa4",
 		"responses": [
 			{
 				"dateTime": 1460732606544,
@@ -58,15 +66,17 @@
 		]
 	},
 	{
+		"id": "5bc5d41b-0549-40b3-ba76-42f6d4cf3fd1",
+		"collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
 		"casePK": 5,
+		"caseGroupFK":1,
 		"state": "ACTIONABLE",
 		"sampleUnitType": "H",
-		"sampleUnitRef": "12345678",
-		"partyId": 1,
+		"partyId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd5",
 		"createdDateTime": 1460732606544,
 		"createdBy": "me",
 		"iac": "gggg hhhh jjjj",
-		"actionPlanId": 1,
+		"actionPlanId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fa5",
 		"responses": [
 			{
 				"dateTime": 1460732606544,
@@ -75,15 +85,17 @@
 		]
 	},
 	{
+		"id": "6bc5d41b-0549-40b3-ba76-42f6d4cf3fd1",
+		"collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
 		"casePK": 6,
+		"caseGroupFK": 1,
 		"state": "INACTIONABLE",
 		"sampleUnitType": "H",
-		"sampleUnitRef": "12345678",
-		"partyId": 1,
+		"partyId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd6",
 		"createdDateTime": 1460732606544,
 		"createdBy": "me",
 		"iac": "hhhh jjjj kkkk",
-		"actionPlanId": 2,
+		"actionPlanId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fa6",
 		"responses": [
 			{
 				"dateTime": 1460732606544,
@@ -92,32 +104,54 @@
 		]
 	},
 	{
+		"id": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd1",
+		"collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
 		"casePK": 7,
+		"caseGroupFK":1,
 		"state": "ACTIONABLE",
 		"sampleUnitType": "H",
-		"sampleUnitRef": "12345678",
-		"partyId": 1,
+		"partyId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd7",
 		"createdDateTime": 1460732606544,
 		"createdBy": "me",
 		"iac": "jjjj kkkk llll",
-		"actionPlanId": 3,
+		"actionPlanId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fa7",
 		"responses": []
 	},
 	{
-		"casePK": 7,
+		"casePK": 8,
+		"caseGroupFK":1,
+		"id": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd1",
+		"collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
 		"state": "INACTIONABLE",
 		"sampleUnitType": "H",
-		"sampleUnitRef": "12345678",
-		"partyId": 1,
+		"partyId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd8",
 		"createdDateTime": 1460732606544,
 		"createdBy": "me",
 		"iac": "kkkk llll mmmm",
-		"actionPlanId": 4,
+		"actionPlanId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fa8",
 		"responses": [
 			{
 				"dateTime": 1460732606544,
 				"inboundChannel": "ONLINE"
 			}
 		]
+	},
+		{
+		"casePK": 9,
+		"partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
+		"responses": []
+	},
+	{
+		"id": "91fda7f2-3825-4bd4-baef-943a0ccf0856",
+		"casePK": 10,
+		"caseGroupFK":1,
+		"state": "ACTIONABLE",
+		"sampleUnitType": "B",
+		"partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
+		"createdDateTime": 1460732606544,
+		"createdBy": "me",
+		"iac": "kkkk llll mmmm",
+		"actionPlanId": "4381731e-e386-41a1-8462-26373744db81",
+		"responses": []
 	}
 ]

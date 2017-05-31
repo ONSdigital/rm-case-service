@@ -2,6 +2,7 @@ package uk.gov.ons.ctp.response.casesvc.domain.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -35,14 +36,17 @@ public class CaseEvent implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "caseeventseq_gen")
   @GenericGenerator(name = "caseeventseq_gen", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
-      @Parameter(name = "sequence_name", value = "casesvc.caseeventidseq"),
+      @Parameter(name = "sequence_name", value = "casesvc.caseeventseq"),
       @Parameter(name = "increment_size", value = "1")
   })
-  @Column(name = "caseeventid")
-  private Integer caseEventId;
+  @Column(name = "caseeventpk")
+  private Integer caseEventPK;
 
-  @Column(name = "caseFK")
+  @Column(name = "casefk")
   private Integer caseFK;
+  
+  @Column(name = "partyid")
+  private UUID partyId;
 
   private String description;
 

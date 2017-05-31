@@ -70,20 +70,21 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @return the case found
    * @throws CTPException something went wrong
    */
-  @RequestMapping(value = "/{casePK}", method = RequestMethod.GET)
-  public ResponseEntity<?> findCaseByCasePK(@PathVariable("casePK") final Integer casePK,
+  @RequestMapping(value = "/{caseId}", method = RequestMethod.GET)
+  public ResponseEntity<?> findCaseById(@PathVariable("caseId") final UUID caseId,
                                   @RequestParam(value = "caseevents", required = false) boolean caseevents)
           throws CTPException {
-    log.info("Entering findCaseByCasePK with {}", casePK);
-    Case caseObj = caseService.findCaseByCasePK(casePK);
+	  
+    log.info("Entering findCaseByCasePK with {}", caseId);
+    Case caseObj = caseService.findCaseById(caseId);
     if (caseObj == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-          String.format("%s case id %s", ERRORMSG_CASENOTFOUND, casePK));
+          String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseId));
     }
     // TODO find the CaseGroup info
-    if (caseevents) {
-       List<CaseEvent> caseEvents = caseService.findCaseEventsByCasePK(casePK);
-    }
+//    if (caseevents) {
+//       List<CaseEvent> caseEvents = caseService.findCaseEventsByCasePK(caseId);
+//    }
     // TODO Build the full DTO
 
     return ResponseEntity.ok(mapperFacade.map(caseObj, CaseDTO.class));
@@ -125,21 +126,21 @@ public final class CaseEndpoint implements CTPEndpoint {
   /**
    * the GET endpoint to find cases by case group UUID
    *
-   * @param id UUID to find by
+   * @param caseId UUID to find by
    * @return the case events found
    * @throws CTPException something went wrong
    */
-  @RequestMapping(value = "/casegroupid/{id}", method = RequestMethod.GET)
+  @RequestMapping(value = "/casegroupid/{caseId}", method = RequestMethod.GET)
 
-  public ResponseEntity<?> findCasesInCaseGroup(@PathVariable("id") final UUID id,
+  public ResponseEntity<?> findCasesInCaseGroup(@PathVariable("caseId") final UUID caseId,
                                                 @RequestParam(name = "caseevents", defaultValue = "false") final boolean caseevents) 
                                                 throws CTPException {
-    log.info("Entering findCasesInCaseGroup with {}", id);
+    log.info("Entering findCasesInCaseGroup with {}", caseId);
 
-    CaseGroup caseGroup = caseGroupService.findCaseGroupById(id);
+    CaseGroup caseGroup = caseGroupService.findCaseGroupById(caseId);
     if (caseGroup == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-          String.format("%s casegroup id %s", ERRORMSG_CASEGROUPNOTFOUND, id));
+          String.format("%s casegroup id %s", ERRORMSG_CASEGROUPNOTFOUND, caseId));
     }
 
     // TODO return the case group details
@@ -153,20 +154,26 @@ public final class CaseEndpoint implements CTPEndpoint {
   /**
    * the GET endpoint to find case events by case id
    *
-   * @param casePK to find by
+   * @param caseId to find by
    * @return the case events found
    * @throws CTPException something went wrong
    */
-  @RequestMapping(value = "/{casePK}/events", method = RequestMethod.GET)
-  public ResponseEntity<?> findCaseEventsByCaseId(@PathVariable("casePK") final Integer casePK) throws CTPException {
+  @RequestMapping(value = "/{caseId}/events", method = RequestMethod.GET)
+  public ResponseEntity<?> findCaseEventsByCaseId(@PathVariable("caseId") final UUID caseId) throws CTPException {
+    
+    log.info("Entering findCaseByCaseId with {}", caseId);
+    Case caze = caseService.findCaseById(caseId);
+	
+    if (caze == null) {
+        throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
+            String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseId.toString()));
+      }
+	
+    Integer casePK = caze.getCasePK();
+	
     log.info("Entering findCaseEventsByCaseId with {}", casePK);
-    Case caseObj = caseService.findCaseByCasePK(casePK);
-
-    if (caseObj == null) {
-      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-          String.format("%s case id %s", ERRORMSG_CASENOTFOUND, casePK));
-    }
-    List<CaseEvent> caseEvents = caseService.findCaseEventsByCasePK(casePK);
+ 
+    List<CaseEvent> caseEvents = caseService.findCaseEventsByCaseFK(casePK);
     List<CaseEventDTO> caseEventDTOs = mapperFacade.mapAsList(caseEvents, CaseEventDTO.class);
     return CollectionUtils.isEmpty(caseEventDTOs) ?
             ResponseEntity.noContent().build() : ResponseEntity.ok(caseEventDTOs);
@@ -182,20 +189,22 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @return the created CaseEventDTO
    * @throws CTPException on failure to create CaseEvent
    */
-  @RequestMapping(value = "/{casePK}/events", method = RequestMethod.POST)
-  public ResponseEntity<?> createCaseEvent(@PathVariable("casePK") final Integer caseFK,
+  @RequestMapping(value = "/{caseId}/events", method = RequestMethod.POST)
+  public ResponseEntity<?> createCaseEvent(@PathVariable("caseId") final UUID caseId,
                                       @RequestBody @Valid final CaseEventCreationRequestDTO caseEventCreationRequestDTO,
                                       BindingResult bindingResult) throws CTPException {
-    log.info("Entering createCaseEvent with casePK {} and requestObject {}", caseFK, caseEventCreationRequestDTO);
+    log.info("Entering createCaseEvent with caseId {} and requestObject {}", caseId, caseEventCreationRequestDTO);
 
     if (bindingResult.hasErrors()) {
       throw new InvalidRequestException("Binding errors for case event creation: ", bindingResult);
     }
 
-    caseEventCreationRequestDTO.setCaseFK(caseFK);
+    caseEventCreationRequestDTO.setCaseId(caseId);
 
     CaseEvent caseEvent = mapperFacade.map(caseEventCreationRequestDTO, CaseEvent.class);
-    Case caze = mapperFacade.map(caseEventCreationRequestDTO.getCaseCreationRequest(), Case.class);
+    caseEvent.setCaseFK(caseService.findCaseById(caseId).getCasePK());
+    
+    Case caze = mapperFacade.map(caseEventCreationRequestDTO.getPartyId(), Case.class);
 //    if (caze != null) {
 // BRES new case id to be passed in?
 //    }
@@ -203,16 +212,21 @@ public final class CaseEndpoint implements CTPEndpoint {
     Category category = categoryService.findCategory(caseEvent.getCategory());
     if (category.getNewCaseSampleUnitType() != null && caze == null) {
       throw new CTPException(CTPException.Fault.VALIDATION_FAILED,
-          String.format(EVENT_REQUIRES_NEW_CASE, caseFK));
+          String.format(EVENT_REQUIRES_NEW_CASE, caseId));
     }
 
     CaseEvent createdCaseEvent = caseService.createCaseEvent(caseEvent, caze);
     if (createdCaseEvent == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-          String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseFK));
+          String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseId));
     }
+    
+    CaseEventDTO mappedCaseEvent = mapperFacade.map(createdCaseEvent, CaseEventDTO.class);
+    mappedCaseEvent.setCaseId(caseId);
+    
     // TODO Define URI
-    return ResponseEntity.created(URI.create("TODO")).body(mapperFacade.map(createdCaseEvent, CaseEventDTO.class));
+    return ResponseEntity.created(URI.create("TODO")).body(mappedCaseEvent);
   }
+
 
 }

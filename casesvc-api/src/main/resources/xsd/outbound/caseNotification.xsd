@@ -14,7 +14,7 @@
 
   <xs:complexType name="CaseNotification">
     <xs:all>
-      <xs:element name="casePK" type="xs:int" minOccurs="0"/>
+      <xs:element name="caseId" type="xs:string" minOccurs="0"/>
       <xs:element name="actionPlanId" type="xs:string" minOccurs="0"/>
       <xs:element name="notificationType" type="NotificationType" />
     </xs:all>
