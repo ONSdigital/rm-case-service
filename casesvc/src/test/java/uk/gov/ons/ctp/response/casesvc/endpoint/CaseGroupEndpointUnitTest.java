@@ -67,8 +67,8 @@ public final class CaseGroupEndpointUnitTest {
   @Test
   public void findCaseGroupById() throws Exception {
     CaseGroup result = CaseGroup.builder().id(CASE_GROUP_UUID)
-            .collectionExerciseId(CASE_GROUP_CE_ID)
-            .partyId(CASE_GROUP_PARTY_ID)
+            .collectionExerciseId(UUID.fromString(CASE_GROUP_CE_ID))
+            .partyId(UUID.fromString(CASE_GROUP_PARTY_ID))
             .sampleUnitRef(CASE_GROUP_SU_REF)
             .sampleUnitType(CASE_GROUP_SU_TYPE).build();
     when(caseGroupService.findCaseGroupById(CASE_GROUP_UUID)).thenReturn(result);

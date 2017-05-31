@@ -164,8 +164,8 @@ public final class CaseEndpointUnitTest {
   public void findCasesByCaseGroup() throws Exception {
     CaseGroup result = CaseGroup.builder().id(EXISTING_CASE_GROUP_UUID)
             .caseGroupPK(EXISTING_CASE_GROUP_PK)
-            .collectionExerciseId(CASE_GROUP_CE_ID)
-            .partyId(CASE_GROUP_PARTY_ID)
+            .collectionExerciseId(UUID.fromString(CASE_GROUP_CE_ID))
+            .partyId(UUID.fromString(CASE_GROUP_PARTY_ID))
             .sampleUnitRef(CASE_GROUP_SU_REF)
             .sampleUnitType(CASE_GROUP_SU_TYPE).build();
     when(caseGroupService.findCaseGroupById(EXISTING_CASE_GROUP_UUID)).thenReturn(result);

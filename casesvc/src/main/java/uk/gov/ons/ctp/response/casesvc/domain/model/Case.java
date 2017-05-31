@@ -85,13 +85,13 @@ public class Case implements Serializable {
   private SampleUnitDTO.SampleUnitType sampleUnitType;
 
   @Column(name = "partyid")
-  private String partyId;
+  private UUID partyId;
 
   @Column(name = "collectioninstrumentid")
-  private String collectionInstrumentId;
+  private UUID collectionInstrumentId;
 
   @Column(name = "actionplanid")
-  private String actionPlanId;
+  private UUID actionPlanId;
 
   @Column(name = "createddatetime")
   private Timestamp createdDateTime;
@@ -99,7 +99,7 @@ public class Case implements Serializable {
   @Column(name = "createdby")
   private String createdBy;
 
-  @OneToMany(mappedBy = "casePK", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "caseFK", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   private List<Response> responses;
 
   private String iac;

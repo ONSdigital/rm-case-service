@@ -40,11 +40,11 @@ public class Response implements Serializable {
       @Parameter(name = "sequence_name", value = "casesvc.responseidseq"),
       @Parameter(name = "increment_size", value = "1")
   })
-  @Column(name = "responseid")
-  private Integer responseId;
+  @Column(name = "responsepk")
+  private Integer responsepk;
 
-  @Column(name = "casePK")
-  private Integer casePK;
+  @Column(name = "casefk")
+  private Integer caseFK;
 
   @Column(name = "inboundchannel")
   @Enumerated(EnumType.STRING)

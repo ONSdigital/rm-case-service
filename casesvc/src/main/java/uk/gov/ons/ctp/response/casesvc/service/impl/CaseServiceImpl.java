@@ -259,7 +259,7 @@ public class CaseServiceImpl implements CaseService {
     if (channel != null) {
       Response response = Response.builder()
           .inboundChannel(channel)
-          .casePK(targetCase.getCasePK())
+          .caseFK(targetCase.getCasePK())
           .dateTime(timestamp).build();
 
       targetCase.getResponses().add(response);
@@ -380,7 +380,9 @@ public class CaseServiceImpl implements CaseService {
   
   @Override
   public void createInitialCase(CaseCreation caseData) {
+	  
 	  CaseGroup newCaseGroup = createNewCaseGroup(caseData);
+	  
 	  createNewCase(caseData,newCaseGroup);
   }
   
@@ -388,8 +390,8 @@ public class CaseServiceImpl implements CaseService {
 	   CaseGroup newCaseGroup = new CaseGroup();
 
 	   newCaseGroup.setId(UUID.randomUUID());
-	   newCaseGroup.setPartyId(String.valueOf(caseGroupData.getPartyId()));
-	   newCaseGroup.setCollectionExerciseId(caseGroupData.getCollectionExerciseId());
+	   newCaseGroup.setPartyId(UUID.fromString(caseGroupData.getPartyId()));
+	   newCaseGroup.setCollectionExerciseId(UUID.fromString(caseGroupData.getCollectionExerciseId()));
 
 	   newCaseGroup.setSampleUnitRef(caseGroupData.getSampleUnitRef());
 	   newCaseGroup.setSampleUnitType(caseGroupData.getSampleUnitType());
@@ -410,8 +412,8 @@ public class CaseServiceImpl implements CaseService {
 		newCase.setSampleUnitType(SampleUnitType.valueOf(caseGroup.getSampleUnitType()));
 		
 		//Values from collection exercise
-		newCase.setActionPlanId(caseData.getActionPlanId());
-		newCase.setCollectionInstrumentId(caseData.getCollectionInstrumentId());
+		newCase.setActionPlanId(UUID.fromString(caseData.getActionPlanId()));
+		newCase.setCollectionInstrumentId(UUID.fromString(caseData.getCollectionInstrumentId()));
 		
 		//HardCoded values
 		newCase.setState(CaseState.SAMPLED_INIT);

@@ -34,7 +34,7 @@ public class CaseGroup implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "casegroupidseq_gen")
   @GenericGenerator(name = "casegroupidseq_gen", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
-      @Parameter(name = "sequence_name", value = "casesvc.casegroupidseq"),
+      @Parameter(name = "sequence_name", value = "casesvc.casegroupseq"),
       @Parameter(name = "increment_size", value = "1")
   })
 
@@ -42,12 +42,12 @@ public class CaseGroup implements Serializable {
   private int caseGroupPK;
   
   @Column(name = "collectionexerciseid")
-  private String collectionExerciseId;
+  private UUID collectionExerciseId;
 
   private UUID id;
   
   @Column(name = "partyid")
-  private String partyId;
+  private UUID partyId;
 
   @Column(name = "sampleunitref")
   private String sampleUnitRef;
