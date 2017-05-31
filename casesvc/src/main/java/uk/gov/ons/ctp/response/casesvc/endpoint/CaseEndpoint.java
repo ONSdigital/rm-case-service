@@ -203,6 +203,8 @@ public final class CaseEndpoint implements CTPEndpoint {
     caseEventCreationRequestDTO.setCaseId(caseId);
 
     CaseEvent caseEvent = mapperFacade.map(caseEventCreationRequestDTO, CaseEvent.class);
+    caseEvent.setCaseFK(caseService.findCaseById(caseId).getCasePK());
+    
     Case caze = mapperFacade.map(caseEventCreationRequestDTO.getPartyId(), Case.class);
 //    if (caze != null) {
 // BRES new case id to be passed in?
@@ -219,8 +221,12 @@ public final class CaseEndpoint implements CTPEndpoint {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
           String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseId));
     }
+    
+    CaseEventDTO mappedCaseEvent = mapperFacade.map(createdCaseEvent, CaseEventDTO.class);
+    mappedCaseEvent.setCaseId(caseId);
+    
     // TODO Define URI
-    return ResponseEntity.created(URI.create("TODO")).body(mapperFacade.map(createdCaseEvent, CaseEventDTO.class));
+    return ResponseEntity.created(URI.create("TODO")).body(mappedCaseEvent);
   }
 
 
