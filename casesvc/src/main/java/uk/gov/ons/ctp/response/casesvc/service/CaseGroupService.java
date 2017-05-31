@@ -17,7 +17,7 @@ public interface CaseGroupService extends CTPService {
    * @param caseGroupId id of the case group to find
    * @return CaseGroup entity or null
    */
-  CaseGroup findCaseGroupByCaseGroupId(Integer caseGroupId);
+  CaseGroup findCaseGroupByCaseGroupPK(Integer caseGroupPK);
 
   /**
    * Find CaseGroup by unique Id.

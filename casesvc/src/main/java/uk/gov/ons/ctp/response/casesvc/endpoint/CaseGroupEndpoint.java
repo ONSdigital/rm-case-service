@@ -37,18 +37,18 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
  /**
    * the GET endpoint to find CaseGroups by caseGroupId
    *
-   * @param id UUID to find by
+   * @param caseGroupId UUID to find by
    * @return the casegroups found
    * @throws CTPException something went wrong
    */
-  @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-  public CaseGroupDTO findCaseGroupById(@PathVariable("id") final UUID id)  throws CTPException {
-    log.info("Entering findCaseGroupById with {}", id);
+  @RequestMapping(value = "/{caseGroupId}", method = RequestMethod.GET)
+  public CaseGroupDTO findCaseGroupById(@PathVariable("caseGroupId") final UUID caseGroupId)  throws CTPException {
+    log.info("Entering findCaseGroupById with {}", caseGroupId);
 
-    CaseGroup caseGroupObj = caseGroupService.findCaseGroupById(id);
+    CaseGroup caseGroupObj = caseGroupService.findCaseGroupById(caseGroupId);
     if (caseGroupObj == null) {
         throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, String.format("%s casegroup id %s",
-                ERRORMSG_CASEGROUPNOTFOUND, id));
+                ERRORMSG_CASEGROUPNOTFOUND, caseGroupId));
     }
 
     return mapperFacade.map(caseGroupObj, CaseGroupDTO.class);

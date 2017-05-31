@@ -71,16 +71,15 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @throws CTPException something went wrong
    */
   @RequestMapping(value = "/{caseId}", method = RequestMethod.GET)
-  public ResponseEntity<?> findCaseById(@PathVariable("caseId") final String id,
+  public ResponseEntity<?> findCaseById(@PathVariable("caseId") final UUID caseId,
                                   @RequestParam(value = "caseevents", required = false) boolean caseevents)
           throws CTPException {
 	  
-    UUID caseId = UUID.fromString(id);
     log.info("Entering findCaseByCasePK with {}", caseId);
     Case caseObj = caseService.findCaseById(caseId);
     if (caseObj == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-          String.format("%s case id %s", ERRORMSG_CASENOTFOUND, id));
+          String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseId));
     }
     // TODO find the CaseGroup info
 //    if (caseevents) {
@@ -127,21 +126,21 @@ public final class CaseEndpoint implements CTPEndpoint {
   /**
    * the GET endpoint to find cases by case group UUID
    *
-   * @param id UUID to find by
+   * @param caseId UUID to find by
    * @return the case events found
    * @throws CTPException something went wrong
    */
-  @RequestMapping(value = "/casegroupid/{id}", method = RequestMethod.GET)
+  @RequestMapping(value = "/casegroupid/{caseId}", method = RequestMethod.GET)
 
-  public ResponseEntity<?> findCasesInCaseGroup(@PathVariable("id") final UUID id,
+  public ResponseEntity<?> findCasesInCaseGroup(@PathVariable("caseId") final UUID caseId,
                                                 @RequestParam(name = "caseevents", defaultValue = "false") final boolean caseevents) 
                                                 throws CTPException {
-    log.info("Entering findCasesInCaseGroup with {}", id);
+    log.info("Entering findCasesInCaseGroup with {}", caseId);
 
-    CaseGroup caseGroup = caseGroupService.findCaseGroupById(id);
+    CaseGroup caseGroup = caseGroupService.findCaseGroupById(caseId);
     if (caseGroup == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-          String.format("%s casegroup id %s", ERRORMSG_CASEGROUPNOTFOUND, id));
+          String.format("%s casegroup id %s", ERRORMSG_CASEGROUPNOTFOUND, caseId));
     }
 
     // TODO return the case group details
