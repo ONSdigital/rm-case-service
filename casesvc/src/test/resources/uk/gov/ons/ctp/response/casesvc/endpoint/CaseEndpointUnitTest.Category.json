@@ -31,5 +31,17 @@
     "newCaseSampleUnitType": null,
     "oldCaseSampleUnitType": null,
     "eventType": null
+  },
+  {
+    "group": null,
+    "categoryType": "RESPONDENT_ENROLLED",
+    "longDescription": "Respondent Enrolled",
+    "shortDescription": "Respondent Enrolled",
+    "role": null,
+    "generatedActionType": null,
+    "newCaseSampleUnitType": "BI",
+    "oldCaseSampleUnitType": "B",
+    "eventType": "DEACTIVATED",
+    "recalcCollectionInstrument": "false"
   }
 ]

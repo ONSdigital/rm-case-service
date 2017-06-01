@@ -17,6 +17,7 @@ import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -47,6 +48,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryType;
 import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
@@ -62,6 +64,7 @@ public final class CaseEndpointUnitTest {
   private static final CaseDTO.CaseState CASE1_STATE = CaseDTO.CaseState.SAMPLED_INIT;
 
   private static final Integer CASE1_ACTIONPLANID = 1;
+  private static final Integer CASE9_CASEPK = 1;
 
   private static final Integer EXISTING_CASE_GROUP_PK = 13;
   private static final Integer EXISTING_CASE_PK_NO_EVENTS = 12;
@@ -91,15 +94,19 @@ public final class CaseEndpointUnitTest {
   private static final String CASE1_DESCRIPTION = "desc 1";
   private static final String CASE2_DESCRIPTION = "desc 2";
   private static final String CASE3_DESCRIPTION = "desc 3";
+  private static final String CASE9_DESCRIPTION = "sometest";
   private static final String CASE1_CREATEDBY = "me 1";
   private static final String CASE2_CREATEDBY = "me 2";
   private static final String CASE3_CREATEDBY = "me 3";
+  private static final String CASE9_CREATEDBY = "unittest";
   private static final String CASE1_CATEGORY = "ONLINE_QUESTIONNAIRE_RESPONSE";
   private static final String CASE2_CATEGORY = "CLASSIFICATION_INCORRECT";
   private static final String CASE3_CATEGORY = "REFUSAL";
+  private static final String CASE9_CATEGORY = "RESPONDENT_ENROLLED";
   private static final String CASE1_SUBCATEGORY = "subcat 1";
   private static final String CASE2_SUBCATEGORY = "subcat 2";
   private static final String CASE3_SUBCATEGORY = "subcat 3";
+  private static final UUID CASE9_PARTYID = UUID.fromString("3b136c4b-7a14-4904-9e01-13364dd7b972");
   private static final String CREATEDDATE_VALUE = createTestDate("2016-04-15T17:02:39.699+0100");
 
 
@@ -116,7 +123,7 @@ public final class CaseEndpointUnitTest {
   private static final String CASEEVENT_INVALIDJSON =
           "{\"description\":\"a\",\"category\":\"BAD_CAT\",\"createdBy\":\"u\"}";
   private static final String CASEEVENT_VALIDJSON =
-          "{\"description\":\"sometest\",\"category\":\"GENERAL_ENQUIRY\",\"createdBy\":\"unittest\"}";
+          "{\"description\":\"sometest\",\"category\":\"RESPONDENT_ENROLLED\",\"partyId\":\"3b136c4b-7a14-4904-9e01-13364dd7b972\",\"createdBy\":\"unittest\"}";
 
   @InjectMocks
   private CaseEndpoint caseEndpoint;
@@ -129,6 +136,9 @@ public final class CaseEndpointUnitTest {
 
   @Mock
   private CaseGroupService caseGroupService;
+  
+  @Mock
+  private CaseGroupRepository caseGroupRepo;
 
   @Spy
   private MapperFacade mapperFacade = new CaseSvcBeanMapper();
@@ -137,6 +147,7 @@ public final class CaseEndpointUnitTest {
   private List<Case> caseResults;
   private List<CaseEvent> caseEventsResults;
   private List<Category> categoryResults;
+
 
   @Before
   public void setUp() throws Exception {
@@ -334,24 +345,25 @@ public final class CaseEndpointUnitTest {
   /**
    * a test providing good json
    */
-//  @Test
-//  public void createCaseEventGoodJson() throws Exception {
-//    when(categoryService.findCategory(CategoryType.GENERAL_ENQUIRY)).thenReturn(categoryResults.get(0));
-//    when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class))).thenReturn(caseEventsResults.get(0));
-//
-//    ResultActions actions = mockMvc.perform(postJson(String.format("/cases/%s/events", CASE9_ID), CASEEVENT_VALIDJSON));
-//
-//    actions.andExpect(status().isCreated());
-//    actions.andExpect(handler().handlerType(CaseEndpoint.class));
-//    actions.andExpect(handler().methodName("createCaseEvent"));
-//    actions.andExpect(jsonPath("$.caseEventPK", is(CASE1_ID)));
-//    actions.andExpect(jsonPath("$.casePK", is(CASE1_ID)));
-//    actions.andExpect(jsonPath("$.description", is(CASE1_DESCRIPTION)));
-//    actions.andExpect(jsonPath("$.createdBy", is(CASE1_CREATEDBY)));
-////    actions.andExpect(jsonPath("$.createdDateTime", is(CREATEDDATE_VALUE)));
-//    actions.andExpect(jsonPath("$.category", is(CASE1_CATEGORY)));
-//    actions.andExpect(jsonPath("$.subCategory", is(CASE1_SUBCATEGORY)));
-//  }
+  @Test
+  public void createCaseEventGoodJson() throws Exception {
+    when(categoryService.findCategory(CategoryType.RESPONDENT_ENROLLED)).thenReturn(categoryResults.get(3));
+    when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class))).thenReturn(caseEventsResults.get(3));
+    when(caseService.findCaseById(CASE9_ID)).thenReturn(caseResults.get(8));
+
+    ResultActions actions = mockMvc.perform(postJson(String.format("/cases/%s/events", CASE9_ID), CASEEVENT_VALIDJSON));
+
+    actions.andExpect(status().isCreated());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("createCaseEvent"));
+    actions.andExpect(jsonPath("$.caseId", is(CASE9_ID.toString())));
+    actions.andExpect(jsonPath("$.description", is(CASE9_DESCRIPTION)));
+    actions.andExpect(jsonPath("$.createdBy", is(CASE9_CREATEDBY)));
+    actions.andExpect(jsonPath("$.createdDateTime", is(CREATEDDATE_VALUE)));
+    actions.andExpect(jsonPath("$.category", is(CASE9_CATEGORY)));
+    actions.andExpect(jsonPath("$.partyId", is(CASE9_PARTYID.toString())));
+    actions.andExpect(jsonPath("$.subCategory").doesNotExist());
+  }
 
 
   private static void printDate(ZonedDateTime zdt) {
@@ -373,13 +385,10 @@ public final class CaseEndpointUnitTest {
   }
   
   private static String createTestDate(String date){
-    String zoneId = Calendar.getInstance().getTimeZone().getID();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
     ZonedDateTime zdt = ZonedDateTime.parse(date, formatter);
-    LocalDateTime ldt = zdt.toLocalDateTime();
-    ZonedDateTime compareDate = ldt.atZone(ZoneId.of(zoneId));
+    ZonedDateTime compareDate = zdt.withZoneSameInstant(ZoneOffset.systemDefault());
     return formatter.format(compareDate);
-    //return compareDate.toString();
     
   }
 }
