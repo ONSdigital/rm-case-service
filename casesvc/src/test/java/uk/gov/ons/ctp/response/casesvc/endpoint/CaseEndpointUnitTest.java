@@ -3,11 +3,13 @@ package uk.gov.ons.ctp.response.casesvc.endpoint;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.ons.ctp.common.MvcHelper.getJson;
+import static uk.gov.ons.ctp.common.MvcHelper.postJson;
 import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
 import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.ERRORMSG_CASENOTFOUND;
 import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseGroupEndpoint.ERRORMSG_CASEGROUPNOTFOUND;
@@ -46,6 +48,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryType;
 import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
@@ -74,6 +77,7 @@ public final class CaseEndpointUnitTest {
   private static final UUID CASE6_ID = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd6");
   private static final UUID CASE7_ID = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd7");
   private static final UUID CASE8_ID = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd8");
+  private static final UUID CASE9_ID = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd9");
   private static final String CASE_CI_ID = "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e";
   private static final String CASE_PARTY_ID = "3b136c4b-7a14-4904-9e01-13364dd7b972";
   private static final String CASE_ACTIONPLAN_ID_1 = "5381731e-e386-41a1-8462-26373744db81";
@@ -311,43 +315,43 @@ public final class CaseEndpointUnitTest {
 
 
   // TODO
-//  /**
-//   * a test providing bad json
-//   */
-//  @Test
-//  public void createCaseEventBadJson() throws Exception {
-//    ResultActions actions = mockMvc.perform(postJson(String.format("/cases/%s/events", CASE_ID), CASEEVENT_INVALIDJSON));
-//
-//    actions.andExpect(status().isBadRequest());
-//    actions.andExpect(handler().handlerType(CaseEndpoint.class));
-//    actions.andExpect(handler().methodName("createCaseEvent"));
-//    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())));
-//    actions.andExpect(jsonPath("$.error.message", isA(String.class)));
-//    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
-//  }
+  /**
+   * a test providing bad json
+   */
+  @Test
+  public void createCaseEventBadJson() throws Exception {
+    ResultActions actions = mockMvc.perform(postJson(String.format("/cases/%s/events", CASE9_ID), CASEEVENT_INVALIDJSON));
+
+    actions.andExpect(status().isBadRequest());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("createCaseEvent"));
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())));
+    actions.andExpect(jsonPath("$.error.message", isA(String.class)));
+    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+  }
 
   // TODO
-//  /**
-//   * a test providing good json
-//   */
-//  @Test
-//  public void createCaseEventGoodJson() throws Exception {
-//    when(categoryService.findCategory(CategoryDTO.CategoryType.GENERAL_ENQUIRY)).thenReturn(categoryResults.get(0));
-//    when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class))).thenReturn(caseEventsResults.get(0));
-//
-//    ResultActions actions = mockMvc.perform(postJson(String.format("/cases/%s/events", CASE_ID), CASEEVENT_VALIDJSON));
-//
-//    actions.andExpect(status().isCreated());
-//    actions.andExpect(handler().handlerType(CaseEndpoint.class));
-//    actions.andExpect(handler().methodName("createCaseEvent"));
-//    actions.andExpect(jsonPath("$.caseEventPK", is(CASE1_ID)));
-//    actions.andExpect(jsonPath("$.casePK", is(CASE1_ID)));
-//    actions.andExpect(jsonPath("$.description", is(CASE1_DESCRIPTION)));
-//    actions.andExpect(jsonPath("$.createdBy", is(CASE1_CREATEDBY)));
-////    actions.andExpect(jsonPath("$.createdDateTime", is(CREATEDDATE_VALUE)));
-//    actions.andExpect(jsonPath("$.category", is(CASE1_CATEGORY)));
-//    actions.andExpect(jsonPath("$.subCategory", is(CASE1_SUBCATEGORY)));
-//  }
+  /**
+   * a test providing good json
+   */
+  @Test
+  public void createCaseEventGoodJson() throws Exception {
+    when(categoryService.findCategory(CategoryType.GENERAL_ENQUIRY)).thenReturn(categoryResults.get(0));
+    when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class))).thenReturn(caseEventsResults.get(0));
+
+    ResultActions actions = mockMvc.perform(postJson(String.format("/cases/%s/events", CASE9_ID), CASEEVENT_VALIDJSON));
+
+    actions.andExpect(status().isCreated());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("createCaseEvent"));
+    actions.andExpect(jsonPath("$.caseEventPK", is(CASE1_ID)));
+    actions.andExpect(jsonPath("$.casePK", is(CASE1_ID)));
+    actions.andExpect(jsonPath("$.description", is(CASE1_DESCRIPTION)));
+    actions.andExpect(jsonPath("$.createdBy", is(CASE1_CREATEDBY)));
+//    actions.andExpect(jsonPath("$.createdDateTime", is(CREATEDDATE_VALUE)));
+    actions.andExpect(jsonPath("$.category", is(CASE1_CATEGORY)));
+    actions.andExpect(jsonPath("$.subCategory", is(CASE1_SUBCATEGORY)));
+  }
 
 
   private static void printDate(ZonedDateTime zdt) {

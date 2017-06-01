@@ -30,7 +30,7 @@ public class Category implements Serializable {
   private static final long serialVersionUID = -8265556287097172790L;
 
   @Id
-  @Column(name = "name")
+  @Column(name = "categorypk")
   @Enumerated(EnumType.STRING)
   private CategoryDTO.CategoryType categoryType;
 
