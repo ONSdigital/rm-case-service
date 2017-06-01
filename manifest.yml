@@ -11,5 +11,3 @@ applications:
     - rabbitmq
   env:
     internetAccessCodeSvc_connectionConfig_host: iacsvc.apps.mvp.onsclofo.uk
-    internetAccessCodeSvc_connectionConfig_port: "443"
-    internetAccessCodeSvc_connectionConfig_scheme: https
