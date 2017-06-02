@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.iac.representation;
 
 import java.sql.Timestamp;
+import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
 
@@ -18,23 +19,15 @@ import lombok.NoArgsConstructor;
 public class InternetAccessCodeCaseContextDTO {
 
   @NotNull
-  private Integer casePK;
+  private UUID  caseId;
+
+  @NotNull
+  private String caseRef;
 
   @NotNull
   private String iac;
 
   private Boolean active;
-
-  private Long uprn;
-
-  @NotNull
-  private Integer sampleId;
-  
-  @NotNull
-  private Integer surveyId;
-  
-  @NotNull
-  private Integer parentCaseId;
 
   @NotNull
   private String questionSet;

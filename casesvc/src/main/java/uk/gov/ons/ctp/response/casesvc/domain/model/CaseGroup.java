@@ -55,7 +55,4 @@ public class CaseGroup implements Serializable {
   @Column(name = "sampleunittype")
   private String sampleUnitType;
 
-
-
-
 }
