@@ -117,7 +117,7 @@ curl -H "Accept: application/json" -H "Content-Type: application/json" http://lo
 400 {"error":{"code":"VALIDATION_FAILED","timestamp":"20160912160946534","message":"Provided json is incorrect."}}
 
 
-curl -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/cases/1/events -v -X POST -d "{\"description\":\"mytest\", \"category\":\"Complaint - Escalated\", \"subCategory\":\"ABC\", \"createdBy\":\"philippe\"}"
+curl -H "Accept: application/json" -H "Content-Type: application/json" http://localhost:8171/cases/a156c0d8-a367-44c7-876e-c854e230aff7/events -v -X POST -d "{\"description\":\"mytest\", \"category\":\"RESPONDENT_ENROLLED\", \"subCategory\":\"ABC\", \"partyId\":\"3b136c4b-7a14-4904-9e01-13364dd7b972\", \"createdBy\":\"gareth\"}"
 200 {"createdDateTime":"2016-09-12T15:28:25.681+0000","caseEventPK":763,"casePK":1,"category":"Complaint - Escalated","subCategory":"ABC","createdBy":"philippe","description":"mytest"}
 
 

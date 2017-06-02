@@ -25,8 +25,6 @@ public class CaseEventDTO {
 
   private Date createdDateTime;
 
-  private UUID caseEventId;
-
   private UUID caseId;
   
   private UUID partyId;

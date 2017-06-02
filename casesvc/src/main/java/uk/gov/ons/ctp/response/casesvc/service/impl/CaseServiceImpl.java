@@ -34,8 +34,11 @@ import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
+import uk.gov.ons.ctp.response.casesvc.service.CollectionExerciseSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.utility.Constants;
+import uk.gov.ons.ctp.response.collection.exercise.representation.CaseTypeDTO;
+import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO.SampleUnitType;
 
 /**
@@ -55,7 +58,7 @@ public class CaseServiceImpl implements CaseService {
 
   @Autowired
   private CaseRepository caseRepo;
-  
+
   @Autowired
   private CaseGroupRepository caseGroupRepo;
 
@@ -73,6 +76,9 @@ public class CaseServiceImpl implements CaseService {
 
   @Autowired
   private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
+
+  @Autowired
+  private CollectionExerciseSvcClientService collectionExerciseSvcClientService;
 
   @Autowired
   private CaseNotificationPublisher notificationPublisher;
@@ -125,7 +131,7 @@ public class CaseServiceImpl implements CaseService {
   @Override
   public CaseNotification prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent) {
     return new CaseNotification(caze.getId().toString(), caze.getActionPlanId().toString(),
-     NotificationType.valueOf(transitionEvent.name()));
+        NotificationType.valueOf(transitionEvent.name()));
   }
 
   /**
@@ -162,6 +168,8 @@ public class CaseServiceImpl implements CaseService {
       // save the case event to db
       caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
       createdCaseEvent = caseEventRepo.save(caseEvent);
+      
+      newCase.setCaseGroupId(targetCase.getCaseGroupId());
 
       // do we need to record a response?
       recordCaseResponse(category, targetCase, timestamp);
@@ -197,7 +205,7 @@ public class CaseServiceImpl implements CaseService {
       }
 
       checkSampleUnitTypesMatch(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, targetCase.getSampleUnitType().name(),
-              category.getOldCaseSampleUnitType());
+          category.getOldCaseSampleUnitType());
 
       // TODO Validate the new sample unit type: call to the PartySvc to verify
       // our partyId's sample unit type
@@ -231,9 +239,32 @@ public class CaseServiceImpl implements CaseService {
   private void createNewCase(Category category, CaseEvent caseEvent, Case targetCase,
       Case newCase) {
     if (category.getNewCaseSampleUnitType() != null) {
-      // TODO Use the value recalcCollectionInstrument in Category: true = we need to call the Collection Exercise
-      // TODO service to set the collectionInstrumentId on the new case - false = we use the value on the target case.
+      // TODO Use the value recalcCollectionInstrument in Category: true = we
+      // need to call the Collection Exercise
+      // TODO service to set the collectionInstrumentId on the new case - false
+      // = we use the value on the target case.
+
+      // add sampleUnitType and actionplanId to newCase
+      buildNewCase(category, newCase, targetCase);
+
+      if (category.getRecalcCollectionInstrument().booleanValue() == false)
+        newCase.setCollectionInstrumentId(targetCase.getCollectionInstrumentId());
       createNewCaseFromEvent(caseEvent, targetCase, newCase, category);
+    }
+  }
+
+  private void buildNewCase(Category category, Case newCase, Case targetCase) {
+    newCase.setSampleUnitType(SampleUnitType.valueOf(category.getNewCaseSampleUnitType()));
+
+    CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
+    CollectionExerciseDTO collectionExercise = collectionExerciseSvcClientService
+        .getCollectionExercise(caseGroup.getCollectionExerciseId());
+
+    List<CaseTypeDTO> caseTypes = collectionExercise.getCaseTypes();
+    for (CaseTypeDTO caseType : caseTypes) {
+      if (caseType.getSampleUnitTypeFK().equals(newCase.getSampleUnitType().name())) {
+        newCase.setActionPlanId(caseType.getActionPlanId());
+      }
     }
   }
 
@@ -249,14 +280,14 @@ public class CaseServiceImpl implements CaseService {
     InboundChannel channel = null;
     // TODO BRES new category type for when a BI responds?
     switch (category.getCategoryType()) {
-      case ONLINE_QUESTIONNAIRE_RESPONSE:
-        channel = InboundChannel.ONLINE;
-        break;
-      case PAPER_QUESTIONNAIRE_RESPONSE:
-        channel = InboundChannel.PAPER;
-        break;
-      default:
-        break;
+    case ONLINE_QUESTIONNAIRE_RESPONSE:
+      channel = InboundChannel.ONLINE;
+      break;
+    case PAPER_QUESTIONNAIRE_RESPONSE:
+      channel = InboundChannel.PAPER;
+      break;
+    default:
+      break;
     }
     if (channel != null) {
       Response response = Response.builder()
@@ -297,8 +328,10 @@ public class CaseServiceImpl implements CaseService {
   private void effectTargetCaseStateTransition(Category category, Case targetCase) {
     CaseDTO.CaseEvent transitionEvent = category.getEventType();
     if (transitionEvent != null) {
-      // case might have transitioned from actionable to inactionable prev via deactivated
-      // so newstate == oldstate, but always want to disable iac if event is  disabled ie as the result
+      // case might have transitioned from actionable to inactionable prev via
+      // deactivated
+      // so newstate == oldstate, but always want to disable iac if event is
+      // disabled ie as the result
       // of an online response after a refusal
       if (transitionEvent == CaseDTO.CaseEvent.DISABLED) {
         internetAccessCodeSvcClientService.disableIAC(targetCase.getIac());
@@ -379,49 +412,49 @@ public class CaseServiceImpl implements CaseService {
     caseEventRepo.saveAndFlush(newCaseCaseEvent);
     return newCaseCaseEvent;
   }
-  
+
   @Override
   public void createInitialCase(CaseCreation caseData) {
-	  
-	  CaseGroup newCaseGroup = createNewCaseGroup(caseData);
-	  createNewCase(caseData,newCaseGroup);
+
+    CaseGroup newCaseGroup = createNewCaseGroup(caseData);
+    createNewCase(caseData, newCaseGroup);
   }
-  
+
   private CaseGroup createNewCaseGroup(CaseCreation caseGroupData) {
-	   CaseGroup newCaseGroup = new CaseGroup();
+    CaseGroup newCaseGroup = new CaseGroup();
 
-	   newCaseGroup.setId(UUID.randomUUID());
-	   newCaseGroup.setPartyId(UUID.fromString(caseGroupData.getPartyId()));
-	   newCaseGroup.setCollectionExerciseId(UUID.fromString(caseGroupData.getCollectionExerciseId()));
+    newCaseGroup.setId(UUID.randomUUID());
+    newCaseGroup.setPartyId(UUID.fromString(caseGroupData.getPartyId()));
+    newCaseGroup.setCollectionExerciseId(UUID.fromString(caseGroupData.getCollectionExerciseId()));
 
-	   newCaseGroup.setSampleUnitRef(caseGroupData.getSampleUnitRef());
-	   newCaseGroup.setSampleUnitType(caseGroupData.getSampleUnitType());
-	   
-	   caseGroupRepo.saveAndFlush(newCaseGroup);
-	   log.info("SetCaseGroupData");
-	   return newCaseGroup;
+    newCaseGroup.setSampleUnitRef(caseGroupData.getSampleUnitRef());
+    newCaseGroup.setSampleUnitType(caseGroupData.getSampleUnitType());
+
+    caseGroupRepo.saveAndFlush(newCaseGroup);
+    log.info("SetCaseGroupData");
+    return newCaseGroup;
   }
-  
+
   private void createNewCase(CaseCreation caseData, CaseGroup caseGroup) {
-		Case newCase = new Case();
-		newCase.setId(UUID.randomUUID());
-		
-		//values from case group
-		newCase.setCaseGroupId(caseGroup.getId());
-		newCase.setCaseGroupFK(caseGroup.getCaseGroupPK());
-		newCase.setPartyId(caseGroup.getPartyId());
-		newCase.setSampleUnitType(SampleUnitType.valueOf(caseGroup.getSampleUnitType()));
-		
-		//Values from collection exercise
-		newCase.setActionPlanId(UUID.fromString(caseData.getActionPlanId()));
-		newCase.setCollectionInstrumentId(UUID.fromString(caseData.getCollectionInstrumentId()));
-		
-		//HardCoded values
-		newCase.setState(CaseState.SAMPLED_INIT);
-		newCase.setCreatedDateTime(DateTimeUtil.nowUTC());
-		newCase.setCreatedBy(Constants.SYSTEM);
-		
-		caseRepo.saveAndFlush(newCase);
-		log.info("SetCaseData");
+    Case newCase = new Case();
+    newCase.setId(UUID.randomUUID());
+
+    // values from case group
+    newCase.setCaseGroupId(caseGroup.getId());
+    newCase.setCaseGroupFK(caseGroup.getCaseGroupPK());
+    newCase.setPartyId(caseGroup.getPartyId());
+    newCase.setSampleUnitType(SampleUnitType.valueOf(caseGroup.getSampleUnitType()));
+
+    // Values from collection exercise
+    newCase.setActionPlanId(UUID.fromString(caseData.getActionPlanId()));
+    newCase.setCollectionInstrumentId(UUID.fromString(caseData.getCollectionInstrumentId()));
+
+    // HardCoded values
+    newCase.setState(CaseState.SAMPLED_INIT);
+    newCase.setCreatedDateTime(DateTimeUtil.nowUTC());
+    newCase.setCreatedBy(Constants.SYSTEM);
+
+    caseRepo.saveAndFlush(newCase);
+    log.info("SetCaseData");
   }
 }

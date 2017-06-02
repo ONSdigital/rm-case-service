@@ -44,9 +44,6 @@ public class CaseEvent implements Serializable {
 
   @Column(name = "casefk")
   private Integer caseFK;
-  
-  @Column(name = "partyid")
-  private UUID partyId;
 
   private String description;
 
@@ -57,6 +54,7 @@ public class CaseEvent implements Serializable {
   private Timestamp createdDateTime;
 
   @Enumerated(EnumType.STRING)
+  @Column(name = "categoryfk")
   private CategoryDTO.CategoryType category;
 
   @Column(name = "subcategory")

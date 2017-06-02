@@ -25,5 +25,14 @@
     "subCategory":"subcat 3",
     "createdBy":"me 3",
     "description":"desc 3"
+  },
+    {
+    "createdDateTime":1460736159699,
+    "caseEventPK":4,
+    "caseFK":9,
+    "category":"RESPONDENT_ENROLLED",
+    "subCategory":null,
+    "createdBy":"unittest",
+    "description":"sometest"
   }
 ]
