@@ -12,7 +12,7 @@
   <parent>
     <groupId>uk.gov.ons.ctp.product</groupId>
     <artifactId>caseservice</artifactId>
-    <version>10.38.0-SNAPSHOT</version>
+    <version>10.40.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
@@ -33,7 +33,7 @@
     <dependency>
       <groupId>uk.gov.ons.ctp.product</groupId>
       <artifactId>casesvc-api</artifactId>
-      <version>10.38.0-SNAPSHOT</version>
+      <version>10.40.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
