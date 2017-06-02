@@ -431,7 +431,7 @@ public class CaseServiceImpl implements CaseService {
     newCaseGroup.setSampleUnitType(caseGroupData.getSampleUnitType());
 
     caseGroupRepo.saveAndFlush(newCaseGroup);
-    log.info("SetCaseGroupData");
+    log.debug("New CaseGroup created: {}", newCaseGroup.getId().toString());
     return newCaseGroup;
   }
 
@@ -455,6 +455,6 @@ public class CaseServiceImpl implements CaseService {
     newCase.setCreatedBy(Constants.SYSTEM);
 
     caseRepo.saveAndFlush(newCase);
-    log.info("SetCaseData");
+    log.debug("New Case created: {}", newCase.getId().toString());
   }
 }

@@ -37,8 +37,6 @@
 		schema-location="classpath:xsd/inbound/caseCreation.xsd" discard-channel="caseCreationInvalid" />
 
 
-
-
 	<!-- Validated xml is transformed into the jaxb generated object model -->
 	<int:channel id="caseTransformed"
 		datatype="uk.gov.ons.ctp.response.casesvc.definition.CaseCreation" />
