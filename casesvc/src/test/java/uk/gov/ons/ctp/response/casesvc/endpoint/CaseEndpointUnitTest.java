@@ -10,20 +10,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.ons.ctp.common.MvcHelper.getJson;
 import static uk.gov.ons.ctp.common.MvcHelper.postJson;
+import static uk.gov.ons.ctp.common.TestHelper.createTestDate;
 import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
 import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.ERRORMSG_CASENOTFOUND;
 import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseGroupEndpoint.ERRORMSG_CASEGROUPNOTFOUND;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.UUID;
 
 import org.hamcrest.Matchers;
@@ -124,6 +118,9 @@ public final class CaseEndpointUnitTest {
           "{\"description\":\"a\",\"category\":\"BAD_CAT\",\"createdBy\":\"u\"}";
   private static final String CASEEVENT_VALIDJSON =
           "{\"description\":\"sometest\",\"category\":\"RESPONDENT_ENROLLED\",\"partyId\":\"3b136c4b-7a14-4904-9e01-13364dd7b972\",\"createdBy\":\"unittest\"}";
+  
+  private static final String CASEEVENT_VALIDJSON_NO_PARTY =
+          "{\"description\":\"sometest\",\"category\":\"RESPONDENT_ENROLLED\",\"createdBy\":\"unittest\"}";
 
   @InjectMocks
   private CaseEndpoint caseEndpoint;
@@ -325,7 +322,6 @@ public final class CaseEndpointUnitTest {
   }
 
 
-  // TODO
   /**
    * a test providing bad json
    */
@@ -340,8 +336,40 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.error.message", isA(String.class)));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
+  
+  /**
+   * a test providing a non existing case ID
+   */
+  @Test
+  public void createCaseEventCaseNotFound() throws Exception {
+    ResultActions actions = mockMvc.perform(postJson(String.format("/cases/%s/events", NON_EXISTING_CASE_ID), CASEEVENT_VALIDJSON));
 
-  // TODO
+    actions.andExpect(status().isNotFound());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("createCaseEvent"));
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
+    actions.andExpect(jsonPath("$.error.message", isA(String.class)));
+    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+  }
+  
+  /**
+   * a test providing a non existing case ID
+   */
+  @Test
+  public void createCaseEventRequiresNewCase() throws Exception {
+    when(categoryService.findCategory(CategoryType.RESPONDENT_ENROLLED)).thenReturn(categoryResults.get(3));
+    when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class))).thenReturn(caseEventsResults.get(3));
+    when(caseService.findCaseById(CASE9_ID)).thenReturn(caseResults.get(8));
+    ResultActions actions = mockMvc.perform(postJson(String.format("/cases/%s/events", CASE9_ID), CASEEVENT_VALIDJSON_NO_PARTY));
+
+    actions.andExpect(status().isBadRequest());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("createCaseEvent"));
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())));
+    actions.andExpect(jsonPath("$.error.message", isA(String.class)));
+    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+  }
+
   /**
    * a test providing good json
    */
@@ -365,30 +393,4 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.subCategory").doesNotExist());
   }
 
-
-  private static void printDate(ZonedDateTime zdt) {
-    TimeZone gmt = TimeZone.getTimeZone("GMT");
-    TimeZone utc = TimeZone.getTimeZone("UTC");
-    TimeZone cet = TimeZone.getTimeZone("CET");
-    System.out.println(CREATEDDATE_VALUE);
-    System.out.println(zdt);
-    LocalDateTime ldt = zdt.toLocalDateTime();
-    ZonedDateTime gmtTime = ldt.atZone(ZoneId.of(gmt.getID()));
-    System.out.println("gmt:" + gmtTime);
-    ZonedDateTime utcTime = ldt.atZone(ZoneId.of(utc.getID()));
-    System.out.println("utc:" + utcTime);
-    ZonedDateTime cetTime = ldt.atZone(ZoneId.of(cet.getID()));
-    System.out.println("cet:" + cetTime);
-    ZonedDateTime bstTime = ldt.atZone(ZoneId.of("Europe/London"));
-    System.out.println("bst:" + bstTime);
-    System.out.println(Calendar.getInstance().getTimeZone().getID());
-  }
-  
-  private static String createTestDate(String date){
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-    ZonedDateTime zdt = ZonedDateTime.parse(date, formatter);
-    ZonedDateTime compareDate = zdt.withZoneSameInstant(ZoneOffset.systemDefault());
-    return formatter.format(compareDate);
-    
-  }
 }

@@ -168,8 +168,6 @@ public class CaseServiceImpl implements CaseService {
       // save the case event to db
       caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
       createdCaseEvent = caseEventRepo.save(caseEvent);
-      
-      newCase.setCaseGroupId(targetCase.getCaseGroupId());
 
       // do we need to record a response?
       recordCaseResponse(category, targetCase, timestamp);
@@ -252,9 +250,19 @@ public class CaseServiceImpl implements CaseService {
       createNewCaseFromEvent(caseEvent, targetCase, newCase, category);
     }
   }
-
+  
+  /**
+   * Add required values to the new case to be created
+   * 
+   * @param category the category details of the event
+   * @param targetCase the 'source' case the event is being created for
+   * @param newCase the new case to be created
+   */
   private void buildNewCase(Category category, Case newCase, Case targetCase) {
     newCase.setSampleUnitType(SampleUnitType.valueOf(category.getNewCaseSampleUnitType()));
+    
+    // set case group id to the same as 
+    newCase.setCaseGroupId(targetCase.getCaseGroupId());
 
     CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
     CollectionExerciseDTO collectionExercise = collectionExerciseSvcClientService

@@ -11,7 +11,7 @@
   <description>CTP : CaseService</description>
 
   <properties>
-    <commonbom.version>10.38.0-SNAPSHOT</commonbom.version>
+    <commonbom.version>10.40.0-SNAPSHOT</commonbom.version>
     <skip.integration.tests>true</skip.integration.tests>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>

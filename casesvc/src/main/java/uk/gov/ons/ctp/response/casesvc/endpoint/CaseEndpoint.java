@@ -183,7 +183,7 @@ public final class CaseEndpoint implements CTPEndpoint {
    * To create a case event being given a parent case and json to describe the
    * case event to be created
    *
-   * @param caseFK the parent case
+   * @param caseId the parent case
    * @param caseEventCreationRequestDTO the CaseEventDTO describing the case
    *          event to be created
    * @return the created CaseEventDTO
@@ -209,11 +209,11 @@ public final class CaseEndpoint implements CTPEndpoint {
     }
     caseEvent.setCaseFK(caseFound.getCasePK());
     
-    Case caze = new Case();
-    caze.setPartyId(caseEventCreationRequestDTO.getPartyId());
-//    if (caze != null) {
-// BRES new case id to be passed in?
-//    }
+    Case caze = null;
+    if (caseEventCreationRequestDTO.getPartyId() != null){
+      caze = new Case();
+      caze.setPartyId(caseEventCreationRequestDTO.getPartyId());
+    }
 
     Category category = categoryService.findCategory(caseEvent.getCategory());
     if (category.getNewCaseSampleUnitType() != null && caze == null) {
