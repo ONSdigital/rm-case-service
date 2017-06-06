@@ -106,8 +106,9 @@ public final class CaseEndpointUnitTest {
   private static final String CASE1_SUBCATEGORY = "subcat 1";
   private static final String CASE2_SUBCATEGORY = "subcat 2";
   private static final String CASE3_SUBCATEGORY = "subcat 3";
-  private static final String CREATEDDATE_VALUE = createTestDate("2016-04-15T17:02:39.699+0100");
-  private static final String CASE1_DATE_VALUE = createTestDate("2016-04-15T17:02:39.699+0100");
+  private static final String CASE_DATE_VALUE_1 = createTestDate("2016-04-15T17:02:39.699+0100");
+  private static final String CASE_DATE_VALUE_2 = createTestDate("2016-04-15T17:02:39.799+0100");
+  private static final String CASE_DATE_VALUE_3 = createTestDate("2016-04-15T17:02:39.899+0100");
   private static final String IAC_CASE1 = "bbbb cccc dddd";
 
 
@@ -174,6 +175,7 @@ public final class CaseEndpointUnitTest {
   public void findCaseByCaseIdFound() throws Exception {
     when(caseService.findCaseById(CASE1_ID)).thenReturn(caseResults.get(0));
     when(caseGroupService.findCaseGroupByCaseGroupPK(any(Integer.class))).thenReturn(caseGroupResults.get(0));
+    when(caseService.findCaseEventsByCaseFK(any(Integer.class))).thenReturn(caseEventsResults);
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s", CASE1_ID)));
 
@@ -188,15 +190,25 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.sampleUnitType", is(CASE_SAMPLE_UNIT_TYPE_B)));
     actions.andExpect(jsonPath("$.state", is(CaseDTO.CaseState.SAMPLED_INIT.name())));
     actions.andExpect(jsonPath("$.createdBy", is(SYSTEM)));
-    actions.andExpect(jsonPath("$.createdDateTime", is(CREATEDDATE_VALUE)));
+    actions.andExpect(jsonPath("$.createdDateTime", is(CASE_DATE_VALUE_1)));
+
     actions.andExpect(jsonPath("$.responses", Matchers.hasSize(1)));
     actions.andExpect(jsonPath("$.responses[*].inboundChannel", containsInAnyOrder(InboundChannel.PAPER.name())));
-    actions.andExpect(jsonPath("$.responses[*].dateTime", containsInAnyOrder(CASE1_DATE_VALUE)));
+    actions.andExpect(jsonPath("$.responses[*].dateTime", containsInAnyOrder(CASE_DATE_VALUE_1)));
+
     actions.andExpect(jsonPath("$.caseGroup.id", is(CASE1_CASEGROUP_ID.toString())));
     actions.andExpect(jsonPath("$.caseGroup.collectionExerciseId", is(CASE1_CASEGROUP_COLLECTION_EXERCISE_ID.toString())));
     actions.andExpect(jsonPath("$.caseGroup.partyId", is(CASE1_CASEGROUP_PARTY_ID.toString())));
     actions.andExpect(jsonPath("$.caseGroup.sampleUnitRef", is(CASE1_CASEGROUP_SAMPLE_UNIT_REF)));
     actions.andExpect(jsonPath("$.caseGroup.sampleUnitType", is(CASE1_CASEGROUP_SAMPLE_UNIT_TYPE)));
+
+    actions.andExpect(jsonPath("$.caseEvents", Matchers.hasSize(4)));
+    actions.andExpect(jsonPath("$.caseEvents[*].description", containsInAnyOrder(CASE1_DESCRIPTION, CASE2_DESCRIPTION, CASE3_DESCRIPTION, CASE9_DESCRIPTION)));
+    actions.andExpect(jsonPath("$.caseEvents[*].category", containsInAnyOrder(CASE1_CATEGORY, CASE2_CATEGORY, CASE3_CATEGORY, CASE9_CATEGORY)));
+    actions.andExpect(jsonPath("$.caseEvents[*].subCategory", containsInAnyOrder(CASE1_SUBCATEGORY, CASE2_SUBCATEGORY, CASE3_SUBCATEGORY, null)));
+    actions.andExpect(jsonPath("$.caseEvents[*].createdBy", containsInAnyOrder(CASE1_CREATEDBY, CASE2_CREATEDBY, CASE3_CREATEDBY, CASE9_CREATEDBY)));
+    actions.andExpect(jsonPath("$.caseEvents[*].createdDateTime", containsInAnyOrder(CASE_DATE_VALUE_1, CASE_DATE_VALUE_2, CASE_DATE_VALUE_3, CASE_DATE_VALUE_1)));
+
   }
 
   @Test
@@ -270,9 +282,9 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$[*].sampleUnitType", containsInAnyOrder(CASE_SAMPLE_UNIT_TYPE_B, CASE_SAMPLE_UNIT_TYPE_BI, CASE_SAMPLE_UNIT_TYPE_H, CASE_SAMPLE_UNIT_TYPE_HI, CASE_SAMPLE_UNIT_TYPE_B, CASE_SAMPLE_UNIT_TYPE_BI, CASE_SAMPLE_UNIT_TYPE_H, CASE_SAMPLE_UNIT_TYPE_HI)));
     actions.andExpect(jsonPath("$[*].state", containsInAnyOrder(CaseDTO.CaseState.SAMPLED_INIT.name(), CaseDTO.CaseState.INACTIONABLE.name(), CaseDTO.CaseState.ACTIONABLE.name(), CaseDTO.CaseState.INACTIONABLE.name(), CaseDTO.CaseState.ACTIONABLE.name(), CaseDTO.CaseState.INACTIONABLE.name(), CaseDTO.CaseState.ACTIONABLE.name(), CaseDTO.CaseState.INACTIONABLE.name())));
     actions.andExpect(jsonPath("$[*].createdBy", containsInAnyOrder(SYSTEM, SYSTEM, SYSTEM, SYSTEM, SYSTEM, SYSTEM, SYSTEM, SYSTEM)));
-    actions.andExpect(jsonPath("$[*].createdDateTime", containsInAnyOrder(CREATEDDATE_VALUE, CREATEDDATE_VALUE, CREATEDDATE_VALUE, CREATEDDATE_VALUE, CREATEDDATE_VALUE, CREATEDDATE_VALUE, CREATEDDATE_VALUE, CREATEDDATE_VALUE)));
+    actions.andExpect(jsonPath("$[*].createdDateTime", containsInAnyOrder(CASE_DATE_VALUE_1, CASE_DATE_VALUE_1, CASE_DATE_VALUE_1, CASE_DATE_VALUE_1, CASE_DATE_VALUE_1, CASE_DATE_VALUE_1, CASE_DATE_VALUE_1, CASE_DATE_VALUE_1)));
     actions.andExpect(jsonPath("$[*].responses[*].inboundChannel", containsInAnyOrder(InboundChannel.PAPER.name(), InboundChannel.ONLINE.name(), InboundChannel.PAPER.name(), InboundChannel.ONLINE.name(), InboundChannel.PAPER.name(), InboundChannel.ONLINE.name(), InboundChannel.PAPER.name(), InboundChannel.ONLINE.name())));
-    actions.andExpect(jsonPath("$[*].responses[*].dateTime", containsInAnyOrder(CREATEDDATE_VALUE, CREATEDDATE_VALUE, CREATEDDATE_VALUE, CREATEDDATE_VALUE, CREATEDDATE_VALUE, CREATEDDATE_VALUE, CREATEDDATE_VALUE, CREATEDDATE_VALUE)));
+    actions.andExpect(jsonPath("$[*].responses[*].dateTime", containsInAnyOrder(CASE_DATE_VALUE_1, CASE_DATE_VALUE_1, CASE_DATE_VALUE_1, CASE_DATE_VALUE_1, CASE_DATE_VALUE_1, CASE_DATE_VALUE_1, CASE_DATE_VALUE_1, CASE_DATE_VALUE_1)));
   }
 
 
@@ -395,7 +407,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.caseId", is(CASE9_ID.toString())));
     actions.andExpect(jsonPath("$.description", is(CASE9_DESCRIPTION)));
     actions.andExpect(jsonPath("$.createdBy", is(CASE9_CREATEDBY)));
-    actions.andExpect(jsonPath("$.createdDateTime", is(CREATEDDATE_VALUE)));
+    actions.andExpect(jsonPath("$.createdDateTime", is(CASE_DATE_VALUE_1)));
     actions.andExpect(jsonPath("$.category", is(CASE9_CATEGORY)));
     actions.andExpect(jsonPath("$.partyId", is(CASE9_PARTYID.toString())));
     actions.andExpect(jsonPath("$.subCategory").doesNotExist());

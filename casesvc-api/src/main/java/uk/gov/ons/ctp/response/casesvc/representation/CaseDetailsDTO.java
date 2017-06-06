@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -42,7 +43,8 @@ public class CaseDetailsDTO {
     private String createdBy;
     private Date createdDateTime;
 
-    private ResponseDTO[] responses;
+    private List<ResponseDTO> responses;
 
     private CaseGroupDTO caseGroup;
+    private List<CaseEventDTO> caseEvents;
 }
