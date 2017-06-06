@@ -1,6 +1,8 @@
 # Case Service API
 This page documents the Case service API endpoints. These endpoints will be secured using HTTP basic authentication initially. All endpoints return an `HTTP 200 OK` status code except where noted otherwise.
 
+## Optional Query Parameters
+
 ## Case Events
 For the endpoints that return the details of a case:
 
@@ -13,6 +15,19 @@ For the endpoints that return the details of a case:
 * `GET /cases/partyid/3b136c4b-7a14-4904-9e01-13364dd7b972?caseevents=true`
 
 If this query parameter is omitted these case events **will not** be returned with the case details. In this scenario case events for a case can be retrieved separately using the `GET /cases/<case_id>/events` endpoint. The JSON examples provided for the three endpoints mentioned above include the case events for illustration purposes.
+
+## Unique Access Codes
+For the endpoints that return the details of a case:
+
+* `GET /cases/<case_id>`
+* `GET /cases/partyid/<party_id>`
+* `GET /cases/iac/<iac>`
+
+&mdash;an optional `iac` boolean query parameter can be used to specify that the JSON response include the unique access code associated with the case. For example:
+
+* `GET /cases/partyid/3b136c4b-7a14-4904-9e01-13364dd7b972?iac=true`
+
+If this query parameter is omitted the UAC **will not** be returned with the case details. The JSON examples provided for the three endpoints mentioned above include the UAC for illustration purposes.
 
 ## Get Case Group
 * `GET /casegroups/9a5f2be5-f944-41f9-982c-3517cfcfef3c` will return the details of the case group with an ID of `9a5f2be5-f944-41f9-982c-3517cfcfef3c`.
@@ -67,6 +82,7 @@ An `HTTP 404 Not Found` status code is returned if the case group with the speci
   "collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
   "partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
   "actionPlanId": "5381731e-e386-41a1-8462-26373744db86",
+  "iac": "fb747cq725lj",
   "sampleUnitType": "BI",
   "state": "INACTIONABLE",
   "createdBy": "SYSTEM",
@@ -116,6 +132,7 @@ An `HTTP 404 Not Found` status code is returned if the case with the specified I
     "collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
     "partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
     "actionPlanId": "5381731e-e386-41a1-8462-26373744db86",
+    "iac": "fb747cq725lj",
     "sampleUnitType": "BI",
     "state": "INACTIONABLE",
     "createdBy": "SYSTEM",
@@ -165,6 +182,7 @@ An `HTTP 404 Not Found` status code is returned if the case with the specified p
   "collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
   "partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
   "actionPlanId": "5381731e-e386-41a1-8462-26373744db86",
+  "iac": "fb747cq725lj",
   "sampleUnitType": "BI",
   "state": "INACTIONABLE",
   "createdBy": "SYSTEM",
