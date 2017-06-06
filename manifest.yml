@@ -2,6 +2,7 @@ applications:
 - name: casesvc
   buildpack: https://github.com/cloudfoundry/java-buildpack.git
   instances: 1
+  timeout: 120
   host: casesvc
   memory: 1024M
   path: casesvc/target/casesvc.jar
