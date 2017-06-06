@@ -1,8 +1,6 @@
 # Case Service API
 This page documents the Case service API endpoints. These endpoints will be secured using HTTP basic authentication initially. All endpoints return an `HTTP 200 OK` status code except where noted otherwise.
 
-## Optional Query Parameters
-
 ## Case Events
 For the endpoints that return the details of a case:
 
@@ -27,7 +25,7 @@ For the endpoints that return the details of a case:
 
 * `GET /cases/partyid/3b136c4b-7a14-4904-9e01-13364dd7b972?iac=true`
 
-If this query parameter is omitted the UAC **will not** be returned with the case details. The JSON examples provided for the three endpoints mentioned above include the UAC for illustration purposes.
+If this query parameter is omitted the unique access code **will not** be returned with the case details. The JSON examples provided for the three endpoints mentioned above include the code for illustration purposes.
 
 ## Get Case Group
 * `GET /casegroups/9a5f2be5-f944-41f9-982c-3517cfcfef3c` will return the details of the case group with an ID of `9a5f2be5-f944-41f9-982c-3517cfcfef3c`.
