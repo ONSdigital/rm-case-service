@@ -10,11 +10,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Response;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.ResponseDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.*;
 
 /**
  * The bean mapper that maps to/from DTOs and JPA entity types.
@@ -24,14 +20,20 @@ import uk.gov.ons.ctp.response.casesvc.representation.ResponseDTO;
 public class CaseSvcBeanMapper extends ConfigurableMapper {
 
   /**
-   * Setup the mapper for all of our beans. Only fields having non  identical names need
-   * mapping if we also use byDefault() following.
+   * Setup the mapper for all of our beans. Only fields having non identical names need mapping if we also use
+   * byDefault() following.
+   *
    * @param factory the factory to which we add our mappings
    */
   protected final void configure(final MapperFactory factory) {
 
     factory
             .classMap(Case.class, CaseDTO.class)
+            .byDefault()
+            .register();
+
+    factory
+            .classMap(Case.class, CaseDetailsDTO.class)
             .byDefault()
             .register();
 
