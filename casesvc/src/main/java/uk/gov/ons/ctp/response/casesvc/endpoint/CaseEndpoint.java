@@ -69,7 +69,8 @@ public final class CaseEndpoint implements CTPEndpoint {
    */
   @RequestMapping(value = "/{caseId}", method = RequestMethod.GET)
   public ResponseEntity<?> findCaseById(@PathVariable("caseId") final UUID caseId,
-                                  @RequestParam(value = "caseevents", required = false) boolean caseevents)
+                                        @RequestParam(value = "caseevents", required = false) boolean caseevents,
+                                        @RequestParam(value = "iac", required = false) boolean iac)
           throws CTPException {
     log.info("Entering findCaseById with {}", caseId);
     Case caseObj = caseService.findCaseById(caseId);
@@ -87,6 +88,10 @@ public final class CaseEndpoint implements CTPEndpoint {
       List<CaseEvent> caseEvents = caseService.findCaseEventsByCaseFK(caseObj.getCasePK());
       List<CaseEventDTO> caseEventDTOs = mapperFacade.mapAsList(caseEvents, CaseEventDTO.class);
       caseDetailsDTO.setCaseEvents(caseEventDTOs);
+    }
+
+    if (!iac) {
+      caseDetailsDTO.setIac(null);
     }
 
     return ResponseEntity.ok(caseDetailsDTO);

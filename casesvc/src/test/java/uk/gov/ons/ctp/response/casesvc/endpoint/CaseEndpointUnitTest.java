@@ -174,12 +174,12 @@ public final class CaseEndpointUnitTest {
   }
 
   @Test
-  public void findCaseByCaseIdFoundWithCaseEvents() throws Exception {
+  public void findCaseByCaseIdFoundWithCaseEventsAndIac() throws Exception {
     when(caseService.findCaseById(CASE1_ID)).thenReturn(caseResults.get(0));
     when(caseGroupService.findCaseGroupByCaseGroupPK(any(Integer.class))).thenReturn(caseGroupResults.get(0));
     when(caseService.findCaseEventsByCaseFK(any(Integer.class))).thenReturn(caseEventsResults);
 
-    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s?caseevents=true", CASE1_ID)));
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s?caseevents=true&iac=true", CASE1_ID)));
 
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
@@ -213,7 +213,7 @@ public final class CaseEndpointUnitTest {
   }
 
   @Test
-  public void findCaseByCaseIdFoundWithoutCaseEvents() throws Exception {
+  public void findCaseByCaseIdFoundWithoutCaseEventsAndIac() throws Exception {
     when(caseService.findCaseById(CASE1_ID)).thenReturn(caseResults.get(0));
     when(caseGroupService.findCaseGroupByCaseGroupPK(any(Integer.class))).thenReturn(caseGroupResults.get(0));
     when(caseService.findCaseEventsByCaseFK(any(Integer.class))).thenReturn(caseEventsResults);
@@ -224,7 +224,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCaseById"));
     actions.andExpect(jsonPath("$.id", is(CASE1_ID.toString())));
-    actions.andExpect(jsonPath("$.iac", is(IAC_CASE1)));
+    actions.andExpect(jsonPath("$.iac", is(nullValue())));
     actions.andExpect(jsonPath("$.collectionInstrumentId", is(CASE_CI_ID)));
     actions.andExpect(jsonPath("$.partyId", is(CASE_PARTY_ID)));
     actions.andExpect(jsonPath("$.actionPlanId", is(CASE_ACTIONPLAN_ID_1)));
