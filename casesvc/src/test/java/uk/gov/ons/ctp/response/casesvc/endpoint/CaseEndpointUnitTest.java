@@ -1,9 +1,11 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -172,12 +174,12 @@ public final class CaseEndpointUnitTest {
   }
 
   @Test
-  public void findCaseByCaseIdFound() throws Exception {
+  public void findCaseByCaseIdFoundWithCaseEvents() throws Exception {
     when(caseService.findCaseById(CASE1_ID)).thenReturn(caseResults.get(0));
     when(caseGroupService.findCaseGroupByCaseGroupPK(any(Integer.class))).thenReturn(caseGroupResults.get(0));
     when(caseService.findCaseEventsByCaseFK(any(Integer.class))).thenReturn(caseEventsResults);
 
-    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s", CASE1_ID)));
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s?caseevents=true", CASE1_ID)));
 
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
@@ -208,7 +210,40 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.caseEvents[*].subCategory", containsInAnyOrder(CASE1_SUBCATEGORY, CASE2_SUBCATEGORY, CASE3_SUBCATEGORY, null)));
     actions.andExpect(jsonPath("$.caseEvents[*].createdBy", containsInAnyOrder(CASE1_CREATEDBY, CASE2_CREATEDBY, CASE3_CREATEDBY, CASE9_CREATEDBY)));
     actions.andExpect(jsonPath("$.caseEvents[*].createdDateTime", containsInAnyOrder(CASE_DATE_VALUE_1, CASE_DATE_VALUE_2, CASE_DATE_VALUE_3, CASE_DATE_VALUE_1)));
+  }
 
+  @Test
+  public void findCaseByCaseIdFoundWithoutCaseEvents() throws Exception {
+    when(caseService.findCaseById(CASE1_ID)).thenReturn(caseResults.get(0));
+    when(caseGroupService.findCaseGroupByCaseGroupPK(any(Integer.class))).thenReturn(caseGroupResults.get(0));
+    when(caseService.findCaseEventsByCaseFK(any(Integer.class))).thenReturn(caseEventsResults);
+
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s", CASE1_ID)));
+
+    actions.andExpect(status().isOk());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("findCaseById"));
+    actions.andExpect(jsonPath("$.id", is(CASE1_ID.toString())));
+    actions.andExpect(jsonPath("$.iac", is(IAC_CASE1)));
+    actions.andExpect(jsonPath("$.collectionInstrumentId", is(CASE_CI_ID)));
+    actions.andExpect(jsonPath("$.partyId", is(CASE_PARTY_ID)));
+    actions.andExpect(jsonPath("$.actionPlanId", is(CASE_ACTIONPLAN_ID_1)));
+    actions.andExpect(jsonPath("$.sampleUnitType", is(CASE_SAMPLE_UNIT_TYPE_B)));
+    actions.andExpect(jsonPath("$.state", is(CaseDTO.CaseState.SAMPLED_INIT.name())));
+    actions.andExpect(jsonPath("$.createdBy", is(SYSTEM)));
+    actions.andExpect(jsonPath("$.createdDateTime", is(CASE_DATE_VALUE_1)));
+
+    actions.andExpect(jsonPath("$.responses", Matchers.hasSize(1)));
+    actions.andExpect(jsonPath("$.responses[*].inboundChannel", containsInAnyOrder(InboundChannel.PAPER.name())));
+    actions.andExpect(jsonPath("$.responses[*].dateTime", containsInAnyOrder(CASE_DATE_VALUE_1)));
+
+    actions.andExpect(jsonPath("$.caseGroup.id", is(CASE1_CASEGROUP_ID.toString())));
+    actions.andExpect(jsonPath("$.caseGroup.collectionExerciseId", is(CASE1_CASEGROUP_COLLECTION_EXERCISE_ID.toString())));
+    actions.andExpect(jsonPath("$.caseGroup.partyId", is(CASE1_CASEGROUP_PARTY_ID.toString())));
+    actions.andExpect(jsonPath("$.caseGroup.sampleUnitRef", is(CASE1_CASEGROUP_SAMPLE_UNIT_REF)));
+    actions.andExpect(jsonPath("$.caseGroup.sampleUnitType", is(CASE1_CASEGROUP_SAMPLE_UNIT_TYPE)));
+
+    actions.andExpect(jsonPath("$.caseEvents", is(nullValue())));
   }
 
   @Test

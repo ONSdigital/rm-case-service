@@ -83,9 +83,11 @@ public final class CaseEndpoint implements CTPEndpoint {
     CaseGroup parentCaseGroup = caseGroupService.findCaseGroupByCaseGroupPK(caseObj.getCaseGroupFK());
     caseDetailsDTO.setCaseGroup(mapperFacade.map(parentCaseGroup, CaseGroupDTO.class));
 
-    List<CaseEvent> caseEvents = caseService.findCaseEventsByCaseFK(caseObj.getCasePK());
-    List<CaseEventDTO> caseEventDTOs = mapperFacade.mapAsList(caseEvents, CaseEventDTO.class);
-    caseDetailsDTO.setCaseEvents(caseEventDTOs);
+    if (caseevents) {
+      List<CaseEvent> caseEvents = caseService.findCaseEventsByCaseFK(caseObj.getCasePK());
+      List<CaseEventDTO> caseEventDTOs = mapperFacade.mapAsList(caseEvents, CaseEventDTO.class);
+      caseDetailsDTO.setCaseEvents(caseEventDTOs);
+    }
 
     return ResponseEntity.ok(caseDetailsDTO);
   }
