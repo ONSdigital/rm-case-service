@@ -6,9 +6,9 @@ applications:
   memory: 1024M
   path: casesvc/target/casesvc.jar
   services:
-    - casesvc_pg_db
-    - redis
-    - rabbitmq
+    - casesvc-pg-db
+    - rm-redis
+    - rm-rabbitmq
   env:
     internetAccessCodeSvc_connectionConfig_host: iacsvc.apps.mvp.onsclofo.uk
     internetAccessCodeSvc_connectionConfig_port: "80"
