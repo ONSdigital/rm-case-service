@@ -30,10 +30,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.*;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
@@ -81,13 +78,17 @@ public final class CaseEndpoint implements CTPEndpoint {
           String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseId));
     }
 
-    // TODO find the CaseGroup info
+    CaseDetailsDTO caseDetailsDTO = mapperFacade.map(caseObj, CaseDetailsDTO.class);
+
+    CaseGroup parentCaseGroup = caseGroupService.findCaseGroupByCaseGroupPK(caseObj.getCaseGroupFK());
+    caseDetailsDTO.setCaseGroup(mapperFacade.map(parentCaseGroup, CaseGroupDTO.class));
+
 //    if (caseevents) {
 //       List<CaseEvent> caseEvents = caseService.findCaseEventsByCasePK(caseId);
 //    }
     // TODO Build the full DTO
 
-    return ResponseEntity.ok(mapperFacade.map(caseObj, CaseDTO.class));
+    return ResponseEntity.ok(caseDetailsDTO);
   }
     
   /**

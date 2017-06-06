@@ -76,6 +76,11 @@ public final class CaseEndpointUnitTest {
   private static final UUID CASE8_ID = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd8");
   private static final UUID CASE9_ID = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd9");
   private static final UUID CASE9_PARTYID = UUID.fromString("3b136c4b-7a14-4904-9e01-13364dd7b972");
+  private static final UUID CASE1_CASEGROUP_ID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfef3c");
+  private static final UUID CASE1_CASEGROUP_COLLECTION_EXERCISE_ID = UUID.fromString("dab9db7f-3aa0-4866-be20-54d72ee185fb");
+  private static final UUID CASE1_CASEGROUP_PARTY_ID = UUID.fromString("3b136c4b-7a14-4904-9e01-13364dd7b972");
+  private static final String CASE1_CASEGROUP_SAMPLE_UNIT_REF = "0123456789";
+  private static final String CASE1_CASEGROUP_SAMPLE_UNIT_TYPE = "B";
   private static final String CASE_CI_ID = "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e";
   private static final String CASE_PARTY_ID = "3b136c4b-7a14-4904-9e01-13364dd7b972";
   private static final String CASE_ACTIONPLAN_ID_1 = "5381731e-e386-41a1-8462-26373744db81";
@@ -144,6 +149,7 @@ public final class CaseEndpointUnitTest {
 
   private MockMvc mockMvc;
   private List<Case> caseResults;
+  private List<CaseGroup> caseGroupResults;
   private List<CaseEvent> caseEventsResults;
   private List<Category> categoryResults;
 
@@ -159,6 +165,7 @@ public final class CaseEndpointUnitTest {
             .build();
 
     this.caseResults = FixtureHelper.loadClassFixtures(Case[].class);
+    this.caseGroupResults = FixtureHelper.loadClassFixtures(CaseGroup[].class);
     this.caseEventsResults = FixtureHelper.loadClassFixtures(CaseEvent[].class);
     this.categoryResults = FixtureHelper.loadClassFixtures(Category[].class);
   }
@@ -166,6 +173,7 @@ public final class CaseEndpointUnitTest {
   @Test
   public void findCaseByCaseIdFound() throws Exception {
     when(caseService.findCaseById(CASE1_ID)).thenReturn(caseResults.get(0));
+    when(caseGroupService.findCaseGroupByCaseGroupPK(any(Integer.class))).thenReturn(caseGroupResults.get(0));
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s", CASE1_ID)));
 
@@ -184,6 +192,11 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.responses", Matchers.hasSize(1)));
     actions.andExpect(jsonPath("$.responses[*].inboundChannel", containsInAnyOrder(InboundChannel.PAPER.name())));
     actions.andExpect(jsonPath("$.responses[*].dateTime", containsInAnyOrder(CASE1_DATE_VALUE)));
+    actions.andExpect(jsonPath("$.caseGroup.id", is(CASE1_CASEGROUP_ID.toString())));
+    actions.andExpect(jsonPath("$.caseGroup.collectionExerciseId", is(CASE1_CASEGROUP_COLLECTION_EXERCISE_ID.toString())));
+    actions.andExpect(jsonPath("$.caseGroup.partyId", is(CASE1_CASEGROUP_PARTY_ID.toString())));
+    actions.andExpect(jsonPath("$.caseGroup.sampleUnitRef", is(CASE1_CASEGROUP_SAMPLE_UNIT_REF)));
+    actions.andExpect(jsonPath("$.caseGroup.sampleUnitType", is(CASE1_CASEGROUP_SAMPLE_UNIT_TYPE)));
   }
 
   @Test
