@@ -96,6 +96,36 @@ public final class CaseEndpoint implements CTPEndpoint {
 
     return ResponseEntity.ok(caseDetailsDTO);
   }
+
+  /**
+   * the GET endpoint to find Cases by partyid UUID
+   *
+   * @param partyId to find by
+   * @return the case found
+   * @throws CTPException something went wrong
+   */
+  @RequestMapping(value = "/partyid/{partyId}", method = RequestMethod.GET)
+  public ResponseEntity<?> findCasesByPartyId(@PathVariable("partyId") final UUID partyId,
+                                        @RequestParam(value = "caseevents", required = false) boolean caseevents,
+                                        @RequestParam(value = "iac", required = false) boolean iac)
+          throws CTPException {
+    log.info("Entering findCasesByPartyId with {}", partyId);
+    List<Case> casesList = caseService.findCasesByPartyId(partyId);
+
+    if (CollectionUtils.isEmpty(casesList)) {
+      return ResponseEntity.noContent().build();
+    } else {
+      List<CaseDetailsDTO> casesDetailedListDTO = mapperFacade.mapAsList(casesList, CaseDetailsDTO.class);
+      // TODO Add the case group details
+      // TODO Add the case events
+      if (!iac) {
+        for (CaseDetailsDTO caze: casesDetailedListDTO) {
+          caze.setIac(null);
+        }
+      }
+      return ResponseEntity.ok(casesDetailedListDTO);
+    }
+  }
     
   /**
    * the GET endpoint to find a Case by IAC
@@ -138,7 +168,6 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @throws CTPException something went wrong
    */
   @RequestMapping(value = "/casegroupid/{caseId}", method = RequestMethod.GET)
-
   public ResponseEntity<?> findCasesInCaseGroup(@PathVariable("caseId") final UUID caseId,
                                                 @RequestParam(name = "caseevents", defaultValue = "false") final boolean caseevents) 
                                                 throws CTPException {

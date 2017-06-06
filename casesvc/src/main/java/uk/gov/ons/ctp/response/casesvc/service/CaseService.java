@@ -25,6 +25,13 @@ public interface CaseService extends CTPService {
   List<Case> findCasesByCaseGroupFK(final Integer caseGroupFK);
 
   /**
+   * Find the cases for a partyId
+   * @param partyId the partyId
+   * @return the cases for the partyId
+   */
+  List<Case> findCasesByPartyId(final UUID partyId);
+
+  /**
    * Find Case entity by Unique Case PK.
    *
    * @param casePK Unique Case Id
@@ -59,7 +66,7 @@ public interface CaseService extends CTPService {
   /**
    * Find CaseEvent entities associated with a Case.
    *
-   * @param casePK Case Id
+   * @param caseFK Case ForeignKey
    * @return List of CaseEvent entities or empty List
    */
   List<CaseEvent> findCaseEventsByCaseFK(Integer caseFK);
@@ -101,9 +108,7 @@ public interface CaseService extends CTPService {
    * create a new case - if so the details must be provided in the newCase argument, otherwise it may remain null.
    * If the newCase is passed it must also contain the contact details for the new case.
    *
-   * @param caseEvent CaseEvent to be created
-   * @param newCase optional case object containing partial details of the case to be created by this event.
-   * @return the created CaseEvent
+   * @param caseData the CaseCreation data
    */
   void createInitialCase(CaseCreation caseData);
 }

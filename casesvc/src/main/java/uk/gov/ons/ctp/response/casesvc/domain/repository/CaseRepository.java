@@ -26,7 +26,7 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
    * using the page specification provided
    *
    * @param states States of Case
-   * @param casepk casepks to exclude
+   * @param casePKs casepks to exclude
    * @param pageable the paging info for the query
    * @return List<Action> returns all cases in states, for the given page
    */
@@ -43,14 +43,12 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
 //  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
 //  @Query(value = "UPDATE casesvc.case SET state = ?2 WHERE casePK = ?1", nativeQuery = true)
 //  int setState(Integer casePK, String state);
-  
-  
+
   /**
    * Find cases assigned to the given casegroupid
    * @param caseGroupFK the group id
    * @return the cases in the group
    */
-
   List<Case> findByCaseGroupFKOrderByCreatedDateTimeDesc(Integer caseGroupFK);
   
   /**
@@ -74,4 +72,13 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
    * @return the case
    */
   Case findById(UUID id);
+
+  /**
+   * Find cases assigned to a given partyId
+   *
+   * @param partyId the partyId
+   * @return the cases associated with the partyId
+   */
+  List<Case> findByPartyId(UUID partyId);
+
 }

@@ -123,6 +123,12 @@ public class CaseServiceImpl implements CaseService {
   }
 
   @Override
+  public List<Case> findCasesByPartyId(final UUID partyId) {
+    log.debug("Entering findCasesByPartyId");
+    return caseRepo.findByPartyId(partyId);
+  }
+
+  @Override
   public List<CaseEvent> findCaseEventsByCaseFK(final Integer caseFK) {
     log.debug("Entering findCaseEventsByCaseFK");
     return caseEventRepo.findByCaseFKOrderByCreatedDateTimeDesc(caseFK);
