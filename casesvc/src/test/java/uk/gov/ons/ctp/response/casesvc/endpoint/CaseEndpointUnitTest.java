@@ -102,6 +102,7 @@ public final class CaseEndpointUnitTest {
   private static final String CASE2_SUBCATEGORY = "subcat 2";
   private static final String CASE3_SUBCATEGORY = "subcat 3";
   private static final String CREATEDDATE_VALUE = createTestDate("2016-04-15T17:02:39.699+0100");
+  private static final String CASE1_DATE_VALUE = createTestDate("2016-04-15T17:02:39.699+0100");
   private static final String IAC_CASE1 = "bbbb cccc dddd";
 
 
@@ -180,7 +181,9 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.state", is(CaseDTO.CaseState.SAMPLED_INIT.name())));
     actions.andExpect(jsonPath("$.createdBy", is(SYSTEM)));
     actions.andExpect(jsonPath("$.createdDateTime", is(CREATEDDATE_VALUE)));
-    actions.andExpect(jsonPath("$.responses[*]", Matchers.hasSize(1)));
+    actions.andExpect(jsonPath("$.responses", Matchers.hasSize(1)));
+    actions.andExpect(jsonPath("$.responses[*].inboundChannel", containsInAnyOrder(InboundChannel.PAPER.name())));
+    actions.andExpect(jsonPath("$.responses[*].dateTime", containsInAnyOrder(CASE1_DATE_VALUE)));
   }
 
   @Test
