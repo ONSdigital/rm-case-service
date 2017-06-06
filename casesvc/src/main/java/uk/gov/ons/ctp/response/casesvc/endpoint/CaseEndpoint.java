@@ -66,7 +66,7 @@ public final class CaseEndpoint implements CTPEndpoint {
   /**
    * the GET endpoint to find a Case by UUID
    *
-   * @param casePK to find by
+   * @param caseId to find by
    * @return the case found
    * @throws CTPException something went wrong
    */
@@ -74,13 +74,13 @@ public final class CaseEndpoint implements CTPEndpoint {
   public ResponseEntity<?> findCaseById(@PathVariable("caseId") final UUID caseId,
                                   @RequestParam(value = "caseevents", required = false) boolean caseevents)
           throws CTPException {
-	  
-    log.info("Entering findCaseByCasePK with {}", caseId);
+    log.info("Entering findCaseById with {}", caseId);
     Case caseObj = caseService.findCaseById(caseId);
     if (caseObj == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
           String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseId));
     }
+
     // TODO find the CaseGroup info
 //    if (caseevents) {
 //       List<CaseEvent> caseEvents = caseService.findCaseEventsByCasePK(caseId);
