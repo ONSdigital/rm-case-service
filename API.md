@@ -168,7 +168,7 @@ An `HTTP 404 Not Found` status code is returned if the case with the specified I
 ]
 ```
 
-An `HTTP 204 No Content ` status code is returned if there are no cases found with the specified party ID.
+An `HTTP 204 No Content` status code is returned if there are no cases found with the specified party ID.
 
 ## Get Case by Unique Access Code
 * `GET /cases/iac/fb747cq725lj` will return the details of the case with a unique access code of `fb747cq725lj`.
