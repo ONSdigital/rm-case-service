@@ -6,6 +6,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.isNull;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -25,10 +26,7 @@ import java.util.UUID;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
+import org.mockito.*;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -46,6 +44,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryType;
 import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
@@ -120,6 +119,7 @@ public final class CaseEndpointUnitTest {
   private static final String IAC_CASE7 = "jjjj kkkk llll";
   private static final String IAC_CASE8 = "kkkk llll mmmm";
   private static final String IAC_CASE9 = "kkkk llll mmmm";
+  private static final String NON_EXISTING_IAC = "zzzz llll mmmm";
 
 
   private static final UUID EXISTING_CASE_GROUP_UUID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfeabc");
@@ -327,6 +327,58 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$[*].caseGroup.id", containsInAnyOrder(CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString())));
   }
 
+
+  @Test
+  public void findCaseByIACNotFound() throws Exception {
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/iac/%s", NON_EXISTING_IAC)));
+
+    actions.andExpect(status().isNotFound());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("findCaseByIac"));
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
+    actions.andExpect(jsonPath("$.error.message", is(String.format("%s iac %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_IAC))));
+    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+  }
+
+  @Test
+  public void findCaseByIACWithoutEventsAndIAC() throws Exception {
+    when(caseService.findCaseByIac(IAC_CASE1)).thenReturn(caseResults.get(0));
+    when(caseGroupService.findCaseGroupByCaseGroupPK(any(Integer.class))).thenReturn(caseGroupResults.get(0));
+    when(caseService.findCaseEventsByCaseFK(any(Integer.class))).thenReturn(caseEventsResults);
+    Category newCategory = new Category();
+    newCategory.setShortDescription("desc");
+    when(categoryService.findCategory(CategoryDTO.CategoryType.IAC_AUTHENTICATED)).thenReturn(newCategory);
+
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/iac/%s", IAC_CASE1)));
+
+    actions.andExpect(status().isOk());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("findCaseByIac"));
+    actions.andExpect(jsonPath("$.id", is(CASE1_ID.toString())));
+    actions.andExpect(jsonPath("$.iac", is(nullValue())));
+    actions.andExpect(jsonPath("$.collectionInstrumentId", is(CASE_CI_ID)));
+    actions.andExpect(jsonPath("$.partyId", is(CASE_PARTY_ID)));
+    actions.andExpect(jsonPath("$.actionPlanId", is(CASE_ACTIONPLAN_ID_1)));
+    actions.andExpect(jsonPath("$.sampleUnitType", is(CASE_SAMPLE_UNIT_TYPE_B)));
+    actions.andExpect(jsonPath("$.state", is(CaseDTO.CaseState.SAMPLED_INIT.name())));
+    actions.andExpect(jsonPath("$.createdBy", is(SYSTEM)));
+    actions.andExpect(jsonPath("$.createdDateTime", is(CASE_DATE_VALUE_1)));
+
+    actions.andExpect(jsonPath("$.responses", Matchers.hasSize(1)));
+    actions.andExpect(jsonPath("$.responses[*].inboundChannel", containsInAnyOrder(InboundChannel.PAPER.name())));
+    actions.andExpect(jsonPath("$.responses[*].dateTime", containsInAnyOrder(CASE_DATE_VALUE_1)));
+
+    actions.andExpect(jsonPath("$.caseGroup.id", is(CASE1_CASEGROUP_ID.toString())));
+    actions.andExpect(jsonPath("$.caseGroup.collectionExerciseId", is(CASE1_CASEGROUP_COLLECTION_EXERCISE_ID.toString())));
+    actions.andExpect(jsonPath("$.caseGroup.partyId", is(CASE1_CASEGROUP_PARTY_ID.toString())));
+    actions.andExpect(jsonPath("$.caseGroup.sampleUnitRef", is(CASE1_CASEGROUP_SAMPLE_UNIT_REF)));
+    actions.andExpect(jsonPath("$.caseGroup.sampleUnitType", is(CASE1_CASEGROUP_SAMPLE_UNIT_TYPE)));
+
+    actions.andExpect(jsonPath("$.caseEvents", is(nullValue())));
+
+    verify(caseService).createCaseEvent(any(CaseEvent.class), any(Case.class));
+  }
+
   @Test
   public void findCasesByCaseGroupIdNotFound() throws Exception {
     ResultActions actions = mockMvc.perform(getJson(String.format("/cases/casegroupid/%s", NON_EXISTING_CASE_GROUP_UUID)));
@@ -502,5 +554,4 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.partyId", is(CASE9_PARTYID.toString())));
     actions.andExpect(jsonPath("$.subCategory").doesNotExist());
   }
-
 }

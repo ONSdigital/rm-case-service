@@ -108,25 +108,6 @@ public final class CaseEndpoint implements CTPEndpoint {
       return ResponseEntity.ok(resultList);
     }
   }
-
-  private CaseDetailsDTO buildDetailedCaseDTO(Case caze, boolean caseevents, boolean iac) {
-    CaseDetailsDTO caseDetailsDTO = mapperFacade.map(caze, CaseDetailsDTO.class);
-
-    CaseGroup parentCaseGroup = caseGroupService.findCaseGroupByCaseGroupPK(caze.getCaseGroupFK());
-    caseDetailsDTO.setCaseGroup(mapperFacade.map(parentCaseGroup, CaseGroupDTO.class));
-
-    if (caseevents) {
-      List<CaseEvent> caseEvents = caseService.findCaseEventsByCaseFK(caze.getCasePK());
-      List<CaseEventDTO> caseEventDTOs = mapperFacade.mapAsList(caseEvents, CaseEventDTO.class);
-      caseDetailsDTO.setCaseEvents(caseEventDTOs);
-    }
-
-    if (!iac) {
-      caseDetailsDTO.setIac(null);
-    }
-
-    return caseDetailsDTO;
-  }
     
   /**
    * the GET endpoint to find a Case by IAC
@@ -136,29 +117,20 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @throws CTPException something went wrong
    */
   @RequestMapping(value = "/iac/{iac}", method = RequestMethod.GET)
-  public ResponseEntity<?> findCaseByIac(@PathVariable("iac") final String iac) throws CTPException {
+  public ResponseEntity<?> findCaseByIac(@PathVariable("iac") final String iac,
+                                         @RequestParam(value = "caseevents", required = false) boolean caseevents,
+                                         @RequestParam(value = "iac", required = false) boolean iacFlag)
+          throws CTPException {
     log.info("Entering findCaseByIac with {}", iac);
     Case caseObj = caseService.findCaseByIac(iac);
     if (caseObj == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-          String.format("%s iac id %s", ERRORMSG_CASENOTFOUND, iac));
+          String.format("%s iac %s", ERRORMSG_CASENOTFOUND, iac));
     }
     
     createNewEventForIACAuthenticated(caseObj);
     
-    return ResponseEntity.ok(mapperFacade.map(caseObj, CaseDTO.class));
-  }
-
-  private void createNewEventForIACAuthenticated(Case caseObj) {
-	Category cat = categoryService.findCategory(CategoryDTO.CategoryType.IAC_AUTHENTICATED);
-    CaseEvent caseEvent = new CaseEvent();
-    caseEvent.setCaseFK(caseObj.getCasePK());
-    caseEvent.setCategory(CategoryDTO.CategoryType.IAC_AUTHENTICATED);
-    caseEvent.setCreatedBy(Constants.SYSTEM);
-    caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
-    caseEvent.setDescription(cat.getShortDescription());
-    
-    caseService.createCaseEvent(caseEvent,caseObj);
+    return ResponseEntity.ok(buildDetailedCaseDTO(caseObj, caseevents, iacFlag));
   }
 
   /**
@@ -269,4 +241,34 @@ public final class CaseEndpoint implements CTPEndpoint {
   }
 
 
+  private CaseDetailsDTO buildDetailedCaseDTO(Case caze, boolean caseevents, boolean iac) {
+    CaseDetailsDTO caseDetailsDTO = mapperFacade.map(caze, CaseDetailsDTO.class);
+
+    CaseGroup parentCaseGroup = caseGroupService.findCaseGroupByCaseGroupPK(caze.getCaseGroupFK());
+    caseDetailsDTO.setCaseGroup(mapperFacade.map(parentCaseGroup, CaseGroupDTO.class));
+
+    if (caseevents) {
+      List<CaseEvent> caseEvents = caseService.findCaseEventsByCaseFK(caze.getCasePK());
+      List<CaseEventDTO> caseEventDTOs = mapperFacade.mapAsList(caseEvents, CaseEventDTO.class);
+      caseDetailsDTO.setCaseEvents(caseEventDTOs);
+    }
+
+    if (!iac) {
+      caseDetailsDTO.setIac(null);
+    }
+
+    return caseDetailsDTO;
+  }
+
+  private void createNewEventForIACAuthenticated(Case caseObj) {
+    Category cat = categoryService.findCategory(CategoryDTO.CategoryType.IAC_AUTHENTICATED);
+    CaseEvent caseEvent = new CaseEvent();
+    caseEvent.setCaseFK(caseObj.getCasePK());
+    caseEvent.setCategory(CategoryDTO.CategoryType.IAC_AUTHENTICATED);
+    caseEvent.setCreatedBy(Constants.SYSTEM);
+    caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
+    caseEvent.setDescription(cat.getShortDescription());
+
+    caseService.createCaseEvent(caseEvent,caseObj);
+  }
 }
