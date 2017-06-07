@@ -3,12 +3,14 @@ package uk.gov.ons.ctp.response.casesvc.endpoint;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.ons.ctp.common.MvcHelper.getJson;
 import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
+import static uk.gov.ons.ctp.response.casesvc.endpoint.CategoryEndpoint.ERRORMSG_CATEGORYNOTFOUND;
 
 import ma.glasnost.orika.MapperFacade;
 import org.hamcrest.Matchers;
@@ -79,24 +81,6 @@ public final class CategoryEndpointUnitTest {
     this.categoryResults = FixtureHelper.loadClassFixtures(Category[].class);
   }
 
-  /**
-   * A test
-   */
-  @Test
-  public void findCategoriesNotFound() throws Exception {
-    ResultActions actions = mockMvc.perform(getJson(String.format("/categories/%s", CATEGORY_UNKNOWN)));
-
-    actions.andExpect(status().isNotFound());
-    actions.andExpect(handler().handlerType(CategoryEndpoint.class));
-    actions.andExpect(handler().methodName("findCategory"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
-    actions.andExpect(jsonPath("$.error.message", is(String.format("Category not found for categoryName %s", CATEGORY_UNKNOWN))));
-    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
-  }
-
-  /**
-   * A test
-   */
   @Test
   public void findCategoriesFoundNoRoleSpecified() throws Exception {
     when(categoryService.findCategories(null, null)).thenReturn(categoryResults);
@@ -114,9 +98,6 @@ public final class CategoryEndpointUnitTest {
     actions.andExpect(jsonPath("$[*].role", containsInAnyOrder(CATEGORY1_ROLE, null, null)));
   }
 
-  /**
-   * A test
-   */
   @Test
   public void findCategoriesFoundAdminRoleSpecified() throws Exception {
     List<Category> results = new ArrayList<>();
@@ -136,4 +117,31 @@ public final class CategoryEndpointUnitTest {
     actions.andExpect(jsonPath("$[0].role", is(CATEGORY1_ROLE)));
   }
 
+  @Test
+  public void findACategoryNotFound() throws Exception {
+    ResultActions actions = mockMvc.perform(getJson(String.format("/categories/name/%s", CATEGORY_UNKNOWN)));
+
+    actions.andExpect(status().isNotFound());
+    actions.andExpect(handler().handlerType(CategoryEndpoint.class));
+    actions.andExpect(handler().methodName("findCategory"));
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
+    actions.andExpect(jsonPath("$.error.message", is(String.format("%s categoryName %s", ERRORMSG_CATEGORYNOTFOUND, CATEGORY_UNKNOWN))));
+    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+  }
+
+  @Test
+  public void findACategoryFound() throws Exception {
+    when(categoryService.findCategory(any())).thenReturn(categoryResults.get(0));
+
+    ResultActions actions = mockMvc.perform(getJson(String.format("/categories/name/%s", CATEGORY1_NAME)));
+
+    actions.andExpect(status().isOk());
+    actions.andExpect(handler().handlerType(CategoryEndpoint.class));
+    actions.andExpect(handler().methodName("findCategory"));
+    actions.andExpect(jsonPath("$.group", is(CATEGORY1_GROUP)));
+    actions.andExpect(jsonPath("$.name", is(CATEGORY1_NAME)));
+    actions.andExpect(jsonPath("$.longDescription", is(CATEGORY1_LONG_DESC)));
+    actions.andExpect(jsonPath("$.shortDescription", is(CATEGORY1_SHORT_DESC)));
+    actions.andExpect(jsonPath("$.role", is(CATEGORY1_ROLE)));
+  }
 }
