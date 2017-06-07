@@ -112,6 +112,14 @@ public final class CaseEndpointUnitTest {
   private static final String CASE_DATE_VALUE_2 = createTestDate("2016-04-15T17:02:39.799+0100");
   private static final String CASE_DATE_VALUE_3 = createTestDate("2016-04-15T17:02:39.899+0100");
   private static final String IAC_CASE1 = "bbbb cccc dddd";
+  private static final String IAC_CASE2 = "cccc dddd ffff";
+  private static final String IAC_CASE3 = "dddd ffff gggg";
+  private static final String IAC_CASE4 = "ffff gggg hhhh";
+  private static final String IAC_CASE5 = "gggg hhhh jjjj";
+  private static final String IAC_CASE6 = "hhhh jjjj kkkk";
+  private static final String IAC_CASE7 = "jjjj kkkk llll";
+  private static final String IAC_CASE8 = "kkkk llll mmmm";
+  private static final String IAC_CASE9 = "kkkk llll mmmm";
 
 
   private static final UUID EXISTING_CASE_GROUP_UUID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfeabc");
@@ -286,12 +294,37 @@ public final class CaseEndpointUnitTest {
   @Test
   public void findCasesByPartyIdFoundWithoutCaseEventsAndIac() throws Exception {
     when(caseService.findCasesByPartyId(EXISTING_PARTY_UUID)).thenReturn(caseResults);
+    when(caseGroupService.findCaseGroupByCaseGroupPK(any(Integer.class))).thenReturn(caseGroupResults.get(0));
+    when(caseService.findCaseEventsByCaseFK(any(Integer.class))).thenReturn(caseEventsResults);
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/cases/partyid/%s", EXISTING_PARTY_UUID)));
 
     actions.andExpect(status().is2xxSuccessful());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCasesByPartyId"));
+    actions.andExpect(jsonPath("$", Matchers.hasSize(9)));
+    actions.andExpect(jsonPath("$[*].id", containsInAnyOrder(CASE1_ID.toString(), CASE2_ID.toString(), CASE3_ID.toString(), CASE4_ID.toString(), CASE5_ID.toString(), CASE6_ID.toString(), CASE7_ID.toString(), CASE8_ID.toString(), CASE9_ID.toString())));
+    actions.andExpect(jsonPath("$[*].iac", containsInAnyOrder(nullValue(), nullValue(), nullValue(), nullValue(), nullValue(), nullValue(), nullValue(), nullValue(), nullValue())));
+    actions.andExpect(jsonPath("$[*].caseEvents", containsInAnyOrder(nullValue(), nullValue(), nullValue(), nullValue(), nullValue(), nullValue(), nullValue(), nullValue(), nullValue())));
+    actions.andExpect(jsonPath("$[*].caseGroup.id", containsInAnyOrder(CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString())));
+  }
+
+  @Test
+  public void findCasesByPartyIdFoundWithCaseEventsAndIac() throws Exception {
+    when(caseService.findCasesByPartyId(EXISTING_PARTY_UUID)).thenReturn(caseResults);
+    when(caseGroupService.findCaseGroupByCaseGroupPK(any(Integer.class))).thenReturn(caseGroupResults.get(0));
+    when(caseService.findCaseEventsByCaseFK(any(Integer.class))).thenReturn(caseEventsResults);
+
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/partyid/%s?caseevents=true&iac=true", EXISTING_PARTY_UUID)));
+
+    actions.andExpect(status().is2xxSuccessful());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("findCasesByPartyId"));
+    actions.andExpect(jsonPath("$", Matchers.hasSize(9)));
+    actions.andExpect(jsonPath("$[*].id", containsInAnyOrder(CASE1_ID.toString(), CASE2_ID.toString(), CASE3_ID.toString(), CASE4_ID.toString(), CASE5_ID.toString(), CASE6_ID.toString(), CASE7_ID.toString(), CASE8_ID.toString(), CASE9_ID.toString())));
+    actions.andExpect(jsonPath("$[*].iac", containsInAnyOrder(IAC_CASE1, IAC_CASE2, IAC_CASE3, IAC_CASE4, IAC_CASE5, IAC_CASE6, IAC_CASE7, IAC_CASE8, IAC_CASE9)));
+    actions.andExpect(jsonPath("$[*].caseEvents", Matchers.hasSize(9)));
+    actions.andExpect(jsonPath("$[*].caseGroup.id", containsInAnyOrder(CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString())));
   }
 
   @Test

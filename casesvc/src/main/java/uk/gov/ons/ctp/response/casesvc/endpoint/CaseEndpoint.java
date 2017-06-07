@@ -3,6 +3,7 @@ package uk.gov.ons.ctp.response.casesvc.endpoint;
 import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseGroupEndpoint.ERRORMSG_CASEGROUPNOTFOUND;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -79,22 +80,7 @@ public final class CaseEndpoint implements CTPEndpoint {
           String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseId));
     }
 
-    CaseDetailsDTO caseDetailsDTO = mapperFacade.map(caseObj, CaseDetailsDTO.class);
-
-    CaseGroup parentCaseGroup = caseGroupService.findCaseGroupByCaseGroupPK(caseObj.getCaseGroupFK());
-    caseDetailsDTO.setCaseGroup(mapperFacade.map(parentCaseGroup, CaseGroupDTO.class));
-
-    if (caseevents) {
-      List<CaseEvent> caseEvents = caseService.findCaseEventsByCaseFK(caseObj.getCasePK());
-      List<CaseEventDTO> caseEventDTOs = mapperFacade.mapAsList(caseEvents, CaseEventDTO.class);
-      caseDetailsDTO.setCaseEvents(caseEventDTOs);
-    }
-
-    if (!iac) {
-      caseDetailsDTO.setIac(null);
-    }
-
-    return ResponseEntity.ok(caseDetailsDTO);
+    return ResponseEntity.ok(buildDetailedCaseDTO(caseObj, caseevents, iac));
   }
 
   /**
@@ -115,25 +101,31 @@ public final class CaseEndpoint implements CTPEndpoint {
     if (CollectionUtils.isEmpty(casesList)) {
       return ResponseEntity.noContent().build();
     } else {
-      List<CaseDetailsDTO> casesDetailedListDTO = mapperFacade.mapAsList(casesList, CaseDetailsDTO.class);
-      for (CaseDetailsDTO caze: casesDetailedListDTO) {
-        if (!iac) {
-          caze.setIac(null);
-        }
-
-        CaseGroup parentCaseGroup = caseGroupService.findCaseGroupById(caze.getCaseGroupId());
-        caze.setCaseGroup(mapperFacade.map(parentCaseGroup, CaseGroupDTO.class));
-
-//        if (caseevents) {
-//          List<CaseEvent> caseEvents = caseService.findCaseEventsByCaseFK(caze.get);
-//          List<CaseEventDTO> caseEventDTOs = mapperFacade.mapAsList(caseEvents, CaseEventDTO.class);
-//          caseDetailsDTO.setCaseEvents(caseEventDTOs);
-//        }
+      List<CaseDetailsDTO> resultList = new ArrayList<>();
+      for (Case caze: casesList) {
+        resultList.add(buildDetailedCaseDTO(caze, caseevents, iac));
       }
-
-      // TODO Add the case events
-      return ResponseEntity.ok(casesDetailedListDTO);
+      return ResponseEntity.ok(resultList);
     }
+  }
+
+  private CaseDetailsDTO buildDetailedCaseDTO(Case caze, boolean caseevents, boolean iac) {
+    CaseDetailsDTO caseDetailsDTO = mapperFacade.map(caze, CaseDetailsDTO.class);
+
+    CaseGroup parentCaseGroup = caseGroupService.findCaseGroupByCaseGroupPK(caze.getCaseGroupFK());
+    caseDetailsDTO.setCaseGroup(mapperFacade.map(parentCaseGroup, CaseGroupDTO.class));
+
+    if (caseevents) {
+      List<CaseEvent> caseEvents = caseService.findCaseEventsByCaseFK(caze.getCasePK());
+      List<CaseEventDTO> caseEventDTOs = mapperFacade.mapAsList(caseEvents, CaseEventDTO.class);
+      caseDetailsDTO.setCaseEvents(caseEventDTOs);
+    }
+
+    if (!iac) {
+      caseDetailsDTO.setIac(null);
+    }
+
+    return caseDetailsDTO;
   }
     
   /**
