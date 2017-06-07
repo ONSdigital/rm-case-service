@@ -391,44 +391,32 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
-  //@Test
+  @Test
   public void findCasesByCaseGroup() throws Exception {
-    CaseGroup result = CaseGroup.builder().id(EXISTING_CASE_GROUP_UUID)
-            .caseGroupPK(EXISTING_CASE_GROUP_PK)
-            .collectionExerciseId(CASE_GROUP_CE_ID)
-            .partyId(CASE_GROUP_PARTY_ID)
-            .sampleUnitRef(CASE_GROUP_SU_REF)
-            .sampleUnitType(CASE_GROUP_SU_TYPE).build();
-    when(caseGroupService.findCaseGroupById(EXISTING_CASE_GROUP_UUID)).thenReturn(result);
-    when(caseService.findCasesByCaseGroupFK(EXISTING_CASE_GROUP_PK)).thenReturn(caseResults);
+    when(caseGroupService.findCaseGroupById(EXISTING_CASE_GROUP_UUID)).thenReturn(caseGroupResults.get(0));
+    when(caseService.findCasesByCaseGroupFK(any())).thenReturn(caseResults);
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/cases/casegroupid/%s", EXISTING_CASE_GROUP_UUID)));
-
-    String case1_ID = CASE1_ID.toString();
-    String case2_ID = CASE2_ID.toString();
-    String case3_ID = CASE3_ID.toString();
-    String case4_ID = CASE4_ID.toString();
-    String case5_ID = CASE5_ID.toString();
-    String case6_ID = CASE6_ID.toString();
-    String case7_ID = CASE7_ID.toString();
-    String case8_ID = CASE8_ID.toString();
     
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCasesInCaseGroup"));
-    actions.andExpect(jsonPath("$", Matchers.hasSize(8)));
-    actions.andExpect(jsonPath("$[*].id", containsInAnyOrder(case1_ID, case2_ID, case3_ID, case4_ID, case5_ID, case6_ID, case7_ID, case8_ID)));
-    actions.andExpect(jsonPath("$[*].collectionInstrumentId", containsInAnyOrder(CASE_CI_ID, CASE_CI_ID, CASE_CI_ID, CASE_CI_ID, CASE_CI_ID, CASE_CI_ID, CASE_CI_ID, CASE_CI_ID)));
-    actions.andExpect(jsonPath("$[*].partyId", containsInAnyOrder(CASE_PARTY_ID, CASE_PARTY_ID, CASE_PARTY_ID, CASE_PARTY_ID, CASE_PARTY_ID, CASE_PARTY_ID, CASE_PARTY_ID, CASE_PARTY_ID)));
-    actions.andExpect(jsonPath("$[*].actionPlanId", containsInAnyOrder(CASE_ACTIONPLAN_ID_1, CASE_ACTIONPLAN_ID_2, CASE_ACTIONPLAN_ID_3, CASE_ACTIONPLAN_ID_4, CASE_ACTIONPLAN_ID_1, CASE_ACTIONPLAN_ID_2, CASE_ACTIONPLAN_ID_3, CASE_ACTIONPLAN_ID_4)));
-    actions.andExpect(jsonPath("$[*].sampleUnitType", containsInAnyOrder(CASE_SAMPLE_UNIT_TYPE_B, CASE_SAMPLE_UNIT_TYPE_BI, CASE_SAMPLE_UNIT_TYPE_H, CASE_SAMPLE_UNIT_TYPE_HI, CASE_SAMPLE_UNIT_TYPE_B, CASE_SAMPLE_UNIT_TYPE_BI, CASE_SAMPLE_UNIT_TYPE_H, CASE_SAMPLE_UNIT_TYPE_HI)));
-    actions.andExpect(jsonPath("$[*].state", containsInAnyOrder(CaseDTO.CaseState.SAMPLED_INIT.name(), CaseDTO.CaseState.INACTIONABLE.name(), CaseDTO.CaseState.ACTIONABLE.name(), CaseDTO.CaseState.INACTIONABLE.name(), CaseDTO.CaseState.ACTIONABLE.name(), CaseDTO.CaseState.INACTIONABLE.name(), CaseDTO.CaseState.ACTIONABLE.name(), CaseDTO.CaseState.INACTIONABLE.name())));
-    actions.andExpect(jsonPath("$[*].createdBy", containsInAnyOrder(SYSTEM, SYSTEM, SYSTEM, SYSTEM, SYSTEM, SYSTEM, SYSTEM, SYSTEM)));
-    actions.andExpect(jsonPath("$[*].createdDateTime", containsInAnyOrder(CASE_DATE_VALUE_1, CASE_DATE_VALUE_1, CASE_DATE_VALUE_1, CASE_DATE_VALUE_1, CASE_DATE_VALUE_1, CASE_DATE_VALUE_1, CASE_DATE_VALUE_1, CASE_DATE_VALUE_1)));
-    actions.andExpect(jsonPath("$[*].responses[*].inboundChannel", containsInAnyOrder(InboundChannel.PAPER.name(), InboundChannel.ONLINE.name(), InboundChannel.PAPER.name(), InboundChannel.ONLINE.name(), InboundChannel.PAPER.name(), InboundChannel.ONLINE.name(), InboundChannel.PAPER.name(), InboundChannel.ONLINE.name())));
-    actions.andExpect(jsonPath("$[*].responses[*].dateTime", containsInAnyOrder(CASE_DATE_VALUE_1, CASE_DATE_VALUE_1, CASE_DATE_VALUE_1, CASE_DATE_VALUE_1, CASE_DATE_VALUE_1, CASE_DATE_VALUE_1, CASE_DATE_VALUE_1, CASE_DATE_VALUE_1)));
+    actions.andExpect(jsonPath("$", Matchers.hasSize(9)));
+    actions.andExpect(jsonPath("$[*].id", containsInAnyOrder(CASE1_ID.toString(), CASE2_ID.toString(), CASE3_ID.toString(), CASE4_ID.toString(), CASE5_ID.toString(), CASE6_ID.toString(), CASE7_ID.toString(), CASE8_ID.toString(), CASE9_ID.toString())));
+    actions.andExpect(jsonPath("$[*].iac", containsInAnyOrder(nullValue(), nullValue(), nullValue(), nullValue(), nullValue(), nullValue(), nullValue(), nullValue(), nullValue())));
   }
 
+  @Test
+  public void findCasesByCaseGroupEmptyList() throws Exception {
+    when(caseGroupService.findCaseGroupById(EXISTING_CASE_GROUP_UUID)).thenReturn(caseGroupResults.get(0));
+    when(caseService.findCasesByCaseGroupFK(any())).thenReturn(new ArrayList<>());
+
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/casegroupid/%s", EXISTING_CASE_GROUP_UUID)));
+
+    actions.andExpect(status().is2xxSuccessful());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("findCasesInCaseGroup"));
+  }
 
   // TODO
 //  /**
