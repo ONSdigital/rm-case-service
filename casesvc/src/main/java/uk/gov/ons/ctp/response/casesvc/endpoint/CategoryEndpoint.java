@@ -36,21 +36,21 @@ public final class CategoryEndpoint implements CTPEndpoint {
   /**
    * the GET endpoint to retrieve the category with categoryType
    * 
-   * @param categoryType the categoryType
+   * @param categoryName the categoryName
    * @return the list of categories
    */
-  @RequestMapping(value = "/{categoryName}", method = RequestMethod.GET)
-  public CategoryDTO findCategory(@PathVariable("categoryName") final String categoryType) throws CTPException {
-    log.info("Entering findCategory with categoryName {}", categoryType);
+  @RequestMapping(value = "/name/{categoryName}", method = RequestMethod.GET)
+  public CategoryDTO findCategory(@PathVariable("categoryName") final String categoryName) throws CTPException {
+    log.info("Entering findCategory with categoryName {}", categoryName);
 
     Category category = null;
-    Optional<CategoryDTO.CategoryType> catTypeEnum = CategoryDTO.CategoryType.fromString(categoryType);
+    Optional<CategoryDTO.CategoryName> catTypeEnum = CategoryDTO.CategoryName.fromString(categoryName);
     if (catTypeEnum.isPresent()) {
       category = categoryService.findCategory(catTypeEnum.get());
     }
     if (category == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-              String.format("%s categoryName %s", ERRORMSG_CATEGORYNOTFOUND, categoryType));
+              String.format("%s categoryName %s", ERRORMSG_CATEGORYNOTFOUND, categoryName));
     }
     return mapperFacade.map(category, CategoryDTO.class);
   }

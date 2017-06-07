@@ -393,14 +393,14 @@ public class CaseServiceImplTest {
    */
   @Test
   public void testBlueSkyEnrollment() throws Exception {
-    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryType.RESPONDENT_ENROLLED,
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ENROLLED,
         ENROLLMENT_CASE_FK);
     Case oldCase = caseRepo.findOne(ENROLLMENT_CASE_FK);
     Case newCase = caseRepo.findOne(ENROLLMENT_CASE_INDIVIDUAL_FK);
     caseService.createCaseEvent(caseEvent, newCase);
     // one of the caseRepo calls is the test loading indCase
     verify(caseRepo, times(2)).findOne(ENROLLMENT_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryType.RESPONDENT_ENROLLED);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLLED);
     verify(caseRepo, times(2)).saveAndFlush(any(Case.class));
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(oldCase.getIac());
     // action service should be told of case state change
@@ -669,91 +669,91 @@ public class CaseServiceImplTest {
   private List<Category> mockupCategoryRepo() throws Exception {
     List<Category> categories = FixtureHelper.loadClassFixtures(Category[].class);
 
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.ACTION_CANCELLATION_COMPLETED))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED))
         .thenReturn(categories.get(CAT_ACTION_CANCELLATION_COMPLETED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.ACTION_CANCELLATION_CREATED))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACTION_CANCELLATION_CREATED))
         .thenReturn(categories.get(CAT_ACTION_CANCELLATION_CREATED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.ACTION_COMPLETED))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACTION_COMPLETED))
         .thenReturn(categories.get(CAT_ACTION_COMPLETED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.ACTION_CREATED))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACTION_CREATED))
         .thenReturn(categories.get(CAT_ACTION_CREATED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.ACTION_UPDATED))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACTION_UPDATED))
         .thenReturn(categories.get(CAT_ACTION_UPDATED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.ADDRESS_DETAILS_INCORRECT))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ADDRESS_DETAILS_INCORRECT))
         .thenReturn(categories.get(CAT_ADDRESS_DETAILS_INCORRECT));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.CASE_CREATED))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.CASE_CREATED))
         .thenReturn(categories.get(CAT_CASE_CREATED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.CLASSIFICATION_INCORRECT))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.CLASSIFICATION_INCORRECT))
         .thenReturn(categories.get(CAT_CLASSIFICATION_INCORRECT));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.GENERAL_COMPLAINT))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.GENERAL_COMPLAINT))
         .thenReturn(categories.get(CAT_GENERAL_COMPLAINT));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.GENERAL_ENQUIRY))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.GENERAL_ENQUIRY))
         .thenReturn(categories.get(CAT_GENERAL_ENQUIRY));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.MISCELLANEOUS))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.MISCELLANEOUS))
         .thenReturn(categories.get(CAT_MISCELLANEOUS));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.TECHNICAL_QUERY))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TECHNICAL_QUERY))
         .thenReturn(categories.get(CAT_TECHNICAL_QUERY));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.ACCESSIBILITY_MATERIALS))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACCESSIBILITY_MATERIALS))
         .thenReturn(categories.get(CAT_ACCESSIBILITY_MATERIALS));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.PAPER_QUESTIONNAIRE_RESPONSE))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE))
         .thenReturn(categories.get(CAT_PAPER_QUESTIONNAIRE_RESPONSE));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.ONLINE_QUESTIONNAIRE_RESPONSE))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE))
         .thenReturn(categories.get(CAT_ONLINE_QUESTIONNAIRE_RESPONSE));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.UNDELIVERABLE))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.UNDELIVERABLE))
         .thenReturn(categories.get(CAT_UNDELIVERABLE));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.TRANSLATION_SOMALI))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_SOMALI))
         .thenReturn(categories.get(CAT_TRANSLATION_SOMALI));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.TRANSLATION_BENGALI))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_BENGALI))
         .thenReturn(categories.get(CAT_TRANSLATION_BENGALI));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.TRANSLATION_SPANISH))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_SPANISH))
         .thenReturn(categories.get(CAT_TRANSLATION_SPANISH));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.TRANSLATION_POLISH))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_POLISH))
         .thenReturn(categories.get(CAT_TRANSLATION_POLISH));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.TRANSLATION_CANTONESE))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_CANTONESE))
         .thenReturn(categories.get(CAT_TRANSLATION_CANTONESE));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.TRANSLATION_MANDARIN))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_MANDARIN))
         .thenReturn(categories.get(CAT_TRANSLATION_MANDARIN));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.TRANSLATION_PUNJABI_SHAHMUKI))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_PUNJABI_SHAHMUKI))
         .thenReturn(categories.get(CAT_TRANSLATION_PUNJABI_SHAHMUKI));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.TRANSLATION_LITHUANIAN))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_LITHUANIAN))
         .thenReturn(categories.get(CAT_TRANSLATION_LITHUANIAN));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.FIELD_COMPLAINT_ESCALATED))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.FIELD_COMPLAINT_ESCALATED))
         .thenReturn(categories.get(CAT_FIELD_COMPLAINT_ESCALATED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.FIELD_EMERGENCY_ESCALATED))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.FIELD_EMERGENCY_ESCALATED))
         .thenReturn(categories.get(CAT_FIELD_EMERGENCY_ESCALATED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.GENERAL_COMPLAINT_ESCALATED))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.GENERAL_COMPLAINT_ESCALATED))
         .thenReturn(categories.get(CAT_GENERAL_COMPLAINT_ESCALATED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.GENERAL_ENQUIRY_ESCALATED))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.GENERAL_ENQUIRY_ESCALATED))
         .thenReturn(categories.get(CAT_GENERAL_ENQUIRY_ESCALATED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.INCORRECT_ESCALATION))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.INCORRECT_ESCALATION))
         .thenReturn(categories.get(CAT_INCORRECT_ESCALATION));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.PENDING)).thenReturn(categories.get(CAT_PENDING));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.REFUSAL)).thenReturn(categories.get(CAT_REFUSAL));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.TRANSLATION_PUNJABI_GURMUKHI))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.PENDING)).thenReturn(categories.get(CAT_PENDING));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.REFUSAL)).thenReturn(categories.get(CAT_REFUSAL));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_PUNJABI_GURMUKHI))
         .thenReturn(categories.get(CAT_TRANSLATION_PUNJABI_GURMUKHI));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.TRANSLATION_TURKISH))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_TURKISH))
         .thenReturn(categories.get(CAT_TRANSLATION_TURKISH));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.TRANSLATION_ARABIC))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_ARABIC))
         .thenReturn(categories.get(CAT_TRANSLATION_ARABIC));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.TRANSLATION_PORTUGUESE))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_PORTUGUESE))
         .thenReturn(categories.get(CAT_TRANSLATION_PORTUGUESE));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.TRANSLATION_URDU))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_URDU))
         .thenReturn(categories.get(CAT_TRANSLATION_URDU));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.TRANSLATION_GUJARATI))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_GUJARATI))
         .thenReturn(categories.get(CAT_TRANSLATION_GUJARATI));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.CLOSE_ESCALATION))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.CLOSE_ESCALATION))
         .thenReturn(categories.get(CAT_CLOSE_ESCALATION));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.H_INDIVIDUAL_RESPONSE_REQUESTED))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED))
         .thenReturn(categories.get(CAT_H_INDIVIDUAL_RESPONSE_REQUESTED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED))
         .thenReturn(categories.get(CAT_H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.H_INDIVIDUAL_PAPER_REQUESTED))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_PAPER_REQUESTED))
         .thenReturn(categories.get(CAT_H_INDIVIDUAL_PAPER_REQUESTED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.HOUSEHOLD_REPLACEMENT_IAC_REQUESTED))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.HOUSEHOLD_REPLACEMENT_IAC_REQUESTED))
         .thenReturn(categories.get(CAT_HOUSEHOLD_REPLACEMENT_IAC_REQUESTED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.HOUSEHOLD_PAPER_REQUESTED))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.HOUSEHOLD_PAPER_REQUESTED))
         .thenReturn(categories.get(CAT_HOUSEHOLD_PAPER_REQUESTED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryType.RESPONDENT_ENROLLED))
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLLED))
         .thenReturn(categories.get(CAT_RESPONDENT_ENROLLED));
 
     return categories;
@@ -776,15 +776,15 @@ public class CaseServiceImplTest {
   /**
    * mock loading data
    *
-   * @param categoryType which category type to load
+   * @param categoryName which category name to load
    * @param casePK the associated Case
    * @return a mock case event
    * @throws Exception oops
    */
-  private CaseEvent fabricateEvent(CategoryDTO.CategoryType categoryType, int casePK) throws Exception {
+  private CaseEvent fabricateEvent(CategoryDTO.CategoryName categoryName, int casePK) throws Exception {
     CaseEvent caseEvent = new CaseEvent();
     caseEvent.setCaseFK(casePK);
-    caseEvent.setCategory(categoryType);
+    caseEvent.setCategory(categoryName);
     caseEvent.setCreatedBy(CASEEVENT_CREATEDBY);
     caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
     caseEvent.setDescription(CASEEVENT_DESCRIPTION);

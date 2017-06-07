@@ -55,7 +55,7 @@ public class CaseEvent implements Serializable {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "categoryfk")
-  private CategoryDTO.CategoryType category;
+  private CategoryDTO.CategoryName category;
 
   @Column(name = "subcategory")
   private String subCategory;

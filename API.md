@@ -288,7 +288,6 @@ An `HTTP 201 Created` status code is returned if the case event creation was a s
     "name": "CASE_CREATED",
     "shortDescription": "Case Created",
     "longDescription": "Case Created",
-    "manual": false,
     "role": null,
     "group": null
   },
@@ -296,7 +295,6 @@ An `HTTP 201 Created` status code is returned if the case event creation was a s
     "name": "GENERAL_ENQUIRY",
     "shortDescription": "General Enquiry",
     "longDescription": "General Enquiry",
-    "manual": true,
     "role": "collect-csos, collect-admins",
     "group": "general"
   }
@@ -314,7 +312,6 @@ An `HTTP 204 No Content` status code is returned if there are no available categ
   "name": "CASE_CREATED",
   "shortDescription": "Case Created",
   "longDescription": "Case Created",
-  "manual": false,
   "role": null,
   "group": null
 }

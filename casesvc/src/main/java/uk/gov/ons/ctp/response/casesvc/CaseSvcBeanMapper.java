@@ -49,7 +49,7 @@ public class CaseSvcBeanMapper extends ConfigurableMapper {
 
     factory
         .classMap(Category.class, CategoryDTO.class)
-        .field("categoryType", "name")
+        .field("categoryName", "name")
         .byDefault()
         .register();
 

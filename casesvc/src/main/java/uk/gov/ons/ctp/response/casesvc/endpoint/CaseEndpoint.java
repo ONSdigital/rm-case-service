@@ -172,20 +172,14 @@ public final class CaseEndpoint implements CTPEndpoint {
    */
   @RequestMapping(value = "/{caseId}/events", method = RequestMethod.GET)
   public ResponseEntity<?> findCaseEventsByCaseId(@PathVariable("caseId") final UUID caseId) throws CTPException {
-    
-    log.info("Entering findCaseByCaseId with {}", caseId);
+    log.info("Entering findCaseEventsByCaseId with {}", caseId);
     Case caze = caseService.findCaseById(caseId);
-	
     if (caze == null) {
-        throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-            String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseId.toString()));
-      }
-	
-    Integer casePK = caze.getCasePK();
-	
-    log.info("Entering findCaseEventsByCaseId with {}", casePK);
- 
-    List<CaseEvent> caseEvents = caseService.findCaseEventsByCaseFK(casePK);
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
+              String.format("%s case id %s", ERRORMSG_CASENOTFOUND, caseId.toString()));
+    }
+
+    List<CaseEvent> caseEvents = caseService.findCaseEventsByCaseFK(caze.getCasePK());
     List<CaseEventDTO> caseEventDTOs = mapperFacade.mapAsList(caseEvents, CaseEventDTO.class);
     return CollectionUtils.isEmpty(caseEventDTOs) ?
             ResponseEntity.noContent().build() : ResponseEntity.ok(caseEventDTOs);
@@ -264,10 +258,10 @@ public final class CaseEndpoint implements CTPEndpoint {
   }
 
   private void createNewEventForIACAuthenticated(Case caseObj) {
-    Category cat = categoryService.findCategory(CategoryDTO.CategoryType.IAC_AUTHENTICATED);
+    Category cat = categoryService.findCategory(CategoryDTO.CategoryName.IAC_AUTHENTICATED);
     CaseEvent caseEvent = new CaseEvent();
     caseEvent.setCaseFK(caseObj.getCasePK());
-    caseEvent.setCategory(CategoryDTO.CategoryType.IAC_AUTHENTICATED);
+    caseEvent.setCategory(CategoryDTO.CategoryName.IAC_AUTHENTICATED);
     caseEvent.setCreatedBy(Constants.SYSTEM);
     caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
     caseEvent.setDescription(cat.getShortDescription());

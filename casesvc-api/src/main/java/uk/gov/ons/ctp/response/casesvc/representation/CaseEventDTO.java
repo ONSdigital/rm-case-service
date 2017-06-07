@@ -30,7 +30,7 @@ public class CaseEventDTO {
   private UUID partyId;
 
   @NotNull
-  private CategoryDTO.CategoryType category;
+  private CategoryDTO.CategoryName category;
 
   private String subCategory;
 

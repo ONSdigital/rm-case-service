@@ -16,11 +16,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class CategoryDTO {
-
   /**
-   * enum for category type
+   * enum for category name
    */
-  public enum CategoryType {
+  public enum CategoryName {
     ACTION_CANCELLATION_COMPLETED,
     ACTION_CANCELLATION_CREATED,
     ACTION_COMPLETED,
@@ -72,18 +71,18 @@ public class CategoryDTO {
     TRANSLATION_SPANISH;
 
     @JsonCreator
-    public static CategoryType fromValue(String name) {
-      return EnumUtils.getEnumFromString(CategoryDTO.CategoryType.class, name);
+    public static CategoryName fromValue(String name) {
+      return EnumUtils.getEnumFromString(CategoryName.class, name);
     }
     
-    public static Optional<CategoryType> fromString(String name) {
-      return EnumUtils.getOptionalEnumFromString(CategoryDTO.CategoryType.class, name);
+    public static Optional<CategoryName> fromString(String name) {
+      return EnumUtils.getOptionalEnumFromString(CategoryName.class, name);
     }
   }
 
   private String group;
 
-  private CategoryType name;
+  private CategoryName name;
 
   private String longDescription;
 

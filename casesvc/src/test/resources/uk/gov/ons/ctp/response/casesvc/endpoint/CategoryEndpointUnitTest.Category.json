@@ -1,7 +1,7 @@
 [
   {
     "group": "general",
-    "categoryType": "ACCESSIBILITY_MATERIALS",
+    "categoryName": "ACCESSIBILITY_MATERIALS",
     "longDescription": "Accessibility Materials Blah",
     "shortDescription": "Accessibility Materials",
     "role": "collect-csos, collect-admins",
@@ -12,7 +12,7 @@
   },
   {
     "group": null,
-    "categoryType": "ACTION_CANCELLATION_COMPLETED",
+    "categoryName": "ACTION_CANCELLATION_COMPLETED",
     "longDescription": "Action Cancellation Completed Blah",
     "shortDescription": "Action Cancellation Completed",
     "role": null,
@@ -23,7 +23,7 @@
   },
   {
     "group": null,
-    "categoryType": "ACTION_CANCELLATION_CREATED",
+    "categoryName": "ACTION_CANCELLATION_CREATED",
     "longDescription": "Action Cancellation Created Blah",
     "shortDescription": "Action Cancellation Created",
     "role": null,

@@ -5,7 +5,6 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
@@ -45,7 +44,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryType;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
 import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
@@ -55,17 +54,9 @@ import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
  * Case Endpoint Unit tests
  */
 public final class CaseEndpointUnitTest {
-
-  private static final CaseDTO.CaseState CASE1_STATE = CaseDTO.CaseState.SAMPLED_INIT;
-
-  private static final Integer CASE1_ACTIONPLANID = 1;
-  private static final Integer CASE9_CASEPK = 1;
-
-  private static final Integer EXISTING_CASE_GROUP_PK = 13;
-  private static final Integer EXISTING_CASE_PK_NO_EVENTS = 12;
+  private static final UUID EXISTING_CASE_GROUP_UUID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfeabc");
   private static final UUID EXISTING_CASE_ID_NO_EVENTS = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3999");
-  private static final String NON_EXISTING_CASE_ID = "9bc9d99b-9999-99b9-ba99-99f9d9cf9999";
- 
+  private static final UUID EXISTING_PARTY_UUID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfe111");
   private static final UUID CASE_ID_UNCHECKED_EXCEPTION_CASE = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3999");
   private static final UUID CASE1_ID = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd1");
   private static final UUID CASE2_ID = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd2");
@@ -80,18 +71,15 @@ public final class CaseEndpointUnitTest {
   private static final UUID CASE1_CASEGROUP_ID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfef3c");
   private static final UUID CASE1_CASEGROUP_COLLECTION_EXERCISE_ID = UUID.fromString("dab9db7f-3aa0-4866-be20-54d72ee185fb");
   private static final UUID CASE1_CASEGROUP_PARTY_ID = UUID.fromString("3b136c4b-7a14-4904-9e01-13364dd7b972");
+  private static final UUID NON_EXISTING_CASE_GROUP_UUID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfe666");
+  private static final UUID NON_EXISTING_PARTY_UUID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfe666");
+
   private static final String CASE1_CASEGROUP_SAMPLE_UNIT_REF = "0123456789";
   private static final String CASE1_CASEGROUP_SAMPLE_UNIT_TYPE = "B";
   private static final String CASE_CI_ID = "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e";
   private static final String CASE_PARTY_ID = "3b136c4b-7a14-4904-9e01-13364dd7b972";
   private static final String CASE_ACTIONPLAN_ID_1 = "5381731e-e386-41a1-8462-26373744db81";
-  private static final String CASE_ACTIONPLAN_ID_2 = "5381731e-e386-41a1-8462-26373744db82";
-  private static final String CASE_ACTIONPLAN_ID_3 = "5381731e-e386-41a1-8462-26373744db83";
-  private static final String CASE_ACTIONPLAN_ID_4  = "5381731e-e386-41a1-8462-26373744db84";
   private static final String CASE_SAMPLE_UNIT_TYPE_B = "B";
-  private static final String CASE_SAMPLE_UNIT_TYPE_BI = "BI";
-  private static final String CASE_SAMPLE_UNIT_TYPE_H = "H";
-  private static final String CASE_SAMPLE_UNIT_TYPE_HI = "HI";
   private static final String CASE1_DESCRIPTION = "desc 1";
   private static final String CASE2_DESCRIPTION = "desc 2";
   private static final String CASE3_DESCRIPTION = "desc 3";
@@ -119,26 +107,14 @@ public final class CaseEndpointUnitTest {
   private static final String IAC_CASE7 = "jjjj kkkk llll";
   private static final String IAC_CASE8 = "kkkk llll mmmm";
   private static final String IAC_CASE9 = "kkkk llll mmmm";
+  private static final String NON_EXISTING_CASE_ID = "9bc9d99b-9999-99b9-ba99-99f9d9cf9999";
   private static final String NON_EXISTING_IAC = "zzzz llll mmmm";
-
-
-  private static final UUID EXISTING_CASE_GROUP_UUID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfeabc");
-  private static final UUID CASE_GROUP_CE_ID = UUID.fromString("dab9db7f-3aa0-4866-be20-54d72ee185fb");
-  private static final UUID CASE_GROUP_PARTY_ID = UUID.fromString("3b136c4b-7a14-4904-9e01-13364dd7b972");
-  private static final String CASE_GROUP_SU_REF = "0123456789";
-  private static final String CASE_GROUP_SU_TYPE = "B";
-
-  private static final UUID EXISTING_PARTY_UUID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfe111");
-  private static final UUID NON_EXISTING_CASE_GROUP_UUID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfe666");
-  private static final UUID NON_EXISTING_PARTY_UUID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfe666");
   private static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
-  private static final String SAMPLEUNIT_TYPE = "H";
 
   private static final String CASEEVENT_INVALIDJSON =
           "{\"description\":\"a\",\"category\":\"BAD_CAT\",\"createdBy\":\"u\"}";
   private static final String CASEEVENT_VALIDJSON =
           "{\"description\":\"sometest\",\"category\":\"RESPONDENT_ENROLLED\",\"partyId\":\"3b136c4b-7a14-4904-9e01-13364dd7b972\",\"createdBy\":\"unittest\"}";
-  
   private static final String CASEEVENT_VALIDJSON_NO_PARTY =
           "{\"description\":\"sometest\",\"category\":\"RESPONDENT_ENROLLED\",\"createdBy\":\"unittest\"}";
 
@@ -347,7 +323,7 @@ public final class CaseEndpointUnitTest {
     when(caseService.findCaseEventsByCaseFK(any(Integer.class))).thenReturn(caseEventsResults);
     Category newCategory = new Category();
     newCategory.setShortDescription("desc");
-    when(categoryService.findCategory(CategoryDTO.CategoryType.IAC_AUTHENTICATED)).thenReturn(newCategory);
+    when(categoryService.findCategory(CategoryName.IAC_AUTHENTICATED)).thenReturn(newCategory);
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/cases/iac/%s", IAC_CASE1)));
 
@@ -418,36 +394,22 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(handler().methodName("findCasesInCaseGroup"));
   }
 
-  // TODO
-//  /**
-//   * a test
-//   */
-//  @Test
-//  public void findCaseEventsByCaseIdFound() throws Exception {
-//    when(caseService.findCaseByCasePK(CASE_ID)).thenReturn(caseResults.get(0));
-//    when(caseService.findCaseEventsByCaseId(CASE_ID)).thenReturn(caseEventsResults);
-//
-//    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s/events", CASE_ID)));
-//
-//    actions.andExpect(status().isOk());
-//    actions.andExpect(handler().handlerType(CaseEndpoint.class));
-//    actions.andExpect(handler().methodName("findCaseEventsByCaseId"));
-//    actions.andExpect(jsonPath("$", Matchers.hasSize(3)));
-//    actions.andExpect(jsonPath("$[*].casePK", containsInAnyOrder(CASE1_ID, CASE2_ID, CASE3_ID)));
-//    actions.andExpect(jsonPath("$[*].description", containsInAnyOrder(CASE1_DESCRIPTION, CASE2_DESCRIPTION, CASE3_DESCRIPTION)));
-//    actions.andExpect(jsonPath("$[*].createdBy", containsInAnyOrder(CASE1_CREATEDBY, CASE2_CREATEDBY, CASE3_CREATEDBY)));
-////    actions.andExpect(jsonPath("$[*].createdDateTime", containsInAnyOrder(CREATEDDATE_VALUE, CREATEDDATE_VALUE1, CREATEDDATE_VALUE2)));
-//    actions.andExpect(jsonPath("$[*].category", containsInAnyOrder(CASE1_CATEGORY, CASE2_CATEGORY, CASE3_CATEGORY)));
-//    actions.andExpect(jsonPath("$[*].subCategory", containsInAnyOrder(CASE1_SUBCATEGORY, CASE2_SUBCATEGORY, CASE3_SUBCATEGORY)));
-//  }
+  @Test
+  public void findCaseEventsByCaseIdNotFound() throws Exception {
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s/events", NON_EXISTING_CASE_ID)));
 
-  /**
-   * a test
-   */
-  //@Test
-  public void findCaseEventsByCaseFKFoundButNoEvents() throws Exception {
+    actions.andExpect(status().isNotFound());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("findCaseEventsByCaseId"));
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
+    actions.andExpect(jsonPath("$.error.message", is(String.format("%s case id %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_CASE_ID))));
+    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+  }
+
+  @Test
+  public void findCaseEventsByCaseIdFoundButNoEvents() throws Exception {
     when(caseService.findCaseById(EXISTING_CASE_ID_NO_EVENTS)).thenReturn(caseResults.get(0));
-    when(caseService.findCaseEventsByCaseFK(EXISTING_CASE_PK_NO_EVENTS)).thenReturn(new ArrayList<>());
+    when(caseService.findCaseEventsByCaseFK(any())).thenReturn(new ArrayList<>());
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s/events", EXISTING_CASE_ID_NO_EVENTS)));
 
@@ -456,21 +418,23 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(handler().methodName("findCaseEventsByCaseId"));
   }
 
-  /**
-   * a test
-   */
-  //@Test
-  public void findCaseEventsByCaseIdNotFound() throws Exception {
-    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s/events", EXISTING_CASE_ID_NO_EVENTS)));
+  @Test
+  public void findCaseEventsByCaseIdFound() throws Exception {
+    when(caseService.findCaseById(CASE1_ID)).thenReturn(caseResults.get(0));
+    when(caseService.findCaseEventsByCaseFK(any())).thenReturn(caseEventsResults);
 
-    actions.andExpect(status().isNotFound());
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s/events", CASE1_ID)));
+
+    actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCaseEventsByCaseId"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
-    actions.andExpect(jsonPath("$.error.message", is(String.format("%s case id %s", ERRORMSG_CASENOTFOUND, EXISTING_CASE_ID_NO_EVENTS))));
-    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    actions.andExpect(jsonPath("$", Matchers.hasSize(4)));
+    actions.andExpect(jsonPath("$[*].description", containsInAnyOrder(CASE1_DESCRIPTION, CASE2_DESCRIPTION, CASE3_DESCRIPTION, CASE9_DESCRIPTION)));
+    actions.andExpect(jsonPath("$[*].category", containsInAnyOrder(CASE1_CATEGORY, CASE2_CATEGORY, CASE3_CATEGORY, CASE9_CATEGORY)));
+    actions.andExpect(jsonPath("$[*].subCategory", containsInAnyOrder(CASE1_SUBCATEGORY, CASE2_SUBCATEGORY, CASE3_SUBCATEGORY, null)));
+    actions.andExpect(jsonPath("$[*].createdBy", containsInAnyOrder(CASE1_CREATEDBY, CASE2_CREATEDBY, CASE3_CREATEDBY, CASE9_CREATEDBY)));
+    actions.andExpect(jsonPath("$[*].createdDateTime", containsInAnyOrder(CASE_DATE_VALUE_1, CASE_DATE_VALUE_2, CASE_DATE_VALUE_3, CASE_DATE_VALUE_1)));
   }
-
 
   /**
    * a test providing bad json
@@ -507,7 +471,7 @@ public final class CaseEndpointUnitTest {
    */
   @Test
   public void createCaseEventRequiresNewCase() throws Exception {
-    when(categoryService.findCategory(CategoryType.RESPONDENT_ENROLLED)).thenReturn(categoryResults.get(3));
+    when(categoryService.findCategory(CategoryName.RESPONDENT_ENROLLED)).thenReturn(categoryResults.get(3));
     when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class))).thenReturn(caseEventsResults.get(3));
     when(caseService.findCaseById(CASE9_ID)).thenReturn(caseResults.get(8));
     ResultActions actions = mockMvc.perform(postJson(String.format("/cases/%s/events", CASE9_ID), CASEEVENT_VALIDJSON_NO_PARTY));
@@ -525,7 +489,7 @@ public final class CaseEndpointUnitTest {
    */
   @Test
   public void createCaseEventGoodJson() throws Exception {
-    when(categoryService.findCategory(CategoryType.RESPONDENT_ENROLLED)).thenReturn(categoryResults.get(3));
+    when(categoryService.findCategory(CategoryName.RESPONDENT_ENROLLED)).thenReturn(categoryResults.get(3));
     when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class))).thenReturn(caseEventsResults.get(3));
     when(caseService.findCaseById(CASE9_ID)).thenReturn(caseResults.get(8));
 
