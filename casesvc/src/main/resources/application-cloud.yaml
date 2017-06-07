@@ -143,7 +143,9 @@ rabbitmq:
   password: ${cloud.services.rabbitmq.connection.password}
   host: ${cloud.services.rabbitmq.connection.host}
   port: ${cloud.services.rabbitmq.connection.port}
-  virtualHost: wibble
+  virtualHost: foo
+  vhost: bar
+  virtualhost: foobar
 
 messaging:
   consumingThreads: 1
