@@ -12,9 +12,9 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 public interface CaseGroupService extends CTPService {
 
   /**
-   * Find CaseGroup by unique Id.
+   * Find CaseGroup by caseGroupPK.
    *
-   * @param caseGroupId id of the case group to find
+   * @param caseGroupPK
    * @return CaseGroup entity or null
    */
   CaseGroup findCaseGroupByCaseGroupPK(Integer caseGroupPK);

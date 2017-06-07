@@ -120,7 +120,9 @@ public final class CaseEndpointUnitTest {
   private static final String CASE_GROUP_SU_REF = "0123456789";
   private static final String CASE_GROUP_SU_TYPE = "B";
 
+  private static final UUID EXISTING_PARTY_UUID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfe111");
   private static final UUID NON_EXISTING_CASE_GROUP_UUID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfe666");
+  private static final UUID NON_EXISTING_PARTY_UUID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfe666");
   private static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
   private static final String SAMPLEUNIT_TYPE = "H";
 
@@ -270,6 +272,26 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.SYSTEM_ERROR.name())));
     actions.andExpect(jsonPath("$.error.message", is(OUR_EXCEPTION_MESSAGE)));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+  }
+
+  @Test
+  public void findCasesByPartyIdNotFound() throws Exception {
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/partyid/%s", NON_EXISTING_PARTY_UUID)));
+
+    actions.andExpect(status().is2xxSuccessful());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("findCasesByPartyId"));
+  }
+
+  @Test
+  public void findCasesByPartyIdFoundWithoutCaseEventsAndIac() throws Exception {
+    when(caseService.findCasesByPartyId(EXISTING_PARTY_UUID)).thenReturn(caseResults);
+
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/partyid/%s", EXISTING_PARTY_UUID)));
+
+    actions.andExpect(status().is2xxSuccessful());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("findCasesByPartyId"));
   }
 
   @Test
