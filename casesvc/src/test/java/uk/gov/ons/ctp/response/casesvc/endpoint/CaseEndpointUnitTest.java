@@ -44,7 +44,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryType;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
 import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
@@ -323,7 +323,7 @@ public final class CaseEndpointUnitTest {
     when(caseService.findCaseEventsByCaseFK(any(Integer.class))).thenReturn(caseEventsResults);
     Category newCategory = new Category();
     newCategory.setShortDescription("desc");
-    when(categoryService.findCategory(CategoryDTO.CategoryType.IAC_AUTHENTICATED)).thenReturn(newCategory);
+    when(categoryService.findCategory(CategoryName.IAC_AUTHENTICATED)).thenReturn(newCategory);
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/cases/iac/%s", IAC_CASE1)));
 
@@ -471,7 +471,7 @@ public final class CaseEndpointUnitTest {
    */
   @Test
   public void createCaseEventRequiresNewCase() throws Exception {
-    when(categoryService.findCategory(CategoryType.RESPONDENT_ENROLLED)).thenReturn(categoryResults.get(3));
+    when(categoryService.findCategory(CategoryName.RESPONDENT_ENROLLED)).thenReturn(categoryResults.get(3));
     when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class))).thenReturn(caseEventsResults.get(3));
     when(caseService.findCaseById(CASE9_ID)).thenReturn(caseResults.get(8));
     ResultActions actions = mockMvc.perform(postJson(String.format("/cases/%s/events", CASE9_ID), CASEEVENT_VALIDJSON_NO_PARTY));
@@ -489,7 +489,7 @@ public final class CaseEndpointUnitTest {
    */
   @Test
   public void createCaseEventGoodJson() throws Exception {
-    when(categoryService.findCategory(CategoryType.RESPONDENT_ENROLLED)).thenReturn(categoryResults.get(3));
+    when(categoryService.findCategory(CategoryName.RESPONDENT_ENROLLED)).thenReturn(categoryResults.get(3));
     when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class))).thenReturn(caseEventsResults.get(3));
     when(caseService.findCaseById(CASE9_ID)).thenReturn(caseResults.get(8));
 

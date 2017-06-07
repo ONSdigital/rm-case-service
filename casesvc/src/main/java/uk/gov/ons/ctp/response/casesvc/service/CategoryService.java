@@ -26,9 +26,9 @@ public interface CategoryService extends CTPService {
   /**
    * Find a category by its primary key name
    * 
-   * @param categoryType the type/name
+   * @param categoryName the type/name
    * @return the Category or null if not found
    */
-  Category findCategory(CategoryDTO.CategoryType categoryType);
+  Category findCategory(CategoryDTO.CategoryName categoryName);
 
 }

@@ -10,7 +10,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
  * JPA Data Repository.
  */
 @Repository
-public interface CategoryRepository extends JpaRepository<Category, CategoryDTO.CategoryType> {
+public interface CategoryRepository extends JpaRepository<Category, CategoryDTO.CategoryName> {
 
 
 }

@@ -292,8 +292,8 @@ public class CaseServiceImpl implements CaseService {
    */
   private void recordCaseResponse(Category category, Case targetCase, Timestamp timestamp) {
     InboundChannel channel = null;
-    // TODO BRES new category type for when a BI responds?
-    switch (category.getCategoryType()) {
+    // TODO BRES new category name for when a BI responds?
+    switch (category.getCategoryName()) {
     case ONLINE_QUESTIONNAIRE_RESPONSE:
       channel = InboundChannel.ONLINE;
       break;
@@ -417,7 +417,7 @@ public class CaseServiceImpl implements CaseService {
   private CaseEvent createCaseCreatedEvent(Case caze, Category caseEventCategory) {
     CaseEvent newCaseCaseEvent = new CaseEvent();
     newCaseCaseEvent.setCaseFK(caze.getCasePK());
-    newCaseCaseEvent.setCategory(CategoryDTO.CategoryType.CASE_CREATED);
+    newCaseCaseEvent.setCategory(CategoryDTO.CategoryName.CASE_CREATED);
     newCaseCaseEvent.setCreatedBy(Constants.SYSTEM);
     newCaseCaseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
     newCaseCaseEvent

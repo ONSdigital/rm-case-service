@@ -32,7 +32,7 @@ public class Category implements Serializable {
   @Id
   @Column(name = "categorypk")
   @Enumerated(EnumType.STRING)
-  private CategoryDTO.CategoryType categoryType;
+  private CategoryDTO.CategoryName categoryName;
 
   @Column(name = "longdescription")
   private String longDescription;

@@ -1,7 +1,7 @@
 [
   {
     "group": "general",
-    "categoryType": "ACCESSIBILITY_MATERIALS",
+    "categoryName": "ACCESSIBILITY_MATERIALS",
     "longDescription": "Accessibility Materials",
     "shortDescription": "Accessibility Materials",
     "role": "collect-csos, collect-admins",
@@ -12,7 +12,7 @@
   },
   {
     "group": null,
-    "categoryType": "ACTION_CANCELLATION_COMPLETED",
+    "categoryName": "ACTION_CANCELLATION_COMPLETED",
     "longDescription": "Action Cancellation Completed",
     "shortDescription": "Action Cancellation Completed",
     "role": null,
@@ -23,7 +23,7 @@
   },
   {
     "group": null,
-    "categoryType": "ACTION_CANCELLATION_CREATED",
+    "categoryName": "ACTION_CANCELLATION_CREATED",
     "longDescription": "Action Cancellation Created",
     "shortDescription": "Action Cancellation Created",
     "role": null,
@@ -34,7 +34,7 @@
   },
   {
     "group": null,
-    "categoryType": "ACTION_COMPLETED",
+    "categoryName": "ACTION_COMPLETED",
     "longDescription": "Action Completed",
     "shortDescription": "Action Completed",
     "role": null,
@@ -45,7 +45,7 @@
   },
   {
     "group": null,
-    "categoryType": "ACTION_CREATED",
+    "categoryName": "ACTION_CREATED",
     "longDescription": "Action Created",
     "shortDescription": "Action Created",
     "role": null,
@@ -56,7 +56,7 @@
   },
   {
     "group": null,
-    "categoryType": "ACTION_UPDATED",
+    "categoryName": "ACTION_UPDATED",
     "longDescription": "Action Updated",
     "shortDescription": "Action Updated",
     "role": null,
@@ -67,7 +67,7 @@
   },
   {
     "group": "general",
-    "categoryType": "ADDRESS_DETAILS_INCORRECT",
+    "categoryName": "ADDRESS_DETAILS_INCORRECT",
     "longDescription": "Address Details Incorrect",
     "shortDescription": "Address Details Incorrect",
     "role": "collect-csos, collect-admins",
@@ -78,7 +78,7 @@
   },
   {
     "group": null,
-    "categoryType": "CASE_CREATED",
+    "categoryName": "CASE_CREATED",
     "longDescription": "Case Created",
     "shortDescription": "Case Created",
     "role": null,
@@ -89,7 +89,7 @@
   },
   {
     "group": "general",
-    "categoryType": "CLASSIFICATION_INCORRECT",
+    "categoryName": "CLASSIFICATION_INCORRECT",
     "longDescription": "Classification Incorrect",
     "shortDescription": "Classification Incorrect",
     "role": "collect-csos, collect-admins",
@@ -100,7 +100,7 @@
   },
   {
     "group": "general",
-    "categoryType": "CLOSE_ESCALATION",
+    "categoryName": "CLOSE_ESCALATION",
     "longDescription": "Close Escalation",
     "shortDescription": "Close Escalation",
     "role": "collect-field-escalate, collect-general-escalate, collect-admins",
@@ -111,7 +111,7 @@
   },
   {
     "group": "general",
-    "categoryType": "FIELD_COMPLAINT_ESCALATED",
+    "categoryName": "FIELD_COMPLAINT_ESCALATED",
     "longDescription": "Field Complaint Escalated",
     "shortDescription": "Field Complaint Escalated",
     "role": "collect-field-escalate, collect-csos, collect-admins",
@@ -122,7 +122,7 @@
   },
   {
     "group": "general",
-    "categoryType": "FIELD_EMERGENCY_ESCALATED",
+    "categoryName": "FIELD_EMERGENCY_ESCALATED",
     "longDescription": "Field Emergency Escalated",
     "shortDescription": "Field Emergency Escalated",
     "role": "collect-field-escalate, collect-csos, collect-admins",
@@ -133,7 +133,7 @@
   },
   {
     "group": "general",
-    "categoryType": "GENERAL_COMPLAINT",
+    "categoryName": "GENERAL_COMPLAINT",
     "longDescription": "General Complaint",
     "shortDescription": "General Complaint",
     "role": "collect-csos, collect-admins",
@@ -144,7 +144,7 @@
   },
   {
     "group": "general",
-    "categoryType": "GENERAL_COMPLAINT_ESCALATED",
+    "categoryName": "GENERAL_COMPLAINT_ESCALATED",
     "longDescription": "General Complaint - Escalated",
     "shortDescription": "General Complaint - Escalated",
     "role": "collect-general-escalate, collect-csos, collect-admins",
@@ -155,7 +155,7 @@
   },
   {
     "group": "general",
-    "categoryType": "GENERAL_ENQUIRY",
+    "categoryName": "GENERAL_ENQUIRY",
     "longDescription": "General Enquiry",
     "shortDescription": "General Enquiry",
     "role": "collect-csos, collect-admins",
@@ -166,7 +166,7 @@
   },
   {
     "group": "general",
-    "categoryType": "GENERAL_ENQUIRY_ESCALATED",
+    "categoryName": "GENERAL_ENQUIRY_ESCALATED",
     "longDescription": "General Enquiry - Escalated",
     "shortDescription": "General Enquiry - Escalated",
     "role": "collect-general-escalate, collect-csos, collect-admins",
@@ -177,7 +177,7 @@
   },
   {
     "group": null,
-    "categoryType": "HOUSEHOLD_PAPER_REQUESTED",
+    "categoryName": "HOUSEHOLD_PAPER_REQUESTED",
     "longDescription": "Household Paper Requested",
     "shortDescription": "Household Paper Requested",
     "role": "collect-csos, collect-admins",
@@ -188,7 +188,7 @@
   },
   {
     "group": null,
-    "categoryType": "HOUSEHOLD_REPLACEMENT_IAC_REQUESTED",
+    "categoryName": "HOUSEHOLD_REPLACEMENT_IAC_REQUESTED",
     "longDescription": "Household Replacement IAC Requested",
     "shortDescription": "Household Replacement IAC Requested",
     "role": "collect-csos, collect-admins",
@@ -199,7 +199,7 @@
   },
   {
     "group": "general",
-    "categoryType": "INCORRECT_ESCALATION",
+    "categoryName": "INCORRECT_ESCALATION",
     "longDescription": "Incorrect Escalation",
     "shortDescription": "Incorrect Escalation",
     "role": "collect-field-escalate, collect-general-escalate, collect_admins",
@@ -210,7 +210,7 @@
   },
   {
     "group": null,
-    "categoryType": "H_INDIVIDUAL_PAPER_REQUESTED",
+    "categoryName": "H_INDIVIDUAL_PAPER_REQUESTED",
     "longDescription": "Individual Paper Requested",
     "shortDescription": "Individual Paper Requested",
     "role": "collect-csos, collect-admins",
@@ -221,7 +221,7 @@
   },
   {
     "group": null,
-    "categoryType": "H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED",
+    "categoryName": "H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED",
     "longDescription": "Individual Replacement IAC Requested",
     "shortDescription": "Individual Replacement IAC Requested",
     "role": "collect-csos, collect-admins",
@@ -232,7 +232,7 @@
   },
   {
     "group": null,
-    "categoryType": "H_INDIVIDUAL_RESPONSE_REQUESTED",
+    "categoryName": "H_INDIVIDUAL_RESPONSE_REQUESTED",
     "longDescription": "Individual Response Requested",
     "shortDescription": "Individual Response Requested",
     "role": "collect-csos, collect-admins",
@@ -243,7 +243,7 @@
   },
   {
     "group": "general",
-    "categoryType": "MISCELLANEOUS",
+    "categoryName": "MISCELLANEOUS",
     "longDescription": "Miscellaneous",
     "shortDescription": "Miscellaneous",
     "role": "collect-csos, collect-admins",
@@ -254,7 +254,7 @@
   },
   {
     "group": null,
-    "categoryType": "ONLINE_QUESTIONNAIRE_RESPONSE",
+    "categoryName": "ONLINE_QUESTIONNAIRE_RESPONSE",
     "longDescription": "Online Questionnaire Response",
     "shortDescription": "Online Questionnaire Response",
     "role": null,
@@ -265,7 +265,7 @@
   },
   {
     "group": null,
-    "categoryType": "PAPER_QUESTIONNAIRE_RESPONSE",
+    "categoryName": "PAPER_QUESTIONNAIRE_RESPONSE",
     "longDescription": "Paper Questionnaire Response",
     "shortDescription": "Paper Questionnaire Response",
     "role": null,
@@ -276,7 +276,7 @@
   },
   {
     "group": "general",
-    "categoryType": "PENDING",
+    "categoryName": "PENDING",
     "longDescription": "Pending",
     "shortDescription": "Pending",
     "role": "collect-field-escalate, collect-general-escalate, collect-admins",
@@ -287,7 +287,7 @@
   },
   {
     "group": "general",
-    "categoryType": "REFUSAL",
+    "categoryName": "REFUSAL",
     "longDescription": "Refusal",
     "shortDescription": "Refusal",
     "role": "collect-csos, collect-field-escalate, collect-general-escalate, collect-admins",
@@ -298,7 +298,7 @@
   },
   {
     "group": null,
-    "categoryType": "RESPONDENT_ENROLLED",
+    "categoryName": "RESPONDENT_ENROLLED",
     "longDescription": "Respondent Enrolled",
     "shortDescription": "Respondent Enrolled",
     "role": null,
@@ -310,7 +310,7 @@
   },
   {
     "group": "general",
-    "categoryType": "TECHNICAL_QUERY",
+    "categoryName": "TECHNICAL_QUERY",
     "longDescription": "Technical Query",
     "shortDescription": "Technical Query",
     "role": "collect-csos, collect-admins",
@@ -321,7 +321,7 @@
   },
   {
     "group": "translation",
-    "categoryType": "TRANSLATION_ARABIC",
+    "categoryName": "TRANSLATION_ARABIC",
     "longDescription": "Arabic Translation",
     "shortDescription": "Arabic",
     "role": "collect-csos, collect-admins",
@@ -332,7 +332,7 @@
   },
   {
     "group": "translation",
-    "categoryType": "TRANSLATION_BENGALI",
+    "categoryName": "TRANSLATION_BENGALI",
     "longDescription": "Bengali Translation",
     "shortDescription": "Bengali",
     "role": "collect-csos, collect-admins",
@@ -343,7 +343,7 @@
   },
   {
     "group": "translation",
-    "categoryType": "TRANSLATION_CANTONESE",
+    "categoryName": "TRANSLATION_CANTONESE",
     "longDescription": "Cantonese Translation",
     "shortDescription": "Cantonese",
     "role": "collect-csos, collect-admins",
@@ -354,7 +354,7 @@
   },
   {
     "group": "translation",
-    "categoryType": "TRANSLATION_GUJARATI",
+    "categoryName": "TRANSLATION_GUJARATI",
     "longDescription": "Gujarati Translation",
     "shortDescription": "Gujarati",
     "role": "collect-csos, collect-admins",
@@ -365,7 +365,7 @@
   },
   {
     "group": "translation",
-    "categoryType": "TRANSLATION_LITHUANIAN",
+    "categoryName": "TRANSLATION_LITHUANIAN",
     "longDescription": "Lithuanian Translation",
     "shortDescription": "Lithuanian",
     "role": "collect-csos, collect-admins",
@@ -376,7 +376,7 @@
   },
   {
     "group": "translation",
-    "categoryType": "TRANSLATION_MANDARIN",
+    "categoryName": "TRANSLATION_MANDARIN",
     "longDescription": "Mandarin Translation",
     "shortDescription": "Mandarin",
     "role": "collect-csos, collect-admins",
@@ -387,7 +387,7 @@
   },
   {
     "group": "translation",
-    "categoryType": "TRANSLATION_POLISH",
+    "categoryName": "TRANSLATION_POLISH",
     "longDescription": "Polish Translation",
     "shortDescription": "Polish",
     "role": "collect-csos, collect-admins",
@@ -398,7 +398,7 @@
   },
   {
     "group": "translation",
-    "categoryType": "TRANSLATION_PORTUGUESE",
+    "categoryName": "TRANSLATION_PORTUGUESE",
     "longDescription": "Portuguese Translation",
     "shortDescription": "Portuguese",
     "role": "collect-csos, collect-admins",
@@ -409,7 +409,7 @@
   },
   {
     "group": "translation",
-    "categoryType": "TRANSLATION_PUNJABI_GURMUKHI",
+    "categoryName": "TRANSLATION_PUNJABI_GURMUKHI",
     "longDescription": "Punjabi (Gurmukhi) Translation",
     "shortDescription": "Punjabi (Gurmukhi)",
     "role": "collect-csos, collect-admins",
@@ -420,7 +420,7 @@
   },
   {
     "group": "translation",
-    "categoryType": "TRANSLATION_PUNJABI_SHAHMUKI",
+    "categoryName": "TRANSLATION_PUNJABI_SHAHMUKI",
     "longDescription": "Punjabi (Shahmuki) Translation",
     "shortDescription": "Punjabi (Shahmuki)",
     "role": "collect-csos, collect-admins",
@@ -431,7 +431,7 @@
   },
   {
     "group": "translation",
-    "categoryType": "TRANSLATION_SOMALI",
+    "categoryName": "TRANSLATION_SOMALI",
     "longDescription": "Somali Translation",
     "shortDescription": "Somali",
     "role": "collect-csos, collect-admins",
@@ -442,7 +442,7 @@
   },
   {
     "group": "translation",
-    "categoryType": "TRANSLATION_SPANISH",
+    "categoryName": "TRANSLATION_SPANISH",
     "longDescription": "Spanish Translation",
     "shortDescription": "Spanish",
     "role": "collect-csos, collect-admins",
@@ -453,7 +453,7 @@
   },
   {
     "group": "translation",
-    "categoryType": "TRANSLATION_TURKISH",
+    "categoryName": "TRANSLATION_TURKISH",
     "longDescription": "Turkish Translation",
     "shortDescription": "Turkish",
     "role": "collect-csos, collect-admins",
@@ -464,7 +464,7 @@
   },
   {
     "group": "translation",
-    "categoryType": "TRANSLATION_URDU",
+    "categoryName": "TRANSLATION_URDU",
     "longDescription": "Urdu Translation",
     "shortDescription": "Urdu",
     "role": "collect-csos, collect-admins",
@@ -475,7 +475,7 @@
   },
   {
     "group": "general",
-    "categoryType": "UNDELIVERABLE",
+    "categoryName": "UNDELIVERABLE",
     "longDescription": "Undeliverable",
     "shortDescription": "Undeliverable",
     "role": "collect-csos, collect-admins",

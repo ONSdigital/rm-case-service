@@ -28,9 +28,9 @@ public class CategoryServiceImpl implements CategoryService {
   private CategoryRepository categoryRepo;
 
   @Override
-  public Category findCategory(CategoryDTO.CategoryType categoryType) {
-    log.debug("Entering findCategory with type {}", categoryType);
-    return categoryRepo.findOne(categoryType);
+  public Category findCategory(CategoryDTO.CategoryName categoryName) {
+    log.debug("Entering findCategory with type {}", categoryName);
+    return categoryRepo.findOne(categoryName);
   }
 
   @Override
@@ -46,7 +46,7 @@ public class CategoryServiceImpl implements CategoryService {
     List<Category> filteredCategories = categories.stream()
         .filter(cat -> (roleFiltered ? (cat.getRole() == null ? false : cat.getRole().contains(role)) : true))
         .filter(cat -> (groupFiltered ? (cat.getGroup() == null ? false : cat.getGroup().contains(group)) : true))
-        .sorted((cat1, cat2) -> cat1.getCategoryType().name().compareTo(cat2.getCategoryType().name()))
+        .sorted((cat1, cat2) -> cat1.getCategoryName().name().compareTo(cat2.getCategoryName().name()))
         .collect(Collectors.toList());
     return filteredCategories;
   }

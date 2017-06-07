@@ -44,7 +44,7 @@ public final class CategoryEndpoint implements CTPEndpoint {
     log.info("Entering findCategory with categoryName {}", categoryName);
 
     Category category = null;
-    Optional<CategoryDTO.CategoryType> catTypeEnum = CategoryDTO.CategoryType.fromString(categoryName);
+    Optional<CategoryDTO.CategoryName> catTypeEnum = CategoryDTO.CategoryName.fromString(categoryName);
     if (catTypeEnum.isPresent()) {
       category = categoryService.findCategory(catTypeEnum.get());
     }

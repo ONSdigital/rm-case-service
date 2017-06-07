@@ -258,10 +258,10 @@ public final class CaseEndpoint implements CTPEndpoint {
   }
 
   private void createNewEventForIACAuthenticated(Case caseObj) {
-    Category cat = categoryService.findCategory(CategoryDTO.CategoryType.IAC_AUTHENTICATED);
+    Category cat = categoryService.findCategory(CategoryDTO.CategoryName.IAC_AUTHENTICATED);
     CaseEvent caseEvent = new CaseEvent();
     caseEvent.setCaseFK(caseObj.getCasePK());
-    caseEvent.setCategory(CategoryDTO.CategoryType.IAC_AUTHENTICATED);
+    caseEvent.setCategory(CategoryDTO.CategoryName.IAC_AUTHENTICATED);
     caseEvent.setCreatedBy(Constants.SYSTEM);
     caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
     caseEvent.setDescription(cat.getShortDescription());

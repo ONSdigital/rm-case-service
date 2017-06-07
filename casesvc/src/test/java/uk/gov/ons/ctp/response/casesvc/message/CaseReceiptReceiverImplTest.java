@@ -4,8 +4,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryType.ONLINE_QUESTIONNAIRE_RESPONSE;
-import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryType.PAPER_QUESTIONNAIRE_RESPONSE;
+import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE;
+import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.QUESTIONNAIRE_RESPONSE;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
@@ -122,10 +122,10 @@ public class CaseReceiptReceiverImplTest {
     return caseReceipt;
   }
 
-  private CaseEvent buildCaseEvent(int casePK, CategoryDTO.CategoryType categoryType) {
+  private CaseEvent buildCaseEvent(int casePK, CategoryDTO.CategoryName categoryName) {
     CaseEvent caseEvent = new CaseEvent();
     caseEvent.setCaseFK(casePK);
-    caseEvent.setCategory(categoryType);
+    caseEvent.setCategory(categoryName);
     caseEvent.setCreatedBy(SYSTEM);
     caseEvent.setDescription(QUESTIONNAIRE_RESPONSE);
     return caseEvent;
