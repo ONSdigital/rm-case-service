@@ -73,11 +73,11 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <bindingDirectory>src/main/resources/xsd/inbound</bindingDirectory>
+              <bindingDirectory>src/main/resources/casesvc/xsd/inbound</bindingDirectory>
               <bindingIncludes>
                 <include>JAXBSchemaCompilerCustomisations.xjb</include>
               </bindingIncludes>         
-              <schemaDirectory>src/main/resources/xsd/inbound</schemaDirectory>
+              <schemaDirectory>src/main/resources/casesvc/xsd/inbound</schemaDirectory>
               <schemaIncludes>
                 <include>*.xsd</include>
               </schemaIncludes>
@@ -109,11 +109,11 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <bindingDirectory>src/main/resources/xsd/outbound</bindingDirectory>
+              <bindingDirectory>src/main/resources/casesvc/xsd/outbound</bindingDirectory>
               <bindingIncludes>
                 <include>caseNotification.xjb</include>
               </bindingIncludes>
-              <schemaDirectory>src/main/resources/xsd/outbound</schemaDirectory>
+              <schemaDirectory>src/main/resources/casesvc/xsd/outbound</schemaDirectory>
               <schemaIncludes>
                 <include>caseNotification.xsd</include>
               </schemaIncludes>

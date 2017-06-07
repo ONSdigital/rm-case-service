@@ -6,7 +6,7 @@
   http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.6.xsd">
 
     <rabbit:connection-factory id="connectionFactory"
-    host="${rabbitmq.host}" username="${rabbitmq.username}" password="${rabbitmq.password}" />
+    host="${rabbitmq.host}" username="${rabbitmq.username}" password="${rabbitmq.password}" virtual-host="${rabbitmq.virtualhost}" port="${rabbitmq.port}"/>
 
     <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" retry-template="retryTemplate" />
     <rabbit:admin id="amqpAdmin" connection-factory="connectionFactory"/>

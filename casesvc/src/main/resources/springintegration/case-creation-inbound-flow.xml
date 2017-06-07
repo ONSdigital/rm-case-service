@@ -34,7 +34,7 @@
 	<!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
 	<int-xml:validating-filter id="caseValidator"
 		input-channel="caseCreation" output-channel="caseCreationValid"
-		schema-location="classpath:xsd/inbound/caseCreation.xsd" discard-channel="caseCreationInvalid" />
+		schema-location="classpath:casesvc/xsd/inbound/caseCreation.xsd" discard-channel="caseCreationInvalid" />
 
 
 	<!-- Validated xml is transformed into the jaxb generated object model -->
