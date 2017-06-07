@@ -146,7 +146,7 @@ rabbitmq:
   virtualHost: foo
   vhost: bar
   virtualhost: foobar
-  virtual_host: barfoo
+  virtual-host: barfoo
 
 messaging:
   consumingThreads: 1
