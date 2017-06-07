@@ -139,11 +139,11 @@ redelivery-policy:
   redeliveryDelay: 1000
 
 rabbitmq:
-  host: ${vcap.services.rabbitmq.credentials.protocols.amqp.host}
-  port: ${vcap.services.rabbitmq.credentials.protocols.amqp.port}
-  username: ${vcap.services.rabbitmq.credentials.protocols.amqp.username}
-  password: ${vcap.services.rabbitmq.credentials.protocols.amqp.password}
-  virtualHost: ${vcap.services.rabbitmq.credentials.protocols.amqp.vhost}
+  username: ${cloud.services.rabbitmq.connection.username}
+  password: ${cloud.services.rabbitmq.connection.password}
+  host: ${cloud.services.rabbitmq.connection.host}
+  port: ${cloud.services.rabbitmq.connection.port}
+  virtualHost: wibble
 
 messaging:
   consumingThreads: 1
