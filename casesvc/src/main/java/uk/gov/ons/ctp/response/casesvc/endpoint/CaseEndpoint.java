@@ -136,28 +136,31 @@ public final class CaseEndpoint implements CTPEndpoint {
   /**
    * the GET endpoint to find cases by case group UUID
    *
-   * @param caseId UUID to find by
+   * @param casegroupId UUID to find by
    * @return the case events found
    * @throws CTPException something went wrong
    */
-  @RequestMapping(value = "/casegroupid/{caseId}", method = RequestMethod.GET)
-  public ResponseEntity<?> findCasesInCaseGroup(@PathVariable("caseId") final UUID caseId,
-                                                @RequestParam(name = "caseevents", defaultValue = "false") final boolean caseevents) 
-                                                throws CTPException {
-    log.info("Entering findCasesInCaseGroup with {}", caseId);
+  @RequestMapping(value = "/casegroupid/{casegroupId}", method = RequestMethod.GET)
+  public ResponseEntity<?> findCasesInCaseGroup(@PathVariable("casegroupId") final UUID casegroupId)
+          throws CTPException {
+    log.info("Entering findCasesInCaseGroup with {}", casegroupId);
 
-    CaseGroup caseGroup = caseGroupService.findCaseGroupById(caseId);
+    CaseGroup caseGroup = caseGroupService.findCaseGroupById(casegroupId);
     if (caseGroup == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-          String.format("%s casegroup id %s", ERRORMSG_CASEGROUPNOTFOUND, caseId));
+          String.format("%s casegroup id %s", ERRORMSG_CASEGROUPNOTFOUND, casegroupId));
     }
 
-    // TODO return the case group details
-    // TODO play with caseevents
-    List<Case> cases = caseService.findCasesByCaseGroupFK(caseGroup.getCaseGroupPK());
-    List<CaseDTO> caseDTOs = mapperFacade.mapAsList(cases, CaseDTO.class);
-    return CollectionUtils.isEmpty(caseDTOs) ?
-            ResponseEntity.noContent().build() : ResponseEntity.ok(caseDTOs);
+    List<Case> casesList = caseService.findCasesByCaseGroupFK(caseGroup.getCaseGroupPK());
+    if (CollectionUtils.isEmpty(casesList)) {
+      return ResponseEntity.noContent().build();
+    } else {
+      List<CaseDTO> caseDTOs = mapperFacade.mapAsList(casesList, CaseDTO.class);
+      for (CaseDTO caseDTO : caseDTOs) {
+        caseDTO.setIac(null);
+      }
+      return ResponseEntity.ok(caseDTOs);
+    }
   }
 
   /**
