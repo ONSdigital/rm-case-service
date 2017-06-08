@@ -119,7 +119,8 @@ public class CaseDistributor {
     Span distribSpan = tracer.createSpan(CASE_DISTRIBUTOR_SPAN);
     CaseDistributionInfo distInfo = new CaseDistributionInfo();
 
-    int successes = 0, failures = 0;
+    int successes = 0;
+    int failures = 0;
     try {
       List<CaseNotification> caseNotifications = new ArrayList<>();
       List<Case> cases = retrieveCases();

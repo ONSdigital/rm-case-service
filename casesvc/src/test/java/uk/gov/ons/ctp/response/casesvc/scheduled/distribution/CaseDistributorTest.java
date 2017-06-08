@@ -32,7 +32,6 @@ public class CaseDistributorTest {
   private static final int I_HATE_CHECKSTYLE_TEN = 10;
   private static final long I_HATE_CHECKSTYLE_TEN_LONG = 10L;
 
-
   @Spy
   private AppConfig appConfig = new AppConfig();
 
@@ -40,13 +39,13 @@ public class CaseDistributorTest {
   private CaseNotificationPublisher caseNotificationPublisher;
 
   @Mock
-  Tracer tracer;
+  private Tracer tracer;
 
   @Mock
-  Span span;
+  private Span span;
 
   @Mock
-  DistributedListManager<Integer> caseDistributionListManager;
+  private DistributedListManager<Integer> caseDistributionListManager;
 
   @Mock
   private StateTransitionManager<CaseState, uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseEvent> caseSvcStateTransitionManager;

@@ -247,7 +247,7 @@ public class CaseServiceImpl implements CaseService {
       // add sampleUnitType and actionplanId to newCase
       buildNewCase(category, newCase, targetCase);
 
-      if (category.getRecalcCollectionInstrument().booleanValue() == false)
+      if (category.getRecalcCollectionInstrument() == false)
         newCase.setCollectionInstrumentId(targetCase.getCollectionInstrumentId());
       createNewCaseFromEvent(caseEvent, targetCase, newCase, category);
     }
@@ -352,7 +352,7 @@ public class CaseServiceImpl implements CaseService {
       // make the transition
       newState = caseSvcStateTransitionManager.transition(oldState, transitionEvent);
       // was a state change effected?
-      if (oldState != newState) {
+      if (!oldState.equals(newState)) {
         targetCase.setState(newState);
         caseRepo.saveAndFlush(targetCase);
         notificationPublisher.sendNotifications(Arrays.asList(prepareCaseNotification(targetCase, transitionEvent)));
