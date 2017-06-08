@@ -47,7 +47,7 @@ public class ActionSvcClientServiceImplTest {
   private ActionSvcClientServiceImpl actionSvcClientService;
 
   @Before
-  public void setup() {
+  public void setUp() {
     MockitoAnnotations.initMocks(this);
     Mockito.when(tracer.getCurrentSpan()).thenReturn(span);
     Mockito.when(tracer.createSpan(any(String.class))).thenReturn(span);
@@ -64,15 +64,21 @@ public class ActionSvcClientServiceImplTest {
     Mockito.when(appConfig.getActionSvc()).thenReturn(actionSvcConfig);
     RestTemplate restTemplate = this.restClient.getRestTemplate();
 
-    MockRestServiceServer mockServer = MockRestServiceServer.createServer(restTemplate);
+    MockRestServiceServer mockServer = MockRestServiceServer.
+            createServer(restTemplate);
     mockServer.expect(requestTo("http://localhost:8080/actions"))
         .andExpect(method(HttpMethod.POST))
-        .andExpect(content().string(containsString("\"actionTypeName\":" + "\"GeneralEscalation\"" + ",")))
-        .andExpect(content().string(containsString("\"caseId\":" + "123,")))
-        .andExpect(content().string(containsString("\"createdBy\":" + "\"SYSTEM\"")))
+        .andExpect(content().string(
+                containsString("\"actionTypeName\":" +
+                        "\"GeneralEscalation\"" + ",")))
+        .andExpect(content().string(containsString("\"caseId\":"
+                + "123,")))
+        .andExpect(content().string(containsString("\"createdBy\":"
+                + "\"SYSTEM\"")))
         .andRespond(withSuccess());
 
-    actionSvcClientService.createAndPostAction("GeneralEscalation", 123, "SYSTEM");
+    actionSvcClientService.createAndPostAction("GeneralEscalation",
+            123, "SYSTEM");
     mockServer.verify();
   }
 

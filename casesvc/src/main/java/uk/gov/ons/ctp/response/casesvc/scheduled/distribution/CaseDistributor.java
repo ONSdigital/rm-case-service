@@ -78,7 +78,8 @@ public class CaseDistributor {
   private AppConfig appConfig;
 
   @Autowired
-  private StateTransitionManager<CaseDTO.CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
+  private StateTransitionManager<CaseDTO.CaseState, CaseDTO.CaseEvent>
+          caseSvcStateTransitionManager;
 
   @Autowired
   private CaseNotificationPublisher notificationPublisher;
@@ -129,10 +130,12 @@ public class CaseDistributor {
         for (int idx = 0; idx < cases.size(); idx++) {
           Case caze = cases.get(idx);
           if (idx % iacPageSize == 0) {
-            int codesToRequest = (idx < cases.size() / iacPageSize * iacPageSize) ? iacPageSize
+            int codesToRequest = (idx < cases.size() /
+                    iacPageSize * iacPageSize) ? iacPageSize
                 : (cases.size() % iacPageSize);
             try {
-              codes = internetAccessCodeSvcClientService.generateIACs(codesToRequest);
+              codes = internetAccessCodeSvcClientService.
+                      generateIACs(codesToRequest);
             } catch (Exception e) {
               log.error("Failed to obtain IAC block");
               // exit case loop and send notifications of cases activated so far
@@ -142,8 +145,10 @@ public class CaseDistributor {
           }
 
           try {
-            caseNotifications.add(processCase(caze, codes.get(idx % iacPageSize)));
-            if (caseNotifications.size() == appConfig.getCaseDistribution().getDistributionMax()) {
+            caseNotifications.add(processCase(caze,
+                    codes.get(idx % iacPageSize)));
+            if (caseNotifications.size() == appConfig.getCaseDistribution().
+                    getDistributionMax()) {
               publishCases(caseNotifications);
             }
             successes++;
@@ -161,7 +166,8 @@ public class CaseDistributor {
 
         publishCases(caseNotifications);
 
-        caseDistributionListManager.deleteList(CASE_DISTRIBUTOR_LIST_ID, true);
+        caseDistributionListManager.deleteList(CASE_DISTRIBUTOR_LIST_ID,
+                true);
       }
       try {
         caseDistributionListManager.unlockContainer();
@@ -186,7 +192,8 @@ public class CaseDistributor {
   private List<Case> retrieveCases() throws LockingException {
     List<Case> cases = new ArrayList<>();
 
-    List<Integer> excludedCases = caseDistributionListManager.findList(CASE_DISTRIBUTOR_LIST_ID, false);
+    List<Integer> excludedCases = caseDistributionListManager.findList(
+            CASE_DISTRIBUTOR_LIST_ID, false);
 
     // using the distributed map of lists of cases that other nodes are
     // processing
@@ -195,21 +202,24 @@ public class CaseDistributor {
 
     // prepare and execute the query to find the oldest N cases that are in
     // INIT states and not in the excluded list
-    Pageable pageable = new PageRequest(0, appConfig.getCaseDistribution().getRetrievalMax(), new Sort(
+    Pageable pageable = new PageRequest(0, appConfig.getCaseDistribution().
+            getRetrievalMax(), new Sort(
         new Sort.Order(Direction.ASC, "createdDateTime")));
     excludedCases.add(Integer.valueOf(IMPOSSIBLE_CASE_ID));
     cases = caseRepo
-        .findByStateInAndCasePKNotIn(Arrays.asList(CaseState.SAMPLED_INIT, CaseState.REPLACEMENT_INIT),
+        .findByStateInAndCasePKNotIn(Arrays.asList(CaseState.SAMPLED_INIT,
+                CaseState.REPLACEMENT_INIT),
             excludedCases,
             pageable);
 
-    log.debug("RETRIEVED case ids {}", cases.stream().map(a -> a.getCasePK().toString())
+    log.debug("RETRIEVED case ids {}", cases.stream().map(a -> a.getCasePK().
+            toString())
         .collect(Collectors.joining(",")));
     // try and save our list to the distributed store
     if (cases.size() > 0) {
-      caseDistributionListManager.saveList(CASE_DISTRIBUTOR_LIST_ID, cases.stream()
-          .map(caze -> caze.getCasePK())
-          .collect(Collectors.toList()), true);
+      caseDistributionListManager.saveList(CASE_DISTRIBUTOR_LIST_ID, cases.
+              stream().map(caze -> caze.getCasePK()).
+              collect(Collectors.toList()), true);
     }
     return cases;
   }
@@ -228,7 +238,8 @@ public class CaseDistributor {
    */
   private CaseNotification processCase(final Case caze, String iac) {
     log.info("processing caseid {}", caze.getCasePK());
-    return transactionTemplate.execute(new TransactionCallback<CaseNotification>() {
+    return transactionTemplate.execute(
+            new TransactionCallback<CaseNotification>() {
       // the code in this method executes in a transactional context
       public CaseNotification doInTransaction(final TransactionStatus status) {
         CaseNotification caseNotification = null;
@@ -242,7 +253,8 @@ public class CaseDistributor {
           event = CaseDTO.CaseEvent.REPLACED;
           break;
         default:
-          String msg = String.format("Case %d has incorrect state %s", caze.getCasePK(), caze.getState());
+          String msg = String.format("Case %d has incorrect state %s",
+                  caze.getCasePK(), caze.getState());
           log.error(msg);
           throw new RuntimeException(msg);
         }
@@ -268,7 +280,8 @@ public class CaseDistributor {
    * @return the transitioned case
    */
   private Case transitionCase(final Case caze, final CaseDTO.CaseEvent event) {
-    CaseDTO.CaseState nextState = caseSvcStateTransitionManager.transition(caze.getState(), event);
+    CaseDTO.CaseState nextState = caseSvcStateTransitionManager.transition(
+            caze.getState(), event);
     caze.setState(nextState);
     return caze;
   }
@@ -299,7 +312,8 @@ public class CaseDistributor {
               e.getMessage());
           log.warn("CaseDistribution will sleep and retry publish");
           try {
-            Thread.sleep(appConfig.getCaseDistribution().getRetrySleepSeconds() * MILLISECONDS);
+            Thread.sleep(appConfig.getCaseDistribution().
+                    getRetrySleepSeconds() * MILLISECONDS);
           } catch (InterruptedException ie) {
             log.warn("Retry sleep was interrupted");
           }

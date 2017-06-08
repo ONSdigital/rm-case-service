@@ -83,15 +83,16 @@ public interface CaseService extends CTPService {
   CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase);
 
   /**
-   * Create a CaseEvent for the specific scenario of an incoming CaseReceipt (sent by the SDX Gateway and containing the
-   * responseDateTime of the online/paper response)
+   * Create a CaseEvent for the specific scenario of an incoming CaseReceipt (sent by the SDX Gateway and containing
+   * the responseDateTime of the online/paper response)
    *
    * @param caseEvent CaseEvent to be created
    * @param newCase optional case object containing partial details of the case to be created by this event.
-   * @param timestamp timestamp equals to the incoming CaseReceipt's responseDateTime
+   * @param timestamp equals to the incoming CaseReceipt's responseDateTime
    * @return the created CaseEvent
    */
-  CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase, Timestamp timestamp);
+  CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase,
+                            Timestamp timestamp);
 
   /**
    * Not sure this is the best place for this method, but .. several parts of case svc need to build a 
@@ -101,7 +102,8 @@ public interface CaseService extends CTPService {
    * @param transitionEvent the event to inform the recipient of
    * @return the newly created notification object
    */
-  CaseNotification prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent);
+  CaseNotification prepareCaseNotification(Case caze,
+                                           CaseDTO.CaseEvent transitionEvent);
 
   /**
    * Create a CaseEvent from the details provided in the passed CaseEvent. Some events will also as a side effect

@@ -12,7 +12,8 @@ import uk.gov.ons.ctp.response.casesvc.service.CollectionExerciseSvcClientServic
 import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
 
 @Service
-public class CollectionExerciseSvcClientServiceImpl implements CollectionExerciseSvcClientService{
+public class CollectionExerciseSvcClientServiceImpl
+        implements CollectionExerciseSvcClientService{
   @Autowired
   private AppConfig appConfig;
 
@@ -22,10 +23,13 @@ public class CollectionExerciseSvcClientServiceImpl implements CollectionExercis
 
 
   @Override
-  public CollectionExerciseDTO getCollectionExercise(UUID collectionExerciseId) {
-    CollectionExerciseDTO collectionExerciseDTO = collectionExerciseServiceClient.getResource(appConfig.getCollectionExerciseSvc().getCollectionExercisePath(),
+  public CollectionExerciseDTO getCollectionExercise(UUID collectionExerciseId)
+  {
+    CollectionExerciseDTO collectionExerciseDTO =
+            collectionExerciseServiceClient.getResource(appConfig.
+                            getCollectionExerciseSvc().
+                            getCollectionExercisePath(),
         CollectionExerciseDTO.class, collectionExerciseId);
     return collectionExerciseDTO;
   }
-
 }

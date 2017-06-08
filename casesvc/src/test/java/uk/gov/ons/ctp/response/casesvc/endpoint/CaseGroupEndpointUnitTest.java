@@ -45,10 +45,14 @@ public final class CaseGroupEndpointUnitTest {
   private MockMvc mockMvc;
 
   private static final UUID CASE_GROUP_UUID = UUID.randomUUID();
-  private static final String NON_EXISTENT_CASE_GROUP_UUID = "9a5f2be5-f944-41f9-982c-3517cfcfe666";
-  private static final UUID CASE_GROUP_UUID_UNCHECKED_EXCEPTION = UUID.randomUUID();
-  private static final UUID CASE_GROUP_CE_ID = UUID.fromString("dab9db7f-3aa0-4866-be20-54d72ee185fb");
-  private static final UUID CASE_GROUP_PARTY_ID = UUID.fromString("3b136c4b-7a14-4904-9e01-13364dd7b972");
+  private static final String NON_EXISTENT_CASE_GROUP_UUID =
+          "9a5f2be5-f944-41f9-982c-3517cfcfe666";
+  private static final UUID CASE_GROUP_UUID_UNCHECKED_EXCEPTION =
+          UUID.randomUUID();
+  private static final UUID CASE_GROUP_CE_ID =
+          UUID.fromString("dab9db7f-3aa0-4866-be20-54d72ee185fb");
+  private static final UUID CASE_GROUP_PARTY_ID =
+          UUID.fromString("3b136c4b-7a14-4904-9e01-13364dd7b972");
   private static final String CASE_GROUP_SU_REF = "0123456789";
   private static final String CASE_GROUP_SU_TYPE = "B";
   private static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
@@ -59,8 +63,10 @@ public final class CaseGroupEndpointUnitTest {
 
     this.mockMvc = MockMvcBuilders
             .standaloneSetup(caseGroupEndpoint)
-            .setHandlerExceptionResolvers(mockAdviceFor(RestExceptionHandler.class))
-            .setMessageConverters(new MappingJackson2HttpMessageConverter(new CustomObjectMapper()))
+            .setHandlerExceptionResolvers(mockAdviceFor(
+                    RestExceptionHandler.class))
+            .setMessageConverters(new MappingJackson2HttpMessageConverter(
+                    new CustomObjectMapper()))
             .build();
   }
 
@@ -71,43 +77,61 @@ public final class CaseGroupEndpointUnitTest {
             .partyId(CASE_GROUP_PARTY_ID)
             .sampleUnitRef(CASE_GROUP_SU_REF)
             .sampleUnitType(CASE_GROUP_SU_TYPE).build();
-    when(caseGroupService.findCaseGroupById(CASE_GROUP_UUID)).thenReturn(result);
+    when(caseGroupService.findCaseGroupById(CASE_GROUP_UUID)).
+            thenReturn(result);
 
-    ResultActions actions = mockMvc.perform(getJson(String.format("/casegroups/%s", CASE_GROUP_UUID)));
+    ResultActions actions = mockMvc.perform(getJson(
+            String.format("/casegroups/%s", CASE_GROUP_UUID)));
 
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CaseGroupEndpoint.class));
     actions.andExpect(handler().methodName("findCaseGroupById"));
-    actions.andExpect(jsonPath("$.id", is(CASE_GROUP_UUID.toString())));
-    actions.andExpect(jsonPath("$.collectionExerciseId", is(CASE_GROUP_CE_ID.toString())));
-    actions.andExpect(jsonPath("$.partyId", is(CASE_GROUP_PARTY_ID.toString())));
-    actions.andExpect(jsonPath("$.sampleUnitRef", is(CASE_GROUP_SU_REF)));
-    actions.andExpect(jsonPath("$.sampleUnitType", is(CASE_GROUP_SU_TYPE)));
+    actions.andExpect(jsonPath("$.id",
+            is(CASE_GROUP_UUID.toString())));
+    actions.andExpect(jsonPath("$.collectionExerciseId",
+            is(CASE_GROUP_CE_ID.toString())));
+    actions.andExpect(jsonPath("$.partyId",
+            is(CASE_GROUP_PARTY_ID.toString())));
+    actions.andExpect(jsonPath("$.sampleUnitRef",
+            is(CASE_GROUP_SU_REF)));
+    actions.andExpect(jsonPath("$.sampleUnitType",
+            is(CASE_GROUP_SU_TYPE)));
   }
 
   @Test
   public void findCaseGroupByIdNotFound() throws Exception {
-    ResultActions actions = mockMvc.perform(getJson(String.format("/casegroups/%s", NON_EXISTENT_CASE_GROUP_UUID)));
+    ResultActions actions = mockMvc.perform(getJson(
+            String.format("/casegroups/%s", NON_EXISTENT_CASE_GROUP_UUID)));
 
     actions.andExpect(status().isNotFound());
     actions.andExpect(handler().handlerType(CaseGroupEndpoint.class));
     actions.andExpect(handler().methodName("findCaseGroupById"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
-    actions.andExpect(jsonPath("$.error.message", is(String.format("CaseGroup not found for casegroup id %s", NON_EXISTENT_CASE_GROUP_UUID))));
-    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    actions.andExpect(jsonPath("$.error.code",
+            is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
+    actions.andExpect(jsonPath("$.error.message",
+            is(String.format("CaseGroup not found for casegroup id %s",
+                    NON_EXISTENT_CASE_GROUP_UUID))));
+    actions.andExpect(jsonPath("$.error.timestamp",
+            isA(String.class)));
   }
 
   @Test
   public void findCaseGroupByIdUnCheckedException() throws Exception {
-    when(caseGroupService.findCaseGroupById(CASE_GROUP_UUID_UNCHECKED_EXCEPTION)).thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
+    when(caseGroupService.
+            findCaseGroupById(CASE_GROUP_UUID_UNCHECKED_EXCEPTION)).
+            thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
 
-    ResultActions actions = mockMvc.perform(getJson(String.format("/casegroups/%s", CASE_GROUP_UUID_UNCHECKED_EXCEPTION)));
+    ResultActions actions = mockMvc.perform(getJson(
+            String.format("/casegroups/%s", CASE_GROUP_UUID_UNCHECKED_EXCEPTION)));
 
     actions.andExpect(status().is5xxServerError());
     actions.andExpect(handler().handlerType(CaseGroupEndpoint.class));
     actions.andExpect(handler().methodName("findCaseGroupById"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.SYSTEM_ERROR.name())));
-    actions.andExpect(jsonPath("$.error.message", is(OUR_EXCEPTION_MESSAGE)));
-    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    actions.andExpect(jsonPath("$.error.code",
+            is(CTPException.Fault.SYSTEM_ERROR.name())));
+    actions.andExpect(jsonPath("$.error.message",
+            is(OUR_EXCEPTION_MESSAGE)));
+    actions.andExpect(jsonPath("$.error.timestamp",
+            isA(String.class)));
   }
 }

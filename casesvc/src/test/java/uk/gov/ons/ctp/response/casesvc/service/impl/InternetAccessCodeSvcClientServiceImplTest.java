@@ -52,7 +52,7 @@ public class InternetAccessCodeSvcClientServiceImplTest {
   private InternetAccessCodeSvcClientServiceImpl iacSvcClientService;
 
   @Before
-  public void setup() {
+  public void setUp() {
     MockitoAnnotations.initMocks(this);
     Mockito.when(tracer.getCurrentSpan()).thenReturn(span);
     Mockito.when(tracer.createSpan(any(String.class))).thenReturn(span);

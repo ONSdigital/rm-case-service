@@ -65,11 +65,11 @@ public final class CaseEndpointUnitTest {
   private static final UUID CASE7_ID = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd7");
   private static final UUID CASE8_ID = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd8");
   private static final UUID CASE9_ID = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd9");
-  private static final UUID CASE9_PARTYID = UUID.fromString("3b136c4b-7a14-4904-9e01-13364dd7b972");
+  private static final UUID CASE9_PARTYID = UUID.fromString("3b136c4b-7a14-4904-9e01-13364dd7b971");
   private static final UUID CASE1_CASEGROUP_ID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfef3c");
   private static final UUID CASE1_CASEGROUP_COLLECTION_EXERCISE_ID = UUID.fromString("dab9db7f-3aa0-4866-be20-54d72ee185fb");
   private static final UUID CASE1_CASEGROUP_PARTY_ID = UUID.fromString("3b136c4b-7a14-4904-9e01-13364dd7b972");
-  private static final UUID NON_EXISTING_CASE_GROUP_UUID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfe666");
+  private static final UUID NON_EXISTING_CASE_GROUP_UUID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfe667");
   private static final UUID NON_EXISTING_PARTY_UUID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfe666");
 
   private static final String CASE1_CASEGROUP_SAMPLE_UNIT_REF = "0123456789";
@@ -112,7 +112,7 @@ public final class CaseEndpointUnitTest {
   private static final String CASEEVENT_INVALIDJSON =
           "{\"description\":\"a\",\"category\":\"BAD_CAT\",\"createdBy\":\"u\"}";
   private static final String CASEEVENT_VALIDJSON =
-          "{\"description\":\"sometest\",\"category\":\"RESPONDENT_ENROLLED\",\"partyId\":\"3b136c4b-7a14-4904-9e01-13364dd7b972\",\"createdBy\":\"unittest\"}";
+          "{\"description\":\"sometest\",\"category\":\"RESPONDENT_ENROLLED\",\"partyId\":\"3b136c4b-7a14-4904-9e01-13364dd7b971\",\"createdBy\":\"unittest\"}";
   private static final String CASEEVENT_VALIDJSON_NO_PARTY =
           "{\"description\":\"sometest\",\"category\":\"RESPONDENT_ENROLLED\",\"createdBy\":\"unittest\"}";
 
