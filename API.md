@@ -119,8 +119,8 @@ An `HTTP 404 Not Found` status code is returned if the case group with the speci
 
 An `HTTP 404 Not Found` status code is returned if the case with the specified ID could not be found.
 
-## Get Cases by Party
-* `GET /cases/partyid/3b136c4b-7a14-4904-9e01-13364dd7b972` will return the details of cases with a party ID of `3b136c4b-7a14-4904-9e01-13364dd7b972`.
+## List Cases for Party
+* `GET /cases/partyid/3b136c4b-7a14-4904-9e01-13364dd7b972` will return a list of cases with a party ID of `3b136c4b-7a14-4904-9e01-13364dd7b972`.
 
 ### Example JSON Response
 ```json
