@@ -17,7 +17,6 @@
   </parent>
 
   <dependencies>
-
     <dependency>
       <groupId>uk.gov.ons.ctp.product</groupId>
       <artifactId>samplesvc-api</artifactId>
