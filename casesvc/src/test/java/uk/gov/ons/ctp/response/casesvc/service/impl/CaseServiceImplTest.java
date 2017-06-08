@@ -1,18 +1,22 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
+import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.fail;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -103,8 +107,9 @@ public class CaseServiceImplTest {
   private static final int CAT_UNDELIVERABLE = 43;
 
   private static final Integer ACTIONABLE_HOUSEHOLD_CASE_FK = 1;
-  private static final Integer NEW_HOUSEHOLD_CASE_FK = 5;
   private static final Integer INACTIONABLE_HOUSEHOLD_CASE_FK = 2;
+  private static final Integer NEW_HOUSEHOLD_CASE_FK = 3;
+  private static final Integer NON_EXISTING_PARENT_CASE_FK = 4;
 
 
   private static final Integer ACTIONABLE_H_INDIVIDUAL_CASE_ID = 3;
@@ -170,21 +175,20 @@ public class CaseServiceImplTest {
   }
 
   /**
-   * Should not be allowed to create an event agains a case that does not exist!
+   * Should not be allowed to create an event against a case that does not exist!
    */
-//  @Test
-//  public void testCreateCaseEventAgainstNonExistentCase() {
-//    Mockito.when(caseRepo.findOne(NON_EXISTING_PARENT_CASE_PK)).thenReturn(null);
-//
-//    Timestamp currentTime = DateTimeUtil.nowUTC();
-//    CaseEvent caseEvent = new CaseEvent(1, NON_EXISTING_PARENT_CASE_PK, CASEEVENT_DESCRIPTION, CASEEVENT_CREATEDBY,
-//        currentTime, CategoryDTO.CategoryType.ADDRESS_DETAILS_INCORRECT, CASEEVENT_SUBCATEGORY);
-//
-//    CaseEvent result = caseService.createCaseEvent(caseEvent, null);
-//
-//    verify(caseRepo).findOne(NON_EXISTING_PARENT_CASE_PK);
-//    assertNull(result);
-//  }
+  @Test
+  public void testCreateCaseEventAgainstNonExistentCase() {
+    Mockito.when(caseRepo.findOne(NON_EXISTING_PARENT_CASE_FK)).thenReturn(null);
+
+    Timestamp currentTime = DateTimeUtil.nowUTC();
+    CaseEvent caseEvent = new CaseEvent(1, NON_EXISTING_PARENT_CASE_FK, CASEEVENT_DESCRIPTION, CASEEVENT_CREATEDBY,
+        currentTime, CategoryDTO.CategoryName.ADDRESS_DETAILS_INCORRECT, CASEEVENT_SUBCATEGORY);
+    CaseEvent result = caseService.createCaseEvent(caseEvent, null);
+
+    verify(caseRepo).findOne(NON_EXISTING_PARENT_CASE_FK);
+    assertNull(result);
+  }
   
   
   /**
@@ -193,24 +197,23 @@ public class CaseServiceImplTest {
    * 
    * @throws Exception
    */
-//  @Test
-//  public void testCreateActionableEventAgainstInactionableCase() throws Exception {
-//
-//    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryType.TRANSLATION_ARABIC, INACTIONABLE_HOUSEHOLD_CASE_ID);
-//
-//    caseService.createCaseEvent(caseEvent, null);
-//
-//    verify(caseRepo).findOne(INACTIONABLE_HOUSEHOLD_CASE_ID);
-//    verify(categoryRepo).findOne(CategoryDTO.CategoryType.TRANSLATION_ARABIC);
-//    // there was no change to case - no state transition
-//    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-//    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
-//    // event was saved
-//    verify(caseEventRepository, times(1)).save(caseEvent);
-//    verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
-//    verify(actionSvcClientService, times(1)).createAndPostAction(any(String.class), any(Integer.class),
-//        any(String.class));
-//  }
+  @Test
+  public void testCreateActionableEventAgainstInactionableCase() throws Exception {
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.TRANSLATION_ARABIC, INACTIONABLE_HOUSEHOLD_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, null);
+
+    verify(caseRepo).findOne(INACTIONABLE_HOUSEHOLD_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.TRANSLATION_ARABIC);
+    // there was no change to case - no state transition
+    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
+    // event was saved
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, times(1)).createAndPostAction(any(String.class), any(Integer.class),
+        any(String.class));
+  }
 
   /**
    * Tries to apply a general event against a case already inactionable. Should
@@ -218,24 +221,22 @@ public class CaseServiceImplTest {
    * 
    * @throws Exception
    */
-//  @Test
-//  @Ignore
-//  public void testCreateNonActionableEventAgainstInactionableCase() throws Exception {
-//
-//    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryType.GENERAL_COMPLAINT, INACTIONABLE_HOUSEHOLD_CASE_ID);
-//
-//    caseService.createCaseEvent(caseEvent, null);
-//    verify(caseRepo).findOne(INACTIONABLE_HOUSEHOLD_CASE_ID);
-//    verify(categoryRepo).findOne(CategoryDTO.CategoryType.GENERAL_COMPLAINT);
-//    // there was no change to case - no state transition
-//    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-//    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
-//    // event was saved
-//    verify(caseEventRepository, times(1)).save(caseEvent);
-//    verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
-//    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
-//        any(String.class));
-//  }
+  @Test
+  public void testCreateNonActionableEventAgainstInactionableCase() throws Exception {
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.GENERAL_COMPLAINT, INACTIONABLE_HOUSEHOLD_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, null);
+    verify(caseRepo).findOne(INACTIONABLE_HOUSEHOLD_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.GENERAL_COMPLAINT);
+    // there was no change to case - no state transition
+    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
+    // event was saved
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+        any(String.class));
+  }
 
   /**
    * Tries to apply a response event against an actionable case Should allow it
@@ -243,36 +244,35 @@ public class CaseServiceImplTest {
    * 
    * @throws Exception
    */
-//  @Test
-//  public void testCreatePaperResponseEventAgainstActionableCase() throws Exception {
-//
-//    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryType.PAPER_QUESTIONNAIRE_RESPONSE,
-//        ACTIONABLE_HOUSEHOLD_CASE_ID);
-//
-//    caseService.createCaseEvent(caseEvent, null);
-//    verify(caseRepo).findOne(ACTIONABLE_HOUSEHOLD_CASE_ID);
-//    verify(categoryRepo).findOne(CategoryDTO.CategoryType.PAPER_QUESTIONNAIRE_RESPONSE);
-//
-//    // there was a change to case - state transition and response saved
-//    ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
-//    verify(caseRepo, times(1)).save(argument.capture());
-//    Case caseSaved = argument.getValue();
-//    assertEquals(1, caseSaved.getResponses().size());
-//    assertEquals(CaseDTO.CaseState.INACTIONABLE, caseSaved.getState());
-//
-//    // IAC should not be disabled for paper responses
-//    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
-//
-//    // action service should be told of case state change
-//    verify(notificationPublisher, times(1)).sendNotifications(anyListOf(CaseNotification.class));
-//
-//    // no new action to be created
-//    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
-//        any(String.class));
-//
-//    // event was saved
-//    verify(caseEventRepository, times(1)).save(caseEvent);
-//  }
+  @Test
+  public void testCreatePaperResponseEventAgainstActionableCase() throws Exception {
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE,
+        ACTIONABLE_HOUSEHOLD_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, null);
+    verify(caseRepo).findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE);
+
+    // there was a change to case - state transition and response saved
+    ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
+    verify(caseRepo, times(1)).save(argument.capture());
+    Case caseSaved = argument.getValue();
+    assertEquals(1, caseSaved.getResponses().size());
+    assertEquals(CaseDTO.CaseState.INACTIONABLE, caseSaved.getState());
+
+    // IAC should not be disabled for paper responses
+    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
+
+    // action service should be told of case state change
+    verify(notificationPublisher, times(1)).sendNotifications(anyListOf(CaseNotification.class));
+
+    // no new action to be created
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+        any(String.class));
+
+    // event was saved
+    verify(caseEventRepository, times(1)).save(caseEvent);
+  }
 
   /**
    * Tries to apply an online response event against an actionable case Should
@@ -280,36 +280,35 @@ public class CaseServiceImplTest {
    * 
    * @throws Exception
    */
-//  @Test
-//  public void testCreateOnlineResponseEventAgainstActionableCase() throws Exception {
-//
-//    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryType.ONLINE_QUESTIONNAIRE_RESPONSE,
-//        ACTIONABLE_HOUSEHOLD_CASE_ID);
-//
-//    caseService.createCaseEvent(caseEvent, null);
-//    verify(caseRepo).findOne(ACTIONABLE_HOUSEHOLD_CASE_ID);
-//    verify(categoryRepo).findOne(CategoryDTO.CategoryType.ONLINE_QUESTIONNAIRE_RESPONSE);
-//
-//    // there was a change to case - state transition and response saved
-//    ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
-//    verify(caseRepo, times(1)).save(argument.capture());
-//    Case caseSaved = argument.getValue();
-//    assertEquals(1, caseSaved.getResponses().size());
-//    assertEquals(CaseDTO.CaseState.INACTIONABLE, caseSaved.getState());
-//
-//    // IAC should be disabled for online responses
-//    verify(internetAccessCodeSvcClientService, times(1)).disableIAC(any(String.class));
-//
-//    // action service should be told of case state change
-//    verify(notificationPublisher, times(1)).sendNotifications(anyListOf(CaseNotification.class));
-//
-//    // no new action to be created
-//    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
-//        any(String.class));
-//
-//    // event was saved
-//    verify(caseEventRepository, times(1)).save(caseEvent);
-//  }
+  @Test
+  public void testCreateOnlineResponseEventAgainstActionableCase() throws Exception {
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE,
+        ACTIONABLE_HOUSEHOLD_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, null);
+    verify(caseRepo).findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE);
+
+    // there was a change to case - state transition and response saved
+    ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
+    verify(caseRepo, times(1)).save(argument.capture());
+    Case caseSaved = argument.getValue();
+    assertEquals(1, caseSaved.getResponses().size());
+    assertEquals(CaseDTO.CaseState.INACTIONABLE, caseSaved.getState());
+
+    // IAC should be disabled for online responses
+    verify(internetAccessCodeSvcClientService, times(1)).disableIAC(any(String.class));
+
+    // action service should be told of case state change
+    verify(notificationPublisher, times(1)).sendNotifications(anyListOf(CaseNotification.class));
+
+    // no new action to be created
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+        any(String.class));
+
+    // event was saved
+    verify(caseEventRepository, times(1)).save(caseEvent);
+  }
 
   /**
    * Tries to apply a response event against an already inactionable case Should
@@ -317,36 +316,35 @@ public class CaseServiceImplTest {
    * 
    * @throws Exception
    */
-//  @Test
-//  public void testCreateResponseEventAgainstInActionableCase() throws Exception {
-//
-//    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryType.PAPER_QUESTIONNAIRE_RESPONSE,
-//        INACTIONABLE_HOUSEHOLD_CASE_ID);
-//
-//    caseService.createCaseEvent(caseEvent, null);
-//    verify(caseRepo).findOne(INACTIONABLE_HOUSEHOLD_CASE_ID);
-//    verify(categoryRepo).findOne(CategoryDTO.CategoryType.PAPER_QUESTIONNAIRE_RESPONSE);
-//
-//    // there was a change to case - state transition and response saved
-//    ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
-//    verify(caseRepo, times(1)).save(argument.capture());
-//    Case caseSaved = argument.getValue();
-//    assertEquals(2, caseSaved.getResponses().size());
-//    assertEquals(CaseDTO.CaseState.INACTIONABLE, caseSaved.getState());
-//
-//    // IAC should not be disabled again!
-//    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
-//
-//    // action service should NOT be told of case state change
-//    verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
-//
-//    // no new action to be created
-//    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
-//        any(String.class));
-//
-//    // event was saved
-//    verify(caseEventRepository, times(1)).save(caseEvent);
-//  }
+  @Test
+  public void testCreateResponseEventAgainstInActionableCase() throws Exception {
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE,
+        INACTIONABLE_HOUSEHOLD_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, null);
+    verify(caseRepo).findOne(INACTIONABLE_HOUSEHOLD_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE);
+
+    // there was a change to case - state transition and response saved
+    ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
+    verify(caseRepo, times(1)).save(argument.capture());
+    Case caseSaved = argument.getValue();
+    assertEquals(2, caseSaved.getResponses().size());
+    assertEquals(CaseDTO.CaseState.INACTIONABLE, caseSaved.getState());
+
+    // IAC should not be disabled again!
+    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
+
+    // action service should NOT be told of case state change
+    verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
+
+    // no new action to be created
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+        any(String.class));
+
+    // event was saved
+    verify(caseEventRepository, times(1)).save(caseEvent);
+  }
 
   /**
    * Bluesky test for creating a replacement household case
