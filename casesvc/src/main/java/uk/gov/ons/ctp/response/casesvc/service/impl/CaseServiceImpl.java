@@ -249,7 +249,8 @@ public class CaseServiceImpl implements CaseService {
       // add sampleUnitType and actionplanId to newCase
       buildNewCase(category, newCase, targetCase);
 
-      if (!category.getRecalcCollectionInstrument()) {
+      Boolean calculationRequired = category.getRecalcCollectionInstrument();
+      if (calculationRequired == null || !calculationRequired) {
         newCase.setCollectionInstrumentId(targetCase.getCollectionInstrumentId());
       }
 
