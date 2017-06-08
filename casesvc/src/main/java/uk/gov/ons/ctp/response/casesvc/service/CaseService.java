@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.UUID;
 
 import uk.gov.ons.ctp.common.service.CTPService;
-import uk.gov.ons.ctp.response.casesvc.definition.CaseCreation;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
+import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 
 /**
@@ -18,14 +18,16 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 public interface CaseService extends CTPService {
 
   /**
-   * Find the cases in a casegroup
-   * @param caseGroupFK the group
-   * @return the cases in the group
+   * Find the cases in a casegroup.
+   * 
+   * @param caseGroupFK the group.
+   * @return the cases in the group.
    */
   List<Case> findCasesByCaseGroupFK(final Integer caseGroupFK);
 
   /**
-   * Find the cases for a partyId
+   * Find the cases for a partyId.
+   * 
    * @param partyId the partyId
    * @return the cases for the partyId
    */
@@ -56,48 +58,56 @@ public interface CaseService extends CTPService {
   Case findCaseByCaseRef(String caseRef);
 
   /**
-   * Find Case entity by IAC
+   * Find Case entity by IAC.
    *
-   * @param iac The IAC 
-   * @return Case object or null
+   * @param iac The IAC.
+   * @return Case object or null.
    */
   Case findCaseByIac(String iac);
-  
+
   /**
    * Find CaseEvent entities associated with a Case.
    *
-   * @param caseFK Case ForeignKey
-   * @return List of CaseEvent entities or empty List
+   * @param caseFK Case ForeignKey.
+   * @return List of CaseEvent entities or empty List.
    */
   List<CaseEvent> findCaseEventsByCaseFK(Integer caseFK);
 
   /**
-   * Create a CaseEvent from the details provided in the passed CaseEvent. Some events will also as a side effect
-   * create a new case - if so the details must be provided in the newCase argument, otherwise it may remain null.
-   * If the newCase is passed it must also contain the contact details for the new case.
+   * Create a CaseEvent from the details provided in the passed CaseEvent. Some
+   * events will also as a side effect create a new case - if so the details
+   * must be provided in the newCase argument, otherwise it may remain null. If
+   * the newCase is passed it must also contain the contact details for the new
+   * case.
    *
-   * @param caseEvent CaseEvent to be created
-   * @param newCase optional case object containing partial details of the case to be created by this event.
-   * @return the created CaseEvent
+   * @param caseEvent CaseEvent to be created.
+   * @param newCase optional case object containing partial details of the case
+   *          to be created by this event.
+   * @return the created CaseEvent.
    */
   CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase);
 
   /**
-   * Create a CaseEvent for the specific scenario of an incoming CaseReceipt (sent by the SDX Gateway and containing
-   * the responseDateTime of the online/paper response)
+   * Create a CaseEvent for the specific scenario of an incoming CaseReceipt
+   * (sent by the SDX Gateway and containing the responseDateTime of the
+   * online/paper response).
    *
    * @param caseEvent CaseEvent to be created
-   * @param newCase optional case object containing partial details of the case to be created by this event.
-   * @param timestamp equals to the incoming CaseReceipt's responseDateTime
-   * @return the created CaseEvent
+   * @param newCase optional case object containing partial details of the case
+   *          to be created by this event.
+   * @param timestamp timestamp equals to the incoming CaseReceipt's
+   *          responseDateTime.
+   * @return the created CaseEvent.
    */
   CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase,
                             Timestamp timestamp);
 
   /**
-   * Not sure this is the best place for this method, but .. several parts of case svc need to build a 
-   * CaseNotification for a Case and need the services of the ActionPlanMappingService to get the actionPlanId
-   * This method just creates a CaseNotification
+   * Not sure this is the best place for this method, but .. several parts of
+   * case svc need to build a CaseNotification for a Case and need the services
+   * of the ActionPlanMappingService to get the actionPlanId This method just
+   * creates a CaseNotification
+   * 
    * @param caze The Case
    * @param transitionEvent the event to inform the recipient of
    * @return the newly created notification object
@@ -106,11 +116,13 @@ public interface CaseService extends CTPService {
                                            CaseDTO.CaseEvent transitionEvent);
 
   /**
-   * Create a CaseEvent from the details provided in the passed CaseEvent. Some events will also as a side effect
-   * create a new case - if so the details must be provided in the newCase argument, otherwise it may remain null.
-   * If the newCase is passed it must also contain the contact details for the new case.
+   * Create a CaseEvent from the details provided in the passed CaseEvent. Some
+   * events will also as a side effect create a new case - if so the details
+   * must be provided in the newCase argument, otherwise it may remain null. If
+   * the newCase is passed it must also contain the contact details for the new
+   * case.
    *
    * @param caseData the CaseCreation data
    */
-  void createInitialCase(CaseCreation caseData);
+  void createInitialCase(SampleUnitParent caseData);
 }

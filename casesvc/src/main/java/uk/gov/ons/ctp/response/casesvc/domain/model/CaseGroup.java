@@ -37,7 +37,7 @@ public class CaseGroup implements Serializable {
       @Parameter(name = "sequence_name", value = "casesvc.casegroupseq"),
       @Parameter(name = "increment_size", value = "1")
   })
-  @Column(name = "casegroupPK")
+  @Column(name = "casegrouppk")
   private int caseGroupPK;
   
   @Column(name = "collectionexerciseid")
