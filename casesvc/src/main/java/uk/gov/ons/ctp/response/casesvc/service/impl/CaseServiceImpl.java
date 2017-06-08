@@ -169,7 +169,7 @@ public class CaseServiceImpl implements CaseService {
       Category category = categoryRepo.findOne(caseEvent.getCategory());
 
       // fail fast...
-      validateCaseEventRequest(category, caseEvent, targetCase, newCase);
+      validateCaseEventRequest(category, targetCase, newCase);
 
       // save the case event to db
       caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
@@ -196,13 +196,10 @@ public class CaseServiceImpl implements CaseService {
    * cannot rollback ie IAC disable, or Action creation.
    * 
    * @param category the category details
-   * @param caseEvent the event details
    * @param targetCase the case the event is being created against
    * @param newCase the details provided in the event request for the new case
    */
-  private void validateCaseEventRequest(Category category, CaseEvent caseEvent, Case targetCase,
-      Case newCase) {
-
+  private void validateCaseEventRequest(Category category, Case targetCase, Case newCase) {
     if (category.getNewCaseSampleUnitType() != null) {
       if (newCase == null) {
         throw new RuntimeException(String.format(MISSING_NEW_CASE_MSG, targetCase.getCasePK()));
@@ -211,8 +208,7 @@ public class CaseServiceImpl implements CaseService {
       checkSampleUnitTypesMatch(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, targetCase.getSampleUnitType().name(),
           category.getOldCaseSampleUnitType());
 
-      // TODO Validate the new sample unit type: call to the PartySvc to verify
-      // our partyId's sample unit type
+      // TODO Validate the new sample unit type: call to the PartySvc to verify our partyId's sample unit type
       // TODO matches the category's new sample unit type.
     }
   }

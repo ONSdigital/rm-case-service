@@ -25,7 +25,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseState;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 
 /**
- * Test the action distributor
+ * Test the case distributor
  */
 @RunWith(MockitoJUnitRunner.class)
 public class CaseDistributorTest {

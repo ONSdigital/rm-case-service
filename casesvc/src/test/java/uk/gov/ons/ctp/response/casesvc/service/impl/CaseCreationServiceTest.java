@@ -14,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.casesvc.definition.CaseCreation;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
@@ -29,10 +28,7 @@ public class CaseCreationServiceTest {
 	
 	 @InjectMocks
 	 private CaseServiceImpl caseService;
-	 
-	 @Mock
-	 private CaseCreation caseCreation;  
-	 
+
 	 @Mock
 	 private CaseGroupRepository caseGroupRepo;
 	 
