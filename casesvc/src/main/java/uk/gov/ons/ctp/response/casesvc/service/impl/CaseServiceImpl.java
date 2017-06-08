@@ -54,7 +54,8 @@ public class CaseServiceImpl implements CaseService {
   private static final String CASE_CREATED_EVENT_DESCRIPTION = "Case created when %s";
   private static final String IAC_OVERUSE_MSG = "More than one case found to be using IAC %s";
   private static final String MISSING_NEW_CASE_MSG = "New Case definition missing for case %s";
-  private static final String WRONG_OLD_SAMPLE_UNIT_TYPE_MSG = "Old Case definition has incorrect sampleUnitType (old sampleUnitType '%s' is not expected type '%s')";
+  private static final String WRONG_OLD_SAMPLE_UNIT_TYPE_MSG =
+      "Old Case definition has incorrect sampleUnitType (old sampleUnitType '%s' is not expected type '%s')";
 
   private static final int TRANSACTION_TIMEOUT = 30;
 
@@ -196,7 +197,7 @@ public class CaseServiceImpl implements CaseService {
    * Upfront fail fast validation - if this event is going to require a new case
    * to be created, lets check the request is valid before we do something we
    * cannot rollback ie IAC disable, or Action creation.
-   * 
+   *
    * @param category the category details
    * @param targetCase the case the event is being created against
    * @param newCase the details provided in the event request for the new case
@@ -217,7 +218,7 @@ public class CaseServiceImpl implements CaseService {
 
   /**
    * Simple method to compare two sample unit types and complain if they don't
-   * 
+   *
    * @param msg the error message to use if they mismatch
    * @param newSampleUnitType the type on the left
    * @param expectedSampleUnitType the type on the right
@@ -231,7 +232,7 @@ public class CaseServiceImpl implements CaseService {
   /**
    * Check to see if a new case creation is indicated by the event category and
    * if so create it
-   * 
+   *
    * @param category the category details of the event
    * @param caseEvent the basic event
    * @param targetCase the 'source' case the event is being created for
@@ -249,23 +250,24 @@ public class CaseServiceImpl implements CaseService {
       // add sampleUnitType and actionplanId to newCase
       buildNewCase(category, newCase, targetCase);
 
-      if (category.getRecalcCollectionInstrument() == false)
+      if (category.getRecalcCollectionInstrument() == false) {
         newCase.setCollectionInstrumentId(targetCase.getCollectionInstrumentId());
+      }
       createNewCaseFromEvent(caseEvent, targetCase, newCase, category);
     }
   }
-  
+
   /**
    * Add required values to the new case to be created
-   * 
+   *
    * @param category the category details of the event
    * @param targetCase the 'source' case the event is being created for
    * @param newCase the new case to be created
    */
   private void buildNewCase(Category category, Case newCase, Case targetCase) {
     newCase.setSampleUnitType(SampleUnitType.valueOf(category.getNewCaseSampleUnitType()));
-    
-    // set case group id to the same as 
+
+    // set case group id to the same as
     newCase.setCaseGroupId(targetCase.getCaseGroupId());
 
     CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
@@ -283,7 +285,7 @@ public class CaseServiceImpl implements CaseService {
   /**
    * Check to see if the event requires a response to be recorded for the case
    * and if so ... record it
-   * 
+   *
    * @param category the category details of the event
    * @param targetCase the 'source' case the event is being created for
    * @param timestamp timestamp the timestamp of the CaseResponse
@@ -315,7 +317,7 @@ public class CaseServiceImpl implements CaseService {
   /**
    * Send a request to the action service to create an ad-hoc action for the
    * event if required
-   * 
+   *
    * @param category the category details of the event
    * @param caseEvent the basic event
    */
@@ -333,7 +335,7 @@ public class CaseServiceImpl implements CaseService {
    * notify the action service of the state change AND if the event was type
    * DISABLED then also call the IAC service to disable/deactivate the IAC code
    * related to the target case.
-   * 
+   *
    * @param category the category details of the event
    * @param targetCase the 'source' case the event is being created for
    */
@@ -365,7 +367,7 @@ public class CaseServiceImpl implements CaseService {
   /**
    * Go ahead and create a new case using the new case details, associate it
    * with the target case and create the CASE_CREATED event on the new case
-   * 
+   *
    * @param caseEvent the basic event
    * @param targetCase the 'source' case the event is being created for
    * @param newCase the details for the new case (if indeed one is required)
@@ -387,7 +389,7 @@ public class CaseServiceImpl implements CaseService {
 
   /**
    * Create a new case row for a replacement/new case
-   * 
+   *
    * @param caseEvent the event that lead to the creation of the new case
    * @param targetCase the case the caseEvent was applied to
    * @param newCase the case we have been asked to create off the back of the
@@ -406,7 +408,7 @@ public class CaseServiceImpl implements CaseService {
 
   /**
    * Create an event for a newly created case
-   * 
+   *
    * @param caze the case for which we want to record the event
    * @param caseEventCategory the category of the event that led to the creation
    *          of the case
@@ -432,6 +434,12 @@ public class CaseServiceImpl implements CaseService {
     createNewCase(caseData, newCaseGroup);
   }
 
+
+  /**
+   * Create the CaseGroup for the Case.
+   * @param caseGroupData SampleUnitParent from which to create CaseGroup.
+   * @return newcaseGroup created caseGroup.
+   */
   private CaseGroup createNewCaseGroup(SampleUnitParent caseGroupData) {
     CaseGroup newCaseGroup = new CaseGroup();
 
@@ -446,14 +454,21 @@ public class CaseServiceImpl implements CaseService {
     return newCaseGroup;
   }
 
-  private void createNewCase(SampleUnitParent caseData, CaseGroup caseGroup) {
+  /**
+   * Create the new Case.
+   * @param caseData SampleUnitParent from which to create Case.
+   * @param caseGroup to which Case belongs.
+   * @return newCase created Case.
+   */
+  private Case createNewCase(SampleUnitParent caseData, CaseGroup caseGroup) {
+
     Case newCase = new Case();
     newCase.setId(UUID.randomUUID());
 
     // values from case group
     newCase.setCaseGroupId(caseGroup.getId());
     newCase.setCaseGroupFK(caseGroup.getCaseGroupPK());
- 
+
     // Child exists, create case for child, otherwise use parent values
     SampleUnitBase sampleUnitBase = null;
     if (!(caseData.getSampleUnitChild() == null)) {
@@ -463,7 +478,6 @@ public class CaseServiceImpl implements CaseService {
       sampleUnitBase = caseData;
       newCase.setActionPlanId(UUID.fromString(caseData.getActionPlanId()));
     }
-      newCase.setCaseRef(sampleUnitBase.getSampleUnitRef());
       newCase.setSampleUnitType(SampleUnitDTO.SampleUnitType.valueOf(sampleUnitBase.getSampleUnitType()));
       newCase.setPartyId(UUID.fromString(sampleUnitBase.getPartyId()));
       newCase.setCollectionInstrumentId(UUID.fromString(sampleUnitBase.getCollectionInstrumentId()));
@@ -476,5 +490,6 @@ public class CaseServiceImpl implements CaseService {
 
     caseRepo.saveAndFlush(newCase);
     log.debug("New Case created: {}", newCase.getId().toString());
+    return newCase;
   }
 }
