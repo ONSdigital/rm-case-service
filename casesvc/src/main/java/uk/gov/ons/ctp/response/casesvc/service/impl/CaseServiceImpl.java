@@ -247,8 +247,10 @@ public class CaseServiceImpl implements CaseService {
       // add sampleUnitType and actionplanId to newCase
       buildNewCase(category, newCase, targetCase);
 
-      if (category.getRecalcCollectionInstrument() == false)
+      if (!category.getRecalcCollectionInstrument()) {
         newCase.setCollectionInstrumentId(targetCase.getCollectionInstrumentId());
+      }
+
       createNewCaseFromEvent(caseEvent, targetCase, newCase, category);
     }
   }
