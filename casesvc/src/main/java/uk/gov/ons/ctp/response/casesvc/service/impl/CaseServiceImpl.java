@@ -15,7 +15,6 @@ import org.springframework.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
-import uk.gov.ons.ctp.response.casesvc.definition.CaseCreation;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
@@ -28,6 +27,8 @@ import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType;
+import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitBase;
+import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
@@ -39,6 +40,7 @@ import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientServic
 import uk.gov.ons.ctp.response.casesvc.utility.Constants;
 import uk.gov.ons.ctp.response.collection.exercise.representation.CaseTypeDTO;
 import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
+import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
 import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO.SampleUnitType;
 
 /**
@@ -424,19 +426,18 @@ public class CaseServiceImpl implements CaseService {
   }
 
   @Override
-  public void createInitialCase(CaseCreation caseData) {
+  public void createInitialCase(SampleUnitParent caseData) {
 
     CaseGroup newCaseGroup = createNewCaseGroup(caseData);
     createNewCase(caseData, newCaseGroup);
   }
 
-  private CaseGroup createNewCaseGroup(CaseCreation caseGroupData) {
+  private CaseGroup createNewCaseGroup(SampleUnitParent caseGroupData) {
     CaseGroup newCaseGroup = new CaseGroup();
 
     newCaseGroup.setId(UUID.randomUUID());
     newCaseGroup.setPartyId(UUID.fromString(caseGroupData.getPartyId()));
     newCaseGroup.setCollectionExerciseId(UUID.fromString(caseGroupData.getCollectionExerciseId()));
-
     newCaseGroup.setSampleUnitRef(caseGroupData.getSampleUnitRef());
     newCaseGroup.setSampleUnitType(caseGroupData.getSampleUnitType());
 
@@ -445,19 +446,28 @@ public class CaseServiceImpl implements CaseService {
     return newCaseGroup;
   }
 
-  private void createNewCase(CaseCreation caseData, CaseGroup caseGroup) {
+  private void createNewCase(SampleUnitParent caseData, CaseGroup caseGroup) {
     Case newCase = new Case();
     newCase.setId(UUID.randomUUID());
 
     // values from case group
     newCase.setCaseGroupId(caseGroup.getId());
     newCase.setCaseGroupFK(caseGroup.getCaseGroupPK());
-    newCase.setPartyId(caseGroup.getPartyId());
-    newCase.setSampleUnitType(SampleUnitType.valueOf(caseGroup.getSampleUnitType()));
+ 
+    // Child exists, create case for child, otherwise use parent values
+    SampleUnitBase sampleUnitBase = null;
+    if (!(caseData.getSampleUnitChild() == null)) {
+      sampleUnitBase = caseData.getSampleUnitChild();
+      newCase.setActionPlanId(UUID.fromString(caseData.getSampleUnitChild().getActionPlanId()));
+    } else {
+      sampleUnitBase = caseData;
+      newCase.setActionPlanId(UUID.fromString(caseData.getActionPlanId()));
+    }
+      newCase.setCaseRef(sampleUnitBase.getSampleUnitRef());
+      newCase.setSampleUnitType(SampleUnitDTO.SampleUnitType.valueOf(sampleUnitBase.getSampleUnitType()));
+      newCase.setPartyId(UUID.fromString(sampleUnitBase.getPartyId()));
+      newCase.setCollectionInstrumentId(UUID.fromString(sampleUnitBase.getCollectionInstrumentId()));
 
-    // Values from collection exercise
-    newCase.setActionPlanId(UUID.fromString(caseData.getActionPlanId()));
-    newCase.setCollectionInstrumentId(UUID.fromString(caseData.getCollectionInstrumentId()));
 
     // HardCoded values
     newCase.setState(CaseState.SAMPLED_INIT);
