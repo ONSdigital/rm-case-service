@@ -45,6 +45,7 @@ import uk.gov.ons.ctp.response.casesvc.utility.Constants;
 @Slf4j
 public final class CaseEndpoint implements CTPEndpoint {
 
+  public static final String CATEGORY_IAC_AUTH_NOT_FOUND = "Category IAC_AUTHENTICATED does not exist.";
   public static final String ERRORMSG_CASENOTFOUND = "Case not found for";
   public static final String EVENT_REQUIRES_NEW_CASE = "Event requested for " +
           "case %s requires additional data - new Case details";
@@ -277,15 +278,18 @@ public final class CaseEndpoint implements CTPEndpoint {
     return caseDetailsDTO;
   }
 
-  private void createNewEventForIACAuthenticated(Case caseObj) {
+  private void createNewEventForIACAuthenticated(Case caseObj) throws CTPException {
     Category cat = categoryService.findCategory(CategoryDTO.CategoryName.IAC_AUTHENTICATED);
+    if (cat == null) {
+      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, CATEGORY_IAC_AUTH_NOT_FOUND);
+    }
+
     CaseEvent caseEvent = new CaseEvent();
     caseEvent.setCaseFK(caseObj.getCasePK());
     caseEvent.setCategory(CategoryDTO.CategoryName.IAC_AUTHENTICATED);
     caseEvent.setCreatedBy(Constants.SYSTEM);
     caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
     caseEvent.setDescription(cat.getShortDescription());
-
-    caseService.createCaseEvent(caseEvent,caseObj);
+    caseService.createCaseEvent(caseEvent, caseObj);
   }
 }
