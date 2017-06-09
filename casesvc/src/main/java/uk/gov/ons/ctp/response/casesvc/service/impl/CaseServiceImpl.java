@@ -465,7 +465,6 @@ public class CaseServiceImpl implements CaseService {
    * @return newCase created Case.
    */
   private Case createNewCase(SampleUnitParent caseData, CaseGroup caseGroup) {
-
     Case newCase = new Case();
     newCase.setId(UUID.randomUUID());
 
@@ -475,7 +474,7 @@ public class CaseServiceImpl implements CaseService {
 
     // Child exists, create case for child, otherwise use parent values
     SampleUnitBase sampleUnitBase = null;
-    if (!(caseData.getSampleUnitChild() == null)) {
+    if (caseData.getSampleUnitChild() != null) {
       sampleUnitBase = caseData.getSampleUnitChild();
       newCase.setActionPlanId(UUID.fromString(caseData.getSampleUnitChild().getActionPlanId()));
     } else {

@@ -109,6 +109,7 @@ public final class CaseEndpointUnitTest {
   private static final String NON_EXISTING_CASE_ID = "9bc9d99b-9999-99b9-ba99-99f9d9cf9999";
   private static final String NON_EXISTING_IAC = "zzzz llll mmmm";
   private static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
+  private static final String FINDCASEBYID = "findCaseById";
 
   private static final String CASEEVENT_INVALIDJSON =
           "{\"description\":\"a\",\"category\":\"BAD_CAT\",\"createdBy\":\"u\"}";
@@ -165,7 +166,7 @@ public final class CaseEndpointUnitTest {
 
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
-    actions.andExpect(handler().methodName("findCaseById"));
+    actions.andExpect(handler().methodName(FINDCASEBYID));
     actions.andExpect(jsonPath("$.id", is(CASE1_ID.toString())));
     actions.andExpect(jsonPath("$.iac", is(IAC_CASE1)));
     actions.andExpect(jsonPath("$.collectionInstrumentId", is(CASE_CI_ID)));
@@ -204,7 +205,7 @@ public final class CaseEndpointUnitTest {
 
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
-    actions.andExpect(handler().methodName("findCaseById"));
+    actions.andExpect(handler().methodName(FINDCASEBYID));
     actions.andExpect(jsonPath("$.id", is(CASE1_ID.toString())));
     actions.andExpect(jsonPath("$.iac", is(nullValue())));
     actions.andExpect(jsonPath("$.collectionInstrumentId", is(CASE_CI_ID)));
@@ -234,7 +235,7 @@ public final class CaseEndpointUnitTest {
 
     actions.andExpect(status().isNotFound());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
-    actions.andExpect(handler().methodName("findCaseById"));
+    actions.andExpect(handler().methodName(FINDCASEBYID));
     actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
     actions.andExpect(jsonPath("$.error.message", is(String.format("%s case id %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_CASE_ID))));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
@@ -248,7 +249,7 @@ public final class CaseEndpointUnitTest {
 
     actions.andExpect(status().is5xxServerError());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
-    actions.andExpect(handler().methodName("findCaseById"));
+    actions.andExpect(handler().methodName(FINDCASEBYID));
     actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.SYSTEM_ERROR.name())));
     actions.andExpect(jsonPath("$.error.message", is(OUR_EXCEPTION_MESSAGE)));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
