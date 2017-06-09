@@ -429,6 +429,7 @@ public class CaseServiceImpl implements CaseService {
     return newCaseCaseEvent;
   }
 
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
   public void createInitialCase(SampleUnitParent caseData) {
 
