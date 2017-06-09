@@ -34,19 +34,19 @@
 	<!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
 	<int-xml:validating-filter id="caseValidator"
 		input-channel="caseCreation" output-channel="caseCreationValid"
-		schema-location="classpath:casesvc/xsd/inbound/caseCreation.xsd" discard-channel="caseCreationInvalid" />
+		schema-location="classpath:casesvc/xsd/inbound/SampleUnitNotification.xsd" discard-channel="caseCreationInvalid" />
 
 
 	<!-- Validated xml is transformed into the jaxb generated object model -->
 	<int:channel id="caseTransformed"
-		datatype="uk.gov.ons.ctp.response.casesvc.definition.CaseCreation" />
+		datatype="uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent" />
 	<int-xml:unmarshalling-transformer
 		input-channel="caseCreationValid" output-channel="caseTransformed"
 		unmarshaller="caseCreationMarshaller" />
 
 	<bean id="caseCreationMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
 		<property name="contextPath"
-			value="uk.gov.ons.ctp.response.casesvc.definition" />
+			value="uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification" />
 	</bean>
 
 	<!-- Finally see the @ServiceActivator(inputChannel = "sampleUnitTransformed", 

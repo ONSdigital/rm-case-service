@@ -45,9 +45,9 @@ import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientServic
  *
  * This class is scheduled to wake and looks for Cases in INIT state to send to
  * the action service. On each wake cycle, it fetches the first n cases, by
- * createddatetime. It loops through those n cases and fetches m IACs from the
+ * createddatetime. It loops through those n cases and fetches n IACs from the
  * IAC service. It then updates each case with an IAC taken from
- * the set of m codes and transitions the case state to ACTIVE. It takes each
+ * the set of n codes and transitions the case state to ACTIVE. It takes each
  * case and constructs a notification message to send to the action service -
  * when it has x notifications it publishes them.
  *
@@ -119,7 +119,8 @@ public class CaseDistributor {
     Span distribSpan = tracer.createSpan(CASE_DISTRIBUTOR_SPAN);
     CaseDistributionInfo distInfo = new CaseDistributionInfo();
 
-    int successes = 0, failures = 0;
+    int successes = 0;
+    int failures = 0;
     try {
       List<CaseNotification> caseNotifications = new ArrayList<>();
       List<Case> cases = retrieveCases();
@@ -134,8 +135,7 @@ public class CaseDistributor {
                     iacPageSize * iacPageSize) ? iacPageSize
                 : (cases.size() % iacPageSize);
             try {
-              codes = internetAccessCodeSvcClientService.
-                      generateIACs(codesToRequest);
+              codes = internetAccessCodeSvcClientService.generateIACs(codesToRequest);
             } catch (Exception e) {
               log.error("Failed to obtain IAC block");
               // exit case loop and send notifications of cases activated so far
@@ -145,18 +145,14 @@ public class CaseDistributor {
           }
 
           try {
-            caseNotifications.add(processCase(caze,
-                    codes.get(idx % iacPageSize)));
-            if (caseNotifications.size() == appConfig.getCaseDistribution().
-                    getDistributionMax()) {
+            caseNotifications.add(processCase(caze, codes.get(idx % iacPageSize)));
+            if (caseNotifications.size() == appConfig.getCaseDistribution().getDistributionMax()) {
               publishCases(caseNotifications);
             }
             successes++;
           } catch (Exception e) {
             // single case/questionnaire db changes rolled back
-            log.error(
-                "Exception {} thrown processing case {}. Processing postponed",
-                e.getMessage(), caze.getCasePK());
+            log.error("Exception {} thrown processing case {}. Processing postponed", e.getMessage(), caze.getCasePK());
             failures++;
           }
         }
@@ -166,19 +162,21 @@ public class CaseDistributor {
 
         publishCases(caseNotifications);
 
-        caseDistributionListManager.deleteList(CASE_DISTRIBUTOR_LIST_ID,
-                true);
+        caseDistributionListManager.deleteList(CASE_DISTRIBUTOR_LIST_ID,true);
       }
+
       try {
         caseDistributionListManager.unlockContainer();
       } catch (LockingException le) {
         // oh well - will time out or we never had the lock
       }
+
       tracer.close(distribSpan);
     } catch (Exception e) {
       // something went wrong retrieving case types or cases
       log.error("Failed to process cases because {}", e.getMessage());
     }
+
     log.info("CaseDistributor sleeping");
     return distInfo;
   }
@@ -195,32 +193,29 @@ public class CaseDistributor {
     List<Integer> excludedCases = caseDistributionListManager.findList(
             CASE_DISTRIBUTOR_LIST_ID, false);
 
-    // using the distributed map of lists of cases that other nodes are
-    // processing
+    // using the distributed map of lists of cases that other nodes are processing
     // flatten them into a list of case ids to exclude from our query
     log.debug("retrieve cases excluding {}", excludedCases);
 
     // prepare and execute the query to find the oldest N cases that are in
     // INIT states and not in the excluded list
-    Pageable pageable = new PageRequest(0, appConfig.getCaseDistribution().
-            getRetrievalMax(), new Sort(
-        new Sort.Order(Direction.ASC, "createdDateTime")));
+    Pageable pageable = new PageRequest(0, appConfig.getCaseDistribution().getRetrievalMax(),
+            new Sort(new Sort.Order(Direction.ASC, "createdDateTime")));
     excludedCases.add(Integer.valueOf(IMPOSSIBLE_CASE_ID));
     cases = caseRepo
-        .findByStateInAndCasePKNotIn(Arrays.asList(CaseState.SAMPLED_INIT,
-                CaseState.REPLACEMENT_INIT),
+        .findByStateInAndCasePKNotIn(Arrays.asList(CaseState.SAMPLED_INIT, CaseState.REPLACEMENT_INIT),
             excludedCases,
             pageable);
 
-    log.debug("RETRIEVED case ids {}", cases.stream().map(a -> a.getCasePK().
-            toString())
+    log.debug("RETRIEVED case ids {}", cases.stream().map(a -> a.getCasePK().toString())
         .collect(Collectors.joining(",")));
+
     // try and save our list to the distributed store
     if (cases.size() > 0) {
       caseDistributionListManager.saveList(CASE_DISTRIBUTOR_LIST_ID, cases.
-              stream().map(caze -> caze.getCasePK()).
-              collect(Collectors.toList()), true);
+              stream().map(caze -> caze.getCasePK()).collect(Collectors.toList()), true);
     }
+
     return cases;
   }
 

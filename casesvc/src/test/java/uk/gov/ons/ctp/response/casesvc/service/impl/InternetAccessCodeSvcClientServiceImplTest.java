@@ -38,9 +38,9 @@ import uk.gov.ons.ctp.response.casesvc.config.InternetAccessCodeSvc;
 public class InternetAccessCodeSvcClientServiceImplTest {
 
   @Mock
-  Tracer tracer;
+  private Tracer tracer;
   @Mock
-  Span span;
+  private Span span;
 
   @Mock
   private AppConfig appConfig;

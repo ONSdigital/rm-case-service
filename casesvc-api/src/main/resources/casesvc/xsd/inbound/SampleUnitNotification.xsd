@@ -9,10 +9,13 @@
 	<xs:complexType name="SampleUnitParent">
 	    <xs:complexContent>
 			<xs:extension base="SampleUnitBase">
-		        <xs:choice>
-		            <xs:element name="actionPlanId" type="xs:string" />
-			        <xs:element name="sampleUnitChild" type="SampleUnitChild" />
-		        </xs:choice>
+				<xs:sequence>
+					<xs:element name="collectionExerciseId" type="xs:string"  minOccurs="1" maxOccurs="1" />
+		            <xs:choice>
+		                <xs:element name="actionPlanId" type="xs:string" />
+			            <xs:element name="sampleUnitChild" type="SampleUnitChild" />
+		            </xs:choice>
+		        </xs:sequence>	
 		    </xs:extension>
 		 </xs:complexContent>    
 	</xs:complexType>

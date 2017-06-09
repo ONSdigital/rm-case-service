@@ -43,7 +43,7 @@ public class CaseReceiptReceiverImplTest {
   private static final String UNLINKED_CASE_REF = "456";
 
   @InjectMocks
-  CaseReceiptReceiverImpl caseReceiptReceiver;
+  private CaseReceiptReceiverImpl caseReceiptReceiver;
 
   @Mock
   private CaseService caseService;

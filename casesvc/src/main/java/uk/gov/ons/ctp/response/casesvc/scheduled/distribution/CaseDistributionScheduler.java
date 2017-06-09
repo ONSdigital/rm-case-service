@@ -17,17 +17,17 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class CaseDistributionScheduler implements HealthIndicator {
 
+  @Autowired
+  private CaseDistributor caseDistributorImpl;
+
+  private CaseDistributionInfo distribInfo = new CaseDistributionInfo();
+
   @Override
   public Health health() {
     return Health.up()
         .withDetail("activationInfo", distribInfo)
         .build();
   }
-
-  @Autowired
-  private CaseDistributor caseDistributorImpl;
-
-  private CaseDistributionInfo distribInfo = new CaseDistributionInfo();
 
   /**
    * Create the scheduler for the Case Distributor
