@@ -114,7 +114,6 @@ public class CaseServiceImplTest {
   private static final Integer ACTIONABLE_HOUSEHOLD_CASE_FK = 0;
   private static final Integer INACTIONABLE_HOUSEHOLD_CASE_FK = 1;
   private static final Integer ACTIONABLE_H_INDIVIDUAL_CASE_FK = 2;
-  private static final Integer INACTIONABLE_H_INDIVIDUAL_CASE_FK = 3;
   private static final Integer NEW_HOUSEHOLD_CASE_FK = 4;
   private static final Integer NEW_H_INDIVIDUAL_CASE_FK = 5;
   private static final Integer ENROLLMENT_CASE_INDIVIDUAL_FK = 8;
