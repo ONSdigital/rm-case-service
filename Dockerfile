@@ -1,7 +1,8 @@
-FROM openjdk 
+FROM openjdk:latest 
+MAINTAINER Kieran Wardle <kieran.wardle@ons.gov.uk>
 ARG jar
 VOLUME /tmp
-ADD $jar casesvc.jar
+COPY $jar casesvc.jar
 RUN sh -c 'touch /casesvc.jar'
 ENV JAVA_OPTS=""
 ENTRYPOINT [ "sh", "-c", "java -jar /casesvc.jar" ]
