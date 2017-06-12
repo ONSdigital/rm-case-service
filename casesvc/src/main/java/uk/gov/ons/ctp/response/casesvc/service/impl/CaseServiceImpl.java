@@ -51,11 +51,12 @@ import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO.SampleUnitTyp
 @Slf4j
 public class CaseServiceImpl implements CaseService {
 
+  public static final String WRONG_OLD_SAMPLE_UNIT_TYPE_MSG =
+          "Old Case definition has incorrect sampleUnitType (old sampleUnitType '%s' is not expected type '%s')";
+
   private static final String CASE_CREATED_EVENT_DESCRIPTION = "Case created when %s";
   private static final String IAC_OVERUSE_MSG = "More than one case found to be using IAC %s";
   private static final String MISSING_NEW_CASE_MSG = "New Case definition missing for case %s";
-  private static final String WRONG_OLD_SAMPLE_UNIT_TYPE_MSG =
-      "Old Case definition has incorrect sampleUnitType (old sampleUnitType '%s' is not expected type '%s')";
 
   private static final int TRANSACTION_TIMEOUT = 30;
 
@@ -429,6 +430,7 @@ public class CaseServiceImpl implements CaseService {
     return newCaseCaseEvent;
   }
 
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
   public void createInitialCase(SampleUnitParent caseData) {
 
@@ -463,7 +465,6 @@ public class CaseServiceImpl implements CaseService {
    * @return newCase created Case.
    */
   private Case createNewCase(SampleUnitParent caseData, CaseGroup caseGroup) {
-
     Case newCase = new Case();
     newCase.setId(UUID.randomUUID());
 
@@ -473,7 +474,7 @@ public class CaseServiceImpl implements CaseService {
 
     // Child exists, create case for child, otherwise use parent values
     SampleUnitBase sampleUnitBase = null;
-    if (!(caseData.getSampleUnitChild() == null)) {
+    if (caseData.getSampleUnitChild() != null) {
       sampleUnitBase = caseData.getSampleUnitChild();
       newCase.setActionPlanId(UUID.fromString(caseData.getSampleUnitChild().getActionPlanId()));
     } else {

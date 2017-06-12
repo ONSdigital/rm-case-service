@@ -1,8 +1,9 @@
+
 [
 	{
 		"id": "1bc5d41b-0549-40b3-ba76-42f6d4cf3fd1",
 		"collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
-		"casePK": 1,
+		"casePK": 0,
 		"caseGroupFK":1,
 		"state": "ACTIONABLE",
 		"sampleUnitType": "H",
@@ -16,7 +17,7 @@
 	{
 		"id": "2bc5d41b-0549-40b3-ba76-42f6d4cf3fd1",
 		"collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
-		"casePK": 2,
+		"casePK": 1,
 		"caseGroupFK":1,
 		"state": "INACTIONABLE",
 		"sampleUnitType": "H",
@@ -35,10 +36,10 @@
 	{
 		"id": "3bc5d41b-0549-40b3-ba76-42f6d4cf3fd1",
 		"collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
-		"casePK": 3,
+		"casePK": 2,
 		"caseGroupFK":1,
 		"state": "ACTIONABLE",
-		"sampleUnitType": "H",
+		"sampleUnitType": "HI",
 		"partyId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd3",
 		"createdDateTime": 1460732606544,
 		"createdBy": "me",
@@ -49,10 +50,10 @@
 	{
 		"id": "4bc5d41b-0549-40b3-ba76-42f6d4cf3fd1",
 		"collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
-		"casePK": 4,
+		"casePK": 3,
 		"caseGroupFK":1,
 		"state": "INACTIONABLE",
-		"sampleUnitType": "H",
+		"sampleUnitType": "HI",
 		"partyId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd4",
 		"createdDateTime": 1460732606544,
 		"createdBy": "me",
@@ -68,7 +69,7 @@
 	{
 		"id": "5bc5d41b-0549-40b3-ba76-42f6d4cf3fd1",
 		"collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
-		"casePK": 5,
+		"casePK": 4,
 		"caseGroupFK":1,
 		"state": "ACTIONABLE",
 		"sampleUnitType": "H",
@@ -87,10 +88,10 @@
 	{
 		"id": "6bc5d41b-0549-40b3-ba76-42f6d4cf3fd1",
 		"collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
-		"casePK": 6,
+		"casePK": 5,
 		"caseGroupFK": 1,
-		"state": "INACTIONABLE",
-		"sampleUnitType": "H",
+		"state": "ACTIONABLE",
+		"sampleUnitType": "HI",
 		"partyId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd6",
 		"createdDateTime": 1460732606544,
 		"createdBy": "me",
@@ -106,7 +107,7 @@
 	{
 		"id": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd1",
 		"collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
-		"casePK": 7,
+		"casePK": 6,
 		"caseGroupFK":1,
 		"state": "ACTIONABLE",
 		"sampleUnitType": "H",
@@ -118,7 +119,7 @@
 		"responses": []
 	},
 	{
-		"casePK": 8,
+		"casePK": 7,
 		"caseGroupFK":1,
 		"id": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd1",
 		"collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
@@ -137,13 +138,13 @@
 		]
 	},
 	{
-		"casePK": 9,
+		"casePK": 8,
 		"partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
 		"responses": []
 	},
 	{
 		"id": "91fda7f2-3825-4bd4-baef-943a0ccf0856",
-		"casePK": 10,
+		"casePK": 9,
 		"caseGroupFK":1,
 		"state": "ACTIONABLE",
 		"sampleUnitType": "B",
