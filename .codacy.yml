@@ -1,0 +1,9 @@
+engines:
+  checkstyle:
+    enabled: true
+  hadolint:
+    enabled: true
+  jacskon Linter:
+    enabled: true
+  pMDJava:
+    enabled: true
