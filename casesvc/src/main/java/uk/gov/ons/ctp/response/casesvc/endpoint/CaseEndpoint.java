@@ -122,7 +122,7 @@ public final class CaseEndpoint implements CTPEndpoint {
    *
    * @param iac to find by
    * @param caseevents flag used to return or not CaseEvents
-   * @param iacFlag used to return or not the iac
+   * @param iacFlag flag used to return or not the iac
    * @return the case found
    * @throws CTPException something went wrong
    */

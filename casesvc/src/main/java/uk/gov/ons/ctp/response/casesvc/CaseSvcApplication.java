@@ -64,7 +64,7 @@ public class CaseSvcApplication {
 
   /**
    * The DistributedListManager
-   * @param redissonClient
+   * @param redissonClient the redissonClient
    * @return the DistributedListManager
    */
   @Bean
