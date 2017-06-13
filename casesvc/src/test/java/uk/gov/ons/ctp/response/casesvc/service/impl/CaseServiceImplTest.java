@@ -581,9 +581,11 @@ public class CaseServiceImplTest {
    */
   @Test
   public void testHouseholdPaperRequestedAgainstIndividualCaseNotAllowed() throws Exception {
-    Mockito.when(caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK)).thenReturn(cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK));
+    Mockito.when(caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK)).thenReturn(
+            cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK));
 
-    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.HOUSEHOLD_PAPER_REQUESTED, ACTIONABLE_H_INDIVIDUAL_CASE_FK);
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.HOUSEHOLD_PAPER_REQUESTED,
+            ACTIONABLE_H_INDIVIDUAL_CASE_FK);
     try {
       Case oldCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
       caseService.createCaseEvent(caseEvent, oldCase);
@@ -770,25 +772,27 @@ public class CaseServiceImplTest {
 
   private void mockupIacServiceClient() throws Exception {
     List<InternetAccessCodeDTO> iacDTOs = FixtureHelper.loadClassFixtures(InternetAccessCodeDTO[].class);
-    Mockito.when(internetAccessCodeSvcClientService.disableIAC(any(String.class))).thenAnswer(new Answer<InternetAccessCodeDTO>() {
-      public InternetAccessCodeDTO answer(InvocationOnMock invocation) {
-        return iacDTOs.get(0);
-      }
-    });
+    Mockito.when(internetAccessCodeSvcClientService.disableIAC(any(String.class))).thenAnswer(
+            new Answer<InternetAccessCodeDTO>() {
+              public InternetAccessCodeDTO answer(InvocationOnMock invocation) {
+                return iacDTOs.get(0);
+              }
+            });
   }
   
   /**
    * mock the collection exercise service
    * 
-   * @throws Exception
+   * @throws Exception if fixtures loading fails
    */
   private void mockupCollectionExerciseServiceClient() throws Exception {
     List<CollectionExerciseDTO> collectionExerciseDTOs = FixtureHelper.loadClassFixtures(CollectionExerciseDTO[].class);
-    Mockito.when(collectionExerciseSvcClientService.getCollectionExercise(any())).thenAnswer(new Answer<CollectionExerciseDTO>() {
-      public CollectionExerciseDTO answer(InvocationOnMock invocation) {
-        return collectionExerciseDTOs.get(0);
-      }
-    });
+    Mockito.when(collectionExerciseSvcClientService.getCollectionExercise(any())).thenAnswer(
+            new Answer<CollectionExerciseDTO>() {
+              public CollectionExerciseDTO answer(InvocationOnMock invocation) {
+                return collectionExerciseDTOs.get(0);
+              }
+            });
   }
 
   /**

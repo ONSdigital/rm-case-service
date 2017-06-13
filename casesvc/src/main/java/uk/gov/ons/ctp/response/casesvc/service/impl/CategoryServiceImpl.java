@@ -45,15 +45,9 @@ public class CategoryServiceImpl implements CategoryService {
     boolean roleFiltered = !StringUtils.isEmpty(role);
     boolean groupFiltered = !StringUtils.isEmpty(group);
     List<Category> filteredCategories = categories.stream()
-        .filter(cat -> (roleFiltered ?
-                (cat.getRole() == null ?
-                        false : cat.getRole().contains(role)) : true))
-        .filter(cat -> (groupFiltered ?
-                (cat.getGroup() == null ?
-                        false : cat.getGroup().contains(group)) : true))
-        .sorted((cat1, cat2) ->
-                cat1.getCategoryName().name().compareTo(
-                        cat2.getCategoryName().name()))
+        .filter(cat -> (roleFiltered ? (cat.getRole() == null ? false : cat.getRole().contains(role)) : true))
+        .filter(cat -> (groupFiltered ? (cat.getGroup() == null ? false : cat.getGroup().contains(group)) : true))
+        .sorted((cat1, cat2) -> cat1.getCategoryName().name().compareTo(cat2.getCategoryName().name()))
         .collect(Collectors.toList());
     return filteredCategories;
   }

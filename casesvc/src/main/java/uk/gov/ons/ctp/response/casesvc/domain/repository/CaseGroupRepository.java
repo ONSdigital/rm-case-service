@@ -12,5 +12,10 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
  */
 @Repository
 public interface CaseGroupRepository extends JpaRepository<CaseGroup, Integer> {
+    /**
+     * To find CaseGroup by UUID
+     * @param id the UUID of the CaseGroup
+     * @return the matching CaseGroup
+     */
     CaseGroup findById(UUID id);
 }

@@ -38,6 +38,7 @@ public final class CategoryEndpoint implements CTPEndpoint {
    * 
    * @param categoryName the categoryName
    * @return the list of categories
+   * @throws CTPException if category does not exist
    */
   @RequestMapping(value = "/name/{categoryName}", method = RequestMethod.GET)
   public CategoryDTO findCategory(@PathVariable("categoryName") final String categoryName) throws CTPException {
@@ -58,7 +59,8 @@ public final class CategoryEndpoint implements CTPEndpoint {
   /**
    * the GET endpoint to retrieve all categories
    * 
-   * @param role the role
+   * @param role the role (example: collect-csos, collect-admins)
+   * @param group the group (example: general)
    * @return the list of categories
    */
   @RequestMapping(method = RequestMethod.GET)
@@ -67,7 +69,6 @@ public final class CategoryEndpoint implements CTPEndpoint {
     log.info("Entering findCategories with role {}", role);
     List<Category> categories = categoryService.findCategories(role, group);
     List<CategoryDTO> categoryDTOs = mapperFacade.mapAsList(categories, CategoryDTO.class);
-    return CollectionUtils.isEmpty(categoryDTOs) ?
-            ResponseEntity.noContent().build() : ResponseEntity.ok(categoryDTOs);
+    return CollectionUtils.isEmpty(categoryDTOs) ? ResponseEntity.noContent().build() : ResponseEntity.ok(categoryDTOs);
   }
 }

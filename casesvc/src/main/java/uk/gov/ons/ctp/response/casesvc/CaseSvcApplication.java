@@ -57,21 +57,28 @@ public class CaseSvcApplication {
    * @return the state transition manager specifically for Actions
    */
   @Bean
-  public StateTransitionManager<CaseDTO.CaseState, CaseDTO.CaseEvent>
-  caseSvcStateTransitionManager() {
+  public StateTransitionManager<CaseDTO.CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager() {
     return caseSvcStateTransitionManagerFactory.getStateTransitionManager(
-        CaseSvcStateTransitionManagerFactory.CASE_ENTITY);
+            CaseSvcStateTransitionManagerFactory.CASE_ENTITY);
   }
 
+  /**
+   * The DistributedListManager
+   * @param redissonClient
+   * @return the DistributedListManager
+   */
   @Bean
-  public DistributedListManager<Integer> caseDistributionListManager(
-          RedissonClient redissonClient) {
+  public DistributedListManager<Integer> caseDistributionListManager(RedissonClient redissonClient) {
     return new DistributedListManagerRedissonImpl<Integer>(
             CASE_DISTRIBUTION_LIST, redissonClient,
         appConfig.getDataGrid().getListTimeToWaitSeconds(),
         appConfig.getDataGrid().getListTimeToLiveSeconds());
   }
 
+  /**
+   * The RedissonClient
+   * @return the RedissonClient
+   */
   @Bean
   public RedissonClient redissonClient() {
     Config config = new Config();
@@ -88,8 +95,7 @@ public class CaseSvcApplication {
   @Bean
   @Qualifier("internetAccessCodeServiceClient")
   public RestClient internetAccessCodeServiceClient() {
-    RestClient restHelper = new RestClient(appConfig.getInternetAccessCodeSvc().
-            getConnectionConfig());
+    RestClient restHelper = new RestClient(appConfig.getInternetAccessCodeSvc().getConnectionConfig());
     return restHelper;
   }
   
@@ -100,8 +106,7 @@ public class CaseSvcApplication {
   @Bean
   @Qualifier("actionServiceClient")
   public RestClient actionServiceClient() {
-    RestClient restHelper = new RestClient(appConfig.getActionSvc().
-            getConnectionConfig());
+    RestClient restHelper = new RestClient(appConfig.getActionSvc().getConnectionConfig());
     return restHelper;
   }
   
@@ -112,19 +117,23 @@ public class CaseSvcApplication {
   @Bean
   @Qualifier("collectionExerciseSvcClient")
   public RestClient collectionExerciseServiceClient() {
-    RestClient restHelper = new RestClient(appConfig.getCollectionExerciseSvc().
-            getConnectionConfig());
+    RestClient restHelper = new RestClient(appConfig.getCollectionExerciseSvc().getConnectionConfig());
     return restHelper;
   }
 
-
-
+  /**
+   * The RestExceptionHandler to handle exceptions thrown in our endpoints
+   * @return the RestExceptionHandler
+   */
   @Bean
   public RestExceptionHandler restExceptionHandler() {
     return new RestExceptionHandler();
   }
 
-
+  /**
+   * The CustomObjectMapper to output dates in the json in our agreed format
+   * @return the CustomObjectMapper
+   */
   @Bean @Primary
   public CustomObjectMapper customObjectMapper() {
     return new CustomObjectMapper();
