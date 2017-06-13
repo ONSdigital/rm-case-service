@@ -46,7 +46,6 @@ import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.service.CollectionExerciseSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
-import uk.gov.ons.ctp.response.iac.representation.InternetAccessCodeDTO;
 
 /**
  * Test the CaseServiceImpl primarily the createCaseEvent functionality. Note
@@ -174,7 +173,6 @@ public class CaseServiceImplTest {
     mockupCaseGroupRepo();
     mockAppConfigUse();
     mockupCaseEventRepo();
-    mockupIacServiceClient();
     mockupCollectionExerciseServiceClient();
   }
 
@@ -770,22 +768,6 @@ public class CaseServiceImplTest {
     });
   }
 
-  /**
-   * mock the iac service client
-   *
-   * @throws Exception oops
-   */
-
-  private void mockupIacServiceClient() throws Exception {
-    List<InternetAccessCodeDTO> iacDTOs = FixtureHelper.loadClassFixtures(InternetAccessCodeDTO[].class);
-    Mockito.when(internetAccessCodeSvcClientService.disableIAC(any(String.class))).thenAnswer(
-            new Answer<InternetAccessCodeDTO>() {
-              public InternetAccessCodeDTO answer(InvocationOnMock invocation) {
-                return iacDTOs.get(0);
-              }
-            });
-  }
-  
   /**
    * mock the collection exercise service
    * 

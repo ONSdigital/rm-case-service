@@ -17,10 +17,8 @@ public interface InternetAccessCodeSvcClientService {
   List<String> generateIACs(int count);
 
   /**
-   * To diable an IAC
+   * To disable an IAC
    * @param iac the one to disable
-   * @return
    */
-  InternetAccessCodeDTO disableIAC(String iac);
-    
+  void disableIAC(String iac);
 }
