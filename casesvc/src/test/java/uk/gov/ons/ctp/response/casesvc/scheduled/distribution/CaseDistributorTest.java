@@ -28,8 +28,10 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class CaseDistributorTest {
-  private static final int I_HATE_CHECKSTYLE_TEN = 10;
-  private static final long I_HATE_CHECKSTYLE_TEN_LONG = 10L;
+  private static final int TWO = 2;
+  private static final int FIVE = 5;
+  private static final int TEN = 10;
+  private static final long TEN_LONG = 10L;
 
   @Spy
   private AppConfig appConfig = new AppConfig();
@@ -47,7 +49,8 @@ public class CaseDistributorTest {
   private DistributedListManager<Integer> caseDistributionListManager;
 
   @Mock
-  private StateTransitionManager<CaseState, uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseEvent> caseSvcStateTransitionManager;
+  private StateTransitionManager<CaseState, uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseEvent>
+          caseSvcStateTransitionManager;
 
   @Mock
   private MapperFacade mapperFacade;
@@ -74,11 +77,11 @@ public class CaseDistributorTest {
   public void setUp() {
     InternetAccessCodeSvc internetAccessCodeSvc = new InternetAccessCodeSvc();
     CaseDistribution caseDistributionConfig = new CaseDistribution();
-    caseDistributionConfig.setDelayMilliSeconds(I_HATE_CHECKSTYLE_TEN_LONG);
-    caseDistributionConfig.setRetrySleepSeconds(I_HATE_CHECKSTYLE_TEN);
-    caseDistributionConfig.setRetrievalMax(10);
-    caseDistributionConfig.setDistributionMax(2);
-    caseDistributionConfig.setIacMax(5);
+    caseDistributionConfig.setDelayMilliSeconds(TEN_LONG);
+    caseDistributionConfig.setRetrySleepSeconds(TEN);
+    caseDistributionConfig.setRetrievalMax(TEN);
+    caseDistributionConfig.setDistributionMax(TWO);
+    caseDistributionConfig.setIacMax(FIVE);
 
     appConfig.setInternetAccessCodeSvc(internetAccessCodeSvc);
     appConfig.setCaseDistribution(caseDistributionConfig);

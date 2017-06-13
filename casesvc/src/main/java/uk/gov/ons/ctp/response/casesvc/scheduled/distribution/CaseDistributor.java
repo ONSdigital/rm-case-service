@@ -227,7 +227,7 @@ public class CaseDistributor {
    * code.
    *
    * @param caze the case to deal with
-   * @param iac the newly minted IAC to assign to the Case 
+   * @param iac the newly minted IAC to assign to the Case
    * @return The resulting CaseNotification that will be added to the outbound
    *         CaseNotifications sent to the action service
    */

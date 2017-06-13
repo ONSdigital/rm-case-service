@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Domain model object
+ * Domain model object to represent a Case
  */
 @Data
 @AllArgsConstructor
