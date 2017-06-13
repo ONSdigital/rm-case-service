@@ -113,7 +113,16 @@ public class CaseReceiptReceiverImplTest {
     verify(unlinkedCaseReceiptService, times(1)).createUnlinkedCaseReceipt(eq(unlinkedCaseReceipt));
   }
 
-  private CaseReceipt buildCaseReceipt(String caseRef, InboundChannel inboundChannel, XMLGregorianCalendar xmlGregorianCalendar)
+  /**
+   *
+   * @param caseRef the caseRef
+   * @param inboundChannel the inboundChannel
+   * @param xmlGregorianCalendar the xmlGregorianCalendar
+   * @return the CaseReceipt
+   * @throws DatatypeConfigurationException
+   */
+  private CaseReceipt buildCaseReceipt(String caseRef, InboundChannel inboundChannel,
+                                       XMLGregorianCalendar xmlGregorianCalendar)
           throws DatatypeConfigurationException {
     CaseReceipt caseReceipt = new CaseReceipt();
     caseReceipt.setCaseRef(caseRef);
@@ -122,6 +131,12 @@ public class CaseReceiptReceiverImplTest {
     return caseReceipt;
   }
 
+  /**
+   * Build a CaseEvent
+   * @param casePK the Case Primary Key
+   * @param categoryName the name of the category
+   * @return the CaseEvent
+   */
   private CaseEvent buildCaseEvent(int casePK, CategoryDTO.CategoryName categoryName) {
     CaseEvent caseEvent = new CaseEvent();
     caseEvent.setCaseFK(casePK);

@@ -338,7 +338,7 @@ public final class CaseEndpointUnitTest {
   }
 
   @Test
-  public void findCaseByIACButCategoryIAC_AUTHENTICATED_NotDefined() throws Exception {
+  public void findCaseByIACButCategoryNotDefined() throws Exception {
     when(caseService.findCaseByIac(IAC_CASE1)).thenReturn(caseResults.get(0));
     when(categoryService.findCategory(CategoryName.IAC_AUTHENTICATED)).thenReturn(null);
 
@@ -394,7 +394,8 @@ public final class CaseEndpointUnitTest {
 
   @Test
   public void findCasesByCaseGroupIdNotFound() throws Exception {
-    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/casegroupid/%s", NON_EXISTING_CASE_GROUP_UUID)));
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/casegroupid/%s",
+            NON_EXISTING_CASE_GROUP_UUID)));
 
     actions.andExpect(status().isNotFound());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
@@ -514,9 +515,10 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.error.message", isA(String.class)));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
-  
+
   /**
    * a test providing a non existing case ID
+   * @throws Exception when perform throws Exception
    */
   @Test
   public void createCaseEventRequiresNewCase() throws Exception {

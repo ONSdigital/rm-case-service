@@ -41,16 +41,13 @@ import uk.gov.ons.ctp.response.casesvc.state.CaseSvcStateTransitionManagerFactor
 @ImportResource("springintegration/main.xml")
 public class CaseSvcApplication {
 
-  public static final String CASE_DISTRIBUTION_LIST =
-          "casesvc.case.distribution";
+  public static final String CASE_DISTRIBUTION_LIST = "casesvc.case.distribution";
 
   @Autowired
   private AppConfig appConfig;
 
-  
   @Autowired
   private StateTransitionManagerFactory caseSvcStateTransitionManagerFactory;
-
 
   /**
    * Bean to allow application to make controlled state transitions of Actions

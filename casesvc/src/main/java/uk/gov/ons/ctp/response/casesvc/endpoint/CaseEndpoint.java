@@ -116,7 +116,7 @@ public final class CaseEndpoint implements CTPEndpoint {
       return ResponseEntity.ok(resultList);
     }
   }
-    
+
   /**
    * the GET endpoint to find a Case by IAC
    *
@@ -128,8 +128,8 @@ public final class CaseEndpoint implements CTPEndpoint {
    */
   @RequestMapping(value = "/iac/{iac}", method = RequestMethod.GET)
   public ResponseEntity<?> findCaseByIac(@PathVariable("iac") final String iac,
-                                         @RequestParam(value = "caseevents", required = false) boolean caseevents,
-                                         @RequestParam(value = "iac", required = false) boolean iacFlag)
+                                         @RequestParam(value = "caseevents", required = false) final boolean caseevents,
+                                         @RequestParam(value = "iac", required = false) final boolean iacFlag)
           throws CTPException {
     log.info("Entering findCaseByIac with {}", iac);
     Case caseObj = caseService.findCaseByIac(iac);
@@ -228,7 +228,7 @@ public final class CaseEndpoint implements CTPEndpoint {
     caseEvent.setCaseFK(caseFound.getCasePK());
     
     Case caze = null;
-    if (caseEventCreationRequestDTO.getPartyId() != null){
+    if (caseEventCreationRequestDTO.getPartyId() != null) {
       caze = new Case();
       caze.setPartyId(caseEventCreationRequestDTO.getPartyId());
     }

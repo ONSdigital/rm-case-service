@@ -224,7 +224,7 @@ public class CaseServiceImplTest {
    * Tries to apply a general event against a case already inactionable. Should
    * allow it.
    * 
-   * @throws Exception
+   * @throws Exception if fabricateEvent does
    */
   @Test
   public void testCreateNonActionableEventAgainstInactionableCase() throws Exception {
@@ -249,7 +249,7 @@ public class CaseServiceImplTest {
    * Tries to apply a response event against an actionable case Should allow it
    * and record response.
    * 
-   * @throws Exception
+   * @throws Exception if fabricateEvent does
    */
   @Test
   public void testCreatePaperResponseEventAgainstActionableCase() throws Exception {
@@ -287,7 +287,7 @@ public class CaseServiceImplTest {
    * Tries to apply an online response event against an actionable case Should
    * allow it and record response.
    * 
-   * @throws Exception
+   * @throws Exception if fabricateEvent does
    */
   @Test
   public void testCreateOnlineResponseEventAgainstActionableCase() throws Exception {
@@ -400,7 +400,8 @@ public class CaseServiceImplTest {
   public void testBlueSkyEnrollment() throws Exception {
     Mockito.when(caseRepo.findOne(ENROLLMENT_CASE_FK)).thenReturn(cases.get(ENROLLMENT_CASE_FK));
     Mockito.when(caseRepo.findOne(ENROLLMENT_CASE_INDIVIDUAL_FK)).thenReturn(cases.get(ENROLLMENT_CASE_INDIVIDUAL_FK));
-    Mockito.when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(cases.get(ENROLLMENT_CASE_INDIVIDUAL_FK));  // the new case
+    Mockito.when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(
+            cases.get(ENROLLMENT_CASE_INDIVIDUAL_FK));  // the new case
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ENROLLED,
         ENROLLMENT_CASE_FK);
@@ -430,7 +431,8 @@ public class CaseServiceImplTest {
   public void testBlueSkyIndividualReplacementIACRequested() throws Exception {
     Mockito.when(caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK)).thenReturn(cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK));
     Mockito.when(caseRepo.findOne(NEW_H_INDIVIDUAL_CASE_FK)).thenReturn(cases.get(NEW_H_INDIVIDUAL_CASE_FK));
-    Mockito.when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(cases.get(NEW_H_INDIVIDUAL_CASE_FK));  // the new case
+    Mockito.when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(
+            cases.get(NEW_H_INDIVIDUAL_CASE_FK));  // the new case
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED,
             ACTIONABLE_H_INDIVIDUAL_CASE_FK);
@@ -481,7 +483,8 @@ public class CaseServiceImplTest {
   public void testBlueSkyIndividualResponseRequested() throws Exception {
     Mockito.when(caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(ACTIONABLE_HOUSEHOLD_CASE_FK));
     Mockito.when(caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK)).thenReturn(cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK));
-    Mockito.when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK));  // the new case
+    Mockito.when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(
+            cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK));  // the new case
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED, ACTIONABLE_HOUSEHOLD_CASE_FK);
     Case newCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
@@ -510,7 +513,8 @@ public class CaseServiceImplTest {
   public void testBlueSkyIndividualPaperRequested() throws Exception {
     Mockito.when(caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK)).thenReturn(cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK));
     Mockito.when(caseRepo.findOne(NEW_H_INDIVIDUAL_CASE_FK)).thenReturn(cases.get(NEW_H_INDIVIDUAL_CASE_FK));
-    Mockito.when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(cases.get(NEW_H_INDIVIDUAL_CASE_FK));  // the new case
+    Mockito.when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(
+            cases.get(NEW_H_INDIVIDUAL_CASE_FK));  // the new case
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.H_INDIVIDUAL_PAPER_REQUESTED,
         ACTIONABLE_H_INDIVIDUAL_CASE_FK);
@@ -536,7 +540,8 @@ public class CaseServiceImplTest {
     CaseEvent refusalCaseEvent = fabricateEvent(CategoryDTO.CategoryName.REFUSAL, ACTIONABLE_H_INDIVIDUAL_CASE_FK);
     caseService.createCaseEvent(refusalCaseEvent, null);
 
-    CaseEvent onlineResponseCaseEvent = fabricateEvent(CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE, ACTIONABLE_H_INDIVIDUAL_CASE_FK);
+    CaseEvent onlineResponseCaseEvent = fabricateEvent(CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE,
+            ACTIONABLE_H_INDIVIDUAL_CASE_FK);
     caseService.createCaseEvent(onlineResponseCaseEvent, null);
 
     Case oldCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
@@ -553,7 +558,8 @@ public class CaseServiceImplTest {
   public void testIndividualResponseRequestedAgainstIndividualCaseNotAllowed() throws Exception {
     Mockito.when(caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK)).thenReturn(cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK));
 
-    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED, ACTIONABLE_H_INDIVIDUAL_CASE_FK);
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED,
+            ACTIONABLE_H_INDIVIDUAL_CASE_FK);
     try {
       Case oldCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
       caseService.createCaseEvent(caseEvent, oldCase);
