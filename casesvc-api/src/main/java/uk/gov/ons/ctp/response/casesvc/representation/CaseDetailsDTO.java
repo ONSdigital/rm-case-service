@@ -38,7 +38,6 @@ public class CaseDetailsDTO {
     private UUID partyId;
 
     private String sampleUnitType;
-    private String sampleUnitRef;
 
     private String createdBy;
     private Date createdDateTime;
