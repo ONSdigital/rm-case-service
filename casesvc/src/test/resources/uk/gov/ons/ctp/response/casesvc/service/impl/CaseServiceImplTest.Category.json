@@ -507,4 +507,16 @@
     "oldCaseSampleUnitType": null,
     "eventType": null
   }
+,
+  {
+    "group": null,
+    "categoryName": "COLLECTION_INSTRUMENT_DOWNLOADED",
+    "longDescription": "Collection Instrument Downloaded",
+    "shortDescription": "Collection Instrument Downloaded",
+    "role": null,
+    "generatedActionType": null,
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
+  }
 ]
