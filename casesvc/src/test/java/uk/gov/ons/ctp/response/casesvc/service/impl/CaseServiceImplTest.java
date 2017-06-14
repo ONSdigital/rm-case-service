@@ -756,6 +756,60 @@ public class CaseServiceImplTest {
   // TODO testEventCollectionInstrumentDownloaded attempted versus a Case of the wrong type, ie not a BI
 
   /**
+   * We create a CaseEvent with category ACTION_CANCELLATION_COMPLETED on an ACTIONABLE BRES case
+   * (the one created for a respondent BI, accountant replying on behalf of Tesco for instance)
+   *
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventActionCancellationCompleted() throws Exception {
+    Mockito.when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BI_CASE_FK));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED,
+            ACTIONABLE_BI_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, null);
+
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_BI_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED);
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    verify(caseRepo, never()).saveAndFlush(any(Case.class));
+    verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
+    verify(caseSvcStateTransitionManager, never()).transition(any(CaseDTO.CaseState.class),
+            any(CaseDTO.CaseEvent.class));
+    verify(notificationPublisher, never()).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(Integer.class),
+            any(String.class));
+  }
+
+  /**
+   * We create a CaseEvent with category ACTION_CANCELLATION_COMPLETED on an ACTIONABLE BRES case
+   * (the one created for a respondent BI, accountant replying on behalf of Tesco for instance)
+   *
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventActionCancellationCreated() throws Exception {
+    Mockito.when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BI_CASE_FK));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.ACTION_CANCELLATION_CREATED,
+            ACTIONABLE_BI_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, null);
+
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_BI_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.ACTION_CANCELLATION_CREATED);
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    verify(caseRepo, never()).saveAndFlush(any(Case.class));
+    verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
+    verify(caseSvcStateTransitionManager, never()).transition(any(CaseDTO.CaseState.class),
+            any(CaseDTO.CaseEvent.class));
+    verify(notificationPublisher, never()).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(Integer.class),
+            any(String.class));
+  }
+
+  /**
    * To mock the behaviour of caseGroupRepo
    * @throws Exception if loadClassFixtures does
    */
