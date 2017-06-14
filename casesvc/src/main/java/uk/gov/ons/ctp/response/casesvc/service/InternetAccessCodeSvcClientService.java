@@ -4,10 +4,21 @@ import java.util.List;
 
 import uk.gov.ons.ctp.response.iac.representation.InternetAccessCodeDTO;
 
+/**
+ * The Service to generate/disable IACs
+ */
 public interface InternetAccessCodeSvcClientService {
 
+  /**
+   * To generate IACs
+   * @param count the number of IACs to generate
+   * @return a list of IACs
+   */
   List<String> generateIACs(int count);
 
-  InternetAccessCodeDTO disableIAC(String iac);
-    
+  /**
+   * To disable an IAC
+   * @param iac the one to disable
+   */
+  void disableIAC(String iac);
 }

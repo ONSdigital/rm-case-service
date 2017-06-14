@@ -43,12 +43,10 @@ public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCod
   }
 
   @Override
-  public InternetAccessCodeDTO disableIAC(String iac) {
+  public void disableIAC(String iac) {
     log.debug("about to put to the IAC SVC with {}", iac);
-    UpdateInternetAccessCodeDTO updateInternetAccessCodeDTO = new UpdateInternetAccessCodeDTO("SYSTEM");
-    InternetAccessCodeDTO internetAccessCodeDTO = internetAccessClientServiceClient
-        .putResource(appConfig.getInternetAccessCodeSvc().getIacPutPath(), updateInternetAccessCodeDTO, InternetAccessCodeDTO.class, iac);
-    return internetAccessCodeDTO;
+    internetAccessClientServiceClient.putResource(appConfig.getInternetAccessCodeSvc().getIacPutPath(),
+            new UpdateInternetAccessCodeDTO("SYSTEM"), InternetAccessCodeDTO.class, iac);
   }
 
 }
