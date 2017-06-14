@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.WRONG_OLD_SAMPLE_UNIT_TYPE_MSG;
@@ -104,6 +105,7 @@ public class CaseServiceImplTest {
   private static final int CAT_TRANSLATION_TURKISH = 41;
   private static final int CAT_TRANSLATION_URDU = 42;
   private static final int CAT_UNDELIVERABLE = 43;
+  private static final int CAT_RESPONDENT_ACCOUNT_CREATED = 44;
 
   /**
    * Note that the Integer values below are linked to the order in which cases appear
@@ -117,6 +119,7 @@ public class CaseServiceImplTest {
   private static final Integer NEW_H_INDIVIDUAL_CASE_FK = 5;
   private static final Integer ENROLLMENT_CASE_INDIVIDUAL_FK = 8;
   private static final Integer ENROLLMENT_CASE_FK = 9;
+  private static final Integer INITIAL_BUSINESS_UNIT_CASE_FK = 10;
 
   private static final Integer CASEGROUP_PK = 1;
 
@@ -521,7 +524,6 @@ public class CaseServiceImplTest {
     Case newCase = caseRepo.findOne(NEW_H_INDIVIDUAL_CASE_FK);
     caseService.createCaseEvent(caseEvent, newCase);
 
-    // one of the caseRepo calls is the test loading indCase
     verify(caseRepo, times(1)).findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_PAPER_REQUESTED);
     verify(caseRepo, times(2)).saveAndFlush(any(Case.class));
@@ -618,7 +620,7 @@ public class CaseServiceImplTest {
    */
   @Test
   public void testIndividualResponseRequestedAgainstIndividualCaseWithoutNewCase() throws Exception {
-    Mockito.when(caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK)).thenReturn(cases.get(2));
+    Mockito.when(caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK)).thenReturn(cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK));
 
     // now kick it off
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED,
@@ -638,6 +640,32 @@ public class CaseServiceImplTest {
       verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
       verify(caseEventRepository, times(0)).save(caseEvent);
     }
+  }
+
+  /**
+   * We create a CaseEvent with category CASE_CREATED on an initial BRES case
+   * (the one created for a business unit B, Tesco for instance)
+   *
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventCaseCreated() throws Exception {
+    Mockito.when(caseRepo.findOne(INITIAL_BUSINESS_UNIT_CASE_FK)).thenReturn(cases.get(INITIAL_BUSINESS_UNIT_CASE_FK));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.CASE_CREATED, INITIAL_BUSINESS_UNIT_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, null);
+
+    verify(caseRepo, times(1)).findOne(INITIAL_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.CASE_CREATED);
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    verify(caseRepo, never()).saveAndFlush(any(Case.class));
+    verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
+    verify(caseSvcStateTransitionManager, never()).transition(any(CaseDTO.CaseState.class),
+            any(CaseDTO.CaseEvent.class));
+    verify(notificationPublisher, never()).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(Integer.class),
+            any(String.class));
   }
 
   /**
@@ -743,6 +771,8 @@ public class CaseServiceImplTest {
         .thenReturn(categories.get(CAT_HOUSEHOLD_PAPER_REQUESTED));
     Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLLED))
         .thenReturn(categories.get(CAT_RESPONDENT_ENROLLED));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED))
+            .thenReturn(categories.get(CAT_RESPONDENT_ACCOUNT_CREATED));
   }
 
   /**

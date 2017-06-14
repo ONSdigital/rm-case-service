@@ -483,5 +483,16 @@
     "newCaseSampleUnitType": null,
     "oldCaseSampleUnitType": null,
     "eventType": "DEACTIVATED"
+  },
+  {
+    "group": null,
+    "categoryName": "RESPONDENT_ACCOUNT_CREATED",
+    "longDescription": "Account created for respondent",
+    "shortDescription": "Account created for respondent",
+    "role": null,
+    "generatedActionType": null,
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   }
 ]

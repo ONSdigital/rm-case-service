@@ -68,7 +68,8 @@ public class CategoryDTO {
     TRANSLATION_ARABIC,
     TRANSLATION_URDU,
     TRANSLATION_PORTUGUESE,
-    TRANSLATION_SPANISH;
+    TRANSLATION_SPANISH,
+    RESPONDENT_ACCOUNT_CREATED;
 
     @JsonCreator
     public static CategoryName fromValue(String name) {
