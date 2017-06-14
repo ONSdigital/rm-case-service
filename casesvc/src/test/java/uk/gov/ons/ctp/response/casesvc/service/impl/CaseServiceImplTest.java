@@ -106,6 +106,7 @@ public class CaseServiceImplTest {
   private static final int CAT_TRANSLATION_URDU = 42;
   private static final int CAT_UNDELIVERABLE = 43;
   private static final int CAT_RESPONDENT_ACCOUNT_CREATED = 44;
+  private static final int CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT = 45;
 
   /**
    * Note that the Integer values below are linked to the order in which cases appear
@@ -118,7 +119,7 @@ public class CaseServiceImplTest {
   private static final Integer NEW_HOUSEHOLD_CASE_FK = 4;
   private static final Integer NEW_H_INDIVIDUAL_CASE_FK = 5;
   private static final Integer ENROLLMENT_CASE_INDIVIDUAL_FK = 8;
-  private static final Integer ENROLLMENT_CASE_FK = 9;
+  private static final Integer ACTIONABLE_BUSINESS_UNIT_CASE_FK = 9;
   private static final Integer INITIAL_BUSINESS_UNIT_CASE_FK = 10;
 
   private static final Integer CASEGROUP_PK = 1;
@@ -401,21 +402,21 @@ public class CaseServiceImplTest {
    */
   @Test
   public void testBlueSkyEnrollment() throws Exception {
-    Mockito.when(caseRepo.findOne(ENROLLMENT_CASE_FK)).thenReturn(cases.get(ENROLLMENT_CASE_FK));
+    Mockito.when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
     Mockito.when(caseRepo.findOne(ENROLLMENT_CASE_INDIVIDUAL_FK)).thenReturn(cases.get(ENROLLMENT_CASE_INDIVIDUAL_FK));
     Mockito.when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(
             cases.get(ENROLLMENT_CASE_INDIVIDUAL_FK));  // the new case
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ENROLLED,
-        ENROLLMENT_CASE_FK);
+            ACTIONABLE_BUSINESS_UNIT_CASE_FK);
     Case newCase = caseRepo.findOne(ENROLLMENT_CASE_INDIVIDUAL_FK);
     caseService.createCaseEvent(caseEvent, newCase);
 
-    verify(caseRepo, times(1)).findOne(ENROLLMENT_CASE_FK);
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLLED);
     verify(caseRepo, times(2)).saveAndFlush(any(Case.class));
 
-    Case oldCase = caseRepo.findOne(ENROLLMENT_CASE_FK);
+    Case oldCase = caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(oldCase.getIac());
     // action service should be told of case state change
     verify(notificationPublisher, times(1)).sendNotifications(anyListOf(CaseNotification.class));
@@ -669,6 +670,61 @@ public class CaseServiceImplTest {
   }
 
   /**
+   * We create a CaseEvent with category RESPONDENT_ACCOUNT_CREATED on an ACTIONABLE BRES case
+   * (the one created for a business unit B, Tesco for instance)
+   *
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventRespondentAccountCreated() throws Exception {
+    Mockito.when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, null);
+
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED);
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    verify(caseRepo, never()).saveAndFlush(any(Case.class));
+    verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
+    verify(caseSvcStateTransitionManager, never()).transition(any(CaseDTO.CaseState.class),
+            any(CaseDTO.CaseEvent.class));
+    verify(notificationPublisher, never()).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(Integer.class),
+            any(String.class));
+  }
+
+  // TODO testEventRespondentAccountCreated attempted versus a Case of the wrong type, ie not a B
+
+  /**
+   * We create a CaseEvent with category ACCESS_CODE_AUTHENTICATION_ATTEMPT on an ACTIONABLE BRES case
+   * (the one created for a business unit B, Tesco for instance)
+   *
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventAccessCodeAuthenticationAttempt() throws Exception {
+    Mockito.when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT,
+            ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, null);
+
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    verify(caseRepo, never()).saveAndFlush(any(Case.class));
+    verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
+    verify(caseSvcStateTransitionManager, never()).transition(any(CaseDTO.CaseState.class),
+            any(CaseDTO.CaseEvent.class));
+    verify(notificationPublisher, never()).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(Integer.class),
+            any(String.class));
+  }
+
+  /**
    * To mock the behaviour of caseGroupRepo
    * @throws Exception if loadClassFixtures does
    */
@@ -773,6 +829,8 @@ public class CaseServiceImplTest {
         .thenReturn(categories.get(CAT_RESPONDENT_ENROLLED));
     Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED))
             .thenReturn(categories.get(CAT_RESPONDENT_ACCOUNT_CREATED));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT))
+            .thenReturn(categories.get(CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT));
   }
 
   /**
