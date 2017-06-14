@@ -12,6 +12,7 @@ import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAd
 
 import java.util.UUID;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -86,6 +87,7 @@ public final class CaseGroupEndpointUnitTest {
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CaseGroupEndpoint.class));
     actions.andExpect(handler().methodName("findCaseGroupById"));
+    actions.andExpect(jsonPath("$.*", Matchers.hasSize(5)));
     actions.andExpect(jsonPath("$.id",
             is(CASE_GROUP_UUID.toString())));
     actions.andExpect(jsonPath("$.collectionExerciseId",

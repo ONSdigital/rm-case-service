@@ -95,6 +95,7 @@ public final class CategoryEndpointUnitTest {
     actions.andExpect(handler().handlerType(CategoryEndpoint.class));
     actions.andExpect(handler().methodName("findCategories"));
     actions.andExpect(jsonPath("$", Matchers.hasSize(3)));
+    actions.andExpect(jsonPath("$[0].*", Matchers.hasSize(5)));
     actions.andExpect(jsonPath("$[*].group", containsInAnyOrder(CATEGORY1_GROUP, null, null)));
     actions.andExpect(jsonPath("$[*].name", containsInAnyOrder(CATEGORY1_NAME, CATEGORY2_NAME, CATEGORY3_NAME)));
     actions.andExpect(jsonPath("$[*].longDescription", containsInAnyOrder(CATEGORY1_LONG_DESC, CATEGORY2_LONG_DESC, CATEGORY3_LONG_DESC)));
@@ -118,6 +119,7 @@ public final class CategoryEndpointUnitTest {
     actions.andExpect(handler().handlerType(CategoryEndpoint.class));
     actions.andExpect(handler().methodName("findCategories"));
     actions.andExpect(jsonPath("$", Matchers.hasSize(1)));
+    actions.andExpect(jsonPath("$[0].*", Matchers.hasSize(5)));
     actions.andExpect(jsonPath("$[0].group", is(CATEGORY1_GROUP)));
     actions.andExpect(jsonPath("$[0].name", is(CATEGORY1_NAME)));
     actions.andExpect(jsonPath("$[0].longDescription", is(CATEGORY1_LONG_DESC)));
@@ -154,6 +156,7 @@ public final class CategoryEndpointUnitTest {
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CategoryEndpoint.class));
     actions.andExpect(handler().methodName("findCategory"));
+    actions.andExpect(jsonPath("$.*", Matchers.hasSize(5)));
     actions.andExpect(jsonPath("$.group", is(CATEGORY1_GROUP)));
     actions.andExpect(jsonPath("$.name", is(CATEGORY1_NAME)));
     actions.andExpect(jsonPath("$.longDescription", is(CATEGORY1_LONG_DESC)));

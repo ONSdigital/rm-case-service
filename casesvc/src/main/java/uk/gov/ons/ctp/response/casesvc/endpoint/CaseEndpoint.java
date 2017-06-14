@@ -167,9 +167,6 @@ public final class CaseEndpoint implements CTPEndpoint {
       return ResponseEntity.noContent().build();
     } else {
       List<CaseDTO> caseDTOs = mapperFacade.mapAsList(casesList, CaseDTO.class);
-      for (CaseDTO caseDTO : caseDTOs) {
-        caseDTO.setIac(null);
-      }
       return ResponseEntity.ok(caseDTOs);
     }
   }
@@ -241,7 +238,7 @@ public final class CaseEndpoint implements CTPEndpoint {
 
     CaseEvent createdCaseEvent = caseService.createCaseEvent(caseEvent, caze);
     
-    CaseEventDTO mappedCaseEvent = mapperFacade.map(createdCaseEvent, CaseEventDTO.class);
+    CreatedCaseEventDTO mappedCaseEvent = mapperFacade.map(createdCaseEvent, CreatedCaseEventDTO.class);
     mappedCaseEvent.setCaseId(caseId);
     mappedCaseEvent.setPartyId(caseEventCreationRequestDTO.getPartyId());
     
