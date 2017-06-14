@@ -51,6 +51,10 @@ public class CaseReceiptReceiverImplTest {
   @Mock
   private UnlinkedCaseReceiptService unlinkedCaseReceiptService;
 
+  /**
+   * ProcessLinkedOnlineCaseReceipt
+   * @throws DatatypeConfigurationException if giveMeCalendarForNow fails
+   */
   @Test
   public void testProcessLinkedOnlineCaseReceipt() throws DatatypeConfigurationException {
     Case existingCase = new Case();
@@ -65,6 +69,10 @@ public class CaseReceiptReceiverImplTest {
     verify(unlinkedCaseReceiptService, times(0)).createUnlinkedCaseReceipt(any(UnlinkedCaseReceipt.class));
   }
 
+  /**
+   * ProcessLinkedPaperCaseReceipt
+   * @throws DatatypeConfigurationException if giveMeCalendarForNow fails
+   */
   @Test
   public void testProcessLinkedPaperCaseReceipt() throws DatatypeConfigurationException {
     Case existingCase = new Case();
@@ -79,6 +87,10 @@ public class CaseReceiptReceiverImplTest {
     verify(unlinkedCaseReceiptService, times(0)).createUnlinkedCaseReceipt(any(UnlinkedCaseReceipt.class));
   }
 
+  /**
+   * ProcessUnlinkedOnlineCaseReceipt
+   * @throws DatatypeConfigurationException if giveMeCalendarForNow fails
+   */
   @Test
   public void testProcessUnlinkedOnlineCaseReceipt() throws DatatypeConfigurationException {
     Mockito.when(caseService.findCaseByCaseRef(UNLINKED_CASE_REF)).thenReturn(null);
@@ -96,6 +108,10 @@ public class CaseReceiptReceiverImplTest {
     verify(unlinkedCaseReceiptService, times(1)).createUnlinkedCaseReceipt(eq(unlinkedCaseReceipt));
   }
 
+  /**
+   * ProcessUnlinkedPaperCaseReceipt
+   * @throws DatatypeConfigurationException if giveMeCalendarForNow fails
+   */
   @Test
   public void testProcessUnlinkedPaperCaseReceipt() throws DatatypeConfigurationException {
     Mockito.when(caseService.findCaseByCaseRef(UNLINKED_CASE_REF)).thenReturn(null);

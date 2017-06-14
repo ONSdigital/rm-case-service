@@ -486,6 +486,7 @@ public final class CaseEndpointUnitTest {
 
   /**
    * a test providing bad json
+   * @throws Exception if the postJson fails
    */
   @Test
   public void createCaseEventBadJson() throws Exception {

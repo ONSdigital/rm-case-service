@@ -162,7 +162,7 @@ public class CaseServiceImplTest {
   /**
    * All of these tests require the mocked repos to respond with predictable
    * data loaded from test fixture json files.
-   * 
+   *
    * @throws Exception
    */
   @Before
@@ -197,7 +197,7 @@ public class CaseServiceImplTest {
    * Tries to apply an actionable event against a case already inactionable.
    * Should allow
    * 
-   * @throws Exception
+   * @throws Exception if fabricateEvent does
    */
   @Test
   public void testCreateActionableEventAgainstInactionableCase() throws Exception {
@@ -368,7 +368,8 @@ public class CaseServiceImplTest {
     Mockito.when(caseRepo.findOne(NEW_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(NEW_HOUSEHOLD_CASE_FK));
     Mockito.when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(cases.get(NEW_HOUSEHOLD_CASE_FK));  // the new case
 
-    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.HOUSEHOLD_REPLACEMENT_IAC_REQUESTED, ACTIONABLE_HOUSEHOLD_CASE_FK);
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.HOUSEHOLD_REPLACEMENT_IAC_REQUESTED,
+            ACTIONABLE_HOUSEHOLD_CASE_FK);
     Case newCase = caseRepo.findOne(NEW_HOUSEHOLD_CASE_FK);
     caseService.createCaseEvent(caseEvent, newCase);
 
@@ -377,7 +378,8 @@ public class CaseServiceImplTest {
     verify(caseRepo, times(2)).saveAndFlush(any(Case.class));
     Case oldCase = caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
     verify(internetAccessCodeSvcClientService, times(1)).disableIAC(oldCase.getIac());
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class), any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+            any(String.class));
 
     // no new action to be created
     verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
@@ -612,7 +614,7 @@ public class CaseServiceImplTest {
    * Tries to create a individual request with providing the individual case.
    * Should throw and not save anything
    * 
-   * @throws Exception
+   * @throws Exception if fabricateEvent does
    */
   @Test
   public void testIndividualResponseRequestedAgainstIndividualCaseWithoutNewCase() throws Exception {
@@ -638,12 +640,20 @@ public class CaseServiceImplTest {
     }
   }
 
+  /**
+   * To mock the behaviour of caseGroupRepo
+   * @throws Exception if loadClassFixtures does
+   */
   private void mockupCaseGroupRepo() throws Exception {
     List<CaseGroup> caseGroups = FixtureHelper.loadClassFixtures(CaseGroup[].class);
     Mockito.when(caseGroupRepo.findOne(CASEGROUP_PK))
         .thenReturn(caseGroups.get(CASEGROUP_PK - 1));
   }
 
+  /**
+   * To mock the behaviour of categoryRepo
+   * @throws Exception if loadClassFixtures does
+   */
   private void mockupCategoryRepo() throws Exception {
     List<Category> categories = FixtureHelper.loadClassFixtures(Category[].class);
 
@@ -741,9 +751,8 @@ public class CaseServiceImplTest {
    * @param categoryName which category name to load
    * @param casePK the associated existing/old Case
    * @return a mock case event
-   * @throws Exception oops
    */
-  private CaseEvent fabricateEvent(CategoryDTO.CategoryName categoryName, int casePK) throws Exception {
+  private CaseEvent fabricateEvent(CategoryDTO.CategoryName categoryName, int casePK) {
     CaseEvent caseEvent = new CaseEvent();
     caseEvent.setCaseFK(casePK);
     caseEvent.setCategory(categoryName);
@@ -758,9 +767,8 @@ public class CaseServiceImplTest {
    * mock loading data
    *
    * @return a mock case event
-   * @throws Exception oops
    */
-  private void mockupCaseEventRepo() throws Exception {
+  private void mockupCaseEventRepo() {
     Mockito.when(caseEventRepository.save(any(CaseEvent.class))).thenAnswer(new Answer<CaseEvent>() {
       public CaseEvent answer(InvocationOnMock invocation) {
         return (CaseEvent) invocation.getArguments()[0];
@@ -785,10 +793,8 @@ public class CaseServiceImplTest {
 
   /**
    * mock state transitions
-   *
-   * @throws Exception oops
    */
-  private void mockStateTransitions() throws Exception {
+  private void mockStateTransitions() {
     Mockito.when(
         caseSvcStateTransitionManager.transition(CaseState.ACTIONABLE,
             uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseEvent.DISABLED))
@@ -810,10 +816,8 @@ public class CaseServiceImplTest {
 
   /**
    * mock loading data
-   *
-   * @throws Exception oops
    */
-  private void mockAppConfigUse() throws Exception {
+  private void mockAppConfigUse() {
     InternetAccessCodeSvc iacSvc = new InternetAccessCodeSvc();
     iacSvc.setIacPutPath(IAC_SVC_PUT_PATH);
     iacSvc.setIacPostPath(IAC_SVC_POST_PATH);

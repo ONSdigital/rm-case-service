@@ -13,5 +13,5 @@ public interface CollectionExerciseSvcClientService {
    * @param collectionExerciseId the UUID to search by
    * @return the asscoaited CollectionExercise
    */
-  CollectionExerciseDTO getCollectionExercise(final UUID collectionExerciseId);
+  CollectionExerciseDTO getCollectionExercise(UUID collectionExerciseId);
 }

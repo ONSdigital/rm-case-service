@@ -2,8 +2,6 @@ package uk.gov.ons.ctp.response.casesvc.service;
 
 import java.util.List;
 
-import uk.gov.ons.ctp.response.iac.representation.InternetAccessCodeDTO;
-
 /**
  * The Service to generate/disable IACs
  */

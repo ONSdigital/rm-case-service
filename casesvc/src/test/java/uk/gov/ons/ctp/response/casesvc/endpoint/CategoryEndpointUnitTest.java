@@ -81,6 +81,10 @@ public final class CategoryEndpointUnitTest {
     this.categoryResults = FixtureHelper.loadClassFixtures(Category[].class);
   }
 
+  /**
+   * Get categories with no role or group specified. Results retrieved OK.
+   * @throws Exception if getJson fails
+   */
   @Test
   public void findCategoriesFoundNoRoleSpecified() throws Exception {
     when(categoryService.findCategories(null, null)).thenReturn(categoryResults);
@@ -98,6 +102,10 @@ public final class CategoryEndpointUnitTest {
     actions.andExpect(jsonPath("$[*].role", containsInAnyOrder(CATEGORY1_ROLE, null, null)));
   }
 
+  /**
+   * Get categories with role ADMIN. Results retrieved OK.
+   * @throws Exception if getJson fails
+   */
   @Test
   public void findCategoriesFoundAdminRoleSpecified() throws Exception {
     List<Category> results = new ArrayList<>();
@@ -117,6 +125,10 @@ public final class CategoryEndpointUnitTest {
     actions.andExpect(jsonPath("$[0].role", is(CATEGORY1_ROLE)));
   }
 
+  /**
+   * Get category which does not exist.
+   * @throws Exception if getJson fails
+   */
   @Test
   public void findACategoryNotFound() throws Exception {
     ResultActions actions = mockMvc.perform(getJson(String.format("/categories/name/%s", CATEGORY_UNKNOWN)));
@@ -129,6 +141,10 @@ public final class CategoryEndpointUnitTest {
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
+  /**
+   * Get category which does exist.
+   * @throws Exception if getJson fails
+   */
   @Test
   public void findACategoryFound() throws Exception {
     when(categoryService.findCategory(any())).thenReturn(categoryResults.get(0));
