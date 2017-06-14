@@ -204,6 +204,8 @@ public class CaseServiceImpl implements CaseService {
    * @param newCase the details provided in the event request for the new case
    */
   private void validateCaseEventRequest(Category category, Case targetCase, Case newCase) {
+    // TODO reinstate the validation versus the old/existing case
+    
     if (category.getNewCaseSampleUnitType() != null) {
       if (newCase == null) {
         throw new RuntimeException(String.format(MISSING_NEW_CASE_MSG, targetCase.getCasePK()));
