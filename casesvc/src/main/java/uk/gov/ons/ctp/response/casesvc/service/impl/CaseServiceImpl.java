@@ -347,12 +347,10 @@ public class CaseServiceImpl implements CaseService {
   private void effectTargetCaseStateTransition(Category category, Case targetCase) {
     CaseDTO.CaseEvent transitionEvent = category.getEventType();
     if (transitionEvent != null) {
-      // case might have transitioned from actionable to inactionable prev via
-      // deactivated
-      // so newstate == oldstate, but always want to disable iac if event is
-      // disabled ie as the result
-      // of an online response after a refusal
-      if (transitionEvent == CaseDTO.CaseEvent.DISABLED) {
+      // case might have transitioned from actionable to inactionable prev via DEACTIVATED
+      // so newstate == oldstate, but always want to disable iac if event is DISABLED (ie as the result
+      // of an online response after a refusal) or ACCOUNT_CREATED (for BRES)
+      if (transitionEvent == CaseDTO.CaseEvent.DISABLED || transitionEvent == CaseDTO.CaseEvent.ACCOUNT_CREATED) {
         internetAccessCodeSvcClientService.disableIAC(targetCase.getIac());
       }
 
