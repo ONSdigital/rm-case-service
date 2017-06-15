@@ -52,7 +52,7 @@ import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO.SampleUnitTyp
 public class CaseServiceImpl implements CaseService {
 
   public static final String WRONG_OLD_SAMPLE_UNIT_TYPE_MSG =
-          "Old Case definition has incorrect sampleUnitType (old sampleUnitType '%s' is not expected type '%s')";
+          "Old Case has sampleUnitType %s. It is expected to have sampleUnitType %s.";
 
   private static final String CASE_CREATED_EVENT_DESCRIPTION = "Case created when %s";
   private static final String IAC_OVERUSE_MSG = "More than one case found to be using IAC %s";
@@ -200,36 +200,39 @@ public class CaseServiceImpl implements CaseService {
    * cannot rollback ie IAC disable, or Action creation.
    *
    * @param category the category details
-   * @param targetCase the case the event is being created against
+   * @param oldCase the case the event is being created against
    * @param newCase the details provided in the event request for the new case
    */
-  private void validateCaseEventRequest(Category category, Case targetCase, Case newCase) {
-    // TODO reinstate the validation versus the old/existing case
+  private void validateCaseEventRequest(Category category, Case oldCase, Case newCase) {
+    String oldCaseSampleUnitType = oldCase.getSampleUnitType().name();
+    String expectedOldCaseSampleUnitTypes = category.getOldCaseSampleUnitType();
+    if (!compareOldCaseSampleUnitType(oldCaseSampleUnitType, expectedOldCaseSampleUnitTypes)) {
+      throw new RuntimeException(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, oldCaseSampleUnitType,
+              expectedOldCaseSampleUnitTypes));
+    }
 
     if (category.getNewCaseSampleUnitType() != null) {
       if (newCase == null) {
-        throw new RuntimeException(String.format(MISSING_NEW_CASE_MSG, targetCase.getCasePK()));
+        throw new RuntimeException(String.format(MISSING_NEW_CASE_MSG, oldCase.getCasePK()));
       }
-
-      checkSampleUnitTypesMatch(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, targetCase.getSampleUnitType().name(),
-          category.getOldCaseSampleUnitType());
-
-      // TODO Validate the new sample unit type: call to the PartySvc to verify our partyId's sample unit type
-      // TODO matches the category's new sample unit type.
     }
   }
 
   /**
-   * Simple method to compare two sample unit types and complain if they don't
-   *
-   * @param msg the error message to use if they mismatch
-   * @param newSampleUnitType the type on the left
-   * @param expectedSampleUnitType the type on the right
+   * To compare the old case sample unit type with the expected sample unit types
+   * @param oldCaseSampleUnitType the old case sample unit type
+   * @param expectedOldCaseSampleUnitTypes a comma separated list of expected sample unit types
+   * @return true if the expected types contain the old case sample unit type
    */
-  private void checkSampleUnitTypesMatch(String msg, String newSampleUnitType, String expectedSampleUnitType) {
-    if (!newSampleUnitType.equals(expectedSampleUnitType)) {
-      throw new RuntimeException(String.format(msg, newSampleUnitType, expectedSampleUnitType));
+  private boolean compareOldCaseSampleUnitType(String oldCaseSampleUnitType, String expectedOldCaseSampleUnitTypes) {
+    boolean result = false;
+    if (expectedOldCaseSampleUnitTypes != null) {
+      List<String> expectedTypes = Arrays.asList(expectedOldCaseSampleUnitTypes.split("\\s*,\\s*"));
+      if (oldCaseSampleUnitType != null && expectedTypes.contains(oldCaseSampleUnitType)) {
+        result = true;
+      }
     }
+    return result;
   }
 
   /**
