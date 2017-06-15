@@ -20,7 +20,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseState;
  * invalid transitions
  *
  */
-public class TestCaseStateTransitionManager {
+public class StateTransitionManagerUnitTest {
 
   private static final int TIMEOUT = 10000;
   private static final int INVOCATIONS = 50;
@@ -41,6 +41,7 @@ public class TestCaseStateTransitionManager {
     validTransitions.put(CaseState.REPLACEMENT_INIT, replacementInitTransitions);
     
     Map<CaseEvent, CaseState> actionableTransitions = new HashMap<>();
+    actionableTransitions.put(CaseEvent.ACCOUNT_CREATED, CaseState.ACTIONABLE);
     actionableTransitions.put(CaseEvent.DEACTIVATED, CaseState.INACTIONABLE);
     actionableTransitions.put(CaseEvent.DISABLED, CaseState.INACTIONABLE);
     validTransitions.put(CaseState.ACTIONABLE, actionableTransitions);
@@ -53,8 +54,6 @@ public class TestCaseStateTransitionManager {
 
   /**
    * test a valid transition
-   *
-   * @throws StateTransitionException shouldn't!
    */
   @Test(threadPoolSize = THREAD_POOL_SIZE, invocationCount = INVOCATIONS, timeOut = TIMEOUT)
   public void testCaseTransitions() {
