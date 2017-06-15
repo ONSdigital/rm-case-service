@@ -6,8 +6,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.WRONG_OLD_SAMPLE_UNIT_TYPE_MSG;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -45,7 +47,6 @@ import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.service.CollectionExerciseSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
-import uk.gov.ons.ctp.response.iac.representation.InternetAccessCodeDTO;
 
 /**
  * Test the CaseServiceImpl primarily the createCaseEvent functionality. Note
@@ -104,17 +105,26 @@ public class CaseServiceImplTest {
   private static final int CAT_TRANSLATION_TURKISH = 41;
   private static final int CAT_TRANSLATION_URDU = 42;
   private static final int CAT_UNDELIVERABLE = 43;
+  private static final int CAT_RESPONDENT_ACCOUNT_CREATED = 44;
+  private static final int CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT = 45;
+  private static final int CAT_COLLECTION_INSTRUMENT_DOWNLOADED = 46;
 
-  private static final Integer ACTIONABLE_HOUSEHOLD_CASE_FK = 1;
-  private static final Integer ACTIONABLE_H_INDIVIDUAL_CASE_ID = 3;
+  /**
+   * Note that the Integer values below are linked to the order in which cases appear
+   * in the array defined at CaseServiceImplTest.Case.json = casePK
+   */
+  private static final Integer NON_EXISTING_PARENT_CASE_FK = 0;
+  private static final Integer ACTIONABLE_HOUSEHOLD_CASE_FK = 0;
+  private static final Integer INACTIONABLE_HOUSEHOLD_CASE_FK = 1;
+  private static final Integer ACTIONABLE_H_INDIVIDUAL_CASE_FK = 2;
+  private static final Integer NEW_HOUSEHOLD_CASE_FK = 4;
+  private static final Integer NEW_H_INDIVIDUAL_CASE_FK = 5;
+  private static final Integer ENROLLMENT_CASE_INDIVIDUAL_FK = 8;
+  private static final Integer ACTIONABLE_BUSINESS_UNIT_CASE_FK = 9;
+  private static final Integer INITIAL_BUSINESS_UNIT_CASE_FK = 10;
+  private static final Integer ACTIONABLE_BI_CASE_FK = 11;
+
   private static final Integer CASEGROUP_PK = 1;
-  private static final Integer ENROLLMENT_CASE_INDIVIDUAL_FK = 9;
-  private static final Integer ENROLLMENT_CASE_FK = 10;
-  private static final Integer INACTIONABLE_HOUSEHOLD_CASE_FK = 2;
-  private static final Integer INACTIONABLE_H_INDIVIDUAL_CASE_ID = 4;
-  private static final Integer NEW_HOUSEHOLD_CASE_FK = 5;
-  private static final Integer NEW_H_INDIVIDUAL_CASE_ID = 7;
-  private static final Integer NON_EXISTING_PARENT_CASE_FK = 1;
 
   private static final String CASEEVENT_CREATEDBY = "unit test";
   private static final String CASEEVENT_DESCRIPTION = "a desc";
@@ -158,7 +168,7 @@ public class CaseServiceImplTest {
   /**
    * All of these tests require the mocked repos to respond with predictable
    * data loaded from test fixture json files.
-   * 
+   *
    * @throws Exception
    */
   @Before
@@ -169,7 +179,6 @@ public class CaseServiceImplTest {
     mockupCaseGroupRepo();
     mockAppConfigUse();
     mockupCaseEventRepo();
-    mockupIacServiceClient();
     mockupCollectionExerciseServiceClient();
   }
 
@@ -194,11 +203,11 @@ public class CaseServiceImplTest {
    * Tries to apply an actionable event against a case already inactionable.
    * Should allow
    * 
-   * @throws Exception
+   * @throws Exception if fabricateEvent does
    */
   @Test
   public void testCreateActionableEventAgainstInactionableCase() throws Exception {
-    Mockito.when(caseRepo.findOne(INACTIONABLE_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(1));
+    Mockito.when(caseRepo.findOne(INACTIONABLE_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(INACTIONABLE_HOUSEHOLD_CASE_FK));
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.TRANSLATION_ARABIC, INACTIONABLE_HOUSEHOLD_CASE_FK);
     caseService.createCaseEvent(caseEvent, null);
@@ -219,11 +228,11 @@ public class CaseServiceImplTest {
    * Tries to apply a general event against a case already inactionable. Should
    * allow it.
    * 
-   * @throws Exception
+   * @throws Exception if fabricateEvent does
    */
   @Test
   public void testCreateNonActionableEventAgainstInactionableCase() throws Exception {
-    Mockito.when(caseRepo.findOne(INACTIONABLE_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(1));
+    Mockito.when(caseRepo.findOne(INACTIONABLE_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(INACTIONABLE_HOUSEHOLD_CASE_FK));
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.GENERAL_COMPLAINT, INACTIONABLE_HOUSEHOLD_CASE_FK);
     caseService.createCaseEvent(caseEvent, null);
@@ -244,11 +253,11 @@ public class CaseServiceImplTest {
    * Tries to apply a response event against an actionable case Should allow it
    * and record response.
    * 
-   * @throws Exception
+   * @throws Exception if fabricateEvent does
    */
   @Test
   public void testCreatePaperResponseEventAgainstActionableCase() throws Exception {
-    Mockito.when(caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(0));
+    Mockito.when(caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(ACTIONABLE_HOUSEHOLD_CASE_FK));
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE,
         ACTIONABLE_HOUSEHOLD_CASE_FK);
@@ -282,11 +291,11 @@ public class CaseServiceImplTest {
    * Tries to apply an online response event against an actionable case Should
    * allow it and record response.
    * 
-   * @throws Exception
+   * @throws Exception if fabricateEvent does
    */
   @Test
   public void testCreateOnlineResponseEventAgainstActionableCase() throws Exception {
-    Mockito.when(caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(0));
+    Mockito.when(caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(ACTIONABLE_HOUSEHOLD_CASE_FK));
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE,
         ACTIONABLE_HOUSEHOLD_CASE_FK);
@@ -324,7 +333,7 @@ public class CaseServiceImplTest {
    */
   @Test
   public void testCreateResponseEventAgainstInActionableCase() throws Exception {
-    Mockito.when(caseRepo.findOne(INACTIONABLE_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(1));
+    Mockito.when(caseRepo.findOne(INACTIONABLE_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(INACTIONABLE_HOUSEHOLD_CASE_FK));
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE,
         INACTIONABLE_HOUSEHOLD_CASE_FK);
@@ -361,11 +370,12 @@ public class CaseServiceImplTest {
    * */
   @Test
   public void testBlueSkyHouseholdIACRequested() throws Exception {
-    Mockito.when(caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(0));
-    Mockito.when(caseRepo.findOne(NEW_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(4));
-    Mockito.when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(cases.get(0));
+    Mockito.when(caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(ACTIONABLE_HOUSEHOLD_CASE_FK));
+    Mockito.when(caseRepo.findOne(NEW_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(NEW_HOUSEHOLD_CASE_FK));
+    Mockito.when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(cases.get(NEW_HOUSEHOLD_CASE_FK));  // the new case
 
-    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.HOUSEHOLD_REPLACEMENT_IAC_REQUESTED, ACTIONABLE_HOUSEHOLD_CASE_FK);
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.HOUSEHOLD_REPLACEMENT_IAC_REQUESTED,
+            ACTIONABLE_HOUSEHOLD_CASE_FK);
     Case newCase = caseRepo.findOne(NEW_HOUSEHOLD_CASE_FK);
     caseService.createCaseEvent(caseEvent, newCase);
 
@@ -374,7 +384,8 @@ public class CaseServiceImplTest {
     verify(caseRepo, times(2)).saveAndFlush(any(Case.class));
     Case oldCase = caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
     verify(internetAccessCodeSvcClientService, times(1)).disableIAC(oldCase.getIac());
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class), any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+            any(String.class));
 
     // no new action to be created
     verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
@@ -393,20 +404,21 @@ public class CaseServiceImplTest {
    */
   @Test
   public void testBlueSkyEnrollment() throws Exception {
-    Mockito.when(caseRepo.findOne(ENROLLMENT_CASE_FK)).thenReturn(cases.get(9));
-    Mockito.when(caseRepo.findOne(ENROLLMENT_CASE_INDIVIDUAL_FK)).thenReturn(cases.get(8));
-    Mockito.when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(cases.get(0));
+    Mockito.when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
+    Mockito.when(caseRepo.findOne(ENROLLMENT_CASE_INDIVIDUAL_FK)).thenReturn(cases.get(ENROLLMENT_CASE_INDIVIDUAL_FK));
+    Mockito.when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(
+            cases.get(ENROLLMENT_CASE_INDIVIDUAL_FK));  // the new case
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ENROLLED,
-        ENROLLMENT_CASE_FK);
+            ACTIONABLE_BUSINESS_UNIT_CASE_FK);
     Case newCase = caseRepo.findOne(ENROLLMENT_CASE_INDIVIDUAL_FK);
     caseService.createCaseEvent(caseEvent, newCase);
 
-    verify(caseRepo, times(1)).findOne(ENROLLMENT_CASE_FK);
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLLED);
     verify(caseRepo, times(2)).saveAndFlush(any(Case.class));
 
-    Case oldCase = caseRepo.findOne(ENROLLMENT_CASE_FK);
+    Case oldCase = caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(oldCase.getIac());
     // action service should be told of case state change
     verify(notificationPublisher, times(1)).sendNotifications(anyListOf(CaseNotification.class));
@@ -421,20 +433,22 @@ public class CaseServiceImplTest {
    * 
    * @throws Exception
    */
-//  @Test
+  @Test
   public void testBlueSkyIndividualReplacementIACRequested() throws Exception {
-    Mockito.when(caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_ID)).thenReturn(cases.get(2));
-    Mockito.when(caseRepo.findOne(NEW_H_INDIVIDUAL_CASE_ID)).thenReturn(cases.get(6));
+    Mockito.when(caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK)).thenReturn(cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK));
+    Mockito.when(caseRepo.findOne(NEW_H_INDIVIDUAL_CASE_FK)).thenReturn(cases.get(NEW_H_INDIVIDUAL_CASE_FK));
+    Mockito.when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(
+            cases.get(NEW_H_INDIVIDUAL_CASE_FK));  // the new case
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED,
-            ACTIONABLE_H_INDIVIDUAL_CASE_ID);
-    Case newCase = caseRepo.findOne(NEW_H_INDIVIDUAL_CASE_ID);
+            ACTIONABLE_H_INDIVIDUAL_CASE_FK);
+    Case newCase = caseRepo.findOne(NEW_H_INDIVIDUAL_CASE_FK);
     caseService.createCaseEvent(caseEvent, newCase);
 
-    verify(caseRepo, times(1)).findOne(ACTIONABLE_H_INDIVIDUAL_CASE_ID);
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED);
     verify(caseRepo, times(2)).saveAndFlush(any(Case.class));
-    Case oldCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_ID);
+    Case oldCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
     verify(internetAccessCodeSvcClientService, times(1)).disableIAC(oldCase.getIac());
     verify(notificationPublisher, times(1)).sendNotifications(anyListOf(CaseNotification.class));
     verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
@@ -442,109 +456,102 @@ public class CaseServiceImplTest {
     verify(caseEventRepository, times(1)).save(caseEvent);
   }
 
-//  @Test
-//  public void testBlueSkyHouseholdPaperRequested() throws Exception {
-//    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.HOUSEHOLD_PAPER_REQUESTED,
-//        ACTIONABLE_HOUSEHOLD_CASE_FK);
-//    Case oldCase = caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
-//    Case newCase = caseRepo.findOne(NEW_HOUSEHOLD_CASE_FK);
-//    caseService.createCaseEvent(caseEvent, newCase);
-//    // one of the caseRepo calls is the test loading indCase
-//    verify(caseRepo, times(2)).findOne(ACTIONABLE_HOUSEHOLD_CASE_ID);
-//    verify(categoryRepo).findOne(CategoryDTO.CategoryName.HOUSEHOLD_PAPER_REQUESTED);
-//    verify(caseRepo, times(2)).saveAndFlush(any(Case.class));
-//    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(oldCase.getIac());
-//    // action service should be told of case state change
-//    verify(notificationPublisher, times(1)).sendNotifications(anyListOf(CaseNotification.class));
-//    // no new action to be created
-//    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
-//        any(String.class));
-//    verify(caseEventRepository, times(1)).save(caseEvent);
-//  }
+  @Test
+  public void testBlueSkyHouseholdPaperRequested() throws Exception {
+    Mockito.when(caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(ACTIONABLE_HOUSEHOLD_CASE_FK));
+    Mockito.when(caseRepo.findOne(NEW_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(NEW_HOUSEHOLD_CASE_FK));
+    Mockito.when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(cases.get(NEW_HOUSEHOLD_CASE_FK));  // the new case
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.HOUSEHOLD_PAPER_REQUESTED,
+        ACTIONABLE_HOUSEHOLD_CASE_FK);
+    Case newCase = caseRepo.findOne(NEW_HOUSEHOLD_CASE_FK);
+    caseService.createCaseEvent(caseEvent, newCase);
+
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.HOUSEHOLD_PAPER_REQUESTED);
+    verify(caseRepo, times(2)).saveAndFlush(any(Case.class));
+    Case oldCase = caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
+    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(oldCase.getIac());
+    // action service should be told of case state change
+    verify(notificationPublisher, times(1)).sendNotifications(anyListOf(CaseNotification.class));
+    // no new action to be created
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+        any(String.class));
+    verify(caseEventRepository, times(1)).save(caseEvent);
+  }
 
   /**
    * Bluesky test for creating a replacement individual case
    * 
    * @throws Exception
    */
-//  @Test
-//  public void testBlueSkyIndividualResponseRequested() throws Exception {
-//    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryType.H_INDIVIDUAL_RESPONSE_REQUESTED,
-//        ACTIONABLE_HOUSEHOLD_CASE_ID);
-//    Case oldCase = caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_ID);
-//    Case newCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_ID);
-//    caseService.createCaseEvent(caseEvent, newCase);
-//    // one of the caseRepo calls is the test loading indCase
-//    verify(caseRepo, times(2)).findOne(ACTIONABLE_HOUSEHOLD_CASE_ID);
-//    verify(categoryRepo).findOne(CategoryDTO.CategoryType.H_INDIVIDUAL_RESPONSE_REQUESTED);
-//    verify(caseRepo, times(1)).saveAndFlush(any(Case.class));
-//    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(oldCase.getIac());
-//    // action service should be told of case state change
-//    verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
-//    // no new action to be created
-//    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
-//        any(String.class));
-//    verify(caseEventRepository, times(1)).save(caseEvent);
-//  }
+  @Test
+  public void testBlueSkyIndividualResponseRequested() throws Exception {
+    Mockito.when(caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(ACTIONABLE_HOUSEHOLD_CASE_FK));
+    Mockito.when(caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK)).thenReturn(cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK));
+    Mockito.when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(
+            cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK));  // the new case
 
-  /**
-   * Bluesky test for creating a IndividualReplacementIACRequested
-   * 
-   * @throws Exception
-   */
-//  @Test
-//  public void testBlueSkyIndividualReplacementIACRequested() throws Exception {
-//    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryType.H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED,
-//        ACTIONABLE_H_INDIVIDUAL_CASE_ID);
-//    Case oldCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_ID);
-//    Case newCase = caseRepo.findOne(NEW_H_INDIVIDUAL_CASE_ID);
-//    // TODO
-////    caseService.createCaseEvent(caseEvent, newCase);
-////    // one of the caseRepo calls is the test loading indCase
-////    verify(caseRepo, times(2)).findOne(ACTIONABLE_H_INDIVIDUAL_CASE_ID);
-////    verify(categoryRepo).findOne(CategoryDTO.CategoryType.H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED);
-////    verify(caseRepo, times(2)).saveAndFlush(any(Case.class));
-////    verify(internetAccessCodeSvcClientService, times(1)).disableIAC(oldCase.getIac());
-////    verify(notificationPublisher, times(1)).sendNotifications(anyListOf(CaseNotification.class));
-////    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
-////        any(String.class));
-////    verify(caseEventRepository, times(1)).save(caseEvent);
-//  }
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED, ACTIONABLE_HOUSEHOLD_CASE_FK);
+    Case newCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
+    caseService.createCaseEvent(caseEvent, newCase);
+
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED);
+    verify(caseRepo, times(1)).saveAndFlush(any(Case.class));
+    Case oldCase = caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
+    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(oldCase.getIac());
+    // action service should be told of case state change
+    verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
+    // no new action to be created
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+        any(String.class));
+    verify(caseEventRepository, times(1)).save(caseEvent);
+  }
+
 
   /**
    * Bluesky test for creating an individual paper request event
    * 
    * @throws Exception
    */
-//  @Test
-//  public void testBlueSkyIndividualPaperRequested() throws Exception {
-//    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryType.H_INDIVIDUAL_PAPER_REQUESTED,
-//        ACTIONABLE_H_INDIVIDUAL_CASE_ID);
-//    Case oldCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_ID);
-//    Case newCase = caseRepo.findOne(NEW_H_INDIVIDUAL_CASE_ID);
-//    // TODO
-////    caseService.createCaseEvent(caseEvent, newCase);
-////    // one of the caseRepo calls is the test loading indCase
-////    verify(caseRepo, times(2)).findOne(ACTIONABLE_H_INDIVIDUAL_CASE_ID);
-////    verify(categoryRepo).findOne(CategoryDTO.CategoryType.H_INDIVIDUAL_PAPER_REQUESTED);
-////    verify(caseRepo, times(2)).saveAndFlush(any(Case.class));
-////    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(oldCase.getIac());
-////    verify(notificationPublisher, times(1)).sendNotifications(anyListOf(CaseNotification.class));
-////    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
-////        any(String.class));
-////    verify(caseEventRepository, times(1)).save(caseEvent);
-//  }
+  @Test
+  public void testBlueSkyIndividualPaperRequested() throws Exception {
+    Mockito.when(caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK)).thenReturn(cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK));
+    Mockito.when(caseRepo.findOne(NEW_H_INDIVIDUAL_CASE_FK)).thenReturn(cases.get(NEW_H_INDIVIDUAL_CASE_FK));
+    Mockito.when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(
+            cases.get(NEW_H_INDIVIDUAL_CASE_FK));  // the new case
 
-//  @Test
-//  public void testIACDisabledAfterOnlineResponseAfterRefusal() throws Exception {
-//    CaseEvent refusalCaseEvent = fabricateEvent(CategoryDTO.CategoryType.REFUSAL, ACTIONABLE_H_INDIVIDUAL_CASE_ID);
-//    CaseEvent onlineResponseCaseEvent = fabricateEvent(CategoryDTO.CategoryType.ONLINE_QUESTIONNAIRE_RESPONSE, ACTIONABLE_H_INDIVIDUAL_CASE_ID);
-//    Case oldCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_ID);
-//    caseService.createCaseEvent(refusalCaseEvent, null);
-//    caseService.createCaseEvent(onlineResponseCaseEvent, null);
-//
-//    verify(internetAccessCodeSvcClientService, times(1)).disableIAC(oldCase.getIac());
-//  }
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.H_INDIVIDUAL_PAPER_REQUESTED,
+        ACTIONABLE_H_INDIVIDUAL_CASE_FK);
+    Case newCase = caseRepo.findOne(NEW_H_INDIVIDUAL_CASE_FK);
+    caseService.createCaseEvent(caseEvent, newCase);
+
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_PAPER_REQUESTED);
+    verify(caseRepo, times(2)).saveAndFlush(any(Case.class));
+    Case oldCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
+    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(oldCase.getIac());
+    verify(notificationPublisher, times(1)).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+        any(String.class));
+    verify(caseEventRepository, times(1)).save(caseEvent);
+  }
+
+  @Test
+  public void testIACDisabledAfterOnlineResponseAfterRefusal() throws Exception {
+    Mockito.when(caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK)).thenReturn(cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK));
+
+    CaseEvent refusalCaseEvent = fabricateEvent(CategoryDTO.CategoryName.REFUSAL, ACTIONABLE_H_INDIVIDUAL_CASE_FK);
+    caseService.createCaseEvent(refusalCaseEvent, null);
+
+    CaseEvent onlineResponseCaseEvent = fabricateEvent(CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE,
+            ACTIONABLE_H_INDIVIDUAL_CASE_FK);
+    caseService.createCaseEvent(onlineResponseCaseEvent, null);
+
+    Case oldCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
+    verify(internetAccessCodeSvcClientService, times(1)).disableIAC(oldCase.getIac());
+  }
 
   /**
    * Tries to create an individual response requested against an individual case
@@ -552,79 +559,82 @@ public class CaseServiceImplTest {
    * 
    * @throws Exception
    */
-//  @Test
-//  public void testIndividualResponseRequestedAgainstIndividualCaseNotAllowed() throws Exception {
-//    // now kick it off
-//    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryType.H_INDIVIDUAL_RESPONSE_REQUESTED,
-//        ACTIONABLE_H_INDIVIDUAL_CASE_ID);
-//    Case indCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_ID);
-//    try {
-//      caseService.createCaseEvent(caseEvent, indCase);
-//      fail();
-//    } catch (RuntimeException re) {
-//      assertThat(re.getMessage().startsWith(WRONG_OLD_CASE_TYPE_EX));
-//      // one of the caseRepo calls is the test loading indCase
-//      verify(caseRepo, times(2)).findOne(ACTIONABLE_H_INDIVIDUAL_CASE_ID);
-//      verify(categoryRepo).findOne(CategoryDTO.CategoryType.H_INDIVIDUAL_RESPONSE_REQUESTED);
-//      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-//      // IAC should not be disabled
-//      verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
-//      verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
-//      verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
-//          any(String.class));
-//      verify(caseEventRepository, times(0)).save(caseEvent);
-//    }
-//  }
-//
-//  /**
-//   * Tries to apply a Household event against an Individual Case NOT ALLOWED!.
-//   * Should throw and not save anything
-//   * 
-//   * @throws Exception
-//   */
-//  @Test
-//  public void testHouseholdPaperRequestedAgainstIndividualCaseNotAllowed() throws Exception {
-//    // now kick it off
-//    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryType.HOUSEHOLD_PAPER_REQUESTED,
-//        ACTIONABLE_H_INDIVIDUAL_CASE_ID);
-//    Case indCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_ID);
-//    try {
-//      caseService.createCaseEvent(caseEvent, indCase);
-//      fail();
-//    } catch (RuntimeException re) {
-//      assertThat(re.getMessage().startsWith(WRONG_NEW_CASE_TYPE_EX));
-//      // one of the caseRepo calls is the test loading indCase
-//      verify(caseRepo, times(2)).findOne(ACTIONABLE_H_INDIVIDUAL_CASE_ID);
-//      verify(categoryRepo).findOne(CategoryDTO.CategoryType.HOUSEHOLD_PAPER_REQUESTED);
-//      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-//      verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
-//      verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
-//          any(String.class));
-//      verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
-//      verify(caseEventRepository, times(0)).save(caseEvent);
-//    }
-//  }
+  @Test
+  public void testIndividualResponseRequestedAgainstIndividualCaseNotAllowed() throws Exception {
+    Mockito.when(caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK)).thenReturn(cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED,
+            ACTIONABLE_H_INDIVIDUAL_CASE_FK);
+    try {
+      Case oldCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
+      caseService.createCaseEvent(caseEvent, oldCase);
+      fail();
+    } catch (RuntimeException re) {
+      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, "HI", "H"), re.getMessage());
+      verify(caseRepo, times(2)).findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
+      verify(categoryRepo).findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED);
+      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+      // IAC should not be disabled
+      verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
+      verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
+      verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+          any(String.class));
+      verify(caseEventRepository, times(0)).save(caseEvent);
+    }
+  }
+
+
+  /**
+   * Tries to apply a Household event against an Individual Case NOT ALLOWED!.
+   * Should throw and not save anything
+   *
+   * @throws Exception
+   */
+  @Test
+  public void testHouseholdPaperRequestedAgainstIndividualCaseNotAllowed() throws Exception {
+    Mockito.when(caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK)).thenReturn(
+            cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.HOUSEHOLD_PAPER_REQUESTED,
+            ACTIONABLE_H_INDIVIDUAL_CASE_FK);
+    try {
+      Case oldCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
+      caseService.createCaseEvent(caseEvent, oldCase);
+      fail();
+    } catch (RuntimeException re) {
+      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, "HI", "H"), re.getMessage());
+      // one of the caseRepo calls is the test loading indCase
+      verify(caseRepo, times(2)).findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
+      verify(categoryRepo).findOne(CategoryDTO.CategoryName.HOUSEHOLD_PAPER_REQUESTED);
+      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+      verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
+      verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+          any(String.class));
+      verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
+      verify(caseEventRepository, times(0)).save(caseEvent);
+    }
+  }
 
   /**
    * Tries to create a individual request with providing the individual case.
    * Should throw and not save anything
    * 
-   * @throws Exception
+   * @throws Exception if fabricateEvent does
    */
   @Test
   public void testIndividualResponseRequestedAgainstIndividualCaseWithoutNewCase() throws Exception {
-    Mockito.when(caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_ID)).thenReturn(cases.get(2));
+    Mockito.when(caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK)).thenReturn(cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK));
 
     // now kick it off
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED,
-        ACTIONABLE_H_INDIVIDUAL_CASE_ID);
+            ACTIONABLE_H_INDIVIDUAL_CASE_FK);
 
     try {
       caseService.createCaseEvent(caseEvent, null);
       fail();
     } catch (RuntimeException re) {
       assertThat(re.getMessage().startsWith(NEW_CASE_MISSING_EX));
-      verify(caseRepo).findOne(ACTIONABLE_H_INDIVIDUAL_CASE_ID);
+      verify(caseRepo).findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
       verify(categoryRepo).findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED);
       verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
       verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
@@ -635,12 +645,184 @@ public class CaseServiceImplTest {
     }
   }
 
+  /**
+   * We create a CaseEvent with category CASE_CREATED on an initial BRES case
+   * (the one created for a business unit B, Tesco for instance)
+   *
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventCaseCreated() throws Exception {
+    Mockito.when(caseRepo.findOne(INITIAL_BUSINESS_UNIT_CASE_FK)).thenReturn(cases.get(INITIAL_BUSINESS_UNIT_CASE_FK));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.CASE_CREATED, INITIAL_BUSINESS_UNIT_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, null);
+
+    verify(caseRepo, times(1)).findOne(INITIAL_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.CASE_CREATED);
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    verify(caseRepo, never()).saveAndFlush(any(Case.class));
+    verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
+    verify(caseSvcStateTransitionManager, never()).transition(any(CaseDTO.CaseState.class),
+            any(CaseDTO.CaseEvent.class));
+    verify(notificationPublisher, never()).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(Integer.class),
+            any(String.class));
+  }
+
+  /**
+   * We create a CaseEvent with category RESPONDENT_ACCOUNT_CREATED on an ACTIONABLE BRES case
+   * (the one created for a business unit B, Tesco for instance)
+   *
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventRespondentAccountCreated() throws Exception {
+    Mockito.when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, null);
+
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED);
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    verify(caseRepo, never()).saveAndFlush(any(Case.class));
+    verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
+    verify(caseSvcStateTransitionManager, never()).transition(any(CaseDTO.CaseState.class),
+            any(CaseDTO.CaseEvent.class));
+    verify(notificationPublisher, never()).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(Integer.class),
+            any(String.class));
+  }
+
+  // TODO testEventRespondentAccountCreated attempted versus a Case of the wrong type, ie not a B
+
+  /**
+   * We create a CaseEvent with category ACCESS_CODE_AUTHENTICATION_ATTEMPT on an ACTIONABLE BRES case
+   * (the one created for a business unit B, Tesco for instance)
+   *
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventAccessCodeAuthenticationAttempt() throws Exception {
+    Mockito.when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT,
+            ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, null);
+
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    verify(caseRepo, never()).saveAndFlush(any(Case.class));
+    verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
+    verify(caseSvcStateTransitionManager, never()).transition(any(CaseDTO.CaseState.class),
+            any(CaseDTO.CaseEvent.class));
+    verify(notificationPublisher, never()).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(Integer.class),
+            any(String.class));
+  }
+
+  /**
+   * We create a CaseEvent with category COLLECTION_INSTRUMENT_DOWNLOADED on an ACTIONABLE BRES case
+   * (the one created for a respondent BI, accountant replying on behalf of Tesco for instance)
+   *
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventCollectionInstrumentDownloaded() throws Exception {
+    Mockito.when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BI_CASE_FK));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED,
+            ACTIONABLE_BI_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, null);
+
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_BI_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED);
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    verify(caseRepo, never()).saveAndFlush(any(Case.class));
+    verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
+    verify(caseSvcStateTransitionManager, never()).transition(any(CaseDTO.CaseState.class),
+            any(CaseDTO.CaseEvent.class));
+    verify(notificationPublisher, never()).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(Integer.class),
+            any(String.class));
+  }
+
+  // TODO testEventCollectionInstrumentDownloaded attempted versus a Case of the wrong type, ie not a BI
+
+  /**
+   * We create a CaseEvent with category ACTION_CANCELLATION_COMPLETED on an ACTIONABLE BRES case
+   * (the one created for a respondent BI, accountant replying on behalf of Tesco for instance)
+   *
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventActionCancellationCompleted() throws Exception {
+    Mockito.when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BI_CASE_FK));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED,
+            ACTIONABLE_BI_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, null);
+
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_BI_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED);
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    verify(caseRepo, never()).saveAndFlush(any(Case.class));
+    verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
+    verify(caseSvcStateTransitionManager, never()).transition(any(CaseDTO.CaseState.class),
+            any(CaseDTO.CaseEvent.class));
+    verify(notificationPublisher, never()).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(Integer.class),
+            any(String.class));
+  }
+
+  /**
+   * We create a CaseEvent with category ACTION_CANCELLATION_COMPLETED on an ACTIONABLE BRES case
+   * (the one created for a respondent BI, accountant replying on behalf of Tesco for instance)
+   *
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventActionCancellationCreated() throws Exception {
+    Mockito.when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BI_CASE_FK));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.ACTION_CANCELLATION_CREATED,
+            ACTIONABLE_BI_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, null);
+
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_BI_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.ACTION_CANCELLATION_CREATED);
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    verify(caseRepo, never()).saveAndFlush(any(Case.class));
+    verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
+    verify(caseSvcStateTransitionManager, never()).transition(any(CaseDTO.CaseState.class),
+            any(CaseDTO.CaseEvent.class));
+    verify(notificationPublisher, never()).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(Integer.class),
+            any(String.class));
+  }
+
+  /**
+   * To mock the behaviour of caseGroupRepo
+   * @throws Exception if loadClassFixtures does
+   */
   private void mockupCaseGroupRepo() throws Exception {
     List<CaseGroup> caseGroups = FixtureHelper.loadClassFixtures(CaseGroup[].class);
     Mockito.when(caseGroupRepo.findOne(CASEGROUP_PK))
         .thenReturn(caseGroups.get(CASEGROUP_PK - 1));
   }
 
+  /**
+   * To mock the behaviour of categoryRepo
+   * @throws Exception if loadClassFixtures does
+   */
   private void mockupCategoryRepo() throws Exception {
     List<Category> categories = FixtureHelper.loadClassFixtures(Category[].class);
 
@@ -730,31 +912,22 @@ public class CaseServiceImplTest {
         .thenReturn(categories.get(CAT_HOUSEHOLD_PAPER_REQUESTED));
     Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLLED))
         .thenReturn(categories.get(CAT_RESPONDENT_ENROLLED));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED))
+            .thenReturn(categories.get(CAT_RESPONDENT_ACCOUNT_CREATED));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT))
+            .thenReturn(categories.get(CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED))
+            .thenReturn(categories.get(CAT_COLLECTION_INSTRUMENT_DOWNLOADED));
   }
 
   /**
    * mock loading data
    *
-   * @return list of mock cases types
-   * @throws Exception oops
-   */
-//  private List<CaseType> mockupCaseTypeRepo() throws Exception {
-//    List<CaseType> caseTypes = FixtureHelper.loadClassFixtures(CaseType[].class);
-//    for (int i = 1; i <= 4; i++) {
-//      Mockito.when(caseTypeRepo.findOne(i)).thenReturn(caseTypes.get(i - 1));
-//    }
-//    return caseTypes;
-//  }
-
-  /**
-   * mock loading data
-   *
    * @param categoryName which category name to load
-   * @param casePK the associated Case
+   * @param casePK the associated existing/old Case
    * @return a mock case event
-   * @throws Exception oops
    */
-  private CaseEvent fabricateEvent(CategoryDTO.CategoryName categoryName, int casePK) throws Exception {
+  private CaseEvent fabricateEvent(CategoryDTO.CategoryName categoryName, int casePK) {
     CaseEvent caseEvent = new CaseEvent();
     caseEvent.setCaseFK(casePK);
     caseEvent.setCategory(categoryName);
@@ -769,9 +942,8 @@ public class CaseServiceImplTest {
    * mock loading data
    *
    * @return a mock case event
-   * @throws Exception oops
    */
-  private void mockupCaseEventRepo() throws Exception {
+  private void mockupCaseEventRepo() {
     Mockito.when(caseEventRepository.save(any(CaseEvent.class))).thenAnswer(new Answer<CaseEvent>() {
       public CaseEvent answer(InvocationOnMock invocation) {
         return (CaseEvent) invocation.getArguments()[0];
@@ -780,40 +952,24 @@ public class CaseServiceImplTest {
   }
 
   /**
-   * mock the iac service client
-   *
-   * @throws Exception oops
-   */
-
-  private void mockupIacServiceClient() throws Exception {
-    List<InternetAccessCodeDTO> iacDTOs = FixtureHelper.loadClassFixtures(InternetAccessCodeDTO[].class);
-    Mockito.when(internetAccessCodeSvcClientService.disableIAC(any(String.class))).thenAnswer(new Answer<InternetAccessCodeDTO>() {
-      public InternetAccessCodeDTO answer(InvocationOnMock invocation) {
-        return iacDTOs.get(0);
-      }
-    });
-  }
-  
-  /**
    * mock the collection exercise service
    * 
-   * @throws Exception
+   * @throws Exception if fixtures loading fails
    */
   private void mockupCollectionExerciseServiceClient() throws Exception {
     List<CollectionExerciseDTO> collectionExerciseDTOs = FixtureHelper.loadClassFixtures(CollectionExerciseDTO[].class);
-    Mockito.when(collectionExerciseSvcClientService.getCollectionExercise(any())).thenAnswer(new Answer<CollectionExerciseDTO>() {
-      public CollectionExerciseDTO answer(InvocationOnMock invocation) {
-        return collectionExerciseDTOs.get(0);
-      }
-    });
+    Mockito.when(collectionExerciseSvcClientService.getCollectionExercise(any())).thenAnswer(
+            new Answer<CollectionExerciseDTO>() {
+              public CollectionExerciseDTO answer(InvocationOnMock invocation) {
+                return collectionExerciseDTOs.get(0);
+              }
+            });
   }
 
   /**
    * mock state transitions
-   *
-   * @throws Exception oops
    */
-  private void mockStateTransitions() throws Exception {
+  private void mockStateTransitions() {
     Mockito.when(
         caseSvcStateTransitionManager.transition(CaseState.ACTIONABLE,
             uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseEvent.DISABLED))
@@ -835,10 +991,8 @@ public class CaseServiceImplTest {
 
   /**
    * mock loading data
-   *
-   * @throws Exception oops
    */
-  private void mockAppConfigUse() throws Exception {
+  private void mockAppConfigUse() {
     InternetAccessCodeSvc iacSvc = new InternetAccessCodeSvc();
     iacSvc.setIacPutPath(IAC_SVC_PUT_PATH);
     iacSvc.setIacPostPath(IAC_SVC_POST_PATH);

@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Domain model object
+ * Domain model object to represent a Case
  */
 @Data
 @AllArgsConstructor
@@ -31,16 +31,12 @@ public class CaseDTO {
 
   private UUID id;
   private CaseState state;
-  private String iac;
-  private String caseRef;
 
   private UUID actionPlanId;
-  private UUID caseGroupId;
   private UUID collectionInstrumentId;
   private UUID partyId;
   
   private String sampleUnitType;
-  private String sampleUnitRef;
 
   private String createdBy;
   private Date createdDateTime;

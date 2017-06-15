@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
@@ -14,6 +15,7 @@ import static uk.gov.ons.ctp.common.MvcHelper.getJson;
 import static uk.gov.ons.ctp.common.MvcHelper.postJson;
 import static uk.gov.ons.ctp.common.TestHelper.createTestDate;
 import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
+import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.CATEGORY_IAC_AUTH_NOT_FOUND;
 import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.ERRORMSG_CASENOTFOUND;
 import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseGroupEndpoint.ERRORMSG_CASEGROUPNOTFOUND;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
@@ -22,10 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -108,6 +112,7 @@ public final class CaseEndpointUnitTest {
   private static final String NON_EXISTING_CASE_ID = "9bc9d99b-9999-99b9-ba99-99f9d9cf9999";
   private static final String NON_EXISTING_IAC = "zzzz llll mmmm";
   private static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
+  private static final String FINDCASEBYID = "findCaseById";
 
   private static final String CASEEVENT_INVALIDJSON =
           "{\"description\":\"a\",\"category\":\"BAD_CAT\",\"createdBy\":\"u\"}";
@@ -164,7 +169,8 @@ public final class CaseEndpointUnitTest {
 
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
-    actions.andExpect(handler().methodName("findCaseById"));
+    actions.andExpect(handler().methodName(FINDCASEBYID));
+    actions.andExpect(jsonPath("$.*", hasSize(12)));
     actions.andExpect(jsonPath("$.id", is(CASE1_ID.toString())));
     actions.andExpect(jsonPath("$.iac", is(IAC_CASE1)));
     actions.andExpect(jsonPath("$.collectionInstrumentId", is(CASE_CI_ID)));
@@ -175,22 +181,28 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.createdBy", is(SYSTEM)));
     actions.andExpect(jsonPath("$.createdDateTime", is(CASE_DATE_VALUE_1)));
 
-    actions.andExpect(jsonPath("$.responses", Matchers.hasSize(1)));
+    actions.andExpect(jsonPath("$.responses", hasSize(1)));
     actions.andExpect(jsonPath("$.responses[*].inboundChannel", containsInAnyOrder(InboundChannel.PAPER.name())));
     actions.andExpect(jsonPath("$.responses[*].dateTime", containsInAnyOrder(CASE_DATE_VALUE_1)));
 
     actions.andExpect(jsonPath("$.caseGroup.id", is(CASE1_CASEGROUP_ID.toString())));
-    actions.andExpect(jsonPath("$.caseGroup.collectionExerciseId", is(CASE1_CASEGROUP_COLLECTION_EXERCISE_ID.toString())));
+    actions.andExpect(jsonPath("$.caseGroup.collectionExerciseId",
+            is(CASE1_CASEGROUP_COLLECTION_EXERCISE_ID.toString())));
     actions.andExpect(jsonPath("$.caseGroup.partyId", is(CASE1_CASEGROUP_PARTY_ID.toString())));
     actions.andExpect(jsonPath("$.caseGroup.sampleUnitRef", is(CASE1_CASEGROUP_SAMPLE_UNIT_REF)));
     actions.andExpect(jsonPath("$.caseGroup.sampleUnitType", is(CASE1_CASEGROUP_SAMPLE_UNIT_TYPE)));
 
-    actions.andExpect(jsonPath("$.caseEvents", Matchers.hasSize(4)));
-    actions.andExpect(jsonPath("$.caseEvents[*].description", containsInAnyOrder(CASE1_DESCRIPTION, CASE2_DESCRIPTION, CASE3_DESCRIPTION, CASE9_DESCRIPTION)));
-    actions.andExpect(jsonPath("$.caseEvents[*].category", containsInAnyOrder(CASE1_CATEGORY, CASE2_CATEGORY, CASE3_CATEGORY, CASE9_CATEGORY)));
-    actions.andExpect(jsonPath("$.caseEvents[*].subCategory", containsInAnyOrder(CASE1_SUBCATEGORY, CASE2_SUBCATEGORY, CASE3_SUBCATEGORY, null)));
-    actions.andExpect(jsonPath("$.caseEvents[*].createdBy", containsInAnyOrder(CASE1_CREATEDBY, CASE2_CREATEDBY, CASE3_CREATEDBY, CASE9_CREATEDBY)));
-    actions.andExpect(jsonPath("$.caseEvents[*].createdDateTime", containsInAnyOrder(CASE_DATE_VALUE_1, CASE_DATE_VALUE_2, CASE_DATE_VALUE_3, CASE_DATE_VALUE_1)));
+    actions.andExpect(jsonPath("$.caseEvents", hasSize(4)));
+    actions.andExpect(jsonPath("$.caseEvents[*].description",
+            containsInAnyOrder(CASE1_DESCRIPTION, CASE2_DESCRIPTION, CASE3_DESCRIPTION, CASE9_DESCRIPTION)));
+    actions.andExpect(jsonPath("$.caseEvents[*].category",
+            containsInAnyOrder(CASE1_CATEGORY, CASE2_CATEGORY, CASE3_CATEGORY, CASE9_CATEGORY)));
+    actions.andExpect(jsonPath("$.caseEvents[*].subCategory",
+            containsInAnyOrder(CASE1_SUBCATEGORY, CASE2_SUBCATEGORY, CASE3_SUBCATEGORY, null)));
+    actions.andExpect(jsonPath("$.caseEvents[*].createdBy",
+            containsInAnyOrder(CASE1_CREATEDBY, CASE2_CREATEDBY, CASE3_CREATEDBY, CASE9_CREATEDBY)));
+    actions.andExpect(jsonPath("$.caseEvents[*].createdDateTime",
+            containsInAnyOrder(CASE_DATE_VALUE_1, CASE_DATE_VALUE_2, CASE_DATE_VALUE_3, CASE_DATE_VALUE_1)));
   }
 
   @Test
@@ -203,7 +215,8 @@ public final class CaseEndpointUnitTest {
 
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
-    actions.andExpect(handler().methodName("findCaseById"));
+    actions.andExpect(handler().methodName(FINDCASEBYID));
+    actions.andExpect(jsonPath("$.*", hasSize(12)));
     actions.andExpect(jsonPath("$.id", is(CASE1_ID.toString())));
     actions.andExpect(jsonPath("$.iac", is(nullValue())));
     actions.andExpect(jsonPath("$.collectionInstrumentId", is(CASE_CI_ID)));
@@ -214,12 +227,13 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.createdBy", is(SYSTEM)));
     actions.andExpect(jsonPath("$.createdDateTime", is(CASE_DATE_VALUE_1)));
 
-    actions.andExpect(jsonPath("$.responses", Matchers.hasSize(1)));
+    actions.andExpect(jsonPath("$.responses", hasSize(1)));
     actions.andExpect(jsonPath("$.responses[*].inboundChannel", containsInAnyOrder(InboundChannel.PAPER.name())));
     actions.andExpect(jsonPath("$.responses[*].dateTime", containsInAnyOrder(CASE_DATE_VALUE_1)));
 
     actions.andExpect(jsonPath("$.caseGroup.id", is(CASE1_CASEGROUP_ID.toString())));
-    actions.andExpect(jsonPath("$.caseGroup.collectionExerciseId", is(CASE1_CASEGROUP_COLLECTION_EXERCISE_ID.toString())));
+    actions.andExpect(jsonPath("$.caseGroup.collectionExerciseId",
+            is(CASE1_CASEGROUP_COLLECTION_EXERCISE_ID.toString())));
     actions.andExpect(jsonPath("$.caseGroup.partyId", is(CASE1_CASEGROUP_PARTY_ID.toString())));
     actions.andExpect(jsonPath("$.caseGroup.sampleUnitRef", is(CASE1_CASEGROUP_SAMPLE_UNIT_REF)));
     actions.andExpect(jsonPath("$.caseGroup.sampleUnitType", is(CASE1_CASEGROUP_SAMPLE_UNIT_TYPE)));
@@ -233,21 +247,23 @@ public final class CaseEndpointUnitTest {
 
     actions.andExpect(status().isNotFound());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
-    actions.andExpect(handler().methodName("findCaseById"));
+    actions.andExpect(handler().methodName(FINDCASEBYID));
     actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
-    actions.andExpect(jsonPath("$.error.message", is(String.format("%s case id %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_CASE_ID))));
+    actions.andExpect(jsonPath("$.error.message",
+            is(String.format("%s case id %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_CASE_ID))));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
   @Test
   public void findCaseByCaseIdUnCheckedException() throws Exception {
-    when(caseService.findCaseById(CASE_ID_UNCHECKED_EXCEPTION_CASE)).thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
+    when(caseService.findCaseById(CASE_ID_UNCHECKED_EXCEPTION_CASE)).thenThrow(
+            new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s", CASE_ID_UNCHECKED_EXCEPTION_CASE)));
 
     actions.andExpect(status().is5xxServerError());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
-    actions.andExpect(handler().methodName("findCaseById"));
+    actions.andExpect(handler().methodName(FINDCASEBYID));
     actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.SYSTEM_ERROR.name())));
     actions.andExpect(jsonPath("$.error.message", is(OUR_EXCEPTION_MESSAGE)));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
@@ -273,11 +289,19 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(status().is2xxSuccessful());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCasesByPartyId"));
-    actions.andExpect(jsonPath("$", Matchers.hasSize(9)));
-    actions.andExpect(jsonPath("$[*].id", containsInAnyOrder(CASE1_ID.toString(), CASE2_ID.toString(), CASE3_ID.toString(), CASE4_ID.toString(), CASE5_ID.toString(), CASE6_ID.toString(), CASE7_ID.toString(), CASE8_ID.toString(), CASE9_ID.toString())));
-    actions.andExpect(jsonPath("$[*].iac", containsInAnyOrder(nullValue(), nullValue(), nullValue(), nullValue(), nullValue(), nullValue(), nullValue(), nullValue(), nullValue())));
-    actions.andExpect(jsonPath("$[*].caseEvents", containsInAnyOrder(nullValue(), nullValue(), nullValue(), nullValue(), nullValue(), nullValue(), nullValue(), nullValue(), nullValue())));
-    actions.andExpect(jsonPath("$[*].caseGroup.id", containsInAnyOrder(CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString())));
+    actions.andExpect(jsonPath("$", hasSize(9)));
+    actions.andExpect(jsonPath("$[0].*", hasSize(12)));
+    actions.andExpect(jsonPath("$[*].id", containsInAnyOrder(CASE1_ID.toString(), CASE2_ID.toString(),
+            CASE3_ID.toString(), CASE4_ID.toString(), CASE5_ID.toString(), CASE6_ID.toString(), CASE7_ID.toString(),
+            CASE8_ID.toString(), CASE9_ID.toString())));
+    actions.andExpect(jsonPath("$[*].iac", containsInAnyOrder(nullValue(), nullValue(), nullValue(), nullValue(),
+            nullValue(), nullValue(), nullValue(), nullValue(), nullValue())));
+    actions.andExpect(jsonPath("$[*].caseEvents", containsInAnyOrder(nullValue(), nullValue(), nullValue(),
+            nullValue(), nullValue(), nullValue(), nullValue(), nullValue(), nullValue())));
+    actions.andExpect(jsonPath("$[*].caseGroup.id", containsInAnyOrder(CASE1_CASEGROUP_ID.toString(),
+            CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(),
+            CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(),
+            CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString())));
   }
 
   @Test
@@ -286,16 +310,24 @@ public final class CaseEndpointUnitTest {
     when(caseGroupService.findCaseGroupByCaseGroupPK(any(Integer.class))).thenReturn(caseGroupResults.get(0));
     when(caseService.findCaseEventsByCaseFK(any(Integer.class))).thenReturn(caseEventsResults);
 
-    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/partyid/%s?caseevents=true&iac=true", EXISTING_PARTY_UUID)));
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/partyid/%s?caseevents=true&iac=true",
+            EXISTING_PARTY_UUID)));
 
     actions.andExpect(status().is2xxSuccessful());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCasesByPartyId"));
-    actions.andExpect(jsonPath("$", Matchers.hasSize(9)));
-    actions.andExpect(jsonPath("$[*].id", containsInAnyOrder(CASE1_ID.toString(), CASE2_ID.toString(), CASE3_ID.toString(), CASE4_ID.toString(), CASE5_ID.toString(), CASE6_ID.toString(), CASE7_ID.toString(), CASE8_ID.toString(), CASE9_ID.toString())));
-    actions.andExpect(jsonPath("$[*].iac", containsInAnyOrder(IAC_CASE1, IAC_CASE2, IAC_CASE3, IAC_CASE4, IAC_CASE5, IAC_CASE6, IAC_CASE7, IAC_CASE8, IAC_CASE9)));
-    actions.andExpect(jsonPath("$[*].caseEvents", Matchers.hasSize(9)));
-    actions.andExpect(jsonPath("$[*].caseGroup.id", containsInAnyOrder(CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString())));
+    actions.andExpect(jsonPath("$", hasSize(9)));
+    actions.andExpect(jsonPath("$[0].*", hasSize(12)));
+    actions.andExpect(jsonPath("$[*].id", containsInAnyOrder(CASE1_ID.toString(), CASE2_ID.toString(),
+            CASE3_ID.toString(), CASE4_ID.toString(), CASE5_ID.toString(), CASE6_ID.toString(), CASE7_ID.toString(),
+            CASE8_ID.toString(), CASE9_ID.toString())));
+    actions.andExpect(jsonPath("$[*].iac", containsInAnyOrder(IAC_CASE1, IAC_CASE2, IAC_CASE3, IAC_CASE4,
+            IAC_CASE5, IAC_CASE6, IAC_CASE7, IAC_CASE8, IAC_CASE9)));
+    actions.andExpect(jsonPath("$[*].caseEvents", hasSize(9)));
+    actions.andExpect(jsonPath("$[*].caseGroup.id", containsInAnyOrder(CASE1_CASEGROUP_ID.toString(),
+            CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(),
+            CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(),
+            CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString())));
   }
 
 
@@ -307,7 +339,23 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCaseByIac"));
     actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
-    actions.andExpect(jsonPath("$.error.message", is(String.format("%s iac %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_IAC))));
+    actions.andExpect(jsonPath("$.error.message", is(String.format("%s iac %s", ERRORMSG_CASENOTFOUND,
+            NON_EXISTING_IAC))));
+    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+  }
+
+  @Test
+  public void findCaseByIACButCategoryNotDefined() throws Exception {
+    when(caseService.findCaseByIac(IAC_CASE1)).thenReturn(caseResults.get(0));
+    when(categoryService.findCategory(CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT)).thenReturn(null);
+
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/iac/%s", IAC_CASE1)));
+
+    actions.andExpect(status().is5xxServerError());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("findCaseByIac"));
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.SYSTEM_ERROR.name())));
+    actions.andExpect(jsonPath("$.error.message", is(CATEGORY_IAC_AUTH_NOT_FOUND)));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
@@ -318,13 +366,14 @@ public final class CaseEndpointUnitTest {
     when(caseService.findCaseEventsByCaseFK(any(Integer.class))).thenReturn(caseEventsResults);
     Category newCategory = new Category();
     newCategory.setShortDescription("desc");
-    when(categoryService.findCategory(CategoryName.IAC_AUTHENTICATED)).thenReturn(newCategory);
+    when(categoryService.findCategory(CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT)).thenReturn(newCategory);
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/cases/iac/%s", IAC_CASE1)));
 
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCaseByIac"));
+    actions.andExpect(jsonPath("$.*", hasSize(12)));
     actions.andExpect(jsonPath("$.id", is(CASE1_ID.toString())));
     actions.andExpect(jsonPath("$.iac", is(nullValue())));
     actions.andExpect(jsonPath("$.collectionInstrumentId", is(CASE_CI_ID)));
@@ -335,12 +384,13 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.createdBy", is(SYSTEM)));
     actions.andExpect(jsonPath("$.createdDateTime", is(CASE_DATE_VALUE_1)));
 
-    actions.andExpect(jsonPath("$.responses", Matchers.hasSize(1)));
+    actions.andExpect(jsonPath("$.responses", hasSize(1)));
     actions.andExpect(jsonPath("$.responses[*].inboundChannel", containsInAnyOrder(InboundChannel.PAPER.name())));
     actions.andExpect(jsonPath("$.responses[*].dateTime", containsInAnyOrder(CASE_DATE_VALUE_1)));
 
     actions.andExpect(jsonPath("$.caseGroup.id", is(CASE1_CASEGROUP_ID.toString())));
-    actions.andExpect(jsonPath("$.caseGroup.collectionExerciseId", is(CASE1_CASEGROUP_COLLECTION_EXERCISE_ID.toString())));
+    actions.andExpect(jsonPath("$.caseGroup.collectionExerciseId",
+            is(CASE1_CASEGROUP_COLLECTION_EXERCISE_ID.toString())));
     actions.andExpect(jsonPath("$.caseGroup.partyId", is(CASE1_CASEGROUP_PARTY_ID.toString())));
     actions.andExpect(jsonPath("$.caseGroup.sampleUnitRef", is(CASE1_CASEGROUP_SAMPLE_UNIT_REF)));
     actions.andExpect(jsonPath("$.caseGroup.sampleUnitType", is(CASE1_CASEGROUP_SAMPLE_UNIT_TYPE)));
@@ -352,13 +402,15 @@ public final class CaseEndpointUnitTest {
 
   @Test
   public void findCasesByCaseGroupIdNotFound() throws Exception {
-    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/casegroupid/%s", NON_EXISTING_CASE_GROUP_UUID)));
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/casegroupid/%s",
+            NON_EXISTING_CASE_GROUP_UUID)));
 
     actions.andExpect(status().isNotFound());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCasesInCaseGroup"));
     actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
-    actions.andExpect(jsonPath("$.error.message", is(String.format("%s casegroup id %s", ERRORMSG_CASEGROUPNOTFOUND, NON_EXISTING_CASE_GROUP_UUID))));
+    actions.andExpect(jsonPath("$.error.message", is(String.format("%s casegroup id %s", ERRORMSG_CASEGROUPNOTFOUND,
+            NON_EXISTING_CASE_GROUP_UUID))));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
@@ -372,9 +424,11 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCasesInCaseGroup"));
-    actions.andExpect(jsonPath("$", Matchers.hasSize(9)));
-    actions.andExpect(jsonPath("$[*].id", containsInAnyOrder(CASE1_ID.toString(), CASE2_ID.toString(), CASE3_ID.toString(), CASE4_ID.toString(), CASE5_ID.toString(), CASE6_ID.toString(), CASE7_ID.toString(), CASE8_ID.toString(), CASE9_ID.toString())));
-    actions.andExpect(jsonPath("$[*].iac", containsInAnyOrder(nullValue(), nullValue(), nullValue(), nullValue(), nullValue(), nullValue(), nullValue(), nullValue(), nullValue())));
+    actions.andExpect(jsonPath("$", hasSize(9)));
+    actions.andExpect(jsonPath("$[0].*", hasSize(9)));
+    actions.andExpect(jsonPath("$[*].id", containsInAnyOrder(CASE1_ID.toString(), CASE2_ID.toString(),
+            CASE3_ID.toString(), CASE4_ID.toString(), CASE5_ID.toString(), CASE6_ID.toString(), CASE7_ID.toString(),
+            CASE8_ID.toString(), CASE9_ID.toString())));
   }
 
   @Test
@@ -397,7 +451,8 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCaseEventsByCaseId"));
     actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
-    actions.andExpect(jsonPath("$.error.message", is(String.format("%s case id %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_CASE_ID))));
+    actions.andExpect(jsonPath("$.error.message", is(String.format("%s case id %s", ERRORMSG_CASENOTFOUND,
+            NON_EXISTING_CASE_ID))));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
@@ -423,20 +478,28 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCaseEventsByCaseId"));
-    actions.andExpect(jsonPath("$", Matchers.hasSize(4)));
-    actions.andExpect(jsonPath("$[*].description", containsInAnyOrder(CASE1_DESCRIPTION, CASE2_DESCRIPTION, CASE3_DESCRIPTION, CASE9_DESCRIPTION)));
-    actions.andExpect(jsonPath("$[*].category", containsInAnyOrder(CASE1_CATEGORY, CASE2_CATEGORY, CASE3_CATEGORY, CASE9_CATEGORY)));
-    actions.andExpect(jsonPath("$[*].subCategory", containsInAnyOrder(CASE1_SUBCATEGORY, CASE2_SUBCATEGORY, CASE3_SUBCATEGORY, null)));
-    actions.andExpect(jsonPath("$[*].createdBy", containsInAnyOrder(CASE1_CREATEDBY, CASE2_CREATEDBY, CASE3_CREATEDBY, CASE9_CREATEDBY)));
-    actions.andExpect(jsonPath("$[*].createdDateTime", containsInAnyOrder(CASE_DATE_VALUE_1, CASE_DATE_VALUE_2, CASE_DATE_VALUE_3, CASE_DATE_VALUE_1)));
+    actions.andExpect(jsonPath("$", hasSize(4)));
+    actions.andExpect(jsonPath("$[0].*", hasSize(5)));
+    actions.andExpect(jsonPath("$[*].description", containsInAnyOrder(CASE1_DESCRIPTION, CASE2_DESCRIPTION,
+            CASE3_DESCRIPTION, CASE9_DESCRIPTION)));
+    actions.andExpect(jsonPath("$[*].category", containsInAnyOrder(CASE1_CATEGORY, CASE2_CATEGORY, CASE3_CATEGORY,
+            CASE9_CATEGORY)));
+    actions.andExpect(jsonPath("$[*].subCategory", containsInAnyOrder(CASE1_SUBCATEGORY, CASE2_SUBCATEGORY,
+            CASE3_SUBCATEGORY, null)));
+    actions.andExpect(jsonPath("$[*].createdBy", containsInAnyOrder(CASE1_CREATEDBY, CASE2_CREATEDBY, CASE3_CREATEDBY,
+            CASE9_CREATEDBY)));
+    actions.andExpect(jsonPath("$[*].createdDateTime", containsInAnyOrder(CASE_DATE_VALUE_1, CASE_DATE_VALUE_2,
+            CASE_DATE_VALUE_3, CASE_DATE_VALUE_1)));
   }
 
   /**
    * a test providing bad json
+   * @throws Exception if the postJson fails
    */
   @Test
   public void createCaseEventBadJson() throws Exception {
-    ResultActions actions = mockMvc.perform(postJson(String.format("/cases/%s/events", CASE9_ID), CASEEVENT_INVALIDJSON));
+    ResultActions actions = mockMvc.perform(postJson(String.format("/cases/%s/events", CASE9_ID),
+            CASEEVENT_INVALIDJSON));
 
     actions.andExpect(status().isBadRequest());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
@@ -451,7 +514,8 @@ public final class CaseEndpointUnitTest {
    */
   @Test
   public void createCaseEventCaseNotFound() throws Exception {
-    ResultActions actions = mockMvc.perform(postJson(String.format("/cases/%s/events", NON_EXISTING_CASE_ID), CASEEVENT_VALIDJSON));
+    ResultActions actions = mockMvc.perform(postJson(String.format("/cases/%s/events", NON_EXISTING_CASE_ID),
+            CASEEVENT_VALIDJSON));
 
     actions.andExpect(status().isNotFound());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
@@ -460,16 +524,18 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.error.message", isA(String.class)));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
-  
+
   /**
    * a test providing a non existing case ID
+   * @throws Exception when perform throws Exception
    */
   @Test
   public void createCaseEventRequiresNewCase() throws Exception {
     when(categoryService.findCategory(CategoryName.RESPONDENT_ENROLLED)).thenReturn(categoryResults.get(3));
     when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class))).thenReturn(caseEventsResults.get(3));
     when(caseService.findCaseById(CASE9_ID)).thenReturn(caseResults.get(8));
-    ResultActions actions = mockMvc.perform(postJson(String.format("/cases/%s/events", CASE9_ID), CASEEVENT_VALIDJSON_NO_PARTY));
+    ResultActions actions = mockMvc.perform(postJson(String.format("/cases/%s/events", CASE9_ID),
+            CASEEVENT_VALIDJSON_NO_PARTY));
 
     actions.andExpect(status().isBadRequest());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
@@ -493,6 +559,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(status().isCreated());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("createCaseEvent"));
+    actions.andExpect(jsonPath("$.*", hasSize(7)));
     actions.andExpect(jsonPath("$.caseId", is(CASE9_ID.toString())));
     actions.andExpect(jsonPath("$.description", is(CASE9_DESCRIPTION)));
     actions.andExpect(jsonPath("$.createdBy", is(CASE9_CREATEDBY)));

@@ -51,6 +51,10 @@ public class CaseReceiptReceiverImplTest {
   @Mock
   private UnlinkedCaseReceiptService unlinkedCaseReceiptService;
 
+  /**
+   * ProcessLinkedOnlineCaseReceipt
+   * @throws DatatypeConfigurationException if giveMeCalendarForNow fails
+   */
   @Test
   public void testProcessLinkedOnlineCaseReceipt() throws DatatypeConfigurationException {
     Case existingCase = new Case();
@@ -65,6 +69,10 @@ public class CaseReceiptReceiverImplTest {
     verify(unlinkedCaseReceiptService, times(0)).createUnlinkedCaseReceipt(any(UnlinkedCaseReceipt.class));
   }
 
+  /**
+   * ProcessLinkedPaperCaseReceipt
+   * @throws DatatypeConfigurationException if giveMeCalendarForNow fails
+   */
   @Test
   public void testProcessLinkedPaperCaseReceipt() throws DatatypeConfigurationException {
     Case existingCase = new Case();
@@ -79,6 +87,10 @@ public class CaseReceiptReceiverImplTest {
     verify(unlinkedCaseReceiptService, times(0)).createUnlinkedCaseReceipt(any(UnlinkedCaseReceipt.class));
   }
 
+  /**
+   * ProcessUnlinkedOnlineCaseReceipt
+   * @throws DatatypeConfigurationException if giveMeCalendarForNow fails
+   */
   @Test
   public void testProcessUnlinkedOnlineCaseReceipt() throws DatatypeConfigurationException {
     Mockito.when(caseService.findCaseByCaseRef(UNLINKED_CASE_REF)).thenReturn(null);
@@ -96,6 +108,10 @@ public class CaseReceiptReceiverImplTest {
     verify(unlinkedCaseReceiptService, times(1)).createUnlinkedCaseReceipt(eq(unlinkedCaseReceipt));
   }
 
+  /**
+   * ProcessUnlinkedPaperCaseReceipt
+   * @throws DatatypeConfigurationException if giveMeCalendarForNow fails
+   */
   @Test
   public void testProcessUnlinkedPaperCaseReceipt() throws DatatypeConfigurationException {
     Mockito.when(caseService.findCaseByCaseRef(UNLINKED_CASE_REF)).thenReturn(null);
@@ -113,7 +129,16 @@ public class CaseReceiptReceiverImplTest {
     verify(unlinkedCaseReceiptService, times(1)).createUnlinkedCaseReceipt(eq(unlinkedCaseReceipt));
   }
 
-  private CaseReceipt buildCaseReceipt(String caseRef, InboundChannel inboundChannel, XMLGregorianCalendar xmlGregorianCalendar)
+  /**
+   *
+   * @param caseRef the caseRef
+   * @param inboundChannel the inboundChannel
+   * @param xmlGregorianCalendar the xmlGregorianCalendar
+   * @return the CaseReceipt
+   * @throws DatatypeConfigurationException
+   */
+  private CaseReceipt buildCaseReceipt(String caseRef, InboundChannel inboundChannel,
+                                       XMLGregorianCalendar xmlGregorianCalendar)
           throws DatatypeConfigurationException {
     CaseReceipt caseReceipt = new CaseReceipt();
     caseReceipt.setCaseRef(caseRef);
@@ -122,6 +147,12 @@ public class CaseReceiptReceiverImplTest {
     return caseReceipt;
   }
 
+  /**
+   * Build a CaseEvent
+   * @param casePK the Case Primary Key
+   * @param categoryName the name of the category
+   * @return the CaseEvent
+   */
   private CaseEvent buildCaseEvent(int casePK, CategoryDTO.CategoryName categoryName) {
     CaseEvent caseEvent = new CaseEvent();
     caseEvent.setCaseFK(casePK);

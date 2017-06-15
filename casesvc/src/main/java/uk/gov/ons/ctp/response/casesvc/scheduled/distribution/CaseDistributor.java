@@ -221,13 +221,13 @@ public class CaseDistributor {
 
   /**
    * Deal with a single case - the transaction boundary is here. The processing
-   * requires a call to the IAC service and to write to our own case 
+   * requires a call to the IAC service and to write to our own case
    * table. The rollback is most likely to be triggered by either
    * failing to find the IAC service, or if it sends back an http error status
    * code.
    *
    * @param caze the case to deal with
-   * @param iac the newly minted IAC to assign to the Case 
+   * @param iac the newly minted IAC to assign to the Case
    * @return The resulting CaseNotification that will be added to the outbound
    *         CaseNotifications sent to the action service
    */

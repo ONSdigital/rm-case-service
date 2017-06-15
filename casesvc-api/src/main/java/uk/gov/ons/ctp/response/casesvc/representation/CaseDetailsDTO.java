@@ -9,6 +9,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Domain model object to represent the full details of a Case (Case, CaseGroup and CaseEvents)
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
@@ -30,15 +33,12 @@ public class CaseDetailsDTO {
     private UUID id;
     private CaseDTO.CaseState state;
     private String iac;
-    private String caseRef;
 
     private UUID actionPlanId;
-    private UUID caseGroupId;
     private UUID collectionInstrumentId;
     private UUID partyId;
 
     private String sampleUnitType;
-    private String sampleUnitRef;
 
     private String createdBy;
     private Date createdDateTime;

@@ -23,7 +23,7 @@ liquibase:
 
 security:
   basic:
-    enabled: true
+    enabled: false
   user:
     name: admin
     password: secret

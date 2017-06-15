@@ -81,6 +81,10 @@ public final class CategoryEndpointUnitTest {
     this.categoryResults = FixtureHelper.loadClassFixtures(Category[].class);
   }
 
+  /**
+   * Get categories with no role or group specified. Results retrieved OK.
+   * @throws Exception if getJson fails
+   */
   @Test
   public void findCategoriesFoundNoRoleSpecified() throws Exception {
     when(categoryService.findCategories(null, null)).thenReturn(categoryResults);
@@ -91,6 +95,7 @@ public final class CategoryEndpointUnitTest {
     actions.andExpect(handler().handlerType(CategoryEndpoint.class));
     actions.andExpect(handler().methodName("findCategories"));
     actions.andExpect(jsonPath("$", Matchers.hasSize(3)));
+    actions.andExpect(jsonPath("$[0].*", Matchers.hasSize(5)));
     actions.andExpect(jsonPath("$[*].group", containsInAnyOrder(CATEGORY1_GROUP, null, null)));
     actions.andExpect(jsonPath("$[*].name", containsInAnyOrder(CATEGORY1_NAME, CATEGORY2_NAME, CATEGORY3_NAME)));
     actions.andExpect(jsonPath("$[*].longDescription", containsInAnyOrder(CATEGORY1_LONG_DESC, CATEGORY2_LONG_DESC, CATEGORY3_LONG_DESC)));
@@ -98,6 +103,10 @@ public final class CategoryEndpointUnitTest {
     actions.andExpect(jsonPath("$[*].role", containsInAnyOrder(CATEGORY1_ROLE, null, null)));
   }
 
+  /**
+   * Get categories with role ADMIN. Results retrieved OK.
+   * @throws Exception if getJson fails
+   */
   @Test
   public void findCategoriesFoundAdminRoleSpecified() throws Exception {
     List<Category> results = new ArrayList<>();
@@ -110,6 +119,7 @@ public final class CategoryEndpointUnitTest {
     actions.andExpect(handler().handlerType(CategoryEndpoint.class));
     actions.andExpect(handler().methodName("findCategories"));
     actions.andExpect(jsonPath("$", Matchers.hasSize(1)));
+    actions.andExpect(jsonPath("$[0].*", Matchers.hasSize(5)));
     actions.andExpect(jsonPath("$[0].group", is(CATEGORY1_GROUP)));
     actions.andExpect(jsonPath("$[0].name", is(CATEGORY1_NAME)));
     actions.andExpect(jsonPath("$[0].longDescription", is(CATEGORY1_LONG_DESC)));
@@ -117,6 +127,10 @@ public final class CategoryEndpointUnitTest {
     actions.andExpect(jsonPath("$[0].role", is(CATEGORY1_ROLE)));
   }
 
+  /**
+   * Get category which does not exist.
+   * @throws Exception if getJson fails
+   */
   @Test
   public void findACategoryNotFound() throws Exception {
     ResultActions actions = mockMvc.perform(getJson(String.format("/categories/name/%s", CATEGORY_UNKNOWN)));
@@ -129,6 +143,10 @@ public final class CategoryEndpointUnitTest {
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
+  /**
+   * Get category which does exist.
+   * @throws Exception if getJson fails
+   */
   @Test
   public void findACategoryFound() throws Exception {
     when(categoryService.findCategory(any())).thenReturn(categoryResults.get(0));
@@ -138,6 +156,7 @@ public final class CategoryEndpointUnitTest {
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CategoryEndpoint.class));
     actions.andExpect(handler().methodName("findCategory"));
+    actions.andExpect(jsonPath("$.*", Matchers.hasSize(5)));
     actions.andExpect(jsonPath("$.group", is(CATEGORY1_GROUP)));
     actions.andExpect(jsonPath("$.name", is(CATEGORY1_NAME)));
     actions.andExpect(jsonPath("$.longDescription", is(CATEGORY1_LONG_DESC)));

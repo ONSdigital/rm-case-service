@@ -483,5 +483,40 @@
     "newCaseSampleUnitType": null,
     "oldCaseSampleUnitType": null,
     "eventType": "DEACTIVATED"
+  },
+  {
+    "group": null,
+    "categoryName": "RESPONDENT_ACCOUNT_CREATED",
+    "longDescription": "Account created for respondent",
+    "shortDescription": "Account created for respondent",
+    "role": null,
+    "generatedActionType": null,
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
+  }
+,
+  {
+    "group": null,
+    "categoryName": "ACCESS_CODE_AUTHENTICATION_ATTEMPT",
+    "longDescription": "Access Code authentication attempted",
+    "shortDescription": "Access Code authentication attempted",
+    "role": null,
+    "generatedActionType": null,
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
+  }
+,
+  {
+    "group": null,
+    "categoryName": "COLLECTION_INSTRUMENT_DOWNLOADED",
+    "longDescription": "Collection Instrument Downloaded",
+    "shortDescription": "Collection Instrument Downloaded",
+    "role": null,
+    "generatedActionType": null,
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": null,
+    "eventType": null
   }
 ]

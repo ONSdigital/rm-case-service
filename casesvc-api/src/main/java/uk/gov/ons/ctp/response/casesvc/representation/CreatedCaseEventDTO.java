@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class CaseEventDTO {
+public class CreatedCaseEventDTO {
 
   private static final int DESC_MAX = 350;
   private static final int DESC_MIN = 2;
@@ -24,6 +24,9 @@ public class CaseEventDTO {
   private static final int CREATED_BY_MIN = 2;
 
   private Date createdDateTime;
+
+  private UUID caseId;
+  private UUID partyId;
 
   @NotNull
   private CategoryDTO.CategoryName category;
