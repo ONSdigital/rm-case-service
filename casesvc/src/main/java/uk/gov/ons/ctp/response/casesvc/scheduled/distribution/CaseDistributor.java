@@ -45,9 +45,9 @@ import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientServic
  *
  * This class is scheduled to wake and looks for Cases in INIT state to send to
  * the action service. On each wake cycle, it fetches the first n cases, by
- * createddatetime. It loops through those n cases and fetches n IACs from the
+ * createddatetime. It loops through those n cases and fetches m IACs from the
  * IAC service. It then updates each case with an IAC taken from
- * the set of n codes and transitions the case state to ACTIVE. It takes each
+ * the set of m codes and transitions the case state to ACTIVE. It takes each
  * case and constructs a notification message to send to the action service -
  * when it has x notifications it publishes them.
  *
