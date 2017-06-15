@@ -119,7 +119,7 @@ public class CaseServiceImplTest {
   private static final Integer ACTIONABLE_H_INDIVIDUAL_CASE_FK = 2;
   private static final Integer NEW_HOUSEHOLD_CASE_FK = 4;
   private static final Integer NEW_H_INDIVIDUAL_CASE_FK = 5;
-  private static final Integer ENROLLMENT_CASE_INDIVIDUAL_FK = 8;
+  private static final Integer ENROLMENT_CASE_INDIVIDUAL_FK = 8;
   private static final Integer ACTIONABLE_BUSINESS_UNIT_CASE_FK = 9;
   private static final Integer INITIAL_BUSINESS_UNIT_CASE_FK = 10;
   private static final Integer ACTIONABLE_BI_CASE_FK = 11;
@@ -398,20 +398,20 @@ public class CaseServiceImplTest {
   }
 
   /**
-   * Bluesky test for creating a enrollment
+   * Bluesky test for creating a enrolment
    * 
    * @throws Exception
    */
   @Test
-  public void testBlueSkyEnrollment() throws Exception {
+  public void testBlueSkyEnrolment() throws Exception {
     Mockito.when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
-    Mockito.when(caseRepo.findOne(ENROLLMENT_CASE_INDIVIDUAL_FK)).thenReturn(cases.get(ENROLLMENT_CASE_INDIVIDUAL_FK));
+    Mockito.when(caseRepo.findOne(ENROLMENT_CASE_INDIVIDUAL_FK)).thenReturn(cases.get(ENROLMENT_CASE_INDIVIDUAL_FK));
     Mockito.when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(
-            cases.get(ENROLLMENT_CASE_INDIVIDUAL_FK));  // the new case
+            cases.get(ENROLMENT_CASE_INDIVIDUAL_FK));  // the new case
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ENROLLED,
             ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    Case newCase = caseRepo.findOne(ENROLLMENT_CASE_INDIVIDUAL_FK);
+    Case newCase = caseRepo.findOne(ENROLMENT_CASE_INDIVIDUAL_FK);
     caseService.createCaseEvent(caseEvent, newCase);
 
     verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
