@@ -126,6 +126,17 @@ action-svc:
     connect-timeout-milli-seconds: 5000
     read-timeout-milli-seconds: 5000
 
+collection-exercise-svc:
+  collection-exercise-path: /collectionexercises/{exerciseId}
+  connection-config:
+    scheme: http
+    host: collectionexercisesvc.apps.onsdigital.uk
+    port: ${cloud.application.port}
+    retry-attempts: 10
+    retry-pause-milli-seconds: 5000
+    connect-timeout-milli-seconds: 5000
+    read-timeout-milli-seconds: 5000
+
 case-distribution:
   iac-max: 50
   retrieval-max: 50

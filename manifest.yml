@@ -14,3 +14,6 @@ applications:
     internetAccessCodeSvc_connectionConfig_host: iacsvc.apps.mvp.onsclofo.uk
     internetAccessCodeSvc_connectionConfig_port: "80"
     internetAccessCodeSvc_connectionConfig_scheme: http
+    collectionExerciseSvc_connectionConfig_host: collectionexercisesvc.apps.mvp.onsclofo.uk
+    collectionExerciseSvc_connectionConfig_port: "80"
+    collectionExerciseSvc_connectionConfig_scheme: http
