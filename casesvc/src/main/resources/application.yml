@@ -13,6 +13,7 @@ logging:
     uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl: DEBUG
     org.springframework.cloud.sleuth.instrument.messaging.MessagingSpanExtractor: ERROR
     org.springframework.context.annotation.ConfigurationClassPostProcessor: ERROR
+  profile: DEV
 
 liquibase:
   user: casesvc
