@@ -164,6 +164,7 @@ public class CaseServiceImplTest {
   private CaseServiceImpl caseService;
 
   private List<Case> cases;
+  private List<Category> categories;
 
   /**
    * All of these tests require the mocked repos to respond with predictable
@@ -174,8 +175,8 @@ public class CaseServiceImplTest {
   @Before
   public void setUp() throws Exception {
     cases = FixtureHelper.loadClassFixtures(Case[].class);
+    categories = FixtureHelper.loadClassFixtures(Category[].class);
     mockStateTransitions();
-    mockupCategoryRepo();
     mockupCaseGroupRepo();
     mockAppConfigUse();
     mockupCaseEventRepo();
@@ -188,6 +189,8 @@ public class CaseServiceImplTest {
   @Test
   public void testCreateCaseEventAgainstNonExistentCase() {
     Mockito.when(caseRepo.findOne(NON_EXISTING_PARENT_CASE_FK)).thenReturn(null);
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ADDRESS_DETAILS_INCORRECT))
+            .thenReturn(categories.get(CAT_ADDRESS_DETAILS_INCORRECT));
 
     Timestamp currentTime = DateTimeUtil.nowUTC();
     CaseEvent caseEvent = new CaseEvent(1, NON_EXISTING_PARENT_CASE_FK, CASEEVENT_DESCRIPTION, CASEEVENT_CREATEDBY,
@@ -208,6 +211,8 @@ public class CaseServiceImplTest {
   @Test
   public void testCreateActionableEventAgainstInactionableCase() throws Exception {
     Mockito.when(caseRepo.findOne(INACTIONABLE_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(INACTIONABLE_HOUSEHOLD_CASE_FK));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_ARABIC))
+            .thenReturn(categories.get(CAT_TRANSLATION_ARABIC));
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.TRANSLATION_ARABIC, INACTIONABLE_HOUSEHOLD_CASE_FK);
     caseService.createCaseEvent(caseEvent, null);
@@ -233,6 +238,8 @@ public class CaseServiceImplTest {
   @Test
   public void testCreateNonActionableEventAgainstInactionableCase() throws Exception {
     Mockito.when(caseRepo.findOne(INACTIONABLE_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(INACTIONABLE_HOUSEHOLD_CASE_FK));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.GENERAL_COMPLAINT))
+            .thenReturn(categories.get(CAT_GENERAL_COMPLAINT));
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.GENERAL_COMPLAINT, INACTIONABLE_HOUSEHOLD_CASE_FK);
     caseService.createCaseEvent(caseEvent, null);
@@ -258,6 +265,8 @@ public class CaseServiceImplTest {
   @Test
   public void testCreatePaperResponseEventAgainstActionableCase() throws Exception {
     Mockito.when(caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(ACTIONABLE_HOUSEHOLD_CASE_FK));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE))
+            .thenReturn(categories.get(CAT_PAPER_QUESTIONNAIRE_RESPONSE));
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE,
         ACTIONABLE_HOUSEHOLD_CASE_FK);
@@ -296,6 +305,8 @@ public class CaseServiceImplTest {
   @Test
   public void testCreateOnlineResponseEventAgainstActionableCase() throws Exception {
     Mockito.when(caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(ACTIONABLE_HOUSEHOLD_CASE_FK));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE))
+            .thenReturn(categories.get(CAT_ONLINE_QUESTIONNAIRE_RESPONSE));
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE,
         ACTIONABLE_HOUSEHOLD_CASE_FK);
@@ -334,6 +345,8 @@ public class CaseServiceImplTest {
   @Test
   public void testCreateResponseEventAgainstInActionableCase() throws Exception {
     Mockito.when(caseRepo.findOne(INACTIONABLE_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(INACTIONABLE_HOUSEHOLD_CASE_FK));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE))
+            .thenReturn(categories.get(CAT_PAPER_QUESTIONNAIRE_RESPONSE));
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE,
         INACTIONABLE_HOUSEHOLD_CASE_FK);
@@ -373,6 +386,8 @@ public class CaseServiceImplTest {
     Mockito.when(caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(ACTIONABLE_HOUSEHOLD_CASE_FK));
     Mockito.when(caseRepo.findOne(NEW_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(NEW_HOUSEHOLD_CASE_FK));
     Mockito.when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(cases.get(NEW_HOUSEHOLD_CASE_FK));  // the new case
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.HOUSEHOLD_REPLACEMENT_IAC_REQUESTED)).
+            thenReturn(categories.get(CAT_HOUSEHOLD_REPLACEMENT_IAC_REQUESTED));
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.HOUSEHOLD_REPLACEMENT_IAC_REQUESTED,
             ACTIONABLE_HOUSEHOLD_CASE_FK);
@@ -408,6 +423,8 @@ public class CaseServiceImplTest {
     Mockito.when(caseRepo.findOne(ENROLMENT_CASE_INDIVIDUAL_FK)).thenReturn(cases.get(ENROLMENT_CASE_INDIVIDUAL_FK));
     Mockito.when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(
             cases.get(ENROLMENT_CASE_INDIVIDUAL_FK));  // the new case
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLLED))
+            .thenReturn(categories.get(CAT_RESPONDENT_ENROLLED));
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ENROLLED,
             ACTIONABLE_BUSINESS_UNIT_CASE_FK);
@@ -439,6 +456,8 @@ public class CaseServiceImplTest {
     Mockito.when(caseRepo.findOne(NEW_H_INDIVIDUAL_CASE_FK)).thenReturn(cases.get(NEW_H_INDIVIDUAL_CASE_FK));
     Mockito.when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(
             cases.get(NEW_H_INDIVIDUAL_CASE_FK));  // the new case
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED))
+            .thenReturn(categories.get(CAT_H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED));
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED,
             ACTIONABLE_H_INDIVIDUAL_CASE_FK);
@@ -461,6 +480,8 @@ public class CaseServiceImplTest {
     Mockito.when(caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(ACTIONABLE_HOUSEHOLD_CASE_FK));
     Mockito.when(caseRepo.findOne(NEW_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(NEW_HOUSEHOLD_CASE_FK));
     Mockito.when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(cases.get(NEW_HOUSEHOLD_CASE_FK));  // the new case
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.HOUSEHOLD_PAPER_REQUESTED))
+            .thenReturn(categories.get(CAT_HOUSEHOLD_PAPER_REQUESTED));
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.HOUSEHOLD_PAPER_REQUESTED,
         ACTIONABLE_HOUSEHOLD_CASE_FK);
@@ -491,6 +512,8 @@ public class CaseServiceImplTest {
     Mockito.when(caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK)).thenReturn(cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK));
     Mockito.when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(
             cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK));  // the new case
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED))
+            .thenReturn(categories.get(CAT_H_INDIVIDUAL_RESPONSE_REQUESTED));
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED, ACTIONABLE_HOUSEHOLD_CASE_FK);
     Case newCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
@@ -521,6 +544,8 @@ public class CaseServiceImplTest {
     Mockito.when(caseRepo.findOne(NEW_H_INDIVIDUAL_CASE_FK)).thenReturn(cases.get(NEW_H_INDIVIDUAL_CASE_FK));
     Mockito.when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(
             cases.get(NEW_H_INDIVIDUAL_CASE_FK));  // the new case
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_PAPER_REQUESTED))
+            .thenReturn(categories.get(CAT_H_INDIVIDUAL_PAPER_REQUESTED));
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.H_INDIVIDUAL_PAPER_REQUESTED,
         ACTIONABLE_H_INDIVIDUAL_CASE_FK);
@@ -541,6 +566,9 @@ public class CaseServiceImplTest {
   @Test
   public void testIACDisabledAfterOnlineResponseAfterRefusal() throws Exception {
     Mockito.when(caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK)).thenReturn(cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.REFUSAL)).thenReturn(categories.get(CAT_REFUSAL));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE)).thenReturn(categories.
+            get(CAT_ONLINE_QUESTIONNAIRE_RESPONSE));
 
     CaseEvent refusalCaseEvent = fabricateEvent(CategoryDTO.CategoryName.REFUSAL, ACTIONABLE_H_INDIVIDUAL_CASE_FK);
     caseService.createCaseEvent(refusalCaseEvent, null);
@@ -562,6 +590,8 @@ public class CaseServiceImplTest {
   @Test
   public void testIndividualResponseRequestedAgainstIndividualCaseNotAllowed() throws Exception {
     Mockito.when(caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK)).thenReturn(cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED)).thenReturn(categories.
+            get(CAT_H_INDIVIDUAL_RESPONSE_REQUESTED));
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED,
             ACTIONABLE_H_INDIVIDUAL_CASE_FK);
@@ -594,6 +624,8 @@ public class CaseServiceImplTest {
   public void testHouseholdPaperRequestedAgainstIndividualCaseNotAllowed() throws Exception {
     Mockito.when(caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK)).thenReturn(
             cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.HOUSEHOLD_PAPER_REQUESTED)).thenReturn(categories.
+            get(CAT_HOUSEHOLD_PAPER_REQUESTED));
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.HOUSEHOLD_PAPER_REQUESTED,
             ACTIONABLE_H_INDIVIDUAL_CASE_FK);
@@ -624,8 +656,9 @@ public class CaseServiceImplTest {
   @Test
   public void testIndividualResponseRequestedAgainstIndividualCaseWithoutNewCase() throws Exception {
     Mockito.when(caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK)).thenReturn(cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED)).thenReturn(categories.
+            get(CAT_H_INDIVIDUAL_RESPONSE_REQUESTED));
 
-    // now kick it off
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED,
             ACTIONABLE_H_INDIVIDUAL_CASE_FK);
 
@@ -654,6 +687,8 @@ public class CaseServiceImplTest {
   @Test
   public void testEventCaseCreated() throws Exception {
     Mockito.when(caseRepo.findOne(INITIAL_BUSINESS_UNIT_CASE_FK)).thenReturn(cases.get(INITIAL_BUSINESS_UNIT_CASE_FK));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.CASE_CREATED)).thenReturn(categories.
+            get(CAT_CASE_CREATED));
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.CASE_CREATED, INITIAL_BUSINESS_UNIT_CASE_FK);
 
@@ -672,32 +707,88 @@ public class CaseServiceImplTest {
   }
 
   /**
-   * We create a CaseEvent with category RESPONDENT_ACCOUNT_CREATED on an ACTIONABLE BRES case
+   * We create a CaseEvent with category ACTION_CREATED on an ACTIONABLE BRES case
    * (the one created for a business unit B, Tesco for instance)
    *
    * @throws Exception if fabricateEvent does
    */
   @Test
-  public void testEventRespondentAccountCreated() throws Exception {
+  public void testEventActionCreated() throws Exception {
     Mockito.when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACTION_CREATED)).thenReturn(categories.
+            get(CAT_ACTION_CREATED));
 
-    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.ACTION_CREATED, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
 
     caseService.createCaseEvent(caseEvent, null);
 
     verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.ACTION_CREATED);
     verify(caseEventRepository, times(1)).save(caseEvent);
     verify(caseRepo, never()).saveAndFlush(any(Case.class));
-    verify(internetAccessCodeSvcClientService, times(1)).disableIAC(any(String.class));
-    verify(caseSvcStateTransitionManager, times(1)).transition(any(CaseDTO.CaseState.class),
+    verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
+    verify(caseSvcStateTransitionManager, never()).transition(any(CaseDTO.CaseState.class),
             any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, never()).sendNotifications(anyListOf(CaseNotification.class));
     verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(Integer.class),
             any(String.class));
   }
 
-  // TODO testEventRespondentAccountCreated attempted versus a Case of the wrong type, ie not a B
+  /**
+   * We create a CaseEvent with category ACTION_UPDATED on an ACTIONABLE BRES case
+   * (the one created for a business unit B, Tesco for instance)
+   *
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventActionUpdated() throws Exception {
+    Mockito.when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACTION_UPDATED)).thenReturn(categories.
+            get(CAT_ACTION_UPDATED));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.ACTION_UPDATED, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, null);
+
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.ACTION_UPDATED);
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    verify(caseRepo, never()).saveAndFlush(any(Case.class));
+    verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
+    verify(caseSvcStateTransitionManager, never()).transition(any(CaseDTO.CaseState.class),
+            any(CaseDTO.CaseEvent.class));
+    verify(notificationPublisher, never()).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(Integer.class),
+            any(String.class));
+  }
+
+  /**
+   * We create a CaseEvent with category ACTION_COMPLETED on an ACTIONABLE BRES case
+   * (the one created for a business unit B, Tesco for instance)
+   *
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventActionCompleted() throws Exception {
+    Mockito.when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACTION_COMPLETED)).thenReturn(categories.
+            get(CAT_ACTION_COMPLETED));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.ACTION_COMPLETED, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, null);
+
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.ACTION_COMPLETED);
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    verify(caseRepo, never()).saveAndFlush(any(Case.class));
+    verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
+    verify(caseSvcStateTransitionManager, never()).transition(any(CaseDTO.CaseState.class),
+            any(CaseDTO.CaseEvent.class));
+    verify(notificationPublisher, never()).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(Integer.class),
+            any(String.class));
+  }
 
   /**
    * We create a CaseEvent with category ACCESS_CODE_AUTHENTICATION_ATTEMPT on an ACTIONABLE BRES case
@@ -708,6 +799,8 @@ public class CaseServiceImplTest {
   @Test
   public void testEventAccessCodeAuthenticationAttempt() throws Exception {
     Mockito.when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT)).
+            thenReturn(categories.get(CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT));
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT,
             ACTIONABLE_BUSINESS_UNIT_CASE_FK);
@@ -727,6 +820,71 @@ public class CaseServiceImplTest {
   }
 
   /**
+   * We create a CaseEvent with category ACCESS_CODE_AUTHENTICATION_ATTEMPT versus a Case of wrong sampleUnitType
+   * (ie NOT a B)
+   *
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventAccessCodeAuthenticationAttemptVersusWrongCaseType() throws Exception {
+    Case existingCase = cases.get(ACTIONABLE_BI_CASE_FK);
+    Mockito.when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(existingCase);
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT)).
+            thenReturn(categories.get(CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT,
+            ACTIONABLE_BI_CASE_FK);
+
+    try {
+      caseService.createCaseEvent(caseEvent, null);
+      fail();
+    } catch (RuntimeException re) {
+      assertThat(re.getMessage().equals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, existingCase.getSampleUnitType(),
+              categories.get(CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT))));
+      verify(caseRepo).findOne(ACTIONABLE_BI_CASE_FK);
+      verify(categoryRepo).findOne(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
+      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+      verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
+      verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+              any(String.class));
+      verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
+      verify(caseEventRepository, times(0)).save(caseEvent);
+    }
+  }
+
+  /**
+   * We create a CaseEvent with category RESPONDENT_ACCOUNT_CREATED on an ACTIONABLE BRES case
+   * (the one created for a business unit B, Tesco for instance)
+   *
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventRespondentAccountCreated() throws Exception {
+    Mockito.when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(cases.
+            get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED)).
+            thenReturn(categories.get(CAT_RESPONDENT_ACCOUNT_CREATED));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED,
+            ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, null);
+
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED);
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    verify(caseRepo, never()).saveAndFlush(any(Case.class));
+    verify(internetAccessCodeSvcClientService, times(1)).disableIAC(any(String.class));
+    verify(caseSvcStateTransitionManager, times(1)).transition(any(CaseDTO.CaseState.class),
+            any(CaseDTO.CaseEvent.class));
+    verify(notificationPublisher, never()).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(Integer.class),
+            any(String.class));
+  }
+
+  // TODO testEventRespondentAccountCreated attempted versus a Case of the wrong type, ie not a B
+
+  /**
    * We create a CaseEvent with category COLLECTION_INSTRUMENT_DOWNLOADED on an ACTIONABLE BRES case
    * (the one created for a respondent BI, accountant replying on behalf of Tesco for instance)
    *
@@ -735,6 +893,8 @@ public class CaseServiceImplTest {
   @Test
   public void testEventCollectionInstrumentDownloaded() throws Exception {
     Mockito.when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BI_CASE_FK));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED)).
+            thenReturn(categories.get(CAT_COLLECTION_INSTRUMENT_DOWNLOADED));
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED,
             ACTIONABLE_BI_CASE_FK);
@@ -764,6 +924,8 @@ public class CaseServiceImplTest {
   @Test
   public void testEventActionCancellationCompleted() throws Exception {
     Mockito.when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BI_CASE_FK));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED)).
+            thenReturn(categories.get(CAT_ACTION_CANCELLATION_COMPLETED));
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED,
             ACTIONABLE_BI_CASE_FK);
@@ -791,6 +953,8 @@ public class CaseServiceImplTest {
   @Test
   public void testEventActionCancellationCreated() throws Exception {
     Mockito.when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BI_CASE_FK));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACTION_CANCELLATION_CREATED)).
+            thenReturn(categories.get(CAT_ACTION_CANCELLATION_CREATED));
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.ACTION_CANCELLATION_CREATED,
             ACTIONABLE_BI_CASE_FK);
@@ -817,107 +981,6 @@ public class CaseServiceImplTest {
     List<CaseGroup> caseGroups = FixtureHelper.loadClassFixtures(CaseGroup[].class);
     Mockito.when(caseGroupRepo.findOne(CASEGROUP_PK))
         .thenReturn(caseGroups.get(CASEGROUP_PK - 1));
-  }
-
-  /**
-   * To mock the behaviour of categoryRepo
-   * @throws Exception if loadClassFixtures does
-   */
-  private void mockupCategoryRepo() throws Exception {
-    List<Category> categories = FixtureHelper.loadClassFixtures(Category[].class);
-
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED))
-        .thenReturn(categories.get(CAT_ACTION_CANCELLATION_COMPLETED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACTION_CANCELLATION_CREATED))
-        .thenReturn(categories.get(CAT_ACTION_CANCELLATION_CREATED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACTION_COMPLETED))
-        .thenReturn(categories.get(CAT_ACTION_COMPLETED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACTION_CREATED))
-        .thenReturn(categories.get(CAT_ACTION_CREATED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACTION_UPDATED))
-        .thenReturn(categories.get(CAT_ACTION_UPDATED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ADDRESS_DETAILS_INCORRECT))
-        .thenReturn(categories.get(CAT_ADDRESS_DETAILS_INCORRECT));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.CASE_CREATED))
-        .thenReturn(categories.get(CAT_CASE_CREATED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.CLASSIFICATION_INCORRECT))
-        .thenReturn(categories.get(CAT_CLASSIFICATION_INCORRECT));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.GENERAL_COMPLAINT))
-        .thenReturn(categories.get(CAT_GENERAL_COMPLAINT));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.GENERAL_ENQUIRY))
-        .thenReturn(categories.get(CAT_GENERAL_ENQUIRY));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.MISCELLANEOUS))
-        .thenReturn(categories.get(CAT_MISCELLANEOUS));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TECHNICAL_QUERY))
-        .thenReturn(categories.get(CAT_TECHNICAL_QUERY));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACCESSIBILITY_MATERIALS))
-        .thenReturn(categories.get(CAT_ACCESSIBILITY_MATERIALS));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE))
-        .thenReturn(categories.get(CAT_PAPER_QUESTIONNAIRE_RESPONSE));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE))
-        .thenReturn(categories.get(CAT_ONLINE_QUESTIONNAIRE_RESPONSE));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.UNDELIVERABLE))
-        .thenReturn(categories.get(CAT_UNDELIVERABLE));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_SOMALI))
-        .thenReturn(categories.get(CAT_TRANSLATION_SOMALI));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_BENGALI))
-        .thenReturn(categories.get(CAT_TRANSLATION_BENGALI));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_SPANISH))
-        .thenReturn(categories.get(CAT_TRANSLATION_SPANISH));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_POLISH))
-        .thenReturn(categories.get(CAT_TRANSLATION_POLISH));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_CANTONESE))
-        .thenReturn(categories.get(CAT_TRANSLATION_CANTONESE));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_MANDARIN))
-        .thenReturn(categories.get(CAT_TRANSLATION_MANDARIN));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_PUNJABI_SHAHMUKI))
-        .thenReturn(categories.get(CAT_TRANSLATION_PUNJABI_SHAHMUKI));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_LITHUANIAN))
-        .thenReturn(categories.get(CAT_TRANSLATION_LITHUANIAN));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.FIELD_COMPLAINT_ESCALATED))
-        .thenReturn(categories.get(CAT_FIELD_COMPLAINT_ESCALATED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.FIELD_EMERGENCY_ESCALATED))
-        .thenReturn(categories.get(CAT_FIELD_EMERGENCY_ESCALATED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.GENERAL_COMPLAINT_ESCALATED))
-        .thenReturn(categories.get(CAT_GENERAL_COMPLAINT_ESCALATED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.GENERAL_ENQUIRY_ESCALATED))
-        .thenReturn(categories.get(CAT_GENERAL_ENQUIRY_ESCALATED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.INCORRECT_ESCALATION))
-        .thenReturn(categories.get(CAT_INCORRECT_ESCALATION));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.PENDING)).thenReturn(categories.get(CAT_PENDING));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.REFUSAL)).thenReturn(categories.get(CAT_REFUSAL));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_PUNJABI_GURMUKHI))
-        .thenReturn(categories.get(CAT_TRANSLATION_PUNJABI_GURMUKHI));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_TURKISH))
-        .thenReturn(categories.get(CAT_TRANSLATION_TURKISH));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_ARABIC))
-        .thenReturn(categories.get(CAT_TRANSLATION_ARABIC));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_PORTUGUESE))
-        .thenReturn(categories.get(CAT_TRANSLATION_PORTUGUESE));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_URDU))
-        .thenReturn(categories.get(CAT_TRANSLATION_URDU));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_GUJARATI))
-        .thenReturn(categories.get(CAT_TRANSLATION_GUJARATI));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.CLOSE_ESCALATION))
-        .thenReturn(categories.get(CAT_CLOSE_ESCALATION));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED))
-        .thenReturn(categories.get(CAT_H_INDIVIDUAL_RESPONSE_REQUESTED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED))
-        .thenReturn(categories.get(CAT_H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_PAPER_REQUESTED))
-        .thenReturn(categories.get(CAT_H_INDIVIDUAL_PAPER_REQUESTED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.HOUSEHOLD_REPLACEMENT_IAC_REQUESTED))
-        .thenReturn(categories.get(CAT_HOUSEHOLD_REPLACEMENT_IAC_REQUESTED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.HOUSEHOLD_PAPER_REQUESTED))
-        .thenReturn(categories.get(CAT_HOUSEHOLD_PAPER_REQUESTED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLLED))
-        .thenReturn(categories.get(CAT_RESPONDENT_ENROLLED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED))
-            .thenReturn(categories.get(CAT_RESPONDENT_ACCOUNT_CREATED));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT))
-            .thenReturn(categories.get(CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED))
-            .thenReturn(categories.get(CAT_COLLECTION_INSTRUMENT_DOWNLOADED));
   }
 
   /**
