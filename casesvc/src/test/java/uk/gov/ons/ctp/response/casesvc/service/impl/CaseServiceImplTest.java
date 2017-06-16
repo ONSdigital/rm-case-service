@@ -1120,7 +1120,7 @@ public class CaseServiceImplTest {
   }
 
   /**
-   * We create a CaseEvent with category COLLECTION_INSTRUMENT_DOWNLOADED on an ACTIONABLE BRES case
+   * We create a CaseEvent with category UNSUCCESSFUL_RESPONSE_UPLOADED on an ACTIONABLE BRES case
    * (the one created for a respondent BI, accountant replying on behalf of Tesco for instance)
    *
    * @throws Exception if fabricateEvent does
@@ -1149,7 +1149,7 @@ public class CaseServiceImplTest {
   }
 
   /**
-   * We create a CaseEvent with category CAT_UNSUCCESSFUL_RESPONSE_UPLOADED versus a Case of wrong sampleUnitType
+   * We create a CaseEvent with category UNSUCCESSFUL_RESPONSE_UPLOADED versus a Case of wrong sampleUnitType
    * (ie NOT a BI)
    *
    * @throws Exception if fabricateEvent does
@@ -1172,6 +1172,68 @@ public class CaseServiceImplTest {
               categories.get(CAT_UNSUCCESSFUL_RESPONSE_UPLOADED).getOldCaseSampleUnitType()), re.getMessage());
       verify(caseRepo).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
       verify(categoryRepo).findOne(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOADED);
+      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+      verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
+      verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+              any(String.class));
+      verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
+      verify(caseEventRepository, times(0)).save(caseEvent);
+    }
+  }
+
+  /**
+   * We create a CaseEvent with category OFFLINE_RESPONSE_PROCESSED on an ACTIONABLE BRES case
+   * (the one created for a respondent BI, accountant replying on behalf of Tesco for instance)
+   *
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventOfflineResponseProcessed() throws Exception {
+    Mockito.when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BI_CASE_FK));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED)).
+            thenReturn(categories.get(CAT_OFFLINE_RESPONSE_PROCESSED));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED,
+            ACTIONABLE_BI_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, null);
+
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_BI_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED);
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    verify(caseRepo, never()).saveAndFlush(any(Case.class));
+    verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
+    verify(caseSvcStateTransitionManager, never()).transition(any(CaseDTO.CaseState.class),
+            any(CaseDTO.CaseEvent.class));
+    verify(notificationPublisher, never()).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(Integer.class),
+            any(String.class));
+  }
+
+  /**
+   * We create a CaseEvent with category OFFLINE_RESPONSE_PROCESSED versus a Case of wrong sampleUnitType
+   * (ie NOT a BI)
+   *
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventOfflineResponseProcessedVersusWrongCaseType() throws Exception {
+    Case existingCase = cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    Mockito.when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(existingCase);
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED)).
+            thenReturn(categories.get(CAT_OFFLINE_RESPONSE_PROCESSED));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED,
+            ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+
+    try {
+      caseService.createCaseEvent(caseEvent, null);
+      fail();
+    } catch (RuntimeException re) {
+      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, existingCase.getSampleUnitType(),
+              categories.get(CAT_OFFLINE_RESPONSE_PROCESSED).getOldCaseSampleUnitType()), re.getMessage());
+      verify(caseRepo).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+      verify(categoryRepo).findOne(CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED);
       verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
       verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
       verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
