@@ -108,6 +108,9 @@ public class CaseServiceImplTest {
   private static final int CAT_RESPONDENT_ACCOUNT_CREATED = 44;
   private static final int CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT = 45;
   private static final int CAT_COLLECTION_INSTRUMENT_DOWNLOADED = 46;
+  private static final int CAT_UNSUCCESSFUL_RESPONSE_UPLOADED = 47;
+  private static final int CAT_SUCCESSFUL_RESPONSE_UPLOADED = 48;
+  private static final int CAT_OFFLINE_RESPONSE_PROCESSED = 49;
 
   /**
    * Note that the Integer values below are linked to the order in which cases appear
@@ -758,6 +761,64 @@ public class CaseServiceImplTest {
   }
 
   /**
+   * We create a CaseEvent with category ACTION_CANCELLATION_COMPLETED on an ACTIONABLE BRES case
+   * (the one created for a respondent BI, accountant replying on behalf of Tesco for instance)
+   *
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventActionCancellationCompleted() throws Exception {
+    Mockito.when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BI_CASE_FK));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED)).
+            thenReturn(categories.get(CAT_ACTION_CANCELLATION_COMPLETED));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED,
+            ACTIONABLE_BI_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, null);
+
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_BI_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED);
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    verify(caseRepo, never()).saveAndFlush(any(Case.class));
+    verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
+    verify(caseSvcStateTransitionManager, never()).transition(any(CaseDTO.CaseState.class),
+            any(CaseDTO.CaseEvent.class));
+    verify(notificationPublisher, never()).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(Integer.class),
+            any(String.class));
+  }
+
+  /**
+   * We create a CaseEvent with category ACTION_CANCELLATION_COMPLETED on an ACTIONABLE BRES case
+   * (the one created for a respondent BI, accountant replying on behalf of Tesco for instance)
+   *
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventActionCancellationCreated() throws Exception {
+    Mockito.when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BI_CASE_FK));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACTION_CANCELLATION_CREATED)).
+            thenReturn(categories.get(CAT_ACTION_CANCELLATION_CREATED));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.ACTION_CANCELLATION_CREATED,
+            ACTIONABLE_BI_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, null);
+
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_BI_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.ACTION_CANCELLATION_CREATED);
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    verify(caseRepo, never()).saveAndFlush(any(Case.class));
+    verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
+    verify(caseSvcStateTransitionManager, never()).transition(any(CaseDTO.CaseState.class),
+            any(CaseDTO.CaseEvent.class));
+    verify(notificationPublisher, never()).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(Integer.class),
+            any(String.class));
+  }
+
+  /**
    * We create a CaseEvent with category ACCESS_CODE_AUTHENTICATION_ATTEMPT on an ACTIONABLE BRES case
    * (the one created for a business unit B, Tesco for instance)
    *
@@ -1058,26 +1119,25 @@ public class CaseServiceImplTest {
     }
   }
 
-
   /**
-   * We create a CaseEvent with category ACTION_CANCELLATION_COMPLETED on an ACTIONABLE BRES case
+   * We create a CaseEvent with category COLLECTION_INSTRUMENT_DOWNLOADED on an ACTIONABLE BRES case
    * (the one created for a respondent BI, accountant replying on behalf of Tesco for instance)
    *
    * @throws Exception if fabricateEvent does
    */
   @Test
-  public void testEventActionCancellationCompleted() throws Exception {
+  public void testEventUnsuccessfulResponseUploaded() throws Exception {
     Mockito.when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BI_CASE_FK));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED)).
-            thenReturn(categories.get(CAT_ACTION_CANCELLATION_COMPLETED));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOADED)).
+            thenReturn(categories.get(CAT_UNSUCCESSFUL_RESPONSE_UPLOADED));
 
-    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED,
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOADED,
             ACTIONABLE_BI_CASE_FK);
 
     caseService.createCaseEvent(caseEvent, null);
 
     verify(caseRepo, times(1)).findOne(ACTIONABLE_BI_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOADED);
     verify(caseEventRepository, times(1)).save(caseEvent);
     verify(caseRepo, never()).saveAndFlush(any(Case.class));
     verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
@@ -1089,32 +1149,36 @@ public class CaseServiceImplTest {
   }
 
   /**
-   * We create a CaseEvent with category ACTION_CANCELLATION_COMPLETED on an ACTIONABLE BRES case
-   * (the one created for a respondent BI, accountant replying on behalf of Tesco for instance)
+   * We create a CaseEvent with category CAT_UNSUCCESSFUL_RESPONSE_UPLOADED versus a Case of wrong sampleUnitType
+   * (ie NOT a BI)
    *
    * @throws Exception if fabricateEvent does
    */
   @Test
-  public void testEventActionCancellationCreated() throws Exception {
-    Mockito.when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BI_CASE_FK));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACTION_CANCELLATION_CREATED)).
-            thenReturn(categories.get(CAT_ACTION_CANCELLATION_CREATED));
+  public void testEventUnsuccessfulResponseUploadedVersusWrongCaseType() throws Exception {
+    Case existingCase = cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    Mockito.when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(existingCase);
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOADED)).
+            thenReturn(categories.get(CAT_UNSUCCESSFUL_RESPONSE_UPLOADED));
 
-    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.ACTION_CANCELLATION_CREATED,
-            ACTIONABLE_BI_CASE_FK);
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOADED,
+            ACTIONABLE_BUSINESS_UNIT_CASE_FK);
 
-    caseService.createCaseEvent(caseEvent, null);
-
-    verify(caseRepo, times(1)).findOne(ACTIONABLE_BI_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.ACTION_CANCELLATION_CREATED);
-    verify(caseEventRepository, times(1)).save(caseEvent);
-    verify(caseRepo, never()).saveAndFlush(any(Case.class));
-    verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
-    verify(caseSvcStateTransitionManager, never()).transition(any(CaseDTO.CaseState.class),
-            any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, never()).sendNotifications(anyListOf(CaseNotification.class));
-    verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(Integer.class),
-            any(String.class));
+    try {
+      caseService.createCaseEvent(caseEvent, null);
+      fail();
+    } catch (RuntimeException re) {
+      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, existingCase.getSampleUnitType(),
+              categories.get(CAT_UNSUCCESSFUL_RESPONSE_UPLOADED).getOldCaseSampleUnitType()), re.getMessage());
+      verify(caseRepo).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+      verify(categoryRepo).findOne(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOADED);
+      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+      verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
+      verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+              any(String.class));
+      verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
+      verify(caseEventRepository, times(0)).save(caseEvent);
+    }
   }
 
   /**

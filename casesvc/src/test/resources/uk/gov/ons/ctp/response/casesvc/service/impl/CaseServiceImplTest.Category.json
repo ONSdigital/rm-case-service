@@ -519,4 +519,40 @@
     "oldCaseSampleUnitType": "BI",
     "eventType": null
   }
+,
+  {
+    "group": null,
+    "categoryName": "UNSUCCESSFUL_RESPONSE_UPLOADED",
+    "longDescription": "Unsuccessful Response Uploaded",
+    "shortDescription": "Unsuccessful Response Uploaded",
+    "role": null,
+    "generatedActionType": null,
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": "BI",
+    "eventType": null
+  }
+,
+  {
+    "group": null,
+    "categoryName": "SUCCESSFUL_RESPONSE_UPLOADED",
+    "longDescription": "Successful Response Uploaded",
+    "shortDescription": "Successful Response Uploaded",
+    "role": null,
+    "generatedActionType": null,
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": "BI",
+    "eventType": "DISABLED"
+  }
+,
+  {
+    "group": null,
+    "categoryName": "OFFLINE_RESPONSE_PROCESSED",
+    "longDescription": "Offline Response Processed",
+    "shortDescription": "Offline Response Processed",
+    "role": null,
+    "generatedActionType": null,
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitType": "BI",
+    "eventType": null
+  }
 ]
