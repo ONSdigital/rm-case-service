@@ -973,7 +973,7 @@ public class CaseServiceImplTest {
     verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
     verify(caseSvcStateTransitionManager, times(1)).transition(any(CaseDTO.CaseState.class),
             any(CaseDTO.CaseEvent.class));    // action service should be told of the old case state change
-    // Now verifying that the old case has been moved to INACTIONABLE and the new case is at TODO
+    // Now verifying that the old case has been moved to INACTIONABLE and the new case is at REPLACEMENT_INIT
     List<Case> casesList = argument.getAllValues();
     boolean oldCaseStateVerified = false, newCaseStateVerified = false;
     for (Case caze : casesList) {
@@ -1241,6 +1241,75 @@ public class CaseServiceImplTest {
       verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
       verify(caseEventRepository, times(0)).save(caseEvent);
     }
+  }
+
+  /**
+   * We create a CaseEvent with category SUCCESSFUL_RESPONSE_UPLOADED versus a Case of wrong sampleUnitType
+   * (ie NOT a BI)
+   *
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventSuccessfulResponseUploadedVersusWrongCaseType() throws Exception {
+    Case existingCase = cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    Mockito.when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(existingCase);
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOADED)).
+            thenReturn(categories.get(CAT_SUCCESSFUL_RESPONSE_UPLOADED));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOADED,
+            ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+
+    try {
+      caseService.createCaseEvent(caseEvent, null);
+      fail();
+    } catch (RuntimeException re) {
+      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, existingCase.getSampleUnitType(),
+              categories.get(CAT_SUCCESSFUL_RESPONSE_UPLOADED).getOldCaseSampleUnitType()), re.getMessage());
+      verify(caseRepo).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+      verify(categoryRepo).findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOADED);
+      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+      verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
+      verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+              any(String.class));
+      verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
+      verify(caseEventRepository, times(0)).save(caseEvent);
+    }
+  }
+
+  /**
+   * We create a CaseEvent with category SUCCESSFUL_RESPONSE_UPLOADED on an ACTIONABLE BRES case
+   * (the one created for a respondent BI, accountant replying on behalf of Tesco for instance)
+   *
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventSuccessfulResponseUploaded() throws Exception {
+    Mockito.when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BI_CASE_FK));
+
+    Category successfulResponseUploadedCategory = categories.get(CAT_SUCCESSFUL_RESPONSE_UPLOADED);
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOADED)).thenReturn(
+            successfulResponseUploadedCategory);
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOADED, ACTIONABLE_BI_CASE_FK);
+    caseService.createCaseEvent(caseEvent, null);
+
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_BI_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOADED);
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
+    verify(caseRepo, times(1)).saveAndFlush(argument.capture());
+
+    verify(internetAccessCodeSvcClientService, times(1)).disableIAC(any(String.class));
+    verify(caseSvcStateTransitionManager, times(1)).transition(any(CaseDTO.CaseState.class),
+            any(CaseDTO.CaseEvent.class));    // action service should be told of the old case state change
+    // Now verifying that the old case has been moved to INACTIONABLE
+    Case oldCase = argument.getValue();
+    assertEquals(CaseDTO.CaseState.INACTIONABLE, oldCase.getState());
+
+    verify(notificationPublisher, times(1)).sendNotifications(anyListOf(CaseNotification.class));
+    // no new action to be created
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+            any(String.class));
   }
 
   /**
