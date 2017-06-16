@@ -50,13 +50,12 @@ import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO.SampleUnitTyp
 @Service
 @Slf4j
 public class CaseServiceImpl implements CaseService {
-
+  public static final String MISSING_NEW_CASE_MSG = "New Case definition missing for case %s";
   public static final String WRONG_OLD_SAMPLE_UNIT_TYPE_MSG =
           "Old Case has sampleUnitType %s. It is expected to have sampleUnitType %s.";
 
   private static final String CASE_CREATED_EVENT_DESCRIPTION = "Case created when %s";
   private static final String IAC_OVERUSE_MSG = "More than one case found to be using IAC %s";
-  private static final String MISSING_NEW_CASE_MSG = "New Case definition missing for case %s";
 
   private static final int TRANSACTION_TIMEOUT = 30;
 
