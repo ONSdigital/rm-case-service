@@ -493,7 +493,7 @@
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
     "oldCaseSampleUnitType": "B",
-    "eventType": null
+    "eventType": "ACCOUNT_CREATED"
   }
 ,
   {

@@ -689,8 +689,8 @@ public class CaseServiceImplTest {
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED);
     verify(caseEventRepository, times(1)).save(caseEvent);
     verify(caseRepo, never()).saveAndFlush(any(Case.class));
-    verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
-    verify(caseSvcStateTransitionManager, never()).transition(any(CaseDTO.CaseState.class),
+    verify(internetAccessCodeSvcClientService, times(1)).disableIAC(any(String.class));
+    verify(caseSvcStateTransitionManager, times(1)).transition(any(CaseDTO.CaseState.class),
             any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, never()).sendNotifications(anyListOf(CaseNotification.class));
     verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(Integer.class),
@@ -970,22 +970,16 @@ public class CaseServiceImplTest {
    * mock state transitions
    */
   private void mockStateTransitions() {
-    Mockito.when(
-        caseSvcStateTransitionManager.transition(CaseState.ACTIONABLE,
-            uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseEvent.DISABLED))
-        .thenReturn(CaseState.INACTIONABLE);
-    Mockito.when(
-        caseSvcStateTransitionManager.transition(CaseState.ACTIONABLE,
-            uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseEvent.DEACTIVATED))
-        .thenReturn(CaseState.INACTIONABLE);
-    Mockito.when(
-        caseSvcStateTransitionManager.transition(CaseState.INACTIONABLE,
-            uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseEvent.DISABLED))
-        .thenReturn(CaseState.INACTIONABLE);
-    Mockito.when(
-        caseSvcStateTransitionManager.transition(CaseState.INACTIONABLE,
-            uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseEvent.DEACTIVATED))
-        .thenReturn(CaseState.INACTIONABLE);
+    Mockito.when(caseSvcStateTransitionManager.transition(CaseState.ACTIONABLE, CaseDTO.CaseEvent.DISABLED))
+            .thenReturn(CaseState.INACTIONABLE);
+    Mockito.when(caseSvcStateTransitionManager.transition(CaseState.ACTIONABLE, CaseDTO.CaseEvent.DEACTIVATED))
+            .thenReturn(CaseState.INACTIONABLE);
+    Mockito.when(caseSvcStateTransitionManager.transition(CaseState.ACTIONABLE, CaseDTO.CaseEvent.ACCOUNT_CREATED))
+            .thenReturn(CaseState.ACTIONABLE);
+    Mockito.when(caseSvcStateTransitionManager.transition(CaseState.INACTIONABLE, CaseDTO.CaseEvent.DISABLED))
+            .thenReturn(CaseState.INACTIONABLE);
+    Mockito.when(caseSvcStateTransitionManager.transition(CaseState.INACTIONABLE, CaseDTO.CaseEvent.DEACTIVATED))
+            .thenReturn(CaseState.INACTIONABLE);
   }
 
 
