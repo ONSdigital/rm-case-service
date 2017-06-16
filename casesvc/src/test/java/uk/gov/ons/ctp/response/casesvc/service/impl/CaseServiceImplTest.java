@@ -1026,7 +1026,38 @@ public class CaseServiceImplTest {
             any(String.class));
   }
 
-  // TODO testEventCollectionInstrumentDownloaded attempted versus a Case of the wrong type, ie not a BI
+  /**
+   * We create a CaseEvent with category COLLECTION_INSTRUMENT_DOWNLOADED versus a Case of wrong sampleUnitType
+   * (ie NOT a BI)
+   *
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventCollectionInstrumentDownloadedVersusWrongCaseType() throws Exception {
+    Case existingCase = cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    Mockito.when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(existingCase);
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED)).
+            thenReturn(categories.get(CAT_COLLECTION_INSTRUMENT_DOWNLOADED));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+
+    try {
+      caseService.createCaseEvent(caseEvent, null);
+      fail();
+    } catch (RuntimeException re) {
+      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, existingCase.getSampleUnitType(),
+              categories.get(CAT_COLLECTION_INSTRUMENT_DOWNLOADED).getOldCaseSampleUnitType()), re.getMessage());
+      verify(caseRepo).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+      verify(categoryRepo).findOne(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED);
+      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+      verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
+      verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+              any(String.class));
+      verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
+      verify(caseEventRepository, times(0)).save(caseEvent);
+    }
+  }
+
 
   /**
    * We create a CaseEvent with category ACTION_CANCELLATION_COMPLETED on an ACTIONABLE BRES case
