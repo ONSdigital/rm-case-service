@@ -61,7 +61,7 @@ public class CaseServiceImplTest {
   private static final String IAC_SVC_POST_PATH = "iacs/123";
   private static final String NEW_CASE_MISSING_EX = "New Case definition missing";
 
-  private static final int CAT_ACCESSIBILITY_MATERIALS = 0;
+//  private static final int CAT_ACCESSIBILITY_MATERIALS = 0;
   private static final int CAT_ACTION_CANCELLATION_COMPLETED = 1;
   private static final int CAT_ACTION_CANCELLATION_CREATED = 2;
   private static final int CAT_ACTION_COMPLETED = 3;
@@ -69,42 +69,42 @@ public class CaseServiceImplTest {
   private static final int CAT_ACTION_UPDATED = 5;
   private static final int CAT_ADDRESS_DETAILS_INCORRECT = 6;
   private static final int CAT_CASE_CREATED = 7;
-  private static final int CAT_CLASSIFICATION_INCORRECT = 8;
-  private static final int CAT_CLOSE_ESCALATION = 9;
-  private static final int CAT_FIELD_COMPLAINT_ESCALATED = 10;
-  private static final int CAT_FIELD_EMERGENCY_ESCALATED = 11;
+//  private static final int CAT_CLASSIFICATION_INCORRECT = 8;
+//  private static final int CAT_CLOSE_ESCALATION = 9;
+//  private static final int CAT_FIELD_COMPLAINT_ESCALATED = 10;
+//  private static final int CAT_FIELD_EMERGENCY_ESCALATED = 11;
   private static final int CAT_GENERAL_COMPLAINT = 12;
-  private static final int CAT_GENERAL_COMPLAINT_ESCALATED = 13;
-  private static final int CAT_GENERAL_ENQUIRY = 14;
-  private static final int CAT_GENERAL_ENQUIRY_ESCALATED = 15;
+//  private static final int CAT_GENERAL_COMPLAINT_ESCALATED = 13;
+//  private static final int CAT_GENERAL_ENQUIRY = 14;
+//  private static final int CAT_GENERAL_ENQUIRY_ESCALATED = 15;
   private static final int CAT_HOUSEHOLD_PAPER_REQUESTED = 16;
   private static final int CAT_HOUSEHOLD_REPLACEMENT_IAC_REQUESTED = 17;
-  private static final int CAT_INCORRECT_ESCALATION = 18;
+//  private static final int CAT_INCORRECT_ESCALATION = 18;
   private static final int CAT_H_INDIVIDUAL_PAPER_REQUESTED = 19;
   private static final int CAT_H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED = 20;
   private static final int CAT_H_INDIVIDUAL_RESPONSE_REQUESTED = 21;
-  private static final int CAT_MISCELLANEOUS = 22;
+//  private static final int CAT_MISCELLANEOUS = 22;
   private static final int CAT_ONLINE_QUESTIONNAIRE_RESPONSE = 23;
   private static final int CAT_PAPER_QUESTIONNAIRE_RESPONSE = 24;
-  private static final int CAT_PENDING = 25;
+//  private static final int CAT_PENDING = 25;
   private static final int CAT_REFUSAL = 26;
   private static final int CAT_RESPONDENT_ENROLLED = 27;
-  private static final int CAT_TECHNICAL_QUERY = 28;
+//  private static final int CAT_TECHNICAL_QUERY = 28;
   private static final int CAT_TRANSLATION_ARABIC = 29;
-  private static final int CAT_TRANSLATION_BENGALI = 30;
-  private static final int CAT_TRANSLATION_CANTONESE = 31;
-  private static final int CAT_TRANSLATION_GUJARATI = 32;
-  private static final int CAT_TRANSLATION_LITHUANIAN = 33;
-  private static final int CAT_TRANSLATION_MANDARIN = 34;
-  private static final int CAT_TRANSLATION_POLISH = 35;
-  private static final int CAT_TRANSLATION_PORTUGUESE = 36;
-  private static final int CAT_TRANSLATION_PUNJABI_GURMUKHI = 37;
-  private static final int CAT_TRANSLATION_PUNJABI_SHAHMUKI = 38;
-  private static final int CAT_TRANSLATION_SOMALI = 39;
-  private static final int CAT_TRANSLATION_SPANISH = 40;
-  private static final int CAT_TRANSLATION_TURKISH = 41;
-  private static final int CAT_TRANSLATION_URDU = 42;
-  private static final int CAT_UNDELIVERABLE = 43;
+//  private static final int CAT_TRANSLATION_BENGALI = 30;
+//  private static final int CAT_TRANSLATION_CANTONESE = 31;
+//  private static final int CAT_TRANSLATION_GUJARATI = 32;
+//  private static final int CAT_TRANSLATION_LITHUANIAN = 33;
+//  private static final int CAT_TRANSLATION_MANDARIN = 34;
+//  private static final int CAT_TRANSLATION_POLISH = 35;
+//  private static final int CAT_TRANSLATION_PORTUGUESE = 36;
+//  private static final int CAT_TRANSLATION_PUNJABI_GURMUKHI = 37;
+//  private static final int CAT_TRANSLATION_PUNJABI_SHAHMUKI = 38;
+//  private static final int CAT_TRANSLATION_SOMALI = 39;
+//  private static final int CAT_TRANSLATION_SPANISH = 40;
+//  private static final int CAT_TRANSLATION_TURKISH = 41;
+//  private static final int CAT_TRANSLATION_URDU = 42;
+//  private static final int CAT_UNDELIVERABLE = 43;
   private static final int CAT_RESPONDENT_ACCOUNT_CREATED = 44;
   private static final int CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT = 45;
   private static final int CAT_COLLECTION_INSTRUMENT_DOWNLOADED = 46;
@@ -409,39 +409,6 @@ public class CaseServiceImplTest {
     // action service should be told of case state change
     verify(notificationPublisher, times(1)).sendNotifications(anyListOf(CaseNotification.class));
 
-    verify(caseEventRepository, times(1)).save(caseEvent);
-  }
-
-  /**
-   * Bluesky test for creating a enrolment
-   * 
-   * @throws Exception
-   */
-  @Test
-  public void testBlueSkyEnrolment() throws Exception {
-    Mockito.when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
-    Mockito.when(caseRepo.findOne(ENROLMENT_CASE_INDIVIDUAL_FK)).thenReturn(cases.get(ENROLMENT_CASE_INDIVIDUAL_FK));
-    Mockito.when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(
-            cases.get(ENROLMENT_CASE_INDIVIDUAL_FK));  // the new case
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLLED))
-            .thenReturn(categories.get(CAT_RESPONDENT_ENROLLED));
-
-    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ENROLLED,
-            ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    Case newCase = caseRepo.findOne(ENROLMENT_CASE_INDIVIDUAL_FK);
-    caseService.createCaseEvent(caseEvent, newCase);
-
-    verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLLED);
-    verify(caseRepo, times(2)).saveAndFlush(any(Case.class));
-
-    Case oldCase = caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(oldCase.getIac());
-    // action service should be told of case state change
-    verify(notificationPublisher, times(1)).sendNotifications(anyListOf(CaseNotification.class));
-    // no new action to be created
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
-        any(String.class));
     verify(caseEventRepository, times(1)).save(caseEvent);
   }
 
@@ -882,7 +849,72 @@ public class CaseServiceImplTest {
             any(String.class));
   }
 
-  // TODO testEventRespondentAccountCreated attempted versus a Case of the wrong type, ie not a B
+  /**
+   * We create a CaseEvent with category RESPONDENT_ACCOUNT_CREATED versus a Case of wrong sampleUnitType
+   * (ie NOT a B)
+   *
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventRespondentAccountCreatedVersusWrongCaseType() throws Exception {
+    Case existingCase = cases.get(ACTIONABLE_BI_CASE_FK);
+    Mockito.when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(existingCase);
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED)).
+            thenReturn(categories.get(CAT_RESPONDENT_ACCOUNT_CREATED));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED, ACTIONABLE_BI_CASE_FK);
+
+    try {
+      caseService.createCaseEvent(caseEvent, null);
+      fail();
+    } catch (RuntimeException re) {
+      assertThat(re.getMessage().equals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, existingCase.getSampleUnitType(),
+              categories.get(CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT))));
+      verify(caseRepo).findOne(ACTIONABLE_BI_CASE_FK);
+      verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED);
+      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+      verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
+      verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+              any(String.class));
+      verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
+      verify(caseEventRepository, times(0)).save(caseEvent);
+    }
+  }
+
+
+  /**
+   * We create a CaseEvent with category RESPONDENT_ENROLLED on an ACTIONABLE BRES case
+   * (the one created for a business unit B, Tesco for instance)
+   *
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventRespondentEnrolled() throws Exception {
+    Mockito.when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
+    Mockito.when(caseRepo.findOne(ENROLMENT_CASE_INDIVIDUAL_FK)).thenReturn(cases.get(ENROLMENT_CASE_INDIVIDUAL_FK));
+    Mockito.when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(cases.get(ENROLMENT_CASE_INDIVIDUAL_FK));//new case
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLLED))
+            .thenReturn(categories.get(CAT_RESPONDENT_ENROLLED));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ENROLLED,
+            ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    Case newCase = caseRepo.findOne(ENROLMENT_CASE_INDIVIDUAL_FK);
+    caseService.createCaseEvent(caseEvent, newCase);
+
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLLED);
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    verify(caseRepo, times(2)).saveAndFlush(any(Case.class));
+
+    verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
+    verify(caseSvcStateTransitionManager, times(1)).transition(any(CaseDTO.CaseState.class),
+            any(CaseDTO.CaseEvent.class));    // action service should be told of the old case state change
+    // TODO Verify the old case is now at INACTIONABLE
+    verify(notificationPublisher, times(1)).sendNotifications(anyListOf(CaseNotification.class));
+    // no new action to be created
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+            any(String.class));
+  }
 
   /**
    * We create a CaseEvent with category COLLECTION_INSTRUMENT_DOWNLOADED on an ACTIONABLE BRES case
