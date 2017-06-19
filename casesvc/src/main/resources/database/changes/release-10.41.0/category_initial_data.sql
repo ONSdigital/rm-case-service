@@ -8,7 +8,7 @@ ALTER TABLE casesvc.category ALTER COLUMN oldcasesampleunittypes SET NOT NULL;
 
 INSERT INTO casesvc.category (categorypk, shortdescription, longdescription, eventtype, role, generatedactiontype, "group", oldcasesampleunittypes, newcasesampleunittype, recalccollectioninstrument) VALUES ('CASE_CREATED', 'Case Created', 'Case Created', NULL, NULL, NULL, NULL,'B,BI',NULL,  NULL);
 
-INSERT INTO casesvc.category (categorypk, shortdescription, longdescription, eventtype, role, generatedactiontype, "group", oldcasesampleunittypes, newcasesampleunittype, recalccollectioninstrument) VALUES ('RESPONDENT_ACCOUNT_CREATED', 'Account created for respondent', 'Account created for respondent', 'ACCOUNT_CREATED', NULL, NULL, NULL, 'B', NULL,  NULL);
+INSERT INTO casesvc.category (categorypk, shortdescription, longdescription, eventtype, role, generatedactiontype, "group", oldcasesampleunittypes, newcasesampleunittype, recalccollectioninstrument) VALUES ('RESPONDENT_ACCOUNT_CREATED', 'ç', 'Account created for respondent', 'ACCOUNT_CREATED', NULL, NULL, NULL, 'B', NULL,  NULL);
 
 INSERT INTO casesvc.category (categorypk, shortdescription, longdescription, eventtype, role, generatedactiontype, "group", oldcasesampleunittypes, newcasesampleunittype, recalccollectioninstrument) VALUES ('ACCESS_CODE_AUTHENTICATION_ATTEMPT', 'Access Code authentication attempted', 'Access Code authentication atttempted', NULL, NULL, NULL, NULL, 'B',NULL,  NULL);
 

@@ -204,7 +204,7 @@ public class CaseServiceImpl implements CaseService {
    */
   private void validateCaseEventRequest(Category category, Case oldCase, Case newCase) {
     String oldCaseSampleUnitType = oldCase.getSampleUnitType().name();
-    String expectedOldCaseSampleUnitTypes = category.getOldCaseSampleUnitType();
+    String expectedOldCaseSampleUnitTypes = category.getOldCaseSampleUnitTypes();
     if (!compareOldCaseSampleUnitType(oldCaseSampleUnitType, expectedOldCaseSampleUnitTypes)) {
       throw new RuntimeException(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, oldCaseSampleUnitType,
               expectedOldCaseSampleUnitTypes));

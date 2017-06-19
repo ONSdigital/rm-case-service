@@ -106,10 +106,10 @@ public class CaseServiceImplTest {
 //  private static final int CAT_TRANSLATION_URDU = 42;
 //  private static final int CAT_UNDELIVERABLE = 43;
   private static final int CAT_RESPONDENT_ACCOUNT_CREATED = 44;
-  private static final int CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT = 45;
+  private static final int CAT_ENROLMENT_CODE_VERIFIED = 45;
   private static final int CAT_COLLECTION_INSTRUMENT_DOWNLOADED = 46;
-  private static final int CAT_UNSUCCESSFUL_RESPONSE_UPLOADED = 47;
-  private static final int CAT_SUCCESSFUL_RESPONSE_UPLOADED = 48;
+  private static final int CAT_UNSUCCESSFUL_RESPONSE_UPLOAD = 47;
+  private static final int CAT_SUCCESSFUL_RESPONSE_UPLOAD = 48;
   private static final int CAT_OFFLINE_RESPONSE_PROCESSED = 49;
 
   /**
@@ -819,7 +819,7 @@ public class CaseServiceImplTest {
   }
 
   /**
-   * We create a CaseEvent with category ACCESS_CODE_AUTHENTICATION_ATTEMPT on an ACTIONABLE BRES case
+   * We create a CaseEvent with category ENROLMENT_CODE_VERIFIED on an ACTIONABLE BRES case
    * (the one created for a business unit B, Tesco for instance)
    *
    * @throws Exception if fabricateEvent does
@@ -827,16 +827,16 @@ public class CaseServiceImplTest {
   @Test
   public void testEventAccessCodeAuthenticationAttempt() throws Exception {
     Mockito.when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT)).
-            thenReturn(categories.get(CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ENROLMENT_CODE_VERIFIED)).
+            thenReturn(categories.get(CAT_ENROLMENT_CODE_VERIFIED));
 
-    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT,
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.ENROLMENT_CODE_VERIFIED,
             ACTIONABLE_BUSINESS_UNIT_CASE_FK);
 
     caseService.createCaseEvent(caseEvent, null);
 
     verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.ENROLMENT_CODE_VERIFIED);
     verify(caseEventRepository, times(1)).save(caseEvent);
     verify(caseRepo, never()).saveAndFlush(any(Case.class));
     verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
@@ -848,7 +848,7 @@ public class CaseServiceImplTest {
   }
 
   /**
-   * We create a CaseEvent with category ACCESS_CODE_AUTHENTICATION_ATTEMPT versus a Case of wrong sampleUnitType
+   * We create a CaseEvent with category ENROLMENT_CODE_VERIFIED versus a Case of wrong sampleUnitType
    * (ie NOT a B)
    *
    * @throws Exception if fabricateEvent does
@@ -857,10 +857,10 @@ public class CaseServiceImplTest {
   public void testEventAccessCodeAuthenticationAttemptVersusWrongCaseType() throws Exception {
     Case existingCase = cases.get(ACTIONABLE_BI_CASE_FK);
     Mockito.when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(existingCase);
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT)).
-            thenReturn(categories.get(CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ENROLMENT_CODE_VERIFIED)).
+            thenReturn(categories.get(CAT_ENROLMENT_CODE_VERIFIED));
 
-    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT,
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.ENROLMENT_CODE_VERIFIED,
             ACTIONABLE_BI_CASE_FK);
 
     try {
@@ -868,9 +868,9 @@ public class CaseServiceImplTest {
       fail();
     } catch (RuntimeException re) {
       assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, existingCase.getSampleUnitType(),
-              categories.get(CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT).getOldCaseSampleUnitType()), re.getMessage());
+              categories.get(CAT_ENROLMENT_CODE_VERIFIED).getOldCaseSampleUnitTypes()), re.getMessage());
       verify(caseRepo).findOne(ACTIONABLE_BI_CASE_FK);
-      verify(categoryRepo).findOne(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
+      verify(categoryRepo).findOne(CategoryDTO.CategoryName.ENROLMENT_CODE_VERIFIED);
       verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
       verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
       verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
@@ -930,7 +930,7 @@ public class CaseServiceImplTest {
       fail();
     } catch (RuntimeException re) {
       assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, existingCase.getSampleUnitType(),
-              categories.get(CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT).getOldCaseSampleUnitType()), re.getMessage());
+              categories.get(CAT_ENROLMENT_CODE_VERIFIED).getOldCaseSampleUnitTypes()), re.getMessage());
       verify(caseRepo).findOne(ACTIONABLE_BI_CASE_FK);
       verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED);
       verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
@@ -977,7 +977,7 @@ public class CaseServiceImplTest {
     List<Case> casesList = argument.getAllValues();
     boolean oldCaseStateVerified = false, newCaseStateVerified = false;
     for (Case caze : casesList) {
-      if (caze.getSampleUnitType().name().equals(respondentEnrolledCategory.getOldCaseSampleUnitType())) {
+      if (caze.getSampleUnitType().name().equals(respondentEnrolledCategory.getOldCaseSampleUnitTypes())) {
         assertEquals(CaseDTO.CaseState.INACTIONABLE, caze.getState());
         oldCaseStateVerified = true;
       }
@@ -1015,7 +1015,7 @@ public class CaseServiceImplTest {
       fail();
     } catch (RuntimeException re) {
       assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, existingCase.getSampleUnitType(),
-              categories.get(CAT_RESPONDENT_ENROLLED).getOldCaseSampleUnitType()), re.getMessage());
+              categories.get(CAT_RESPONDENT_ENROLLED).getOldCaseSampleUnitTypes()), re.getMessage());
       verify(caseRepo).findOne(ACTIONABLE_BI_CASE_FK);
       verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLLED);
       verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
@@ -1107,7 +1107,7 @@ public class CaseServiceImplTest {
       fail();
     } catch (RuntimeException re) {
       assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, existingCase.getSampleUnitType(),
-              categories.get(CAT_COLLECTION_INSTRUMENT_DOWNLOADED).getOldCaseSampleUnitType()), re.getMessage());
+              categories.get(CAT_COLLECTION_INSTRUMENT_DOWNLOADED).getOldCaseSampleUnitTypes()), re.getMessage());
       verify(caseRepo).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
       verify(categoryRepo).findOne(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED);
       verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
@@ -1120,7 +1120,7 @@ public class CaseServiceImplTest {
   }
 
   /**
-   * We create a CaseEvent with category UNSUCCESSFUL_RESPONSE_UPLOADED on an ACTIONABLE BRES case
+   * We create a CaseEvent with category UNSUCCESSFUL_RESPONSE_UPLOAD on an ACTIONABLE BRES case
    * (the one created for a respondent BI, accountant replying on behalf of Tesco for instance)
    *
    * @throws Exception if fabricateEvent does
@@ -1128,16 +1128,16 @@ public class CaseServiceImplTest {
   @Test
   public void testEventUnsuccessfulResponseUploaded() throws Exception {
     Mockito.when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BI_CASE_FK));
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOADED)).
-            thenReturn(categories.get(CAT_UNSUCCESSFUL_RESPONSE_UPLOADED));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOAD)).
+            thenReturn(categories.get(CAT_UNSUCCESSFUL_RESPONSE_UPLOAD));
 
-    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOADED,
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOAD,
             ACTIONABLE_BI_CASE_FK);
 
     caseService.createCaseEvent(caseEvent, null);
 
     verify(caseRepo, times(1)).findOne(ACTIONABLE_BI_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOADED);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOAD);
     verify(caseEventRepository, times(1)).save(caseEvent);
     verify(caseRepo, never()).saveAndFlush(any(Case.class));
     verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
@@ -1149,7 +1149,7 @@ public class CaseServiceImplTest {
   }
 
   /**
-   * We create a CaseEvent with category UNSUCCESSFUL_RESPONSE_UPLOADED versus a Case of wrong sampleUnitType
+   * We create a CaseEvent with category UNSUCCESSFUL_RESPONSE_UPLOAD versus a Case of wrong sampleUnitType
    * (ie NOT a BI)
    *
    * @throws Exception if fabricateEvent does
@@ -1158,10 +1158,10 @@ public class CaseServiceImplTest {
   public void testEventUnsuccessfulResponseUploadedVersusWrongCaseType() throws Exception {
     Case existingCase = cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
     Mockito.when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(existingCase);
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOADED)).
-            thenReturn(categories.get(CAT_UNSUCCESSFUL_RESPONSE_UPLOADED));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOAD)).
+            thenReturn(categories.get(CAT_UNSUCCESSFUL_RESPONSE_UPLOAD));
 
-    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOADED,
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOAD,
             ACTIONABLE_BUSINESS_UNIT_CASE_FK);
 
     try {
@@ -1169,9 +1169,9 @@ public class CaseServiceImplTest {
       fail();
     } catch (RuntimeException re) {
       assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, existingCase.getSampleUnitType(),
-              categories.get(CAT_UNSUCCESSFUL_RESPONSE_UPLOADED).getOldCaseSampleUnitType()), re.getMessage());
+              categories.get(CAT_UNSUCCESSFUL_RESPONSE_UPLOAD).getOldCaseSampleUnitTypes()), re.getMessage());
       verify(caseRepo).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-      verify(categoryRepo).findOne(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOADED);
+      verify(categoryRepo).findOne(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOAD);
       verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
       verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
       verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
@@ -1231,7 +1231,7 @@ public class CaseServiceImplTest {
       fail();
     } catch (RuntimeException re) {
       assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, existingCase.getSampleUnitType(),
-              categories.get(CAT_OFFLINE_RESPONSE_PROCESSED).getOldCaseSampleUnitType()), re.getMessage());
+              categories.get(CAT_OFFLINE_RESPONSE_PROCESSED).getOldCaseSampleUnitTypes()), re.getMessage());
       verify(caseRepo).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
       verify(categoryRepo).findOne(CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED);
       verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
@@ -1244,7 +1244,7 @@ public class CaseServiceImplTest {
   }
 
   /**
-   * We create a CaseEvent with category SUCCESSFUL_RESPONSE_UPLOADED versus a Case of wrong sampleUnitType
+   * We create a CaseEvent with category SUCCESSFUL_RESPONSE_UPLOAD versus a Case of wrong sampleUnitType
    * (ie NOT a BI)
    *
    * @throws Exception if fabricateEvent does
@@ -1253,10 +1253,10 @@ public class CaseServiceImplTest {
   public void testEventSuccessfulResponseUploadedVersusWrongCaseType() throws Exception {
     Case existingCase = cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
     Mockito.when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(existingCase);
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOADED)).
-            thenReturn(categories.get(CAT_SUCCESSFUL_RESPONSE_UPLOADED));
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD)).
+            thenReturn(categories.get(CAT_SUCCESSFUL_RESPONSE_UPLOAD));
 
-    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOADED,
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD,
             ACTIONABLE_BUSINESS_UNIT_CASE_FK);
 
     try {
@@ -1264,9 +1264,9 @@ public class CaseServiceImplTest {
       fail();
     } catch (RuntimeException re) {
       assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, existingCase.getSampleUnitType(),
-              categories.get(CAT_SUCCESSFUL_RESPONSE_UPLOADED).getOldCaseSampleUnitType()), re.getMessage());
+              categories.get(CAT_SUCCESSFUL_RESPONSE_UPLOAD).getOldCaseSampleUnitTypes()), re.getMessage());
       verify(caseRepo).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-      verify(categoryRepo).findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOADED);
+      verify(categoryRepo).findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD);
       verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
       verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
       verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
@@ -1277,7 +1277,7 @@ public class CaseServiceImplTest {
   }
 
   /**
-   * We create a CaseEvent with category SUCCESSFUL_RESPONSE_UPLOADED on an ACTIONABLE BRES case
+   * We create a CaseEvent with category SUCCESSFUL_RESPONSE_UPLOAD on an ACTIONABLE BRES case
    * (the one created for a respondent BI, accountant replying on behalf of Tesco for instance)
    *
    * @throws Exception if fabricateEvent does
@@ -1286,15 +1286,15 @@ public class CaseServiceImplTest {
   public void testEventSuccessfulResponseUploaded() throws Exception {
     Mockito.when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BI_CASE_FK));
 
-    Category successfulResponseUploadedCategory = categories.get(CAT_SUCCESSFUL_RESPONSE_UPLOADED);
-    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOADED)).thenReturn(
+    Category successfulResponseUploadedCategory = categories.get(CAT_SUCCESSFUL_RESPONSE_UPLOAD);
+    Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD)).thenReturn(
             successfulResponseUploadedCategory);
 
-    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOADED, ACTIONABLE_BI_CASE_FK);
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, ACTIONABLE_BI_CASE_FK);
     caseService.createCaseEvent(caseEvent, null);
 
     verify(caseRepo, times(1)).findOne(ACTIONABLE_BI_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOADED);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD);
     verify(caseEventRepository, times(1)).save(caseEvent);
     ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
     verify(caseRepo, times(1)).saveAndFlush(argument.capture());
