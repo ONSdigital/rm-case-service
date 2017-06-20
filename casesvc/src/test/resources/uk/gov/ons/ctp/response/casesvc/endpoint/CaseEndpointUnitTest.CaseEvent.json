@@ -30,7 +30,7 @@
     "createdDateTime":1460736159699,
     "caseEventPK":4,
     "caseFK":9,
-    "category":"RESPONDENT_ENROLLED",
+    "category":"RESPONDENT_ENROLED",
     "subCategory":null,
     "createdBy":"unittest",
     "description":"sometest"

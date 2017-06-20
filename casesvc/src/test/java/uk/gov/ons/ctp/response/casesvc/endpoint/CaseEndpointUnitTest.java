@@ -93,7 +93,7 @@ public final class CaseEndpointUnitTest {
   private static final String CASE1_CATEGORY = "ONLINE_QUESTIONNAIRE_RESPONSE";
   private static final String CASE2_CATEGORY = "CLASSIFICATION_INCORRECT";
   private static final String CASE3_CATEGORY = "REFUSAL";
-  private static final String CASE9_CATEGORY = "RESPONDENT_ENROLLED";
+  private static final String CASE9_CATEGORY = "RESPONDENT_ENROLED";
   private static final String CASE1_SUBCATEGORY = "subcat 1";
   private static final String CASE2_SUBCATEGORY = "subcat 2";
   private static final String CASE3_SUBCATEGORY = "subcat 3";
@@ -117,9 +117,9 @@ public final class CaseEndpointUnitTest {
   private static final String CASEEVENT_INVALIDJSON =
           "{\"description\":\"a\",\"category\":\"BAD_CAT\",\"createdBy\":\"u\"}";
   private static final String CASEEVENT_VALIDJSON =
-          "{\"description\":\"sometest\",\"category\":\"RESPONDENT_ENROLLED\",\"partyId\":\"3b136c4b-7a14-4904-9e01-13364dd7b971\",\"createdBy\":\"unittest\"}";
+          "{\"description\":\"sometest\",\"category\":\"RESPONDENT_ENROLED\",\"partyId\":\"3b136c4b-7a14-4904-9e01-13364dd7b971\",\"createdBy\":\"unittest\"}";
   private static final String CASEEVENT_VALIDJSON_NO_PARTY =
-          "{\"description\":\"sometest\",\"category\":\"RESPONDENT_ENROLLED\",\"createdBy\":\"unittest\"}";
+          "{\"description\":\"sometest\",\"category\":\"RESPONDENT_ENROLED\",\"createdBy\":\"unittest\"}";
 
   @InjectMocks
   private CaseEndpoint caseEndpoint;
@@ -531,7 +531,7 @@ public final class CaseEndpointUnitTest {
    */
   @Test
   public void createCaseEventRequiresNewCase() throws Exception {
-    when(categoryService.findCategory(CategoryName.RESPONDENT_ENROLLED)).thenReturn(categoryResults.get(3));
+    when(categoryService.findCategory(CategoryName.RESPONDENT_ENROLED)).thenReturn(categoryResults.get(3));
     when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class))).thenReturn(caseEventsResults.get(3));
     when(caseService.findCaseById(CASE9_ID)).thenReturn(caseResults.get(8));
     ResultActions actions = mockMvc.perform(postJson(String.format("/cases/%s/events", CASE9_ID),
@@ -550,7 +550,7 @@ public final class CaseEndpointUnitTest {
    */
   @Test
   public void createCaseEventGoodJson() throws Exception {
-    when(categoryService.findCategory(CategoryName.RESPONDENT_ENROLLED)).thenReturn(categoryResults.get(3));
+    when(categoryService.findCategory(CategoryName.RESPONDENT_ENROLED)).thenReturn(categoryResults.get(3));
     when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class))).thenReturn(caseEventsResults.get(3));
     when(caseService.findCaseById(CASE9_ID)).thenReturn(caseResults.get(8));
 
