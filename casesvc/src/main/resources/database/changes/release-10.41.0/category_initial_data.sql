@@ -11,7 +11,7 @@ INSERT INTO casesvc.category (categorypk, shortdescription, longdescription, eve
 
 INSERT INTO casesvc.category (categorypk, shortdescription, longdescription, eventtype, role, generatedactiontype, "group", oldcasesampleunittypes, newcasesampleunittype, recalccollectioninstrument) VALUES ('RESPONDENT_ACCOUNT_CREATED', 'Account created for respondent', 'Account created for respondent', 'ACCOUNT_CREATED', NULL, NULL, NULL, 'B', NULL,  NULL);
 
-INSERT INTO casesvc.category (categorypk, shortdescription, longdescription, eventtype, role, generatedactiontype, "group", oldcasesampleunittypes, newcasesampleunittype, recalccollectioninstrument) VALUES ('ACCESS_CODE_AUTHENTICATION_ATTEMPT', 'Access Code authentication attempted', 'Access Code authentication atttempted', NULL, NULL, NULL, NULL, 'B',NULL,  NULL);
+INSERT INTO casesvc.category (categorypk, shortdescription, longdescription, eventtype, role, generatedactiontype, "group", oldcasesampleunittypes, newcasesampleunittype, recalccollectioninstrument) VALUES ('ACCESS_CODE_AUTHENTICATION_ATTEMPT', 'Access Code authentication attempted', 'Access Code authentication attempted', NULL, NULL, NULL, NULL, 'B',NULL,  NULL);
 
 INSERT INTO casesvc.category (categorypk, shortdescription, longdescription, eventtype, role, generatedactiontype, "group", oldcasesampleunittypes, newcasesampleunittype, recalccollectioninstrument) VALUES ('COLLECTION_INSTRUMENT_DOWNLOADED', 'Collection Instrument Downloaded', 'Collection Instrument Downloaded', NULL, NULL, NULL, NULL, 'BI', NULL, NULL);
 
