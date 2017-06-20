@@ -1,4 +1,5 @@
 DELETE FROM casesvc.category WHERE categorypk = 'INDIVIDUAL_RESPONSE_REQUESTED';
+DELETE FROM casesvc.category WHERE categorypk = 'RESPONDENT_ENROLLED';
 
 ALTER TABLE casesvc.category RENAME oldcasesampleunittype TO oldcasesampleunittypes;
 
@@ -14,16 +15,14 @@ INSERT INTO casesvc.category (categorypk, shortdescription, longdescription, eve
 
 INSERT INTO casesvc.category (categorypk, shortdescription, longdescription, eventtype, role, generatedactiontype, "group", oldcasesampleunittypes, newcasesampleunittype, recalccollectioninstrument) VALUES ('COLLECTION_INSTRUMENT_DOWNLOADED', 'Collection Instrument Downloaded', 'Collection Instrument Downloaded', NULL, NULL, NULL, NULL, 'BI', NULL, NULL);
 
-INSERT INTO casesvc.category (categorypk, shortdescription, longdescription, eventtype, role, generatedactiontype, "group", oldcasesampleunittypes, newcasesampleunittype, recalccollectioninstrument) VALUES ('COLLECTION_RESPONSE_UPLOADED', 'Collection Response Uploaded', 'Collection Response Uploaded', 'DISABLED', NULL, NULL, NULL, 'BI', NULL, NULL);
-
 INSERT INTO casesvc.category (categorypk, shortdescription, longdescription, eventtype, role, generatedactiontype, "group", oldcasesampleunittypes, newcasesampleunittype, recalccollectioninstrument) VALUES ('ACTION_CANCELLATION_COMPLETED', 'Action Cancellation Completed', 'Action Cancellation Completed', NULL, NULL, NULL, NULL, 'B,BI', NULL, NULL);
 
 INSERT INTO casesvc.category (categorypk, shortdescription, longdescription, eventtype, role, generatedactiontype, "group", oldcasesampleunittypes, newcasesampleunittype, recalccollectioninstrument) VALUES ('ACTION_CANCELLATION_CREATED', 'Action Cancellation Created', 'Action Cancellation Created', NULL, NULL, NULL, NULL,  'B,BI', NULL, NULL);
 
 INSERT INTO casesvc.category (categorypk, shortdescription, longdescription, eventtype, role, generatedactiontype, "group", oldcasesampleunittypes, newcasesampleunittype, recalccollectioninstrument) VALUES ('UNSUCCESSFUL_RESPONSE_UPLOAD', 'Unsuccessful Response Upload', 'Unsuccessful Response Upload', NULL, NULL, NULL, NULL, 'BI', NULL, NULL);
 
-INSERT INTO casesvc.category (categorypk, shortdescription, longdescription, eventtype, role, generatedactiontype, "group", oldcasesampleunittypes, newcasesampleunittype, recalccollectioninstrument) VALUES ('ENROLMENT_CODE_VERIFIED', 'Enrolment code verified', 'Enrolment code verified', NULL, NULL, NULL, NULL, 'B', NULL, NULL);
-
 INSERT INTO casesvc.category (categorypk, shortdescription, longdescription, eventtype, role, generatedactiontype, "group", oldcasesampleunittypes, newcasesampleunittype, recalccollectioninstrument) VALUES ('SUCCESSFUL_RESPONSE_UPLOAD', 'Successful Response Upload', 'Successful Response Upload', 'DISABLED',  NULL, NULL, NULL, 'BI', NULL, NULL);
 
-INSERT INTO casesvc.category (categorypk, shortdescription, longdescription, eventtype, role, generatedactiontype, "group", oldcasesampleunittypes, newcasesampleunittype, recalccollectioninstrument) VALUES ('OFFLINE_RESPONSE_PROCESSED', 'Offline Response Processed', 'Offline Response Processed', 'DISABLED',  NULL, NULL, NULL, 'BI', NULL, NULL);
+INSERT INTO casesvc.category (categorypk, shortdescription, longdescription, eventtype, role, generatedactiontype, "group", oldcasesampleunittypes, newcasesampleunittype, recalccollectioninstrument) VALUES ('OFFLINE_RESPONSE_PROCESSED', 'Offline Response Processed', 'Offline Response Processed', NULL,  NULL, NULL, NULL, 'BI', NULL, NULL);
+
+INSERT INTO casesvc.category (categorypk, shortdescription, longdescription, eventtype, role, generatedactiontype, "group", oldcasesampleunittypes, newcasesampleunittype, recalccollectioninstrument) VALUES ('RESPONDENT_ENROLED', 'Respondent Enroled', 'Respondent Enroled', 'DEACTIVATED',  NULL, NULL, NULL, 'B', 'BI', NULL);
