@@ -1,13 +1,13 @@
 package uk.gov.ons.ctp.response.casesvc.representation;
 
-import java.util.Optional;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
-import uk.gov.ons.ctp.common.util.EnumUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uk.gov.ons.ctp.common.util.EnumUtils;
+
+import java.util.Optional;
 
 /**
  * The object to represent a Category
@@ -72,11 +72,21 @@ public class CategoryDTO {
     SUCCESSFUL_RESPONSE_UPLOAD,
     OFFLINE_RESPONSE_PROCESSED;
 
+    /**
+     * Gets CategoryName enum from string
+     * @param name
+     * @return CategoryName category name
+     */
     @JsonCreator
     public static CategoryName fromValue(String name) {
       return EnumUtils.getEnumFromString(CategoryName.class, name);
     }
-    
+
+    /**
+     * Creates optional of CategoryNames
+     * @param name
+     * @return Optional optional of Category Names
+     */
     public static Optional<CategoryName> fromString(String name) {
       return EnumUtils.getOptionalEnumFromString(CategoryName.class, name);
     }

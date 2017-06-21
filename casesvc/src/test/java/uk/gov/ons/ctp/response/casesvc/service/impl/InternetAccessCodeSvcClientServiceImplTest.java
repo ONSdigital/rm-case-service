@@ -1,24 +1,9 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
-
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
+import org.mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.cloud.sleuth.Span;
 import org.springframework.cloud.sleuth.Tracer;
@@ -26,10 +11,18 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
-
 import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.config.InternetAccessCodeSvc;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 /**
  * A test of the case frame service client service
@@ -51,6 +44,9 @@ public class InternetAccessCodeSvcClientServiceImplTest {
   @InjectMocks
   private InternetAccessCodeSvcClientServiceImpl iacSvcClientService;
 
+  /**
+   * Set up Mockito for tests
+   */
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);

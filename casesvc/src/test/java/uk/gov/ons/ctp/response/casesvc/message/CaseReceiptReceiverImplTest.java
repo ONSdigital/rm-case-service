@@ -1,26 +1,11 @@
 package uk.gov.ons.ctp.response.casesvc.message;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE;
-import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE;
-import static uk.gov.ons.ctp.response.casesvc.utility.Constants.QUESTIONNAIRE_RESPONSE;
-import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
-
-import java.sql.Timestamp;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.XMLGregorianCalendar;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
@@ -31,6 +16,19 @@ import uk.gov.ons.ctp.response.casesvc.message.impl.CaseReceiptReceiverImpl;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.UnlinkedCaseReceiptService;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.sql.Timestamp;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE;
+import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE;
+import static uk.gov.ons.ctp.response.casesvc.utility.Constants.QUESTIONNAIRE_RESPONSE;
+import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
 /**
  * To unit test CaseReceiptReceiverImpl
@@ -135,7 +133,7 @@ public class CaseReceiptReceiverImplTest {
    * @param inboundChannel the inboundChannel
    * @param xmlGregorianCalendar the xmlGregorianCalendar
    * @return the CaseReceipt
-   * @throws DatatypeConfigurationException
+   * @throws DatatypeConfigurationException datatype configuration exception thrown
    */
   private CaseReceipt buildCaseReceipt(String caseRef, InboundChannel inboundChannel,
                                        XMLGregorianCalendar xmlGregorianCalendar)

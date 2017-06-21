@@ -1,10 +1,10 @@
 package uk.gov.ons.ctp.response.casesvc.service;
 
-import java.util.List;
-
 import uk.gov.ons.ctp.common.service.CTPService;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
+
+import java.util.List;
 
 /**
  * The Category Service interface defines all business behaviours for operations
@@ -25,7 +25,7 @@ public interface CategoryService extends CTPService {
 
   /**
    * Find a category by its primary key name
-   * 
+   *
    * @param categoryName the type/name
    * @return the Category or null if not found
    */

@@ -1,10 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.scheduled.distribution;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.sleuth.Span;
 import org.springframework.cloud.sleuth.Tracer;
@@ -17,8 +13,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
-
-import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.distributed.DistributedListManager;
 import uk.gov.ons.ctp.common.distributed.LockingException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
@@ -31,6 +25,11 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseState;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This is the 'service' class that distributes cases to the action service. It
@@ -131,8 +130,8 @@ public class CaseDistributor {
         for (int idx = 0; idx < cases.size(); idx++) {
           Case caze = cases.get(idx);
           if (idx % iacPageSize == 0) {
-            int codesToRequest = (idx < cases.size() /
-                    iacPageSize * iacPageSize) ? iacPageSize
+            int codesToRequest = (idx < cases.size()
+                    / iacPageSize * iacPageSize) ? iacPageSize
                 : (cases.size() % iacPageSize);
             try {
               codes = internetAccessCodeSvcClientService.generateIACs(codesToRequest);
@@ -162,7 +161,7 @@ public class CaseDistributor {
 
         publishCases(caseNotifications);
 
-        caseDistributionListManager.deleteList(CASE_DISTRIBUTOR_LIST_ID,true);
+        caseDistributionListManager.deleteList(CASE_DISTRIBUTOR_LIST_ID, true);
       }
 
       try {
@@ -185,6 +184,7 @@ public class CaseDistributor {
    * Get the oldest page of INIT cases to activate - but do not retrieve the
    * same cases as other CaseSvc' in the cluster
    *
+   * @throws LockingException locking exception thrown
    * @return list of cases
    */
   private List<Case> retrieveCases() throws LockingException {

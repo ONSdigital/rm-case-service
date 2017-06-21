@@ -1,18 +1,12 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
-import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-
-import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
@@ -42,6 +36,11 @@ import uk.gov.ons.ctp.response.collection.exercise.representation.CaseTypeDTO;
 import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
 import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO.SampleUnitType;
+
+import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * A CaseService implementation which encapsulates all business logic operating
@@ -210,10 +209,8 @@ public class CaseServiceImpl implements CaseService {
               expectedOldCaseSampleUnitTypes));
     }
 
-    if (category.getNewCaseSampleUnitType() != null) {
-      if (newCase == null) {
+    if (category.getNewCaseSampleUnitType() != null && newCase == null) {
         throw new RuntimeException(String.format(MISSING_NEW_CASE_MSG, oldCase.getCasePK()));
-      }
     }
   }
 

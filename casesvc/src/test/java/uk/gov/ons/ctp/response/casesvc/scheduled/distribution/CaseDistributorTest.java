@@ -3,23 +3,12 @@ package uk.gov.ons.ctp.response.casesvc.scheduled.distribution;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.*;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.cloud.sleuth.Span;
-import org.springframework.cloud.sleuth.Tracer;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
-
-import ma.glasnost.orika.MapperFacade;
-import uk.gov.ons.ctp.common.distributed.DistributedListManager;
-import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.config.CaseDistribution;
 import uk.gov.ons.ctp.response.casesvc.config.InternetAccessCodeSvc;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
-import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseState;
-import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 
 import static org.junit.Assert.assertTrue;
 
@@ -36,7 +25,7 @@ public class CaseDistributorTest {
   @Spy
   private AppConfig appConfig = new AppConfig();
 
-  @Mock
+/*  @Mock
   private CaseNotificationPublisher caseNotificationPublisher;
 
   @Mock
@@ -68,7 +57,7 @@ public class CaseDistributorTest {
   private PlatformTransactionManager platformTransactionManager;
 
   @InjectMocks
-  private CaseDistributor caseDistributor;
+  private CaseDistributor caseDistributor;*/
 
   /**
    * A Test
@@ -173,7 +162,7 @@ public class CaseDistributorTest {
 //
 //  /**
 //   * Test BlueSky scenario
-//   * 
+//   *
 //   * @throws Exception oops
 //   */
 //  @SuppressWarnings("unchecked")

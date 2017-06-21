@@ -6,6 +6,9 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.UnlinkedCaseReceipt;
 
 import javax.transaction.Transactional;
 
+/**
+ * JPA Data Repository
+ */
 @Repository
 @Transactional
 public interface UnlinkedCaseReceiptRepository extends JpaRepository<UnlinkedCaseReceipt, String> {
