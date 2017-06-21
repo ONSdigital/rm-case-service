@@ -1,6 +1,12 @@
 package uk.gov.ons.ctp.response.casesvc.domain.model;
 
-import java.sql.Timestamp;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,15 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
+import java.sql.Timestamp;
 
 /**
  * Domain model object.
@@ -32,9 +30,10 @@ import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 public class UnlinkedCaseReceipt {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "unlinkedcasereceiptidseq_gen")
-  @GenericGenerator(name = "unlinkedcasereceiptidseq_gen", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
-      @Parameter(name = "sequence_name", value = "casesvc.unlinkedcasereceiptidseq"),
-      @Parameter(name = "increment_size", value = "1")
+  @GenericGenerator(name = "unlinkedcasereceiptidseq_gen",
+          strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
+            @Parameter(name = "sequence_name", value = "casesvc.unlinkedcasereceiptidseq"),
+            @Parameter(name = "increment_size", value = "1")
   })
   private Integer id;
 

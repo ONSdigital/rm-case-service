@@ -1,17 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.Is.isA;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static uk.gov.ons.ctp.common.MvcHelper.getJson;
-import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
-
-import java.util.UUID;
-
+import ma.glasnost.orika.MapperFacade;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,8 +13,6 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import ma.glasnost.orika.MapperFacade;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.error.RestExceptionHandler;
 import uk.gov.ons.ctp.common.jackson.CustomObjectMapper;
@@ -32,6 +20,18 @@ import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 
+import java.util.UUID;
+
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.Is.isA;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static uk.gov.ons.ctp.common.MvcHelper.getJson;
+import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
+
+/**
+ * A test of the CaseGroup endpoint
+ */
 public final class CaseGroupEndpointUnitTest {
 
   @InjectMocks
@@ -71,6 +71,10 @@ public final class CaseGroupEndpointUnitTest {
             .build();
   }
 
+  /**
+   * Tests whether casegroup is found by id
+   * @throws Exception exception thrown
+   */
   @Test
   public void findCaseGroupById() throws Exception {
     CaseGroup result = CaseGroup.builder().id(CASE_GROUP_UUID)
@@ -100,6 +104,10 @@ public final class CaseGroupEndpointUnitTest {
             is(CASE_GROUP_SU_TYPE)));
   }
 
+  /**
+   * Tests whether casegroup is not found by id
+   * @throws Exception exception thrown
+   */
   @Test
   public void findCaseGroupByIdNotFound() throws Exception {
     ResultActions actions = mockMvc.perform(getJson(
@@ -117,6 +125,10 @@ public final class CaseGroupEndpointUnitTest {
             isA(String.class)));
   }
 
+  /**
+   * Tests whether casegroup is found by id with an unchecked exception
+   * @throws Exception exception thrown
+   */
   @Test
   public void findCaseGroupByIdUnCheckedException() throws Exception {
     when(caseGroupService.

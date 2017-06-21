@@ -1,6 +1,11 @@
 package uk.gov.ons.ctp.response.casesvc.domain.model;
 
-import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,13 +13,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
+import java.io.Serializable;
 
 /**
  * Domain model object.
@@ -56,7 +55,7 @@ public class Category implements Serializable {
 
   @Column(name = "generatedactiontype")
   private String generatedActionType;
-  
+
   @Column(name = "recalccollectioninstrument")
   private Boolean recalcCollectionInstrument;
 }
