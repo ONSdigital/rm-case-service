@@ -6,6 +6,7 @@ import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.message.CaseReceiptReceiver;
@@ -27,16 +28,19 @@ import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 @MessageEndpoint
 public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
 
+  public final static String EXISTING_CASE_NOT_FOUND = "No existing case found for caseRef %s";
+
   @Autowired
   private CaseService caseService;
 
   /**
    * To process CaseReceipts read from queue
    * @param caseReceipt to process
+   * @throws CTPException when no existing case found
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, value = "transactionManager")
   @ServiceActivator(inputChannel = "caseReceiptTransformed", adviceChain = "caseReceiptRetryAdvice")
-  public void process(CaseReceipt caseReceipt) {
+  public void process(CaseReceipt caseReceipt) throws CTPException {
     log.debug("entering process with caseReceipt {}", caseReceipt);
     String caseRef = caseReceipt.getCaseRef().trim();
     InboundChannel inboundChannel = caseReceipt.getInboundChannel();
@@ -47,13 +51,7 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
     log.debug("existingCase is {}", existingCase);
 
     if (existingCase == null) {
-// TODO Throw exception?
-//      UnlinkedCaseReceipt unlinkedCaseReceipt = new UnlinkedCaseReceipt();
-//      unlinkedCaseReceipt.setCaseRef(caseRef);
-//      unlinkedCaseReceipt.setInboundChannel(
-//              uk.gov.ons.ctp.response.casesvc.representation.InboundChannel.valueOf(inboundChannel.name()));
-//      unlinkedCaseReceipt.setResponseDateTime(responseTimestamp);
-//      unlinkedCaseReceiptService.createUnlinkedCaseReceipt(unlinkedCaseReceipt);
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, String.format(EXISTING_CASE_NOT_FOUND, caseRef));
     } else {
       CaseEvent caseEvent = new CaseEvent();
       caseEvent.setCaseFK(existingCase.getCasePK());

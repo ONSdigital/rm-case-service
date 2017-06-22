@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
@@ -19,10 +20,13 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.sql.Timestamp;
 
+import static junit.framework.TestCase.fail;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static uk.gov.ons.ctp.response.casesvc.message.impl.CaseReceiptReceiverImpl.EXISTING_CASE_NOT_FOUND;
 import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE;
 import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.QUESTIONNAIRE_RESPONSE;
@@ -49,7 +53,7 @@ public class CaseReceiptReceiverImplTest {
    * @throws DatatypeConfigurationException if giveMeCalendarForNow fails
    */
   @Test
-  public void testProcessLinkedOnlineCaseReceipt() throws DatatypeConfigurationException {
+  public void testProcessLinkedOnlineCaseReceipt() throws CTPException, DatatypeConfigurationException {
     Case existingCase = new Case();
     existingCase.setCasePK(LINKED_CASE_ID);
     Mockito.when(caseService.findCaseByCaseRef(LINKED_CASE_REF)).thenReturn(existingCase);
@@ -66,7 +70,7 @@ public class CaseReceiptReceiverImplTest {
    * @throws DatatypeConfigurationException if giveMeCalendarForNow fails
    */
   @Test
-  public void testProcessLinkedPaperCaseReceipt() throws DatatypeConfigurationException {
+  public void testProcessLinkedPaperCaseReceipt() throws CTPException, DatatypeConfigurationException {
     Case existingCase = new Case();
     existingCase.setCasePK(LINKED_CASE_ID);
     Mockito.when(caseService.findCaseByCaseRef(LINKED_CASE_REF)).thenReturn(existingCase);
@@ -88,11 +92,15 @@ public class CaseReceiptReceiverImplTest {
 
     XMLGregorianCalendar calendar = DateTimeUtil.giveMeCalendarForNow();
     CaseReceipt caseReceipt = buildCaseReceipt(UNLINKED_CASE_REF, InboundChannel.ONLINE, calendar);
-    caseReceiptReceiver.process(caseReceipt);
+    try {
+      caseReceiptReceiver.process(caseReceipt);
+      fail();
+    } catch (CTPException e) {
+      assertEquals(CTPException.Fault.RESOURCE_NOT_FOUND, e.getFault());
+      assertEquals(String.format(EXISTING_CASE_NOT_FOUND, UNLINKED_CASE_REF), e.getMessage());
+    }
 
     verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class), any(Case.class));
-
-    // TODO verify exception thrown?
   }
 
   /**
@@ -105,11 +113,15 @@ public class CaseReceiptReceiverImplTest {
 
     XMLGregorianCalendar calendar = DateTimeUtil.giveMeCalendarForNow();
     CaseReceipt caseReceipt = buildCaseReceipt(UNLINKED_CASE_REF, InboundChannel.PAPER, calendar);
-    caseReceiptReceiver.process(caseReceipt);
+    try {
+      caseReceiptReceiver.process(caseReceipt);
+      fail();
+    } catch (CTPException e) {
+      assertEquals(CTPException.Fault.RESOURCE_NOT_FOUND, e.getFault());
+      assertEquals(String.format(EXISTING_CASE_NOT_FOUND, UNLINKED_CASE_REF), e.getMessage());
+    }
 
     verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class), any(Case.class));
-
-    // TODO verify exception thrown?
   }
 
   /**
