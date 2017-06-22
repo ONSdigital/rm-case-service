@@ -432,12 +432,36 @@ public class CaseServiceImpl implements CaseService {
     return newCaseCaseEvent;
   }
 
+  /**
+   * Create an event for a newly created case
+   *
+   * @param caze the case for which we want to record the event
+   * @param caseEventCategory the category of the event that led to the creation
+   *          of the case
+   * @return the created event
+   */
+  private CaseEvent createCaseCreatedEvent(Case caze) {
+    CaseEvent newCaseCaseEvent = new CaseEvent();
+    newCaseCaseEvent.setCaseFK(caze.getCasePK());
+    newCaseCaseEvent.setCategory(CategoryDTO.CategoryName.CASE_CREATED);
+    newCaseCaseEvent.setCreatedBy(Constants.SYSTEM);
+    newCaseCaseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
+    newCaseCaseEvent
+        .setDescription(String.format(CASE_CREATED_EVENT_DESCRIPTION, "Initial creation of case"));
+
+    caseEventRepo.saveAndFlush(newCaseCaseEvent);
+    return newCaseCaseEvent;
+  }
+  
+  
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
   public void createInitialCase(SampleUnitParent caseData) {
 
     CaseGroup newCaseGroup = createNewCaseGroup(caseData);
-    createNewCase(caseData, newCaseGroup);
+    Case caze = createNewCase(caseData, newCaseGroup);
+    createCaseCreatedEvent(caze);
+    
   }
 
 
@@ -466,7 +490,8 @@ public class CaseServiceImpl implements CaseService {
    * @param caseGroup to which Case belongs.
    * @return newCase created Case.
    */
-  private Case createNewCase(SampleUnitParent caseData, CaseGroup caseGroup) {
+  @SuppressWarnings("null")
+private Case createNewCase(SampleUnitParent caseData, CaseGroup caseGroup) {
     Case newCase = new Case();
     newCase.setId(UUID.randomUUID());
 
@@ -492,7 +517,6 @@ public class CaseServiceImpl implements CaseService {
     newCase.setState(CaseState.SAMPLED_INIT);
     newCase.setCreatedDateTime(DateTimeUtil.nowUTC());
     newCase.setCreatedBy(Constants.SYSTEM);
-
     caseRepo.saveAndFlush(newCase);
     log.debug("New Case created: {}", newCase.getId().toString());
     return newCase;

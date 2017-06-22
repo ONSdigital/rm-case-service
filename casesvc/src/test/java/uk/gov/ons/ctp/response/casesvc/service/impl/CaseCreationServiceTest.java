@@ -16,6 +16,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitChild;
@@ -37,6 +38,9 @@ public class CaseCreationServiceTest {
 
   @Mock
   private CaseRepository caseRepo;
+  
+  @Mock
+  private CaseEventRepository caseEventRepo;
 
   /**
    * Create a Case and a Casegroup from the message that would be on the Case
