@@ -232,37 +232,36 @@ public class CaseDistributor {
    *         CaseNotifications sent to the action service
    */
   private CaseNotification processCase(final Case caze, String iac) {
-    log.info("processing caseid {}", caze.getCasePK());
+    log.info("processing caseid {}", caze.getId());
     return transactionTemplate.execute(
             new TransactionCallback<CaseNotification>() {
-      // the code in this method executes in a transactional context
-      public CaseNotification doInTransaction(final TransactionStatus status) {
-        CaseNotification caseNotification = null;
-        // update our cases state in db
-        CaseDTO.CaseEvent event = null;
-        switch (caze.getState()) {
-        case SAMPLED_INIT:
-          event = CaseDTO.CaseEvent.ACTIVATED;
-          break;
-        case REPLACEMENT_INIT:
-          event = CaseDTO.CaseEvent.REPLACED;
-          break;
-        default:
-          String msg = String.format("Case %d has incorrect state %s",
-                  caze.getCasePK(), caze.getState());
-          log.error(msg);
-          throw new RuntimeException(msg);
-        }
-        Case updatedCase = transitionCase(caze, event);
-        updatedCase.setIac(iac);
+              // the code in this method executes in a transactional context
+              public CaseNotification doInTransaction(final TransactionStatus status) {
+                CaseNotification caseNotification = null;
+                // update our cases state in db
+                CaseDTO.CaseEvent event = null;
+                switch (caze.getState()) {
+                  case SAMPLED_INIT:
+                    event = CaseDTO.CaseEvent.ACTIVATED;
+                    break;
+                  case REPLACEMENT_INIT:
+                    event = CaseDTO.CaseEvent.REPLACED;
+                    break;
+                  default:
+                    String msg = String.format("Case id %s has incorrect state %s", caze.getId(), caze.getState());
+                    log.error(msg);
+                }
 
-        caseRepo.saveAndFlush(updatedCase);
+                Case updatedCase = transitionCase(caze, event);
+                updatedCase.setIac(iac);
 
-        // create the request, filling in details by GETs from casesvc
-        caseNotification = caseService.prepareCaseNotification(caze, event);
-        return caseNotification;
-      }
-    });
+                caseRepo.saveAndFlush(updatedCase);
+
+                // create the request, filling in details by GETs from casesvc
+                caseNotification = caseService.prepareCaseNotification(caze, event);
+                return caseNotification;
+              }
+            });
   }
 
   /**
