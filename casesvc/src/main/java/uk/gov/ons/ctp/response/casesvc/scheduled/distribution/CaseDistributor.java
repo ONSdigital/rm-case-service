@@ -15,7 +15,6 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 import uk.gov.ons.ctp.common.distributed.DistributedListManager;
 import uk.gov.ons.ctp.common.distributed.LockingException;
-import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
@@ -230,7 +229,7 @@ public class CaseDistributor {
     return transactionTemplate.execute(
             new TransactionCallback<CaseNotification>() {
               // the code in this method executes in a transactional context
-              public CaseNotification doInTransaction(final TransactionStatus status) throws CTPException {
+              public CaseNotification doInTransaction(final TransactionStatus status) {
                 CaseNotification caseNotification = null;
                 // update our cases state in db
                 CaseDTO.CaseEvent event = null;
