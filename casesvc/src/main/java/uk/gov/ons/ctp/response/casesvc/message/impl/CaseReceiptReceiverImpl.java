@@ -28,19 +28,19 @@ import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 @MessageEndpoint
 public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
 
-  public final static String EXISTING_CASE_NOT_FOUND = "No existing case found for caseRef %s";
+  private final static String EXISTING_CASE_NOT_FOUND = "No existing case found for caseRef %s";
 
   @Autowired
   private CaseService caseService;
 
   /**
    * To process CaseReceipts read from queue
+   *
    * @param caseReceipt to process
-   * @throws CTPException when no existing case found
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, value = "transactionManager")
   @ServiceActivator(inputChannel = "caseReceiptTransformed", adviceChain = "caseReceiptRetryAdvice")
-  public void process(CaseReceipt caseReceipt) throws CTPException {
+  public void process(CaseReceipt caseReceipt) {
     log.debug("entering process with caseReceipt {}", caseReceipt);
     String caseRef = caseReceipt.getCaseRef().trim();
     InboundChannel inboundChannel = caseReceipt.getInboundChannel();
@@ -51,7 +51,7 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
     log.debug("existingCase is {}", existingCase);
 
     if (existingCase == null) {
-      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, String.format(EXISTING_CASE_NOT_FOUND, caseRef));
+      log.error(String.format(EXISTING_CASE_NOT_FOUND, caseRef));
     } else {
       CaseEvent caseEvent = new CaseEvent();
       caseEvent.setCaseFK(existingCase.getCasePK());
