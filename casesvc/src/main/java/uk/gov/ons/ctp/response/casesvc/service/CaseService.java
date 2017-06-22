@@ -1,15 +1,15 @@
 package uk.gov.ons.ctp.response.casesvc.service;
 
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.UUID;
-
 import uk.gov.ons.ctp.common.service.CTPService;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * The Case Service interface defines all business behaviours for operations on
@@ -19,19 +19,19 @@ public interface CaseService extends CTPService {
 
   /**
    * Find the cases in a casegroup.
-   * 
+   *
    * @param caseGroupFK the group.
    * @return the cases in the group.
    */
-  List<Case> findCasesByCaseGroupFK(final Integer caseGroupFK);
+  List<Case> findCasesByCaseGroupFK(Integer caseGroupFK);
 
   /**
    * Find the cases for a partyId.
-   * 
+   *
    * @param partyId the partyId
    * @return the cases for the partyId
    */
-  List<Case> findCasesByPartyId(final UUID partyId);
+  List<Case> findCasesByPartyId(UUID partyId);
 
   /**
    * Find Case entity by Unique Case PK.
@@ -107,7 +107,7 @@ public interface CaseService extends CTPService {
    * case svc need to build a CaseNotification for a Case and need the services
    * of the ActionPlanMappingService to get the actionPlanId This method just
    * creates a CaseNotification
-   * 
+   *
    * @param caze The Case
    * @param transitionEvent the event to inform the recipient of
    * @return the newly created notification object

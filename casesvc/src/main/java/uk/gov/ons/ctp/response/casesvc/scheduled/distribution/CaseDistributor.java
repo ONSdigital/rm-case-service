@@ -1,10 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.scheduled.distribution;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.sleuth.Span;
 import org.springframework.cloud.sleuth.Tracer;
@@ -17,8 +13,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
-
-import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.distributed.DistributedListManager;
 import uk.gov.ons.ctp.common.distributed.LockingException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
@@ -31,6 +25,11 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseState;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This is the 'service' class that distributes cases to the action service. It
@@ -59,11 +58,8 @@ public class CaseDistributor {
   private static final String CASE_DISTRIBUTOR_SPAN = "caseDistributor";
   private static final String CASE_DISTRIBUTOR_LIST_ID = "case";
 
-  // this is a bit of a kludge - jpa does not like having an IN clause with an
-  // empty list
-  // it does not return results when you expect it to - so ... always have this
-  // in the list
-  // of excluded case ids
+  // this is a bit of a kludge - jpa does not like having an IN clause with an empty list
+  // it does not return results when you expect it to - so ... always have this in the list of excluded case ids
   private static final int IMPOSSIBLE_CASE_ID = Integer.MAX_VALUE;
 
   private static final long MILLISECONDS = 1000L;
@@ -131,15 +127,14 @@ public class CaseDistributor {
         for (int idx = 0; idx < cases.size(); idx++) {
           Case caze = cases.get(idx);
           if (idx % iacPageSize == 0) {
-            int codesToRequest = (idx < cases.size() /
-                    iacPageSize * iacPageSize) ? iacPageSize
+            int codesToRequest = (idx < cases.size()
+                    / iacPageSize * iacPageSize) ? iacPageSize
                 : (cases.size() % iacPageSize);
             try {
               codes = internetAccessCodeSvcClientService.generateIACs(codesToRequest);
             } catch (Exception e) {
               log.error("Failed to obtain IAC block");
-              // exit case loop and send notifications of cases activated so far
-              // to action svc
+              // exit case loop and send notifications of cases activated so far to action svc
               break;
             }
           }
@@ -162,7 +157,7 @@ public class CaseDistributor {
 
         publishCases(caseNotifications);
 
-        caseDistributionListManager.deleteList(CASE_DISTRIBUTOR_LIST_ID,true);
+        caseDistributionListManager.deleteList(CASE_DISTRIBUTOR_LIST_ID, true);
       }
 
       try {
@@ -182,16 +177,16 @@ public class CaseDistributor {
   }
 
   /**
-   * Get the oldest page of INIT cases to activate - but do not retrieve the
+   * Get the oldest page of SAMPLED_INIT & REPLACEMENT_INIT cases to activate - but do not retrieve the
    * same cases as other CaseSvc' in the cluster
    *
+   * @throws LockingException locking exception thrown
    * @return list of cases
    */
   private List<Case> retrieveCases() throws LockingException {
     List<Case> cases = new ArrayList<>();
 
-    List<Integer> excludedCases = caseDistributionListManager.findList(
-            CASE_DISTRIBUTOR_LIST_ID, false);
+    List<Integer> excludedCases = caseDistributionListManager.findList(CASE_DISTRIBUTOR_LIST_ID, false);
 
     // using the distributed map of lists of cases that other nodes are processing
     // flatten them into a list of case ids to exclude from our query
@@ -202,13 +197,11 @@ public class CaseDistributor {
     Pageable pageable = new PageRequest(0, appConfig.getCaseDistribution().getRetrievalMax(),
             new Sort(new Sort.Order(Direction.ASC, "createdDateTime")));
     excludedCases.add(Integer.valueOf(IMPOSSIBLE_CASE_ID));
-    cases = caseRepo
-        .findByStateInAndCasePKNotIn(Arrays.asList(CaseState.SAMPLED_INIT, CaseState.REPLACEMENT_INIT),
-            excludedCases,
-            pageable);
+    cases = caseRepo.findByStateInAndCasePKNotIn(Arrays.asList(CaseState.SAMPLED_INIT, CaseState.REPLACEMENT_INIT),
+            excludedCases, pageable);
 
-    log.debug("RETRIEVED case ids {}", cases.stream().map(a -> a.getCasePK().toString())
-        .collect(Collectors.joining(",")));
+    log.debug("RETRIEVED case ids {}", cases.stream().map(a -> a.getCasePK().toString()).collect(
+            Collectors.joining(",")));
 
     // try and save our list to the distributed store
     if (cases.size() > 0) {
@@ -232,37 +225,37 @@ public class CaseDistributor {
    *         CaseNotifications sent to the action service
    */
   private CaseNotification processCase(final Case caze, String iac) {
-    log.info("processing caseid {}", caze.getCasePK());
+    log.info("processing caseid {}", caze.getId());
     return transactionTemplate.execute(
             new TransactionCallback<CaseNotification>() {
-      // the code in this method executes in a transactional context
-      public CaseNotification doInTransaction(final TransactionStatus status) {
-        CaseNotification caseNotification = null;
-        // update our cases state in db
-        CaseDTO.CaseEvent event = null;
-        switch (caze.getState()) {
-        case SAMPLED_INIT:
-          event = CaseDTO.CaseEvent.ACTIVATED;
-          break;
-        case REPLACEMENT_INIT:
-          event = CaseDTO.CaseEvent.REPLACED;
-          break;
-        default:
-          String msg = String.format("Case %d has incorrect state %s",
-                  caze.getCasePK(), caze.getState());
-          log.error(msg);
-          throw new RuntimeException(msg);
-        }
-        Case updatedCase = transitionCase(caze, event);
-        updatedCase.setIac(iac);
+              // the code in this method executes in a transactional context
+              public CaseNotification doInTransaction(final TransactionStatus status) {
+                CaseNotification caseNotification = null;
+                // update our cases state in db
+                CaseDTO.CaseEvent event = null;
+                switch (caze.getState()) {
+                  case SAMPLED_INIT:
+                    event = CaseDTO.CaseEvent.ACTIVATED;
+                    break;
+                  case REPLACEMENT_INIT:
+                    event = CaseDTO.CaseEvent.REPLACED;
+                    break;
+                  default:
+                    String msg = String.format("Case id %s has incorrect state %s", caze.getId(), caze.getState());
+                    log.error(msg);
+                    throw new RuntimeException(msg);
+                }
 
-        caseRepo.saveAndFlush(updatedCase);
+                Case updatedCase = transitionCase(caze, event);
+                updatedCase.setIac(iac);
 
-        // create the request, filling in details by GETs from casesvc
-        caseNotification = caseService.prepareCaseNotification(caze, event);
-        return caseNotification;
-      }
-    });
+                caseRepo.saveAndFlush(updatedCase);
+
+                // create the request, filling in details by GETs from casesvc
+                caseNotification = caseService.prepareCaseNotification(caze, event);
+                return caseNotification;
+              }
+            });
   }
 
   /**
@@ -275,8 +268,7 @@ public class CaseDistributor {
    * @return the transitioned case
    */
   private Case transitionCase(final Case caze, final CaseDTO.CaseEvent event) {
-    CaseDTO.CaseState nextState = caseSvcStateTransitionManager.transition(
-            caze.getState(), event);
+    CaseDTO.CaseState nextState = caseSvcStateTransitionManager.transition(caze.getState(), event);
     caze.setState(nextState);
     return caze;
   }

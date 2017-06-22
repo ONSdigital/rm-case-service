@@ -1,9 +1,15 @@
 package uk.gov.ons.ctp.response.casesvc.domain.model;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,18 +24,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Version;
-
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
-import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
+import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Domain model object.
@@ -64,13 +62,14 @@ public class Case implements Serializable {
 
   @Column(name = "casegroupid")
   private UUID caseGroupId;
-  
+
   @Column(name = "sourcecase")
   private Integer sourceCaseId;
 
   @Generated(GenerationTime.INSERT)
 // @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "caserefseq_gen")
-// @GenericGenerator(name = "caserefseq_gen", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
+// @GenericGenerator(name = "caserefseq_gen", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+// parameters = {
 // @Parameter(name = "sequence_name", value = "casesvc.caserefseq"),
 // @Parameter(name = "increment_size", value = "1")})
   @Column(name = "caseref", nullable = false, unique = true, insertable = false, updatable = false,
@@ -104,6 +103,9 @@ public class Case implements Serializable {
 
   private String iac;
 
+  /**
+   * Trims spaces from IAC after load
+   */
   @PostLoad
   public void trimIACAfterLoad() {
     if (iac != null) {

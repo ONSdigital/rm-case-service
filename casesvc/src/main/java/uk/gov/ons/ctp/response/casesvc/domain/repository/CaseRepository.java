@@ -1,15 +1,14 @@
 package uk.gov.ons.ctp.response.casesvc.domain.repository;
 
-import java.util.List;
-import java.util.UUID;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * JPA Data Repository.
@@ -35,7 +34,7 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
    * @return the cases in the group
    */
   List<Case> findByCaseGroupFKOrderByCreatedDateTimeDesc(Integer caseGroupFK);
-  
+
   /**
    * Find cases assigned to the given iac
    * There should only be one - it is the job of the caller to complain if there is >1

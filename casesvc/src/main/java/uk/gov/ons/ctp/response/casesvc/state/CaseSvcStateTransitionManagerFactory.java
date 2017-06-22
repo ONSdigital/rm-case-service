@@ -51,10 +51,9 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
     transitions.put(CaseState.INACTIONABLE, transitionMapForInactionable);
 
     StateTransitionManager<CaseState, CaseEvent> caseStateTransitionManager =
-        new BasicStateTransitionManager<>(transitions);
+            new BasicStateTransitionManager<>(transitions);
 
     managers.put(CASE_ENTITY, caseStateTransitionManager);
-
   }
 
   @SuppressWarnings("unchecked")

@@ -95,7 +95,7 @@ public class CaseSvcApplication {
     RestClient restHelper = new RestClient(appConfig.getInternetAccessCodeSvc().getConnectionConfig());
     return restHelper;
   }
-  
+
   /**
    * The action service client bean
    * @return the RestClient for the action service
@@ -106,7 +106,7 @@ public class CaseSvcApplication {
     RestClient restHelper = new RestClient(appConfig.getActionSvc().getConnectionConfig());
     return restHelper;
   }
-  
+
   /**
    * The collectionExercise service client bean
    * @return the RestClient for the collectionExercise service
@@ -135,7 +135,7 @@ public class CaseSvcApplication {
   public CustomObjectMapper customObjectMapper() {
     return new CustomObjectMapper();
   }
-  
+
   /**
    * The main entry point for this applicaion.
    *

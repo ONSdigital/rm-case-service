@@ -1,14 +1,13 @@
 package uk.gov.ons.ctp.response.iac.representation;
 
-import java.sql.Timestamp;
-import java.util.UUID;
-
-import javax.validation.constraints.NotNull;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
+import java.util.UUID;
 
 /**
  * Domain model object for representation of the IAC data in the context of its associated case.
@@ -31,6 +30,6 @@ public class InternetAccessCodeCaseContextDTO {
 
   @NotNull
   private String questionSet;
-  
+
   private Timestamp lastUsedDateTime;
 }

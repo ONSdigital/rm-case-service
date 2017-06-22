@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.message;
 
+import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
 
 /**
@@ -9,6 +10,7 @@ public interface CaseReceiptReceiver {
   /**
    * To process CaseReceipts read from queue
    * @param caseReceipt to process
+   * @throws CTPException when no existing case found
    */
-  void process(CaseReceipt caseReceipt);
+  void process(CaseReceipt caseReceipt) throws CTPException;
 }

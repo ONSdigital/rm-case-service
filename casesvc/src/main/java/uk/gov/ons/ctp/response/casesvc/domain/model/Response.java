@@ -1,7 +1,12 @@
 package uk.gov.ons.ctp.response.casesvc.domain.model;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,15 +16,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
+import java.io.Serializable;
+import java.sql.Timestamp;
 
 /**
  * Domain model object.
@@ -36,9 +34,10 @@ public class Response implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "responseseq_gen")
-  @GenericGenerator(name = "responseseq_gen", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
-      @Parameter(name = "sequence_name", value = "casesvc.responseidseq"),
-      @Parameter(name = "increment_size", value = "1")
+  @GenericGenerator(name = "responseseq_gen", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+          parameters = {
+            @Parameter(name = "sequence_name", value = "casesvc.responseidseq"),
+            @Parameter(name = "increment_size", value = "1")
   })
   @Column(name = "responsepk")
   private Integer responsepk;

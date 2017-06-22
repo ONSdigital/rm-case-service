@@ -20,7 +20,7 @@ public class CaseCreationRequestDTO {
   private String title;
 
   private String forename;
-  
+
   private String surname;
    
   private String phoneNumber;

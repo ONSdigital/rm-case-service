@@ -1,8 +1,39 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
+import ma.glasnost.orika.MapperFacade;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import uk.gov.ons.ctp.common.FixtureHelper;
+import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.common.error.RestExceptionHandler;
+import uk.gov.ons.ctp.common.jackson.CustomObjectMapper;
+import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
+import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
+import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
+import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
+import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
+import uk.gov.ons.ctp.response.casesvc.service.CaseService;
+import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
 import static org.mockito.Matchers.any;
@@ -19,38 +50,6 @@ import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.CATEGORY_IAC
 import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.ERRORMSG_CASENOTFOUND;
 import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseGroupEndpoint.ERRORMSG_CASEGROUPNOTFOUND;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import ma.glasnost.orika.MapperFacade;
-import uk.gov.ons.ctp.common.FixtureHelper;
-import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.common.error.RestExceptionHandler;
-import uk.gov.ons.ctp.common.jackson.CustomObjectMapper;
-import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
-import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
-import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
-import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
-import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
-import uk.gov.ons.ctp.response.casesvc.service.CaseService;
-import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
 
 /**
  * Case Endpoint Unit tests
@@ -117,7 +116,8 @@ public final class CaseEndpointUnitTest {
   private static final String CASEEVENT_INVALIDJSON =
           "{\"description\":\"a\",\"category\":\"BAD_CAT\",\"createdBy\":\"u\"}";
   private static final String CASEEVENT_VALIDJSON =
-          "{\"description\":\"sometest\",\"category\":\"RESPONDENT_ENROLED\",\"partyId\":\"3b136c4b-7a14-4904-9e01-13364dd7b971\",\"createdBy\":\"unittest\"}";
+          "{\"description\":\"sometest\",\"category\":\"RESPONDENT_ENROLED\",\"partyId\":"
+                  + "\"3b136c4b-7a14-4904-9e01-13364dd7b971\",\"createdBy\":\"unittest\"}";
   private static final String CASEEVENT_VALIDJSON_NO_PARTY =
           "{\"description\":\"sometest\",\"category\":\"RESPONDENT_ENROLED\",\"createdBy\":\"unittest\"}";
 
@@ -142,7 +142,10 @@ public final class CaseEndpointUnitTest {
   private List<CaseEvent> caseEventsResults;
   private List<Category> categoryResults;
 
-
+  /**
+   * Set up of tests
+   * @throws Exception exception thrown
+   */
   @Before
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
@@ -159,6 +162,10 @@ public final class CaseEndpointUnitTest {
     this.categoryResults = FixtureHelper.loadClassFixtures(Category[].class);
   }
 
+  /**
+   * Tests if case found by id and checks case events and iac.
+   * @throws Exception exception thrown
+   */
   @Test
   public void findCaseByCaseIdFoundWithCaseEventsAndIac() throws Exception {
     when(caseService.findCaseById(CASE1_ID)).thenReturn(caseResults.get(0));
@@ -420,7 +427,7 @@ public final class CaseEndpointUnitTest {
     when(caseService.findCasesByCaseGroupFK(any())).thenReturn(caseResults);
 
     ResultActions actions = mockMvc.perform(getJson(String.format("/cases/casegroupid/%s", EXISTING_CASE_GROUP_UUID)));
-    
+
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCasesInCaseGroup"));
@@ -511,6 +518,7 @@ public final class CaseEndpointUnitTest {
   
   /**
    * a test providing a non existing case ID
+   * @throws Exception exception thrown
    */
   @Test
   public void createCaseEventCaseNotFound() throws Exception {
@@ -547,6 +555,7 @@ public final class CaseEndpointUnitTest {
 
   /**
    * a test providing good json
+   * @throws Exception exception thrown
    */
   @Test
   public void createCaseEventGoodJson() throws Exception {
