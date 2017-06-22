@@ -241,18 +241,13 @@ public class CaseServiceImpl implements CaseService {
    * @param newCase the details for the new case (if indeed one is required)
    *          else null
    */
-  private void createNewCase(Category category, CaseEvent caseEvent, Case targetCase,
-      Case newCase) {
+  private void createNewCase(Category category, CaseEvent caseEvent, Case targetCase, Case newCase) {
     if (category.getNewCaseSampleUnitType() != null) {
-      // TODO Use the value recalcCollectionInstrument in Category: true = we
-      // need to call the Collection Exercise
-      // TODO service to set the collectionInstrumentId on the new case - false
-      // = we use the value on the target case.
-
       // add sampleUnitType and actionplanId to newCase
       buildNewCase(category, newCase, targetCase);
 
       Boolean calculationRequired = category.getRecalcCollectionInstrument();
+      // TODO if calculationRequired true = we need to call the Collection Exercise (will only happen for CENSUS)
       if (calculationRequired == null || !calculationRequired) {
         newCase.setCollectionInstrumentId(targetCase.getCollectionInstrumentId());
       }
