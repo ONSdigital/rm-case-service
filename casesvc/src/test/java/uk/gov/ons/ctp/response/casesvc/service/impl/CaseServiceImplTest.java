@@ -35,14 +35,11 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import static junit.framework.TestCase.assertNull;
-import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.*;
-import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.MISSING_NEW_CASE_MSG;
-import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.WRONG_OLD_SAMPLE_UNIT_TYPE_MSG;
 
 /**
  * Test the CaseServiceImpl primarily the createCaseEvent functionality. Note
@@ -565,24 +562,20 @@ public class CaseServiceImplTest {
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED,
             ACTIONABLE_H_INDIVIDUAL_CASE_FK);
-    try {
-      Case oldCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
-      caseService.createCaseEvent(caseEvent, oldCase);
-      fail();
-    } catch (RuntimeException re) {
-      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, "HI", "H"), re.getMessage());
-      verify(caseRepo, times(2)).findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
-      verify(categoryRepo).findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED);
-      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-      // IAC should not be disabled
-      verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
-      verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
-      verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
-          any(String.class));
-      verify(caseEventRepository, times(0)).save(caseEvent);
-    }
-  }
 
+    Case oldCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
+    assertNull(caseService.createCaseEvent(caseEvent, oldCase));
+
+    verify(caseRepo, times(2)).findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED);
+    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+    // IAC should not be disabled
+    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
+    verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+          any(String.class));
+    verify(caseEventRepository, times(0)).save(caseEvent);
+  }
 
   /**
    * Tries to apply a Household event against an Individual Case NOT ALLOWED!.
@@ -599,22 +592,18 @@ public class CaseServiceImplTest {
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.HOUSEHOLD_PAPER_REQUESTED,
             ACTIONABLE_H_INDIVIDUAL_CASE_FK);
-    try {
-      Case oldCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
-      caseService.createCaseEvent(caseEvent, oldCase);
-      fail();
-    } catch (RuntimeException re) {
-      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, "HI", "H"), re.getMessage());
-      // one of the caseRepo calls is the test loading indCase
-      verify(caseRepo, times(2)).findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
-      verify(categoryRepo).findOne(CategoryDTO.CategoryName.HOUSEHOLD_PAPER_REQUESTED);
-      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-      verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
-      verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+
+    Case oldCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
+    assertNull(caseService.createCaseEvent(caseEvent, oldCase));
+
+    verify(caseRepo, times(2)).findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.HOUSEHOLD_PAPER_REQUESTED);
+    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+    verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
           any(String.class));
-      verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
-      verify(caseEventRepository, times(0)).save(caseEvent);
-    }
+    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
+    verify(caseEventRepository, times(0)).save(caseEvent);
   }
 
   /**
@@ -632,20 +621,16 @@ public class CaseServiceImplTest {
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED,
             ACTIONABLE_HOUSEHOLD_CASE_FK);
 
-    try {
-      caseService.createCaseEvent(caseEvent, null);
-      fail();
-    } catch (RuntimeException re) {
-      assertEquals(String.format(MISSING_NEW_CASE_MSG, ACTIONABLE_HOUSEHOLD_CASE_FK), re.getMessage());
-      verify(caseRepo).findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
-      verify(categoryRepo).findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED);
-      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-      verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
-      verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+    assertNull(caseService.createCaseEvent(caseEvent, null));
+
+    verify(caseRepo).findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED);
+    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+    verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
           any(String.class));
-      verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
-      verify(caseEventRepository, times(0)).save(caseEvent);
-    }
+    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
+    verify(caseEventRepository, times(0)).save(caseEvent);
   }
 
   /**
@@ -867,22 +852,16 @@ public class CaseServiceImplTest {
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT,
             ACTIONABLE_BI_CASE_FK);
 
-    try {
-      caseService.createCaseEvent(caseEvent, null);
-      fail();
-    } catch (RuntimeException re) {
-      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, existingCase.getSampleUnitType(),
-              categories.get(CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT).getOldCaseSampleUnitTypes()), re.getMessage());
-      verify(caseRepo).findOne(ACTIONABLE_BI_CASE_FK);
-      verify(categoryRepo).findOne(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
-      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-      verify(notificationPublisher, times(0)).sendNotifications(
-              anyListOf(CaseNotification.class));
-      verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
-              any(Integer.class), any(String.class));
-      verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
-      verify(caseEventRepository, times(0)).save(caseEvent);
-    }
+    assertNull(caseService.createCaseEvent(caseEvent, null));
+
+    verify(caseRepo).findOne(ACTIONABLE_BI_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
+    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+    verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+            any(String.class));
+    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
+    verify(caseEventRepository, times(0)).save(caseEvent);
   }
 
   /**
@@ -930,24 +909,17 @@ public class CaseServiceImplTest {
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED, ACTIONABLE_BI_CASE_FK);
 
-    try {
-      caseService.createCaseEvent(caseEvent, null);
-      fail();
-    } catch (RuntimeException re) {
-      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, existingCase.getSampleUnitType(),
-              categories.get(CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT).getOldCaseSampleUnitTypes()), re.getMessage());
-      verify(caseRepo).findOne(ACTIONABLE_BI_CASE_FK);
-      verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED);
-      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-      verify(notificationPublisher, times(0)).sendNotifications(
-              anyListOf(CaseNotification.class));
-      verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
-              any(Integer.class), any(String.class));
-      verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
-      verify(caseEventRepository, times(0)).save(caseEvent);
-    }
-  }
+    assertNull(caseService.createCaseEvent(caseEvent, null));
 
+    verify(caseRepo).findOne(ACTIONABLE_BI_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED);
+    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+    verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+            any(String.class));
+    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
+    verify(caseEventRepository, times(0)).save(caseEvent);
+  }
 
   /**
    * We create a CaseEvent with category RESPONDENT_ENROLED on an ACTIONABLE BRES case
@@ -1019,23 +991,16 @@ public class CaseServiceImplTest {
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ENROLED, ACTIONABLE_BI_CASE_FK);
 
-    try {
-      caseService.createCaseEvent(caseEvent, null);
-      fail();
-    } catch (RuntimeException re) {
-      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, existingCase.getSampleUnitType(),
-              categories.get(CAT_RESPONDENT_ENROLED).getOldCaseSampleUnitTypes()), re.getMessage());
-      verify(caseRepo).findOne(ACTIONABLE_BI_CASE_FK);
-      verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED);
-      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-      verify(notificationPublisher, times(0)).sendNotifications(
-              anyListOf(CaseNotification.class));
-      verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
-              any(Integer.class),
-              any(String.class));
-      verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
-      verify(caseEventRepository, times(0)).save(caseEvent);
-    }
+    assertNull(caseService.createCaseEvent(caseEvent, null));
+
+    verify(caseRepo).findOne(ACTIONABLE_BI_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED);
+    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+    verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+            any(String.class));
+    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
+    verify(caseEventRepository, times(0)).save(caseEvent);
   }
 
   /**
@@ -1054,22 +1019,16 @@ public class CaseServiceImplTest {
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ENROLED,
             ACTIONABLE_BUSINESS_UNIT_CASE_FK);
 
-    try {
-      caseService.createCaseEvent(caseEvent, null);
-      fail();
-    } catch (RuntimeException re) {
-      assertEquals(String.format(MISSING_NEW_CASE_MSG, ACTIONABLE_BUSINESS_UNIT_CASE_FK), re.getMessage());
-      verify(caseRepo).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-      verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED);
-      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-      verify(notificationPublisher, times(0)).sendNotifications(
-              anyListOf(CaseNotification.class));
-      verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
-              any(Integer.class),
-              any(String.class));
-      verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
-      verify(caseEventRepository, times(0)).save(caseEvent);
-    }
+    assertNull(caseService.createCaseEvent(caseEvent, null));
+
+    verify(caseRepo).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED);
+    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+    verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+            any(String.class));
+    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
+    verify(caseEventRepository, times(0)).save(caseEvent);
   }
 
   /**
@@ -1117,23 +1076,16 @@ public class CaseServiceImplTest {
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED,
             ACTIONABLE_BUSINESS_UNIT_CASE_FK);
 
-    try {
-      caseService.createCaseEvent(caseEvent, null);
-      fail();
-    } catch (RuntimeException re) {
-      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, existingCase.getSampleUnitType(),
-              categories.get(CAT_COLLECTION_INSTRUMENT_DOWNLOADED).getOldCaseSampleUnitTypes()), re.getMessage());
-      verify(caseRepo).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-      verify(categoryRepo).findOne(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED);
-      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-      verify(notificationPublisher, times(0)).sendNotifications(
-              anyListOf(CaseNotification.class));
-      verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
-              any(Integer.class),
-              any(String.class));
-      verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
-      verify(caseEventRepository, times(0)).save(caseEvent);
-    }
+    assertNull(caseService.createCaseEvent(caseEvent, null));
+
+    verify(caseRepo).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED);
+    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+    verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
+            any(String.class));
+    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
+    verify(caseEventRepository, times(0)).save(caseEvent);
   }
 
   /**
@@ -1181,23 +1133,16 @@ public class CaseServiceImplTest {
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOAD,
             ACTIONABLE_BUSINESS_UNIT_CASE_FK);
 
-    try {
-      caseService.createCaseEvent(caseEvent, null);
-      fail();
-    } catch (RuntimeException re) {
-      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, existingCase.getSampleUnitType(),
-              categories.get(CAT_UNSUCCESSFUL_RESPONSE_UPLOAD).getOldCaseSampleUnitTypes()), re.getMessage());
-      verify(caseRepo).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-      verify(categoryRepo).findOne(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOAD);
-      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-      verify(notificationPublisher, times(0)).sendNotifications(
-              anyListOf(CaseNotification.class));
-      verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
-              any(Integer.class),
+    assertNull(caseService.createCaseEvent(caseEvent, null));
+
+    verify(caseRepo).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOAD);
+    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+    verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
               any(String.class));
-      verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
-      verify(caseEventRepository, times(0)).save(caseEvent);
-    }
+    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
+    verify(caseEventRepository, times(0)).save(caseEvent);
   }
 
   /**
@@ -1245,23 +1190,16 @@ public class CaseServiceImplTest {
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED,
             ACTIONABLE_BUSINESS_UNIT_CASE_FK);
 
-    try {
-      caseService.createCaseEvent(caseEvent, null);
-      fail();
-    } catch (RuntimeException re) {
-      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, existingCase.getSampleUnitType(),
-              categories.get(CAT_OFFLINE_RESPONSE_PROCESSED).getOldCaseSampleUnitTypes()), re.getMessage());
-      verify(caseRepo).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-      verify(categoryRepo).findOne(CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED);
-      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-      verify(notificationPublisher, times(0)).sendNotifications(
-              anyListOf(CaseNotification.class));
-      verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
-              any(Integer.class),
+    assertNull(caseService.createCaseEvent(caseEvent, null));
+
+    verify(caseRepo).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED);
+    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+    verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
               any(String.class));
-      verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
-      verify(caseEventRepository, times(0)).save(caseEvent);
-    }
+    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
+    verify(caseEventRepository, times(0)).save(caseEvent);
   }
 
   /**
@@ -1280,23 +1218,16 @@ public class CaseServiceImplTest {
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD,
             ACTIONABLE_BUSINESS_UNIT_CASE_FK);
 
-    try {
-      caseService.createCaseEvent(caseEvent, null);
-      fail();
-    } catch (RuntimeException re) {
-      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, existingCase.getSampleUnitType(),
-              categories.get(CAT_SUCCESSFUL_RESPONSE_UPLOAD).getOldCaseSampleUnitTypes()), re.getMessage());
-      verify(caseRepo).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-      verify(categoryRepo).findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD);
-      verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-      verify(notificationPublisher, times(0)).sendNotifications(
-              anyListOf(CaseNotification.class));
-      verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
-              any(Integer.class),
+    assertNull(caseService.createCaseEvent(caseEvent, null));
+
+    verify(caseRepo).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD);
+    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+    verify(notificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(Integer.class),
               any(String.class));
-      verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
-      verify(caseEventRepository, times(0)).save(caseEvent);
-    }
+    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
+    verify(caseEventRepository, times(0)).save(caseEvent);
   }
 
   /**
