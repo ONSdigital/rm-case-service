@@ -8,12 +8,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
-import uk.gov.ons.ctp.response.casesvc.domain.model.UnlinkedCaseReceipt;
 import uk.gov.ons.ctp.response.casesvc.message.CaseReceiptReceiver;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
-import uk.gov.ons.ctp.response.casesvc.service.UnlinkedCaseReceiptService;
 
 import java.sql.Timestamp;
 
@@ -32,9 +30,6 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
   @Autowired
   private CaseService caseService;
 
-  @Autowired
-  private UnlinkedCaseReceiptService unlinkedCaseReceiptService;
-
   /**
    * To process CaseReceipts read from queue
    * @param caseReceipt to process
@@ -52,12 +47,13 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
     log.debug("existingCase is {}", existingCase);
 
     if (existingCase == null) {
-      UnlinkedCaseReceipt unlinkedCaseReceipt = new UnlinkedCaseReceipt();
-      unlinkedCaseReceipt.setCaseRef(caseRef);
-      unlinkedCaseReceipt.setInboundChannel(
-              uk.gov.ons.ctp.response.casesvc.representation.InboundChannel.valueOf(inboundChannel.name()));
-      unlinkedCaseReceipt.setResponseDateTime(responseTimestamp);
-      unlinkedCaseReceiptService.createUnlinkedCaseReceipt(unlinkedCaseReceipt);
+// TODO Throw exception?
+//      UnlinkedCaseReceipt unlinkedCaseReceipt = new UnlinkedCaseReceipt();
+//      unlinkedCaseReceipt.setCaseRef(caseRef);
+//      unlinkedCaseReceipt.setInboundChannel(
+//              uk.gov.ons.ctp.response.casesvc.representation.InboundChannel.valueOf(inboundChannel.name()));
+//      unlinkedCaseReceipt.setResponseDateTime(responseTimestamp);
+//      unlinkedCaseReceiptService.createUnlinkedCaseReceipt(unlinkedCaseReceipt);
     } else {
       CaseEvent caseEvent = new CaseEvent();
       caseEvent.setCaseFK(existingCase.getCasePK());
