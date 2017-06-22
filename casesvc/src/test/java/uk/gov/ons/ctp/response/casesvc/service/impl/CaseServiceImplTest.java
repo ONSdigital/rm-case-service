@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.ons.ctp.common.FixtureHelper;
+import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
@@ -32,14 +33,17 @@ import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientServic
 import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.*;
+import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.IAC_OVERUSE_MSG;
 
 /**
  * Test the CaseServiceImpl primarily the createCaseEvent functionality. Note
@@ -124,6 +128,7 @@ public class CaseServiceImplTest {
   private static final String CASEEVENT_CREATEDBY = "unit test";
   private static final String CASEEVENT_DESCRIPTION = "a desc";
   private static final String CASEEVENT_SUBCATEGORY = "sub category";
+  private static final String IAC_FOR_TEST = "ABCD-EFGH-IJKL";
 
   @Mock
   private CaseRepository caseRepo;
@@ -176,6 +181,46 @@ public class CaseServiceImplTest {
     mockAppConfigUse();
     mockupCaseEventRepo();
     mockupCollectionExerciseServiceClient();
+  }
+
+  /**
+   * To test findCaseByIac when no case is found for given IAC
+   *
+   * @throws CTPException if findCaseByIac does
+   */
+  @Test
+  public void testFindCaseByIacNoCaseFound() throws CTPException {
+    assertNull(caseService.findCaseByIac(IAC_FOR_TEST));
+  }
+
+  /**
+   * To test findCaseByIac when more than one case is found for given IAC
+   */
+  @Test
+  public void testFindCaseByIacMoreThanOneCaseFound() {
+    Mockito.when(caseRepo.findByIac(IAC_FOR_TEST)).thenReturn(cases);
+
+    try {
+      caseService.findCaseByIac(IAC_FOR_TEST);
+      fail();
+    } catch (CTPException e) {
+      assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
+      assertEquals(String.format(IAC_OVERUSE_MSG, IAC_FOR_TEST), e.getMessage());
+    }
+  }
+
+  /**
+   * To test findCaseByIac when one case is found for given IAC
+   *
+   * @throws CTPException if findCaseByIac does
+   */
+  @Test
+  public void testFindCaseByIacOneCaseFound() throws CTPException {
+    List<Case> result = new ArrayList<>();
+    result.add(cases.get(0));
+    Mockito.when(caseRepo.findByIac(IAC_FOR_TEST)).thenReturn(result);
+
+    assertEquals(cases.get(0), caseService.findCaseByIac(IAC_FOR_TEST));
   }
 
   /**

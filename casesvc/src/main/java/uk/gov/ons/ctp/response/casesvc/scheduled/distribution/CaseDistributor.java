@@ -243,7 +243,7 @@ public class CaseDistributor {
                   default:
                     String msg = String.format("Case id %s has incorrect state %s", caze.getId(), caze.getState());
                     log.error(msg);
-                    throw new RuntimeException(msg);
+                    throw new RuntimeException(msg);  // Recommended way by Spring to come out of a TransactionCallback
                 }
 
                 Case updatedCase = transitionCase(caze, event);

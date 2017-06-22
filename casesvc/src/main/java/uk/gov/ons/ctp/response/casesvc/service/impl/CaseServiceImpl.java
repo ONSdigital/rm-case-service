@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
@@ -50,12 +51,13 @@ import java.util.UUID;
 @Slf4j
 public class CaseServiceImpl implements CaseService {
 
+  public static final String IAC_OVERUSE_MSG = "More than one case found to be using IAC %s";
+
   private static final String CASE_CREATED_EVENT_DESCRIPTION = "Case created when %s";
-  private static final String IAC_OVERUSE_MSG = "More than one case found to be using IAC %s";
   private static final String MISSING_NEW_CASE_MSG = "New Case definition missing for case %s";
   private static final String WRONG_OLD_SAMPLE_UNIT_TYPE_MSG =
           "Old Case has sampleUnitType %s. It is expected to have sampleUnitType %s.";
-  
+
   private static final int TRANSACTION_TIMEOUT = 30;
 
   @Autowired
@@ -104,17 +106,19 @@ public class CaseServiceImpl implements CaseService {
   }
 
   @Override
-  public Case findCaseByIac(final String iac) {
+  public Case findCaseByIac(final String iac) throws CTPException {
     log.debug("Entering findCaseByIac");
 
     List<Case> cases = caseRepo.findByIac(iac);
+
     Case caze = null;
     if (!CollectionUtils.isEmpty(cases)) {
       if (cases.size() != 1) {
-        throw new RuntimeException(String.format(IAC_OVERUSE_MSG, iac));
+        throw new CTPException(CTPException.Fault.SYSTEM_ERROR, String.format(IAC_OVERUSE_MSG, iac));
       }
       caze = cases.get(0);
     }
+
     return caze;
   }
 

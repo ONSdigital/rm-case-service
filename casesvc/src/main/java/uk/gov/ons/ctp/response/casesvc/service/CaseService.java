@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.service;
 
+import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.service.CTPService;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
@@ -62,8 +63,9 @@ public interface CaseService extends CTPService {
    *
    * @param iac The IAC.
    * @return Case object or null.
+   * @throws CTPException if more than one case found for a given IAC
    */
-  Case findCaseByIac(String iac);
+  Case findCaseByIac(String iac) throws CTPException;
 
   /**
    * Find CaseEvent entities associated with a Case.
