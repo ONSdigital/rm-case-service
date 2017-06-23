@@ -273,7 +273,7 @@ public class CaseDistributor {
    * @param caze the case to change and persist
    * @param event the event to transition the case with
    * @return the transitioned case
-   * @throws CTPException if transition errors
+   * @throws CTPException when case state transition error
    */
   private Case transitionCase(final Case caze, final CaseDTO.CaseEvent event) throws CTPException {
     CaseDTO.CaseState nextState = caseSvcStateTransitionManager.transition(caze.getState(), event);

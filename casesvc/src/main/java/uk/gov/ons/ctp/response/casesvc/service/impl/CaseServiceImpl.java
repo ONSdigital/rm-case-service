@@ -346,7 +346,7 @@ public class CaseServiceImpl implements CaseService {
    *
    * @param category the category details of the event
    * @param targetCase the 'source' case the event is being created for
-   * @throws CTPException if transition errors
+   * @throws CTPException when case state transition error
    */
   private void effectTargetCaseStateTransition(Category category, Case targetCase) throws CTPException {
     CaseDTO.CaseEvent transitionEvent = category.getEventType();

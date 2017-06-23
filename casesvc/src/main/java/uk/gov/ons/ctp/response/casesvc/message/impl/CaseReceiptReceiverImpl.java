@@ -33,6 +33,7 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
   @Autowired
   private CaseService caseService;
 
+  // TODO CTPA-1340
   /**
    * To process CaseReceipts read from queue
    *

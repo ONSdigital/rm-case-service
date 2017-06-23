@@ -86,7 +86,7 @@ public interface CaseService extends CTPService {
    * @param newCase optional case object containing partial details of the case
    *          to be created by this event.
    * @return the created CaseEvent.
-   * @throws CTPException if transition errors
+   * @throws CTPException when case state transition error
    */
   CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase) throws CTPException;
 
@@ -101,7 +101,7 @@ public interface CaseService extends CTPService {
    * @param timestamp timestamp equals to the incoming CaseReceipt's
    *          responseDateTime.
    * @return the created CaseEvent.
-   * @throws CTPException if transition errors
+   * @throws CTPException when case state transition error
    */
   CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase, Timestamp timestamp) throws CTPException;
 
