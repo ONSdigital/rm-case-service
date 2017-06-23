@@ -40,7 +40,7 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, value = "transactionManager")
   @ServiceActivator(inputChannel = "caseReceiptTransformed", adviceChain = "caseReceiptRetryAdvice")
-  public void process(CaseReceipt caseReceipt) {
+  public void process(CaseReceipt caseReceipt) throws CTPException {
     log.debug("entering process with caseReceipt {}", caseReceipt);
     String caseRef = caseReceipt.getCaseRef().trim();
     InboundChannel inboundChannel = caseReceipt.getInboundChannel();
@@ -60,11 +60,7 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
       caseEvent.setCreatedBy(SYSTEM);
       caseEvent.setDescription(QUESTIONNAIRE_RESPONSE);
       log.debug("about to invoke the event creation...");
-      try {
-        caseService.createCaseEvent(caseEvent, null, responseTimestamp);
-      } catch (CTPException e) {
-        log.error(String.format("message = %s - cause = %s", e.getMessage(), e.getCause()));
-      }
+      caseService.createCaseEvent(caseEvent, null, responseTimestamp);
     }
   }
 }

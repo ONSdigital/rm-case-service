@@ -10,7 +10,7 @@ public interface CaseReceiptReceiver {
   /**
    * To process CaseReceipts read from queue
    * @param caseReceipt to process
-   * @throws CTPException when no existing case found
+   * @throws CTPException when issues
    */
   void process(CaseReceipt caseReceipt) throws CTPException;
 }
