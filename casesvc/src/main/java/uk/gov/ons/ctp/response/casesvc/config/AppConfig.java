@@ -18,4 +18,5 @@ public class AppConfig {
   private CaseDistribution caseDistribution;
   private CollectionExerciseSvc collectionExerciseSvc;
   private DataGrid dataGrid;
+  private SwaggerSettings swaggerSettings;
 }

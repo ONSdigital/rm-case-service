@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.service;
 
+import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.service.CTPService;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
@@ -62,8 +63,9 @@ public interface CaseService extends CTPService {
    *
    * @param iac The IAC.
    * @return Case object or null.
+   * @throws CTPException if more than one case found for a given IAC
    */
-  Case findCaseByIac(String iac);
+  Case findCaseByIac(String iac) throws CTPException;
 
   /**
    * Find CaseEvent entities associated with a Case.
@@ -84,8 +86,9 @@ public interface CaseService extends CTPService {
    * @param newCase optional case object containing partial details of the case
    *          to be created by this event.
    * @return the created CaseEvent.
+   * @throws CTPException when case state transition error
    */
-  CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase);
+  CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase) throws CTPException;
 
   /**
    * Create a CaseEvent for the specific scenario of an incoming CaseReceipt
@@ -98,9 +101,9 @@ public interface CaseService extends CTPService {
    * @param timestamp timestamp equals to the incoming CaseReceipt's
    *          responseDateTime.
    * @return the created CaseEvent.
+   * @throws CTPException when case state transition error
    */
-  CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase,
-                            Timestamp timestamp);
+  CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase, Timestamp timestamp) throws CTPException;
 
   /**
    * Not sure this is the best place for this method, but .. several parts of
