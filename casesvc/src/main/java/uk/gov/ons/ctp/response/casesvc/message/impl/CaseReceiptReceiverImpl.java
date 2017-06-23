@@ -60,7 +60,11 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
       caseEvent.setCreatedBy(SYSTEM);
       caseEvent.setDescription(QUESTIONNAIRE_RESPONSE);
       log.debug("about to invoke the event creation...");
-      caseService.createCaseEvent(caseEvent, null, responseTimestamp);
+      try {
+        caseService.createCaseEvent(caseEvent, null, responseTimestamp);
+      } catch (CTPException e) {
+        log.error(String.format("message = %s - cause = %s", e.getMessage(), e.getCause()));
+      }
     }
   }
 }

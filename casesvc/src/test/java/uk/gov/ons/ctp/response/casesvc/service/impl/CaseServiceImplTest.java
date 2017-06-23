@@ -225,9 +225,10 @@ public class CaseServiceImplTest {
 
   /**
    * Should not be allowed to create an event against a case that does not exist!
+   * @throws CTPException if case state transition errors
    */
   @Test
-  public void testCreateCaseEventAgainstNonExistentCase() {
+  public void testCreateCaseEventAgainstNonExistentCase() throws CTPException {
     Mockito.when(caseRepo.findOne(NON_EXISTING_PARENT_CASE_FK)).thenReturn(null);
     Mockito.when(categoryRepo.findOne(CategoryDTO.CategoryName.ADDRESS_DETAILS_INCORRECT))
             .thenReturn(categories.get(CAT_ADDRESS_DETAILS_INCORRECT));
@@ -1360,8 +1361,9 @@ public class CaseServiceImplTest {
 
   /**
    * mock state transitions
+   * @throws CTPException if case state transition errors
    */
-  private void mockStateTransitions() {
+  private void mockStateTransitions() throws CTPException {
     Mockito.when(caseSvcStateTransitionManager.transition(CaseState.ACTIONABLE, CaseDTO.CaseEvent.DISABLED))
             .thenReturn(CaseState.INACTIONABLE);
     Mockito.when(caseSvcStateTransitionManager.transition(CaseState.ACTIONABLE, CaseDTO.CaseEvent.DEACTIVATED))

@@ -210,11 +210,12 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @param bindingResult the bindingResult used to validate requests
    * @return the created CaseEventDTO
    * @throws CTPException on failure to create CaseEvent
+   * @throws InvalidRequestException if binding errors
    */
   @RequestMapping(value = "/{caseId}/events", method = RequestMethod.POST)
   public ResponseEntity<?> createCaseEvent(@PathVariable("caseId") final UUID caseId,
                                       @RequestBody @Valid final CaseEventCreationRequestDTO caseEventCreationRequestDTO,
-                                      BindingResult bindingResult) throws CTPException {
+                                      BindingResult bindingResult) throws CTPException, InvalidRequestException {
     log.info("Entering createCaseEvent with caseId {} and requestObject {}", caseId, caseEventCreationRequestDTO);
 
     if (bindingResult.hasErrors()) {

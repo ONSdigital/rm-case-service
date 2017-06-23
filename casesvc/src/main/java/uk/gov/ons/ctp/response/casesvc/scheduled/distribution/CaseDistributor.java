@@ -15,6 +15,7 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 import uk.gov.ons.ctp.common.distributed.DistributedListManager;
 import uk.gov.ons.ctp.common.distributed.LockingException;
+import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
@@ -246,14 +247,20 @@ public class CaseDistributor {
                     throw new RuntimeException(msg);  // Recommended way by Spring to come out of a TransactionCallback
                 }
 
-                Case updatedCase = transitionCase(caze, event);
-                updatedCase.setIac(iac);
+                try {
+                  Case updatedCase = transitionCase(caze, event);
+                  updatedCase.setIac(iac);
+                  caseRepo.saveAndFlush(updatedCase);
 
-                caseRepo.saveAndFlush(updatedCase);
-
-                // create the request, filling in details by GETs from casesvc
-                caseNotification = caseService.prepareCaseNotification(caze, event);
-                return caseNotification;
+                  // create the request, filling in details by GETs from casesvc
+                  caseNotification = caseService.prepareCaseNotification(caze, event);
+                  return caseNotification;
+                } catch (CTPException e) {
+                  String msg = String.format("Transition error - cause = %s - message = %s", e.getCause(),
+                          e.getMessage());
+                  log.error(msg);
+                  throw new RuntimeException(msg);  // Recommended way by Spring to come out of a TransactionCallback
+                }
               }
             });
   }
@@ -266,8 +273,9 @@ public class CaseDistributor {
    * @param caze the case to change and persist
    * @param event the event to transition the case with
    * @return the transitioned case
+   * @throws CTPException if transition errors
    */
-  private Case transitionCase(final Case caze, final CaseDTO.CaseEvent event) {
+  private Case transitionCase(final Case caze, final CaseDTO.CaseEvent event) throws CTPException {
     CaseDTO.CaseState nextState = caseSvcStateTransitionManager.transition(caze.getState(), event);
     caze.setState(nextState);
     return caze;

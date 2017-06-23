@@ -8,10 +8,15 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseState;
+
+import static junit.framework.TestCase.fail;
+import static org.junit.Assert.assertEquals;
+import static uk.gov.ons.ctp.common.state.BasicStateTransitionManager.TRANSITION_ERROR_MSG;
 
 /**
  * A test of the state transition manager It simply has to test a single good
@@ -58,27 +63,26 @@ public class StateTransitionManagerUnitTest {
   @Test(threadPoolSize = THREAD_POOL_SIZE, invocationCount = INVOCATIONS, timeOut = TIMEOUT)
   public void testCaseTransitions() {
     StateTransitionManagerFactory stmFactory = new CaseSvcStateTransitionManagerFactory();
-    StateTransitionManager<CaseState, CaseEvent> stm = stmFactory
-        .getStateTransitionManager(CaseSvcStateTransitionManagerFactory.CASE_ENTITY);
+    StateTransitionManager<CaseState, CaseEvent> stm = stmFactory.getStateTransitionManager(
+            CaseSvcStateTransitionManagerFactory.CASE_ENTITY);
 
     validTransitions.forEach((sourceState, transitions) -> {
       transitions.forEach((caseEvent, caseState) -> {
         try {
           Assert.assertEquals(caseState, stm.transition(sourceState, caseEvent));
-        } catch (RuntimeException ste) {
-          Assert.fail("bad transition!", ste);
+        } catch (CTPException e) {
+          fail();
         }
       });
 
       Arrays.asList(CaseEvent.values()).forEach(event -> {
         if (!transitions.keySet().contains(event)) {
-          boolean caught = false;
           try {
             stm.transition(sourceState, event);
-          } catch (RuntimeException ste) {
-            caught = true;
+            fail();
+          } catch (CTPException ste) {
+            assertEquals(String.format(TRANSITION_ERROR_MSG, sourceState, event), ste.getMessage());
           }
-          Assert.assertTrue(caught, "Transition " + sourceState + "(" + event + ") should be invalid");
         }
       });
     });

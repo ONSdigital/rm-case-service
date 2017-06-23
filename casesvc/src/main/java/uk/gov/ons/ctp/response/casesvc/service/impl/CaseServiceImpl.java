@@ -154,13 +154,13 @@ public class CaseServiceImpl implements CaseService {
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
-  public CaseEvent createCaseEvent(final CaseEvent caseEvent, final Case newCase) {
+  public CaseEvent createCaseEvent(final CaseEvent caseEvent, final Case newCase) throws CTPException {
     return createCaseEvent(caseEvent, newCase, DateTimeUtil.nowUTC());
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
-  public CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase, Timestamp timestamp) {
+  public CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase, Timestamp timestamp) throws CTPException {
     log.debug("Entering createCaseEvent with caseEvent {}", caseEvent);
     log.info("SPLUNK: CaseEventCreation: casePK={}, category={}, subCategory={}, createdBy={}",
         caseEvent.getCaseFK(),
@@ -346,8 +346,9 @@ public class CaseServiceImpl implements CaseService {
    *
    * @param category the category details of the event
    * @param targetCase the 'source' case the event is being created for
+   * @throws CTPException if transition errors
    */
-  private void effectTargetCaseStateTransition(Category category, Case targetCase) {
+  private void effectTargetCaseStateTransition(Category category, Case targetCase) throws CTPException {
     CaseDTO.CaseEvent transitionEvent = category.getEventType();
     if (transitionEvent != null) {
       // case might have transitioned from actionable to inactionable prev via DEACTIVATED
@@ -437,8 +438,6 @@ public class CaseServiceImpl implements CaseService {
    * Create an event for a newly created case
    *
    * @param caze the case for which we want to record the event
-   * @param caseEventCategory the category of the event that led to the creation
-   *          of the case
    * @return the created event
    */
   private CaseEvent createCaseCreatedEvent(Case caze) {

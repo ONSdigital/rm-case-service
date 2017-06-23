@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
@@ -47,9 +48,10 @@ public class CaseReceiptReceiverImplTest {
   /**
    * ProcessLinkedOnlineCaseReceipt
    * @throws DatatypeConfigurationException if giveMeCalendarForNow fails
+   * @throws CTPException if case state transition errors
    */
   @Test
-  public void testProcessLinkedOnlineCaseReceipt() throws DatatypeConfigurationException {
+  public void testProcessLinkedOnlineCaseReceipt() throws CTPException, DatatypeConfigurationException {
     Case existingCase = new Case();
     existingCase.setCasePK(LINKED_CASE_ID);
     Mockito.when(caseService.findCaseByCaseRef(LINKED_CASE_REF)).thenReturn(existingCase);
@@ -64,9 +66,10 @@ public class CaseReceiptReceiverImplTest {
   /**
    * ProcessLinkedPaperCaseReceipt
    * @throws DatatypeConfigurationException if giveMeCalendarForNow fails
+   * @throws CTPException if case state transition errors
    */
   @Test
-  public void testProcessLinkedPaperCaseReceipt() throws DatatypeConfigurationException {
+  public void testProcessLinkedPaperCaseReceipt() throws CTPException, DatatypeConfigurationException {
     Case existingCase = new Case();
     existingCase.setCasePK(LINKED_CASE_ID);
     Mockito.when(caseService.findCaseByCaseRef(LINKED_CASE_REF)).thenReturn(existingCase);
@@ -81,9 +84,10 @@ public class CaseReceiptReceiverImplTest {
   /**
    * ProcessUnlinkedOnlineCaseReceipt
    * @throws DatatypeConfigurationException if giveMeCalendarForNow fails
+   * @throws CTPException if case state transition errors
    */
   @Test
-  public void testProcessUnlinkedOnlineCaseReceipt() throws DatatypeConfigurationException {
+  public void testProcessUnlinkedOnlineCaseReceipt() throws CTPException, DatatypeConfigurationException {
     Mockito.when(caseService.findCaseByCaseRef(UNLINKED_CASE_REF)).thenReturn(null);
 
     XMLGregorianCalendar calendar = DateTimeUtil.giveMeCalendarForNow();
@@ -97,9 +101,10 @@ public class CaseReceiptReceiverImplTest {
   /**
    * ProcessUnlinkedPaperCaseReceipt
    * @throws DatatypeConfigurationException if giveMeCalendarForNow fails
+   * @throws CTPException if case state transition errors
    */
   @Test
-  public void testProcessUnlinkedPaperCaseReceipt() throws DatatypeConfigurationException {
+  public void testProcessUnlinkedPaperCaseReceipt() throws CTPException, DatatypeConfigurationException {
     Mockito.when(caseService.findCaseByCaseRef(UNLINKED_CASE_REF)).thenReturn(null);
 
     XMLGregorianCalendar calendar = DateTimeUtil.giveMeCalendarForNow();
