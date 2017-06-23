@@ -37,9 +37,10 @@ public class CaseDTO {
   private UUID collectionInstrumentId;
   private UUID partyId;
 
+  private String caseRef;
+  private String createdBy;
   private String sampleUnitType;
 
-  private String createdBy;
   private Date createdDateTime;
 
   private ResponseDTO[] responses;
