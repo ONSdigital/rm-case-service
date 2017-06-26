@@ -163,3 +163,10 @@ messaging:
   conMaxAttempts: 3
   prefetchCount: 10
   txSize: 1
+
+swagger-settings:
+  swagger-ui-active: false
+  group-name: "caseservice-api"
+  title: "Case Service API"
+  description: "API for the Case Service"
+  version: "10.41"
