@@ -1,5 +1,25 @@
 package uk.gov.ons.ctp.response.casesvc.message;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
+import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.common.time.DateTimeUtil;
+import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
+import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
+import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
+import uk.gov.ons.ctp.response.casesvc.message.impl.CaseReceiptReceiverImpl;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
+import uk.gov.ons.ctp.response.casesvc.service.CaseService;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.sql.Timestamp;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
@@ -8,29 +28,6 @@ import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.Categor
 import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.QUESTIONNAIRE_RESPONSE;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
-
-import java.sql.Timestamp;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.XMLGregorianCalendar;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
-
-import uk.gov.ons.ctp.common.time.DateTimeUtil;
-import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
-import uk.gov.ons.ctp.response.casesvc.domain.model.UnlinkedCaseReceipt;
-import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
-import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
-import uk.gov.ons.ctp.response.casesvc.message.impl.CaseReceiptReceiverImpl;
-import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
-import uk.gov.ons.ctp.response.casesvc.service.CaseService;
-import uk.gov.ons.ctp.response.casesvc.service.UnlinkedCaseReceiptService;
 
 /**
  * To unit test CaseReceiptReceiverImpl
@@ -48,15 +45,13 @@ public class CaseReceiptReceiverImplTest {
   @Mock
   private CaseService caseService;
 
-  @Mock
-  private UnlinkedCaseReceiptService unlinkedCaseReceiptService;
-
   /**
    * ProcessLinkedOnlineCaseReceipt
    * @throws DatatypeConfigurationException if giveMeCalendarForNow fails
+   * @throws CTPException if case state transition errors
    */
   @Test
-  public void testProcessLinkedOnlineCaseReceipt() throws DatatypeConfigurationException {
+  public void testProcessLinkedOnlineCaseReceipt() throws CTPException, DatatypeConfigurationException {
     Case existingCase = new Case();
     existingCase.setCasePK(LINKED_CASE_ID);
     Mockito.when(caseService.findCaseByCaseRef(LINKED_CASE_REF)).thenReturn(existingCase);
@@ -66,15 +61,15 @@ public class CaseReceiptReceiverImplTest {
 
     verify(caseService, times(1)).createCaseEvent(eq(buildCaseEvent(LINKED_CASE_ID, ONLINE_QUESTIONNAIRE_RESPONSE)),
             eq(null), eq(new Timestamp(calendar.toGregorianCalendar().getTimeInMillis())));
-    verify(unlinkedCaseReceiptService, times(0)).createUnlinkedCaseReceipt(any(UnlinkedCaseReceipt.class));
   }
 
   /**
    * ProcessLinkedPaperCaseReceipt
    * @throws DatatypeConfigurationException if giveMeCalendarForNow fails
+   * @throws CTPException if case state transition errors
    */
   @Test
-  public void testProcessLinkedPaperCaseReceipt() throws DatatypeConfigurationException {
+  public void testProcessLinkedPaperCaseReceipt() throws CTPException, DatatypeConfigurationException {
     Case existingCase = new Case();
     existingCase.setCasePK(LINKED_CASE_ID);
     Mockito.when(caseService.findCaseByCaseRef(LINKED_CASE_REF)).thenReturn(existingCase);
@@ -84,49 +79,40 @@ public class CaseReceiptReceiverImplTest {
 
     verify(caseService, times(1)).createCaseEvent(eq(buildCaseEvent(LINKED_CASE_ID, PAPER_QUESTIONNAIRE_RESPONSE)),
             eq(null), eq(new Timestamp(calendar.toGregorianCalendar().getTimeInMillis())));
-    verify(unlinkedCaseReceiptService, times(0)).createUnlinkedCaseReceipt(any(UnlinkedCaseReceipt.class));
   }
 
   /**
    * ProcessUnlinkedOnlineCaseReceipt
    * @throws DatatypeConfigurationException if giveMeCalendarForNow fails
+   * @throws CTPException if case state transition errors
    */
   @Test
-  public void testProcessUnlinkedOnlineCaseReceipt() throws DatatypeConfigurationException {
+  public void testProcessUnlinkedOnlineCaseReceipt() throws CTPException, DatatypeConfigurationException {
     Mockito.when(caseService.findCaseByCaseRef(UNLINKED_CASE_REF)).thenReturn(null);
 
     XMLGregorianCalendar calendar = DateTimeUtil.giveMeCalendarForNow();
     CaseReceipt caseReceipt = buildCaseReceipt(UNLINKED_CASE_REF, InboundChannel.ONLINE, calendar);
+
     caseReceiptReceiver.process(caseReceipt);
 
     verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class), any(Case.class));
-
-    UnlinkedCaseReceipt unlinkedCaseReceipt = new UnlinkedCaseReceipt();
-    unlinkedCaseReceipt.setCaseRef(UNLINKED_CASE_REF);
-    unlinkedCaseReceipt.setInboundChannel(uk.gov.ons.ctp.response.casesvc.representation.InboundChannel.ONLINE);
-    unlinkedCaseReceipt.setResponseDateTime(new Timestamp(calendar.toGregorianCalendar().getTimeInMillis()));
-    verify(unlinkedCaseReceiptService, times(1)).createUnlinkedCaseReceipt(eq(unlinkedCaseReceipt));
   }
 
   /**
    * ProcessUnlinkedPaperCaseReceipt
    * @throws DatatypeConfigurationException if giveMeCalendarForNow fails
+   * @throws CTPException if case state transition errors
    */
   @Test
-  public void testProcessUnlinkedPaperCaseReceipt() throws DatatypeConfigurationException {
+  public void testProcessUnlinkedPaperCaseReceipt() throws CTPException, DatatypeConfigurationException {
     Mockito.when(caseService.findCaseByCaseRef(UNLINKED_CASE_REF)).thenReturn(null);
 
     XMLGregorianCalendar calendar = DateTimeUtil.giveMeCalendarForNow();
     CaseReceipt caseReceipt = buildCaseReceipt(UNLINKED_CASE_REF, InboundChannel.PAPER, calendar);
+
     caseReceiptReceiver.process(caseReceipt);
 
     verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class), any(Case.class));
-
-    UnlinkedCaseReceipt unlinkedCaseReceipt = new UnlinkedCaseReceipt();
-    unlinkedCaseReceipt.setCaseRef(UNLINKED_CASE_REF);
-    unlinkedCaseReceipt.setInboundChannel(uk.gov.ons.ctp.response.casesvc.representation.InboundChannel.PAPER);
-    unlinkedCaseReceipt.setResponseDateTime(new Timestamp(calendar.toGregorianCalendar().getTimeInMillis()));
-    verify(unlinkedCaseReceiptService, times(1)).createUnlinkedCaseReceipt(eq(unlinkedCaseReceipt));
   }
 
   /**
@@ -135,7 +121,7 @@ public class CaseReceiptReceiverImplTest {
    * @param inboundChannel the inboundChannel
    * @param xmlGregorianCalendar the xmlGregorianCalendar
    * @return the CaseReceipt
-   * @throws DatatypeConfigurationException
+   * @throws DatatypeConfigurationException datatype configuration exception thrown
    */
   private CaseReceipt buildCaseReceipt(String caseRef, InboundChannel inboundChannel,
                                        XMLGregorianCalendar xmlGregorianCalendar)

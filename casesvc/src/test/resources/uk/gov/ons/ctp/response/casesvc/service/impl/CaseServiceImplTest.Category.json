@@ -7,7 +7,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI",
     "eventType": null
   },
   {
@@ -18,7 +18,7 @@
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -29,7 +29,7 @@
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -40,7 +40,7 @@
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -51,7 +51,7 @@
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -62,7 +62,7 @@
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -73,7 +73,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -84,7 +84,7 @@
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -95,7 +95,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -106,7 +106,7 @@
     "role": "collect-field-escalate, collect-general-escalate, collect-admins",
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -117,7 +117,7 @@
     "role": "collect-field-escalate, collect-csos, collect-admins",
     "generatedActionType": "FC_ESCALATION",
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -128,7 +128,7 @@
     "role": "collect-field-escalate, collect-csos, collect-admins",
     "generatedActionType": "FC_ESCALATION",
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -139,7 +139,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": "DEACTIVATED"
   },
   {
@@ -150,7 +150,7 @@
     "role": "collect-general-escalate, collect-csos, collect-admins",
     "generatedActionType": "GC_ESCALATION",
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -161,7 +161,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -172,7 +172,7 @@
     "role": "collect-general-escalate, collect-csos, collect-admins",
     "generatedActionType": "GE_ESCALATION",
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -183,7 +183,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
     "newCaseSampleUnitType": "H",
-    "oldCaseSampleUnitType": "H",
+    "oldCaseSampleUnitTypes": "H",
     "eventType": "DEACTIVATED"
   },
   {
@@ -194,7 +194,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
     "newCaseSampleUnitType": "H",
-    "oldCaseSampleUnitType": "H",
+    "oldCaseSampleUnitTypes": "H",
     "eventType": "DISABLED"
   },
   {
@@ -205,7 +205,7 @@
     "role": "collect-field-escalate, collect-general-escalate, collect_admins",
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -216,7 +216,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
     "newCaseSampleUnitType": "HI",
-    "oldCaseSampleUnitType": "HI",
+    "oldCaseSampleUnitTypes": "HI",
     "eventType": "DEACTIVATED"
   },
   {
@@ -227,7 +227,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
     "newCaseSampleUnitType": "HI",
-    "oldCaseSampleUnitType": "HI",
+    "oldCaseSampleUnitTypes": "HI",
     "eventType": "DISABLED"
   },
   {
@@ -238,7 +238,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
     "newCaseSampleUnitType": "HI",
-    "oldCaseSampleUnitType": "H",
+    "oldCaseSampleUnitTypes": "H",
     "eventType": null
   },
   {
@@ -249,7 +249,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -260,7 +260,7 @@
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI",
     "eventType": "DISABLED"
   },
   {
@@ -271,7 +271,7 @@
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI",
     "eventType": "DEACTIVATED"
   },
   {
@@ -282,7 +282,7 @@
     "role": "collect-field-escalate, collect-general-escalate, collect-admins",
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -293,18 +293,18 @@
     "role": "collect-csos, collect-field-escalate, collect-general-escalate, collect-admins",
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": "DEACTIVATED"
   },
   {
     "group": null,
-    "categoryName": "RESPONDENT_ENROLLED",
-    "longDescription": "Respondent Enrolled",
-    "shortDescription": "Respondent Enrolled",
+    "categoryName": "RESPONDENT_ENROLED",
+    "longDescription": "Respondent Enroled",
+    "shortDescription": "Respondent Enroled",
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": "BI",
-    "oldCaseSampleUnitType": "B",
+    "oldCaseSampleUnitTypes": "B",
     "eventType": "DEACTIVATED",
     "recalcCollectionInstrument": false
   },
@@ -316,7 +316,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -327,7 +327,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": "QGARA",
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -338,7 +338,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": "QGBEN",
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -349,7 +349,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": "QGCAN",
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -360,7 +360,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": "QGGUJ",
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -371,7 +371,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": "QGLIT",
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -382,7 +382,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": "QGMAN",
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -393,7 +393,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -404,7 +404,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": "QGPOL",
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -415,7 +415,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": "QGGUR",
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -426,7 +426,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": "QGSHA",
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -437,7 +437,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": "QGSOM",
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -448,7 +448,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": "QGSPA",
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -459,7 +459,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": "QGTUR",
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -470,7 +470,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": "QGURD",
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
   },
   {
@@ -481,7 +481,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": "DEACTIVATED"
   },
   {
@@ -492,8 +492,8 @@
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
-    "eventType": null
+    "oldCaseSampleUnitTypes": "B",
+    "eventType": "ACCOUNT_CREATED"
   }
 ,
   {
@@ -504,7 +504,7 @@
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "B",
     "eventType": null
   }
 ,
@@ -516,7 +516,43 @@
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "BI",
+    "eventType": null
+  }
+,
+  {
+    "group": null,
+    "categoryName": "UNSUCCESSFUL_RESPONSE_UPLOAD",
+    "longDescription": "Unsuccessful Response Upload",
+    "shortDescription": "Unsuccessful Response Upload",
+    "role": null,
+    "generatedActionType": null,
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "BI",
+    "eventType": null
+  }
+,
+  {
+    "group": null,
+    "categoryName": "SUCCESSFUL_RESPONSE_UPLOAD",
+    "longDescription": "Successful Response Upload",
+    "shortDescription": "Successful Response Uploaded",
+    "role": null,
+    "generatedActionType": null,
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "BI",
+    "eventType": "DISABLED"
+  }
+,
+  {
+    "group": null,
+    "categoryName": "OFFLINE_RESPONSE_PROCESSED",
+    "longDescription": "Offline Response Processed",
+    "shortDescription": "Offline Response Processed",
+    "role": null,
+    "generatedActionType": null,
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "BI",
     "eventType": null
   }
 ]

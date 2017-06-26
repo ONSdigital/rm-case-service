@@ -1,21 +1,24 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
-import java.util.List;
-import java.util.Optional;
-
+import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
-
-import lombok.extern.slf4j.Slf4j;
-import ma.glasnost.orika.MapperFacade;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * The REST endpoint controller for Category
@@ -35,7 +38,7 @@ public final class CategoryEndpoint implements CTPEndpoint {
 
   /**
    * the GET endpoint to retrieve the category with categoryType
-   * 
+   *
    * @param categoryName the categoryName
    * @return the list of categories
    * @throws CTPException if category does not exist
@@ -58,7 +61,7 @@ public final class CategoryEndpoint implements CTPEndpoint {
 
   /**
    * the GET endpoint to retrieve all categories
-   * 
+   *
    * @param role the role (example: collect-csos, collect-admins)
    * @param group the group (example: general)
    * @return the list of categories

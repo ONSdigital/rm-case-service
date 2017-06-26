@@ -13,6 +13,7 @@ logging:
     uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl: DEBUG
     org.springframework.cloud.sleuth.instrument.messaging.MessagingSpanExtractor: ERROR
     org.springframework.context.annotation.ConfigurationClassPostProcessor: ERROR
+  profile: DEV
 
 liquibase:
   user: casesvc
@@ -170,3 +171,10 @@ messaging:
   conMaxAttempts: 3
   prefetchCount: 10
   txSize: 1
+
+swagger-settings:
+  swagger-ui-active: true
+  group-name: "caseservice-api"
+  title: "Case Service API"
+  description: "API for the Case Service"
+  version: "10.41"

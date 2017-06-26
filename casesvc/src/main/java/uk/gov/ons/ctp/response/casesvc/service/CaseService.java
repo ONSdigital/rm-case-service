@@ -1,15 +1,16 @@
 package uk.gov.ons.ctp.response.casesvc.service;
 
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.UUID;
-
+import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.service.CTPService;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * The Case Service interface defines all business behaviours for operations on
@@ -19,19 +20,19 @@ public interface CaseService extends CTPService {
 
   /**
    * Find the cases in a casegroup.
-   * 
+   *
    * @param caseGroupFK the group.
    * @return the cases in the group.
    */
-  List<Case> findCasesByCaseGroupFK(final Integer caseGroupFK);
+  List<Case> findCasesByCaseGroupFK(Integer caseGroupFK);
 
   /**
    * Find the cases for a partyId.
-   * 
+   *
    * @param partyId the partyId
    * @return the cases for the partyId
    */
-  List<Case> findCasesByPartyId(final UUID partyId);
+  List<Case> findCasesByPartyId(UUID partyId);
 
   /**
    * Find Case entity by Unique Case PK.
@@ -62,8 +63,9 @@ public interface CaseService extends CTPService {
    *
    * @param iac The IAC.
    * @return Case object or null.
+   * @throws CTPException if more than one case found for a given IAC
    */
-  Case findCaseByIac(String iac);
+  Case findCaseByIac(String iac) throws CTPException;
 
   /**
    * Find CaseEvent entities associated with a Case.
@@ -84,8 +86,9 @@ public interface CaseService extends CTPService {
    * @param newCase optional case object containing partial details of the case
    *          to be created by this event.
    * @return the created CaseEvent.
+   * @throws CTPException when case state transition error
    */
-  CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase);
+  CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase) throws CTPException;
 
   /**
    * Create a CaseEvent for the specific scenario of an incoming CaseReceipt
@@ -98,16 +101,16 @@ public interface CaseService extends CTPService {
    * @param timestamp timestamp equals to the incoming CaseReceipt's
    *          responseDateTime.
    * @return the created CaseEvent.
+   * @throws CTPException when case state transition error
    */
-  CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase,
-                            Timestamp timestamp);
+  CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase, Timestamp timestamp) throws CTPException;
 
   /**
    * Not sure this is the best place for this method, but .. several parts of
    * case svc need to build a CaseNotification for a Case and need the services
    * of the ActionPlanMappingService to get the actionPlanId This method just
    * creates a CaseNotification
-   * 
+   *
    * @param caze The Case
    * @param transitionEvent the event to inform the recipient of
    * @return the newly created notification object

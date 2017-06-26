@@ -1,17 +1,5 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.Is.isA;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static uk.gov.ons.ctp.common.MvcHelper.getJson;
-import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
-import static uk.gov.ons.ctp.response.casesvc.endpoint.CategoryEndpoint.ERRORMSG_CATEGORYNOTFOUND;
-
 import ma.glasnost.orika.MapperFacade;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -20,7 +8,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
-
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -36,9 +23,18 @@ import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.Is.isA;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static uk.gov.ons.ctp.common.MvcHelper.getJson;
+import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
+import static uk.gov.ons.ctp.response.casesvc.endpoint.CategoryEndpoint.ERRORMSG_CATEGORYNOTFOUND;
+
 /**
  * A test of the category endpoint
- *
  */
 public final class CategoryEndpointUnitTest {
 
@@ -68,6 +64,10 @@ public final class CategoryEndpointUnitTest {
   private static final String ADMIN_ROLE = "collect-admins";
   private static final String CATEGORY1_GROUP = "general";
 
+  /**
+   * Sets up Mockito for tests
+   * @throws Exception exception thrown
+   */
   @Before
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
@@ -98,8 +98,10 @@ public final class CategoryEndpointUnitTest {
     actions.andExpect(jsonPath("$[0].*", Matchers.hasSize(5)));
     actions.andExpect(jsonPath("$[*].group", containsInAnyOrder(CATEGORY1_GROUP, null, null)));
     actions.andExpect(jsonPath("$[*].name", containsInAnyOrder(CATEGORY1_NAME, CATEGORY2_NAME, CATEGORY3_NAME)));
-    actions.andExpect(jsonPath("$[*].longDescription", containsInAnyOrder(CATEGORY1_LONG_DESC, CATEGORY2_LONG_DESC, CATEGORY3_LONG_DESC)));
-    actions.andExpect(jsonPath("$[*].shortDescription", containsInAnyOrder(CATEGORY1_SHORT_DESC, CATEGORY2_SHORT_DESC, CATEGORY3_SHORT_DESC)));
+    actions.andExpect(jsonPath("$[*].longDescription", containsInAnyOrder(CATEGORY1_LONG_DESC,
+            CATEGORY2_LONG_DESC, CATEGORY3_LONG_DESC)));
+    actions.andExpect(jsonPath("$[*].shortDescription", containsInAnyOrder(CATEGORY1_SHORT_DESC,
+            CATEGORY2_SHORT_DESC, CATEGORY3_SHORT_DESC)));
     actions.andExpect(jsonPath("$[*].role", containsInAnyOrder(CATEGORY1_ROLE, null, null)));
   }
 
@@ -139,7 +141,8 @@ public final class CategoryEndpointUnitTest {
     actions.andExpect(handler().handlerType(CategoryEndpoint.class));
     actions.andExpect(handler().methodName("findCategory"));
     actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
-    actions.andExpect(jsonPath("$.error.message", is(String.format("%s categoryName %s", ERRORMSG_CATEGORYNOTFOUND, CATEGORY_UNKNOWN))));
+    actions.andExpect(jsonPath("$.error.message", is(String.format("%s categoryName %s", ERRORMSG_CATEGORYNOTFOUND,
+            CATEGORY_UNKNOWN))));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 

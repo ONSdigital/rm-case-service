@@ -10,6 +10,7 @@ info:
 logging:
   level:
     uk.gov.ons.ctp: DEBUG
+  profile: CLOUD
 
 liquibase:
   user: ${cloud.services.postgresql.connection.username}

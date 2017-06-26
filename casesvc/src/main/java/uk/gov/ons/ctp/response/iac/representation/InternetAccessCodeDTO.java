@@ -1,11 +1,11 @@
 package uk.gov.ons.ctp.response.iac.representation;
 
-import java.sql.Timestamp;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.sql.Timestamp;
 
 /**
  * Domain model object.
@@ -26,6 +26,6 @@ public class InternetAccessCodeDTO {
   private String updatedBy;
 
   private Timestamp updatedDateTime;
-  
+
   private Timestamp lastUsedDateTime;
 }

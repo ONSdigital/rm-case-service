@@ -40,6 +40,7 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
     transitions.put(CaseState.REPLACEMENT_INIT, transitionMapForReplacementInit);
 
     Map<CaseEvent, CaseState> transitionMapForActionable = new HashMap<>();
+    transitionMapForActionable.put(CaseEvent.ACCOUNT_CREATED, CaseState.ACTIONABLE);
     transitionMapForActionable.put(CaseEvent.DEACTIVATED, CaseState.INACTIONABLE);
     transitionMapForActionable.put(CaseEvent.DISABLED, CaseState.INACTIONABLE);
     transitions.put(CaseState.ACTIONABLE, transitionMapForActionable);
@@ -50,10 +51,9 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
     transitions.put(CaseState.INACTIONABLE, transitionMapForInactionable);
 
     StateTransitionManager<CaseState, CaseEvent> caseStateTransitionManager =
-        new BasicStateTransitionManager<>(transitions);
+            new BasicStateTransitionManager<>(transitions);
 
     managers.put(CASE_ENTITY, caseStateTransitionManager);
-
   }
 
   @SuppressWarnings("unchecked")

@@ -7,7 +7,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": null,
     "eventType": null
   },
   {
@@ -18,7 +18,7 @@
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": null,
     "eventType": null
   },
   {
@@ -29,18 +29,18 @@
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": null,
     "eventType": null
   },
   {
     "group": null,
-    "categoryName": "RESPONDENT_ENROLLED",
-    "longDescription": "Respondent Enrolled",
-    "shortDescription": "Respondent Enrolled",
+    "categoryName": "RESPONDENT_ENROLED",
+    "longDescription": "Respondent Enroled",
+    "shortDescription": "Respondent Enroled",
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": "BI",
-    "oldCaseSampleUnitType": "B",
+    "oldCaseSampleUnitTypes": "B",
     "eventType": "DEACTIVATED",
     "recalcCollectionInstrument": "false"
   }

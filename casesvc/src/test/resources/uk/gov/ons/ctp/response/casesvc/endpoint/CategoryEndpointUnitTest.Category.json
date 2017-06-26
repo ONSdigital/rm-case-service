@@ -7,7 +7,7 @@
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": null,
     "eventType": null
   },
   {
@@ -18,7 +18,7 @@
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": null,
     "eventType": null
   },
   {
@@ -29,7 +29,7 @@
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": null,
     "eventType": null
   }
 ]
