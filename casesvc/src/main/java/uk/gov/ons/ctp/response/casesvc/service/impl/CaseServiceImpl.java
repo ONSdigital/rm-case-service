@@ -372,6 +372,7 @@ public class CaseServiceImpl implements CaseService {
       CaseDTO.CaseState newState = null;
       // make the transition
       newState = caseSvcStateTransitionManager.transition(oldState, transitionEvent);
+
       // was a state change effected?
       if (!oldState.equals(newState)) {
         targetCase.setState(newState);

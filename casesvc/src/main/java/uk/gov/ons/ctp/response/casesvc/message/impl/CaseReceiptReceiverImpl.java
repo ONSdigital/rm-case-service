@@ -43,6 +43,8 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
   @ServiceActivator(inputChannel = "caseReceiptTransformed", adviceChain = "caseReceiptRetryAdvice")
   public void process(CaseReceipt caseReceipt) throws CTPException {
     log.debug("entering process with caseReceipt {}", caseReceipt);
+//  TODO
+//    throw new CTPException(CTPException.Fault.BAD_REQUEST, "To test the SI retries");
     String caseRef = caseReceipt.getCaseRef().trim();
     InboundChannel inboundChannel = caseReceipt.getInboundChannel();
     Timestamp responseTimestamp = new Timestamp(caseReceipt.getResponseDateTime().toGregorianCalendar()

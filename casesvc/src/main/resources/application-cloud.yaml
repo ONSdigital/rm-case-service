@@ -1,5 +1,5 @@
 info:
-  contactEmail: philip.whiles@ons.gov.uk
+  contactEmail: philippe.brossier@ons.gov.uk
   version: ${project.version}
   commit: ${buildNumber}
   branch: ${scmBranch}
@@ -158,6 +158,9 @@ rabbitmq:
   virtualhost: ${cloud.services.rabbitmq.connection.virtualhost}
 
 messaging:
+  backoffInitial: 5
+  backoffMultiplier: 2
+  backoffMax: 30000
   consumingThreads: 1
   pubMaxAttempts: 3
   conMaxAttempts: 3

@@ -54,8 +54,9 @@
 
 	<!-- Start of section to deal with retries and DLQ after max attempts -->
 	<int:channel id="caseDlqChannel" />
-	<int:handler-retry-advice id="caseRetryAdvice"
-		recovery-channel="caseDlqChannel" max-attempts="${messaging.conMaxAttempts}" />
+	<int:handler-retry-advice id="caseRetryAdvice" recovery-channel="caseDlqChannel" max-attempts="${messaging.conMaxAttempts}" >
+		<int:exponential-back-off initial="${messaging.backoffInitial}" multiplier="${messaging.backoffMultiplier}" maximum="${messaging.backoffMax}"/>
+	</int:handler-retry-advice>
 
 	<int:channel id="caseDlqInterimChannel" />
 	<int:transformer input-channel="caseDlqChannel"
