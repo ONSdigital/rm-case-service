@@ -1,0 +1,18 @@
+applications:
+- name: casesvc-int
+  instances: 1
+  timeout: 180
+  host: casesvc-int
+  memory: 1024M
+  path: casesvc/target/casesvc.jar
+  services:
+    - rm-pg-db
+    - rm-redis
+    - rm-rabbitmq
+  env:
+    internetAccessCodeSvc_connectionConfig_host: iacsvc-int.apps.mvp.onsclofo.uk
+    internetAccessCodeSvc_connectionConfig_port: "80"
+    internetAccessCodeSvc_connectionConfig_scheme: http
+    collectionExerciseSvc_connectionConfig_host: collectionexercisesvc-int.apps.mvp.onsclofo.uk
+    collectionExerciseSvc_connectionConfig_port: "80"
+    collectionExerciseSvc_connectionConfig_scheme: http
