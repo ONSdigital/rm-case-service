@@ -10,6 +10,8 @@ info:
 logging:
   level:
     uk.gov.ons.ctp: WARN
+    org.springframework.retry: DEBUG
+    org.springframework.util.backoff: DEBUG
     org.springframework.cloud.sleuth.instrument.messaging.MessagingSpanExtractor: ERROR
     org.springframework.context.annotation.ConfigurationClassPostProcessor: ERROR
   profile: DEV
@@ -165,9 +167,9 @@ rabbitmq:
   virtualhost: /
 
 messaging:
-  backoffInitial: 5
-  backoffMultiplier: 2
-  backoffMax: 30000
+  backoffInitial: 5000
+  backoffMultiplier: 3
+  backoffMax: 45000
   consumingThreads: 1
   pubMaxAttempts: 3
   conMaxAttempts: 3

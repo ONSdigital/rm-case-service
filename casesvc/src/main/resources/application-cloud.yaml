@@ -158,9 +158,9 @@ rabbitmq:
   virtualhost: ${cloud.services.rabbitmq.connection.virtualhost}
 
 messaging:
-  backoffInitial: 5
-  backoffMultiplier: 2
-  backoffMax: 30000
+  backoffInitial: 5000
+  backoffMultiplier: 3
+  backoffMax: 45000
   consumingThreads: 1
   pubMaxAttempts: 3
   conMaxAttempts: 3
