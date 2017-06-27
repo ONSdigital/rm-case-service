@@ -46,9 +46,30 @@
 
     <!-- Start of section to deal with retries and DLQ after max attempts -->
     <int:channel id="caseReceiptDlqChannel" />
-    <int:handler-retry-advice id="caseReceiptRetryAdvice" recovery-channel="caseReceiptDlqChannel" max-attempts="${messaging.conMaxAttempts}">
-        <int:exponential-back-off initial="${messaging.backoffInitial}" multiplier="${messaging.backoffMultiplier}" maximum="${messaging.backoffMax}"/>
-    </int:handler-retry-advice>
+
+    <bean class="org.springframework.integration.handler.advice.RequestHandlerRetryAdvice" id="caseReceiptRetryAdvice">
+        <property name="recoveryCallback">
+            <bean class="org.springframework.integration.handler.advice.ErrorMessageSendingRecoverer">
+                <constructor-arg ref="caseReceiptDlqChannel" />
+            </bean>
+        </property>
+        <property name="retryTemplate" ref="retryTemplate" />
+    </bean>
+    <bean id="retryTemplate" class="org.springframework.retry.support.RetryTemplate">
+        <property name="retryPolicy">
+            <!-- TODO Change this policy with a CTP-specific one to ignore some exceptions -->
+            <bean class="org.springframework.retry.policy.SimpleRetryPolicy">
+                <property name="maxAttempts" value="${messaging.conMaxAttempts}" />
+            </bean>
+        </property>
+        <property name="backOffPolicy">
+            <bean class="org.springframework.retry.backoff.ExponentialBackOffPolicy">
+                <property name="initialInterval" value="${messaging.backoffInitial}" />
+                <property name="multiplier" value="${messaging.backoffMultiplier}" />
+                <property name="maxInterval" value="${messaging.backoffMax}" />
+            </bean>
+        </property>
+    </bean>
 
     <int:channel id="caseReceiptDlqInterimChannel" />
     <int:transformer input-channel="caseReceiptDlqChannel" output-channel="caseReceiptDlqInterimChannel" expression="payload.failedMessage.payload" />
