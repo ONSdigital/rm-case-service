@@ -14,6 +14,7 @@ import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 
 import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE;
@@ -44,7 +45,9 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
   public void process(CaseReceipt caseReceipt) throws CTPException {
     log.debug("entering process with caseReceipt {}", caseReceipt);
 //  TODO
+//    throw new NullPointerException("test");
 //    throw new CTPException(CTPException.Fault.BAD_REQUEST, "To test the SI retries");
+
     String caseRef = caseReceipt.getCaseRef().trim();
     InboundChannel inboundChannel = caseReceipt.getInboundChannel();
     Timestamp responseTimestamp = new Timestamp(caseReceipt.getResponseDateTime().toGregorianCalendar()
