@@ -57,43 +57,29 @@
     </bean>
     <bean id="retryTemplate" class="org.springframework.retry.support.RetryTemplate">
          <property name="retryPolicy">
-             <!-- <bean class="org.springframework.retry.policy.SimpleRetryPolicy">
-                 <constructor-arg type="int">
-                     <value>${messaging.conMaxAttempts}</value>
-                 </constructor-arg>
-                 <constructor-arg type="java.util.Map">
-                   <map>
-                       <entry key="java.lang.RuntimeException" value="true" />
-                       <entry key="uk.gov.ons.ctp.common.error.CTPException" value="false" />
-                   </map>
-               </constructor-arg>
-                 <constructor-arg type="boolean">
-                     <value>true</value>
-                 </constructor-arg>
-           </bean> -->
-    <bean class="uk.gov.ons.ctp.response.casesvc.utility.CTPRetryPolicy">
-        <property name="maxAttempts" value="${messaging.conMaxAttempts}" />
+             <bean class="uk.gov.ons.ctp.response.casesvc.utility.CTPRetryPolicy">
+                 <property name="maxAttempts" value="${messaging.conMaxAttempts}" />
+             </bean>
+         </property>
+        <property name="backOffPolicy">
+            <bean class="org.springframework.retry.backoff.ExponentialBackOffPolicy">
+                <property name="initialInterval" value="${messaging.backoffInitial}" />
+                <property name="multiplier" value="${messaging.backoffMultiplier}" />
+                <property name="maxInterval" value="${messaging.backoffMax}" />
+            </bean>
+        </property>
     </bean>
-</property>
-<property name="backOffPolicy">
-    <bean class="org.springframework.retry.backoff.ExponentialBackOffPolicy">
-        <property name="initialInterval" value="${messaging.backoffInitial}" />
-        <property name="multiplier" value="${messaging.backoffMultiplier}" />
-        <property name="maxInterval" value="${messaging.backoffMax}" />
-    </bean>
-</property>
-</bean>
 
-<int:channel id="caseReceiptDlqInterimChannel" />
-<int:transformer input-channel="caseReceiptDlqChannel" output-channel="caseReceiptDlqInterimChannel" expression="payload.failedMessage.payload" />
+    <int:channel id="caseReceiptDlqInterimChannel" />
+    <int:transformer input-channel="caseReceiptDlqChannel" output-channel="caseReceiptDlqInterimChannel" expression="payload.failedMessage.payload" />
 
-<int:channel id="caseReceiptDlqChannelXml" />
-<int-xml:marshalling-transformer
-    input-channel="caseReceiptDlqInterimChannel" output-channel="caseReceiptDlqChannelXml"
-    marshaller="caseReceiptMarshaller"
-    result-transformer="caseReceiptOutboundTransformer"/>
-<bean id="caseReceiptOutboundTransformer" class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
+    <int:channel id="caseReceiptDlqChannelXml" />
+    <int-xml:marshalling-transformer
+        input-channel="caseReceiptDlqInterimChannel" output-channel="caseReceiptDlqChannelXml"
+        marshaller="caseReceiptMarshaller"
+        result-transformer="caseReceiptOutboundTransformer"/>
+    <bean id="caseReceiptOutboundTransformer" class="org.springframework.integration.xml.transformer.ResultToStringTransformer" />
 
-<int-amqp:outbound-channel-adapter id="caseReceiptDlqAmqp" channel="caseReceiptDlqChannelXml" exchange-name="case-deadletter-exchange" routing-key="Case.Responses.binding" />
-<!-- End of section to deal with retries and DLQ after max attempts -->
+    <int-amqp:outbound-channel-adapter id="caseReceiptDlqAmqp" channel="caseReceiptDlqChannelXml" exchange-name="case-deadletter-exchange" routing-key="Case.Responses.binding" />
+    <!-- End of section to deal with retries and DLQ after max attempts -->
 </beans>

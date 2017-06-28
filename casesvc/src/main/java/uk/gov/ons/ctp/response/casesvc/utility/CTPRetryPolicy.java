@@ -9,7 +9,7 @@ import org.springframework.retry.context.RetryContextSupport;
 import org.springframework.util.ClassUtils;
 
 /**
- * A Stateless RetryPolicy
+ * A Stateless RetryPolicy that will rety only if an unchecked exception is thrown
  *
  * We actually need a Stateful Retry as per
  * https://github.com/spring-projects/spring-retry/blob/master/README.md
@@ -18,33 +18,58 @@ import org.springframework.util.ClassUtils;
 public class CTPRetryPolicy implements RetryPolicy {
     @Getter @Setter private volatile int maxAttempts;
 
+    /**
+     * To decide if a retrial is required.
+     *
+     * @param context the RetryContext
+     * @return true if retrial is required
+     */
     public boolean canRetry(RetryContext context) {
         Throwable lastThrowable = context.getLastThrowable();
-        return (lastThrowable == null || this.retryForException(lastThrowable)) && context.getRetryCount() < this.maxAttempts;
+        return (lastThrowable == null || this.retryForException(lastThrowable)) && context.getRetryCount() <
+                this.maxAttempts;
     }
 
+    /**
+     * Has to be there as per interface RetryPolicy
+     * @param status the RetryContext
+     */
     public void close(RetryContext status) {
     }
 
+    /**
+     * Identical implementation to SimpleRetryPolicy
+     * @param context the RetryContext
+     * @param throwable the Throwable
+     */
     public void registerThrowable(RetryContext context, Throwable throwable) {
-        CTPRetryPolicy.SimpleRetryContext simpleContext = (CTPRetryPolicy.SimpleRetryContext)context;
+        CTPRetryContext simpleContext = (CTPRetryContext)context;
         simpleContext.registerThrowable(throwable);
     }
 
+    /**
+     * Identical implementation to SimpleRetryPolicy
+     * @param parent the RetryContext
+     * @return the RetryContext
+     */
     public RetryContext open(RetryContext parent) {
-        return new CTPRetryPolicy.SimpleRetryContext(parent);
+        return new CTPRetryContext(parent);
     }
 
     private boolean retryForException(Throwable ex) {
         return ex.getCause() instanceof RuntimeException;
     }
 
+    /**
+     * Identical implementation to SimpleRetryPolicy
+     * @return a representation string
+     */
     public String toString() {
         return ClassUtils.getShortName(this.getClass()) + "[maxAttempts=" + this.maxAttempts + "]";
     }
 
-    private static class SimpleRetryContext extends RetryContextSupport {
-        public SimpleRetryContext(RetryContext parent) {
+    private static class CTPRetryContext extends RetryContextSupport {
+        public CTPRetryContext(RetryContext parent) {
             super(parent);
         }
     }
