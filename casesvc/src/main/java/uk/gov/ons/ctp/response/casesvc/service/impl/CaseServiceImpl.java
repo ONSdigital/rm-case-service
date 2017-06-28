@@ -202,7 +202,7 @@ public class CaseServiceImpl implements CaseService {
     CaseGroup newCaseGroup = createNewCaseGroup(caseData);
     Case caze = createNewCase(caseData, newCaseGroup);
     Category category = new Category();
-    category.setShortDescription(String.format(CASE_CREATED_EVENT_DESCRIPTION, "Initial creation of case"));
+    category.setShortDescription(String.format("Initial creation of case"));
     createCaseCreatedEvent(caze, category);
   }
 
