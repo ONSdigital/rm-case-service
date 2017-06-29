@@ -1,22 +1,38 @@
 package uk.gov.ons.ctp.response.casesvc.utility;
 
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.retry.RetryContext;
 import org.springframework.retry.RetryPolicy;
 import org.springframework.retry.context.RetryContextSupport;
 import org.springframework.util.ClassUtils;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
- * A Stateless RetryPolicy that will rety only if an unchecked exception is thrown
- *
- * We actually need a Stateful Retry as per
- * https://github.com/spring-projects/spring-retry/blob/master/README.md
+ * A RetryPolicy that will retry ONLY if an unchecked exception is thrown
  */
 @Slf4j
 public class CTPRetryPolicy implements RetryPolicy {
-    @Getter @Setter private volatile int maxAttempts;
+
+    private static final int DEFAULT_MAX_ATTEMPTS = 3;
+    private static final String RUNTIME_EXCEPTION = "java.lang.RuntimeException";
+
+    private volatile int maxAttempts;
+    private volatile List<String> retryableExceptions;  // TODO Make it a List<Class<? extends Throwable>
+
+    public CTPRetryPolicy() {
+        this(DEFAULT_MAX_ATTEMPTS);
+    }
+
+    public CTPRetryPolicy(int maxAttempts) {
+        this(maxAttempts, Collections.singletonList(RUNTIME_EXCEPTION));
+    }
+
+    public CTPRetryPolicy(int maxAttempts, List<String> retryableExceptions) {
+        this.maxAttempts = maxAttempts;
+        this.retryableExceptions = retryableExceptions;
+    }
 
     /**
      * To decide if a retrial is required.
@@ -49,6 +65,7 @@ public class CTPRetryPolicy implements RetryPolicy {
 
     /**
      * Identical implementation to SimpleRetryPolicy
+     *
      * @param parent the RetryContext
      * @return the RetryContext
      */
@@ -56,8 +73,24 @@ public class CTPRetryPolicy implements RetryPolicy {
         return new CTPRetryContext(parent);
     }
 
+    /**
+     * To determine if a retry is required for the given Throwable
+     *
+     * @param ex the Throwable to check for retry
+     * @return true if a retry is required
+     */
     private boolean retryForException(Throwable ex) {
-        return ex.getCause() instanceof RuntimeException;
+        try {
+            for (String className : retryableExceptions) {
+                if (Class.forName(className).isInstance(ex.getCause())) {
+                    return true;
+                }
+            }
+        } catch (ClassNotFoundException e) {
+            log.error("msg {} - cause {}", e.getMessage(), e.getCause());
+        }
+
+        return false;
     }
 
     /**
