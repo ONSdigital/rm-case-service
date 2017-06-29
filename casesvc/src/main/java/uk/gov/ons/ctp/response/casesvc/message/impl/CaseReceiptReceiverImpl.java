@@ -15,7 +15,6 @@ import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.UUID;
 
@@ -32,7 +31,7 @@ import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 @MessageEndpoint
 public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
 
-  private final static String EXISTING_CASE_NOT_FOUND = "No existing case found for caseId %s";
+  private static final String EXISTING_CASE_NOT_FOUND = "No existing case found for caseId %s";
 
   @Autowired
   private CaseService caseService;
@@ -42,6 +41,7 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
    * To process CaseReceipts read from queue
    *
    * @param caseReceipt to process
+   * @throws CTPException CTPException
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, value = "transactionManager")
   @ServiceActivator(inputChannel = "caseReceiptTransformed", adviceChain = "caseReceiptRetryAdvice")
@@ -69,6 +69,8 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
         break;
       case PAPER:
         category = PAPER_QUESTIONNAIRE_RESPONSE;
+        break;
+      default:
         break;
     }
 
