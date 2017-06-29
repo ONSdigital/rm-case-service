@@ -16,3 +16,6 @@ applications:
     collectionExerciseSvc_connectionConfig_host: collectionexercisesvc-int.apps.mvp.onsclofo.uk
     collectionExerciseSvc_connectionConfig_port: "80"
     collectionExerciseSvc_connectionConfig_scheme: http
+    actionSvc_connectionConfig_host: actionsvc-int.apps.mvp.onsclofo.uk
+    actionSvc_connectionConfig_port: "80"
+    actionSvc_connectionConfig_scheme: http
