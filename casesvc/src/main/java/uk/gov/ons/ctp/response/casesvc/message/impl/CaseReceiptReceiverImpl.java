@@ -15,7 +15,6 @@ import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.UUID;
 
@@ -37,7 +36,6 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
   @Autowired
   private CaseService caseService;
 
-  // TODO CTPA-1340
   /**
    * To process CaseReceipts read from queue
    *
@@ -48,10 +46,6 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
   public void process(CaseReceipt caseReceipt) throws CTPException {
     log.debug("entering process with caseReceipt {}", caseReceipt);
     UUID caseId = UUID.fromString(caseReceipt.getCaseId());
-//  TODO
-//    throw new NullPointerException("test");
-//    throw new CTPException(CTPException.Fault.BAD_REQUEST, "To test the SI retries");
-
     InboundChannel inboundChannel = caseReceipt.getInboundChannel();
     Timestamp responseTimestamp = new Timestamp(caseReceipt.getResponseDateTime().toGregorianCalendar()
             .getTimeInMillis());
