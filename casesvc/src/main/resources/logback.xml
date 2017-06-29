@@ -18,7 +18,7 @@
           <pattern>
             {
             "created": "%date{ISO8601}",
-            "service": "SampleSvc",
+            "service": "casesvc",
             "level": "%level",
             "event": "%message"
             }

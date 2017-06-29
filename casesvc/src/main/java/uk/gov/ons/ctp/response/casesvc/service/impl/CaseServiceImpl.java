@@ -312,6 +312,9 @@ public class CaseServiceImpl implements CaseService {
     InboundChannel channel = null;
     // TODO BRES new category name for when a BI responds?
     switch (category.getCategoryName()) {
+    case OFFLINE_RESPONSE_PROCESSED:
+      channel = InboundChannel.OFFLINE;
+      break;
     case ONLINE_QUESTIONNAIRE_RESPONSE:
       channel = InboundChannel.ONLINE;
       break;

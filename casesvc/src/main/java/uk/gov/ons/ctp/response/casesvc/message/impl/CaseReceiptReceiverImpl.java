@@ -12,13 +12,16 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.message.CaseReceiptReceiver;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.UUID;
 
 import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE;
 import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE;
+import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.QUESTIONNAIRE_RESPONSE;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
@@ -29,7 +32,7 @@ import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 @MessageEndpoint
 public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
 
-  private final static String EXISTING_CASE_NOT_FOUND = "No existing case found for caseRef %s";
+  private final static String EXISTING_CASE_NOT_FOUND = "No existing case found for caseId %s";
 
   @Autowired
   private CaseService caseService;
@@ -44,25 +47,38 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
   @ServiceActivator(inputChannel = "caseReceiptTransformed", adviceChain = "caseReceiptRetryAdvice")
   public void process(CaseReceipt caseReceipt) throws CTPException {
     log.debug("entering process with caseReceipt {}", caseReceipt);
+    UUID caseId = UUID.fromString(caseReceipt.getCaseId());
 //  TODO
 //    throw new NullPointerException("test");
 //    throw new CTPException(CTPException.Fault.BAD_REQUEST, "To test the SI retries");
 
-    String caseRef = caseReceipt.getCaseRef().trim();
     InboundChannel inboundChannel = caseReceipt.getInboundChannel();
     Timestamp responseTimestamp = new Timestamp(caseReceipt.getResponseDateTime().toGregorianCalendar()
             .getTimeInMillis());
 
-    Case existingCase = caseService.findCaseByCaseRef(caseRef);
+    Case existingCase = caseService.findCaseById(caseId);
     log.debug("existingCase is {}", existingCase);
 
+    CategoryDTO.CategoryName category = null;
+    switch (inboundChannel) {
+      case OFFLINE:
+        category = OFFLINE_RESPONSE_PROCESSED;
+        break;
+      case ONLINE:
+        category = ONLINE_QUESTIONNAIRE_RESPONSE;
+        break;
+      case PAPER:
+        category = PAPER_QUESTIONNAIRE_RESPONSE;
+        break;
+    }
+
     if (existingCase == null) {
-      log.error(String.format(EXISTING_CASE_NOT_FOUND, caseRef));
+      log.error(String.format(EXISTING_CASE_NOT_FOUND, caseId));
     } else {
       CaseEvent caseEvent = new CaseEvent();
       caseEvent.setCaseFK(existingCase.getCasePK());
-      caseEvent.setCategory(
-              inboundChannel == InboundChannel.ONLINE ? ONLINE_QUESTIONNAIRE_RESPONSE : PAPER_QUESTIONNAIRE_RESPONSE);
+      caseEvent.setCategory(category);
+      log.info("" + caseEvent.getCategory());
       caseEvent.setCreatedBy(SYSTEM);
       caseEvent.setDescription(QUESTIONNAIRE_RESPONSE);
       log.debug("about to invoke the event creation...");
