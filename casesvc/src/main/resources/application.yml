@@ -1,5 +1,5 @@
 info:
-  contactEmail: philip.whiles@ons.gov.uk
+  contactEmail: philippe.brossier@ons.gov.uk
   version: ${project.version}
   commit: ${buildNumber}
   branch: ${scmBranch}
@@ -9,8 +9,10 @@ info:
 # ie -Dlogging.level.org.springframework=DEBUG
 logging:
   level:
+    uk.gov.ons.ctp.response.casesvc.utility: DEBUG
     uk.gov.ons.ctp: DEBUG
-    uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl: DEBUG
+    org.springframework.retry: DEBUG
+    org.springframework.integration.handler.advice: DEBUG
     org.springframework.cloud.sleuth.instrument.messaging.MessagingSpanExtractor: ERROR
     org.springframework.context.annotation.ConfigurationClassPostProcessor: ERROR
   profile: DEV
@@ -107,8 +109,8 @@ spring:
 
 data-grid:
   address: localhost:6379
-  list-time-to-live-seconds: 600
-  list-time-to-wait-seconds: 600
+  list-time-to-live-seconds: 60
+  list-time-to-wait-seconds: 60
 
 internet-access-code-svc:
   iac-post-path: /iacs
@@ -166,6 +168,9 @@ rabbitmq:
   virtualhost: /
 
 messaging:
+  backoffInitial: 5000
+  backoffMultiplier: 3
+  backoffMax: 45000
   consumingThreads: 1
   pubMaxAttempts: 3
   conMaxAttempts: 3

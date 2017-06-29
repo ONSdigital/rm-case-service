@@ -1,5 +1,5 @@
 info:
-  contactEmail: philip.whiles@ons.gov.uk
+  contactEmail: philippe.brossier@ons.gov.uk
   version: ${project.version}
   commit: ${buildNumber}
   branch: ${scmBranch}
@@ -158,8 +158,18 @@ rabbitmq:
   virtualhost: ${cloud.services.rabbitmq.connection.virtualhost}
 
 messaging:
+  backoffInitial: 5000
+  backoffMultiplier: 3
+  backoffMax: 45000
   consumingThreads: 1
   pubMaxAttempts: 3
   conMaxAttempts: 3
   prefetchCount: 10
   txSize: 1
+
+swagger-settings:
+  swagger-ui-active: false
+  group-name: "caseservice-api"
+  title: "Case Service API"
+  description: "API for the Case Service"
+  version: "10.41"

@@ -196,6 +196,16 @@ public class CaseServiceImpl implements CaseService {
     return createdCaseEvent;
   }
 
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
+  @Override
+  public void createInitialCase(SampleUnitParent caseData) {
+    CaseGroup newCaseGroup = createNewCaseGroup(caseData);
+    Case caze = createNewCase(caseData, newCaseGroup);
+    Category category = new Category();
+    category.setShortDescription(String.format("Initial creation of case"));
+    createCaseCreatedEvent(caze, category);
+  }
+
   /**
    * Upfront fail fast validation - if this event is going to require a new case
    * to be created, lets check the request is valid before we do something we
@@ -365,6 +375,7 @@ public class CaseServiceImpl implements CaseService {
       CaseDTO.CaseState newState = null;
       // make the transition
       newState = caseSvcStateTransitionManager.transition(oldState, transitionEvent);
+
       // was a state change effected?
       if (!oldState.equals(newState)) {
         targetCase.setState(newState);
@@ -387,12 +398,9 @@ public class CaseServiceImpl implements CaseService {
    */
   private Case createNewCaseFromEvent(CaseEvent caseEvent, Case targetCase, Case newCase, Category caseEventCategory) {
     Case persistedCase = saveNewCase(caseEvent, targetCase, newCase);
-    // NOTE the action service does not need to be notified of the creation of
-    // the new case - yet
-    // That will be done when the CaseDistributor wakes up and assigns an IAC to
-    // the newly created case
-    // ie it might be created here, but it is not yet ready for prime time
-    // without its IAC!
+    // NOTE the action service does not need to be notified of the creation of the new case - yet
+    // That will be done when the CaseDistributor wakes up and assigns an IAC to the newly created case
+    // ie it might be created here, but it is not yet ready for prime time without its IAC!
     createCaseCreatedEvent(persistedCase, caseEventCategory);
     return persistedCase;
   }
@@ -430,43 +438,12 @@ public class CaseServiceImpl implements CaseService {
     newCaseCaseEvent.setCategory(CategoryDTO.CategoryName.CASE_CREATED);
     newCaseCaseEvent.setCreatedBy(Constants.SYSTEM);
     newCaseCaseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
-    newCaseCaseEvent
-        .setDescription(String.format(CASE_CREATED_EVENT_DESCRIPTION, caseEventCategory.getShortDescription()));
+    newCaseCaseEvent.
+            setDescription(String.format(CASE_CREATED_EVENT_DESCRIPTION, caseEventCategory.getShortDescription()));
 
     caseEventRepo.saveAndFlush(newCaseCaseEvent);
     return newCaseCaseEvent;
   }
-
-  /**
-   * Create an event for a newly created case
-   *
-   * @param caze the case for which we want to record the event
-   * @return the created event
-   */
-  private CaseEvent createCaseCreatedEvent(Case caze) {
-    CaseEvent newCaseCaseEvent = new CaseEvent();
-    newCaseCaseEvent.setCaseFK(caze.getCasePK());
-    newCaseCaseEvent.setCategory(CategoryDTO.CategoryName.CASE_CREATED);
-    newCaseCaseEvent.setCreatedBy(Constants.SYSTEM);
-    newCaseCaseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
-    newCaseCaseEvent
-        .setDescription(String.format(CASE_CREATED_EVENT_DESCRIPTION, "Initial creation of case"));
-
-    caseEventRepo.saveAndFlush(newCaseCaseEvent);
-    return newCaseCaseEvent;
-  }
-  
-  
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
-  @Override
-  public void createInitialCase(SampleUnitParent caseData) {
-
-    CaseGroup newCaseGroup = createNewCaseGroup(caseData);
-    Case caze = createNewCase(caseData, newCaseGroup);
-    createCaseCreatedEvent(caze);
-    
-  }
-
 
   /**
    * Create the CaseGroup for the Case.
@@ -494,7 +471,7 @@ public class CaseServiceImpl implements CaseService {
    * @return newCase created Case.
    */
   @SuppressWarnings("null")
-private Case createNewCase(SampleUnitParent caseData, CaseGroup caseGroup) {
+  private Case createNewCase(SampleUnitParent caseData, CaseGroup caseGroup) {
     Case newCase = new Case();
     newCase.setId(UUID.randomUUID());
 
