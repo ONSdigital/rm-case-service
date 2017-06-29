@@ -10,6 +10,7 @@ info:
 logging:
   level:
     uk.gov.ons.ctp.response.casesvc.utility: DEBUG
+    uk.gov.ons.ctp: DEBUG
     org.springframework.retry: DEBUG
     org.springframework.integration.handler.advice: DEBUG
     org.springframework.cloud.sleuth.instrument.messaging.MessagingSpanExtractor: ERROR
