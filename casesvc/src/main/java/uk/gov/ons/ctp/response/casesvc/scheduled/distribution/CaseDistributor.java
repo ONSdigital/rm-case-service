@@ -293,8 +293,7 @@ public class CaseDistributor {
     if (caseNotifications.size() > 0 || caseNotifications.size() > 0) {
       do {
         try {
-          // send the list of requests for this case type to the
-          // handler
+          // send the list of requests for this case type to the handler
           log.debug("Publishing instruction");
           notificationPublisher.sendNotifications(caseNotifications);
           caseNotifications.clear();
