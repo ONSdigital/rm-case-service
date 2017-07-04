@@ -1,25 +1,26 @@
 SELECT
   events.sampleunitref
 , events.sampleunittype
-, events.caseFK
+, events.casePK as case
 , events.case_created
 , events.action_created
-, events.action_cancellation_created
-, events.action_cancellation_completed
+--, events.action_cancellation_created
+--, events.action_cancellation_completed
 , events.action_completed
-, events.action_updated     
+--, events.action_updated     
 , events.respondent_account_created                                                                                           
 , events.respondent_enroled         
-, events.access_code_authentication_attempt_ind     
-, events.offline_response_processed_ind 
+, events.access_code_authentication_attempt_ind 
+, events.collection_instrument_downloaded_ind 
 , events.unsuccessful_response_upload_ind  
-, events.successful_response_upload_ind   
-, events.collection_instrument_downloaded_ind  
+, events.successful_response_upload_ind 
+, events.offline_response_processed_ind   
+  
 FROM 
 (SELECT 
     cg.sampleunitref
   , c.sampleunittype 
-  , ce.caseFK
+  , c.casePK
   -- response chasing categories
   , MAX(CASE WHEN ce.categoryFK = 'ACCESS_CODE_AUTHENTICATION_ATTEMPT'  THEN 1 ELSE  0 END) access_code_authentication_attempt_ind 	--(B)  -- count distinct event
   , SUM(CASE WHEN ce.categoryFK = 'RESPONDENT_ACCOUNT_CREATED' 		THEN 1 ELSE  0 END) respondent_account_created 			--(B)  -- count all events
@@ -40,7 +41,7 @@ RIGHT OUTER JOIN casesvc.case c  ON c.casePK = ce.caseFK
 INNER JOIN casesvc.casegroup cg  ON c.casegroupFK = cg.casegroupPK
 GROUP BY cg.sampleunitref
        , c.sampleunittype
-       , ce.caseFK) events
+       , c.casePK) events
 ORDER BY events.sampleunitref
        , events.sampleunittype
-       , events.caseFK
+       , events.casePK
