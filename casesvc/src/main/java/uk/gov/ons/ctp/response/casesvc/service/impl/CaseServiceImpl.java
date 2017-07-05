@@ -310,26 +310,24 @@ public class CaseServiceImpl implements CaseService {
    */
   private void recordCaseResponse(Category category, Case targetCase, Timestamp timestamp) {
     InboundChannel channel = null;
-    // TODO BRES new category name for when a BI responds?
     switch (category.getCategoryName()) {
-    case OFFLINE_RESPONSE_PROCESSED:
-      channel = InboundChannel.OFFLINE;
-      break;
-    case ONLINE_QUESTIONNAIRE_RESPONSE:
-      channel = InboundChannel.ONLINE;
-      break;
-    case PAPER_QUESTIONNAIRE_RESPONSE:
-      channel = InboundChannel.PAPER;
-      break;
-    default:
-      break;
+      case OFFLINE_RESPONSE_PROCESSED:
+        channel = InboundChannel.OFFLINE;
+        break;
+      case ONLINE_QUESTIONNAIRE_RESPONSE:
+        channel = InboundChannel.ONLINE;
+        break;
+      case PAPER_QUESTIONNAIRE_RESPONSE:
+        channel = InboundChannel.PAPER;
+        break;
+      default:
+        break;
     }
     if (channel != null) {
       Response response = Response.builder()
           .inboundChannel(channel)
           .caseFK(targetCase.getCasePK())
           .dateTime(timestamp).build();
-
       targetCase.getResponses().add(response);
       caseRepo.save(targetCase);
     }
