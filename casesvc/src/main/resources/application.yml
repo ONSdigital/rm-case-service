@@ -9,9 +9,9 @@ info:
 # ie -Dlogging.level.org.springframework=DEBUG
 logging:
   level:
-    uk.gov.ons.ctp: WARN
-    org.springframework.retry: DEBUG
-    org.springframework.util.backoff: DEBUG
+    uk.gov.ons.ctp: DEBUG
+    org.springframework.retry: ERROR
+    org.springframework.integration.handler.advice: ERROR
     org.springframework.cloud.sleuth.instrument.messaging.MessagingSpanExtractor: ERROR
     org.springframework.context.annotation.ConfigurationClassPostProcessor: ERROR
   profile: DEV
@@ -108,8 +108,8 @@ spring:
 
 data-grid:
   address: localhost:6379
-  list-time-to-live-seconds: 600
-  list-time-to-wait-seconds: 600
+  list-time-to-live-seconds: 60
+  list-time-to-wait-seconds: 60
 
 internet-access-code-svc:
   iac-post-path: /iacs
