@@ -6,6 +6,8 @@ import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import lombok.extern.slf4j.Slf4j;
+import net.sourceforge.cobertura.CoverageIgnore;
+
 import org.springframework.stereotype.Component;
 
 /**
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Component;
  * constructions. It will then schedule the running of the distributor using
  * details from the AppConfig
  */
+@CoverageIgnore
 @Component
 @Slf4j
 public class CaseDistributionScheduler implements HealthIndicator {

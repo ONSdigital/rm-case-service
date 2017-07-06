@@ -1,6 +1,8 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import net.sourceforge.cobertura.CoverageIgnore;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,6 +49,7 @@ import java.util.UUID;
  * A CaseService implementation which encapsulates all business logic operating
  * on the Case entity model.
  */
+@CoverageIgnore
 @Service
 @Slf4j
 public class CaseServiceImpl implements CaseService {

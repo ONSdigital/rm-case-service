@@ -1,10 +1,13 @@
 package uk.gov.ons.ctp.response.casesvc.config;
 
-import com.google.common.base.Predicates;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+
+import com.google.common.base.Predicates;
+
+import net.sourceforge.cobertura.CoverageIgnore;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -18,6 +21,7 @@ import uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint;
 /**
  * Created by stevee on 23/06/2017.
  */
+@CoverageIgnore
 @Configuration
 @EnableSwagger2
 @ComponentScan(basePackageClasses = {
