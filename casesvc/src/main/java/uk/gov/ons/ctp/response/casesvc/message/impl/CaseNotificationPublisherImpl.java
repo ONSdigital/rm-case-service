@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.integration.annotation.MessageEndpoint;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
-import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotifications;
 
 /**
  * Service implementation responsible for publishing case lifecycle events to
@@ -28,8 +27,6 @@ public class CaseNotificationPublisherImpl implements CaseNotificationPublisher 
   @Override
   public void sendNotifications(List<CaseNotification> caseNotificationList) {
     log.debug("Entering sendNotifications with {} CaseNotification ", caseNotificationList.size());
-    CaseNotifications caseNotifications = new CaseNotifications();
-    caseNotifications.getCaseNotifications().addAll(caseNotificationList);
-    rabbitTemplate.convertAndSend(caseNotifications);
+    caseNotificationList.forEach(caseNotification -> rabbitTemplate.convertAndSend(caseNotification));
   }
 }

@@ -57,6 +57,7 @@ public class CaseServiceImpl implements CaseService {
   public static final String IAC_OVERUSE_MSG = "More than one case found to be using IAC %s";
 
   private static final String CASE_CREATED_EVENT_DESCRIPTION = "Case created when %s";
+  private static final String MISSING_EXISTING_CASE_MSG = "No existing Case found for caseFK %d";
   private static final String MISSING_NEW_CASE_MSG = "New Case definition missing for case %s";
   private static final String WRONG_OLD_SAMPLE_UNIT_TYPE_MSG =
           "Old Case has sampleUnitType %s. It is expected to have sampleUnitType %s.";
@@ -337,8 +338,7 @@ public class CaseServiceImpl implements CaseService {
   }
 
   /**
-   * Send a request to the action service to create an ad-hoc action for the
-   * event if required
+   * Send a request to the action service to create an ad-hoc action for the event if required
    *
    * @param category the category details of the event
    * @param caseEvent the basic event
@@ -347,7 +347,13 @@ public class CaseServiceImpl implements CaseService {
     String actionType = category.getGeneratedActionType();
     log.debug("actionType = {}", actionType);
     if (!StringUtils.isEmpty(actionType)) {
-      actionSvcClientService.createAndPostAction(actionType, caseEvent.getCaseFK(), caseEvent.getCreatedBy());
+      Integer caseFk = caseEvent.getCaseFK();
+      Case existingCase = caseRepo.findOne(caseFk);
+      if (existingCase != null) {
+        actionSvcClientService.createAndPostAction(actionType, existingCase.getId(), caseEvent.getCreatedBy());
+      } else {
+        log.error(String.format(MISSING_EXISTING_CASE_MSG, caseFk));
+      }
     }
   }
 
