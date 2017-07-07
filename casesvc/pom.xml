@@ -178,11 +178,11 @@
         <version>2.1.1</version>
       </dependency>
 
-      <dependency>
+      <!-- <dependency>
           <groupId>javax.servlet</groupId>
           <artifactId>javax.servlet-api</artifactId>
           <scope>provided</scope>
-      </dependency>
+      </dependency> TODO CTPA-1392 -->
       
   </dependencies>
 

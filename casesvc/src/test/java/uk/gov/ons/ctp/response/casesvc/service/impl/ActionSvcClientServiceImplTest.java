@@ -68,7 +68,7 @@ public class ActionSvcClientServiceImplTest {
     actionSvcConfig.setActionsPath("/actions");
     Mockito.when(appConfig.getActionSvc()).thenReturn(actionSvcConfig);
 
-    assertTrue(true); // TODO
+    assertTrue(true); // TODO CTPA-1392
 
 //    RestTemplate restTemplate = this.restClient.getRestTemplate();
 //    MockRestServiceServer mockServer = MockRestServiceServer.createServer(restTemplate);

@@ -31,7 +31,7 @@ public class ActionSvcClientServiceImpl implements ActionSvcClientService {
   public void createAndPostAction(String actionType, UUID caseId, String createdBy) {
       ActionDTO actionDTO = new ActionDTO();
 //      actionDTO.setCaseId(caseId);
-      actionDTO.setCaseId(1);   // TODO
+      actionDTO.setCaseId(1);   // TODO CTPA-1392
       actionDTO.setActionTypeName(actionType);
       actionDTO.setCreatedBy(createdBy);
       log.debug("about to post to the Action SVC with {}", actionDTO);
