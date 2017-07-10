@@ -582,6 +582,27 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.partyId", is(CASE9_PARTYID.toString())));
     actions.andExpect(jsonPath("$.subCategory").doesNotExist());
   }
+
+  /**
+   * a test providing good json but versus an incorrect sample unit type
+   * @throws Exception exception thrown
+   */
+  @Test
+  public void createCaseEventGoodJsonButVersusIncorrectSampleUnitType() throws Exception {
+    when(categoryService.findCategory(CategoryName.RESPONDENT_ENROLED)).thenReturn(categoryResults.get(3));
+    when(caseService.findCaseById(CASE9_ID)).thenReturn(caseResults.get(8));
+    when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class))).thenThrow(new CTPException(
+            CTPException.Fault.VALIDATION_FAILED, OUR_EXCEPTION_MESSAGE));
+
+    ResultActions actions = mockMvc.perform(postJson(String.format("/cases/%s/events", CASE9_ID), CASEEVENT_VALIDJSON));
+
+    actions.andExpect(status().isBadRequest())
+            .andExpect(handler().handlerType(CaseEndpoint.class))
+            .andExpect(handler().methodName("createCaseEvent"))
+            .andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())))
+            .andExpect(jsonPath("$.error.message", is(OUR_EXCEPTION_MESSAGE)))
+            .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+  }
   
   @Test(expected = InvalidRequestException.class)
   public void verifyBadBindingResultThrowsException() throws Exception {

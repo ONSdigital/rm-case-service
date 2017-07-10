@@ -45,6 +45,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.*;
 import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.IAC_OVERUSE_MSG;
+import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.MISSING_NEW_CASE_MSG;
+import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.WRONG_OLD_SAMPLE_UNIT_TYPE_MSG;
 
 /**
  * Test the CaseServiceImpl primarily the createCaseEvent functionality. Note
@@ -130,6 +132,8 @@ public class CaseServiceImplTest {
   private static final String CASEEVENT_DESCRIPTION = "a desc";
   private static final String CASEEVENT_SUBCATEGORY = "sub category";
   private static final String IAC_FOR_TEST = "ABCD-EFGH-IJKL";
+  private static final String UUID_FOR_ACTIONABLE_HOUSEHOLD_CASE_FK = "1bc5d41b-0549-40b3-ba76-42f6d4cf3fd1";
+  private static final String UUID_FOR_ACTIONABLE_BUSINESS_UNIT_CASE_FK = "91fda7f2-3825-4bd4-baef-943a0ccf0856";
 
   @Mock
   private CaseRepository caseRepo;
@@ -610,7 +614,13 @@ public class CaseServiceImplTest {
             ACTIONABLE_H_INDIVIDUAL_CASE_FK);
 
     Case oldCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
-    assertNull(caseService.createCaseEvent(caseEvent, oldCase));
+    try {
+      caseService.createCaseEvent(caseEvent, oldCase);
+      fail();
+    } catch(CTPException e) {
+      assertEquals(CTPException.Fault.VALIDATION_FAILED, e.getFault());
+      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, "HI", "H"), e.getMessage());
+    }
 
     verify(caseRepo, times(2)).findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED);
@@ -640,7 +650,13 @@ public class CaseServiceImplTest {
             ACTIONABLE_H_INDIVIDUAL_CASE_FK);
 
     Case oldCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
-    assertNull(caseService.createCaseEvent(caseEvent, oldCase));
+    try {
+      caseService.createCaseEvent(caseEvent, oldCase);
+      fail();
+    } catch(CTPException e) {
+      assertEquals(CTPException.Fault.VALIDATION_FAILED, e.getFault());
+      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, "HI", "H"), e.getMessage());
+    }
 
     verify(caseRepo, times(2)).findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.HOUSEHOLD_PAPER_REQUESTED);
@@ -667,7 +683,13 @@ public class CaseServiceImplTest {
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED,
             ACTIONABLE_HOUSEHOLD_CASE_FK);
 
-    assertNull(caseService.createCaseEvent(caseEvent, null));
+    try {
+      caseService.createCaseEvent(caseEvent, null);
+      fail();
+    } catch(CTPException e) {
+      assertEquals(CTPException.Fault.VALIDATION_FAILED, e.getFault());
+      assertEquals(String.format(MISSING_NEW_CASE_MSG, UUID_FOR_ACTIONABLE_HOUSEHOLD_CASE_FK), e.getMessage());
+    }
 
     verify(caseRepo).findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED);
@@ -898,7 +920,13 @@ public class CaseServiceImplTest {
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT,
             ACTIONABLE_BI_CASE_FK);
 
-    assertNull(caseService.createCaseEvent(caseEvent, null));
+    try {
+      caseService.createCaseEvent(caseEvent, null);
+      fail();
+    } catch(CTPException e) {
+      assertEquals(CTPException.Fault.VALIDATION_FAILED, e.getFault());
+      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, "BI", "B"), e.getMessage());
+    }
 
     verify(caseRepo).findOne(ACTIONABLE_BI_CASE_FK);
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
@@ -955,7 +983,13 @@ public class CaseServiceImplTest {
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED, ACTIONABLE_BI_CASE_FK);
 
-    assertNull(caseService.createCaseEvent(caseEvent, null));
+    try {
+      caseService.createCaseEvent(caseEvent, null);
+      fail();
+    } catch(CTPException e) {
+      assertEquals(CTPException.Fault.VALIDATION_FAILED, e.getFault());
+      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, "BI", "B"), e.getMessage());
+    }
 
     verify(caseRepo).findOne(ACTIONABLE_BI_CASE_FK);
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED);
@@ -1036,7 +1070,13 @@ public class CaseServiceImplTest {
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ENROLED, ACTIONABLE_BI_CASE_FK);
 
-    assertNull(caseService.createCaseEvent(caseEvent, null));
+    try {
+      caseService.createCaseEvent(caseEvent, null);
+      fail();
+    } catch(CTPException e) {
+      assertEquals(CTPException.Fault.VALIDATION_FAILED, e.getFault());
+      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, "BI", "B"), e.getMessage());
+    }
 
     verify(caseRepo).findOne(ACTIONABLE_BI_CASE_FK);
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED);
@@ -1064,7 +1104,13 @@ public class CaseServiceImplTest {
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ENROLED,
             ACTIONABLE_BUSINESS_UNIT_CASE_FK);
 
-    assertNull(caseService.createCaseEvent(caseEvent, null));
+    try {
+      caseService.createCaseEvent(caseEvent, null);
+      fail();
+    } catch(CTPException e) {
+      assertEquals(CTPException.Fault.VALIDATION_FAILED, e.getFault());
+      assertEquals(String.format(MISSING_NEW_CASE_MSG, UUID_FOR_ACTIONABLE_BUSINESS_UNIT_CASE_FK), e.getMessage());
+    }
 
     verify(caseRepo).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED);
@@ -1120,7 +1166,13 @@ public class CaseServiceImplTest {
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED,
             ACTIONABLE_BUSINESS_UNIT_CASE_FK);
 
-    assertNull(caseService.createCaseEvent(caseEvent, null));
+    try {
+      caseService.createCaseEvent(caseEvent, null);
+      fail();
+    } catch(CTPException e) {
+      assertEquals(CTPException.Fault.VALIDATION_FAILED, e.getFault());
+      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, "B", "BI"), e.getMessage());
+    }
 
     verify(caseRepo).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED);
@@ -1177,7 +1229,13 @@ public class CaseServiceImplTest {
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOAD,
             ACTIONABLE_BUSINESS_UNIT_CASE_FK);
 
-    assertNull(caseService.createCaseEvent(caseEvent, null));
+    try {
+      caseService.createCaseEvent(caseEvent, null);
+      fail();
+    } catch(CTPException e) {
+      assertEquals(CTPException.Fault.VALIDATION_FAILED, e.getFault());
+      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, "B", "BI"), e.getMessage());
+    }
 
     verify(caseRepo).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOAD);
@@ -1234,7 +1292,13 @@ public class CaseServiceImplTest {
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED,
             ACTIONABLE_BUSINESS_UNIT_CASE_FK);
 
-    assertNull(caseService.createCaseEvent(caseEvent, null));
+    try {
+      caseService.createCaseEvent(caseEvent, null);
+      fail();
+    } catch(CTPException e) {
+      assertEquals(CTPException.Fault.VALIDATION_FAILED, e.getFault());
+      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, "B", "BI"), e.getMessage());
+    }
 
     verify(caseRepo).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED);
@@ -1262,7 +1326,13 @@ public class CaseServiceImplTest {
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD,
             ACTIONABLE_BUSINESS_UNIT_CASE_FK);
 
-    assertNull(caseService.createCaseEvent(caseEvent, null));
+    try {
+      caseService.createCaseEvent(caseEvent, null);
+      fail();
+    } catch(CTPException e) {
+      assertEquals(CTPException.Fault.VALIDATION_FAILED, e.getFault());
+      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, "B", "BI"), e.getMessage());
+    }
 
     verify(caseRepo).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD);
