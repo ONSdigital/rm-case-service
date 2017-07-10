@@ -16,7 +16,6 @@ import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 
 import java.util.UUID;
 
-import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Matchers.any;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
@@ -67,20 +66,17 @@ public class ActionSvcClientServiceImplTest {
     ActionSvc actionSvcConfig = new ActionSvc();
     actionSvcConfig.setActionsPath("/actions");
     Mockito.when(appConfig.getActionSvc()).thenReturn(actionSvcConfig);
+    RestTemplate restTemplate = this.restClient.getRestTemplate();
+    MockRestServiceServer mockServer = MockRestServiceServer.createServer(restTemplate);
+    mockServer.expect(requestTo("http://localhost:8080/actions"))
+        .andExpect(method(HttpMethod.POST))
+        .andExpect(content().string(containsString("\"actionTypeName\":\"" + GENERAL_ESCALATION + "\",")))
+        .andExpect(content().string(containsString("\"caseId\":\"" + EXISTING_CASE_ID.toString() + "\",")))
+        .andExpect(content().string(containsString("\"createdBy\":\"" + SYSTEM + "\"")))
+        .andRespond(withSuccess());
 
-    assertTrue(true); // TODO CTPA-1392
+    actionSvcClientService.createAndPostAction(GENERAL_ESCALATION, EXISTING_CASE_ID, SYSTEM);
 
-//    RestTemplate restTemplate = this.restClient.getRestTemplate();
-//    MockRestServiceServer mockServer = MockRestServiceServer.createServer(restTemplate);
-//    mockServer.expect(requestTo("http://localhost:8080/actions"))
-//        .andExpect(method(HttpMethod.POST))
-//        .andExpect(content().string(containsString("\"actionTypeName\":\"" + GENERAL_ESCALATION + "\",")))
-//        .andExpect(content().string(containsString("\"caseId\":\"" + EXISTING_CASE_ID.toString() + "\",")))
-//        .andExpect(content().string(containsString("\"createdBy\":\"" + SYSTEM + "\"")))
-//        .andRespond(withSuccess());
-//
-//    actionSvcClientService.createAndPostAction(GENERAL_ESCALATION, EXISTING_CASE_ID, SYSTEM);
-//
-//    mockServer.verify();
+    mockServer.verify();
   }
 }

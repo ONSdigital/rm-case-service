@@ -26,7 +26,7 @@
     <dependency>
       <groupId>uk.gov.ons.ctp.product</groupId>
       <artifactId>actionsvc-api</artifactId>
-      <version>10.37.0-SNAPSHOT</version>
+      <version>10.42.0-SNAPSHOT</version>
     </dependency>
 
     <dependency>
@@ -43,7 +43,7 @@
     
     <dependency>
       <groupId>uk.gov.ons.ctp.product</groupId>
-      <artifactId> collectionexercisesvc-api</artifactId>
+      <artifactId>collectionexercisesvc-api</artifactId>
       <version>10.41.0-SNAPSHOT</version>
     </dependency>
 
@@ -61,7 +61,6 @@
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
-      <version>6.9.10</version>
       <scope>test</scope>
     </dependency>
 
@@ -71,94 +70,143 @@
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-       <groupId>org.springframework.cloud</groupId>
-       <artifactId>spring-cloud-spring-service-connector</artifactId>
-   </dependency>
-   <!-- If you intend to deploy the app on Cloud Foundry, add the following -->
-   <dependency>
-       <groupId>org.springframework.cloud</groupId>
-       <artifactId>spring-cloud-cloudfoundry-connector</artifactId>
-   </dependency>
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-zipkin</artifactId>
-    </dependency>
+      <dependency>
+          <groupId>org.springframework.cloud</groupId>
+          <artifactId>spring-cloud-starter-zipkin</artifactId>
+      </dependency>
 
-    <dependency>
-      <groupId>org.springframework.amqp</groupId>
-      <artifactId>spring-rabbit</artifactId>
-    </dependency>
+      <dependency>
+          <groupId>org.springframework.integration</groupId>
+          <artifactId>spring-integration-amqp</artifactId>
+      </dependency>
 
-    <!-- Packages spring-boot-starter, spring-boot-starter-aop, spring-integration-core,
-      spring-integration-java-dsl, spring-integration-jmx -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-integration</artifactId>
-    </dependency>
+      <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-actuator</artifactId>
+      </dependency>
 
-    <dependency>
-      <groupId>org.springframework.integration</groupId>
-      <artifactId>spring-integration-xml</artifactId>
-    </dependency>
+      <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-data-jpa</artifactId>
+      </dependency>
 
-    <dependency>
-      <groupId>org.springframework.integration</groupId>
-      <artifactId>spring-integration-file</artifactId>
-    </dependency>
+      <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-jdbc</artifactId>
+      </dependency>
 
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-jpa</artifactId>
-    </dependency>
+      <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-web</artifactId>
+          <exclusions>
+              <exclusion>
+                  <groupId>org.springframework.boot</groupId>
+                  <artifactId>spring-boot-starter-tomcat</artifactId>
+              </exclusion>
+          </exclusions>
+      </dependency>
 
-    <dependency>
-      <groupId>org.springframework.integration</groupId>
-      <artifactId>spring-integration-amqp</artifactId>
-    </dependency>
+      <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-jetty</artifactId>
+      </dependency>
 
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-jdbc</artifactId>
-    </dependency>
+      <dependency>
+          <groupId>org.liquibase</groupId>
+          <artifactId>liquibase-core</artifactId>
+      </dependency>
 
-    <dependency>
-      <groupId>org.liquibase</groupId>
-      <artifactId>liquibase-core</artifactId>
-    </dependency>
+      <dependency>
+          <groupId>org.postgresql</groupId>
+          <artifactId>postgresql</artifactId>
+          <scope>runtime</scope>
+      </dependency>
 
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <scope>runtime</scope>
-    </dependency>
+      <dependency>
+          <groupId>ma.glasnost.orika</groupId>
+          <artifactId>orika-core</artifactId>
+      </dependency>
 
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-configuration-processor</artifactId>
-      <optional>true</optional>
-    </dependency>
+      <dependency>
+          <groupId>ma.glasnost.orika</groupId>
+          <artifactId>orika-eclipse-tools</artifactId>
+      </dependency>
 
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <scope>provided</scope>
-    </dependency>
+      <dependency>
+          <groupId>org.projectlombok</groupId>
+          <artifactId>lombok</artifactId>
+          <scope>provided</scope>
+      </dependency>
 
-    <dependency>
-      <groupId>ma.glasnost.orika</groupId>
-      <artifactId>orika-core</artifactId>
-    </dependency>
+      <dependency>
+          <groupId>org.springframework.amqp</groupId>
+          <artifactId>spring-rabbit</artifactId>
+      </dependency>
 
-    <dependency>
-      <groupId>ma.glasnost.orika</groupId>
-      <artifactId>orika-eclipse-tools</artifactId>
-    </dependency>
+      <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-starter-amqp</artifactId>
+      </dependency>
 
-    <dependency>
-       <groupId>net.logstash.logback</groupId>
-       <artifactId>logstash-logback-encoder</artifactId>
-    </dependency>
+      <dependency>
+          <groupId>org.springframework.integration</groupId>
+          <artifactId>spring-integration-core</artifactId>
+      </dependency>
+
+      <dependency>
+          <groupId>org.springframework.integration</groupId>
+          <artifactId>spring-integration-xml</artifactId>
+      </dependency>
+
+      <dependency>
+          <groupId>org.springframework.integration</groupId>
+          <artifactId>spring-integration-file</artifactId>
+      </dependency>
+
+      <dependency>
+          <groupId>org.springframework.integration</groupId>
+          <artifactId>spring-integration-http</artifactId>
+      </dependency>
+
+      <dependency>
+          <groupId>org.springframework.integration</groupId>
+          <artifactId>spring-integration-test</artifactId>
+          <scope>test</scope>
+      </dependency>
+
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-test</artifactId>
+          <scope>test</scope>
+      </dependency>
+
+      <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-configuration-processor</artifactId>
+          <optional>true</optional>
+      </dependency>
+
+      <dependency>
+          <groupId>org.springframework.cloud</groupId>
+          <artifactId>spring-cloud-spring-service-connector</artifactId>
+      </dependency>
+
+      <!-- If you intend to deploy the app on Cloud Foundry, add the following -->
+      <dependency>
+          <groupId>org.springframework.cloud</groupId>
+          <artifactId>spring-cloud-cloudfoundry-connector</artifactId>
+      </dependency>
+
+      <dependency>
+          <groupId>javax.servlet</groupId>
+          <artifactId>javax.servlet-api</artifactId>
+          <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+          <groupId>net.logstash.logback</groupId>
+          <artifactId>logstash-logback-encoder</artifactId>
+      </dependency>
 
       <dependency>
           <groupId>io.springfox</groupId>
@@ -178,12 +226,6 @@
         <version>2.1.1</version>
       </dependency>
 
-      <!-- <dependency>
-          <groupId>javax.servlet</groupId>
-          <artifactId>javax.servlet-api</artifactId>
-          <scope>provided</scope>
-      </dependency> TODO CTPA-1392 -->
-      
   </dependencies>
 
   <build>
