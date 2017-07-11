@@ -1,7 +1,7 @@
 info:
   name: ${project.artifactId}
   version: ${project.version}
-  origin: ${scm.url}
+  origin: git@github.com:ONSdigital/rm-case-service.git
   commit: ${buildNumber}
   branch: ${scmBranch}
   built: ${timestamp}

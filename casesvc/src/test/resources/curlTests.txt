@@ -13,4 +13,4 @@ curl http://localhost:8171/cases/9a5f2be5-f944-41f9-982c-3517cfcfef3c/ -v -X GET
 ## To test the info endpoint
 ########################################################################
 curl http://localhost:8171/info/ -v -X GET
-200 {"name":"casesvc","version":"10.43.0-SNAPSHOT","origin":"git@github.com:ONSdigital/rm-case-service.git/casesvc","commit":"984ca66d28ca40ce8ce7c5d518755516e051bee1","branch":"master","built":"2017-07-11T13:26:51Z"}
+200 {"name":"casesvc","version":"10.43.0-SNAPSHOT","origin":"git@github.com:ONSdigital/rm-case-service.git","commit":"bad3532bd06ecffe0626a1a5eae8401edde719da","branch":"master","built":"2017-07-11T15:41:46Z"}
