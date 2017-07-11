@@ -20,6 +20,12 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
 
+  <scm>
+    <connection>scm:git:git@github.com:ONSdigital/rm-case-service.git</connection>
+    <developerConnection>scm:git:git@github.com:ONSdigital/rm-case-service.git</developerConnection>
+    <url>git@github.com:ONSdigital/rm-case-service.git</url>
+  </scm>
+
   <modules>
     <module>casesvc</module>
     <module>casesvc-api</module>
@@ -36,12 +42,6 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
-  <scm>
-    <connection>scm:git:git@github.com:ONSdigital/rm-case-service.git</connection>
-    <developerConnection>scm:git:git@github.com:ONSdigital/rm-case-service.git</developerConnection>
-    <url>git@github.com:ONSdigital/rm-case-service.git</url>
-  </scm>
 
   <build>
   <pluginManagement>
@@ -154,7 +154,7 @@
         </executions>
         <configuration>
           <doCheck>false</doCheck>
-          <doUpdate>false</doUpdate>
+          <doUpdate>true</doUpdate>
           <timestampFormat>{0,date,yyyy-MM-dd'T'HH:mm:ss'Z'}</timestampFormat>
           <items>
             <item>timestamp</item>
