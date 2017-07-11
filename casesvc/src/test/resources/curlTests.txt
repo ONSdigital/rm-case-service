@@ -7,3 +7,10 @@ curl http://localhost:8171/cases/9a5f2be5-f944-41f9-982c-3517cfcfef3c/ -v -X GET
 
 curl http://localhost:8171/cases/9a5f2be5-f944-41f9-982c-3517cfcfef3c/ -v -X GET -u admin:secret
 404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20170608102717460","message":"Case not found for case id 9a5f2be5-f944-41f9-982c-3517cfcfef3c"}}
+
+
+########################################################################
+## To test the info endpoint
+########################################################################
+curl http://localhost:8171/info/ -v -X GET
+200 {"contactEmail":"philippe.brossier@ons.gov.uk","version":"10.42.0-SNAPSHOT","commit":"c69ff69","branch":"master","buildTime":"10:12:08 AM BST on July 11, 2017"}
