@@ -1,6 +1,8 @@
 package uk.gov.ons.ctp.response.casesvc.scheduled.distribution;
 
 import lombok.extern.slf4j.Slf4j;
+import net.sourceforge.cobertura.CoverageIgnore;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.sleuth.Span;
 import org.springframework.cloud.sleuth.Tracer;
@@ -52,9 +54,14 @@ import java.util.stream.Collectors;
  * when it has x notifications it publishes them.
  *
  */
+@CoverageIgnore
 @Component
 @Slf4j
 public class CaseDistributor {
+	
+	
+//TODO: Needs units tests
+
 
   private static final String CASE_DISTRIBUTOR_SPAN = "caseDistributor";
   private static final String CASE_DISTRIBUTOR_LIST_ID = "case";

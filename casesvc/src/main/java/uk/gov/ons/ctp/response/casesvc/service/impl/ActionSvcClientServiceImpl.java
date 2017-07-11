@@ -10,6 +10,8 @@ import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
 
+import java.util.UUID;
+
 /**
  * The impl of the service which calls the action service via REST
  *
@@ -26,16 +28,13 @@ public class ActionSvcClientServiceImpl implements ActionSvcClientService {
   private RestClient actionServiceClient;
 
   @Override
-  public void createAndPostAction(String actionType, int casePK,
-                                  String createdBy) {
+  public void createAndPostAction(String actionType, UUID caseId, String createdBy) {
       ActionDTO actionDTO = new ActionDTO();
-      actionDTO.setCaseId(casePK);
+      actionDTO.setCaseId(caseId);
       actionDTO.setActionTypeName(actionType);
       actionDTO.setCreatedBy(createdBy);
       log.debug("about to post to the Action SVC with {}", actionDTO);
-      actionServiceClient.postResource(
-              appConfig.getActionSvc().getActionsPath(), actionDTO,
-              ActionDTO.class);
+      actionServiceClient.postResource(appConfig.getActionSvc().getActionsPath(), actionDTO, ActionDTO.class);
   }
 
 }

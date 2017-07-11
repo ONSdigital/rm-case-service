@@ -14,16 +14,23 @@ import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.response.casesvc.config.ActionSvc;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 
+import java.util.UUID;
+
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Matchers.any;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
 /**
  * A test of the case frame service client service
  */
 @RunWith(MockitoJUnitRunner.class)
 public class ActionSvcClientServiceImplTest {
+
+  private static final String GENERAL_ESCALATION = "GeneralEscalation";
+
+  private static final UUID EXISTING_CASE_ID = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd1");
 
   @Mock
   private Tracer tracer;
@@ -60,23 +67,16 @@ public class ActionSvcClientServiceImplTest {
     actionSvcConfig.setActionsPath("/actions");
     Mockito.when(appConfig.getActionSvc()).thenReturn(actionSvcConfig);
     RestTemplate restTemplate = this.restClient.getRestTemplate();
-
-    MockRestServiceServer mockServer = MockRestServiceServer.
-            createServer(restTemplate);
+    MockRestServiceServer mockServer = MockRestServiceServer.createServer(restTemplate);
     mockServer.expect(requestTo("http://localhost:8080/actions"))
         .andExpect(method(HttpMethod.POST))
-        .andExpect(content().string(
-                containsString("\"actionTypeName\":"
-                        + "\"GeneralEscalation\"" + ",")))
-        .andExpect(content().string(containsString("\"caseId\":"
-                + "123,")))
-        .andExpect(content().string(containsString("\"createdBy\":"
-                + "\"SYSTEM\"")))
+        .andExpect(content().string(containsString("\"actionTypeName\":\"" + GENERAL_ESCALATION + "\",")))
+        .andExpect(content().string(containsString("\"caseId\":\"" + EXISTING_CASE_ID.toString() + "\",")))
+        .andExpect(content().string(containsString("\"createdBy\":\"" + SYSTEM + "\"")))
         .andRespond(withSuccess());
 
-    actionSvcClientService.createAndPostAction("GeneralEscalation",
-            123, "SYSTEM");
+    actionSvcClientService.createAndPostAction(GENERAL_ESCALATION, EXISTING_CASE_ID, SYSTEM);
+
     mockServer.verify();
   }
-
 }
