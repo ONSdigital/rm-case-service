@@ -20,8 +20,6 @@ liquibase:
   url: ${cloud.services.postgresql.connection.jdbcurl}
   changeLog: classpath:/database/changelog-master.yml
 
-
-
 security:
   basic:
     enabled: false
@@ -30,8 +28,6 @@ security:
     password: secret
 
 management:
-  port: 8271
-  context-path: /mgmt
   security:
     roles: SUPERUSER
     enabled: true
@@ -61,7 +57,7 @@ endpoints:
     sensitive: true
   info:
     enabled: true
-    sensitive: true
+    sensitive: false
   metrics:
     enabled: true
     sensitive: true
