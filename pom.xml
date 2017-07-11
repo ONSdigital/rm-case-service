@@ -38,9 +38,9 @@
   </dependencyManagement>
 
   <scm>
-    <connection>scm:git:git@192.168.11.106:ctp/rm-case-service.git</connection>
-    <developerConnection>scm:git:git@192.168.11.106:ctp/rm-case-service.git</developerConnection>
-    <url>scm:git:git@192.168.11.106:ctp/rm-case-service.git</url>
+    <connection>scm:git:git@github.com:ONSdigital/rm-case-service.git</connection>
+    <developerConnection>scm:git:git@github.com:ONSdigital/rm-case-service.git</developerConnection>
+    <url>git@github.com:ONSdigital/rm-case-service.git</url>
   </scm>
 
   <build>
