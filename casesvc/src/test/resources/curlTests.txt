@@ -13,4 +13,4 @@ curl http://localhost:8171/cases/9a5f2be5-f944-41f9-982c-3517cfcfef3c/ -v -X GET
 ## To test the info endpoint
 ########################################################################
 curl http://localhost:8171/info/ -v -X GET
-200 {"contactEmail":"philippe.brossier@ons.gov.uk","version":"10.42.0-SNAPSHOT","commit":"c69ff69","branch":"master","buildTime":"10:12:08 AM BST on July 11, 2017"}
+200 {"name":"casesvc","version":"10.43.0-SNAPSHOT","origin":"git@github.com:ONSdigital/rm-case-service.git","commit":"4c2c32d","branch":"master","buildTime":"10:42:30 AM BST on July 11, 2017","contactEmail":"philippe.brossier@ons.gov.uk"}
