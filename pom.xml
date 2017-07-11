@@ -154,7 +154,7 @@
         </executions>
         <configuration>
           <doCheck>false</doCheck>
-          <doUpdate>true</doUpdate>
+          <doUpdate>false</doUpdate>
           <timestampFormat>{0,date,yyyy-MM-dd'T'HH:mm:ss'Z'}</timestampFormat>
           <items>
             <item>timestamp</item>
