@@ -79,7 +79,7 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @throws CTPException something went wrong
    */
   @RequestMapping(value = "/{caseId}", method = RequestMethod.GET)
-  public ResponseEntity<?> findCaseById(
+  public ResponseEntity<CaseDetailsDTO> findCaseById(
           @PathVariable("caseId") final UUID caseId,
           @RequestParam(value = "caseevents", required = false) boolean
                   caseevents,
@@ -105,7 +105,7 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @throws CTPException something went wrong
    */
   @RequestMapping(value = "/partyid/{partyId}", method = RequestMethod.GET)
-  public ResponseEntity<?> findCasesByPartyId(
+  public ResponseEntity<List<CaseDetailsDTO>> findCasesByPartyId(
           @PathVariable("partyId") final UUID partyId,
           @RequestParam(value = "caseevents", required = false)
                   boolean caseevents,
@@ -135,7 +135,7 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @throws CTPException something went wrong
    */
   @RequestMapping(value = "/iac/{iac}", method = RequestMethod.GET)
-  public ResponseEntity<?> findCaseByIac(@PathVariable("iac") final String iac,
+  public ResponseEntity<CaseDetailsDTO> findCaseByIac(@PathVariable("iac") final String iac,
                                          @RequestParam(value = "caseevents", required = false) final boolean caseevents,
                                          @RequestParam(value = "iac", required = false) final boolean iacFlag)
           throws CTPException {
@@ -159,7 +159,7 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @throws CTPException something went wrong
    */
   @RequestMapping(value = "/casegroupid/{casegroupId}", method = RequestMethod.GET)
-  public ResponseEntity<?> findCasesInCaseGroup(@PathVariable("casegroupId") final UUID casegroupId)
+  public ResponseEntity<List<CaseDTO>> findCasesInCaseGroup(@PathVariable("casegroupId") final UUID casegroupId)
           throws CTPException {
     log.info("Entering findCasesInCaseGroup with {}", casegroupId);
 
@@ -186,7 +186,7 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @throws CTPException something went wrong
    */
   @RequestMapping(value = "/{caseId}/events", method = RequestMethod.GET)
-  public ResponseEntity<?> findCaseEventsByCaseId(@PathVariable("caseId") final UUID caseId)
+  public ResponseEntity<List<CaseEventDTO>> findCaseEventsByCaseId(@PathVariable("caseId") final UUID caseId)
           throws CTPException {
     log.info("Entering findCaseEventsByCaseId with {}", caseId);
     Case caze = caseService.findCaseById(caseId);
@@ -213,7 +213,7 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @throws InvalidRequestException if binding errors
    */
   @RequestMapping(value = "/{caseId}/events", method = RequestMethod.POST)
-  public ResponseEntity<?> createCaseEvent(@PathVariable("caseId") final UUID caseId,
+  public ResponseEntity<CreatedCaseEventDTO> createCaseEvent(@PathVariable("caseId") final UUID caseId,
                                       @RequestBody @Valid final CaseEventCreationRequestDTO caseEventCreationRequestDTO,
                                       BindingResult bindingResult) throws CTPException, InvalidRequestException {
     log.info("Entering createCaseEvent with caseId {} and requestObject {}", caseId, caseEventCreationRequestDTO);
@@ -249,6 +249,7 @@ public final class CaseEndpoint implements CTPEndpoint {
     CreatedCaseEventDTO mappedCaseEvent = mapperFacade.map(createdCaseEvent, CreatedCaseEventDTO.class);
     mappedCaseEvent.setCaseId(caseId);
     mappedCaseEvent.setPartyId(caseEventCreationRequestDTO.getPartyId());
+
 
     // TODO Define URI
     return ResponseEntity.created(URI.create("TODO")).body(mappedCaseEvent);
