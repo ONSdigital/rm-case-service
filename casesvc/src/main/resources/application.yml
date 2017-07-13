@@ -184,4 +184,3 @@ swagger-settings:
   title: Case Service API
   description: API for ${project.artifactId}
   version: ${project.version}
-  
