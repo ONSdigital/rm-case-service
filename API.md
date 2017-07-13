@@ -27,6 +27,21 @@ For the endpoints that return the details of a case:
 
 If this query parameter is omitted the unique access code **will not** be returned with the case details. The JSON examples provided for the three endpoints mentioned above include the code for illustration purposes.
 
+## Service Information
+* `GET /info` will return information about this service, collated from when it was last built.
+
+### Example JSON Response
+```json
+{
+    "name": "casesvc",
+    "version": "10.42.0",
+    "origin": "git@github.com:ONSdigital/rm-case-service.git",
+    "commit": "a7abf0734b7cbac9ccb83882cc9aad91446ee8c8",
+    "branch": "master",
+    "built": "2017-07-12T09:38:30Z"
+}
+```
+
 ## Get Case Group
 * `GET /casegroups/9a5f2be5-f944-41f9-982c-3517cfcfef3c` will return the details of the case group with an ID of `9a5f2be5-f944-41f9-982c-3517cfcfef3c`.
 
