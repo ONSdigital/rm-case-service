@@ -100,6 +100,8 @@ spring:
 data-grid:
   address: ${cloud.services.redis.connection.host}:${cloud.services.redis.connection.port}
   list-time-to-live-seconds: 600
+  list-time-to-wait-seconds: 600
+  report-lock-time-to-live-seconds: 300
 
 internet-access-code-svc:
   iac-post-path: /iacs

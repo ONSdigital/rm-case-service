@@ -109,6 +109,7 @@ data-grid:
   address: localhost:6379
   list-time-to-live-seconds: 60
   list-time-to-wait-seconds: 60
+  report-lock-time-to-live-seconds: 300
 
 internet-access-code-svc:
   iac-post-path: /iacs
