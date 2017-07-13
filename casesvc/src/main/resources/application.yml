@@ -181,3 +181,6 @@ swagger-settings:
   title: "Case Service API"
   description: "API for the Case Service"
   version: "10.41"
+
+report-settings:
+  cron-expression: "0 * * * * *"
