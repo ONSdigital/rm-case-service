@@ -237,7 +237,6 @@ public class CaseDistributor {
               // the code in this method executes in a transactional context
               public CaseNotification doInTransaction(final TransactionStatus status) {
                 CaseNotification caseNotification = null;
-                // update our cases state in db
                 CaseDTO.CaseEvent event = null;
                 switch (caze.getState()) {
                   case SAMPLED_INIT:
@@ -306,13 +305,11 @@ public class CaseDistributor {
         } catch (Exception e) {
           // broker not there ? sleep then retry
           log.warn("Failed to send notifications {} because {}",
-              caseNotifications.stream().map(a -> a.getCaseId().toString())
-                  .collect(Collectors.joining(",")),
+              caseNotifications.stream().map(a -> a.getCaseId().toString()).collect(Collectors.joining(",")),
               e.getMessage());
           log.warn("CaseDistribution will sleep and retry publish");
           try {
-            Thread.sleep(appConfig.getCaseDistribution().
-                    getRetrySleepSeconds() * MILLISECONDS);
+            Thread.sleep(appConfig.getCaseDistribution().getRetrySleepSeconds() * MILLISECONDS);
           } catch (InterruptedException ie) {
             log.warn("Retry sleep was interrupted");
           }
@@ -320,5 +317,4 @@ public class CaseDistributor {
       } while (!published);
     }
   }
-
 }
