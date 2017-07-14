@@ -3,14 +3,31 @@ package uk.gov.ons.ctp.response.casesvc.scheduled.distribution;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
+import org.mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.cloud.sleuth.Span;
+import org.springframework.cloud.sleuth.Tracer;
+import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.support.TransactionTemplate;
+import uk.gov.ons.ctp.common.distributed.DistributedListManager;
+import uk.gov.ons.ctp.common.distributed.LockingException;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.config.CaseDistribution;
 import uk.gov.ons.ctp.response.casesvc.config.InternetAccessCodeSvc;
+import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
+import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+import uk.gov.ons.ctp.response.casesvc.service.CaseService;
+import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 
-import static org.junit.Assert.assertTrue;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * Test the case distributor
@@ -19,29 +36,22 @@ import static org.junit.Assert.assertTrue;
 public class CaseDistributorTest {
   private static final int TWO = 2;
   private static final int TEN = 10;
+
   private static final long TEN_LONG = 10L;
+
+  private static final UUID CASE_ID = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd1");
 
   @Spy
   private AppConfig appConfig = new AppConfig();
 
-/*  @Mock
-  private CaseNotificationPublisher caseNotificationPublisher;
+  @Mock
+  private TransactionTemplate transactionTemplate;
 
   @Mock
   private Tracer tracer;
 
   @Mock
-  private Span span;
-
-  @Mock
   private DistributedListManager<Integer> caseDistributionListManager;
-
-  @Mock
-  private StateTransitionManager<CaseState, uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseEvent>
-          caseSvcStateTransitionManager;
-
-  @Mock
-  private MapperFacade mapperFacade;
 
   @Mock
   private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
@@ -50,13 +60,13 @@ public class CaseDistributorTest {
   private CaseRepository caseRepo;
 
   @Mock
-  private TransactionTemplate transactionTemplate;
+  private CaseService caseService;
 
   @Mock
-  private PlatformTransactionManager platformTransactionManager;
+  private CaseNotificationPublisher caseNotificationPublisher;
 
   @InjectMocks
-  private CaseDistributor caseDistributor;*/
+  private CaseDistributor caseDistributor;
 
   /**
    * A Test
@@ -64,209 +74,88 @@ public class CaseDistributorTest {
   @Before
   public void setUp() {
     InternetAccessCodeSvc internetAccessCodeSvc = new InternetAccessCodeSvc();
+    appConfig.setInternetAccessCodeSvc(internetAccessCodeSvc);
+
     CaseDistribution caseDistributionConfig = new CaseDistribution();
     caseDistributionConfig.setDelayMilliSeconds(TEN_LONG);
     caseDistributionConfig.setRetrySleepSeconds(TEN);
     caseDistributionConfig.setRetrievalMax(TEN);
     caseDistributionConfig.setDistributionMax(TWO);
-
-    appConfig.setInternetAccessCodeSvc(internetAccessCodeSvc);
     appConfig.setCaseDistribution(caseDistributionConfig);
 
     MockitoAnnotations.initMocks(this);
   }
 
   /**
-   * Test BlueSky scenario
-   *
-   * @throws Exception oops
+   * Test where we fail at the 1st hurdle, ie we can't retrieve any cases
    */
-  @SuppressWarnings("unchecked")
   @Test
-  public void testBlueSkyRetrieve10Iac2Publish5() throws Exception {
-    assertTrue(true);
-//    Mockito.when(hazelcastInstance.getMap(any(String.class))).thenReturn(Mockito.mock(MapProxyImpl.class));
-//    Mockito.when(hazelcastInstance.getLocalEndpoint()).thenReturn(Mockito.mock(Endpoint.class));
-//
-//    appConfig.getCaseDistribution().setIacMax(2);
-//    appConfig.getCaseDistribution().setDistributionMax(5);
-//
-//    List<Case> cases = FixtureHelper.loadClassFixtures(Case[].class);
-//    List<Questionnaire> questionnaires = FixtureHelper.loadClassFixtures(Questionnaire[].class);
-//    List<String> iacs = Arrays.asList("bcdf-2345-lkjh", "bcdf-2345-lkjh");
-//
-//    // wire up mock responses
-//    Mockito.when(
-//        caseSvcStateTransitionManager.transition(CaseState.SAMPLED_INIT, CaseDTO.CaseEvent.ACTIVATED))
-//        .thenReturn(CaseState.ACTIVE);
-//
-//    List<CaseDTO.CaseState> states = Arrays.asList(CaseDTO.CaseState.SAMPLED_INIT);
-//    Mockito.when(
-//        caseRepo.findByStateInAndCaseIdNotIn(eq(states), anyListOf(Integer.class), any(Pageable.class)))
-//        .thenReturn(cases);
-//    Mockito.when(
-//        internetAccessCodeSvcClientService.generateIACs(2))
-//        .thenReturn(iacs);
-//    Mockito.when(
-//        questionnaireRepo.findByCaseId(1))
-//        .thenReturn(Arrays.asList(questionnaires.get(0)));
-//    Mockito.when(
-//        questionnaireRepo.findByCaseId(2))
-//        .thenReturn(Arrays.asList(questionnaires.get(1)));
-//    Mockito.when(
-//        questionnaireRepo.findByCaseId(3))
-//        .thenReturn(Arrays.asList(questionnaires.get(2)));
-//    Mockito.when(
-//        questionnaireRepo.findByCaseId(4))
-//        .thenReturn(Arrays.asList(questionnaires.get(3)));
-//    Mockito.when(
-//        questionnaireRepo.findByCaseId(5))
-//        .thenReturn(Arrays.asList(questionnaires.get(4)));
-//    Mockito.when(
-//        questionnaireRepo.findByCaseId(6))
-//        .thenReturn(Arrays.asList(questionnaires.get(5)));
-//    Mockito.when(
-//        questionnaireRepo.findByCaseId(7))
-//        .thenReturn(Arrays.asList(questionnaires.get(6)));
-//    Mockito.when(
-//        questionnaireRepo.findByCaseId(8))
-//        .thenReturn(Arrays.asList(questionnaires.get(7)));
-//    Mockito.when(
-//        questionnaireRepo.findByCaseId(9))
-//        .thenReturn(Arrays.asList(questionnaires.get(8)));
-//    Mockito.when(
-//        questionnaireRepo.findByCaseId(10))
-//        .thenReturn(Arrays.asList(questionnaires.get(9)));
-//
-//    // let it roll
-//    caseDistributor.distribute();
-//
-//    verify(caseRepo).findByStateInAndCaseIdNotIn(eq(states), anyListOf(Integer.class), any(Pageable.class));
-//    verify(internetAccessCodeSvcClientService, times(5)).generateIACs(2);
-//    verify(questionnaireRepo).findByCaseId(1);
-//    verify(questionnaireRepo).findByCaseId(2);
-//    verify(questionnaireRepo).findByCaseId(3);
-//    verify(questionnaireRepo).findByCaseId(4);
-//    verify(questionnaireRepo).findByCaseId(5);
-//    verify(questionnaireRepo).findByCaseId(6);
-//    verify(questionnaireRepo).findByCaseId(7);
-//    verify(questionnaireRepo).findByCaseId(8);
-//    verify(questionnaireRepo).findByCaseId(9);
-//    verify(questionnaireRepo).findByCaseId(10);
-//    verify(questionnaireRepo, times(10)).save(any(Questionnaire.class));
-//    verify(caseRepo, times(10)).saveAndFlush(any(Case.class));
-//    verify(caseNotificationPublisher, times(2)).sendNotifications(anyListOf(CaseNotification.class));
+  public void testFailRetrievingCases() throws LockingException {
+    Mockito.when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class)))
+        .thenThrow(new RuntimeException("Database access failed"));
+
+    caseDistributor.distribute();
+
+    verify(tracer, times(1)).createSpan(any(String.class));
+    verify(internetAccessCodeSvcClientService, times(0)).generateIACs(any(Integer.class));
+    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+    verify(caseService, times(0)).prepareCaseNotification(any(Case.class),
+            any(CaseDTO.CaseEvent.class));
+    verify(caseNotificationPublisher, times(0)).sendNotifications(any(List.class));
+    verify(caseDistributionListManager, times(0)).deleteList(any(String.class),
+            any(Boolean.class));
+    verify(caseDistributionListManager, times(0)).unlockContainer();
+    verify(tracer, times(1)).close(any(Span.class));
   }
-//
-//  /**
-//   * Test BlueSky scenario
-//   *
-//   * @throws Exception oops
-//   */
-//  @SuppressWarnings("unchecked")
-//  @Test
-//  public void testBlueSkyRetrieve10Iac5Publish2() throws Exception {
-//
-//    Mockito.when(hazelcastInstance.getMap(any(String.class))).thenReturn(Mockito.mock(MapProxyImpl.class));
-//    Mockito.when(hazelcastInstance.getLocalEndpoint()).thenReturn(Mockito.mock(Endpoint.class));
-//
-//    List<Case> cases = FixtureHelper.loadClassFixtures(Case[].class);
-//    List<Questionnaire> questionnaires = FixtureHelper.loadClassFixtures(Questionnaire[].class);
-//    List<String> iacs = Arrays.asList("bcdf-2345-lkjh", "bcdf-2345-lkjh", "bcdf-2345-lkjh", "bcdf-2345-lkjh",
-//        "bcdf-2345-lkjh");
-//
-//    // wire up mock responses
-//    Mockito.when(
-//        caseSvcStateTransitionManager.transition(CaseState.SAMPLED_INIT, CaseDTO.CaseEvent.ACTIVATED))
-//        .thenReturn(CaseState.ACTIVE);
-//
-//    List<CaseDTO.CaseState> states = Arrays.asList(CaseDTO.CaseState.SAMPLED_INIT);
-//    Mockito.when(
-//        caseRepo.findByStateInAndCaseIdNotIn(eq(states), anyListOf(Integer.class), any(Pageable.class)))
-//        .thenReturn(cases);
-//    Mockito.when(
-//        internetAccessCodeSvcClientService.generateIACs(5))
-//        .thenReturn(iacs);
-//    Mockito.when(
-//        questionnaireRepo.findByCaseId(1))
-//        .thenReturn(Arrays.asList(questionnaires.get(0)));
-//    Mockito.when(
-//        questionnaireRepo.findByCaseId(2))
-//        .thenReturn(Arrays.asList(questionnaires.get(1)));
-//    Mockito.when(
-//        questionnaireRepo.findByCaseId(3))
-//        .thenReturn(Arrays.asList(questionnaires.get(2)));
-//    Mockito.when(
-//        questionnaireRepo.findByCaseId(4))
-//        .thenReturn(Arrays.asList(questionnaires.get(3)));
-//    Mockito.when(
-//        questionnaireRepo.findByCaseId(5))
-//        .thenReturn(Arrays.asList(questionnaires.get(4)));
-//    Mockito.when(
-//        questionnaireRepo.findByCaseId(6))
-//        .thenReturn(Arrays.asList(questionnaires.get(5)));
-//    Mockito.when(
-//        questionnaireRepo.findByCaseId(7))
-//        .thenReturn(Arrays.asList(questionnaires.get(6)));
-//    Mockito.when(
-//        questionnaireRepo.findByCaseId(8))
-//        .thenReturn(Arrays.asList(questionnaires.get(7)));
-//    Mockito.when(
-//        questionnaireRepo.findByCaseId(9))
-//        .thenReturn(Arrays.asList(questionnaires.get(8)));
-//    Mockito.when(
-//        questionnaireRepo.findByCaseId(10))
-//        .thenReturn(Arrays.asList(questionnaires.get(9)));
-//
-//    // let it roll
-//    caseDistributor.distribute();
-//
-//    verify(caseRepo).findByStateInAndCaseIdNotIn(eq(states), anyListOf(Integer.class), any(Pageable.class));
-//    verify(internetAccessCodeSvcClientService, times(2)).generateIACs(5);
-//    verify(questionnaireRepo).findByCaseId(1);
-//    verify(questionnaireRepo).findByCaseId(2);
-//    verify(questionnaireRepo).findByCaseId(3);
-//    verify(questionnaireRepo).findByCaseId(4);
-//    verify(questionnaireRepo).findByCaseId(5);
-//    verify(questionnaireRepo).findByCaseId(6);
-//    verify(questionnaireRepo).findByCaseId(7);
-//    verify(questionnaireRepo).findByCaseId(8);
-//    verify(questionnaireRepo).findByCaseId(9);
-//    verify(questionnaireRepo).findByCaseId(10);
-//    verify(questionnaireRepo, times(10)).save(any(Questionnaire.class));
-//    verify(caseRepo, times(10)).saveAndFlush(any(Case.class));
-//    verify(caseNotificationPublisher, times(5)).sendNotifications(anyListOf(CaseNotification.class));
-//  }
-//
-//  /**
-//   * Test that when we fail at first hurdle to load Cases we do not go on to
-//   * call anything else In reality the wakeup method would then be called again
-//   * after a sleep interval by spring but we cannot test that here
-//   *
-//   * @throws Exception oops
-//   */
-//  @SuppressWarnings("unchecked")
-//  @Test
-//  public void testDBFailure() throws Exception {
-//
-//    Mockito.when(hazelcastInstance.getMap(any(String.class))).thenReturn(Mockito.mock(MapProxyImpl.class));
-//    Mockito.when(hazelcastInstance.getLocalEndpoint()).thenReturn(Mockito.mock(Endpoint.class));
-//
-//    // wire up mock responses
-//    List<CaseDTO.CaseState> states = Arrays.asList(CaseDTO.CaseState.SAMPLED_INIT);
-//    Mockito.when(
-//        caseRepo.findByStateInAndCaseIdNotIn(eq(states), anyListOf(Integer.class), any(Pageable.class)))
-//        .thenThrow(new RuntimeException("Database access failed"));
-//
-//    // let it roll
-//    caseDistributor.distribute();
-//
-//    verify(caseRepo).findByStateInAndCaseIdNotIn(eq(states), anyListOf(Integer.class), any(Pageable.class));
-//    verify(internetAccessCodeSvcClientService, times(0)).generateIACs(any(Integer.class));
-//    verify(questionnaireRepo, times(0)).findByCaseId(any(Integer.class));
-//    verify(questionnaireRepo, times(0)).save(any(Questionnaire.class));
-//    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-//    verify(caseNotificationPublisher, times(0)).sendNotifications(anyListOf(CaseNotification.class));
-//  }
-//
+
+  /**
+   * Test where we retrieve 0 case
+   */
+  @Test
+  public void testRetrieveZeroCases() throws LockingException {
+    List<Case> cases = new ArrayList<>();
+    Mockito.when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class)))
+            .thenReturn(cases);
+
+    caseDistributor.distribute();
+
+    verify(tracer, times(1)).createSpan(any(String.class));
+    verify(internetAccessCodeSvcClientService, times(0)).generateIACs(any(Integer.class));
+    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+    verify(caseService, times(0)).prepareCaseNotification(any(Case.class),
+            any(CaseDTO.CaseEvent.class));
+    verify(caseNotificationPublisher, times(0)).sendNotifications(any(List.class));
+    verify(caseDistributionListManager, times(0)).deleteList(any(String.class),
+            any(Boolean.class));
+    verify(caseDistributionListManager, times(1)).unlockContainer();
+    verify(tracer, times(1)).close(any(Span.class));
+  }
+
+  /**
+   * Test where we retrieve cases but IAC call fails
+   */
+  @Test
+  public void testFailIAC() throws LockingException {
+    List<Case> cases = new ArrayList<>();
+    Case caze = new Case();
+    caze.setId(CASE_ID);
+    cases.add(caze);
+    Mockito.when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class)))
+            .thenReturn(cases);
+    Mockito.when(internetAccessCodeSvcClientService.generateIACs(any(Integer.class))).thenThrow(
+            new RuntimeException("IAC access failed"));
+
+    caseDistributor.distribute();
+
+    verify(tracer, times(1)).createSpan(any(String.class));
+    verify(internetAccessCodeSvcClientService, times(1)).generateIACs(any(Integer.class));
+    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+    verify(caseService, times(0)).prepareCaseNotification(any(Case.class),
+            any(CaseDTO.CaseEvent.class));
+    verify(caseNotificationPublisher, times(0)).sendNotifications(any(List.class));
+    verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
+            any(Boolean.class));
+    verify(caseDistributionListManager, times(1)).unlockContainer();
+    verify(tracer, times(1)).close(any(Span.class));
+  }
 }

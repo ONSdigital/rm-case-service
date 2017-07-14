@@ -59,10 +59,6 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class CaseDistributor {
-	
-	
-//TODO: Needs units tests
-
 
   private static final String CASE_DISTRIBUTOR_SPAN = "caseDistributor";
   private static final String CASE_DISTRIBUTOR_LIST_ID = "case";
@@ -83,8 +79,7 @@ public class CaseDistributor {
   private AppConfig appConfig;
 
   @Autowired
-  private StateTransitionManager<CaseDTO.CaseState, CaseDTO.CaseEvent>
-          caseSvcStateTransitionManager;
+  private StateTransitionManager<CaseDTO.CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
   @Autowired
   private CaseNotificationPublisher notificationPublisher;
@@ -122,8 +117,8 @@ public class CaseDistributor {
   public final CaseDistributionInfo distribute() {
     log.info("CaseDistributor awoken");
     Span distribSpan = tracer.createSpan(CASE_DISTRIBUTOR_SPAN);
-    CaseDistributionInfo distInfo = new CaseDistributionInfo();
 
+    CaseDistributionInfo distInfo = new CaseDistributionInfo();
     int successes = 0;
     int failures = 0;
     try {
@@ -135,38 +130,37 @@ public class CaseDistributor {
         List<String> codes = null;
         try {
           codes = internetAccessCodeSvcClientService.generateIACs(nbRetrievedCases);
-        } catch (Exception e) {
-          // TODO Try to be more specific than this all-Exception
-          log.error("Failed to obtain IAC codes");
-        }
-
-        if (CollectionUtils.isEmpty(codes)) {
-          int nbRetrievedCodes = codes.size();
-          if (nbRetrievedCases == nbRetrievedCodes) {
-            for (int idx = 0; idx < nbRetrievedCases; idx++) {
-              Case caze = cases.get(idx);
-              try {
-                caseNotifications.add(processCase(caze, codes.get(idx)));
-                if (caseNotifications.size() == appConfig.getCaseDistribution().getDistributionMax()) {
-                  publishCases(caseNotifications);
+          if (CollectionUtils.isEmpty(codes)) {
+            int nbRetrievedCodes = codes.size();
+            if (nbRetrievedCases == nbRetrievedCodes) {
+              for (int idx = 0; idx < nbRetrievedCases; idx++) {
+                Case caze = cases.get(idx);
+                try {
+                  caseNotifications.add(processCase(caze, codes.get(idx)));
+                  if (caseNotifications.size() == appConfig.getCaseDistribution().getDistributionMax()) {
+                    publishCases(caseNotifications);
+                  }
+                  successes++;
+                } catch (Exception e) {
+                  // single case/questionnaire db changes rolled back
+                  log.error("Exception msg {} thrown processing case with id {}. Processing postponed", e.getMessage(), caze.getId());
+                  failures++;
                 }
-                successes++;
-              } catch (Exception e) {
-                // single case/questionnaire db changes rolled back
-                // TODO Try to be more specific than this all-Exception
-                log.error("Exception msg {} thrown processing case with id {}. Processing postponed", e.getMessage(), caze.getId());
-                failures++;
               }
             }
           }
+
+          distInfo.setCasesSucceeded(successes);
+          distInfo.setCasesFailed(failures);
+
+          publishCases(caseNotifications);
+        } catch (Exception e) {
+          // TODO Try to be more specific than this all-Exception once the RestClient exception management
+          // TODO has been sorted
+          log.error("Failed to obtain IAC codes");
+        } finally {
+          caseDistributionListManager.deleteList(CASE_DISTRIBUTOR_LIST_ID, true);
         }
-
-        distInfo.setCasesSucceeded(successes);
-        distInfo.setCasesFailed(failures);
-
-        publishCases(caseNotifications);
-
-        caseDistributionListManager.deleteList(CASE_DISTRIBUTOR_LIST_ID, true);
       }
 
       try {
@@ -174,11 +168,11 @@ public class CaseDistributor {
       } catch (LockingException le) {
         // oh well - will time out or we never had the lock
       }
-
-      tracer.close(distribSpan);
-    } catch (Exception e) {
+    } catch (Exception e) { // TODO Be more specific than this all-Exception
       // something went wrong retrieving case types or cases
       log.error("Failed to process cases because {}", e.getMessage());
+    } finally {
+      tracer.close(distribSpan);
     }
 
     log.info("CaseDistributor sleeping");
@@ -207,7 +201,7 @@ public class CaseDistributor {
             excludedCases, pageable);
 
     if (!CollectionUtils.isEmpty(cases)) {
-      log.debug("RETRIEVED case ids {}", cases.stream().map(a -> a.getCasePK().toString()).collect(
+      log.debug("RETRIEVED case ids {}", cases.stream().map(caze -> caze.getId().toString()).collect(
               Collectors.joining(",")));
       caseDistributionListManager.saveList(CASE_DISTRIBUTOR_LIST_ID, cases.
               stream().map(caze -> caze.getCasePK()).collect(Collectors.toList()), true);
@@ -302,7 +296,7 @@ public class CaseDistributor {
           notificationPublisher.sendNotifications(caseNotifications);
           caseNotifications.clear();
           published = true;
-        } catch (Exception e) {
+        } catch (Exception e) { // TODO Should we be more specific
           // broker not there ? sleep then retry
           log.warn("Failed to send notifications {} because {}",
               caseNotifications.stream().map(a -> a.getCaseId().toString()).collect(Collectors.joining(",")),
