@@ -148,7 +148,6 @@ collection-exercise-svc:
     read-timeout-milli-seconds: 5000
 
 case-distribution:
-  iac-max: 50
   retrieval-max: 50
   distribution-max: 10
   retry-sleep-seconds: 3

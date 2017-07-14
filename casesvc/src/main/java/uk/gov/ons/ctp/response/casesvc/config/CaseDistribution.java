@@ -10,7 +10,6 @@ import net.sourceforge.cobertura.CoverageIgnore;
 @Data
 @CoverageIgnore
 public class CaseDistribution {
-  private Integer iacMax;
   private Integer retrievalMax;
   private Integer distributionMax;
   private Integer retrySleepSeconds;

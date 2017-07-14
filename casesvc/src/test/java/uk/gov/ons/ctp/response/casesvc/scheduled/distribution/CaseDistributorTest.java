@@ -18,7 +18,6 @@ import static org.junit.Assert.assertTrue;
 @RunWith(MockitoJUnitRunner.class)
 public class CaseDistributorTest {
   private static final int TWO = 2;
-  private static final int FIVE = 5;
   private static final int TEN = 10;
   private static final long TEN_LONG = 10L;
 
@@ -70,7 +69,6 @@ public class CaseDistributorTest {
     caseDistributionConfig.setRetrySleepSeconds(TEN);
     caseDistributionConfig.setRetrievalMax(TEN);
     caseDistributionConfig.setDistributionMax(TWO);
-    caseDistributionConfig.setIacMax(FIVE);
 
     appConfig.setInternetAccessCodeSvc(internetAccessCodeSvc);
     appConfig.setCaseDistribution(caseDistributionConfig);

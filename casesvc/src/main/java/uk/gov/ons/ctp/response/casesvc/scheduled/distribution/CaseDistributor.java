@@ -48,9 +48,9 @@ import java.util.stream.Collectors;
  *
  * This class is scheduled to wake and looks for Cases in INIT state to send to
  * the action service. On each wake cycle, it fetches the first n cases, by
- * createddatetime. It loops through those n cases and fetches m IACs from the
+ * createddatetime. It loops through those n cases and fetches n IACs from the
  * IAC service. It then updates each case with an IAC taken from
- * the set of m codes and transitions the case state to ACTIVE. It takes each
+ * the set of n codes and transitions the case state to ACTIVE. It takes each
  * case and constructs a notification message to send to the action service -
  * when it has x notifications it publishes them.
  *
@@ -131,33 +131,33 @@ public class CaseDistributor {
       List<Case> cases = retrieveCases();
 
       if (!CollectionUtils.isEmpty(cases)) {
-        int iacPageSize = appConfig.getCaseDistribution().getIacMax();
+        int nbRetrievedCases = cases.size();
         List<String> codes = null;
-        for (int idx = 0; idx < cases.size(); idx++) {
-          Case caze = cases.get(idx);
-          if (idx % iacPageSize == 0) {
-            int codesToRequest = (idx < cases.size()
-                    / iacPageSize * iacPageSize) ? iacPageSize
-                : (cases.size() % iacPageSize);
-            try {
-              codes = internetAccessCodeSvcClientService.generateIACs(codesToRequest);
-            } catch (Exception e) {
-              log.error("Failed to obtain IAC block");
-              // exit case loop and send notifications of cases activated so far to action svc
-              break;
-            }
-          }
+        try {
+          codes = internetAccessCodeSvcClientService.generateIACs(nbRetrievedCases);
+        } catch (Exception e) {
+          // TODO Try to be more specific than this all-Exception
+          log.error("Failed to obtain IAC codes");
+        }
 
-          try {
-            caseNotifications.add(processCase(caze, codes.get(idx % iacPageSize)));
-            if (caseNotifications.size() == appConfig.getCaseDistribution().getDistributionMax()) {
-              publishCases(caseNotifications);
+        if (CollectionUtils.isEmpty(codes)) {
+          int nbRetrievedCodes = codes.size();
+          if (nbRetrievedCases == nbRetrievedCodes) {
+            for (int idx = 0; idx < nbRetrievedCases; idx++) {
+              Case caze = cases.get(idx);
+              try {
+                caseNotifications.add(processCase(caze, codes.get(idx)));
+                if (caseNotifications.size() == appConfig.getCaseDistribution().getDistributionMax()) {
+                  publishCases(caseNotifications);
+                }
+                successes++;
+              } catch (Exception e) {
+                // single case/questionnaire db changes rolled back
+                // TODO Try to be more specific than this all-Exception
+                log.error("Exception msg {} thrown processing case with id {}. Processing postponed", e.getMessage(), caze.getId());
+                failures++;
+              }
             }
-            successes++;
-          } catch (Exception e) {
-            // single case/questionnaire db changes rolled back
-            log.error("Exception {} thrown processing case {}. Processing postponed", e.getMessage(), caze.getCasePK());
-            failures++;
           }
         }
 
@@ -295,7 +295,7 @@ public class CaseDistributor {
    */
   private void publishCases(List<CaseNotification> caseNotifications) {
     boolean published = false;
-    if (caseNotifications.size() > 0 || caseNotifications.size() > 0) {
+    if (!CollectionUtils.isEmpty(caseNotifications)) {
       do {
         try {
           // send the list of requests for this case type to the handler
