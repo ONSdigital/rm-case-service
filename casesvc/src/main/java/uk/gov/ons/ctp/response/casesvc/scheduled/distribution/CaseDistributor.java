@@ -3,6 +3,7 @@ package uk.gov.ons.ctp.response.casesvc.scheduled.distribution;
 import lombok.extern.slf4j.Slf4j;
 import net.sourceforge.cobertura.CoverageIgnore;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.sleuth.Span;
 import org.springframework.cloud.sleuth.Tracer;
@@ -129,7 +130,7 @@ public class CaseDistributor {
       List<CaseNotification> caseNotifications = new ArrayList<>();
       List<Case> cases = retrieveCases();
 
-      if (cases.size() > 0) {
+      if (!CollectionUtils.isEmpty(cases)) {
         int iacPageSize = appConfig.getCaseDistribution().getIacMax();
         List<String> codes = null;
         for (int idx = 0; idx < cases.size(); idx++) {
@@ -192,29 +193,26 @@ public class CaseDistributor {
    * @return list of cases
    */
   private List<Case> retrieveCases() throws LockingException {
-    List<Case> cases = new ArrayList<>();
+    List<Case> cases;
 
     List<Integer> excludedCases = caseDistributionListManager.findList(CASE_DISTRIBUTOR_LIST_ID, false);
-
-    // using the distributed map of lists of cases that other nodes are processing
-    // flatten them into a list of case ids to exclude from our query
     log.debug("retrieve cases excluding {}", excludedCases);
 
-    // prepare and execute the query to find the oldest N cases that are in
-    // INIT states and not in the excluded list
+    // prepare and execute the query to find the oldest N cases that are in SAMPLED_INIT & REPLACEMENT_INIT states and
+    // not in the excluded list
     Pageable pageable = new PageRequest(0, appConfig.getCaseDistribution().getRetrievalMax(),
             new Sort(new Sort.Order(Direction.ASC, "createdDateTime")));
     excludedCases.add(Integer.valueOf(IMPOSSIBLE_CASE_ID));
     cases = caseRepo.findByStateInAndCasePKNotIn(Arrays.asList(CaseState.SAMPLED_INIT, CaseState.REPLACEMENT_INIT),
             excludedCases, pageable);
 
-    log.debug("RETRIEVED case ids {}", cases.stream().map(a -> a.getCasePK().toString()).collect(
-            Collectors.joining(",")));
-
-    // try and save our list to the distributed store
-    if (cases.size() > 0) {
+    if (!CollectionUtils.isEmpty(cases)) {
+      log.debug("RETRIEVED case ids {}", cases.stream().map(a -> a.getCasePK().toString()).collect(
+              Collectors.joining(",")));
       caseDistributionListManager.saveList(CASE_DISTRIBUTOR_LIST_ID, cases.
               stream().map(caze -> caze.getCasePK()).collect(Collectors.toList()), true);
+    } else {
+      log.debug("RETRIEVED 0 case id");
     }
 
     return cases;
