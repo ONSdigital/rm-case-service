@@ -45,11 +45,7 @@ public class CaseDistributorTest {
 
   private static final long TEN_LONG = 10L;
 
-  private static final String IAC_0 = "ABCD-EFGH-IJKL-MNOP";
-  private static final String IAC_1 = "QRST-UVWX-YZAB-CDEF";
-  private static final String IAC_2 = "GHIJ-KLMN-OPQR-STUV";
-  private static final String IAC_3 = "QRST-UVWX-YZAB-CDEF";
-  private static final String IAC_4 = "GHIJ-KLMN-OPQR-STUV";
+  private static final String IAC = "ABCD-EFGH-IJKL-MNOP";
 
   private List<Case> cases;
 
@@ -178,7 +174,10 @@ public class CaseDistributorTest {
   }
 
   /**
-   * Test where we retrieve 5 cases and 5 IAC correctly. Cases also have a correct state.
+   * Test where we retrieve 6 cases and 6 IACs correctly.
+   *
+   * 5 Cases have a correct state (SAMPLED_INIT or REPLACEMENT_INIT). 1 case has an incorrect state (ACTIONABLE).
+   *
    * And setDistributionMax is at 2.
    */
   @Test
@@ -187,14 +186,14 @@ public class CaseDistributorTest {
             .thenReturn(cases);
 
     List<String> iacs = new ArrayList<>();
-    iacs.add(IAC_0);
-    iacs.add(IAC_1);
-    iacs.add(IAC_2);
-    iacs.add(IAC_3);
-    iacs.add(IAC_4);
+    for (int i = 0; i < 6; i++){
+      iacs.add(IAC);
+    }
     Mockito.when(internetAccessCodeSvcClientService.generateIACs(any(Integer.class))).thenReturn(iacs);
 
-    when(caseSvcStateTransitionManager.transition(any(CaseDTO.CaseState.class), any(CaseDTO.CaseEvent.class))).
+    when(caseSvcStateTransitionManager.transition(CaseDTO.CaseState.SAMPLED_INIT, CaseDTO.CaseEvent.ACTIVATED)).
+            thenReturn(CaseDTO.CaseState.ACTIONABLE);
+    when(caseSvcStateTransitionManager.transition(CaseDTO.CaseState.REPLACEMENT_INIT, CaseDTO.CaseEvent.REPLACED)).
             thenReturn(CaseDTO.CaseState.ACTIONABLE);
 
     CaseNotification caseNotification = new CaseNotification();
@@ -207,7 +206,7 @@ public class CaseDistributorTest {
 
     verify(tracer, times(1)).createSpan(any(String.class));
     verify(internetAccessCodeSvcClientService, times(1)).generateIACs(any(Integer.class));
-    verify(caseRepo, times(5)).saveAndFlush(any(Case.class));
+    verify(caseRepo, times(5)).saveAndFlush(any(Case.class)); // 5 and not 6 as 1 case is at an incorrect state (ACTIONABLE).
     verify(caseService, times(5)).prepareCaseNotification(any(Case.class),
             any(CaseDTO.CaseEvent.class));
     // Only 3 below as we have 5 cases AND setDistributionMax is at 2 in setUp(). So, the first time around it is
@@ -218,4 +217,6 @@ public class CaseDistributorTest {
     verify(caseDistributionListManager, times(1)).unlockContainer();
     verify(tracer, times(1)).close(any(Span.class));
   }
+
+
 }
