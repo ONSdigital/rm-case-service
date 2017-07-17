@@ -36,22 +36,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * This is the 'service' class that distributes cases to the action service. It
- * has a number of injected beans, including a RestClient, Repositories and the
- * InstructionPublisher
+ * This is the 'service' class that distributes cases to the action service. It has a number of injected beans,
+ * including a RestClient, Repositories and the InstructionPublisher.
  *
- * It cannot use the normal serviceimpl @Transaction pattern, as that will
- * rollback on a runtime exception (desired) but will then rethrow that
- * exception all the way up the stack. If we try and catch that exception, the
- * rollback does not happen. So - see the TransactionTemplate usage - that
- * allows both rollback and for us to catch the runtime exception and handle it.
+ * It cannot use the normal serviceimpl @Transaction pattern, as that will rollback on a runtime exception (desired) but
+ * will then rethrow that exception all the way up the stack. If we try and catch that exception, the rollback does not
+ * happen. So - see the TransactionTemplate usage - that allows both rollback and for us to catch the runtime exception
+ * and handle it.
  *
- * This class is scheduled to wake and looks for Cases in INIT state to send to
- * the action service. On each wake cycle, it fetches the first n cases, by
- * createddatetime. It loops through those n cases and fetches n IACs from the
- * IAC service. It then updates each case with an IAC taken from
- * the set of n codes and transitions the case state to ACTIVE. It takes each
- * case and constructs a notification message to send to the action service -
+ * This class is scheduled to wake and looks for Cases in SAMPLED_INIT & REPLACEMENT_INIT states to send to the action
+ * service. On each wake cycle, it fetches the first n cases, by createddatetime. It then fetches n IACs from the IAC
+ * service and loops through those n cases to update each case with an IAC taken from the set of n codes and transitions
+ * the case state to ACTIVE. It takes each case and constructs a notification message to send to the action service -
  * when it has x notifications it publishes them.
  *
  */
@@ -115,7 +111,7 @@ public class CaseDistributor {
    *         performed
    */
   public final CaseDistributionInfo distribute() {
-    log.info("CaseDistributor awoken");
+    log.info("CaseDistributor awoken...");
     Span distribSpan = tracer.createSpan(CASE_DISTRIBUTOR_SPAN);
 
     CaseDistributionInfo distInfo = new CaseDistributionInfo();
@@ -143,7 +139,8 @@ public class CaseDistributor {
                   successes++;
                 } catch (Exception e) {
                   // single case/questionnaire db changes rolled back
-                  log.error("Exception msg {} thrown processing case with id {}. Processing postponed", e.getMessage(), caze.getId());
+                  log.error("Exception msg {} thrown processing case with id {}. Processing postponed", e.getMessage(),
+                          caze.getId());
                   failures++;
                 }
               }
@@ -155,20 +152,16 @@ public class CaseDistributor {
 
           publishCases(caseNotifications);
         } catch (Exception e) {
-          // TODO Try to be more specific than this all-Exception once the RestClient exception management
-          // TODO has been sorted
+          // TODO Try to be more specific than this catch-all-Exception once the RestClient exception management
+          // TODO has been sorted.
           log.error("Failed to obtain IAC codes");
         } finally {
           caseDistributionListManager.deleteList(CASE_DISTRIBUTOR_LIST_ID, true);
         }
       }
 
-      try {
-        caseDistributionListManager.unlockContainer();
-      } catch (LockingException le) {
-        // oh well - will time out or we never had the lock
-      }
-    } catch (Exception e) { // TODO Be more specific than this all-Exception
+      caseDistributionListManager.unlockContainer();
+    } catch (Exception e) {
       // something went wrong retrieving case types or cases
       log.error("Failed to process cases because {}", e.getMessage());
     } finally {
@@ -183,7 +176,8 @@ public class CaseDistributor {
    * Get the oldest page of SAMPLED_INIT & REPLACEMENT_INIT cases to activate - but do not retrieve the
    * same cases as other CaseSvc' in the cluster
    *
-   * @throws LockingException locking exception thrown
+   * @throws LockingException locking exception thrown when caseDistributionListManager does
+   *
    * @return list of cases
    */
   private List<Case> retrieveCases() throws LockingException {
@@ -213,16 +207,15 @@ public class CaseDistributor {
   }
 
   /**
-   * Deal with a single case - the transaction boundary is here. The processing
-   * requires a call to the IAC service and to write to our own case
-   * table. The rollback is most likely to be triggered by either
-   * failing to find the IAC service, or if it sends back an http error status
-   * code.
+   * Deal with a single case - the transaction boundary is here.
+   * The processing requires to write to our own case table. The rollback is most likely to be triggered by an incorrect
+   * state of the case.
    *
    * @param caze the case to deal with
-   * @param iac the newly minted IAC to assign to the Case
-   * @return The resulting CaseNotification that will be added to the outbound
-   *         CaseNotifications sent to the action service
+   * @param iac the IAC to assign to the Case
+   *
+   * @return The resulting CaseNotification that will be added to the outbound CaseNotifications sent to the action
+   * service.
    */
   private CaseNotification processCase(final Case caze, String iac) {
     log.info("processing caseid {}", caze.getId());
