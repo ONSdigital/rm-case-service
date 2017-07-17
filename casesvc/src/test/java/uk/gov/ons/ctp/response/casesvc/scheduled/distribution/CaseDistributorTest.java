@@ -9,7 +9,6 @@ import org.springframework.cloud.sleuth.Span;
 import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 import uk.gov.ons.ctp.common.FixtureHelper;
 import uk.gov.ons.ctp.common.distributed.DistributedListManager;
@@ -40,6 +39,7 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class CaseDistributorTest {
+
   private static final int TWO = 2;
   private static final int TEN = 10;
 
@@ -48,6 +48,8 @@ public class CaseDistributorTest {
   private static final String IAC_0 = "ABCD-EFGH-IJKL-MNOP";
   private static final String IAC_1 = "QRST-UVWX-YZAB-CDEF";
   private static final String IAC_2 = "GHIJ-KLMN-OPQR-STUV";
+  private static final String IAC_3 = "QRST-UVWX-YZAB-CDEF";
+  private static final String IAC_4 = "GHIJ-KLMN-OPQR-STUV";
 
   private List<Case> cases;
 
@@ -76,7 +78,7 @@ public class CaseDistributorTest {
   private CaseService caseService;
 
   @Mock
-  private CaseNotificationPublisher caseNotificationPublisher;
+  private CaseNotificationPublisher notificationPublisher;
 
   @Mock
   private StateTransitionManager<CaseDTO.CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
@@ -121,7 +123,7 @@ public class CaseDistributorTest {
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(caseService, times(0)).prepareCaseNotification(any(Case.class),
             any(CaseDTO.CaseEvent.class));
-    verify(caseNotificationPublisher, times(0)).sendNotifications(any(List.class));
+    verify(notificationPublisher, times(0)).sendNotifications(any(List.class));
     verify(caseDistributionListManager, times(0)).deleteList(any(String.class),
             any(Boolean.class));
     verify(caseDistributionListManager, times(0)).unlockContainer();
@@ -144,7 +146,7 @@ public class CaseDistributorTest {
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(caseService, times(0)).prepareCaseNotification(any(Case.class),
             any(CaseDTO.CaseEvent.class));
-    verify(caseNotificationPublisher, times(0)).sendNotifications(any(List.class));
+    verify(notificationPublisher, times(0)).sendNotifications(any(List.class));
     verify(caseDistributionListManager, times(0)).deleteList(any(String.class),
             any(Boolean.class));
     verify(caseDistributionListManager, times(1)).unlockContainer();
@@ -168,7 +170,7 @@ public class CaseDistributorTest {
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(caseService, times(0)).prepareCaseNotification(any(Case.class),
             any(CaseDTO.CaseEvent.class));
-    verify(caseNotificationPublisher, times(0)).sendNotifications(any(List.class));
+    verify(notificationPublisher, times(0)).sendNotifications(any(List.class));
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
             any(Boolean.class));
     verify(caseDistributionListManager, times(1)).unlockContainer();
@@ -176,7 +178,8 @@ public class CaseDistributorTest {
   }
 
   /**
-   * Test where we retrieve 3 cases and 3 IAC correctly. Cases also have a correct state.
+   * Test where we retrieve 5 cases and 5 IAC correctly. Cases also have a correct state.
+   * And setDistributionMax is at 2.
    */
   @Test
   public void testHappyPath() throws CTPException, LockingException {
@@ -187,12 +190,15 @@ public class CaseDistributorTest {
     iacs.add(IAC_0);
     iacs.add(IAC_1);
     iacs.add(IAC_2);
+    iacs.add(IAC_3);
+    iacs.add(IAC_4);
     Mockito.when(internetAccessCodeSvcClientService.generateIACs(any(Integer.class))).thenReturn(iacs);
 
     when(caseSvcStateTransitionManager.transition(any(CaseDTO.CaseState.class), any(CaseDTO.CaseEvent.class))).
             thenReturn(CaseDTO.CaseState.ACTIONABLE);
 
     CaseNotification caseNotification = new CaseNotification();
+    caseNotification.setCaseId(cases.get(0).getId().toString());
     when(caseService.prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class))).
             thenReturn(caseNotification);
 
@@ -201,12 +207,12 @@ public class CaseDistributorTest {
 
     verify(tracer, times(1)).createSpan(any(String.class));
     verify(internetAccessCodeSvcClientService, times(1)).generateIACs(any(Integer.class));
-    verify(caseRepo, times(3)).saveAndFlush(any(Case.class));
-    verify(caseService, times(3)).prepareCaseNotification(any(Case.class),
+    verify(caseRepo, times(5)).saveAndFlush(any(Case.class));
+    verify(caseService, times(5)).prepareCaseNotification(any(Case.class),
             any(CaseDTO.CaseEvent.class));
-    // Only 2 below as we have 3 cases AND setDistributionMax is at 2 in setUp(). So, the first time around it is
-    // invoked with a list of 2 cases and the second time around with a list of 1 case.
-    verify(caseNotificationPublisher, times(2)).sendNotifications(any(List.class));
+    // Only 3 below as we have 5 cases AND setDistributionMax is at 2 in setUp(). So, the first time around it is
+    // invoked with a list of 2 caseNotifs, the second time around with a list of 2 caseNotifs and finally 1 caseNotif.
+    verify(notificationPublisher, times(3)).sendNotifications(any(List.class));
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
             any(Boolean.class));
     verify(caseDistributionListManager, times(1)).unlockContainer();
