@@ -8,26 +8,32 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.cloud.sleuth.Span;
 import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
+import uk.gov.ons.ctp.common.FixtureHelper;
 import uk.gov.ons.ctp.common.distributed.DistributedListManager;
 import uk.gov.ons.ctp.common.distributed.LockingException;
+import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.config.CaseDistribution;
 import uk.gov.ons.ctp.response.casesvc.config.InternetAccessCodeSvc;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
+import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Test the case distributor
@@ -39,10 +45,17 @@ public class CaseDistributorTest {
 
   private static final long TEN_LONG = 10L;
 
-  private static final UUID CASE_ID = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd1");
+  private static final String IAC_0 = "ABCD-EFGH-IJKL-MNOP";
+  private static final String IAC_1 = "QRST-UVWX-YZAB-CDEF";
+  private static final String IAC_2 = "GHIJ-KLMN-OPQR-STUV";
+
+  private List<Case> cases;
 
   @Spy
   private AppConfig appConfig = new AppConfig();
+
+  @Mock
+  private PlatformTransactionManager transactionManager;  // required by transactionTemplate
 
   @Mock
   private TransactionTemplate transactionTemplate;
@@ -65,14 +78,21 @@ public class CaseDistributorTest {
   @Mock
   private CaseNotificationPublisher caseNotificationPublisher;
 
+  @Mock
+  private StateTransitionManager<CaseDTO.CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
+
   @InjectMocks
   private CaseDistributor caseDistributor;
 
   /**
-   * A Test
+   * All of these tests require the mocked repos to respond with predictable data loaded from test fixture json files.
+   *
+   * @throws Exception exception thrown
    */
   @Before
-  public void setUp() {
+  public void setUp() throws Exception {
+    cases = FixtureHelper.loadClassFixtures(Case[].class);
+
     InternetAccessCodeSvc internetAccessCodeSvc = new InternetAccessCodeSvc();
     appConfig.setInternetAccessCodeSvc(internetAccessCodeSvc);
 
@@ -136,10 +156,6 @@ public class CaseDistributorTest {
    */
   @Test
   public void testFailIAC() throws LockingException {
-    List<Case> cases = new ArrayList<>();
-    Case caze = new Case();
-    caze.setId(CASE_ID);
-    cases.add(caze);
     Mockito.when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class)))
             .thenReturn(cases);
     Mockito.when(internetAccessCodeSvcClientService.generateIACs(any(Integer.class))).thenThrow(
@@ -153,6 +169,44 @@ public class CaseDistributorTest {
     verify(caseService, times(0)).prepareCaseNotification(any(Case.class),
             any(CaseDTO.CaseEvent.class));
     verify(caseNotificationPublisher, times(0)).sendNotifications(any(List.class));
+    verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
+            any(Boolean.class));
+    verify(caseDistributionListManager, times(1)).unlockContainer();
+    verify(tracer, times(1)).close(any(Span.class));
+  }
+
+  /**
+   * Test where we retrieve 3 cases and 3 IAC correctly. Cases also have a correct state.
+   */
+  @Test
+  public void testHappyPath() throws CTPException, LockingException {
+    Mockito.when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class)))
+            .thenReturn(cases);
+
+    List<String> iacs = new ArrayList<>();
+    iacs.add(IAC_0);
+    iacs.add(IAC_1);
+    iacs.add(IAC_2);
+    Mockito.when(internetAccessCodeSvcClientService.generateIACs(any(Integer.class))).thenReturn(iacs);
+
+    when(caseSvcStateTransitionManager.transition(any(CaseDTO.CaseState.class), any(CaseDTO.CaseEvent.class))).
+            thenReturn(CaseDTO.CaseState.ACTIONABLE);
+
+    CaseNotification caseNotification = new CaseNotification();
+    when(caseService.prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class))).
+            thenReturn(caseNotification);
+
+    // launching the test...
+    caseDistributor.distribute();
+
+    verify(tracer, times(1)).createSpan(any(String.class));
+    verify(internetAccessCodeSvcClientService, times(1)).generateIACs(any(Integer.class));
+    verify(caseRepo, times(3)).saveAndFlush(any(Case.class));
+    verify(caseService, times(3)).prepareCaseNotification(any(Case.class),
+            any(CaseDTO.CaseEvent.class));
+    // Only 2 below as we have 3 cases AND setDistributionMax is at 2 in setUp(). So, the first time around it is
+    // invoked with a list of 2 cases and the second time around with a list of 1 case.
+    verify(caseNotificationPublisher, times(2)).sendNotifications(any(List.class));
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
             any(Boolean.class));
     verify(caseDistributionListManager, times(1)).unlockContainer();

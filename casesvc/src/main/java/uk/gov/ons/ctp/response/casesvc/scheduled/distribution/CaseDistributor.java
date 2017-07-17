@@ -126,13 +126,14 @@ public class CaseDistributor {
         List<String> codes = null;
         try {
           codes = internetAccessCodeSvcClientService.generateIACs(nbRetrievedCases);
-          if (CollectionUtils.isEmpty(codes)) {
+          if (!CollectionUtils.isEmpty(codes)) {
             int nbRetrievedCodes = codes.size();
             if (nbRetrievedCases == nbRetrievedCodes) {
               for (int idx = 0; idx < nbRetrievedCases; idx++) {
                 Case caze = cases.get(idx);
                 try {
-                  caseNotifications.add(processCase(caze, codes.get(idx)));
+                  CaseNotification caseNotification = processCase(caze, codes.get(idx));
+                  caseNotifications.add(caseNotification);
                   if (caseNotifications.size() == appConfig.getCaseDistribution().getDistributionMax()) {
                     publishCases(caseNotifications);
                   }
@@ -217,7 +218,7 @@ public class CaseDistributor {
    * @return The resulting CaseNotification that will be added to the outbound CaseNotifications sent to the action
    * service.
    */
-  private CaseNotification processCase(final Case caze, String iac) {
+  private CaseNotification processCase(final Case caze, final String iac) {
     log.info("processing caseid {}", caze.getId());
     return transactionTemplate.execute(
             new TransactionCallback<CaseNotification>() {
