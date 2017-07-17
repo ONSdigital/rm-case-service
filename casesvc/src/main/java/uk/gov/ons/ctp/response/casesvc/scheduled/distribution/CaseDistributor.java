@@ -275,7 +275,6 @@ public class CaseDistributor {
    * effect will be the list of notifications will be cleared once sent
    *
    * @param caseNotifications the case messages to publish - cleared afterwards
-   * @throws InterruptedException our pause was interrupted
    */
   private void publishCases(List<CaseNotification> caseNotifications) {
     boolean published = false;
@@ -287,8 +286,8 @@ public class CaseDistributor {
           notificationPublisher.sendNotifications(caseNotifications);
           caseNotifications.clear();
           published = true;
-        } catch (Exception e) { // TODO Should we be more specific
-          // broker not there ? sleep then retry
+        } catch (Exception e) {
+          // broker not there? Sleep then retry.
           log.warn("Failed to send notifications {} because {}",
               caseNotifications.stream().map(a -> a.getCaseId().toString()).collect(Collectors.joining(",")),
               e.getMessage());
@@ -296,7 +295,7 @@ public class CaseDistributor {
           try {
             Thread.sleep(appConfig.getCaseDistribution().getRetrySleepSeconds() * MILLISECONDS);
           } catch (InterruptedException ie) {
-            log.warn("Retry sleep was interrupted");
+            log.warn("Retry sleep was interrupted.");
           }
         }
       } while (!published);

@@ -104,10 +104,12 @@ public class CaseDistributorTest {
 
   /**
    * Test where we fail at the 1st hurdle, ie we can't retrieve any cases
+   *
+   * @throws LockingException when caseDistributionListManager does
    */
   @Test
   public void testFailRetrievingCases() throws LockingException {
-    Mockito.when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class)))
+    when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class)))
         .thenThrow(new RuntimeException("Database access failed"));
 
     caseDistributor.distribute();
@@ -126,12 +128,13 @@ public class CaseDistributorTest {
 
   /**
    * Test where we retrieve 0 case
+   *
+   * @throws LockingException when caseDistributionListManager does
    */
   @Test
   public void testRetrieveZeroCases() throws LockingException {
     List<Case> cases = new ArrayList<>();
-    Mockito.when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class)))
-            .thenReturn(cases);
+    when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class))).thenReturn(cases);
 
     caseDistributor.distribute();
 
@@ -149,12 +152,14 @@ public class CaseDistributorTest {
 
   /**
    * Test where we retrieve cases but IAC call fails
+   *
+   * @throws LockingException when caseDistributionListManager does
    */
   @Test
   public void testFailIAC() throws LockingException {
-    Mockito.when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class)))
+    when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class)))
             .thenReturn(cases);
-    Mockito.when(internetAccessCodeSvcClientService.generateIACs(any(Integer.class))).thenThrow(
+    when(internetAccessCodeSvcClientService.generateIACs(any(Integer.class))).thenThrow(
             new RuntimeException("IAC access failed"));
 
     caseDistributor.distribute();
@@ -175,17 +180,20 @@ public class CaseDistributorTest {
    * Test where we retrieve 6 cases and 6 IACs correctly.
    *
    * 5 Cases have a correct state (SAMPLED_INIT or REPLACEMENT_INIT). 1 case has an incorrect state (ACTIONABLE).
+   *
+   * @throws CTPException when caseSvcStateTransitionManager.transition does
+   * @throws LockingException when caseDistributionListManager does
    */
   @Test
   public void testHappyPath() throws CTPException, LockingException {
-    Mockito.when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class)))
+    when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class)))
             .thenReturn(cases);
 
     List<String> iacs = new ArrayList<>();
-    for (int i = 0; i < 6; i++){
+    for (int i = 0; i < 6; i++) {
       iacs.add(IAC);
     }
-    Mockito.when(internetAccessCodeSvcClientService.generateIACs(any(Integer.class))).thenReturn(iacs);
+    when(internetAccessCodeSvcClientService.generateIACs(any(Integer.class))).thenReturn(iacs);
 
     when(caseSvcStateTransitionManager.transition(CaseDTO.CaseState.SAMPLED_INIT, CaseDTO.CaseEvent.ACTIVATED)).
             thenReturn(CaseDTO.CaseState.ACTIONABLE);
@@ -202,7 +210,8 @@ public class CaseDistributorTest {
 
     verify(tracer, times(1)).createSpan(any(String.class));
     verify(internetAccessCodeSvcClientService, times(1)).generateIACs(any(Integer.class));
-    verify(caseRepo, times(5)).saveAndFlush(any(Case.class)); // 5 and not 6 as 1 case is at an incorrect state (ACTIONABLE).
+    // Below: 5 and not 6 as 1 case is at an incorrect state (ACTIONABLE).
+    verify(caseRepo, times(5)).saveAndFlush(any(Case.class));
     verify(caseService, times(5)).prepareCaseNotification(any(Case.class),
             any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, times(1)).sendNotifications(any(List.class));
