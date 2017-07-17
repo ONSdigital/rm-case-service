@@ -149,7 +149,6 @@ collection-exercise-svc:
 
 case-distribution:
   retrieval-max: 50
-  distribution-max: 10
   retry-sleep-seconds: 3
   delay-milli-seconds: 500
 

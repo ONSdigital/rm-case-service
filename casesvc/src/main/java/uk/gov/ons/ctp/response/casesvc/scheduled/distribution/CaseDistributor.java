@@ -134,9 +134,6 @@ public class CaseDistributor {
                 try {
                   CaseNotification caseNotification = processCase(caze, codes.get(idx));
                   caseNotifications.add(caseNotification);
-                  if (caseNotifications.size() == appConfig.getCaseDistribution().getDistributionMax()) {
-                    publishCases(caseNotifications);
-                  }
                   successes++;
                 } catch (Exception e) {
                   // single case/questionnaire db changes rolled back

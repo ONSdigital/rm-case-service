@@ -4,14 +4,13 @@ import lombok.Data;
 import net.sourceforge.cobertura.CoverageIgnore;
 
 /**
- * Config POJO for distribition params
+ * Config POJO for distribution params
  *
  */
 @Data
 @CoverageIgnore
 public class CaseDistribution {
   private Integer retrievalMax;
-  private Integer distributionMax;
   private Integer retrySleepSeconds;
   private Long delayMilliSeconds;
 }

@@ -40,7 +40,6 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class CaseDistributorTest {
 
-  private static final int TWO = 2;
   private static final int TEN = 10;
 
   private static final long TEN_LONG = 10L;
@@ -98,7 +97,6 @@ public class CaseDistributorTest {
     caseDistributionConfig.setDelayMilliSeconds(TEN_LONG);
     caseDistributionConfig.setRetrySleepSeconds(TEN);
     caseDistributionConfig.setRetrievalMax(TEN);
-    caseDistributionConfig.setDistributionMax(TWO);
     appConfig.setCaseDistribution(caseDistributionConfig);
 
     MockitoAnnotations.initMocks(this);
@@ -177,8 +175,6 @@ public class CaseDistributorTest {
    * Test where we retrieve 6 cases and 6 IACs correctly.
    *
    * 5 Cases have a correct state (SAMPLED_INIT or REPLACEMENT_INIT). 1 case has an incorrect state (ACTIONABLE).
-   *
-   * And setDistributionMax is at 2.
    */
   @Test
   public void testHappyPath() throws CTPException, LockingException {
@@ -209,9 +205,7 @@ public class CaseDistributorTest {
     verify(caseRepo, times(5)).saveAndFlush(any(Case.class)); // 5 and not 6 as 1 case is at an incorrect state (ACTIONABLE).
     verify(caseService, times(5)).prepareCaseNotification(any(Case.class),
             any(CaseDTO.CaseEvent.class));
-    // Only 3 below as we have 5 cases AND setDistributionMax is at 2 in setUp(). So, the first time around it is
-    // invoked with a list of 2 caseNotifs, the second time around with a list of 2 caseNotifs and finally 1 caseNotif.
-    verify(notificationPublisher, times(3)).sendNotifications(any(List.class));
+    verify(notificationPublisher, times(1)).sendNotifications(any(List.class));
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
             any(Boolean.class));
     verify(caseDistributionListManager, times(1)).unlockContainer();
