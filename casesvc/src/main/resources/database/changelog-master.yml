@@ -8,3 +8,6 @@ databaseChangeLog:
 
   - include:
       file: database/changes/release-10.41.0/changelog.yml
+
+  - include:
+      file: database/changes/release-10.43.0/changelog.yml
