@@ -29,6 +29,7 @@ import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientServic
 import java.util.ArrayList;
 import java.util.List;
 
+import static junit.framework.TestCase.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -112,7 +113,9 @@ public class CaseDistributorTest {
     when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class)))
         .thenThrow(new RuntimeException("Database access failed"));
 
-    caseDistributor.distribute();
+    CaseDistributionInfo info = caseDistributor.distribute();
+    assertEquals(0, info.getCasesFailed());
+    assertEquals(0, info.getCasesSucceeded());
 
     verify(tracer, times(1)).createSpan(any(String.class));
     verify(internetAccessCodeSvcClientService, times(0)).generateIACs(any(Integer.class));
@@ -120,9 +123,9 @@ public class CaseDistributorTest {
     verify(caseService, times(0)).prepareCaseNotification(any(Case.class),
             any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, times(0)).sendNotifications(any(List.class));
-    verify(caseDistributionListManager, times(0)).deleteList(any(String.class),
+    verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
             any(Boolean.class));
-    verify(caseDistributionListManager, times(0)).unlockContainer();
+    verify(caseDistributionListManager, times(1)).unlockContainer();
     verify(tracer, times(1)).close(any(Span.class));
   }
 
@@ -136,7 +139,9 @@ public class CaseDistributorTest {
     List<Case> cases = new ArrayList<>();
     when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class))).thenReturn(cases);
 
-    caseDistributor.distribute();
+    CaseDistributionInfo info = caseDistributor.distribute();
+    assertEquals(0, info.getCasesFailed());
+    assertEquals(0, info.getCasesSucceeded());
 
     verify(tracer, times(1)).createSpan(any(String.class));
     verify(internetAccessCodeSvcClientService, times(0)).generateIACs(any(Integer.class));
@@ -144,7 +149,7 @@ public class CaseDistributorTest {
     verify(caseService, times(0)).prepareCaseNotification(any(Case.class),
             any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, times(0)).sendNotifications(any(List.class));
-    verify(caseDistributionListManager, times(0)).deleteList(any(String.class),
+    verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
             any(Boolean.class));
     verify(caseDistributionListManager, times(1)).unlockContainer();
     verify(tracer, times(1)).close(any(Span.class));
@@ -162,7 +167,9 @@ public class CaseDistributorTest {
     when(internetAccessCodeSvcClientService.generateIACs(any(Integer.class))).thenThrow(
             new RuntimeException("IAC access failed"));
 
-    caseDistributor.distribute();
+    CaseDistributionInfo info = caseDistributor.distribute();
+    assertEquals(0, info.getCasesFailed());
+    assertEquals(0, info.getCasesSucceeded());
 
     verify(tracer, times(1)).createSpan(any(String.class));
     verify(internetAccessCodeSvcClientService, times(1)).generateIACs(any(Integer.class));
@@ -205,8 +212,9 @@ public class CaseDistributorTest {
     when(caseService.prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class))).
             thenReturn(caseNotification);
 
-    // launching the test...
-    caseDistributor.distribute();
+    CaseDistributionInfo info = caseDistributor.distribute();
+    assertEquals(1, info.getCasesFailed());
+    assertEquals(5, info.getCasesSucceeded());
 
     verify(tracer, times(1)).createSpan(any(String.class));
     verify(internetAccessCodeSvcClientService, times(1)).generateIACs(any(Integer.class));
@@ -214,7 +222,7 @@ public class CaseDistributorTest {
     verify(caseRepo, times(5)).saveAndFlush(any(Case.class));
     verify(caseService, times(5)).prepareCaseNotification(any(Case.class),
             any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, times(1)).sendNotifications(any(List.class));
+    verify(notificationPublisher, times(5)).sendNotification(any(CaseNotification.class));
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
             any(Boolean.class));
     verify(caseDistributionListManager, times(1)).unlockContainer();

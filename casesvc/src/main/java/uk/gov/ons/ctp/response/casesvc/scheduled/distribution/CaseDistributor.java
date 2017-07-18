@@ -30,7 +30,6 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseState;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -117,23 +116,25 @@ public class CaseDistributor {
     CaseDistributionInfo distInfo = new CaseDistributionInfo();
     int successes = 0;
     int failures = 0;
+
     try {
-      List<CaseNotification> caseNotifications = new ArrayList<>();
       List<Case> cases = retrieveCases();
 
       if (!CollectionUtils.isEmpty(cases)) {
         int nbRetrievedCases = cases.size();
-        List<String> codes = null;
+
         try {
-          codes = internetAccessCodeSvcClientService.generateIACs(nbRetrievedCases);
+          List<String> codes = internetAccessCodeSvcClientService.generateIACs(nbRetrievedCases);
+
           if (!CollectionUtils.isEmpty(codes)) {
             int nbRetrievedCodes = codes.size();
+
             if (nbRetrievedCases == nbRetrievedCodes) {
               for (int idx = 0; idx < nbRetrievedCases; idx++) {
                 Case caze = cases.get(idx);
                 try {
                   CaseNotification caseNotification = processCase(caze, codes.get(idx));
-                  caseNotifications.add(caseNotification);
+                  publishCaseNotification(caseNotification);
                   successes++;
                 } catch (Exception e) {
                   // single case/questionnaire db changes rolled back
@@ -147,24 +148,24 @@ public class CaseDistributor {
 
           distInfo.setCasesSucceeded(successes);
           distInfo.setCasesFailed(failures);
-
-          publishCases(caseNotifications);
         } catch (Exception e) {
           // TODO Try to be more specific than this catch-all-Exception once the RestClient exception management
           // TODO has been sorted.
           log.error("Failed to obtain IAC codes");
-        } finally {
-          caseDistributionListManager.deleteList(CASE_DISTRIBUTOR_LIST_ID, true);
         }
       }
-
-      caseDistributionListManager.unlockContainer();
     } catch (Exception e) {
-      // something went wrong retrieving case types or cases
       log.error("Failed to process cases because {}", e.getMessage());
     } finally {
-      tracer.close(distribSpan);
+      try {
+        caseDistributionListManager.deleteList(CASE_DISTRIBUTOR_LIST_ID, true);
+        caseDistributionListManager.unlockContainer();
+      } catch (LockingException e) {
+        log.error("Failed to release caseDistributionListManager data - error msg is {}", e.getMessage());
+      }
     }
+
+    tracer.close(distribSpan);
 
     log.info("CaseDistributor sleeping");
     return distInfo;
@@ -271,34 +272,27 @@ public class CaseDistributor {
   }
 
   /**
-   * publish cases using the inject publisher - try and try and try ... side
-   * effect will be the list of notifications will be cleared once sent
+   * Publish a CaseNotification using the inject publisher - try and try and try ...
    *
-   * @param caseNotifications the case messages to publish - cleared afterwards
+   * @param caseNotification the CaseNotification to publish
    */
-  private void publishCases(List<CaseNotification> caseNotifications) {
+  private void publishCaseNotification(CaseNotification caseNotification) {
     boolean published = false;
-    if (!CollectionUtils.isEmpty(caseNotifications)) {
-      do {
+    do {
+      try {
+        log.debug("Publishing caseNotification...");
+        notificationPublisher.sendNotification(caseNotification);
+        published = true;
+      } catch (Exception e) {
+        // broker not there? Sleep then retry.
+        log.warn("Failed to send case notification {} because {}", caseNotification, e.getMessage());
+        log.warn("CaseDistribution will sleep and retry publish");
         try {
-          // send the list of requests for this case type to the handler
-          log.debug("Publishing instruction");
-          notificationPublisher.sendNotifications(caseNotifications);
-          caseNotifications.clear();
-          published = true;
-        } catch (Exception e) {
-          // broker not there? Sleep then retry.
-          log.warn("Failed to send notifications {} because {}",
-              caseNotifications.stream().map(a -> a.getCaseId().toString()).collect(Collectors.joining(",")),
-              e.getMessage());
-          log.warn("CaseDistribution will sleep and retry publish");
-          try {
-            Thread.sleep(appConfig.getCaseDistribution().getRetrySleepSeconds() * MILLISECONDS);
-          } catch (InterruptedException ie) {
-            log.warn("Retry sleep was interrupted.");
-          }
+          Thread.sleep(appConfig.getCaseDistribution().getRetrySleepSeconds() * MILLISECONDS);
+        } catch (InterruptedException ie) {
+          log.warn("Retry sleep was interrupted.");
         }
-      } while (!published);
-    }
+      }
+    } while (!published);
   }
 }

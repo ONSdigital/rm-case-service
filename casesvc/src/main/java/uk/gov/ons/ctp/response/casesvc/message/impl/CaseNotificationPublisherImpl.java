@@ -25,8 +25,14 @@ public class CaseNotificationPublisherImpl implements CaseNotificationPublisher 
   private RabbitTemplate rabbitTemplate;
 
   @Override
+  public void sendNotification(CaseNotification caseNotification) {
+    log.debug("Entering sendNotification with CaseNotification {}", caseNotification);
+    rabbitTemplate.convertAndSend(caseNotification);
+  }
+
+  @Override
   public void sendNotifications(List<CaseNotification> caseNotificationList) {
-    log.debug("Entering sendNotifications with {} CaseNotification ", caseNotificationList.size());
+    log.debug("Entering sendNotifications with {} CaseNotifications", caseNotificationList.size());
     caseNotificationList.forEach(caseNotification -> rabbitTemplate.convertAndSend(caseNotification));
   }
 }
