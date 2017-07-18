@@ -42,7 +42,6 @@ import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.*;
 import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.IAC_OVERUSE_MSG;
 import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.MISSING_NEW_CASE_MSG;
