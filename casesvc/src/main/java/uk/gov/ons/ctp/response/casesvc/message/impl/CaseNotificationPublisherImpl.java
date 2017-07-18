@@ -1,7 +1,5 @@
 package uk.gov.ons.ctp.response.casesvc.message.impl;
 
-import java.util.List;
-
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -28,11 +26,5 @@ public class CaseNotificationPublisherImpl implements CaseNotificationPublisher 
   public void sendNotification(CaseNotification caseNotification) {
     log.debug("Entering sendNotification with CaseNotification {}", caseNotification);
     rabbitTemplate.convertAndSend(caseNotification);
-  }
-
-  @Override
-  public void sendNotifications(List<CaseNotification> caseNotificationList) {
-    log.debug("Entering sendNotifications with {} CaseNotifications", caseNotificationList.size());
-    caseNotificationList.forEach(caseNotification -> rabbitTemplate.convertAndSend(caseNotification));
   }
 }

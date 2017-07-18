@@ -122,7 +122,7 @@ public class CaseDistributorTest {
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(caseService, times(0)).prepareCaseNotification(any(Case.class),
             any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, times(0)).sendNotifications(any(List.class));
+    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
             any(Boolean.class));
     verify(caseDistributionListManager, times(1)).unlockContainer();
@@ -148,7 +148,7 @@ public class CaseDistributorTest {
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(caseService, times(0)).prepareCaseNotification(any(Case.class),
             any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, times(0)).sendNotifications(any(List.class));
+    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
             any(Boolean.class));
     verify(caseDistributionListManager, times(1)).unlockContainer();
@@ -176,7 +176,7 @@ public class CaseDistributorTest {
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(caseService, times(0)).prepareCaseNotification(any(Case.class),
             any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, times(0)).sendNotifications(any(List.class));
+    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
             any(Boolean.class));
     verify(caseDistributionListManager, times(1)).unlockContainer();

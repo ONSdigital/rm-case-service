@@ -387,7 +387,7 @@ public class CaseServiceImpl implements CaseService {
       if (!oldState.equals(newState)) {
         targetCase.setState(newState);
         caseRepo.saveAndFlush(targetCase);
-        notificationPublisher.sendNotifications(Arrays.asList(prepareCaseNotification(targetCase, transitionEvent)));
+        notificationPublisher.sendNotification(prepareCaseNotification(targetCase, transitionEvent));
       }
     }
   }
