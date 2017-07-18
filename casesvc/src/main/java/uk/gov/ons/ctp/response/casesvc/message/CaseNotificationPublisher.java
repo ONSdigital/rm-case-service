@@ -1,8 +1,5 @@
 package uk.gov.ons.ctp.response.casesvc.message;
 
-
-import java.util.List;
-
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 
 /**
@@ -13,8 +10,8 @@ import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 public interface CaseNotificationPublisher {
 
   /**
-   * To put CaseNotifications on the outbound channel caseNotificationOutbound
-   * @param caseNotifications the list of CaseNotification to put on the outbound channel
+   * To put one CaseNotification on the outbound channel caseNotificationOutbound
+   * @param caseNotification the CaseNotification to put on the outbound channel
    */
-  void sendNotifications(List<CaseNotification> caseNotifications);
+  void sendNotification(CaseNotification caseNotification);
 }

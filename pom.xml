@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>uk.gov.ons.ctp.product</groupId>
   <artifactId>caseservice</artifactId>
-  <version>10.42.0-SNAPSHOT</version>
+  <version>10.43.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>CTP : CaseService</name>
@@ -13,12 +13,17 @@
   <properties>
     <commonbom.version>10.42.0-SNAPSHOT</commonbom.version>
     <skip.integration.tests>true</skip.integration.tests>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
     <java.version>1.8</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
+
+  <scm>
+    <connection>scm:git:git@github.com:ONSdigital/rm-case-service.git</connection>
+    <developerConnection>scm:git:git@github.com:ONSdigital/rm-case-service.git</developerConnection>
+    <url>git@github.com:ONSdigital/rm-case-service.git</url>
+  </scm>
 
   <modules>
     <module>casesvc</module>
@@ -36,12 +41,6 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
-  <scm>
-    <connection>scm:git:git@192.168.11.106:ctp/rm-case-service.git</connection>
-    <developerConnection>scm:git:git@192.168.11.106:ctp/rm-case-service.git</developerConnection>
-    <url>scm:git:git@192.168.11.106:ctp/rm-case-service.git</url>
-  </scm>
 
   <build>
   <pluginManagement>
@@ -153,10 +152,9 @@
           </execution>
         </executions>
         <configuration>
-          <shortRevisionLength>7</shortRevisionLength>
           <doCheck>false</doCheck>
           <doUpdate>false</doUpdate>
-          <timestampFormat>{0,time,long} on {0,date,long}</timestampFormat>
+          <timestampFormat>{0,date,yyyy-MM-dd'T'HH:mm:ss'Z'}</timestampFormat>
           <items>
             <item>timestamp</item>
           </items>

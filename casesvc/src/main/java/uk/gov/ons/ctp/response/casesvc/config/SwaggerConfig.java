@@ -1,13 +1,11 @@
 package uk.gov.ons.ctp.response.casesvc.config;
 
+import net.sourceforge.cobertura.CoverageIgnore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-
-import com.google.common.base.Predicates;
-
-import net.sourceforge.cobertura.CoverageIgnore;
+import org.springframework.http.ResponseEntity;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -32,6 +30,10 @@ public class SwaggerConfig {
   @Autowired
   private AppConfig appConfig;
 
+  /**
+   * Creates Docket for swagger ui configuration
+   * @return Docket springfox api configuration object
+   */
   @Bean
   public Docket postsApi() {
 
@@ -52,12 +54,13 @@ public class SwaggerConfig {
     }
 
     return new Docket(DocumentationType.SWAGGER_2)
+            .select()
+            .apis(RequestHandlerSelectors.basePackage("uk.gov.ons.ctp.response.casesvc.endpoint"))
+            .paths(pathSelector::test)
+            .build()
             .groupName(swaggerSettings.getGroupName())
             .apiInfo(apiInfo)
-            .select()
-            .apis(Predicates.not(RequestHandlerSelectors.basePackage("org.springframework.boot")))
-            .paths(pathSelector::test)
-            .build();
+            .genericModelSubstitutes(ResponseEntity.class);
   }
 
 }

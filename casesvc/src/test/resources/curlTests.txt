@@ -7,3 +7,18 @@ curl http://localhost:8171/cases/9a5f2be5-f944-41f9-982c-3517cfcfef3c/ -v -X GET
 
 curl http://localhost:8171/cases/9a5f2be5-f944-41f9-982c-3517cfcfef3c/ -v -X GET -u admin:secret
 404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20170608102717460","message":"Case not found for case id 9a5f2be5-f944-41f9-982c-3517cfcfef3c"}}
+
+
+########################################################################
+## To test the info endpoint
+########################################################################
+curl http://localhost:8171/info/ -v -X GET
+200 {"name":"casesvc","version":"10.43.0-SNAPSHOT","origin":"git@github.com:ONSdigital/rm-case-service.git","commit":"bad3532bd06ecffe0626a1a5eae8401edde719da","branch":"master","built":"2017-07-11T15:41:46Z"}
+
+
+curl http://casesvc.apps.devtest.onsclofo.uk/info -v -X GET
+200 {"name":"casesvc","version":"10.43.0-SNAPSHOT","origin":"git@github.com:ONSdigital/rm-case-service.git","commit":"bad3532bd06ecffe0626a1a5eae8401edde719da","branch":"master","built":"2017-07-11T15:41:46Z"}
+
+
+curl https://casesvc-int.apps.devtest.onsclofo.uk/info -v -k -X GET
+200 {"name":"casesvc","version":"10.43.0-SNAPSHOT","origin":"git@github.com:ONSdigital/rm-case-service.git","commit":"c155bad05e75c72575a35445cc93e1dda0677338","branch":"UNKNOWN","built":"2017-07-11T14:53:37Z"}
