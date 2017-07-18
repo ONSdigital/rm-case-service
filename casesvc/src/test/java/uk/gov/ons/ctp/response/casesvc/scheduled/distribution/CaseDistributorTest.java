@@ -229,5 +229,38 @@ public class CaseDistributorTest {
     verify(tracer, times(1)).close(any(Span.class));
   }
 
+  /**
+   * Test where we retrieve 6 cases but only 4 IACs correctly.
+   *
+   * 5 Cases have a correct state (SAMPLED_INIT or REPLACEMENT_INIT). 1 case has an incorrect state (ACTIONABLE).
+   *
+   * @throws CTPException when caseSvcStateTransitionManager.transition does
+   * @throws LockingException when caseDistributionListManager does
+   */
+  @Test
+  public void testWeDontRetrieveEnoughIACs() throws CTPException, LockingException {
+    when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class)))
+            .thenReturn(cases);
 
+    List<String> iacs = new ArrayList<>();
+    for (int i = 0; i < 4; i++) {
+      iacs.add(IAC);
+    }
+    when(internetAccessCodeSvcClientService.generateIACs(any(Integer.class))).thenReturn(iacs);
+
+    CaseDistributionInfo info = caseDistributor.distribute();
+    assertEquals(0, info.getCasesFailed());
+    assertEquals(0, info.getCasesSucceeded());
+
+    verify(tracer, times(1)).createSpan(any(String.class));
+    verify(internetAccessCodeSvcClientService, times(1)).generateIACs(any(Integer.class));
+    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+    verify(caseService, times(0)).prepareCaseNotification(any(Case.class),
+            any(CaseDTO.CaseEvent.class));
+    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
+    verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
+            any(Boolean.class));
+    verify(caseDistributionListManager, times(1)).unlockContainer();
+    verify(tracer, times(1)).close(any(Span.class));
+  }
 }
