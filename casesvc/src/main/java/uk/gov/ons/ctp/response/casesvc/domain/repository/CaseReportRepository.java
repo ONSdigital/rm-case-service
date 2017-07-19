@@ -1,9 +1,11 @@
 package uk.gov.ons.ctp.response.casesvc.domain.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.query.Procedure;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseReport;
 
+import javax.transaction.Transactional;
 import java.util.UUID;
 
 /**
@@ -15,6 +17,8 @@ public interface CaseReportRepository extends JpaRepository<CaseReport, UUID> {
      *
      * @return boolean whether report has been created successfully
      */
+    @Modifying
+    @Transactional
     @Procedure(name = "CaseReport.chasingReport")
     Boolean chasingReportStoredProcedure();
 
@@ -23,6 +27,8 @@ public interface CaseReportRepository extends JpaRepository<CaseReport, UUID> {
      *
      * @return boolean whether report has been created successfully
      */
+    @Modifying
+    @Transactional
     @Procedure(name = "CaseReport.caseEventsReport")
     Boolean caseEventsReportStoredProcedure();
 }
