@@ -10,7 +10,7 @@ info:
 # ie -Dlogging.level.org.springframework=DEBUG
 logging:
   level:
-    uk.gov.ons.ctp: DEBUG
+    uk.gov.ons.ctp: WARN
     org.springframework.retry: ERROR
     org.springframework.integration.handler.advice: ERROR
     org.springframework.cloud.sleuth.instrument.messaging.MessagingSpanExtractor: ERROR

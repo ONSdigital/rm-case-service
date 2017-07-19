@@ -11,6 +11,7 @@ info:
 logging:
   level:
     uk.gov.ons.ctp: DEBUG
+    org.springframework: WARN
   profile: CLOUD
 
 liquibase:

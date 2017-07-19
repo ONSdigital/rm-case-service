@@ -16,6 +16,11 @@ public class CaseReportServiceImpl implements CaseReportService {
     @Override
     public void createReport() {
         log.debug("Entering createReport...");
-// TODO CTPA-1409        caseReportRepository.plus1inoutStoredProcedure();
+
+        boolean reportResult = caseReportRepository.chasingReportStoredProcedure();
+        log.debug("Just ran the chasing report and result is {}", reportResult);
+
+        reportResult = caseReportRepository.caseEventsReportStoredProcedure();
+        log.debug("Just ran the case events report and result is {}", reportResult);
     }
 }
