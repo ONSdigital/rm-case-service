@@ -20,10 +20,10 @@ import java.util.UUID;
 @Table(name = "report", schema = "casesvc")
 @NamedStoredProcedureQueries(
         {@NamedStoredProcedureQuery(name = "CaseReport.chasingReport",
-                procedureName = "generate_response_chasing_report",
+                procedureName = "casesvc.generate_response_chasing_report",
                 parameters = {@StoredProcedureParameter(mode = ParameterMode.OUT, type = Boolean.class)}),
         @NamedStoredProcedureQuery(name = "CaseReport.caseEventsReport",
-                procedureName = "generate_case_events_report",
+                procedureName = "casesvc.generate_case_events_report",
                 parameters = {@StoredProcedureParameter(mode = ParameterMode.OUT, type = Boolean.class)})})
 public class CaseReport {
     @Id @Column(name = "id")
