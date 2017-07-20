@@ -125,7 +125,7 @@ public class CaseDistributorTest {
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
             any(Boolean.class));
-    verify(caseDistributionListManager, times(1)).unlockContainer();
+    verify(caseDistributionListManager, times(0)).unlockContainer();
     verify(tracer, times(1)).close(any(Span.class));
   }
 
@@ -151,7 +151,7 @@ public class CaseDistributorTest {
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
             any(Boolean.class));
-    verify(caseDistributionListManager, times(1)).unlockContainer();
+    verify(caseDistributionListManager, times(0)).unlockContainer();
     verify(tracer, times(1)).close(any(Span.class));
   }
 
@@ -179,7 +179,7 @@ public class CaseDistributorTest {
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
             any(Boolean.class));
-    verify(caseDistributionListManager, times(1)).unlockContainer();
+    verify(caseDistributionListManager, times(0)).unlockContainer();
     verify(tracer, times(1)).close(any(Span.class));
   }
 
@@ -225,7 +225,7 @@ public class CaseDistributorTest {
     verify(notificationPublisher, times(5)).sendNotification(any(CaseNotification.class));
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
             any(Boolean.class));
-    verify(caseDistributionListManager, times(1)).unlockContainer();
+    verify(caseDistributionListManager, times(0)).unlockContainer();
     verify(tracer, times(1)).close(any(Span.class));
   }
 
@@ -260,7 +260,7 @@ public class CaseDistributorTest {
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
             any(Boolean.class));
-    verify(caseDistributionListManager, times(1)).unlockContainer();
+    verify(caseDistributionListManager, times(0)).unlockContainer();
     verify(tracer, times(1)).close(any(Span.class));
   }
 }

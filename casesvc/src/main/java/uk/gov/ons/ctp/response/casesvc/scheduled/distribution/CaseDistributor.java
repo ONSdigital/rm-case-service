@@ -159,7 +159,6 @@ public class CaseDistributor {
     } finally {
       try {
         caseDistributionListManager.deleteList(CASE_DISTRIBUTOR_LIST_ID, true);
-        caseDistributionListManager.unlockContainer();
       } catch (LockingException e) {
         log.error("Failed to release caseDistributionListManager data - error msg is {}", e.getMessage());
       }
