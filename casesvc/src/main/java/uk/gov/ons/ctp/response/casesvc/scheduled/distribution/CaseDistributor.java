@@ -199,6 +199,7 @@ public class CaseDistributor {
               stream().map(caze -> caze.getCasePK()).collect(Collectors.toList()), true);
     } else {
       log.debug("RETRIEVED 0 case id");
+      caseDistributionListManager.unlockContainer();
     }
 
     return cases;
