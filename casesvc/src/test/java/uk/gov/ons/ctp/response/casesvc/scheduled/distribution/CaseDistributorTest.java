@@ -1,15 +1,28 @@
 package uk.gov.ons.ctp.response.casesvc.scheduled.distribution;
 
+import static junit.framework.TestCase.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.cloud.sleuth.Span;
 import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
+
 import uk.gov.ons.ctp.common.FixtureHelper;
 import uk.gov.ons.ctp.common.distributed.DistributedListManager;
 import uk.gov.ons.ctp.common.distributed.LockingException;
@@ -25,15 +38,6 @@ import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static junit.framework.TestCase.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * Test the case distributor
@@ -108,6 +112,7 @@ public class CaseDistributorTest {
    *
    * @throws LockingException when caseDistributionListManager does
    */
+  @SuppressWarnings("unchecked")
   @Test
   public void testFailRetrievingCases() throws LockingException {
     when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class)))
@@ -134,10 +139,11 @@ public class CaseDistributorTest {
    *
    * @throws LockingException when caseDistributionListManager does
    */
+  @SuppressWarnings("unchecked")
   @Test
   public void testRetrieveZeroCases() throws LockingException {
-    List<Case> cases = new ArrayList<>();
-    when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class))).thenReturn(cases);
+    List<Case> cazes = new ArrayList<>();
+    when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class))).thenReturn(cazes);
 
     CaseDistributionInfo info = caseDistributor.distribute();
     assertEquals(0, info.getCasesFailed());
@@ -160,6 +166,7 @@ public class CaseDistributorTest {
    *
    * @throws LockingException when caseDistributionListManager does
    */
+  @SuppressWarnings("unchecked")
   @Test
   public void testFailIAC() throws LockingException {
     when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class)))
@@ -191,6 +198,7 @@ public class CaseDistributorTest {
    * @throws CTPException when caseSvcStateTransitionManager.transition does
    * @throws LockingException when caseDistributionListManager does
    */
+  @SuppressWarnings("unchecked")
   @Test
   public void testHappyPath() throws CTPException, LockingException {
     when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class)))
@@ -237,6 +245,7 @@ public class CaseDistributorTest {
    * @throws CTPException when caseSvcStateTransitionManager.transition does
    * @throws LockingException when caseDistributionListManager does
    */
+  @SuppressWarnings("unchecked")
   @Test
   public void testWeDontRetrieveEnoughIACs() throws CTPException, LockingException {
     when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class)))
