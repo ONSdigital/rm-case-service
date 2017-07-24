@@ -221,9 +221,7 @@ public final class CaseEndpoint implements CTPEndpoint {
     if (bindingResult.hasErrors()) {
       throw new InvalidRequestException("Binding errors for case event creation: ", bindingResult);
     }
-
-    caseEventCreationRequestDTO.setCaseId(caseId);
-
+    
     CaseEvent caseEvent = mapperFacade.map(caseEventCreationRequestDTO, CaseEvent.class);
     Case caseFound = caseService.findCaseById(caseId);
     if (caseFound == null) {
