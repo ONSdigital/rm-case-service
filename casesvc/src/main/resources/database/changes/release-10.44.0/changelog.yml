@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 10.44.0-1
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: add secure message sent category
+            path: add_secure_message_category.sql
+            relativeToChangelogFile: true
+            splitStatements: false
