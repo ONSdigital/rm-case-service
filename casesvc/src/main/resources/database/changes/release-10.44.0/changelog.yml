@@ -9,3 +9,13 @@ databaseChangeLog:
             path: add_secure_message_category.sql
             relativeToChangelogFile: true
             splitStatements: false
+
+  - changeSet:
+      id: 10.44.0-2
+      author: John Topley
+      changes:
+        - sqlFile:
+            comment: add collection instrument error category
+            path: add_collection_instrument_error_category.sql
+            relativeToChangelogFile: true
+            splitStatements: false
