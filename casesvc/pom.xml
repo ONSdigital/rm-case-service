@@ -166,7 +166,7 @@
           <artifactId>spring-test</artifactId>
           <scope>test</scope>
       </dependency>
-      
+
       <dependency>
           <groupId>uk.gov.ons.ctp.common</groupId>
           <artifactId>test-framework</artifactId>
