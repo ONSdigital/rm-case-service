@@ -162,18 +162,11 @@
       </dependency>
 
       <dependency>
-          <groupId>org.springframework.integration</groupId>
-          <artifactId>spring-integration-test</artifactId>
-          <scope>test</scope>
-      </dependency>
-
-      <dependency>
           <groupId>org.springframework</groupId>
           <artifactId>spring-test</artifactId>
           <scope>test</scope>
       </dependency>
-
-
+      
       <dependency>
           <groupId>uk.gov.ons.ctp.common</groupId>
           <artifactId>test-framework</artifactId>
