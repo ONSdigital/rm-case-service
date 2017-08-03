@@ -16,12 +16,6 @@
     <relativePath>../</relativePath>
   </parent>
 
-    <scm>
-        <connection>scm:git:git@github.com:ONSdigital/rm-case-service.git</connection>
-        <developerConnection>scm:git:git@github.com:ONSdigital/rm-case-service.git</developerConnection>
-        <url>git@github.com:ONSdigital/rm-case-service.git</url>
-    </scm>
-
   <dependencies>
       <dependency>
           <groupId>uk.gov.ons.ctp.product</groupId>
