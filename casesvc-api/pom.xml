@@ -44,7 +44,6 @@
       <plugin>
         <groupId>org.jvnet.jaxb2.maven2</groupId>
         <artifactId>maven-jaxb2-plugin</artifactId>
-        <version>0.13.1</version>
         <executions>
           <execution>
             <phase>generate-sources</phase>
@@ -71,7 +70,7 @@
                 <plugin>
                   <groupId>net.codesup.util</groupId>
                   <artifactId>jaxb2-rich-contract-plugin</artifactId>
-                  <version>1.15.0</version>
+                  <version>1.18.0</version>
                 </plugin>
                 <plugin>
                   <groupId>org.jvnet.jaxb2_commons</groupId>
