@@ -1,28 +1,25 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.*;
+import org.junit.runner.*;
 import org.mockito.*;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.cloud.sleuth.Span;
-import org.springframework.cloud.sleuth.Tracer;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.web.client.RestTemplate;
-import uk.gov.ons.ctp.common.rest.RestClient;
-import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
-import uk.gov.ons.ctp.response.casesvc.config.InternetAccessCodeSvc;
+import org.mockito.runners.*;
+import org.springframework.cloud.sleuth.*;
+import org.springframework.http.*;
+import org.springframework.test.web.client.*;
+import org.springframework.web.client.*;
+import uk.gov.ons.ctp.common.rest.*;
+import uk.gov.ons.ctp.response.casesvc.config.*;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.*;
 
 /**
  * A test of the case frame service client service

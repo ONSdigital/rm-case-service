@@ -77,7 +77,7 @@ public class CategoryDTO {
 
     /**
      * Gets CategoryName enum from string
-     * @param name
+     * @param name name of Category
      * @return CategoryName category name
      */
     @JsonCreator
@@ -87,7 +87,7 @@ public class CategoryDTO {
 
     /**
      * Creates optional of CategoryNames
-     * @param name
+     * @param name name of Category
      * @return Optional optional of Category Names
      */
     public static Optional<CategoryName> fromString(String name) {

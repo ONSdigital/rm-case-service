@@ -18,7 +18,14 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import net.sourceforge.cobertura.CoverageIgnore;
-import uk.gov.ons.ctp.common.distributed.*;
+import uk.gov.ons.ctp.common.distributed.DistributedInstanceManager;
+import uk.gov.ons.ctp.common.distributed.DistributedInstanceManagerRedissonImpl;
+import uk.gov.ons.ctp.common.distributed.DistributedLatchManager;
+import uk.gov.ons.ctp.common.distributed.DistributedLatchManagerRedissonImpl;
+import uk.gov.ons.ctp.common.distributed.DistributedListManager;
+import uk.gov.ons.ctp.common.distributed.DistributedListManagerRedissonImpl;
+import uk.gov.ons.ctp.common.distributed.DistributedLockManager;
+import uk.gov.ons.ctp.common.distributed.DistributedLockManagerRedissonImpl;
 import uk.gov.ons.ctp.common.error.RestExceptionHandler;
 import uk.gov.ons.ctp.common.jackson.CustomObjectMapper;
 import uk.gov.ons.ctp.common.rest.RestClient;

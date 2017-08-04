@@ -22,7 +22,7 @@ public class CaseCreationRequestDTO {
   private String forename;
 
   private String surname;
-   
+
   private String phoneNumber;
 
   private String emailAddress;
