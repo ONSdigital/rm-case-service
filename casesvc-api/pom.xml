@@ -16,12 +16,6 @@
     <relativePath>../</relativePath>
   </parent>
 
-  <scm>
-    <connection>scm:git:git@github.com:ONSdigital/rm-case-service.git</connection>
-    <developerConnection>scm:git:git@github.com:ONSdigital/rm-case-service.git</developerConnection>
-    <url>git@github.com:ONSdigital/rm-case-service.git</url>
-  </scm>
-
   <dependencies>
     <dependency>
       <groupId>uk.gov.ons.ctp.common</groupId>
@@ -44,7 +38,6 @@
       <plugin>
         <groupId>org.jvnet.jaxb2.maven2</groupId>
         <artifactId>maven-jaxb2-plugin</artifactId>
-        <version>0.13.1</version>
         <executions>
           <execution>
             <phase>generate-sources</phase>
@@ -71,7 +64,7 @@
                 <plugin>
                   <groupId>net.codesup.util</groupId>
                   <artifactId>jaxb2-rich-contract-plugin</artifactId>
-                  <version>1.15.0</version>
+                  <version>1.18.0</version>
                 </plugin>
                 <plugin>
                   <groupId>org.jvnet.jaxb2_commons</groupId>
@@ -107,7 +100,7 @@
                 <plugin>
                   <groupId>net.codesup.util</groupId>
                   <artifactId>jaxb2-rich-contract-plugin</artifactId>
-                  <version>1.15.0</version>
+                  <version>1.18.0</version>
                 </plugin>
                 <plugin>
                   <groupId>org.jvnet.jaxb2_commons</groupId>

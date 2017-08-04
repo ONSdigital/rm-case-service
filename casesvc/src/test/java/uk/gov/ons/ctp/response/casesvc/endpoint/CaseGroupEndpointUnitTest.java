@@ -25,7 +25,9 @@ import java.util.UUID;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.ons.ctp.common.MvcHelper.getJson;
 import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
 
@@ -58,6 +60,10 @@ public final class CaseGroupEndpointUnitTest {
   private static final String CASE_GROUP_SU_TYPE = "B";
   private static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
 
+  /**
+   * Initialises Mockito
+   * @throws Exception exception thrown
+   */
   @Before
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);

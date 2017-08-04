@@ -6,8 +6,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.omg.CORBA.INTERNAL;
-import sun.awt.image.ImageWatched;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
@@ -27,9 +25,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED;
-import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE;
-import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE;
+import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.*;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.QUESTIONNAIRE_RESPONSE;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
@@ -63,7 +59,7 @@ public class CaseReceiptReceiverImplTest {
     Mockito.when(caseService.findCaseById(UUID.fromString(LINKED_CASE_ID))).thenReturn(existingCase);
 
     XMLGregorianCalendar calendar = DateTimeUtil.giveMeCalendarForNow();
-    caseReceiptReceiver.process(buildCaseReceipt(LINKED_CASE_ID,LINKED_CASE_REF, InboundChannel.ONLINE, calendar));
+    caseReceiptReceiver.process(buildCaseReceipt(LINKED_CASE_ID, LINKED_CASE_REF, InboundChannel.ONLINE, calendar));
 
     verify(caseService, times(1)).createCaseEvent(eq(buildCaseEvent(LINKED_CASE_PK, ONLINE_QUESTIONNAIRE_RESPONSE)),
             eq(null), eq(new Timestamp(calendar.toGregorianCalendar().getTimeInMillis())));
@@ -157,7 +153,7 @@ public class CaseReceiptReceiverImplTest {
   }
 
   /**
-   *
+   * @param caseId the caseId
    * @param caseRef the caseRef
    * @param inboundChannel the inboundChannel
    * @param xmlGregorianCalendar the xmlGregorianCalendar

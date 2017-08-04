@@ -1,22 +1,15 @@
 package uk.gov.ons.ctp.response.casesvc.state;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import org.testng.annotations.*;
+import uk.gov.ons.ctp.common.error.*;
+import uk.gov.ons.ctp.common.state.*;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.*;
 
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
-import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.common.state.StateTransitionManager;
-import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseEvent;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseState;
+import java.util.*;
 
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
-import static uk.gov.ons.ctp.common.state.BasicStateTransitionManager.TRANSITION_ERROR_MSG;
+import static uk.gov.ons.ctp.common.state.BasicStateTransitionManager.*;
 
 /**
  * A test of the state transition manager It simply has to test a single good
@@ -44,7 +37,7 @@ public class StateTransitionManagerUnitTest {
     Map<CaseEvent, CaseState> replacementInitTransitions = new HashMap<>();
     replacementInitTransitions.put(CaseEvent.REPLACED, CaseState.ACTIONABLE);
     validTransitions.put(CaseState.REPLACEMENT_INIT, replacementInitTransitions);
-    
+
     Map<CaseEvent, CaseState> actionableTransitions = new HashMap<>();
     actionableTransitions.put(CaseEvent.ACCOUNT_CREATED, CaseState.ACTIONABLE);
     actionableTransitions.put(CaseEvent.DEACTIVATED, CaseState.INACTIONABLE);
@@ -69,7 +62,7 @@ public class StateTransitionManagerUnitTest {
     validTransitions.forEach((sourceState, transitions) -> {
       transitions.forEach((caseEvent, caseState) -> {
         try {
-          Assert.assertEquals(caseState, stm.transition(sourceState, caseEvent));
+          assertEquals(caseState, stm.transition(sourceState, caseEvent));
         } catch (CTPException e) {
           fail();
         }
