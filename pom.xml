@@ -69,6 +69,7 @@
         <configuration>
           <threadCount>1</threadCount>
         </configuration>
+        <!-- REQUIRED for unit tests to run -->
         <dependencies>
           <dependency>
             <groupId>org.apache.maven.surefire</groupId>
