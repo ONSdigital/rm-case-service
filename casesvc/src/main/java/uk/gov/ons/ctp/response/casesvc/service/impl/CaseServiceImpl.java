@@ -49,7 +49,6 @@ import java.util.UUID;
  * A CaseService implementation which encapsulates all business logic operating
  * on the Case entity model.
  */
-@CoverageIgnore
 @Service
 @Slf4j
 public class CaseServiceImpl implements CaseService {
