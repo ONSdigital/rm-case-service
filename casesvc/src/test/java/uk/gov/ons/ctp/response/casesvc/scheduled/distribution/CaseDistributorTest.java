@@ -17,8 +17,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.cloud.sleuth.Span;
-import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -61,9 +59,6 @@ public class CaseDistributorTest {
 
   @Mock
   private TransactionTemplate transactionTemplate;
-
-  @Mock
-  private Tracer tracer;
 
   @Mock
   private DistributedListManager<Integer> caseDistributionListManager;
@@ -122,7 +117,6 @@ public class CaseDistributorTest {
     assertEquals(0, info.getCasesFailed());
     assertEquals(0, info.getCasesSucceeded());
 
-    verify(tracer, times(1)).createSpan(any(String.class));
     verify(internetAccessCodeSvcClientService, times(0)).generateIACs(any(Integer.class));
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(caseService, times(0)).prepareCaseNotification(any(Case.class),
@@ -131,7 +125,6 @@ public class CaseDistributorTest {
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
             any(Boolean.class));
     verify(caseDistributionListManager, times(0)).unlockContainer();
-    verify(tracer, times(1)).close(any(Span.class));
   }
 
   /**
@@ -149,7 +142,6 @@ public class CaseDistributorTest {
     assertEquals(0, info.getCasesFailed());
     assertEquals(0, info.getCasesSucceeded());
 
-    verify(tracer, times(1)).createSpan(any(String.class));
     verify(internetAccessCodeSvcClientService, times(0)).generateIACs(any(Integer.class));
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(caseService, times(0)).prepareCaseNotification(any(Case.class),
@@ -158,7 +150,6 @@ public class CaseDistributorTest {
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
             any(Boolean.class));
     verify(caseDistributionListManager, times(1)).unlockContainer();
-    verify(tracer, times(1)).close(any(Span.class));
   }
 
   /**
@@ -178,7 +169,6 @@ public class CaseDistributorTest {
     assertEquals(0, info.getCasesFailed());
     assertEquals(0, info.getCasesSucceeded());
 
-    verify(tracer, times(1)).createSpan(any(String.class));
     verify(internetAccessCodeSvcClientService, times(1)).generateIACs(any(Integer.class));
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(caseService, times(0)).prepareCaseNotification(any(Case.class),
@@ -187,7 +177,6 @@ public class CaseDistributorTest {
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
             any(Boolean.class));
     verify(caseDistributionListManager, times(0)).unlockContainer();
-    verify(tracer, times(1)).close(any(Span.class));
   }
 
   /**
@@ -224,7 +213,6 @@ public class CaseDistributorTest {
     assertEquals(1, info.getCasesFailed());
     assertEquals(5, info.getCasesSucceeded());
 
-    verify(tracer, times(1)).createSpan(any(String.class));
     verify(internetAccessCodeSvcClientService, times(1)).generateIACs(any(Integer.class));
     // Below: 5 and not 6 as 1 case is at an incorrect state (ACTIONABLE).
     verify(caseRepo, times(5)).saveAndFlush(any(Case.class));
@@ -234,7 +222,6 @@ public class CaseDistributorTest {
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
             any(Boolean.class));
     verify(caseDistributionListManager, times(0)).unlockContainer();
-    verify(tracer, times(1)).close(any(Span.class));
   }
 
   /**
@@ -261,7 +248,6 @@ public class CaseDistributorTest {
     assertEquals(0, info.getCasesFailed());
     assertEquals(0, info.getCasesSucceeded());
 
-    verify(tracer, times(1)).createSpan(any(String.class));
     verify(internetAccessCodeSvcClientService, times(1)).generateIACs(any(Integer.class));
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(caseService, times(0)).prepareCaseNotification(any(Case.class),
@@ -270,6 +256,5 @@ public class CaseDistributorTest {
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
             any(Boolean.class));
     verify(caseDistributionListManager, times(0)).unlockContainer();
-    verify(tracer, times(1)).close(any(Span.class));
   }
 }

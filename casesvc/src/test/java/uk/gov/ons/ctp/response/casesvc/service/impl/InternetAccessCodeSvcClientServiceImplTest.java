@@ -9,8 +9,6 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.cloud.sleuth.Span;
-import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
@@ -36,11 +34,6 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 public class InternetAccessCodeSvcClientServiceImplTest {
 
   @Mock
-  private Tracer tracer;
-  @Mock
-  private Span span;
-
-  @Mock
   private AppConfig appConfig;
 
   @Spy
@@ -55,9 +48,6 @@ public class InternetAccessCodeSvcClientServiceImplTest {
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
-    Mockito.when(tracer.getCurrentSpan()).thenReturn(span);
-    Mockito.when(tracer.createSpan(any(String.class))).thenReturn(span);
-    restClient.setTracer(tracer);
   }
 
   /**

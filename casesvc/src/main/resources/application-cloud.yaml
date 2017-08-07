@@ -75,9 +75,6 @@ endpoints:
 spring:
   application:
     name: ONS CaseService
-  sleuth:
-    sampler:
-      percentage: 10
   datasource:
     driverClassName: org.postgresql.Driver
     tomcat:

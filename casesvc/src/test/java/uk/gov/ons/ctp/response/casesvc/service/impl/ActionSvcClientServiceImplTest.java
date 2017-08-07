@@ -9,8 +9,6 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.cloud.sleuth.Span;
-import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
@@ -39,12 +37,6 @@ public class ActionSvcClientServiceImplTest {
   private static final UUID EXISTING_CASE_ID = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd1");
 
   @Mock
-  private Tracer tracer;
-
-  @Mock
-  private Span span;
-
-  @Mock
   private AppConfig appConfig;
 
   @Spy
@@ -59,9 +51,6 @@ public class ActionSvcClientServiceImplTest {
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
-    Mockito.when(tracer.getCurrentSpan()).thenReturn(span);
-    Mockito.when(tracer.createSpan(any(String.class))).thenReturn(span);
-    restClient.setTracer(tracer);
   }
 
   /**

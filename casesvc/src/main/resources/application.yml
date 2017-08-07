@@ -13,7 +13,6 @@ logging:
     uk.gov.ons.ctp: WARN
     org.springframework.retry: ERROR
     org.springframework.integration.handler.advice: ERROR
-    org.springframework.cloud.sleuth.instrument.messaging.MessagingSpanExtractor: ERROR
     org.springframework.context.annotation.ConfigurationClassPostProcessor: ERROR
   profile: DEV
 
@@ -81,9 +80,6 @@ spring:
       enabled: never
   application:
     name: ONS CaseService
-  sleuth:
-    sampler:
-      percentage: 10
   datasource:
     url: jdbc:postgresql://localhost:6432/postgres
     username: casesvc
