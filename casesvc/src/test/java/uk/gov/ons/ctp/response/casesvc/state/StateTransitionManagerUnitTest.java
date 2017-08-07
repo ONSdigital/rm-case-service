@@ -1,11 +1,16 @@
 package uk.gov.ons.ctp.response.casesvc.state;
 
-import org.testng.annotations.*;
-import uk.gov.ons.ctp.common.error.*;
-import uk.gov.ons.ctp.common.state.*;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.*;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.common.state.StateTransitionManager;
+import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseEvent;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseState;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;

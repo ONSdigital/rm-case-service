@@ -41,7 +41,10 @@ import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.never;
 import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.IAC_OVERUSE_MSG;
 import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.MISSING_NEW_CASE_MSG;
 import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.WRONG_OLD_SAMPLE_UNIT_TYPE_MSG;
@@ -244,8 +247,7 @@ public class CaseServiceImplTest {
     verify(caseRepo).findOne(NON_EXISTING_PARENT_CASE_FK);
     assertNull(result);
   }
-  
-  
+
   /**
    * Tries to apply an actionable event against a case already inactionable. Should allow.
    * 
@@ -652,7 +654,7 @@ public class CaseServiceImplTest {
     try {
       caseService.createCaseEvent(caseEvent, oldCase);
       fail();
-    } catch(CTPException e) {
+    } catch (CTPException e) {
       assertEquals(CTPException.Fault.VALIDATION_FAILED, e.getFault());
       assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, "HI", "H"), e.getMessage());
     }
@@ -1441,7 +1443,6 @@ public class CaseServiceImplTest {
     when(caseSvcStateTransitionManager.transition(CaseState.INACTIONABLE, CaseDTO.CaseEvent.DEACTIVATED))
             .thenReturn(CaseState.INACTIONABLE);
   }
-
 
   /**
    * mock loading data
