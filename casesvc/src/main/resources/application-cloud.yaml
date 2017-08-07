@@ -92,9 +92,6 @@ spring:
       hibernate:
         ddl-auto: update
 
-  zipkin:
-    enabled: false
-
 data-grid:
   address: ${cloud.services.redis.connection.host}:${cloud.services.redis.connection.port}
   list-time-to-live-seconds: 600
