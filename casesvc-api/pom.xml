@@ -12,7 +12,7 @@
   <parent>
     <groupId>uk.gov.ons.ctp.product</groupId>
     <artifactId>caseservice</artifactId>
-    <version>10.44.0-SNAPSHOT</version>
+    <version>10.45.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
