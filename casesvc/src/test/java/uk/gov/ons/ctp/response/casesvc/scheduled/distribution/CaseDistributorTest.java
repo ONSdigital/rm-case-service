@@ -134,7 +134,7 @@ public class CaseDistributorTest {
    */
   @SuppressWarnings("unchecked")
   @Test
-  public void testRetrieveZeroCases() throws LockingException {
+  public void testRetrieveZeroCase() throws LockingException {
     List<Case> cazes = new ArrayList<>();
     when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class))).thenReturn(cazes);
 
@@ -180,9 +180,7 @@ public class CaseDistributorTest {
   }
 
   /**
-   * Test where we retrieve 6 cases and 6 IACs correctly.
-   *
-   * 5 Cases have a correct state (SAMPLED_INIT or REPLACEMENT_INIT). 1 case has an incorrect state (ACTIONABLE).
+   * Test where we retrieve 5 cases (all at SAMPLED_INIT or REPLACEMENT_INIT) and 5 IACs correctly.
    *
    * @throws CTPException when caseSvcStateTransitionManager.transition does
    * @throws LockingException when caseDistributionListManager does
@@ -194,7 +192,7 @@ public class CaseDistributorTest {
             .thenReturn(cases);
 
     List<String> iacs = new ArrayList<>();
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 5; i++) {
       iacs.add(IAC);
     }
     when(internetAccessCodeSvcClientService.generateIACs(any(Integer.class))).thenReturn(iacs);
@@ -210,11 +208,10 @@ public class CaseDistributorTest {
             thenReturn(caseNotification);
 
     CaseDistributionInfo info = caseDistributor.distribute();
-    assertEquals(1, info.getCasesFailed());
+    assertEquals(0, info.getCasesFailed());
     assertEquals(5, info.getCasesSucceeded());
 
     verify(internetAccessCodeSvcClientService, times(1)).generateIACs(any(Integer.class));
-    // Below: 5 and not 6 as 1 case is at an incorrect state (ACTIONABLE).
     verify(caseRepo, times(5)).saveAndFlush(any(Case.class));
     verify(caseService, times(5)).prepareCaseNotification(any(Case.class),
             any(CaseDTO.CaseEvent.class));
@@ -255,6 +252,46 @@ public class CaseDistributorTest {
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
             any(Boolean.class));
+    verify(caseDistributionListManager, times(0)).unlockContainer();
+  }
+
+  /**
+   * Test where we retrieve 5 cases (all at SAMPLED_INIT or REPLACEMENT_INIT) and 5 IACs correctly. But, on processing,
+   * 1 case out of 5 is throwing an exception.
+   *
+   * @throws CTPException when caseSvcStateTransitionManager.transition does
+   * @throws LockingException when caseDistributionListManager does
+   */
+  @SuppressWarnings("unchecked")
+  @Test
+  public void testDBExceptionThrownDuringProcessing() throws CTPException, LockingException {
+    when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class)))
+        .thenReturn(cases);
+
+    List<String> iacs = new ArrayList<>();
+    for (int i = 0; i < 5; i++) {
+      iacs.add(IAC);
+    }
+    when(internetAccessCodeSvcClientService.generateIACs(any(Integer.class))).thenReturn(iacs);
+
+    when(caseSvcStateTransitionManager.transition(CaseDTO.CaseState.SAMPLED_INIT, CaseDTO.CaseEvent.ACTIVATED)).
+        thenReturn(CaseDTO.CaseState.ACTIONABLE);
+    when(caseSvcStateTransitionManager.transition(CaseDTO.CaseState.REPLACEMENT_INIT, CaseDTO.CaseEvent.REPLACED)).
+        thenReturn(CaseDTO.CaseState.ACTIONABLE);
+
+    when(caseRepo.saveAndFlush(any(Case.class))).thenThrow(new RuntimeException("The DB is KO at the moment."));
+
+    CaseDistributionInfo info = caseDistributor.distribute();
+    assertEquals(5, info.getCasesFailed());
+    assertEquals(0, info.getCasesSucceeded());
+
+    verify(internetAccessCodeSvcClientService, times(1)).generateIACs(any(Integer.class));
+    verify(caseRepo, times(5)).saveAndFlush(any(Case.class));
+    verify(caseService, times(0)).prepareCaseNotification(any(Case.class),
+        any(CaseDTO.CaseEvent.class));
+    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
+    verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
+        any(Boolean.class));
     verify(caseDistributionListManager, times(0)).unlockContainer();
   }
 }

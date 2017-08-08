@@ -11,7 +11,7 @@
   <description>CTP : CaseService</description>
 
   <properties>
-    <commonbom.version>10.44.0-SNAPSHOT</commonbom.version>
+    <commonbom.version>10.45.0-SNAPSHOT</commonbom.version>
     <skip.integration.tests>true</skip.integration.tests>
     <java.version>1.8</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

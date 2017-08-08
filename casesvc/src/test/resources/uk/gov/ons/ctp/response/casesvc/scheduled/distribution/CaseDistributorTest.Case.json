@@ -61,20 +61,6 @@
 		"responses": []
 	},
 	{
-		"id": "5bc5d41b-0549-40b3-ba76-42f6d4cf3fd1",
-		"collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
-		"casePK": 4,
-		"caseGroupFK":1,
-		"state": "ACTIONABLE",
-		"sampleUnitType": "B",
-		"partyId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd3",
-		"createdDateTime": 1460732606544,
-		"createdBy": "me",
-		"iac": "dddd ffff gggg",
-		"actionPlanId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fa3",
-		"responses": []
-	},
-	{
 		"id": "6bc5d41b-0549-40b3-ba76-42f6d4cf3fd1",
 		"collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
 		"casePK": 5,

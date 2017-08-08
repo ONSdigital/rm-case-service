@@ -12,6 +12,8 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 import uk.gov.ons.ctp.common.distributed.DistributedListManager;
@@ -36,11 +38,6 @@ import java.util.stream.Collectors;
  * This is the 'service' class that distributes cases to the action service. It has a number of injected beans,
  * including a RestClient, Repositories and the InstructionPublisher.
  *
- * It cannot use the normal serviceimpl @Transaction pattern, as that will rollback on a runtime exception (desired) but
- * will then rethrow that exception all the way up the stack. If we try and catch that exception, the rollback does not
- * happen. So - see the TransactionTemplate usage - that allows both rollback and for us to catch the runtime exception
- * and handle it.
- *
  * This class is scheduled to wake and looks for Cases in SAMPLED_INIT & REPLACEMENT_INIT states to send to the action
  * service. On each wake cycle, it fetches the first n cases, by createddatetime. It then fetches n IACs from the IAC
  * service and loops through those n cases to update each case with an IAC taken from the set of n codes and transitions
@@ -53,7 +50,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CaseDistributor {
 
-  private static final String CASE_DISTRIBUTOR_SPAN = "caseDistributor";
   private static final String CASE_DISTRIBUTOR_LIST_ID = "case";
 
   // this is a bit of a kludge - jpa does not like having an IN clause with an empty list
@@ -83,19 +79,6 @@ public class CaseDistributor {
   @Autowired
   private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
 
-  // single TransactionTemplate shared amongst all methods in this instance
-  private final TransactionTemplate transactionTemplate;
-
-  /**
-   * Constructor into which the Spring PlatformTransactionManager is injected
-   *
-   * @param transactionManager provided by Spring
-   */
-  @Autowired
-  public CaseDistributor(final PlatformTransactionManager transactionManager) {
-    this.transactionTemplate = new TransactionTemplate(transactionManager);
-  }
-
   /**
    * wake up on schedule and check for cases that are in INIT state - fetch IACs
    * for them, adding the IAC to the case questionnaire, and send a notificaiton
@@ -121,17 +104,13 @@ public class CaseDistributor {
           List<String> codes = internetAccessCodeSvcClientService.generateIACs(nbRetrievedCases);
 
           if (!CollectionUtils.isEmpty(codes)) {
-            int nbRetrievedCodes = codes.size();
-
-            if (nbRetrievedCases == nbRetrievedCodes) {
+            if (nbRetrievedCases == codes.size()) {
               for (int idx = 0; idx < nbRetrievedCases; idx++) {
                 Case caze = cases.get(idx);
                 try {
-                  CaseNotification caseNotification = processCase(caze, codes.get(idx));
-                  publishCaseNotification(caseNotification);
+                  processCase(caze, codes.get(idx));
                   successes++;
                 } catch (Exception e) {
-                  // single case/questionnaire db changes rolled back
                   log.error("Exception msg {} thrown processing case with id {}. Processing postponed", e.getMessage(),
                           caze.getId());
                   failures++;
@@ -143,8 +122,6 @@ public class CaseDistributor {
           distInfo.setCasesSucceeded(successes);
           distInfo.setCasesFailed(failures);
         } catch (Exception e) {
-          // TODO Try to be more specific than this catch-all-Exception once the RestClient exception management
-          // TODO has been sorted.
           log.error("Failed to obtain IAC codes");
         }
       }
@@ -199,52 +176,34 @@ public class CaseDistributor {
 
   /**
    * Deal with a single case - the transaction boundary is here.
-   * The processing requires to write to our own case table. The rollback is most likely to be triggered by an incorrect
-   * state of the case.
+   *
+   * The processing requires to write to our own case table. A CaseNotification is also produced and added to the
+   * outbound CaseNotifications sent to the action service.
    *
    * @param caze the case to deal with
    * @param iac the IAC to assign to the Case
-   *
-   * @return The resulting CaseNotification that will be added to the outbound CaseNotifications sent to the action
-   * service.
    */
-  private CaseNotification processCase(final Case caze, final String iac) {
+  @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = false)
+  private void processCase(final Case caze, final String iac) throws CTPException {
     log.info("processing caseid {}", caze.getId());
-    return transactionTemplate.execute(
-            new TransactionCallback<CaseNotification>() {
-              // the code in this method executes in a transactional context
-              public CaseNotification doInTransaction(final TransactionStatus status) {
-                CaseNotification caseNotification = null;
-                CaseDTO.CaseEvent event = null;
-                switch (caze.getState()) {
-                  case SAMPLED_INIT:
-                    event = CaseDTO.CaseEvent.ACTIVATED;
-                    break;
-                  case REPLACEMENT_INIT:
-                    event = CaseDTO.CaseEvent.REPLACED;
-                    break;
-                  default:
-                    String msg = String.format("Case id %s has incorrect state %s", caze.getId(), caze.getState());
-                    log.error(msg);
-                    throw new RuntimeException(msg);  // Recommended way by Spring to come out of a TransactionCallback
-                }
 
-                try {
-                  Case updatedCase = transitionCase(caze, event);
-                  updatedCase.setIac(iac);
-                  caseRepo.saveAndFlush(updatedCase);
+    CaseDTO.CaseEvent event = null;
+    switch (caze.getState()) {
+      case SAMPLED_INIT:
+        event = CaseDTO.CaseEvent.ACTIVATED;
+        break;
+      case REPLACEMENT_INIT:
+        event = CaseDTO.CaseEvent.REPLACED;
+        break;
+    }
 
-                  // create the request, filling in details by GETs from casesvc
-                  caseNotification = caseService.prepareCaseNotification(caze, event);
-                  return caseNotification;
-                } catch (CTPException e) {
-                  String msg = String.format("Transition error - cause = %s - message = %s", e.getCause(),
-                          e.getMessage());
-                  log.error(msg);
-                  throw new RuntimeException(msg);  // Recommended way by Spring to come out of a TransactionCallback
-                }
-              }
-            });
+    Case updatedCase = transitionCase(caze, event);
+    updatedCase.setIac(iac);
+    caseRepo.saveAndFlush(updatedCase);
+
+    CaseNotification caseNotification = caseService.prepareCaseNotification(caze, event);
+    log.debug("Publishing caseNotification...");
+    notificationPublisher.sendNotification(caseNotification);
   }
 
   /**
@@ -261,30 +220,5 @@ public class CaseDistributor {
     CaseDTO.CaseState nextState = caseSvcStateTransitionManager.transition(caze.getState(), event);
     caze.setState(nextState);
     return caze;
-  }
-
-  /**
-   * Publish a CaseNotification using the inject publisher - try and try and try ...
-   *
-   * @param caseNotification the CaseNotification to publish
-   */
-  private void publishCaseNotification(CaseNotification caseNotification) {
-    boolean published = false;
-    do {
-      try {
-        log.debug("Publishing caseNotification...");
-        notificationPublisher.sendNotification(caseNotification);
-        published = true;
-      } catch (Exception e) {
-        // broker not there? Sleep then retry.
-        log.warn("Failed to send case notification {} because {}", caseNotification, e.getMessage());
-        log.warn("CaseDistribution will sleep and retry publish");
-        try {
-          Thread.sleep(appConfig.getCaseDistribution().getRetrySleepSeconds() * MILLISECONDS);
-        } catch (InterruptedException ie) {
-          log.warn("Retry sleep was interrupted.");
-        }
-      }
-    } while (!published);
   }
 }

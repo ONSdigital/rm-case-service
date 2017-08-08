@@ -137,7 +137,6 @@ collection-exercise-svc:
 
 case-distribution:
   retrieval-max: 50
-  retry-sleep-seconds: 3
   delay-milli-seconds: 500
 
 redelivery-policy:
