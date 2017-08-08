@@ -1,23 +1,50 @@
 package uk.gov.ons.ctp.response.casesvc.domain.model;
 
-import javax.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedStoredProcedureQueries;
+import javax.persistence.NamedStoredProcedureQuery;
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureParameter;
+import javax.persistence.Table;
+import java.sql.Timestamp;
+import java.util.UUID;
 
 /**
- * The below is for (taken from https://github.com/spring-projects/spring-data-examples/tree/master/jpa/jpa21)
- * DROP procedure IF EXISTS plus1inout
- /;
- CREATE procedure plus1inout (IN arg int, OUT res int)
- BEGIN ATOMIC
- set res = arg + 1;
- END
- /;
+ * Domain entity representing the report table
  */
-// TODO CTPA-1409
 @Entity
-@NamedStoredProcedureQuery(name = "CaseReport.plus1inout", procedureName = "plus1inout", parameters = {
-        @StoredProcedureParameter(mode = ParameterMode.IN, name = "arg", type = Integer.class),
-        @StoredProcedureParameter(mode = ParameterMode.OUT, name = "res", type = Integer.class) })
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "report", schema = "casesvc")
+@NamedStoredProcedureQueries(
+        {@NamedStoredProcedureQuery(name = "CaseReport.chasingReport",
+                procedureName = "casesvc.generate_response_chasing_report",
+                parameters = {@StoredProcedureParameter(mode = ParameterMode.OUT, type = Boolean.class)}),
+        @NamedStoredProcedureQuery(name = "CaseReport.caseEventsReport",
+                procedureName = "casesvc.generate_case_events_report",
+                parameters = {@StoredProcedureParameter(mode = ParameterMode.OUT, type = Boolean.class)})})
 public class CaseReport {
-    @Id @GeneratedValue//
-    private Long id;
+    @Id @Column(name = "id")
+    private UUID id;
+
+    @Column(name = "reportpk")
+    private Integer reportPK;
+
+    @Column(name = "reporttypefk")
+    private String reportTypeFK;
+
+    @Column(name = "contents")
+    private String contents;
+
+    @Column(name = "createddatetime")
+    private Timestamp createdDateTime;
 }

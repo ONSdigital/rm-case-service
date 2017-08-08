@@ -1,5 +1,39 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
+import ma.glasnost.orika.MapperFacade;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.validation.BindingResult;
+import uk.gov.ons.ctp.common.FixtureHelper;
+import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.common.error.InvalidRequestException;
+import uk.gov.ons.ctp.common.error.RestExceptionHandler;
+import uk.gov.ons.ctp.common.jackson.CustomObjectMapper;
+import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
+import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
+import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
+import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
+import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
+import uk.gov.ons.ctp.response.casesvc.service.CaseService;
+import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
@@ -20,41 +54,6 @@ import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.CATEGORY_IAC
 import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.ERRORMSG_CASENOTFOUND;
 import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseGroupEndpoint.ERRORMSG_CASEGROUPNOTFOUND;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.validation.BindingResult;
-
-import ma.glasnost.orika.MapperFacade;
-import uk.gov.ons.ctp.common.FixtureHelper;
-import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.common.error.InvalidRequestException;
-import uk.gov.ons.ctp.common.error.RestExceptionHandler;
-import uk.gov.ons.ctp.common.jackson.CustomObjectMapper;
-import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
-import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
-import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
-import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
-import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
-import uk.gov.ons.ctp.response.casesvc.service.CaseService;
-import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
 
 /**
  * Case Endpoint Unit tests
@@ -603,7 +602,11 @@ public final class CaseEndpointUnitTest {
             .andExpect(jsonPath("$.error.message", is(OUR_EXCEPTION_MESSAGE)))
             .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
-  
+
+  /**
+   * a test against binding errors
+   * @throws Exception exception thrown
+   */
   @Test(expected = InvalidRequestException.class)
   public void verifyBadBindingResultThrowsException() throws Exception {
    BindingResult bindingResult = mock(BindingResult.class);

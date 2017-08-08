@@ -3,10 +3,12 @@ package uk.gov.ons.ctp.response.casesvc.service.impl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.cloud.sleuth.Span;
-import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
@@ -17,23 +19,19 @@ import uk.gov.ons.ctp.response.casesvc.config.InternetAccessCodeSvc;
 
 import java.util.Arrays;
 import java.util.List;
-
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.*;
 
 /**
  * A test of the case frame service client service
  */
 @RunWith(MockitoJUnitRunner.class)
 public class InternetAccessCodeSvcClientServiceImplTest {
-
-  @Mock
-  private Tracer tracer;
-  @Mock
-  private Span span;
 
   @Mock
   private AppConfig appConfig;
@@ -50,9 +48,6 @@ public class InternetAccessCodeSvcClientServiceImplTest {
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
-    Mockito.when(tracer.getCurrentSpan()).thenReturn(span);
-    Mockito.when(tracer.createSpan(any(String.class))).thenReturn(span);
-    restClient.setTracer(tracer);
   }
 
   /**

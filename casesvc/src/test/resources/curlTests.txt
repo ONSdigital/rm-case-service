@@ -2,11 +2,7 @@
 ## To test GET /cases/<case_id>
 ########################################################################
 curl http://localhost:8171/cases/9a5f2be5-f944-41f9-982c-3517cfcfef3c/ -v -X GET
-401 {"timestamp":"2017-06-08T10:22:08.541+0100","status":401,"error":"Unauthorized","message":"Full authentication is required to access this resource","path":"/cases/9a5f2be5-f944-41f9-982c-3517cfcfef3c/"}
-
-
-curl http://localhost:8171/cases/9a5f2be5-f944-41f9-982c-3517cfcfef3c/ -v -X GET -u admin:secret
-404 {"error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20170608102717460","message":"Case not found for case id 9a5f2be5-f944-41f9-982c-3517cfcfef3c"}}
+404 "error":{"code":"RESOURCE_NOT_FOUND","timestamp":"20170801145321789","message":"Case not found for case id 9a5f2be5-f944-41f9-982c-3517cfcfef3c"}}
 
 
 ########################################################################

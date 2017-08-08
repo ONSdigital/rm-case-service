@@ -5,8 +5,6 @@ import net.sourceforge.cobertura.CoverageIgnore;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.sleuth.Span;
-import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -68,9 +66,6 @@ public class CaseDistributor {
   private DistributedListManager<Integer> caseDistributionListManager;
 
   @Autowired
-  private Tracer tracer;
-
-  @Autowired
   private AppConfig appConfig;
 
   @Autowired
@@ -111,7 +106,6 @@ public class CaseDistributor {
    */
   public final CaseDistributionInfo distribute() {
     log.info("CaseDistributor awoken...");
-    Span distribSpan = tracer.createSpan(CASE_DISTRIBUTOR_SPAN);
 
     CaseDistributionInfo distInfo = new CaseDistributionInfo();
     int successes = 0;
@@ -159,13 +153,10 @@ public class CaseDistributor {
     } finally {
       try {
         caseDistributionListManager.deleteList(CASE_DISTRIBUTOR_LIST_ID, true);
-        caseDistributionListManager.unlockContainer();
       } catch (LockingException e) {
         log.error("Failed to release caseDistributionListManager data - error msg is {}", e.getMessage());
       }
     }
-
-    tracer.close(distribSpan);
 
     log.info("CaseDistributor sleeping");
     return distInfo;
@@ -200,6 +191,7 @@ public class CaseDistributor {
               stream().map(caze -> caze.getCasePK()).collect(Collectors.toList()), true);
     } else {
       log.debug("RETRIEVED 0 case id");
+      caseDistributionListManager.unlockContainer();
     }
 
     return cases;

@@ -1,19 +1,11 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
-import java.util.List;
-import java.util.UUID;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
@@ -23,6 +15,13 @@ import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnit
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseState;
 import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
+
+import java.util.List;
+import java.util.UUID;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * Test Case created by Sample
@@ -38,7 +37,7 @@ public class CaseCreationServiceTest {
 
   @Mock
   private CaseRepository caseRepo;
-  
+
   @Mock
   private CaseEventRepository caseEventRepo;
 
