@@ -10,7 +10,7 @@ info:
 # ie -Dlogging.level.org.springframework=DEBUG
 logging:
   level:
-    uk.gov.ons.ctp: WARN
+    uk.gov.ons.ctp: INFO
     org.springframework.retry: ERROR
     org.springframework.integration.handler.advice: ERROR
     org.springframework.context.annotation.ConfigurationClassPostProcessor: ERROR
@@ -97,9 +97,6 @@ spring:
     properties:
       hibernate:
         ddl-auto: update
-
-  zipkin:
-    enabled: false
 
 data-grid:
   address: localhost:7379
