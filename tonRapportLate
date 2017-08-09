@@ -1,0 +1,1165 @@
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] CTP : CaseService
+[INFO] CTP : CaseService: CaseSvcApi
+[INFO] CTP : CaseService: CaseSvc
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Building CTP : CaseService 10.45.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ caseservice ---
+[INFO] Deleting /Users/philippebrossier/code/rm-case-service/target
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.4:create (default) @ caseservice ---
+[INFO] Executing: /bin/sh -c cd '/Users/philippebrossier/code/rm-case-service' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /Users/philippebrossier/code/rm-case-service
+[INFO] Storing buildNumber: bde490eaace4a2157f84907af8a40cc3ca9e7c0c at timestamp: 2017-08-09T10:51:35Z
+[INFO] Storing buildScmBranch: master
+[INFO] 
+[INFO] --- maven-checkstyle-plugin:2.17:check (test) @ caseservice ---
+[INFO] Starting audit...
+Audit done.
+[INFO] 
+[INFO] --- maven-install-plugin:2.4:install (default-install) @ caseservice ---
+[INFO] Installing /Users/philippebrossier/code/rm-case-service/pom.xml to /Users/philippebrossier/.m2/repository/uk/gov/ons/ctp/product/caseservice/10.45.0-SNAPSHOT/caseservice-10.45.0-SNAPSHOT.pom
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Building CTP : CaseService: CaseSvcApi 10.45.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ casesvc-api ---
+[INFO] Deleting /Users/philippebrossier/code/rm-case-service/casesvc-api/target
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.4:create (default) @ casesvc-api ---
+[INFO] Executing: /bin/sh -c cd '/Users/philippebrossier/code/rm-case-service/casesvc-api' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /Users/philippebrossier/code/rm-case-service/casesvc-api
+[INFO] Storing buildNumber: bde490eaace4a2157f84907af8a40cc3ca9e7c0c at timestamp: 2017-08-09T10:51:38Z
+[INFO] Storing buildScmBranch: master
+[INFO] 
+[INFO] --- maven-jaxb2-plugin:0.13.1:generate (inbound) @ casesvc-api ---
+[INFO] Up-to-date check for source resources [[file:/Users/philippebrossier/code/rm-case-service/casesvc-api/src/main/resources/casesvc/xsd/inbound/caseCreation.xsd, file:/Users/philippebrossier/code/rm-case-service/casesvc-api/src/main/resources/casesvc/xsd/inbound/caseReceipt.xsd, file:/Users/philippebrossier/code/rm-case-service/casesvc-api/src/main/resources/casesvc/xsd/inbound/SampleUnitNotification.xsd, file:/Users/philippebrossier/code/rm-case-service/casesvc-api/src/main/resources/casesvc/xsd/inbound/JAXBSchemaCompilerCustomisations.xjb, file:/Users/philippebrossier/code/rm-case-service/casesvc-api/pom.xml]] and target resources [[]].
+[INFO] Sources are not up-to-date, XJC will be executed.
+[INFO] Episode file [/Users/philippebrossier/code/rm-case-service/casesvc-api/target/generated-sources/xjc/inbound/META-INF/sun-jaxb.episode] was augmented with if-exists="true" attributes.
+[INFO] 
+[INFO] --- maven-jaxb2-plugin:0.13.1:generate (outbound) @ casesvc-api ---
+[INFO] Up-to-date check for source resources [[file:/Users/philippebrossier/code/rm-case-service/casesvc-api/src/main/resources/casesvc/xsd/outbound/caseNotification.xsd, file:/Users/philippebrossier/code/rm-case-service/casesvc-api/src/main/resources/casesvc/xsd/outbound/caseNotification.xjb, file:/Users/philippebrossier/code/rm-case-service/casesvc-api/pom.xml]] and target resources [[]].
+[INFO] Sources are not up-to-date, XJC will be executed.
+[INFO] Episode file [/Users/philippebrossier/code/rm-case-service/casesvc-api/target/generated-sources/xjc/outbound/META-INF/sun-jaxb.episode] was augmented with if-exists="true" attributes.
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ casesvc-api ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 7 resources
+[INFO] Copying 1 resource
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.6.2:compile (default-compile) @ casesvc-api ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 28 source files to /Users/philippebrossier/code/rm-case-service/casesvc-api/target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ casesvc-api ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /Users/philippebrossier/code/rm-case-service/casesvc-api/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.6.2:testCompile (default-testCompile) @ casesvc-api ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.20:test (default-test) @ casesvc-api ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] --- maven-checkstyle-plugin:2.17:check (test) @ casesvc-api ---
+[INFO] Starting audit...
+Audit done.
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ casesvc-api ---
+[INFO] Building jar: /Users/philippebrossier/code/rm-case-service/casesvc-api/target/casesvc-api-10.45.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- maven-install-plugin:2.4:install (default-install) @ casesvc-api ---
+[INFO] Installing /Users/philippebrossier/code/rm-case-service/casesvc-api/target/casesvc-api-10.45.0-SNAPSHOT.jar to /Users/philippebrossier/.m2/repository/uk/gov/ons/ctp/product/casesvc-api/10.45.0-SNAPSHOT/casesvc-api-10.45.0-SNAPSHOT.jar
+[INFO] Installing /Users/philippebrossier/code/rm-case-service/casesvc-api/pom.xml to /Users/philippebrossier/.m2/repository/uk/gov/ons/ctp/product/casesvc-api/10.45.0-SNAPSHOT/casesvc-api-10.45.0-SNAPSHOT.pom
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Building CTP : CaseService: CaseSvc 10.45.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+Downloading: http://artifactory.rmdev.onsdigital.uk/artifactory/libs-snapshot-local/uk/gov/ons/ctp/product/samplesvc-api/10.45.0-SNAPSHOT/maven-metadata.xml
+[WARNING] Could not transfer metadata uk.gov.ons.ctp.product:samplesvc-api:10.45.0-SNAPSHOT/maven-metadata.xml from/to artifactory-maven (http://artifactory.rmdev.onsdigital.uk/artifactory/libs-snapshot-local): artifactory.rmdev.onsdigital.uk: nodename nor servname provided, or not known
+[WARNING] Failure to transfer uk.gov.ons.ctp.product:samplesvc-api:10.45.0-SNAPSHOT/maven-metadata.xml from http://artifactory.rmdev.onsdigital.uk/artifactory/libs-snapshot-local was cached in the local repository, resolution will not be reattempted until the update interval of artifactory-maven has elapsed or updates are forced. Original error: Could not transfer metadata uk.gov.ons.ctp.product:samplesvc-api:10.45.0-SNAPSHOT/maven-metadata.xml from/to artifactory-maven (http://artifactory.rmdev.onsdigital.uk/artifactory/libs-snapshot-local): artifactory.rmdev.onsdigital.uk: nodename nor servname provided, or not known
+Downloading: http://artifactory.rmdev.onsdigital.uk/artifactory/libs-snapshot-local/uk/gov/ons/ctp/product/sampleservice/10.45.0-SNAPSHOT/maven-metadata.xml
+[WARNING] Could not transfer metadata uk.gov.ons.ctp.product:sampleservice:10.45.0-SNAPSHOT/maven-metadata.xml from/to artifactory-maven (http://artifactory.rmdev.onsdigital.uk/artifactory/libs-snapshot-local): artifactory.rmdev.onsdigital.uk
+Downloading: http://artifactory.rmdev.onsdigital.uk/artifactory/libs-snapshot-local/uk/gov/ons/ctp/product/actionsvc-api/10.45.0-SNAPSHOT/maven-metadata.xml
+[WARNING] Could not transfer metadata uk.gov.ons.ctp.product:actionsvc-api:10.45.0-SNAPSHOT/maven-metadata.xml from/to artifactory-maven (http://artifactory.rmdev.onsdigital.uk/artifactory/libs-snapshot-local): artifactory.rmdev.onsdigital.uk
+[WARNING] Failure to transfer uk.gov.ons.ctp.product:actionsvc-api:10.45.0-SNAPSHOT/maven-metadata.xml from http://artifactory.rmdev.onsdigital.uk/artifactory/libs-snapshot-local was cached in the local repository, resolution will not be reattempted until the update interval of artifactory-maven has elapsed or updates are forced. Original error: Could not transfer metadata uk.gov.ons.ctp.product:actionsvc-api:10.45.0-SNAPSHOT/maven-metadata.xml from/to artifactory-maven (http://artifactory.rmdev.onsdigital.uk/artifactory/libs-snapshot-local): artifactory.rmdev.onsdigital.uk
+Downloading: http://artifactory.rmdev.onsdigital.uk/artifactory/libs-snapshot-local/uk/gov/ons/ctp/product/actionservice/10.45.0-SNAPSHOT/maven-metadata.xml
+[WARNING] Could not transfer metadata uk.gov.ons.ctp.product:actionservice:10.45.0-SNAPSHOT/maven-metadata.xml from/to artifactory-maven (http://artifactory.rmdev.onsdigital.uk/artifactory/libs-snapshot-local): artifactory.rmdev.onsdigital.uk
+Downloading: http://artifactory.rmdev.onsdigital.uk/artifactory/libs-snapshot-local/uk/gov/ons/ctp/product/collectionexercisesvc-api/10.45.0-SNAPSHOT/maven-metadata.xml
+[WARNING] Could not transfer metadata uk.gov.ons.ctp.product:collectionexercisesvc-api:10.45.0-SNAPSHOT/maven-metadata.xml from/to artifactory-maven (http://artifactory.rmdev.onsdigital.uk/artifactory/libs-snapshot-local): artifactory.rmdev.onsdigital.uk
+[WARNING] Failure to transfer uk.gov.ons.ctp.product:collectionexercisesvc-api:10.45.0-SNAPSHOT/maven-metadata.xml from http://artifactory.rmdev.onsdigital.uk/artifactory/libs-snapshot-local was cached in the local repository, resolution will not be reattempted until the update interval of artifactory-maven has elapsed or updates are forced. Original error: Could not transfer metadata uk.gov.ons.ctp.product:collectionexercisesvc-api:10.45.0-SNAPSHOT/maven-metadata.xml from/to artifactory-maven (http://artifactory.rmdev.onsdigital.uk/artifactory/libs-snapshot-local): artifactory.rmdev.onsdigital.uk
+Downloading: http://artifactory.rmdev.onsdigital.uk/artifactory/libs-snapshot-local/uk/gov/ons/ctp/product/collectionexerciseservice/10.45.0-SNAPSHOT/maven-metadata.xml
+[WARNING] Could not transfer metadata uk.gov.ons.ctp.product:collectionexerciseservice:10.45.0-SNAPSHOT/maven-metadata.xml from/to artifactory-maven (http://artifactory.rmdev.onsdigital.uk/artifactory/libs-snapshot-local): artifactory.rmdev.onsdigital.uk
+[INFO] 
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ casesvc ---
+[INFO] Deleting /Users/philippebrossier/code/rm-case-service/casesvc/target
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.4:create (default) @ casesvc ---
+[INFO] Executing: /bin/sh -c cd '/Users/philippebrossier/code/rm-case-service/casesvc' && 'git' 'rev-parse' '--verify' 'HEAD'
+[INFO] Working directory: /Users/philippebrossier/code/rm-case-service/casesvc
+[INFO] Storing buildNumber: bde490eaace4a2157f84907af8a40cc3ca9e7c0c at timestamp: 2017-08-09T10:51:44Z
+[INFO] Storing buildScmBranch: master
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ casesvc ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 34 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.6.2:compile (default-compile) @ casesvc ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 56 source files to /Users/philippebrossier/code/rm-case-service/casesvc/target/classes
+[INFO] /Users/philippebrossier/code/rm-case-service/casesvc/src/main/java/uk/gov/ons/ctp/response/casesvc/state/CaseSvcStateTransitionManagerFactory.java: /Users/philippebrossier/code/rm-case-service/casesvc/src/main/java/uk/gov/ons/ctp/response/casesvc/state/CaseSvcStateTransitionManagerFactory.java uses unchecked or unsafe operations.
+[INFO] /Users/philippebrossier/code/rm-case-service/casesvc/src/main/java/uk/gov/ons/ctp/response/casesvc/state/CaseSvcStateTransitionManagerFactory.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ casesvc ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 15 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.6.2:testCompile (default-testCompile) @ casesvc ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 10 source files to /Users/philippebrossier/code/rm-case-service/casesvc/target/test-classes
+[INFO] /Users/philippebrossier/code/rm-case-service/casesvc/src/test/java/uk/gov/ons/ctp/response/casesvc/endpoint/CaseEndpointUnitTest.java: /Users/philippebrossier/code/rm-case-service/casesvc/src/test/java/uk/gov/ons/ctp/response/casesvc/endpoint/CaseEndpointUnitTest.java uses unchecked or unsafe operations.
+[INFO] /Users/philippebrossier/code/rm-case-service/casesvc/src/test/java/uk/gov/ons/ctp/response/casesvc/endpoint/CaseEndpointUnitTest.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.20:test (default-test) @ casesvc ---
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+10:51:49,696 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback.groovy]
+10:51:49,697 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback-test.xml]
+10:51:49,697 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Found resource [logback.xml] at [file:/Users/philippebrossier/code/rm-case-service/casesvc/target/classes/logback.xml]
+10:51:49,698 |-WARN in ch.qos.logback.classic.LoggerContext[default] - Resource [logback.xml] occurs multiple times on the classpath.
+10:51:49,698 |-WARN in ch.qos.logback.classic.LoggerContext[default] - Resource [logback.xml] occurs at [jar:file:/Users/philippebrossier/.m2/repository/net/sourceforge/cobertura/cobertura/2.1.1/cobertura-2.1.1.jar!/logback.xml]
+10:51:49,698 |-WARN in ch.qos.logback.classic.LoggerContext[default] - Resource [logback.xml] occurs at [file:/Users/philippebrossier/code/rm-case-service/casesvc/target/classes/logback.xml]
+10:51:49,763 |-INFO in ch.qos.logback.classic.joran.action.ConfigurationAction - debug attribute not set
+10:51:49,768 |-INFO in ch.qos.logback.core.joran.util.ConfigurationWatchListUtil@702b8b12 - Adding [jar:file:/Users/philippebrossier/.m2/repository/org/springframework/boot/spring-boot/1.5.6.RELEASE/spring-boot-1.5.6.RELEASE.jar!/org/springframework/boot/logging/logback/defaults.xml] to configuration watch list.
+10:51:49,768 |-INFO in ch.qos.logback.core.joran.spi.ConfigurationWatchList@22e357dc - URL [jar:file:/Users/philippebrossier/.m2/repository/org/springframework/boot/spring-boot/1.5.6.RELEASE/spring-boot-1.5.6.RELEASE.jar!/org/springframework/boot/logging/logback/defaults.xml] is not of type file
+10:51:49,772 |-INFO in ch.qos.logback.core.joran.action.ConversionRuleAction - registering conversion word clr with class [org.springframework.boot.logging.logback.ColorConverter]
+10:51:49,772 |-INFO in ch.qos.logback.core.joran.action.ConversionRuleAction - registering conversion word wex with class [org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter]
+10:51:49,772 |-INFO in ch.qos.logback.core.joran.action.ConversionRuleAction - registering conversion word wEx with class [org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter]
+10:51:49,779 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [org.springframework.boot.logging.logback.LevelRemappingAppender]
+10:51:49,782 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [DEBUG_LEVEL_REMAPPER]
+10:51:49,803 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting level of logger [org.apache.catalina.startup.DigesterFactory] to ERROR
+10:51:49,803 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting level of logger [org.apache.catalina.util.LifecycleBase] to ERROR
+10:51:49,803 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting level of logger [org.apache.coyote.http11.Http11NioProtocol] to WARN
+10:51:49,803 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting level of logger [org.apache.sshd.common.util.SecurityUtils] to WARN
+10:51:49,803 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting level of logger [org.apache.tomcat.util.net.NioSelectorPool] to WARN
+10:51:49,803 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting level of logger [org.crsh.plugin] to WARN
+10:51:49,803 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting level of logger [org.crsh.ssh] to WARN
+10:51:49,804 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting level of logger [org.eclipse.jetty.util.component.AbstractLifeCycle] to ERROR
+10:51:49,804 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting level of logger [org.hibernate.validator.internal.util.Version] to WARN
+10:51:49,804 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting level of logger [org.springframework.boot.actuate.autoconfigure.CrshAutoConfiguration] to WARN
+10:51:49,804 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting additivity of logger [org.springframework.boot.actuate.endpoint.jmx] to false
+10:51:49,804 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [DEBUG_LEVEL_REMAPPER] to Logger[org.springframework.boot.actuate.endpoint.jmx]
+10:51:49,805 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting additivity of logger [org.thymeleaf] to false
+10:51:49,805 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [DEBUG_LEVEL_REMAPPER] to Logger[org.thymeleaf]
+10:51:49,805 |-INFO in ch.qos.logback.core.joran.action.TimestampAction - Using current interpretation time, i.e. now, as time reference.
+10:51:49,811 |-INFO in ch.qos.logback.core.joran.action.TimestampAction - Adding property to the context with key="bySecond" and value="20170809T105149" to the LOCAL scope
+10:51:49,813 |-ERROR in ch.qos.logback.core.joran.spi.Interpreter@5:61 - no applicable action for [springProperty], current ElementPath  is [[configuration][springProperty]]
+10:51:49,813 |-ERROR in ch.qos.logback.core.joran.spi.Interpreter@7:40 - no applicable action for [springProperty], current ElementPath  is [[configuration][springProperty]]
+10:51:49,814 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.core.ConsoleAppender]
+10:51:49,816 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [CLOUD]
+10:51:49,968 |-INFO in ch.qos.logback.core.joran.action.NestedComplexPropertyIA - Assuming default type [net.logstash.logback.composite.loggingevent.LoggingEventJsonProviders] for [providers] property
+10:51:49,979 |-INFO in ch.qos.logback.core.joran.action.NestedComplexPropertyIA - Assuming default type [net.logstash.logback.composite.loggingevent.MdcJsonProvider] for [mdc] property
+10:51:49,981 |-INFO in ch.qos.logback.core.joran.action.NestedComplexPropertyIA - Assuming default type [net.logstash.logback.composite.loggingevent.LoggingEventPatternJsonProvider] for [pattern] property
+10:51:50,042 |-WARN in net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder@49912c99 - Logback version is prior to 1.2.0.  Enabling backwards compatible encoding.  Logback 1.2.1 or greater is recommended.
+10:51:50,043 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.core.ConsoleAppender]
+10:51:50,043 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [DEV]
+10:51:50,043 |-INFO in ch.qos.logback.core.joran.action.NestedComplexPropertyIA - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+10:51:50,049 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.classic.net.SyslogAppender]
+10:51:50,051 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [SYSLOG]
+10:51:50,067 |-INFO in ch.qos.logback.classic.net.SyslogAppender[SYSLOG] - Defaulting maxMessageSize to [65000]
+10:51:50,394 |-INFO in ch.qos.logback.classic.joran.action.RootLoggerAction - Setting level of ROOT logger to WARN
+10:51:50,394 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [DEV] to Logger[ROOT]
+10:51:50,394 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [SYSLOG] to Logger[ROOT]
+10:51:50,395 |-INFO in ch.qos.logback.classic.joran.action.ConfigurationAction - End of configuration.
+10:51:50,396 |-INFO in ch.qos.logback.classic.joran.JoranConfigurator@10163d6 - Registering current configuration as safe fallback point
+
+[INFO] Running uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpointUnitTest
+2017-08-09 10:51:51.825 ERROR    --- [           main] u.g.o.c.c.error.RestExceptionHandler     : handleCTPException {}
+
+uk.gov.ons.ctp.common.error.CTPException: Case not found for case id 9bc9d99b-9999-99b9-ba99-99f9d9cf9999
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.findCaseById(CaseEndpoint.java:92)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:133)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:97)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:827)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:738)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:85)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:967)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:901)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:970)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:861)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:687)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:846)
+	at org.springframework.test.web.servlet.TestDispatcherServlet.service(TestDispatcherServlet.java:65)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:790)
+	at org.springframework.mock.web.MockFilterChain$ServletFilterProxy.doFilter(MockFilterChain.java:167)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:134)
+	at org.springframework.test.web.servlet.MockMvc.perform(MockMvc.java:155)
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpointUnitTest.findCaseByCaseIdNotFound(CaseEndpointUnitTest.java:257)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.junit.runners.Suite.runChild(Suite.java:128)
+	at org.junit.runners.Suite.runChild(Suite.java:27)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junitcore.JUnitCore.run(JUnitCore.java:55)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.createRequestAndRun(JUnitCoreWrapper.java:137)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.executeEager(JUnitCoreWrapper.java:107)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:83)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:75)
+	at org.apache.maven.surefire.junitcore.JUnitCoreProvider.invoke(JUnitCoreProvider.java:157)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:386)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:323)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:143)
+
+2017-08-09 10:51:52.417 ERROR    --- [           main] u.g.o.c.c.error.RestExceptionHandler     : handleCTPException {}
+
+uk.gov.ons.ctp.common.error.CTPException: Case not found for case id 9bc9d99b-9999-99b9-ba99-99f9d9cf9999
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.findCaseEventsByCaseId(CaseEndpoint.java:195)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:133)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:97)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:827)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:738)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:85)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:967)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:901)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:970)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:861)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:687)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:846)
+	at org.springframework.test.web.servlet.TestDispatcherServlet.service(TestDispatcherServlet.java:65)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:790)
+	at org.springframework.mock.web.MockFilterChain$ServletFilterProxy.doFilter(MockFilterChain.java:167)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:134)
+	at org.springframework.test.web.servlet.MockMvc.perform(MockMvc.java:155)
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpointUnitTest.findCaseEventsByCaseIdNotFound(CaseEndpointUnitTest.java:459)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.junit.runners.Suite.runChild(Suite.java:128)
+	at org.junit.runners.Suite.runChild(Suite.java:27)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junitcore.JUnitCore.run(JUnitCore.java:55)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.createRequestAndRun(JUnitCoreWrapper.java:137)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.executeEager(JUnitCoreWrapper.java:107)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:83)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:75)
+	at org.apache.maven.surefire.junitcore.JUnitCoreProvider.invoke(JUnitCoreProvider.java:157)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:386)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:323)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:143)
+
+2017-08-09 10:51:53.030 ERROR    --- [           main] u.g.o.c.c.error.RestExceptionHandler     : handleHttpMessageNotReadableException {}
+
+org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Can not construct instance of uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO$CategoryName, problem: BAD_CAT is invalid value. only ACTION_CANCELLATION_COMPLETED, ACTION_CANCELLATION_CREATED, ACTION_COMPLETED, ACTION_COMPLETED_DEACTIVATED, ACTION_CREATED, ACTION_UPDATED, ADDRESS_DETAILS_INCORRECT, CASE_CREATED, CLASSIFICATION_INCORRECT, GENERAL_COMPLAINT, GENERAL_COMPLAINT_ESCALATED, GENERAL_ENQUIRY, GENERAL_ENQUIRY_ESCALATED, ACCESS_CODE_AUTHENTICATION_ATTEMPT, INCORRECT_ESCALATION, MISCELLANEOUS, FIELD_EMERGENCY_ESCALATED, CLOSE_ESCALATION, PENDING, FIELD_COMPLAINT_ESCALATED, TECHNICAL_QUERY, ACCESSIBILITY_MATERIALS, PAPER_QUESTIONNAIRE_RESPONSE, ONLINE_QUESTIONNAIRE_RESPONSE, REFUSAL, UNDELIVERABLE, HOUSEHOLD_REPLACEMENT_IAC_REQUESTED, HOUSEHOLD_PAPER_REQUESTED, H_INDIVIDUAL_RESPONSE_REQUESTED, H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED, H_INDIVIDUAL_PAPER_REQUESTED, RESPONDENT_ENROLED, TRANSLATION_POLISH, TRANSLATION_CANTONESE, TRANSLATION_SOMALI, TRANSLATION_MANDARIN, TRANSLATION_BENGALI, TRANSLATION_PUNJABI_SHAHMUKI, TRANSLATION_PUNJABI_GURMUKHI, TRANSLATION_LITHUANIAN, TRANSLATION_GUJARATI, TRANSLATION_TURKISH, TRANSLATION_ARABIC, TRANSLATION_URDU, TRANSLATION_PORTUGUESE, TRANSLATION_SPANISH, RESPONDENT_ACCOUNT_CREATED, COLLECTION_INSTRUMENT_DOWNLOADED, UNSUCCESSFUL_RESPONSE_UPLOAD, SUCCESSFUL_RESPONSE_UPLOAD, OFFLINE_RESPONSE_PROCESSED, SECURE_MESSAGE_SENT, VERIFICATION_CODE_SENT, COLLECTION_INSTRUMENT_ERROR; nested exception is com.fasterxml.jackson.databind.JsonMappingException: Can not construct instance of uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO$CategoryName, problem: BAD_CAT is invalid value. only ACTION_CANCELLATION_COMPLETED, ACTION_CANCELLATION_CREATED, ACTION_COMPLETED, ACTION_COMPLETED_DEACTIVATED, ACTION_CREATED, ACTION_UPDATED, ADDRESS_DETAILS_INCORRECT, CASE_CREATED, CLASSIFICATION_INCORRECT, GENERAL_COMPLAINT, GENERAL_COMPLAINT_ESCALATED, GENERAL_ENQUIRY, GENERAL_ENQUIRY_ESCALATED, ACCESS_CODE_AUTHENTICATION_ATTEMPT, INCORRECT_ESCALATION, MISCELLANEOUS, FIELD_EMERGENCY_ESCALATED, CLOSE_ESCALATION, PENDING, FIELD_COMPLAINT_ESCALATED, TECHNICAL_QUERY, ACCESSIBILITY_MATERIALS, PAPER_QUESTIONNAIRE_RESPONSE, ONLINE_QUESTIONNAIRE_RESPONSE, REFUSAL, UNDELIVERABLE, HOUSEHOLD_REPLACEMENT_IAC_REQUESTED, HOUSEHOLD_PAPER_REQUESTED, H_INDIVIDUAL_RESPONSE_REQUESTED, H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED, H_INDIVIDUAL_PAPER_REQUESTED, RESPONDENT_ENROLED, TRANSLATION_POLISH, TRANSLATION_CANTONESE, TRANSLATION_SOMALI, TRANSLATION_MANDARIN, TRANSLATION_BENGALI, TRANSLATION_PUNJABI_SHAHMUKI, TRANSLATION_PUNJABI_GURMUKHI, TRANSLATION_LITHUANIAN, TRANSLATION_GUJARATI, TRANSLATION_TURKISH, TRANSLATION_ARABIC, TRANSLATION_URDU, TRANSLATION_PORTUGUESE, TRANSLATION_SPANISH, RESPONDENT_ACCOUNT_CREATED, COLLECTION_INSTRUMENT_DOWNLOADED, UNSUCCESSFUL_RESPONSE_UPLOAD, SUCCESSFUL_RESPONSE_UPLOAD, OFFLINE_RESPONSE_PROCESSED, SECURE_MESSAGE_SENT, VERIFICATION_CODE_SENT, COLLECTION_INSTRUMENT_ERROR
+ at [Source: java.io.PushbackInputStream@2227a6c1; line: 1, column: 31] (through reference chain: uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO["category"])
+	at org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter.readJavaType(AbstractJackson2HttpMessageConverter.java:238)
+	at org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter.read(AbstractJackson2HttpMessageConverter.java:223)
+	at org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConverterMethodArgumentResolver.readWithMessageConverters(AbstractMessageConverterMethodArgumentResolver.java:201)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor.readWithMessageConverters(RequestResponseBodyMethodProcessor.java:150)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor.resolveArgument(RequestResponseBodyMethodProcessor.java:128)
+	at org.springframework.web.method.support.HandlerMethodArgumentResolverComposite.resolveArgument(HandlerMethodArgumentResolverComposite.java:121)
+	at org.springframework.web.method.support.InvocableHandlerMethod.getMethodArgumentValues(InvocableHandlerMethod.java:158)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:128)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:97)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:827)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:738)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:85)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:967)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:901)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:970)
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:872)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:707)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:846)
+	at org.springframework.test.web.servlet.TestDispatcherServlet.service(TestDispatcherServlet.java:65)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:790)
+	at org.springframework.mock.web.MockFilterChain$ServletFilterProxy.doFilter(MockFilterChain.java:167)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:134)
+	at org.springframework.test.web.servlet.MockMvc.perform(MockMvc.java:155)
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpointUnitTest.createCaseEventBadJson(CaseEndpointUnitTest.java:512)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.junit.runners.Suite.runChild(Suite.java:128)
+	at org.junit.runners.Suite.runChild(Suite.java:27)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junitcore.JUnitCore.run(JUnitCore.java:55)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.createRequestAndRun(JUnitCoreWrapper.java:137)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.executeEager(JUnitCoreWrapper.java:107)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:83)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:75)
+	at org.apache.maven.surefire.junitcore.JUnitCoreProvider.invoke(JUnitCoreProvider.java:157)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:386)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:323)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:143)
+Caused by: com.fasterxml.jackson.databind.JsonMappingException: Can not construct instance of uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO$CategoryName, problem: BAD_CAT is invalid value. only ACTION_CANCELLATION_COMPLETED, ACTION_CANCELLATION_CREATED, ACTION_COMPLETED, ACTION_COMPLETED_DEACTIVATED, ACTION_CREATED, ACTION_UPDATED, ADDRESS_DETAILS_INCORRECT, CASE_CREATED, CLASSIFICATION_INCORRECT, GENERAL_COMPLAINT, GENERAL_COMPLAINT_ESCALATED, GENERAL_ENQUIRY, GENERAL_ENQUIRY_ESCALATED, ACCESS_CODE_AUTHENTICATION_ATTEMPT, INCORRECT_ESCALATION, MISCELLANEOUS, FIELD_EMERGENCY_ESCALATED, CLOSE_ESCALATION, PENDING, FIELD_COMPLAINT_ESCALATED, TECHNICAL_QUERY, ACCESSIBILITY_MATERIALS, PAPER_QUESTIONNAIRE_RESPONSE, ONLINE_QUESTIONNAIRE_RESPONSE, REFUSAL, UNDELIVERABLE, HOUSEHOLD_REPLACEMENT_IAC_REQUESTED, HOUSEHOLD_PAPER_REQUESTED, H_INDIVIDUAL_RESPONSE_REQUESTED, H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED, H_INDIVIDUAL_PAPER_REQUESTED, RESPONDENT_ENROLED, TRANSLATION_POLISH, TRANSLATION_CANTONESE, TRANSLATION_SOMALI, TRANSLATION_MANDARIN, TRANSLATION_BENGALI, TRANSLATION_PUNJABI_SHAHMUKI, TRANSLATION_PUNJABI_GURMUKHI, TRANSLATION_LITHUANIAN, TRANSLATION_GUJARATI, TRANSLATION_TURKISH, TRANSLATION_ARABIC, TRANSLATION_URDU, TRANSLATION_PORTUGUESE, TRANSLATION_SPANISH, RESPONDENT_ACCOUNT_CREATED, COLLECTION_INSTRUMENT_DOWNLOADED, UNSUCCESSFUL_RESPONSE_UPLOAD, SUCCESSFUL_RESPONSE_UPLOAD, OFFLINE_RESPONSE_PROCESSED, SECURE_MESSAGE_SENT, VERIFICATION_CODE_SENT, COLLECTION_INSTRUMENT_ERROR
+ at [Source: java.io.PushbackInputStream@2227a6c1; line: 1, column: 31] (through reference chain: uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO["category"])
+	at com.fasterxml.jackson.databind.JsonMappingException.from(JsonMappingException.java:277)
+	at com.fasterxml.jackson.databind.DeserializationContext.instantiationException(DeserializationContext.java:1441)
+	at com.fasterxml.jackson.databind.DeserializationContext.handleInstantiationProblem(DeserializationContext.java:1055)
+	at com.fasterxml.jackson.databind.deser.std.FactoryBasedEnumDeserializer.deserialize(FactoryBasedEnumDeserializer.java:141)
+	at com.fasterxml.jackson.databind.deser.SettableBeanProperty.deserialize(SettableBeanProperty.java:504)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer._deserializeWithErrorWrapping(BeanDeserializer.java:511)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer._deserializeUsingPropertyBased(BeanDeserializer.java:400)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.deserializeFromObjectUsingNonDefault(BeanDeserializerBase.java:1191)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserializeFromObject(BeanDeserializer.java:314)
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:148)
+	at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:3814)
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:2938)
+	at org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter.readJavaType(AbstractJackson2HttpMessageConverter.java:235)
+	... 58 common frames omitted
+Caused by: java.lang.IllegalArgumentException: BAD_CAT is invalid value. only ACTION_CANCELLATION_COMPLETED, ACTION_CANCELLATION_CREATED, ACTION_COMPLETED, ACTION_COMPLETED_DEACTIVATED, ACTION_CREATED, ACTION_UPDATED, ADDRESS_DETAILS_INCORRECT, CASE_CREATED, CLASSIFICATION_INCORRECT, GENERAL_COMPLAINT, GENERAL_COMPLAINT_ESCALATED, GENERAL_ENQUIRY, GENERAL_ENQUIRY_ESCALATED, ACCESS_CODE_AUTHENTICATION_ATTEMPT, INCORRECT_ESCALATION, MISCELLANEOUS, FIELD_EMERGENCY_ESCALATED, CLOSE_ESCALATION, PENDING, FIELD_COMPLAINT_ESCALATED, TECHNICAL_QUERY, ACCESSIBILITY_MATERIALS, PAPER_QUESTIONNAIRE_RESPONSE, ONLINE_QUESTIONNAIRE_RESPONSE, REFUSAL, UNDELIVERABLE, HOUSEHOLD_REPLACEMENT_IAC_REQUESTED, HOUSEHOLD_PAPER_REQUESTED, H_INDIVIDUAL_RESPONSE_REQUESTED, H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED, H_INDIVIDUAL_PAPER_REQUESTED, RESPONDENT_ENROLED, TRANSLATION_POLISH, TRANSLATION_CANTONESE, TRANSLATION_SOMALI, TRANSLATION_MANDARIN, TRANSLATION_BENGALI, TRANSLATION_PUNJABI_SHAHMUKI, TRANSLATION_PUNJABI_GURMUKHI, TRANSLATION_LITHUANIAN, TRANSLATION_GUJARATI, TRANSLATION_TURKISH, TRANSLATION_ARABIC, TRANSLATION_URDU, TRANSLATION_PORTUGUESE, TRANSLATION_SPANISH, RESPONDENT_ACCOUNT_CREATED, COLLECTION_INSTRUMENT_DOWNLOADED, UNSUCCESSFUL_RESPONSE_UPLOAD, SUCCESSFUL_RESPONSE_UPLOAD, OFFLINE_RESPONSE_PROCESSED, SECURE_MESSAGE_SENT, VERIFICATION_CODE_SENT, COLLECTION_INSTRUMENT_ERROR
+	at uk.gov.ons.ctp.common.util.EnumUtils.getEnumFromString(EnumUtils.java:35)
+	at uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO$CategoryName.fromValue(CategoryDTO.java:85)
+	at sun.reflect.GeneratedMethodAccessor4.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at com.fasterxml.jackson.databind.introspect.AnnotatedMethod.callOnWith(AnnotatedMethod.java:130)
+	at com.fasterxml.jackson.databind.deser.std.FactoryBasedEnumDeserializer.deserialize(FactoryBasedEnumDeserializer.java:133)
+	... 67 common frames omitted
+
+2017-08-09 10:51:53.271 ERROR    --- [           main] u.g.o.c.c.error.RestExceptionHandler     : handleCTPException {}
+
+uk.gov.ons.ctp.common.error.CTPException: Case not found for case id 9bc9d99b-9999-99b9-ba99-99f9d9cf9999
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.createCaseEvent(CaseEndpoint.java:229)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:133)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:97)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:827)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:738)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:85)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:967)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:901)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:970)
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:872)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:707)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:846)
+	at org.springframework.test.web.servlet.TestDispatcherServlet.service(TestDispatcherServlet.java:65)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:790)
+	at org.springframework.mock.web.MockFilterChain$ServletFilterProxy.doFilter(MockFilterChain.java:167)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:134)
+	at org.springframework.test.web.servlet.MockMvc.perform(MockMvc.java:155)
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpointUnitTest.createCaseEventCaseNotFound(CaseEndpointUnitTest.java:529)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.junit.runners.Suite.runChild(Suite.java:128)
+	at org.junit.runners.Suite.runChild(Suite.java:27)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junitcore.JUnitCore.run(JUnitCore.java:55)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.createRequestAndRun(JUnitCoreWrapper.java:137)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.executeEager(JUnitCoreWrapper.java:107)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:83)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:75)
+	at org.apache.maven.surefire.junitcore.JUnitCoreProvider.invoke(JUnitCoreProvider.java:157)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:386)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:323)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:143)
+
+2017-08-09 10:51:53.464 ERROR    --- [           main] u.g.o.c.c.error.RestExceptionHandler     : handleCTPException {}
+
+uk.gov.ons.ctp.common.error.CTPException: Category ACCESS_CODE_AUTHENTICATION_ATTEMPT does not exist
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.createNewEventForAccessCodeAuthAttempt(CaseEndpoint.java:290)
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.findCaseByIac(CaseEndpoint.java:149)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:133)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:97)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:827)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:738)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:85)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:967)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:901)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:970)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:861)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:687)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:846)
+	at org.springframework.test.web.servlet.TestDispatcherServlet.service(TestDispatcherServlet.java:65)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:790)
+	at org.springframework.mock.web.MockFilterChain$ServletFilterProxy.doFilter(MockFilterChain.java:167)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:134)
+	at org.springframework.test.web.servlet.MockMvc.perform(MockMvc.java:155)
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpointUnitTest.findCaseByIACButCategoryNotDefined(CaseEndpointUnitTest.java:363)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.junit.runners.Suite.runChild(Suite.java:128)
+	at org.junit.runners.Suite.runChild(Suite.java:27)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junitcore.JUnitCore.run(JUnitCore.java:55)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.createRequestAndRun(JUnitCoreWrapper.java:137)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.executeEager(JUnitCoreWrapper.java:107)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:83)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:75)
+	at org.apache.maven.surefire.junitcore.JUnitCoreProvider.invoke(JUnitCoreProvider.java:157)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:386)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:323)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:143)
+
+2017-08-09 10:51:53.466 ERROR    --- [           main] u.g.o.c.c.error.RestExceptionHandler     : Internal System Error
+
+uk.gov.ons.ctp.common.error.CTPException: Category ACCESS_CODE_AUTHENTICATION_ATTEMPT does not exist
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.createNewEventForAccessCodeAuthAttempt(CaseEndpoint.java:290)
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.findCaseByIac(CaseEndpoint.java:149)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:133)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:97)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:827)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:738)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:85)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:967)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:901)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:970)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:861)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:687)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:846)
+	at org.springframework.test.web.servlet.TestDispatcherServlet.service(TestDispatcherServlet.java:65)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:790)
+	at org.springframework.mock.web.MockFilterChain$ServletFilterProxy.doFilter(MockFilterChain.java:167)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:134)
+	at org.springframework.test.web.servlet.MockMvc.perform(MockMvc.java:155)
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpointUnitTest.findCaseByIACButCategoryNotDefined(CaseEndpointUnitTest.java:363)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.junit.runners.Suite.runChild(Suite.java:128)
+	at org.junit.runners.Suite.runChild(Suite.java:27)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junitcore.JUnitCore.run(JUnitCore.java:55)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.createRequestAndRun(JUnitCoreWrapper.java:137)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.executeEager(JUnitCoreWrapper.java:107)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:83)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:75)
+	at org.apache.maven.surefire.junitcore.JUnitCoreProvider.invoke(JUnitCoreProvider.java:157)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:386)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:323)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:143)
+
+2017-08-09 10:51:53.698 ERROR    --- [           main] u.g.o.c.c.error.RestExceptionHandler     : handleCTPException {}
+
+uk.gov.ons.ctp.common.error.CTPException: Event requested for case 7bc5d41b-0549-40b3-ba76-42f6d4cf3fd9 requires additional data - new Case details
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.createCaseEvent(CaseEndpoint.java:242)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:133)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:97)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:827)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:738)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:85)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:967)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:901)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:970)
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:872)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:707)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:846)
+	at org.springframework.test.web.servlet.TestDispatcherServlet.service(TestDispatcherServlet.java:65)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:790)
+	at org.springframework.mock.web.MockFilterChain$ServletFilterProxy.doFilter(MockFilterChain.java:167)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:134)
+	at org.springframework.test.web.servlet.MockMvc.perform(MockMvc.java:155)
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpointUnitTest.createCaseEventRequiresNewCase(CaseEndpointUnitTest.java:549)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.junit.runners.Suite.runChild(Suite.java:128)
+	at org.junit.runners.Suite.runChild(Suite.java:27)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junitcore.JUnitCore.run(JUnitCore.java:55)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.createRequestAndRun(JUnitCoreWrapper.java:137)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.executeEager(JUnitCoreWrapper.java:107)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:83)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:75)
+	at org.apache.maven.surefire.junitcore.JUnitCoreProvider.invoke(JUnitCoreProvider.java:157)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:386)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:323)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:143)
+
+2017-08-09 10:51:53.775 ERROR    --- [           main] u.g.o.c.c.error.RestExceptionHandler     : handleCTPException {}
+
+uk.gov.ons.ctp.common.error.CTPException: Case not found for iac zzzz llll mmmm
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.findCaseByIac(CaseEndpoint.java:146)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:133)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:97)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:827)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:738)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:85)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:967)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:901)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:970)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:861)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:687)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:846)
+	at org.springframework.test.web.servlet.TestDispatcherServlet.service(TestDispatcherServlet.java:65)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:790)
+	at org.springframework.mock.web.MockFilterChain$ServletFilterProxy.doFilter(MockFilterChain.java:167)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:134)
+	at org.springframework.test.web.servlet.MockMvc.perform(MockMvc.java:155)
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpointUnitTest.findCaseByIACNotFound(CaseEndpointUnitTest.java:347)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.junit.runners.Suite.runChild(Suite.java:128)
+	at org.junit.runners.Suite.runChild(Suite.java:27)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junitcore.JUnitCore.run(JUnitCore.java:55)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.createRequestAndRun(JUnitCoreWrapper.java:137)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.executeEager(JUnitCoreWrapper.java:107)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:83)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:75)
+	at org.apache.maven.surefire.junitcore.JUnitCoreProvider.invoke(JUnitCoreProvider.java:157)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:386)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:323)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:143)
+
+2017-08-09 10:51:53.847 ERROR    --- [           main] u.g.o.c.c.error.RestExceptionHandler     : handleGeneralException {}
+
+java.lang.IllegalArgumentException: this is what we throw
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.findCaseById(CaseEndpoint.java:89)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:133)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:97)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:827)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:738)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:85)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:967)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:901)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:970)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:861)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:687)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:846)
+	at org.springframework.test.web.servlet.TestDispatcherServlet.service(TestDispatcherServlet.java:65)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:790)
+	at org.springframework.mock.web.MockFilterChain$ServletFilterProxy.doFilter(MockFilterChain.java:167)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:134)
+	at org.springframework.test.web.servlet.MockMvc.perform(MockMvc.java:155)
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpointUnitTest.findCaseByCaseIdUnCheckedException(CaseEndpointUnitTest.java:273)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.junit.runners.Suite.runChild(Suite.java:128)
+	at org.junit.runners.Suite.runChild(Suite.java:27)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junitcore.JUnitCore.run(JUnitCore.java:55)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.createRequestAndRun(JUnitCoreWrapper.java:137)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.executeEager(JUnitCoreWrapper.java:107)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:83)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:75)
+	at org.apache.maven.surefire.junitcore.JUnitCoreProvider.invoke(JUnitCoreProvider.java:157)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:386)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:323)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:143)
+
+2017-08-09 10:51:54.204 ERROR    --- [           main] u.g.o.c.c.error.RestExceptionHandler     : handleCTPException {}
+
+uk.gov.ons.ctp.common.error.CTPException: this is what we throw
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.createCaseEvent(CaseEndpoint.java:245)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:133)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:97)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:827)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:738)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:85)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:967)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:901)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:970)
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:872)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:707)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:846)
+	at org.springframework.test.web.servlet.TestDispatcherServlet.service(TestDispatcherServlet.java:65)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:790)
+	at org.springframework.mock.web.MockFilterChain$ServletFilterProxy.doFilter(MockFilterChain.java:167)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:134)
+	at org.springframework.test.web.servlet.MockMvc.perform(MockMvc.java:155)
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpointUnitTest.createCaseEventGoodJsonButVersusIncorrectSampleUnitType(CaseEndpointUnitTest.java:596)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.junit.runners.Suite.runChild(Suite.java:128)
+	at org.junit.runners.Suite.runChild(Suite.java:27)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junitcore.JUnitCore.run(JUnitCore.java:55)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.createRequestAndRun(JUnitCoreWrapper.java:137)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.executeEager(JUnitCoreWrapper.java:107)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:83)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:75)
+	at org.apache.maven.surefire.junitcore.JUnitCoreProvider.invoke(JUnitCoreProvider.java:157)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:386)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:323)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:143)
+
+2017-08-09 10:51:54.293 ERROR    --- [           main] u.g.o.c.c.error.RestExceptionHandler     : handleCTPException {}
+
+uk.gov.ons.ctp.common.error.CTPException: CaseGroup not found for casegroup id 9a5f2be5-f944-41f9-982c-3517cfcfe667
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.findCasesInCaseGroup(CaseEndpoint.java:169)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:133)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:97)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:827)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:738)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:85)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:967)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:901)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:970)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:861)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:687)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:846)
+	at org.springframework.test.web.servlet.TestDispatcherServlet.service(TestDispatcherServlet.java:65)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:790)
+	at org.springframework.mock.web.MockFilterChain$ServletFilterProxy.doFilter(MockFilterChain.java:167)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:134)
+	at org.springframework.test.web.servlet.MockMvc.perform(MockMvc.java:155)
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpointUnitTest.findCasesByCaseGroupIdNotFound(CaseEndpointUnitTest.java:416)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.junit.runners.Suite.runChild(Suite.java:128)
+	at org.junit.runners.Suite.runChild(Suite.java:27)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junitcore.JUnitCore.run(JUnitCore.java:55)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.createRequestAndRun(JUnitCoreWrapper.java:137)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.executeEager(JUnitCoreWrapper.java:107)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:83)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:75)
+	at org.apache.maven.surefire.junitcore.JUnitCoreProvider.invoke(JUnitCoreProvider.java:157)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:386)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:323)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:143)
+
+[INFO] Tests run: 22, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.692 s - in uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpointUnitTest
+[INFO] Running uk.gov.ons.ctp.response.casesvc.endpoint.CaseGroupEndpointUnitTest
+2017-08-09 10:51:54.481 ERROR    --- [           main] u.g.o.c.c.error.RestExceptionHandler     : handleCTPException {}
+
+uk.gov.ons.ctp.common.error.CTPException: CaseGroup not found for casegroup id 9a5f2be5-f944-41f9-982c-3517cfcfe666
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CaseGroupEndpoint.findCaseGroupById(CaseGroupEndpoint.java:50)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:133)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:97)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:827)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:738)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:85)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:967)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:901)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:970)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:861)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:687)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:846)
+	at org.springframework.test.web.servlet.TestDispatcherServlet.service(TestDispatcherServlet.java:65)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:790)
+	at org.springframework.mock.web.MockFilterChain$ServletFilterProxy.doFilter(MockFilterChain.java:167)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:134)
+	at org.springframework.test.web.servlet.MockMvc.perform(MockMvc.java:155)
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CaseGroupEndpointUnitTest.findCaseGroupByIdNotFound(CaseGroupEndpointUnitTest.java:119)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.junit.runners.Suite.runChild(Suite.java:128)
+	at org.junit.runners.Suite.runChild(Suite.java:27)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junitcore.JUnitCore.run(JUnitCore.java:55)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.createRequestAndRun(JUnitCoreWrapper.java:137)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.executeEager(JUnitCoreWrapper.java:107)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:83)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:75)
+	at org.apache.maven.surefire.junitcore.JUnitCoreProvider.invoke(JUnitCoreProvider.java:157)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:386)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:323)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:143)
+
+2017-08-09 10:51:54.711 ERROR    --- [           main] u.g.o.c.c.error.RestExceptionHandler     : handleGeneralException {}
+
+java.lang.IllegalArgumentException: this is what we throw
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CaseGroupEndpoint.findCaseGroupById(CaseGroupEndpoint.java:48)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:133)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:97)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:827)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:738)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:85)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:967)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:901)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:970)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:861)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:687)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:846)
+	at org.springframework.test.web.servlet.TestDispatcherServlet.service(TestDispatcherServlet.java:65)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:790)
+	at org.springframework.mock.web.MockFilterChain$ServletFilterProxy.doFilter(MockFilterChain.java:167)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:134)
+	at org.springframework.test.web.servlet.MockMvc.perform(MockMvc.java:155)
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CaseGroupEndpointUnitTest.findCaseGroupByIdUnCheckedException(CaseGroupEndpointUnitTest.java:144)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.junit.runners.Suite.runChild(Suite.java:128)
+	at org.junit.runners.Suite.runChild(Suite.java:27)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junitcore.JUnitCore.run(JUnitCore.java:55)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.createRequestAndRun(JUnitCoreWrapper.java:137)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.executeEager(JUnitCoreWrapper.java:107)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:83)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:75)
+	at org.apache.maven.surefire.junitcore.JUnitCoreProvider.invoke(JUnitCoreProvider.java:157)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:386)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:323)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:143)
+
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.287 s - in uk.gov.ons.ctp.response.casesvc.endpoint.CaseGroupEndpointUnitTest
+[INFO] Running uk.gov.ons.ctp.response.casesvc.endpoint.CategoryEndpointUnitTest
+2017-08-09 10:51:54.848 ERROR    --- [           main] u.g.o.c.c.error.RestExceptionHandler     : handleCTPException {}
+
+uk.gov.ons.ctp.common.error.CTPException: Category not found for categoryName Felix The Cat
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CategoryEndpoint.findCategory(CategoryEndpoint.java:57)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:133)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:97)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:827)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:738)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:85)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:967)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:901)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:970)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:861)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:687)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:846)
+	at org.springframework.test.web.servlet.TestDispatcherServlet.service(TestDispatcherServlet.java:65)
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:790)
+	at org.springframework.mock.web.MockFilterChain$ServletFilterProxy.doFilter(MockFilterChain.java:167)
+	at org.springframework.mock.web.MockFilterChain.doFilter(MockFilterChain.java:134)
+	at org.springframework.test.web.servlet.MockMvc.perform(MockMvc.java:155)
+	at uk.gov.ons.ctp.response.casesvc.endpoint.CategoryEndpointUnitTest.findACategoryNotFound(CategoryEndpointUnitTest.java:140)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.junit.runners.Suite.runChild(Suite.java:128)
+	at org.junit.runners.Suite.runChild(Suite.java:27)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junitcore.JUnitCore.run(JUnitCore.java:55)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.createRequestAndRun(JUnitCoreWrapper.java:137)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.executeEager(JUnitCoreWrapper.java:107)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:83)
+	at org.apache.maven.surefire.junitcore.JUnitCoreWrapper.execute(JUnitCoreWrapper.java:75)
+	at org.apache.maven.surefire.junitcore.JUnitCoreProvider.invoke(JUnitCoreProvider.java:157)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:386)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:323)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:143)
+
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.252 s - in uk.gov.ons.ctp.response.casesvc.endpoint.CategoryEndpointUnitTest
+[INFO] Running uk.gov.ons.ctp.response.casesvc.message.CaseReceiptReceiverImplTest
+2017-08-09 10:51:55.018 ERROR    --- [           main] u.g.o.c.r.c.m.i.CaseReceiptReceiverImpl  : No existing case found for caseId fa622b71-f158-4d51-82dd-c3417e31e32d
+2017-08-09 10:51:55.021 ERROR    --- [           main] u.g.o.c.r.c.m.i.CaseReceiptReceiverImpl  : No existing case found for caseId fa622b71-f158-4d51-82dd-c3417e31e32d
+2017-08-09 10:51:55.029 ERROR    --- [           main] u.g.o.c.r.c.m.i.CaseReceiptReceiverImpl  : No existing case found for caseId fa622b71-f158-4d51-82dd-c3417e31e32d
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.07 s - in uk.gov.ons.ctp.response.casesvc.message.CaseReceiptReceiverImplTest
+[INFO] Running uk.gov.ons.ctp.response.casesvc.scheduled.distribution.CaseDistributorTest
+2017-08-09 10:51:55.120 ERROR    --- [           main] u.g.o.c.r.c.s.d.CaseDistributor          : Failed to obtain IAC codes
+2017-08-09 10:51:55.154 ERROR    --- [           main] u.g.o.c.r.c.s.d.CaseDistributor          : Exception msg The DB is KO at the moment. thrown processing case with id 1bc5d41b-0549-40b3-ba76-42f6d4cf3fd1. Processing postponed
+2017-08-09 10:51:55.157 ERROR    --- [           main] u.g.o.c.r.c.s.d.CaseDistributor          : Exception msg The DB is KO at the moment. thrown processing case with id 2bc5d41b-0549-40b3-ba76-42f6d4cf3fd1. Processing postponed
+2017-08-09 10:51:55.157 ERROR    --- [           main] u.g.o.c.r.c.s.d.CaseDistributor          : Exception msg The DB is KO at the moment. thrown processing case with id 3bc5d41b-0549-40b3-ba76-42f6d4cf3fd1. Processing postponed
+2017-08-09 10:51:55.158 ERROR    --- [           main] u.g.o.c.r.c.s.d.CaseDistributor          : Exception msg The DB is KO at the moment. thrown processing case with id 4bc5d41b-0549-40b3-ba76-42f6d4cf3fd1. Processing postponed
+2017-08-09 10:51:55.159 ERROR    --- [           main] u.g.o.c.r.c.s.d.CaseDistributor          : Exception msg The DB is KO at the moment. thrown processing case with id 6bc5d41b-0549-40b3-ba76-42f6d4cf3fd1. Processing postponed
+2017-08-09 10:51:55.174 ERROR    --- [           main] u.g.o.c.r.c.s.d.CaseDistributor          : Failed to process cases because Database access failed
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.368 s - in uk.gov.ons.ctp.response.casesvc.scheduled.distribution.CaseDistributorTest
+[INFO] Running uk.gov.ons.ctp.response.casesvc.service.impl.ActionSvcClientServiceImplTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.063 s - in uk.gov.ons.ctp.response.casesvc.service.impl.ActionSvcClientServiceImplTest
+[INFO] Running uk.gov.ons.ctp.response.casesvc.service.impl.CaseCreationServiceTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.023 s - in uk.gov.ons.ctp.response.casesvc.service.impl.CaseCreationServiceTest
+[INFO] Running uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImplTest
+2017-08-09 10:51:55.563 ERROR    --- [           main] u.g.o.c.r.c.s.impl.CaseServiceImpl       : New Case definition missing for case 91fda7f2-3825-4bd4-baef-943a0ccf0856
+2017-08-09 10:51:55.578 ERROR    --- [           main] u.g.o.c.r.c.s.impl.CaseServiceImpl       : Old Case has sampleUnitType BI. It is expected to have sampleUnitType B.
+2017-08-09 10:51:55.590 ERROR    --- [           main] u.g.o.c.r.c.s.impl.CaseServiceImpl       : Old Case has sampleUnitType B. It is expected to have sampleUnitType BI.
+2017-08-09 10:51:55.660 ERROR    --- [           main] u.g.o.c.r.c.s.impl.CaseServiceImpl       : Old Case has sampleUnitType HI. It is expected to have sampleUnitType H.
+2017-08-09 10:51:55.735 ERROR    --- [           main] u.g.o.c.r.c.s.impl.CaseServiceImpl       : Old Case has sampleUnitType B. It is expected to have sampleUnitType BI.
+2017-08-09 10:51:55.781 ERROR    --- [           main] u.g.o.c.r.c.s.impl.CaseServiceImpl       : Old Case has sampleUnitType BI. It is expected to have sampleUnitType B.
+2017-08-09 10:51:55.789 ERROR    --- [           main] u.g.o.c.r.c.s.impl.CaseServiceImpl       : Old Case has sampleUnitType B. It is expected to have sampleUnitType BI.
+2017-08-09 10:51:55.818 ERROR    --- [           main] u.g.o.c.r.c.s.impl.CaseServiceImpl       : Old Case has sampleUnitType BI. It is expected to have sampleUnitType B.
+2017-08-09 10:51:55.889 ERROR    --- [           main] u.g.o.c.r.c.s.impl.CaseServiceImpl       : Old Case has sampleUnitType B. It is expected to have sampleUnitType BI.
+2017-08-09 10:51:55.919 ERROR    --- [           main] u.g.o.c.r.c.s.impl.CaseServiceImpl       : Old Case has sampleUnitType HI. It is expected to have sampleUnitType H.
+2017-08-09 10:51:55.938 ERROR    --- [           main] u.g.o.c.r.c.s.impl.CaseServiceImpl       : New Case definition missing for case 1bc5d41b-0549-40b3-ba76-42f6d4cf3fd1
+[INFO] Tests run: 39, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.428 s - in uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImplTest
+[INFO] Running uk.gov.ons.ctp.response.casesvc.service.impl.InternetAccessCodeSvcClientServiceImplTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s - in uk.gov.ons.ctp.response.casesvc.service.impl.InternetAccessCodeSvcClientServiceImplTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 84, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running TestSuite
+[INFO] Tests run: 50, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.733 s - in TestSuite
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 50, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- maven-checkstyle-plugin:2.17:check (test) @ casesvc ---
+[INFO] Starting audit...
+[WARN] /Users/philippebrossier/code/rm-case-service/casesvc/src/main/java/uk/gov/ons/ctp/response/casesvc/scheduled/distribution/CaseDistributor.java:183:70: Expected @throws tag for 'CTPException'. [JavadocMethod]
+[WARN] /Users/philippebrossier/code/rm-case-service/casesvc/src/main/java/uk/gov/ons/ctp/response/casesvc/scheduled/distribution/CaseDistributor.java:187: switch without "default" clause. [MissingSwitchDefault]
+Audit done.
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ casesvc ---
+[INFO] Building jar: /Users/philippebrossier/code/rm-case-service/casesvc/target/casesvc-10.45.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- spring-boot-maven-plugin:1.5.6.RELEASE:repackage (default) @ casesvc ---
+[INFO] 
+[INFO] --- maven-install-plugin:2.4:install (default-install) @ casesvc ---
+[INFO] Installing /Users/philippebrossier/code/rm-case-service/casesvc/target/casesvc-10.45.0-SNAPSHOT.jar to /Users/philippebrossier/.m2/repository/uk/gov/ons/ctp/product/casesvc/10.45.0-SNAPSHOT/casesvc-10.45.0-SNAPSHOT.jar
+[INFO] Installing /Users/philippebrossier/code/rm-case-service/casesvc/pom.xml to /Users/philippebrossier/.m2/repository/uk/gov/ons/ctp/product/casesvc/10.45.0-SNAPSHOT/casesvc-10.45.0-SNAPSHOT.pom
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary:
+[INFO] 
+[INFO] CTP : CaseService .................................. SUCCESS [  3.057 s]
+[INFO] CTP : CaseService: CaseSvcApi ...................... SUCCESS [  5.515 s]
+[INFO] CTP : CaseService: CaseSvc ......................... SUCCESS [ 16.310 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 25.427 s
+[INFO] Finished at: 2017-08-09T10:51:59+01:00
+[INFO] Final Memory: 69M/889M
+[INFO] ------------------------------------------------------------------------
