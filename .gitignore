@@ -59,3 +59,5 @@ target
 *.redo
 *.backup
 *.DS_Store
+/.apt_generated/
+/.apt_generated/

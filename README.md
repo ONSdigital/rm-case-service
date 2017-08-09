@@ -11,5 +11,11 @@ This repository contains the Case service. This microservice is a RESTful web se
 ## API
 See [API.md](https://github.com/ONSdigital/rm-case-service/blob/master/API.md) for API documentation.
 
+## To test
+See curlTests.txt under /test/resources
+
+## Swagger Specifications
+To view the Swagger Specifications for the Sample Service, run the service and navigate to http://localhost:8171/swagger-ui.html.
+
 ## Copyright
 Copyright (C) 2017 Crown Copyright (Office for National Statistics)
