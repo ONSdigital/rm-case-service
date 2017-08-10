@@ -1,0 +1,21 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 10.45.0-1
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Schema changes
+            path: case_schema_changes.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 10.45.0-2
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: Add indexes
+            path: index_case_schema.sql
+            relativeToChangelogFile: true
+            splitStatements: false
