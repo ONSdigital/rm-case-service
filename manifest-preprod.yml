@@ -6,7 +6,7 @@ applications:
   memory: 1024M
   path: target/casesvc.jar
   services:
-    - rm-pg-db
+    - case-db
     - rm-redis
     - rm-rabbitmq
   env:
