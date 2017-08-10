@@ -81,6 +81,7 @@ public class Case implements Serializable {
   private String caseRef;
 
   @Enumerated(EnumType.STRING)
+  @Column(name = "statefk")
   private CaseDTO.CaseState state;
 
   @Enumerated(EnumType.STRING)
