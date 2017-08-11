@@ -84,7 +84,7 @@ public class CaseDistributor {
    *         performed
    */
   public final CaseDistributionInfo distribute() {
-    log.info("CaseDistributor awoken...");
+    log.debug("CaseDistributor awoken...");
 
     CaseDistributionInfo distInfo = new CaseDistributionInfo();
     int successes = 0;
@@ -131,7 +131,7 @@ public class CaseDistributor {
       }
     }
 
-    log.info("CaseDistributor sleeping");
+    log.debug("CaseDistributor sleeping");
     return distInfo;
   }
 
