@@ -4,7 +4,7 @@ applications:
   timeout: 180
   host: casesvc-sit
   memory: 1024M
-  path: casesvc/target/casesvc.jar
+  path: target/casesvc.jar
   services:
     - rm-pg-db
     - rm-redis
