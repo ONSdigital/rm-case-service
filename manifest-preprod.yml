@@ -11,11 +11,11 @@ applications:
     - rm-rabbitmq
   env:
     internetAccessCodeSvc_connectionConfig_host: iacsvc-preprod.apps.prod.cf5.onsclofo.uk
-    internetAccessCodeSvc_connectionConfig_port: "80"
+    internetAccessCodeSvc_connectionConfig_port: "443"
     internetAccessCodeSvc_connectionConfig_scheme: https
     collectionExerciseSvc_connectionConfig_host: collectionexercisesvc-preprod.apps.prod.cf5.onsclofo.uk
-    collectionExerciseSvc_connectionConfig_port: "80"
+    collectionExerciseSvc_connectionConfig_port: "443"
     collectionExerciseSvc_connectionConfig_scheme: https
     actionSvc_connectionConfig_host: actionsvc-preprod.apps.prod.cf5.onsclofo.uk
-    actionSvc_connectionConfig_port: "80"
+    actionSvc_connectionConfig_port: "443"
     actionSvc_connectionConfig_scheme: https
