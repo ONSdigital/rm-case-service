@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
 
 import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
@@ -46,14 +45,8 @@ public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCod
 
   @Override
   public void disableIAC(String iac) {
-    try {
       log.debug("about to put to the IAC SVC with {}", iac);
       internetAccessClientServiceClient.putResource(appConfig.getInternetAccessCodeSvc().getIacPutPath(),
               new UpdateInternetAccessCodeDTO("SYSTEM"), InternetAccessCodeDTO.class, iac);
-    } catch (RestClientException e) {
-      log.error("Error disabling iacs.", e);
-      throw e;
-    }
   }
-
 }

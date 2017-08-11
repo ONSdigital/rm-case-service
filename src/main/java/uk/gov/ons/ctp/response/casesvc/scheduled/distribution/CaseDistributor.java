@@ -179,7 +179,7 @@ public class CaseDistributor {
    * @param caze the case to deal with
    * @param iac the IAC to assign to the Case
    */
-  @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = false, rollbackFor = Exception.class)
   private void processCase(final Case caze, final String iac) throws CTPException {
     log.info("processing caseid {}", caze.getId());
 
