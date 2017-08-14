@@ -19,3 +19,13 @@ databaseChangeLog:
             path: index_case_schema.sql
             relativeToChangelogFile: true
             splitStatements: false
+
+  - changeSet:
+      id: 10.45.0-3
+      author: Edward Stevens
+      changes:
+        - sqlFile:
+            comment: Change oldcasesample of VERIFICATION_CODE_SENT to B
+            path: modify_verification_code_oldcasesample.sql
+            relativeToChangelogFile: true
+            splitStatements: false
