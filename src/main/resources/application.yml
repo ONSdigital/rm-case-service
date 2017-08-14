@@ -88,7 +88,7 @@ internet-access-code-svc:
     port: 8121
     username: admin
     password: secret
-    retry-attempts: 10
+    retry-attempts: 1
     retry-pause-milli-seconds: 5000
     connect-timeout-milli-seconds: 5000
     read-timeout-milli-seconds: 5000
