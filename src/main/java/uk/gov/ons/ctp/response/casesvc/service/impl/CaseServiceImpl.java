@@ -210,7 +210,7 @@ public class CaseServiceImpl implements CaseService {
 
   /**
    * Upfront fail fast validation - if this event is going to require a new case
-   * to be created, lets check the request is valid before we do something we
+   * to be created, let's check the request is valid before we do something we
    * cannot rollback ie IAC disable, or Action creation.
    *
    * @param category the category details
@@ -232,6 +232,15 @@ public class CaseServiceImpl implements CaseService {
       String errorMsg = String.format(MISSING_NEW_CASE_MSG, oldCase.getId());
       log.error(errorMsg);
       throw new CTPException(CTPException.Fault.VALIDATION_FAILED, errorMsg);
+    }
+
+    CaseDTO.CaseEvent transitionEvent = category.getEventType();
+    if (transitionEvent != null) {
+      try {
+        CaseState result = caseSvcStateTransitionManager.transition(oldCase.getState(), transitionEvent);
+      } catch(CTPException e) {
+        throw new CTPException(CTPException.Fault.VALIDATION_FAILED, e.getMessage());
+      }
     }
   }
 
