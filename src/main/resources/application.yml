@@ -10,7 +10,7 @@ info:
 # ie -Dlogging.level.org.springframework=DEBUG
 logging:
   level:
-    uk.gov.ons.ctp: INFO
+    uk.gov.ons.ctp: ERROR
     org.springframework.retry: ERROR
     org.springframework.integration.handler.advice: ERROR
     org.springframework.context.annotation.ConfigurationClassPostProcessor: ERROR
@@ -90,7 +90,7 @@ internet-access-code-svc:
     password: secret
     retry-attempts: 1
     retry-pause-milli-seconds: 5000
-    connect-timeout-milli-seconds: 5000
+    connect-timeout-milli-seconds: 0
     read-timeout-milli-seconds: 5000
 
 action-svc:

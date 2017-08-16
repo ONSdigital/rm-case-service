@@ -217,7 +217,7 @@ public final class CaseEndpoint implements CTPEndpoint {
   public ResponseEntity<CreatedCaseEventDTO> createCaseEvent(@PathVariable("caseId") final UUID caseId,
                                       @RequestBody @Valid final CaseEventCreationRequestDTO caseEventCreationRequestDTO,
                                       BindingResult bindingResult) throws CTPException, InvalidRequestException {
-    log.info("Entering createCaseEvent with caseId {} and requestObject {}", caseId, caseEventCreationRequestDTO);
+    log.error("Entering createCaseEvent with caseId {} and requestObject {}", caseId, caseEventCreationRequestDTO);
 
     if (bindingResult.hasErrors()) {
       throw new InvalidRequestException("Binding errors for case event creation: ", bindingResult);
@@ -225,6 +225,7 @@ public final class CaseEndpoint implements CTPEndpoint {
 
     CaseEvent caseEvent = mapperFacade.map(caseEventCreationRequestDTO, CaseEvent.class);
     Case caseFound = caseService.findCaseById(caseId);
+    log.error("caseFound is {}", caseFound);
     if (caseFound == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
           String.format(CASE_ID, ERRORMSG_CASENOTFOUND, caseId));
@@ -238,6 +239,7 @@ public final class CaseEndpoint implements CTPEndpoint {
     }
 
     Category category = categoryService.findCategory(caseEvent.getCategory());
+    log.error("category is {}", category);
     if (category.getNewCaseSampleUnitType() != null && caze == null) {
       throw new CTPException(CTPException.Fault.VALIDATION_FAILED,
           String.format(EVENT_REQUIRES_NEW_CASE, caseId));

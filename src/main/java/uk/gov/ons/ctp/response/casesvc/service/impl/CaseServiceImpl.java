@@ -164,7 +164,7 @@ public class CaseServiceImpl implements CaseService {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
   public CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase, Timestamp timestamp) throws CTPException {
-    log.debug("Entering createCaseEvent with caseEvent {}", caseEvent);
+    log.error("Entering createCaseEvent with caseEvent {}", caseEvent);
     log.info("SPLUNK: CaseEventCreation: casePK={}, category={}, subCategory={}, createdBy={}",
         caseEvent.getCaseFK(),
         caseEvent.getCategory(),
@@ -174,6 +174,7 @@ public class CaseServiceImpl implements CaseService {
     CaseEvent createdCaseEvent = null;
 
     Case targetCase = caseRepo.findOne(caseEvent.getCaseFK());
+    log.error("targetCase is {}");
     if (targetCase != null) {
       Category category = categoryRepo.findOne(caseEvent.getCategory());
 
@@ -182,6 +183,7 @@ public class CaseServiceImpl implements CaseService {
       // save the case event to db
       caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
       createdCaseEvent = caseEventRepo.save(caseEvent);
+      log.error("createdCaseEvent is {}", createdCaseEvent);
 
       // do we need to record a response?
       recordCaseResponse(category, targetCase, timestamp);
