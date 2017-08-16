@@ -5,12 +5,14 @@ import org.springframework.context.annotation.Configuration;
 
 import lombok.Data;
 import net.sourceforge.cobertura.CoverageIgnore;
+import org.springframework.retry.annotation.EnableRetry;
 
 /**
  * Application Config bean
  *
  */
 @CoverageIgnore
+@EnableRetry
 @Configuration
 @ConfigurationProperties
 @Data

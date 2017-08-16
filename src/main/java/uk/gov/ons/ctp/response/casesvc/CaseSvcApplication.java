@@ -18,6 +18,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import net.sourceforge.cobertura.CoverageIgnore;
+import org.springframework.web.client.RestTemplate;
 import uk.gov.ons.ctp.common.distributed.DistributedInstanceManager;
 import uk.gov.ons.ctp.common.distributed.DistributedInstanceManagerRedissonImpl;
 import uk.gov.ons.ctp.common.distributed.DistributedLatchManager;
@@ -95,14 +96,13 @@ public class CaseSvcApplication {
   }
 
   /**
-   * The IAC service client bean
-   * @return the RestClient for the IAC service
+   * The restTemplate bean injected in REST client classes
+   *
+   * @return the restTemplate used in REST calls
    */
   @Bean
-  @Qualifier("internetAccessCodeServiceClient")
-  public RestClient internetAccessCodeServiceClient() {
-    RestClient restHelper = new RestClient(appConfig.getInternetAccessCodeSvc().getConnectionConfig());
-    return restHelper;
+  public RestTemplate restTemplate() {
+    return new RestTemplate();
   }
 
   /**
