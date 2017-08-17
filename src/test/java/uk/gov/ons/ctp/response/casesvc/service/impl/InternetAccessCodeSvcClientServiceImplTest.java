@@ -30,11 +30,10 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
 /**
- * A test of the case frame service client service
+ * Testing InternetAccessCodeSvcClientServiceImpl
  */
 @RunWith(MockitoJUnitRunner.class)
 public class InternetAccessCodeSvcClientServiceImplTest {
@@ -131,6 +130,4 @@ public class InternetAccessCodeSvcClientServiceImplTest {
     verify(restTemplate, times(1)).exchange(eq(uriComponents.toUri()), eq(HttpMethod.PUT),
         eq(httpEntity), eq(InternetAccessCodeDTO.class));
   }
-  
-  // TODO Test error scenarios
 }
