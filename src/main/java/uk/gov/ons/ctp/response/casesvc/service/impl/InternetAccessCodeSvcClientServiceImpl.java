@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.*;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
@@ -38,6 +39,7 @@ public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCod
   @Autowired
   private RestTemplate restTemplate;
 
+  @Qualifier("iacServiceRestUtility")
   @Autowired
   private RestUtility restUtility;
 

@@ -29,12 +29,12 @@ import uk.gov.ons.ctp.common.distributed.DistributedLockManager;
 import uk.gov.ons.ctp.common.distributed.DistributedLockManagerRedissonImpl;
 import uk.gov.ons.ctp.common.error.RestExceptionHandler;
 import uk.gov.ons.ctp.common.jackson.CustomObjectMapper;
-import uk.gov.ons.ctp.common.rest.RestClient;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.state.CaseSvcStateTransitionManagerFactory;
+import uk.gov.ons.ctp.response.casesvc.utility.RestUtility;
 
 /**
  * The 'main' entry point for the CaseSvc SpringBoot Application.
@@ -106,25 +106,36 @@ public class CaseSvcApplication {
   }
 
   /**
-   * The action service client bean
-   * @return the RestClient for the action service
+   * The RestUtility bean for the IAC service
+   * @return the RestUtility bean for the IAC service
    */
   @Bean
-  @Qualifier("actionServiceClient")
-  public RestClient actionServiceClient() {
-    RestClient restHelper = new RestClient(appConfig.getActionSvc().getConnectionConfig());
-    return restHelper;
+  @Qualifier("iacServiceRestUtility")
+  public RestUtility iacServiceRestUtility() {
+    RestUtility restUtility = new RestUtility(appConfig.getInternetAccessCodeSvc().getConnectionConfig());
+    return restUtility;
   }
 
   /**
-   * The collectionExercise service client bean
-   * @return the RestClient for the collectionExercise service
+   * The RestUtility bean for the Action service
+   * @return the RestUtility bean for the Action service
    */
   @Bean
-  @Qualifier("collectionExerciseSvcClient")
-  public RestClient collectionExerciseServiceClient() {
-    RestClient restHelper = new RestClient(appConfig.getCollectionExerciseSvc().getConnectionConfig());
-    return restHelper;
+  @Qualifier("actionServiceRestUtility")
+  public RestUtility actionServiceRestUtility() {
+    RestUtility restUtility = new RestUtility(appConfig.getActionSvc().getConnectionConfig());
+    return restUtility;
+  }
+
+  /**
+   * The RestUtility bean for the CollectionExercise service
+   * @return the RestUtility bean for the CollectionExercise service
+   */
+  @Bean
+  @Qualifier("collectionExerciseRestUtility")
+  public RestUtility collectionExerciseRestUtility() {
+    RestUtility restUtility = new RestUtility(appConfig.getCollectionExerciseSvc().getConnectionConfig());
+    return restUtility;
   }
 
   /**
