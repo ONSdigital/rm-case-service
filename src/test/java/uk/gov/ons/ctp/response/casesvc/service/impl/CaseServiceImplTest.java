@@ -45,6 +45,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.never;
+import static uk.gov.ons.ctp.common.state.BasicStateTransitionManager.TRANSITION_ERROR_MSG;
+import static uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseEvent.ACCOUNT_CREATED;
 import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.IAC_OVERUSE_MSG;
 import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.MISSING_NEW_CASE_MSG;
 import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.WRONG_OLD_SAMPLE_UNIT_TYPE_MSG;
@@ -126,6 +128,7 @@ public class CaseServiceImplTest {
   private static final Integer ACTIONABLE_BUSINESS_UNIT_CASE_FK = 9;
   private static final Integer INITIAL_BUSINESS_UNIT_CASE_FK = 10;
   private static final Integer ACTIONABLE_BI_CASE_FK = 11;
+  private static final Integer INACTIONABLE_BUSINESS_UNIT_CASE_FK = 12;
 
   private static final Integer CASEGROUP_PK = 1;
 
@@ -962,11 +965,53 @@ public class CaseServiceImplTest {
     verify(caseEventRepository, times(1)).save(caseEvent);
     verify(caseRepo, never()).saveAndFlush(any(Case.class));
     verify(internetAccessCodeSvcClientService, times(1)).disableIAC(any(String.class));
-    verify(caseSvcStateTransitionManager, times(1)).transition(any(CaseDTO.CaseState.class),
+    verify(caseSvcStateTransitionManager, times(2)).transition(any(CaseDTO.CaseState.class),
             any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
     verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(UUID.class),
             any(String.class));
+  }
+
+  /**
+   * We create a CaseEvent with category RESPONDENT_ACCOUNT_CREATED on an INACTIONABLE BRES case
+   * (the one created for a business unit B, Tesco for instance)
+   *
+   * The validation should fail as the BRES case should NOT be INACTIONABLE.
+   *
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventRespondentAccountCreatedVersusCaseInWrongState() throws Exception {
+    when(caseRepo.findOne(INACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(cases.
+        get(INACTIONABLE_BUSINESS_UNIT_CASE_FK));
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED)).
+        thenReturn(categories.get(CAT_RESPONDENT_ACCOUNT_CREATED));
+    // To mimick what BasicStateTransitionManager does
+    String errorMsg = String.format(TRANSITION_ERROR_MSG, CaseState.INACTIONABLE, ACCOUNT_CREATED);
+    when(caseSvcStateTransitionManager.transition(CaseState.INACTIONABLE, ACCOUNT_CREATED)).thenThrow(
+        new CTPException(CTPException.Fault.BAD_REQUEST, errorMsg));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED,
+        INACTIONABLE_BUSINESS_UNIT_CASE_FK);
+
+    try {
+      caseService.createCaseEvent(caseEvent, null);
+      fail();
+    } catch (CTPException e) {
+      assertEquals(CTPException.Fault.VALIDATION_FAILED, e.getFault());
+      assertEquals(errorMsg, e.getMessage());
+    }
+
+    verify(caseRepo, times(1)).findOne(INACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED);
+    verify(caseEventRepository, never()).save(caseEvent);
+    verify(caseRepo, never()).saveAndFlush(any(Case.class));
+    verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
+    verify(caseSvcStateTransitionManager, times(1)).transition(any(CaseDTO.CaseState.class),
+        any(CaseDTO.CaseEvent.class));
+    verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
+    verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(UUID.class),
+        any(String.class));
   }
 
   /**
@@ -1031,7 +1076,7 @@ public class CaseServiceImplTest {
     verify(caseRepo, times(2)).saveAndFlush(argument.capture());
 
     verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
-    verify(caseSvcStateTransitionManager, times(1)).transition(any(CaseDTO.CaseState.class),
+    verify(caseSvcStateTransitionManager, times(2)).transition(any(CaseDTO.CaseState.class),
             any(CaseDTO.CaseEvent.class));    // action service should be told of the old case state change
     // Now verifying that the old case has been moved to INACTIONABLE and the new case is at REPLACEMENT_INIT
     List<Case> casesList = argument.getAllValues();
@@ -1369,7 +1414,7 @@ public class CaseServiceImplTest {
     verify(caseRepo, times(1)).saveAndFlush(argument.capture());
 
     verify(internetAccessCodeSvcClientService, times(1)).disableIAC(any(String.class));
-    verify(caseSvcStateTransitionManager, times(1)).transition(any(CaseDTO.CaseState.class),
+    verify(caseSvcStateTransitionManager, times(2)).transition(any(CaseDTO.CaseState.class),
             any(CaseDTO.CaseEvent.class));    // action service should be told of the old case state change
     // Now verifying that the old case has been moved to INACTIONABLE
     Case oldCase = argument.getValue();
@@ -1436,7 +1481,7 @@ public class CaseServiceImplTest {
             .thenReturn(CaseState.INACTIONABLE);
     when(caseSvcStateTransitionManager.transition(CaseState.ACTIONABLE, CaseDTO.CaseEvent.DEACTIVATED))
             .thenReturn(CaseState.INACTIONABLE);
-    when(caseSvcStateTransitionManager.transition(CaseState.ACTIONABLE, CaseDTO.CaseEvent.ACCOUNT_CREATED))
+    when(caseSvcStateTransitionManager.transition(CaseState.ACTIONABLE, ACCOUNT_CREATED))
             .thenReturn(CaseState.ACTIONABLE);
     when(caseSvcStateTransitionManager.transition(CaseState.INACTIONABLE, CaseDTO.CaseEvent.DISABLED))
             .thenReturn(CaseState.INACTIONABLE);
