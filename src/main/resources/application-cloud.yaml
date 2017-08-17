@@ -91,6 +91,7 @@ spring:
     properties:
       hibernate:
         ddl-auto: update
+        default_schema: casesvc
 
 data-grid:
   address: ${cloud.services.redis.connection.host}:${cloud.services.redis.connection.port}
