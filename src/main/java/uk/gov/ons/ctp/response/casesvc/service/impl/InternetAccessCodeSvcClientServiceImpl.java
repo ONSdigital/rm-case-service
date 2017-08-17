@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
@@ -12,7 +11,6 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
@@ -43,9 +41,8 @@ public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCod
   @Autowired
   private RestUtility restUtility;
 
-  // TODO Replace values with config props
-  // Retry on client-side HTTP errors - up to 3 retries and with a delay of 5000 milliseconds.
-  @Retryable(value = { RestClientException.class }, maxAttempts = 3, backoff = @Backoff(delay = 5000))
+  @Retryable(value = {RestClientException.class}, maxAttemptsExpression = "#{${retries.maxAttempts}}",
+      backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
   @Override
   public List<String> generateIACs(int count) {
     UriComponents uriComponents = restUtility.createUriComponents(appConfig.getInternetAccessCodeSvc().getIacPostPath(),
@@ -60,9 +57,8 @@ public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCod
     return Arrays.asList(responseEntity.getBody());
   }
 
-  // TODO Replace values with config props
-  // Retry on client-side HTTP errors - up to 3 retries and with a delay of 5000 milliseconds.
-  @Retryable(value = { RestClientException.class }, maxAttempts = 3, backoff = @Backoff(delay = 5000))
+  @Retryable(value = {RestClientException.class}, maxAttemptsExpression = "#{${retries.maxAttempts}}",
+      backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
   @Override
   public void disableIAC(String iac) {
     log.debug("about to put to the IAC SVC with {}", iac);
