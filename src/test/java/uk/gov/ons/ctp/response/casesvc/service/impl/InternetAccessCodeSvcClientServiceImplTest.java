@@ -5,12 +5,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.*;
-import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
@@ -19,11 +16,13 @@ import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.config.InternetAccessCodeSvc;
 import uk.gov.ons.ctp.response.casesvc.utility.RestUtility;
 import uk.gov.ons.ctp.response.iac.representation.CreateInternetAccessCodeDTO;
+import uk.gov.ons.ctp.response.iac.representation.InternetAccessCodeDTO;
+import uk.gov.ons.ctp.response.iac.representation.UpdateInternetAccessCodeDTO;
 
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
-import static org.hamcrest.Matchers.containsString;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -31,10 +30,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.*;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
 /**
@@ -45,7 +41,9 @@ public class InternetAccessCodeSvcClientServiceImplTest {
 
   private static final String HTTP = "http";
   private static final String LOCALHOST = "localhost";
-  private static final String IAC_PATH = "/iacs";
+  private static final String IAC = "ABCD-EFGH-IJKL-MNOP";
+  private static final String IAC_POST_PATH = "/iacs";
+  private static final String IAC_PUT_PATH = "/iacs/{iac}";
 
   @Mock
   private AppConfig appConfig;
@@ -73,14 +71,14 @@ public class InternetAccessCodeSvcClientServiceImplTest {
   @Test
   public void testGenerateIACs() {
     InternetAccessCodeSvc iacSvcConfig = new InternetAccessCodeSvc();
-    iacSvcConfig.setIacPostPath(IAC_PATH);
+    iacSvcConfig.setIacPostPath(IAC_POST_PATH);
     when(appConfig.getInternetAccessCodeSvc()).thenReturn(iacSvcConfig);
 
     UriComponents uriComponents = UriComponentsBuilder.newInstance()
         .scheme(HTTP)
         .host(LOCALHOST)
         .port(80)
-        .path(IAC_PATH)
+        .path(IAC_POST_PATH)
         .build();
     when(restUtility.createUriComponents(any(String.class), any(MultiValueMap.class))).thenReturn(uriComponents);
 
@@ -99,12 +97,40 @@ public class InternetAccessCodeSvcClientServiceImplTest {
     assertEquals(3, codes.size());
     assertTrue(codes.containsAll(Arrays.asList(new String[] {"1", "2", "3"})));
 
-    verify(restUtility, times(1)).createUriComponents(IAC_PATH, null);
+    verify(restUtility, times(1)).createUriComponents(IAC_POST_PATH, null);
     verify(restUtility, times(1)).createHttpEntity(eq(createInternetAccessCodeDTO));
     verify(restTemplate, times(1)).exchange(eq(uriComponents.toUri()), eq(HttpMethod.POST),
         eq(httpEntity), eq(String[].class));
   }
 
-  // TODO Test disableIAC happy path
+  /**
+   * Testing happy path for disableIAC
+   */
+  @Test
+  public void testDisableIAC() {
+    InternetAccessCodeSvc iacSvcConfig = new InternetAccessCodeSvc();
+    iacSvcConfig.setIacPutPath(IAC_PUT_PATH);
+    when(appConfig.getInternetAccessCodeSvc()).thenReturn(iacSvcConfig);
+
+    UriComponents uriComponents = UriComponentsBuilder.newInstance()
+        .scheme(HTTP)
+        .host(LOCALHOST)
+        .port(80)
+        .path(IAC_PUT_PATH)
+        .build();
+    when(restUtility.createUriComponents(any(String.class), eq(null), eq(IAC))).thenReturn(uriComponents);
+
+    UpdateInternetAccessCodeDTO updateInternetAccessCodeDTO = new UpdateInternetAccessCodeDTO("SYSTEM");
+    HttpEntity httpEntity = new HttpEntity<>(updateInternetAccessCodeDTO, null);
+    when(restUtility.createHttpEntity(any(UpdateInternetAccessCodeDTO.class))).thenReturn(httpEntity);
+
+    iacSvcClientService.disableIAC(IAC);
+
+    verify(restUtility, times(1)).createUriComponents(IAC_PUT_PATH, null, IAC);
+    verify(restUtility, times(1)).createHttpEntity(eq(updateInternetAccessCodeDTO));
+    verify(restTemplate, times(1)).exchange(eq(uriComponents.toUri()), eq(HttpMethod.PUT),
+        eq(httpEntity), eq(InternetAccessCodeDTO.class));
+  }
+  
   // TODO Test error scenarios
 }
