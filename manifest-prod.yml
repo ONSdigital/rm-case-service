@@ -1,0 +1,21 @@
+applications:
+- name: casesvc-prod
+  instances: 1
+  timeout: 180
+  host: casesvc-prod
+  memory: 1024M
+  path: target/casesvc.jar
+  services:
+    - rm-case-db
+    - rm-redis
+    - rm-rabbitmq
+  env:
+    internetAccessCodeSvc_connectionConfig_host: iacsvc-prod.apps.prod.cf5.onsclofo.uk
+    internetAccessCodeSvc_connectionConfig_port: "443"
+    internetAccessCodeSvc_connectionConfig_scheme: https
+    collectionExerciseSvc_connectionConfig_host: collectionexercisesvc-prod.apps.prod.cf5.onsclofo.uk
+    collectionExerciseSvc_connectionConfig_port: "443"
+    collectionExerciseSvc_connectionConfig_scheme: https
+    actionSvc_connectionConfig_host: actionsvc-prod.apps.prod.cf5.onsclofo.uk
+    actionSvc_connectionConfig_port: "443"
+    actionSvc_connectionConfig_scheme: https
