@@ -18,9 +18,9 @@ import net.sourceforge.cobertura.CoverageIgnore;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
+import uk.gov.ons.ctp.common.rest.RestUtility;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.service.CollectionExerciseSvcClientService;
-import uk.gov.ons.ctp.response.casesvc.utility.RestUtility;
 import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
 
 /**

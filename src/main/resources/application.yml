@@ -86,12 +86,6 @@ internet-access-code-svc:
     scheme: http
     host: localhost
     port: 8121
-    username: admin
-    password: secret
-    retry-attempts: 1
-    retry-pause-milli-seconds: 5000
-    connect-timeout-milli-seconds: 0
-    read-timeout-milli-seconds: 5000
 
 action-svc:
   actions-path: /actions
@@ -101,10 +95,6 @@ action-svc:
     port: 8151
     username: admin
     password: secret
-    retry-attempts: 10
-    retry-pause-milli-seconds: 5000
-    connect-timeout-milli-seconds: 5000
-    read-timeout-milli-seconds: 5000
     
 collection-exercise-svc:
   collection-exercise-path: /collectionexercises/{exerciseId}
@@ -114,10 +104,6 @@ collection-exercise-svc:
     port: 8145
     username: admin
     password: secret
-    retry-attempts: 10
-    retry-pause-milli-seconds: 5000
-    connect-timeout-milli-seconds: 5000
-    read-timeout-milli-seconds: 5000
 
 case-distribution:
   retrieval-max: 50
