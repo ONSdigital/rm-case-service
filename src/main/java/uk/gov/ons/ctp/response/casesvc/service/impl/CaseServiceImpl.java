@@ -532,4 +532,20 @@ public class CaseServiceImpl implements CaseService {
 
     return newCase;
   }
+
+  // TODO delete once test ran successfully
+  @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = false, timeout = TRANSACTION_TIMEOUT)
+  public void testTransactionalBehaviour() {
+    log.debug("Entering testTransactionalBehaviour...");
+
+    Case caze = caseRepo.findById(UUID.fromString("551308fb-2d5a-4477-92c3-649d915834c3"));
+    caze.setState(CaseState.SAMPLED_INIT);
+    caseRepo.saveAndFlush(caze);
+    log.debug("just saved to db");
+
+    CaseNotification caseNotification = new CaseNotification("3b136c4b-7a14-4904-9e01-13364dd7b972",
+        "3b136c4b-7a14-4904-9e01-13364dd7b972", null);
+    notificationPublisher.sendNotification(caseNotification);
+    log.debug("just published to queue");
+  }
 }

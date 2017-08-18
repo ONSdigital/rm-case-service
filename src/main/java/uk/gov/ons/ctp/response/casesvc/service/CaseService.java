@@ -128,4 +128,7 @@ public interface CaseService extends CTPService {
    * @param caseData the CaseCreation data
    */
   void createInitialCase(SampleUnitParent caseData);
+
+  // TODO delete once test ran successfully
+  void testTransactionalBehaviour();
 }

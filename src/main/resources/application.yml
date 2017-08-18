@@ -11,9 +11,7 @@ info:
 logging:
   level:
     uk.gov.ons.ctp: ERROR
-    org.springframework.retry: ERROR
-    org.springframework.integration.handler.advice: ERROR
-    org.springframework.context.annotation.ConfigurationClassPostProcessor: ERROR
+    org.springframework: DEBUG
   profile: DEV
 
 liquibase:
