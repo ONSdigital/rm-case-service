@@ -7,23 +7,26 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import uk.gov.ons.ctp.common.rest.RestClient;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
+import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.casesvc.config.ActionSvc;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
+import uk.gov.ons.ctp.response.casesvc.utility.RestUtility;
 
 import java.util.UUID;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Matchers.any;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
 /**
@@ -31,20 +34,25 @@ import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class ActionSvcClientServiceImplTest {
-  // TODO
 
+  private static final String ACTION_PATH = "/actions";
   private static final String GENERAL_ESCALATION = "GeneralEscalation";
+  private static final String HTTP = "http";
+  private static final String LOCALHOST = "localhost";
 
   private static final UUID EXISTING_CASE_ID = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd1");
+
+  @InjectMocks
+  private ActionSvcClientServiceImpl actionSvcClientService;
 
   @Mock
   private AppConfig appConfig;
 
-  @Spy
-  private RestClient restClient = new RestClient();
+  @Mock
+  private RestTemplate restTemplate;
 
-  @InjectMocks
-  private ActionSvcClientServiceImpl actionSvcClientService;
+  @Mock
+  private RestUtility restUtility;
 
   /**
    * Sets up Mockito for tests
@@ -55,24 +63,36 @@ public class ActionSvcClientServiceImplTest {
   }
 
   /**
-   * Guess what? - a test!
+   * Happy path scenario for createAndPostAction
    */
   @Test
-  public void testCreateAction() {
+  public void testCreateAndPostAction() {
     ActionSvc actionSvcConfig = new ActionSvc();
-    actionSvcConfig.setActionsPath("/actions");
+    actionSvcConfig.setActionsPath(ACTION_PATH);
     Mockito.when(appConfig.getActionSvc()).thenReturn(actionSvcConfig);
-    RestTemplate restTemplate = this.restClient.getRestTemplate();
-    MockRestServiceServer mockServer = MockRestServiceServer.createServer(restTemplate);
-    mockServer.expect(requestTo("http://localhost:8080/actions"))
-        .andExpect(method(HttpMethod.POST))
-        .andExpect(content().string(containsString("\"actionTypeName\":\"" + GENERAL_ESCALATION + "\",")))
-        .andExpect(content().string(containsString("\"caseId\":\"" + EXISTING_CASE_ID.toString() + "\",")))
-        .andExpect(content().string(containsString("\"createdBy\":\"" + SYSTEM + "\"")))
-        .andRespond(withSuccess());
+
+    UriComponents uriComponents = UriComponentsBuilder.newInstance()
+        .scheme(HTTP)
+        .host(LOCALHOST)
+        .port(80)
+        .path(ACTION_PATH)
+        .build();
+    when(restUtility.createUriComponents(any(String.class), any(MultiValueMap.class))).
+        thenReturn(uriComponents);
+
+    ActionDTO actionDTO = new ActionDTO();
+    actionDTO.setCaseId(EXISTING_CASE_ID);
+    actionDTO.setActionTypeName(GENERAL_ESCALATION);
+    actionDTO.setCreatedBy(SYSTEM);
+    HttpEntity httpEntity = new HttpEntity<>(actionDTO, null);
+    when(restUtility.createHttpEntity(any(ActionDTO.class))).thenReturn(httpEntity);
 
     actionSvcClientService.createAndPostAction(GENERAL_ESCALATION, EXISTING_CASE_ID, SYSTEM);
 
-    mockServer.verify();
+    verify(restUtility, times(1)).createUriComponents(ACTION_PATH, null);
+    verify(restUtility, times(1)).createHttpEntity(eq(actionDTO));
+    verify(restTemplate, times(1)).exchange(eq(uriComponents.toUri()), eq(HttpMethod.POST),
+        eq(httpEntity), eq(ActionDTO.class));
+
   }
 }
