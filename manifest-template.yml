@@ -1,0 +1,21 @@
+applications:
+- name: casesvc-SPACE
+  instances: INSTANCES
+  timeout: 180
+  host: casesvc-SPACE
+  memory: 1024M
+  path: target/casesvc.jar
+  services:
+    - DATABASE
+    - rm-redis
+    - rm-rabbitmq
+  env:
+    internetAccessCodeSvc_connectionConfig_host: iacsvc-SPACE.DOMAIN
+    internetAccessCodeSvc_connectionConfig_port: "REPLACE_PORT"
+    internetAccessCodeSvc_connectionConfig_scheme: REPLACE_PROTOCOL
+    collectionExerciseSvc_connectionConfig_host: collectionexercisesvc-SPACE.DOMAIN
+    collectionExerciseSvc_connectionConfig_port: "REPLACE_PORT"
+    collectionExerciseSvc_connectionConfig_scheme: REPLACE_PROTOCOL
+    actionSvc_connectionConfig_host: actionsvc-SPACE.DOMAIN
+    actionSvc_connectionConfig_port: "REPLACE_PORT"
+    actionSvc_connectionConfig_scheme: REPLACE_PROTOCOL
