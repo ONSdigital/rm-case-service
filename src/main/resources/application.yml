@@ -25,7 +25,8 @@ liquibase:
 
 security:
   basic:
-    enabled: false
+    enabled: true
+    realm: sdc
   user:
     name: admin
     password: secret
@@ -124,6 +125,8 @@ action-svc:
     scheme: http
     host: localhost
     port: 8151
+    name: admin
+    password: secret
     retry-attempts: 10
     retry-pause-milli-seconds: 5000
     connect-timeout-milli-seconds: 5000
@@ -135,6 +138,8 @@ collection-exercise-svc:
     scheme: http
     host: localhost
     port: 8145
+    name: admin
+    password: secret
     retry-attempts: 10
     retry-pause-milli-seconds: 5000
     connect-timeout-milli-seconds: 5000
