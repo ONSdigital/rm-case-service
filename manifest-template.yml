@@ -13,8 +13,8 @@ applications:
     internetAccessCodeSvc_connectionConfig_host: iacsvc-SPACE.DOMAIN
     internetAccessCodeSvc_connectionConfig_port: "REPLACE_PORT"
     internetAccessCodeSvc_connectionConfig_scheme: REPLACE_PROTOCOL
-    internetAccessCodeSvc_username: REPLACE_BA_USERNAME
-    internetAccessCodeSvc_password: REPLACE_BA_PASSWORD
+    internetAccessCodeSvc_connectionConfig_username: REPLACE_BA_USERNAME
+    internetAccessCodeSvc_connectionConfig_password: REPLACE_BA_PASSWORD
     collectionExerciseSvc_connectionConfig_host: collectionexercisesvc-SPACE.DOMAIN
     collectionExerciseSvc_connectionConfig_port: "REPLACE_PORT"
     collectionExerciseSvc_connectionConfig_scheme: REPLACE_PROTOCOL
