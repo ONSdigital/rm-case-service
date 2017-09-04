@@ -47,9 +47,6 @@ endpoints:
   info:
     enabled: true
     sensitive: false
-  shutdown:
-    enabled: true
-    sensitive: true
 
 spring:
   output:
