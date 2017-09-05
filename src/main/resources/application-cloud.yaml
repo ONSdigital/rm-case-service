@@ -41,12 +41,6 @@ server:
   port: 8171
   servlet-path: /
 
-endpoints:
-  info:
-    enabled: true
-    sensitive: false
-  enabled: true
-
 spring:
   application:
     name: ONS CaseService
