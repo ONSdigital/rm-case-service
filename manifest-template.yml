@@ -26,6 +26,5 @@ applications:
     actionSvc_connectionConfig_username: REPLACE_BA_USERNAME
     actionSvc_connectionConfig_password: REPLACE_BA_PASSWORD
     endpoints_enabled: ENDPOINT_ENABLED
-    endpoints_info_enabled: true
     security_user_name: REPLACE_BA_USERNAME
     security_user_password: REPLACE_BA_PASSWORD
