@@ -180,7 +180,7 @@ public class CaseDistributor {
    * @param iac the IAC to assign to the Case
    */
   @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = false, rollbackFor = Exception.class)
-  public void processCase(final Case caze, final String iac) throws CTPException {
+  private void processCase(final Case caze, final String iac) throws CTPException {
     log.info("processing caseid {}", caze.getId());
 
     CaseDTO.CaseEvent event = null;
