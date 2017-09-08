@@ -75,7 +75,7 @@ internet-access-code-svc:
     scheme: http
     host: iacsvc.apps.onsdigital.uk
     port: ${cloud.application.port}
-    name: admin
+    username: admin
     password: secret
     retry-attempts: 10
     retry-pause-milli-seconds: 5000
@@ -88,7 +88,7 @@ action-svc:
     scheme: http
     host: actionsvc.apps.onsdigital.uk
     port: ${cloud.application.port}
-    name: admin
+    username: admin
     password: secret
     retry-attempts: 10
     retry-pause-milli-seconds: 5000
@@ -101,7 +101,7 @@ collection-exercise-svc:
     scheme: http
     host: collectionexercisesvc.apps.onsdigital.uk
     port: ${cloud.application.port}
-    name: admin
+    username: admin
     password: secret
     retry-attempts: 10
     retry-pause-milli-seconds: 5000
