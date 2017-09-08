@@ -11,7 +11,7 @@ info:
 logging:
   level:
     uk.gov.ons.ctp: ERROR
-    org.springframework: DEBUG
+    org.springframework: ERROR
   profile: DEV
 
 liquibase:

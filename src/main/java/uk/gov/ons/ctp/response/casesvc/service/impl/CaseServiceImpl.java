@@ -533,7 +533,7 @@ public class CaseServiceImpl implements CaseService {
     return newCase;
   }
 
-  // TODO delete once test ran successfully
+  // TODO delete once test for CTPA-1511 ran successfully
   @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   public void testTransactionalBehaviour() {
     log.debug("Entering testTransactionalBehaviour...");

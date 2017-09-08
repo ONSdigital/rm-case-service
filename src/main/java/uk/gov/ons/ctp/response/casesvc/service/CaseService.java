@@ -129,6 +129,6 @@ public interface CaseService extends CTPService {
    */
   void createInitialCase(SampleUnitParent caseData);
 
-  // TODO delete once test ran successfully
+  // TODO delete once test  for CTPA-1511 ran successfully
   void testTransactionalBehaviour();
 }

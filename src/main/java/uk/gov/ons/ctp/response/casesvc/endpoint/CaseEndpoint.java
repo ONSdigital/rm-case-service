@@ -304,10 +304,13 @@ public final class CaseEndpoint implements CTPEndpoint {
   }
 
   // TODO delete once test ran successfully
-  // Test scenario:
+  // Test scenario for CTPA-1511:
   //  - reset your RabbitMQ
-  //  - build CaseSvc and start it
+  //  - groundzero
+  //  - rebuild CaseSvc and start it
   //  - verify your db state with:
+  //      - insert into casesvc.casegroup(casegrouppk, collectionexerciseid, id) values(1, '551308fb-2d5a-4477-92c3-649d915834c3','81858985-6d9a-4bc1-bdcd-c3b1ed442b11');
+  //      - insert into casesvc.case(casepk, id, optLockVersion, casegroupfk, casegroupid, statefk, sampleunittype, partyid, actionplanid, createdby, iac) values(1, '551308fb-2d5a-4477-92c3-649d915834c3', 1, 1, '81858985-6d9a-4bc1-bdcd-c3b1ed442b11', 'ACTIONABLE', 'B', '81858985-6d9a-4bc1-bdcd-c3b1ed442b11', 'e71002ac-3575-47eb-b87f-cd9db92bf9a7', 'SYSTEM', 'fb747cq725lj');
   //      - select * from casesvc.case;
   //      - update casesvc.case set statefk = 'ACTIONABLE' where id = '551308fb-2d5a-4477-92c3-649d915834c3';
   //  - curl http://localhost:8171/cases/transactTest -v -X GET
