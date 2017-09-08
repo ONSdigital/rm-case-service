@@ -99,7 +99,7 @@ action-svc:
     scheme: http
     host: localhost
     port: 8151
-    name: admin
+    username: admin
     password: secret
     retry-attempts: 10
     retry-pause-milli-seconds: 5000
@@ -112,7 +112,7 @@ collection-exercise-svc:
     scheme: http
     host: localhost
     port: 8145
-    name: admin
+    username: admin
     password: secret
     retry-attempts: 10
     retry-pause-milli-seconds: 5000
