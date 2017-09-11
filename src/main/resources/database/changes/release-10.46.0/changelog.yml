@@ -1,0 +1,31 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 10.46.0-1
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: add caseref to response chasing report
+            path: response_chasing_report_caseref.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 10.46.0-2
+      author: Sarah Radford
+      changes:
+        - sqlFile:
+            comment: add caseref to case events report
+            path: case_events_report_caseref.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 10.46.0-3
+      author: Chris Hardman
+      changes:
+        - sqlFile:
+            comment: adddefault valu to case ref
+            path: case_ref_default.sql
+            relativeToChangelogFile: true
+            splitStatements: false

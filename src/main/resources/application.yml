@@ -25,7 +25,8 @@ liquibase:
 
 security:
   basic:
-    enabled: false
+    enabled: true
+    realm: sdc
   user:
     name: admin
     password: secret
@@ -43,36 +44,10 @@ server:
   servlet-path: /
 
 endpoints:
-  autoconfig:
-    enabled: true
-    sensitive: true
-  beans:
-    enabled: true
-    sensitive: true
-  configprops:
-    enabled: true
-    sensitive: true
-  dump:
-    enabled: true
-    sensitive: true
-  env:
-    enabled: true
-    sensitive: true
+  enabled: true
   info:
     enabled: true
     sensitive: false
-  metrics:
-    enabled: true
-    sensitive: true
-  mappings:
-    enabled: true
-    sensitive: true
-  shutdown:
-    enabled: true
-    sensitive: true
-  trace:
-    enabled: true
-    sensitive: true
 
 spring:
   output:
@@ -124,6 +99,8 @@ action-svc:
     scheme: http
     host: localhost
     port: 8151
+    username: admin
+    password: secret
     retry-attempts: 10
     retry-pause-milli-seconds: 5000
     connect-timeout-milli-seconds: 5000
@@ -135,6 +112,8 @@ collection-exercise-svc:
     scheme: http
     host: localhost
     port: 8145
+    username: admin
+    password: secret
     retry-attempts: 10
     retry-pause-milli-seconds: 5000
     connect-timeout-milli-seconds: 5000

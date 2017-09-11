@@ -71,13 +71,7 @@ public class Case implements Serializable {
   private Integer sourceCaseId;
 
   @Generated(GenerationTime.INSERT)
-// @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "caserefseq_gen")
-// @GenericGenerator(name = "caserefseq_gen", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-// parameters = {
-// @Parameter(name = "sequence_name", value = "casesvc.caserefseq"),
-// @Parameter(name = "increment_size", value = "1")})
-  @Column(name = "caseref", nullable = false, unique = true, insertable = false, updatable = false,
-          columnDefinition = "VARCHAR DEFAULT nextval('casesvc.caserefseq')")
+  @Column(name = "caseref")
   private String caseRef;
 
   @Enumerated(EnumType.STRING)

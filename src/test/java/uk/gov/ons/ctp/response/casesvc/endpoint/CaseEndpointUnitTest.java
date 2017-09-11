@@ -181,7 +181,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName(FINDCASEBYID));
-    actions.andExpect(jsonPath("$.*", hasSize(12)));
+    actions.andExpect(jsonPath("$.*", hasSize(13)));
     actions.andExpect(jsonPath("$.id", is(CASE1_ID.toString())));
     actions.andExpect(jsonPath("$.iac", is(IAC_CASE1)));
     actions.andExpect(jsonPath("$.collectionInstrumentId", is(CASE_CI_ID)));
@@ -227,7 +227,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName(FINDCASEBYID));
-    actions.andExpect(jsonPath("$.*", hasSize(12)));
+    actions.andExpect(jsonPath("$.*", hasSize(13)));
     actions.andExpect(jsonPath("$.id", is(CASE1_ID.toString())));
     actions.andExpect(jsonPath("$.iac", is(nullValue())));
     actions.andExpect(jsonPath("$.collectionInstrumentId", is(CASE_CI_ID)));
@@ -301,7 +301,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCasesByPartyId"));
     actions.andExpect(jsonPath("$", hasSize(9)));
-    actions.andExpect(jsonPath("$[0].*", hasSize(12)));
+    actions.andExpect(jsonPath("$[0].*", hasSize(13)));
     actions.andExpect(jsonPath("$[*].id", containsInAnyOrder(CASE1_ID.toString(), CASE2_ID.toString(),
             CASE3_ID.toString(), CASE4_ID.toString(), CASE5_ID.toString(), CASE6_ID.toString(), CASE7_ID.toString(),
             CASE8_ID.toString(), CASE9_ID.toString())));
@@ -328,7 +328,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCasesByPartyId"));
     actions.andExpect(jsonPath("$", hasSize(9)));
-    actions.andExpect(jsonPath("$[0].*", hasSize(12)));
+    actions.andExpect(jsonPath("$[0].*", hasSize(13)));
     actions.andExpect(jsonPath("$[*].id", containsInAnyOrder(CASE1_ID.toString(), CASE2_ID.toString(),
             CASE3_ID.toString(), CASE4_ID.toString(), CASE5_ID.toString(), CASE6_ID.toString(), CASE7_ID.toString(),
             CASE8_ID.toString(), CASE9_ID.toString())));
@@ -384,7 +384,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCaseByIac"));
-    actions.andExpect(jsonPath("$.*", hasSize(12)));
+    actions.andExpect(jsonPath("$.*", hasSize(13)));
     actions.andExpect(jsonPath("$.id", is(CASE1_ID.toString())));
     actions.andExpect(jsonPath("$.iac", is(nullValue())));
     actions.andExpect(jsonPath("$.collectionInstrumentId", is(CASE_CI_ID)));
