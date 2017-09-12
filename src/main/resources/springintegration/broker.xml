@@ -5,8 +5,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
   http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.6.xsd">
 
-    <rabbit:connection-factory id="connectionFactory"
-    host="${rabbitmq.host}" username="${rabbitmq.username}" password="${rabbitmq.password}" virtual-host="${rabbitmq.virtualhost}" port="${rabbitmq.port}"/>
+    <rabbit:connection-factory id="connectionFactory" publisher-confirms="true" publisher-returns="true"
+    host="${rabbitmq.host}" username="${rabbitmq.username}" password="${rabbitmq.password}" virtual-host="${rabbitmq.virtualhost}" port="${rabbitmq.port}" />
 
     <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" retry-template="retryTemplate" />
     <rabbit:admin id="amqpAdmin" connection-factory="connectionFactory"/>

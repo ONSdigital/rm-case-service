@@ -17,10 +17,10 @@
         <property name="concurrentConsumers" value="${messaging.consumingThreads}" />
         <property name="prefetchCount" value="${messaging.prefetchCount}" />
         <property name="txSize" value="${messaging.txSize}" />
-        <property name="channelTransacted" value="true" />
+        <!-- zzz  <property name="channelTransacted" value="true" /> -->
     </bean>
 
-    <!-- Xml msg is taken off the queue Case.Responses and put on the channel caseReceiptXml -->
+<!-- Xml msg is taken off the queue Case.Responses and put on the channel caseReceiptXml -->
     <int:channel id="caseReceiptXml" />
     <bean id="simpleMessageConverter" class="org.springframework.amqp.support.converter.SimpleMessageConverter" />
     <int-amqp:inbound-channel-adapter id="caseReceiptInboundAmqp" listener-container="caseReceiptMessageListenerContainer"
