@@ -9,3 +9,14 @@ databaseChangeLog:
             path: category_offline_response.sql
             relativeToChangelogFile: true
             splitStatements: false
+
+  - changeSet:
+      id: 10.47.0-2
+      author: Narinder Birk
+      changes:
+        - sqlFile:
+            comment: standing data change
+            path: removal_of_report_from_displayname.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
