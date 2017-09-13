@@ -17,7 +17,7 @@
         <property name="concurrentConsumers" value="${messaging.consumingThreads}" />
         <property name="prefetchCount" value="${messaging.prefetchCount}" />
         <property name="txSize" value="${messaging.txSize}" />
-        <!-- zzz  <property name="channelTransacted" value="true" /> -->
+        <property name="channelTransacted" value="true" />
     </bean>
 
 <!-- Xml msg is taken off the queue Case.Responses and put on the channel caseReceiptXml -->
