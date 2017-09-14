@@ -1,27 +1,31 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitChild;
+import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitChildren;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseState;
 import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
-
-import java.util.List;
-import java.util.UUID;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 /**
  * Test Case created by Sample
@@ -107,6 +111,8 @@ public class CaseCreationServiceTest {
 
     SampleUnitParent sampleUnitParent = new SampleUnitParent();
     SampleUnitChild sampleUnitChild = new SampleUnitChild();
+    SampleUnitChildren sampleUnitChildren = new SampleUnitChildren(
+        new ArrayList<SampleUnitChild>(Arrays.asList(sampleUnitChild)));
 
     // Sample unit child has actionplanId
     sampleUnitChild.setActionPlanId("7bc5d41b-0549-40b3-ba76-42f6d4cf3991");
@@ -119,7 +125,7 @@ public class CaseCreationServiceTest {
     // Parent Only field
     sampleUnitParent.setCollectionExerciseId("14fb3e68-4dca-46db-bf49-04b84e07e77c");
     // Parent has actionplanId or child sample unit
-    sampleUnitParent.setSampleUnitChild(sampleUnitChild);
+    sampleUnitParent.setSampleUnitChildren(sampleUnitChildren);
     // Base sample unit data for parent
     sampleUnitParent.setCollectionInstrumentId("8bae64c5-a282-4e87-ae5d-cd4181ba6c73");
     sampleUnitParent.setPartyId("7bc5d41b-0549-40b3-ba76-42f6d4cf3992");
