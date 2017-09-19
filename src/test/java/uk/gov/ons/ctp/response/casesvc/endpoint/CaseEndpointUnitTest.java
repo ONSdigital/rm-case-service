@@ -59,6 +59,7 @@ import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
  * Case Endpoint Unit tests
  */
 public final class CaseEndpointUnitTest {
+
   private static final UUID EXISTING_CASE_GROUP_UUID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfeabc");
   private static final UUID EXISTING_CASE_ID_NO_EVENTS = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3999");
   private static final UUID EXISTING_PARTY_UUID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfe111");
@@ -114,6 +115,15 @@ public final class CaseEndpointUnitTest {
   private static final String IAC_CASE9 = "kkkk llll mmmm";
   private static final String NON_EXISTING_CASE_ID = "9bc9d99b-9999-99b9-ba99-99f9d9cf9999";
   private static final String NON_EXISTING_IAC = "zzzz llll mmmm";
+  private static final String ONE = "1";
+  private static final String TWO = "2";
+  private static final String THREE = "3";
+  private static final String FOUR = "4";
+  private static final String FIVE = "5";
+  private static final String SIX = "6";
+  private static final String SEVEN = "7";
+  private static final String EIGHT = "8";
+  private static final String NINE = "9";
   private static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
   private static final String FINDCASEBYID = "findCaseById";
 
@@ -184,6 +194,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.*", hasSize(13)));
     actions.andExpect(jsonPath("$.id", is(CASE1_ID.toString())));
     actions.andExpect(jsonPath("$.iac", is(IAC_CASE1)));
+    actions.andExpect(jsonPath("$.caseRef", is(ONE)));
     actions.andExpect(jsonPath("$.collectionInstrumentId", is(CASE_CI_ID)));
     actions.andExpect(jsonPath("$.partyId", is(CASE_PARTY_ID)));
     actions.andExpect(jsonPath("$.actionPlanId", is(CASE_ACTIONPLAN_ID_1)));
@@ -229,6 +240,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(handler().methodName(FINDCASEBYID));
     actions.andExpect(jsonPath("$.*", hasSize(13)));
     actions.andExpect(jsonPath("$.id", is(CASE1_ID.toString())));
+    actions.andExpect(jsonPath("$.caseRef", is(ONE)));
     actions.andExpect(jsonPath("$.iac", is(nullValue())));
     actions.andExpect(jsonPath("$.collectionInstrumentId", is(CASE_CI_ID)));
     actions.andExpect(jsonPath("$.partyId", is(CASE_PARTY_ID)));
@@ -305,6 +317,8 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$[*].id", containsInAnyOrder(CASE1_ID.toString(), CASE2_ID.toString(),
             CASE3_ID.toString(), CASE4_ID.toString(), CASE5_ID.toString(), CASE6_ID.toString(), CASE7_ID.toString(),
             CASE8_ID.toString(), CASE9_ID.toString())));
+    actions.andExpect(jsonPath("$[*].caseRef", containsInAnyOrder(ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN,
+        EIGHT, NINE)));
     actions.andExpect(jsonPath("$[*].iac", containsInAnyOrder(nullValue(), nullValue(), nullValue(), nullValue(),
             nullValue(), nullValue(), nullValue(), nullValue(), nullValue())));
     actions.andExpect(jsonPath("$[*].caseEvents", containsInAnyOrder(nullValue(), nullValue(), nullValue(),
@@ -332,6 +346,8 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$[*].id", containsInAnyOrder(CASE1_ID.toString(), CASE2_ID.toString(),
             CASE3_ID.toString(), CASE4_ID.toString(), CASE5_ID.toString(), CASE6_ID.toString(), CASE7_ID.toString(),
             CASE8_ID.toString(), CASE9_ID.toString())));
+    actions.andExpect(jsonPath("$[*].caseRef", containsInAnyOrder(ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN,
+        EIGHT, NINE)));
     actions.andExpect(jsonPath("$[*].iac", containsInAnyOrder(IAC_CASE1, IAC_CASE2, IAC_CASE3, IAC_CASE4,
             IAC_CASE5, IAC_CASE6, IAC_CASE7, IAC_CASE8, IAC_CASE9)));
     actions.andExpect(jsonPath("$[*].caseEvents", hasSize(9)));
@@ -386,6 +402,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(handler().methodName("findCaseByIac"));
     actions.andExpect(jsonPath("$.*", hasSize(13)));
     actions.andExpect(jsonPath("$.id", is(CASE1_ID.toString())));
+    actions.andExpect(jsonPath("$.caseRef", is(ONE)));
     actions.andExpect(jsonPath("$.iac", is(nullValue())));
     actions.andExpect(jsonPath("$.collectionInstrumentId", is(CASE_CI_ID)));
     actions.andExpect(jsonPath("$.partyId", is(CASE_PARTY_ID)));

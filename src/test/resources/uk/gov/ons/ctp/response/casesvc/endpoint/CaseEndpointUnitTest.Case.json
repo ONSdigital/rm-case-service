@@ -2,6 +2,7 @@
 	{
 		"id": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd1",
 		"casePK": 1,
+		"caseRef": "1",
 		"caseGroupFK": 1,
 		"collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
 		"state": "SAMPLED_INIT",
@@ -21,6 +22,7 @@
 	{
 		"id": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd2",
 		"casePK": 2,
+		"caseRef": "2",
 		"caseGroupFK": 1,
 		"collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
 		"state": "INACTIONABLE",
@@ -40,6 +42,7 @@
 	{
 		"id": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd3",
 		"casePK": 3,
+		"caseRef": "3",
 		"caseGroupFK": 1,
 		"collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
 		"state": "ACTIONABLE",
@@ -59,6 +62,7 @@
 	{
 		"id": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd4",
 		"casePK": 4,
+		"caseRef": "4",
 		"caseGroupFK": 1,
 		"collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
 		"state": "INACTIONABLE",
@@ -78,6 +82,7 @@
 	{
 		"id": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd5",
 		"casePK": 5,
+		"caseRef": "5",
 		"caseGroupFK": 1,
 		"collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
 		"state": "ACTIONABLE",
@@ -97,6 +102,7 @@
 	{
 		"id": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd6",
 		"casePK": 6,
+		"caseRef": "6",
 		"caseGroupFK": 1,
 		"collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
 		"state": "INACTIONABLE",
@@ -116,6 +122,7 @@
 	{
 		"id": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd7",
 		"casePK": 7,
+		"caseRef": "7",
 		"caseGroupFK": 1,
 		"collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
 		"state": "ACTIONABLE",
@@ -135,6 +142,7 @@
 	{
 		"id": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd8",
 		"casePK": 8,
+		"caseRef": "8",
 		"caseGroupFK": 1,
 		"collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
 		"state": "INACTIONABLE",
@@ -154,6 +162,7 @@
 		{
 		"id": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fd9",
 		"casePK": 9,
+		"caseRef": "9",
 		"caseGroupFK": 1,
 		"collectionInstrumentId": "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e",
 		"state": "ACTIONABLE",
