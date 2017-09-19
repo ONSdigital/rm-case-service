@@ -164,7 +164,7 @@ public class CaseServiceImpl implements CaseService {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
   public CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase, Timestamp timestamp) throws CTPException {
-    log.error("Entering createCaseEvent with caseEvent {}", caseEvent);
+    log.debug("Entering createCaseEvent with caseEvent {}", caseEvent);
     log.info("SPLUNK: CaseEventCreation: casePK={}, category={}, subCategory={}, createdBy={}",
         caseEvent.getCaseFK(),
         caseEvent.getCategory(),
@@ -174,7 +174,7 @@ public class CaseServiceImpl implements CaseService {
     CaseEvent createdCaseEvent = null;
 
     Case targetCase = caseRepo.findOne(caseEvent.getCaseFK());
-    log.error("targetCase is {}");
+    log.debug("targetCase is {}");
     if (targetCase != null) {
       Category category = categoryRepo.findOne(caseEvent.getCategory());
 
@@ -183,7 +183,7 @@ public class CaseServiceImpl implements CaseService {
       // save the case event to db
       caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
       createdCaseEvent = caseEventRepo.save(caseEvent);
-      log.error("createdCaseEvent is {}", createdCaseEvent);
+      log.debug("createdCaseEvent is {}", createdCaseEvent);
 
       // do we need to record a response?
       recordCaseResponse(category, targetCase, timestamp);
@@ -531,21 +531,5 @@ public class CaseServiceImpl implements CaseService {
     newCase.setCreatedBy(Constants.SYSTEM);
 
     return newCase;
-  }
-
-  // TODO delete once test for CTPA-1511 ran successfully
-  @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = false, timeout = TRANSACTION_TIMEOUT)
-  public void testTransactionalBehaviour() {
-    log.info("Entering testTransactionalBehaviour...");
-
-    Case caze = caseRepo.findById(UUID.fromString("551308fb-2d5a-4477-92c3-649d915834c3"));
-    caze.setState(CaseState.SAMPLED_INIT);
-    caseRepo.saveAndFlush(caze);
-    log.info("just saved to db");
-
-    CaseNotification caseNotification = new CaseNotification("3b136c4b-7a14-4904-9e01-13364dd7b972",
-        "3b136c4b-7a14-4904-9e01-13364dd7b972", null);
-    notificationPublisher.sendNotification(caseNotification);
-    log.info("just published to queue");
   }
 }
