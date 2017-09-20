@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.error.InvalidRequestException;
@@ -248,9 +249,10 @@ public final class CaseEndpoint implements CTPEndpoint {
     mappedCaseEvent.setCaseId(caseId);
     mappedCaseEvent.setPartyId(caseEventCreationRequestDTO.getPartyId());
 
+    String newResourceUrl = ServletUriComponentsBuilder
+        .fromCurrentRequest().buildAndExpand(mappedCaseEvent.getCaseId()).toUri().toString();
 
-    // TODO Define URI
-    return ResponseEntity.created(URI.create("TODO")).body(mappedCaseEvent);
+    return ResponseEntity.created(URI.create(newResourceUrl)).body(mappedCaseEvent);
   }
 
   /**
