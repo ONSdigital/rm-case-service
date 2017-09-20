@@ -19,13 +19,4 @@
     <rabbit:template id="caseNotificationRabbitTemplate" connection-factory="connectionFactory" exchange="case-outbound-exchange" routing-key="Case.LifecycleEvents.binding"
                      message-converter="caseNotificationMarshallingMessageConverter" mandatory="true" channel-transacted="true" />
 
-    <!-- If you want to use 'Publisher Confirms' instead of Transactions, add confirm-callback="bespokeConfirmCallback" return-callback="bespokeReturnCallback" to the definition
-    of caseNotificationRabbitTemplate. Also note the change in broker.xml to define connectionFactory. And the beans below:
-    <bean id="bespokeConfirmCallback" class="uk.gov.ons.ctp.response.casesvc.utility.BespokeConfirmCallback">
-    </bean>
-
-    <bean id="bespokeReturnCallback" class="uk.gov.ons.ctp.response.casesvc.utility.BespokeReturnCallback">
-    </bean>
-    -->
-
 </beans>

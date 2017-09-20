@@ -5,10 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
   http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.6.xsd">
 
-	<!-- publisher-confirms="true" publisher-returns="true"
-	These attributes can be defined on the connectionFactory if instead of using Transactions, we decide to go for Confirms. See
-	https://www.rabbitmq.com/blog/2011/02/10/introducing-publisher-confirms/ -->
-    <rabbit:connection-factory id="connectionFactory"
+	<rabbit:connection-factory id="connectionFactory"
     host="${rabbitmq.host}" username="${rabbitmq.username}" password="${rabbitmq.password}" virtual-host="${rabbitmq.virtualhost}" port="${rabbitmq.port}" />
 
     <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" retry-template="retryTemplate" />
