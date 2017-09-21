@@ -174,7 +174,7 @@ public class CaseServiceImpl implements CaseService {
     CaseEvent createdCaseEvent = null;
 
     Case targetCase = caseRepo.findOne(caseEvent.getCaseFK());
-    log.debug("targetCase is {}");
+    log.debug("targetCase is {}", targetCase);
     if (targetCase != null) {
       Category category = categoryRepo.findOne(caseEvent.getCategory());
 

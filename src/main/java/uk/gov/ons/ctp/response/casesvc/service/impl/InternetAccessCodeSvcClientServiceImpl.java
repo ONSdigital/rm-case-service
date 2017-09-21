@@ -67,7 +67,7 @@ public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCod
     UriComponents uriComponents = restUtility.createUriComponents(appConfig.getInternetAccessCodeSvc().getIacPutPath(),
         null, iac);
     HttpEntity<UpdateInternetAccessCodeDTO> httpEntity = restUtility.createHttpEntity(
-        new UpdateInternetAccessCodeDTO("SYSTEM"));
+        new UpdateInternetAccessCodeDTO(SYSTEM));
 
     restTemplate.exchange(uriComponents.toUri(), HttpMethod.PUT, httpEntity, InternetAccessCodeDTO.class);
     log.debug("gone past the call to the IAC Svc...");
