@@ -28,6 +28,7 @@ import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientServic
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -178,12 +179,15 @@ public class CaseDistributor {
    *
    * @param caze the case to deal with
    * @param iac the IAC to assign to the Case
+   * @throws CTPException when transitionCase does.
    */
   @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = false, rollbackFor = Exception.class)
   private void processCase(final Case caze, final String iac) throws CTPException {
+    UUID caseID = caze.getId();
     log.info("processing caseid {}", caze.getId());
 
     CaseDTO.CaseEvent event = null;
+    CaseState initialState = caze.getState();
     switch (caze.getState()) {
       case SAMPLED_INIT:
         event = CaseDTO.CaseEvent.ACTIVATED;
@@ -191,6 +195,8 @@ public class CaseDistributor {
       case REPLACEMENT_INIT:
         event = CaseDTO.CaseEvent.REPLACED;
         break;
+      default:
+        log.error("Unexpected state found {}", initialState);
     }
 
     Case updatedCase = transitionCase(caze, event);

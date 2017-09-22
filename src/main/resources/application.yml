@@ -84,6 +84,8 @@ internet-access-code-svc:
     scheme: http
     host: localhost
     port: 8121
+    username: admin
+    password: secret
 
 action-svc:
   actions-path: /actions
