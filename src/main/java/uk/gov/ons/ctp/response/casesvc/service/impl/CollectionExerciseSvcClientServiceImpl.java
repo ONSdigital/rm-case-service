@@ -48,8 +48,8 @@ public class CollectionExerciseSvcClientServiceImpl implements CollectionExercis
       backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
   @Override
   public CollectionExerciseDTO getCollectionExercise(UUID collectionExerciseId) {
-    UriComponents uriComponents = restUtility.createUriComponents(appConfig.getCollectionExerciseSvc().getCollectionExercisePath(),
-        null, collectionExerciseId);
+    UriComponents uriComponents = restUtility.createUriComponents(
+        appConfig.getCollectionExerciseSvc().getCollectionExercisePath(), null, collectionExerciseId);
 
     HttpEntity<?> httpEntity = restUtility.createHttpEntity(null);
 
