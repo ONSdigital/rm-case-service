@@ -184,7 +184,7 @@ public class CaseDistributor {
   @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = false, rollbackFor = Exception.class)
   private void processCase(final Case caze, final String iac) throws CTPException {
     UUID caseID = caze.getId();
-    log.info("processing caseid {}", caze.getId());
+    log.info("processing caseid {}", caseID);
 
     CaseDTO.CaseEvent event = null;
     CaseState initialState = caze.getState();
