@@ -1,18 +1,12 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
-import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-
-import lombok.extern.slf4j.Slf4j;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
@@ -32,7 +26,7 @@ import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnit
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitChild;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseState;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
@@ -44,6 +38,11 @@ import uk.gov.ons.ctp.response.collection.exercise.representation.CaseTypeDTO;
 import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
 import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO.SampleUnitType;
+
+import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * A CaseService implementation which encapsulates all business logic operating
@@ -70,7 +69,7 @@ public class CaseServiceImpl implements CaseService {
   private CaseGroupRepository caseGroupRepo;
 
   @Autowired
-  private StateTransitionManager<CaseDTO.CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
+  private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
   @Autowired
   private CaseEventRepository caseEventRepo;
@@ -408,8 +407,8 @@ public class CaseServiceImpl implements CaseService {
         internetAccessCodeSvcClientService.disableIAC(targetCase.getIac());
       }
 
-      CaseDTO.CaseState oldState = targetCase.getState();
-      CaseDTO.CaseState newState = null;
+      CaseState oldState = targetCase.getState();
+      CaseState newState = null;
       // make the transition
       newState = caseSvcStateTransitionManager.transition(oldState, transitionEvent);
 
@@ -456,7 +455,7 @@ public class CaseServiceImpl implements CaseService {
    */
   private Case saveNewCase(CaseEvent caseEvent, Case targetCase, Case newCase) {
     newCase.setId(UUID.randomUUID());
-    newCase.setState(CaseDTO.CaseState.REPLACEMENT_INIT);
+    newCase.setState(CaseState.REPLACEMENT_INIT);
     newCase.setCreatedDateTime(DateTimeUtil.nowUTC());
     newCase.setCaseGroupFK(targetCase.getCaseGroupFK());
     newCase.setCreatedBy(caseEvent.getCreatedBy());

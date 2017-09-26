@@ -1,9 +1,16 @@
 package uk.gov.ons.ctp.response.casesvc.domain.model;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import net.sourceforge.cobertura.CoverageIgnore;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
+import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,19 +25,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Version;
-
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import net.sourceforge.cobertura.CoverageIgnore;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
-import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
+import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Domain model object.
@@ -76,7 +74,7 @@ public class Case implements Serializable {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "statefk")
-  private CaseDTO.CaseState state;
+  private CaseState state;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "sampleunittype")

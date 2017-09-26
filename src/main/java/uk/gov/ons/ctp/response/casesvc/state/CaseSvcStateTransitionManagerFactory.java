@@ -1,14 +1,14 @@
 package uk.gov.ons.ctp.response.casesvc.state;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.stereotype.Component;
 import uk.gov.ons.ctp.common.state.BasicStateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseEvent;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseState;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This is the state transition manager actory for the actionsvc. It intended

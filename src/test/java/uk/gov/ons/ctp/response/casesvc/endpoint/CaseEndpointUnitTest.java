@@ -24,6 +24,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
 import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
@@ -199,7 +200,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.partyId", is(CASE_PARTY_ID)));
     actions.andExpect(jsonPath("$.actionPlanId", is(CASE_ACTIONPLAN_ID_1)));
     actions.andExpect(jsonPath("$.sampleUnitType", is(CASE_SAMPLE_UNIT_TYPE_B)));
-    actions.andExpect(jsonPath("$.state", is(CaseDTO.CaseState.SAMPLED_INIT.name())));
+    actions.andExpect(jsonPath("$.state", is(CaseState.SAMPLED_INIT.name())));
     actions.andExpect(jsonPath("$.createdBy", is(SYSTEM)));
     actions.andExpect(jsonPath("$.createdDateTime", is(CASE_DATE_VALUE_1)));
 
@@ -246,7 +247,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.partyId", is(CASE_PARTY_ID)));
     actions.andExpect(jsonPath("$.actionPlanId", is(CASE_ACTIONPLAN_ID_1)));
     actions.andExpect(jsonPath("$.sampleUnitType", is(CASE_SAMPLE_UNIT_TYPE_B)));
-    actions.andExpect(jsonPath("$.state", is(CaseDTO.CaseState.SAMPLED_INIT.name())));
+    actions.andExpect(jsonPath("$.state", is(CaseState.SAMPLED_INIT.name())));
     actions.andExpect(jsonPath("$.createdBy", is(SYSTEM)));
     actions.andExpect(jsonPath("$.createdDateTime", is(CASE_DATE_VALUE_1)));
 
@@ -408,7 +409,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.partyId", is(CASE_PARTY_ID)));
     actions.andExpect(jsonPath("$.actionPlanId", is(CASE_ACTIONPLAN_ID_1)));
     actions.andExpect(jsonPath("$.sampleUnitType", is(CASE_SAMPLE_UNIT_TYPE_B)));
-    actions.andExpect(jsonPath("$.state", is(CaseDTO.CaseState.SAMPLED_INIT.name())));
+    actions.andExpect(jsonPath("$.state", is(CaseState.SAMPLED_INIT.name())));
     actions.andExpect(jsonPath("$.createdBy", is(SYSTEM)));
     actions.andExpect(jsonPath("$.createdDateTime", is(CASE_DATE_VALUE_1)));
 

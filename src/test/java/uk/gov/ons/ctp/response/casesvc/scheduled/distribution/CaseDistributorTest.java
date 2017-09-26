@@ -1,14 +1,5 @@
 package uk.gov.ons.ctp.response.casesvc.scheduled.distribution;
 
-import static junit.framework.TestCase.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +11,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
-
 import uk.gov.ons.ctp.common.FixtureHelper;
 import uk.gov.ons.ctp.common.distributed.DistributedListManager;
 import uk.gov.ons.ctp.common.distributed.LockingException;
@@ -34,8 +24,18 @@ import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static junit.framework.TestCase.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Test the case distributor
@@ -76,7 +76,7 @@ public class CaseDistributorTest {
   private CaseNotificationPublisher notificationPublisher;
 
   @Mock
-  private StateTransitionManager<CaseDTO.CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
+  private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
   @InjectMocks
   private CaseDistributor caseDistributor;
@@ -197,10 +197,10 @@ public class CaseDistributorTest {
     }
     when(internetAccessCodeSvcClientService.generateIACs(any(Integer.class))).thenReturn(iacs);
 
-    when(caseSvcStateTransitionManager.transition(CaseDTO.CaseState.SAMPLED_INIT, CaseDTO.CaseEvent.ACTIVATED)).
-            thenReturn(CaseDTO.CaseState.ACTIONABLE);
-    when(caseSvcStateTransitionManager.transition(CaseDTO.CaseState.REPLACEMENT_INIT, CaseDTO.CaseEvent.REPLACED)).
-            thenReturn(CaseDTO.CaseState.ACTIONABLE);
+    when(caseSvcStateTransitionManager.transition(CaseState.SAMPLED_INIT, CaseDTO.CaseEvent.ACTIVATED)).
+            thenReturn(CaseState.ACTIONABLE);
+    when(caseSvcStateTransitionManager.transition(CaseState.REPLACEMENT_INIT, CaseDTO.CaseEvent.REPLACED)).
+            thenReturn(CaseState.ACTIONABLE);
 
     CaseNotification caseNotification = new CaseNotification();
     caseNotification.setCaseId(cases.get(0).getId().toString());
@@ -274,10 +274,10 @@ public class CaseDistributorTest {
     }
     when(internetAccessCodeSvcClientService.generateIACs(any(Integer.class))).thenReturn(iacs);
 
-    when(caseSvcStateTransitionManager.transition(CaseDTO.CaseState.SAMPLED_INIT, CaseDTO.CaseEvent.ACTIVATED)).
-        thenReturn(CaseDTO.CaseState.ACTIONABLE);
-    when(caseSvcStateTransitionManager.transition(CaseDTO.CaseState.REPLACEMENT_INIT, CaseDTO.CaseEvent.REPLACED)).
-        thenReturn(CaseDTO.CaseState.ACTIONABLE);
+    when(caseSvcStateTransitionManager.transition(CaseState.SAMPLED_INIT, CaseDTO.CaseEvent.ACTIVATED)).
+        thenReturn(CaseState.ACTIONABLE);
+    when(caseSvcStateTransitionManager.transition(CaseState.REPLACEMENT_INIT, CaseDTO.CaseEvent.REPLACED)).
+        thenReturn(CaseState.ACTIONABLE);
 
     when(caseRepo.saveAndFlush(any(Case.class))).thenThrow(new RuntimeException("The DB is KO at the moment."));
 

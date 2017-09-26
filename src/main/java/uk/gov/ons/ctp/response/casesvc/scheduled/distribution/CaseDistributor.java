@@ -22,7 +22,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseState;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 
@@ -62,7 +62,7 @@ public class CaseDistributor {
   private AppConfig appConfig;
 
   @Autowired
-  private StateTransitionManager<CaseDTO.CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
+  private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
   @Autowired
   private CaseNotificationPublisher notificationPublisher;
@@ -219,7 +219,7 @@ public class CaseDistributor {
    * @throws CTPException when case state transition error
    */
   private Case transitionCase(final Case caze, final CaseDTO.CaseEvent event) throws CTPException {
-    CaseDTO.CaseState nextState = caseSvcStateTransitionManager.transition(caze.getState(), event);
+    CaseState nextState = caseSvcStateTransitionManager.transition(caze.getState(), event);
     caze.setState(nextState);
     return caze;
   }

@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc;
 
+import net.sourceforge.cobertura.CoverageIgnore;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -16,8 +17,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import net.sourceforge.cobertura.CoverageIgnore;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.ons.ctp.common.distributed.DistributedInstanceManager;
 import uk.gov.ons.ctp.common.distributed.DistributedInstanceManagerRedissonImpl;
@@ -34,6 +33,7 @@ import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.state.CaseSvcStateTransitionManagerFactory;
 
 /**
@@ -64,7 +64,7 @@ public class CaseSvcApplication {
    * @return the state transition manager specifically for Actions
    */
   @Bean
-  public StateTransitionManager<CaseDTO.CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager() {
+  public StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager() {
     return caseSvcStateTransitionManagerFactory.getStateTransitionManager(
             CaseSvcStateTransitionManagerFactory.CASE_ENTITY);
   }
