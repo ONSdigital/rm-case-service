@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>uk.gov.ons.ctp.product</groupId>
   <artifactId>casesvc</artifactId>
-  <version>10.47.3-SNAPSHOT</version>
+  <version>10.48.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>CTP : CaseService</name>
@@ -57,7 +57,7 @@
     <dependency>
       <groupId>uk.gov.ons.ctp.product</groupId>
       <artifactId>casesvc-api</artifactId>
-      <version>10.48.0-SNAPSHOT</version>
+      <version>10.48.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
