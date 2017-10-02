@@ -82,6 +82,7 @@ public class ReportScheduler {
             }
         } catch (InterruptedException e) {
             log.error("Report run error waiting for countdownlatch: {}", e.getMessage());
+            log.error("Stack trace " + e);
         } finally {
             reportDistributedLockManager.unlock(DISTRIBUTED_OBJECT_KEY_REPORT);
             reportDistributedLatchManager.deleteCountDownLatch(DISTRIBUTED_OBJECT_KEY_REPORT_LATCH);
