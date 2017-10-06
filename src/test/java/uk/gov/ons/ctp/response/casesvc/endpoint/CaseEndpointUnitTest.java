@@ -22,7 +22,6 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
@@ -51,7 +50,7 @@ import static uk.gov.ons.ctp.common.MvcHelper.getJson;
 import static uk.gov.ons.ctp.common.MvcHelper.postJson;
 import static uk.gov.ons.ctp.common.TestHelper.createTestDate;
 import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
-import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.CATEGORY_IAC_AUTH_NOT_FOUND;
+import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.CATEGORY_ACCESS_CODE_AUTHENTICATION_ATTEMPT_NOT_FOUND;
 import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.ERRORMSG_CASENOTFOUND;
 import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseGroupEndpoint.ERRORMSG_CASEGROUPNOTFOUND;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
@@ -383,7 +382,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCaseByIac"));
     actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.SYSTEM_ERROR.name())));
-    actions.andExpect(jsonPath("$.error.message", is(CATEGORY_IAC_AUTH_NOT_FOUND)));
+    actions.andExpect(jsonPath("$.error.message", is(CATEGORY_ACCESS_CODE_AUTHENTICATION_ATTEMPT_NOT_FOUND)));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
   }
 
