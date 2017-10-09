@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-amqp="http://www.springframework.org/schema/integration/amqp"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+  http://www.springframework.org/schema/rabbit
+  http://www.springframework.org/schema/rabbit/spring-rabbit-1.6.xsd
+  http://www.springframework.org/schema/integration
+  http://www.springframework.org/schema/integration/spring-integration.xsd
+  http://www.springframework.org/schema/integration/amqp
+  http://www.springframework.org/schema/integration/amqp/spring-integration-amqp.xsd
+  http://www.springframework.org/schema/integration/xml
+  http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
+
+<rabbit:admin connection-factory="connectionFactory" />
+
+
+    <int:gateway id="dataSender" service-interface="uk.gov.ons.ctp.common.events.EventExchange" default-request-channel="messageOutput" />
+
+    <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" exchange="event-message-outbound-exchange"
+                       channel-transacted="true"/>
+    
+    <int-amqp:publish-subscribe-channel id="messageOutput" connection-factory="connectionFactory"/>
+    
+    <int-amqp:outbound-channel-adapter channel="messageOutput"
+amqp-template="amqpTemplate" exchange-name="event-message-outbound-exchange" routing-key="event-message-outbound-exchange" />
+
+</beans>
