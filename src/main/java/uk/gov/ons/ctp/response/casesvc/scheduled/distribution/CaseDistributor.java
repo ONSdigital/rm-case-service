@@ -114,7 +114,7 @@ public class CaseDistributor {
                 } catch (Exception e) {
                   log.error("Exception msg {} thrown processing case with id {}. Processing postponed", e.getMessage(),
                           caze.getId());
-                  log.error("Stack trace " + e);
+                  log.error("Stacktrace ", e);
                   failures++;
                 }
               }
@@ -125,18 +125,18 @@ public class CaseDistributor {
           distInfo.setCasesFailed(failures);
         } catch (Exception e) {
           log.error("Failed to obtain IAC codes");
-          log.error("Stack trace " + e);
+          log.error("Stacktrace ", e);
         }
       }
     } catch (Exception e) {
       log.error("Failed to process cases because {}", e.getMessage());
-      log.error("Stack trace " + e);
+      log.error("Stacktrace ", e);
     } finally {
       try {
         caseDistributionListManager.deleteList(CASE_DISTRIBUTOR_LIST_ID, true);
       } catch (LockingException e) {
         log.error("Failed to release caseDistributionListManager data - error msg is {}", e.getMessage());
-        log.error("Stack trace " + e);
+        log.error("Stacktrace ", e);
       }
     }
 
