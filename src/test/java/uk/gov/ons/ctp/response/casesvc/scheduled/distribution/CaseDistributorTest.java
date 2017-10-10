@@ -16,7 +16,7 @@ import uk.gov.ons.ctp.common.FixtureHelper;
 import uk.gov.ons.ctp.common.distributed.DistributedListManager;
 import uk.gov.ons.ctp.common.distributed.LockingException;
 import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.common.events.EventExchange;
+//import uk.gov.ons.ctp.common.events.EventExchange;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.config.CaseDistribution;
@@ -81,7 +81,7 @@ public class CaseDistributorTest {
   private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
   @Mock
-  private EventExchange eventExchange;
+//  private EventExchange eventExchange;
 
   @InjectMocks
   private CaseDistributor caseDistributor;

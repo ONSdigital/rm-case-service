@@ -8,7 +8,8 @@
 	<rabbit:connection-factory id="connectionFactory"
     host="${rabbitmq.host}" username="${rabbitmq.username}" password="${rabbitmq.password}" virtual-host="${rabbitmq.virtualhost}" port="${rabbitmq.port}" />
 
-    <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" retry-template="retryTemplate" />
+  <!--   <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" retry-template="retryTemplate" />
+ -->
     <rabbit:admin id="amqpAdmin" connection-factory="connectionFactory"/>
 
 	<!-- Retry policy for a failed publish -->
@@ -58,6 +59,8 @@
 	<!-- End of Queues -->
 
 	<!-- Start of Exchanges -->
+	<rabbit:fanout-exchange name="event-message-outbound-exchange"></rabbit:fanout-exchange>
+	
 	<rabbit:direct-exchange name="case-outbound-exchange">
 		<rabbit:bindings>
 			<rabbit:binding queue="Case.LifecycleEvents" key="Case.LifecycleEvents.binding" />

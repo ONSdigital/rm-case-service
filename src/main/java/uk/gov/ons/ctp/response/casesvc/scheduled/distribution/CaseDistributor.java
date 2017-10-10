@@ -20,12 +20,12 @@ import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
+import uk.gov.ons.ctp.response.casesvc.message.EventPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
-import uk.gov.ons.ctp.common.events.EventExchange;
 
 import java.util.Arrays;
 import java.util.List;
@@ -78,7 +78,8 @@ public class CaseDistributor {
   private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
   
   @Autowired
-  private EventExchange eventExchange;
+  private EventPublisher eventPublisher;
+ // private EventExchange eventExchange;
 
   /**
    * wake up on schedule and check for cases that are in INIT state - fetch IACs
@@ -199,7 +200,7 @@ public class CaseDistributor {
     switch (caze.getState()) {
       case SAMPLED_INIT:
         event = CaseDTO.CaseEvent.ACTIVATED;
-        eventExchange.send("case Activated");
+        eventPublisher.publishEvent("case Activated");
         break;
       case REPLACEMENT_INIT:
         event = CaseDTO.CaseEvent.REPLACED;

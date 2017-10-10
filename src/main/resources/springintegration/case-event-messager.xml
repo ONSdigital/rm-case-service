@@ -18,14 +18,14 @@
 <rabbit:admin connection-factory="connectionFactory" />
 
 
-    <int:gateway id="dataSender" service-interface="uk.gov.ons.ctp.common.events.EventExchange" default-request-channel="messageOutput" />
-
+   <!-- <int:gateway id="dataSender" service-interface="uk.gov.ons.ctp.common.events.EventExchange" default-request-channel="messageOutput" />
+  -->
     <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" exchange="event-message-outbound-exchange"
-                       channel-transacted="true"/>
+                       channel-transacted="true" />
     
-    <int-amqp:publish-subscribe-channel id="messageOutput" connection-factory="connectionFactory"/>
+ <!--     <int-amqp:publish-subscribe-channel id="messageOutput" connection-factory="connectionFactory" />
     
     <int-amqp:outbound-channel-adapter channel="messageOutput"
-amqp-template="amqpTemplate" exchange-name="event-message-outbound-exchange" routing-key="event-message-outbound-exchange" />
-
+ amqp-template="amqpTemplate" exchange-name="event-message-outbound-exchange" routing-key="event-message-outbound-exchange" />
+ -->
 </beans>
