@@ -8,8 +8,6 @@
 	<rabbit:connection-factory id="connectionFactory"
     host="${rabbitmq.host}" username="${rabbitmq.username}" password="${rabbitmq.password}" virtual-host="${rabbitmq.virtualhost}" port="${rabbitmq.port}" />
 
-  <!--   <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" retry-template="retryTemplate" />
- -->
     <rabbit:admin id="amqpAdmin" connection-factory="connectionFactory"/>
 
 	<!-- Retry policy for a failed publish -->
