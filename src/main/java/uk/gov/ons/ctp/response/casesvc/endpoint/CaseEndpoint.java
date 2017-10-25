@@ -50,7 +50,8 @@ import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseGroupEndpoint.ERRORMS
 @Slf4j
 public final class CaseEndpoint implements CTPEndpoint {
 
-  public static final String CATEGORY_IAC_AUTH_NOT_FOUND = "Category ACCESS_CODE_AUTHENTICATION_ATTEMPT does not exist";
+  public static final String CATEGORY_ACCESS_CODE_AUTHENTICATION_ATTEMPT_NOT_FOUND =
+      "Category ACCESS_CODE_AUTHENTICATION_ATTEMPT does not exist";
   public static final String ERRORMSG_CASENOTFOUND = "Case not found for";
   public static final String EVENT_REQUIRES_NEW_CASE = "Event requested for "
           + "case %s requires additional data - new Case details";
@@ -291,7 +292,7 @@ public final class CaseEndpoint implements CTPEndpoint {
   private void createNewEventForAccessCodeAuthAttempt(Case caseObj) throws CTPException {
     Category cat = categoryService.findCategory(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
     if (cat == null) {
-      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, CATEGORY_IAC_AUTH_NOT_FOUND);
+      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, CATEGORY_ACCESS_CODE_AUTHENTICATION_ATTEMPT_NOT_FOUND);
     }
 
     CaseEvent caseEvent = new CaseEvent();

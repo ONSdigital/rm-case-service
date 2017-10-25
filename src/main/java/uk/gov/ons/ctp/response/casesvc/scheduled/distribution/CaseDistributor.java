@@ -1,7 +1,9 @@
 package uk.gov.ons.ctp.response.casesvc.scheduled.distribution;
 
-import lombok.extern.slf4j.Slf4j;
-import net.sourceforge.cobertura.CoverageIgnore;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+
+import lombok.extern.slf4j.Slf4j;
+import net.sourceforge.cobertura.CoverageIgnore;
 import uk.gov.ons.ctp.common.distributed.DistributedListManager;
 import uk.gov.ons.ctp.common.distributed.LockingException;
 import uk.gov.ons.ctp.common.error.CTPException;
@@ -26,11 +29,6 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * This is the 'service' class that distributes cases to the action service. It has a number of injected beans,
@@ -53,8 +51,6 @@ public class CaseDistributor {
   // this is a bit of a kludge - jpa does not like having an IN clause with an empty list
   // it does not return results when you expect it to - so ... always have this in the list of excluded case ids
   private static final int IMPOSSIBLE_CASE_ID = Integer.MAX_VALUE;
-
-  private static final long MILLISECONDS = 1000L;
 
   @Autowired
   private DistributedListManager<Integer> caseDistributionListManager;
@@ -181,7 +177,7 @@ public class CaseDistributor {
   }
 
   /**
-   * Deal with a single case - the transaction boundary is here.
+   * Deal with a single case.
    *
    * The processing requires to write to our own case table. A CaseNotification is also produced and added to the
    * outbound CaseNotifications sent to the action service.
@@ -190,7 +186,6 @@ public class CaseDistributor {
    * @param iac the IAC to assign to the Case
    * @throws CTPException when transitionCase does.
    */
-  @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = false, rollbackFor = Exception.class)
   private void processCase(final Case caze, final String iac) throws CTPException {
     UUID caseID = caze.getId();
     log.info("processing caseid {}", caseID);
