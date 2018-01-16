@@ -12,6 +12,7 @@
 		"createdBy": "SYSTEM",
 		"iac": "bbbb cccc dddd",
 		"actionPlanId": "5381731e-e386-41a1-8462-26373744db81",
+		"caseGroupStatus": "INPROGRESS",
 		"responses": [
 			{
 				"dateTime": 1460736159699,
@@ -32,6 +33,7 @@
 		"createdBy": "SYSTEM",
 		"iac": "cccc dddd ffff",
 		"actionPlanId": "5381731e-e386-41a1-8462-26373744db82",
+		"caseGroupStatus": "INPROGRESS",
 		"responses": [
 			{
 				"dateTime": 1460736159699,
@@ -52,6 +54,7 @@
 		"createdBy": "SYSTEM",
 		"iac": "dddd ffff gggg",
 		"actionPlanId": "5381731e-e386-41a1-8462-26373744db83",
+		"caseGroupStatus": "INPROGRESS",
 		"responses": [
 			{
 				"dateTime": 1460736159699,
@@ -72,6 +75,7 @@
 		"createdBy": "SYSTEM",
 		"iac": "ffff gggg hhhh",
 		"actionPlanId": "5381731e-e386-41a1-8462-26373744db84",
+		"caseGroupStatus": "INPROGRESS",
 		"responses": [
 			{
 				"dateTime": 1460736159699,
@@ -92,6 +96,7 @@
 		"createdBy": "SYSTEM",
 		"iac": "gggg hhhh jjjj",
 		"actionPlanId": "5381731e-e386-41a1-8462-26373744db81",
+		"caseGroupStatus": "INPROGRESS",
 		"responses": [
 			{
 				"dateTime": 1460736159699,
@@ -112,6 +117,7 @@
 		"createdBy": "SYSTEM",
 		"iac": "hhhh jjjj kkkk",
 		"actionPlanId": "5381731e-e386-41a1-8462-26373744db82",
+		"caseGroupStatus": "INPROGRESS",
 		"responses": [
 			{
 				"dateTime": 1460736159699,
@@ -132,6 +138,7 @@
 		"createdBy": "SYSTEM",
 		"iac": "jjjj kkkk llll",
 		"actionPlanId": "5381731e-e386-41a1-8462-26373744db83",
+		"caseGroupStatus": "INPROGRESS",
 		"responses": [
 			{
 				"dateTime": 1460736159699,
@@ -152,6 +159,7 @@
 		"createdBy": "SYSTEM",
 		"iac": "kkkk llll mmmm",
 		"actionPlanId": "5381731e-e386-41a1-8462-26373744db84",
+		"caseGroupStatus": "INPROGRESS",
 		"responses": [
 			{
 				"dateTime": 1460736159699,
@@ -172,6 +180,7 @@
 		"createdBy": "SYSTEM",
 		"iac": "kkkk llll mmmm",
 		"actionPlanId": "5381731e-e386-41a1-8462-26373744db84",
-		"responses": []
+			"caseGroupStatus": "NOTSTARTED",
+			"responses": []
 	}
 ]

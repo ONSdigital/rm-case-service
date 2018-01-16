@@ -24,6 +24,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
@@ -818,6 +819,50 @@ public class CaseServiceImplTest {
     verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
     verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(UUID.class),
             any(String.class));
+  }
+
+  @Test
+  public void testResponseStateUpdatedToComplete() throws Exception {
+    when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(
+            cases.get(ACTIONABLE_BI_CASE_FK));
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED)).thenReturn(categories.
+            get(CAT_COLLECTION_INSTRUMENT_DOWNLOADED));
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD)).thenReturn(categories.
+            get(CAT_SUCCESSFUL_RESPONSE_UPLOAD));
+
+    CaseEvent caseEvent1 = fabricateEvent(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED, ACTIONABLE_BI_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent1, null);
+
+    CaseEvent caseEvent2 = fabricateEvent(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, ACTIONABLE_BI_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent2, null);
+
+    Case updatedCase = cases.get(ACTIONABLE_BI_CASE_FK);
+    updatedCase.setCaseGroupStatus(CaseGroupStatus.COMPLETE);
+    verify(caseRepo, times(1)).saveAndFlush(updatedCase);
+  }
+
+  @Test
+  public void testResponseStateUpdatedToInprogress() throws Exception {
+    when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(
+            cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED)).thenReturn(categories.
+            get(CAT_COLLECTION_INSTRUMENT_DOWNLOADED));
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED)).thenReturn(categories.
+            get(CAT_RESPONDENT_ENROLED))
+    ;
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ENROLED, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
+
+    CaseEvent caseEvent1 = fabricateEvent(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent1, null);
+
+    Case updatedCase = cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    updatedCase.setCaseGroupStatus(CaseGroupStatus.INPROGRESS);
+    verify(caseRepo, times(1)).saveAndFlush(updatedCase);
   }
 
   /**
