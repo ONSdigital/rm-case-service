@@ -97,7 +97,7 @@ public class Case implements Serializable {
   private String createdBy;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "caseGroupStatus")
+  @Column(name = "casegroupstatus")
   private CaseGroupStatus caseGroupStatus;
 
   @OneToMany(mappedBy = "caseFK", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
