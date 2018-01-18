@@ -205,10 +205,9 @@ public class CaseServiceImpl implements CaseService {
 
     Boolean collectionInstrumentDownloaded = getState(caseEvents, CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED);
     Boolean successfullyUploaded = getState(caseEvents, CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD);
-    Boolean hasRespondent = getState(caseEvents,CategoryDTO.CategoryName.RESPONDENT_ENROLED);
 
     //TODO: Update logic once matrix analysis of how EQ's, SEFT's etc map to these statuses.
-    if(hasRespondent && !successfullyUploaded){
+    if(collectionInstrumentDownloaded && !successfullyUploaded){
       targetCase.setCaseGroupStatus(CaseGroupStatus.INPROGRESS);
       caseRepo.saveAndFlush(targetCase);
     }
