@@ -486,6 +486,7 @@ public class CaseServiceImpl implements CaseService {
     newCase.setCaseGroupFK(targetCase.getCaseGroupFK());
     newCase.setCreatedBy(caseEvent.getCreatedBy());
     newCase.setSourceCaseId(targetCase.getCasePK());
+    newCase.setCaseGroupStatus(CaseGroupStatus.NOTSTARTED);
     return caseRepo.saveAndFlush(newCase);
   }
 
