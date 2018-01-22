@@ -25,7 +25,11 @@ import uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitBase;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitChild;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
-import uk.gov.ons.ctp.response.casesvc.representation.*;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CollectionExerciseSvcClientService;
@@ -193,18 +197,18 @@ public class CaseServiceImpl implements CaseService {
       // should a new case be created?
       createNewCase(category, caseEvent, targetCase, newCase);
 
-      updateResponseState(caseEvent, targetCase);
+      updateCaseGroupStatus(caseEvent, targetCase);
     }
 
     return createdCaseEvent;
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
-  public void updateResponseState(final CaseEvent caseEvent, final Case targetCase) {
+  public void updateCaseGroupStatus(final CaseEvent caseEvent, final Case targetCase) {
     List<CaseEvent> caseEvents = findCaseEventsByCaseFK(caseEvent.getCaseFK());
 
-    Boolean collectionInstrumentDownloaded = getState(caseEvents, CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED);
-    Boolean successfullyUploaded = getState(caseEvents, CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD);
+    Boolean collectionInstrumentDownloaded = getCaseEvent(caseEvents, CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED);
+    Boolean successfullyUploaded = getCaseEvent(caseEvents, CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD);
 
     //TODO: Update logic once matrix analysis of how EQ's, SEFT's etc map to these statuses.
     if(collectionInstrumentDownloaded && !successfullyUploaded){
@@ -218,7 +222,7 @@ public class CaseServiceImpl implements CaseService {
     }
   }
 
-  private Boolean getState(List<CaseEvent> caseEvents, CategoryDTO.CategoryName categoryName) {
+  private Boolean getCaseEvent(List<CaseEvent> caseEvents, CategoryDTO.CategoryName categoryName) {
     return caseEvents.stream().anyMatch(caseEvent -> caseEvent.getCategory().equals(categoryName));
   }
 
