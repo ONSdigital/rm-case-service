@@ -24,6 +24,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitChild;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitChildren;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
 
@@ -100,6 +101,7 @@ public class CaseCreationServiceTest {
         capturedCase.get(0).getCollectionInstrumentId());
     assertEquals(UUID.fromString(sampleUnitParent.getActionPlanId()),
         capturedCase.get(0).getActionPlanId());
+    assertEquals(CaseGroupStatus.NOTSTARTED, capturedCase.get(0).getCaseGroupStatus());
   }
 
   /**
@@ -168,5 +170,6 @@ public class CaseCreationServiceTest {
         capturedCase.get(0).getCollectionInstrumentId());
     assertEquals(UUID.fromString(sampleUnitChild.getActionPlanId()),
         capturedCase.get(0).getActionPlanId());
+    assertEquals(CaseGroupStatus.NOTSTARTED, capturedCase.get(0).getCaseGroupStatus());
   }
 }

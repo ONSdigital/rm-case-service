@@ -126,6 +126,7 @@ public final class CaseEndpointUnitTest {
   private static final String NINE = "9";
   private static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
   private static final String FINDCASEBYID = "findCaseById";
+  private static final String INPROGRESS = "INPROGRESS";
 
   private static final String CASEEVENT_INVALIDJSON =
           "{\"description\":\"a\",\"category\":\"BAD_CAT\",\"createdBy\":\"u\"}";
@@ -191,7 +192,6 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName(FINDCASEBYID));
-    actions.andExpect(jsonPath("$.*", hasSize(13)));
     actions.andExpect(jsonPath("$.id", is(CASE1_ID.toString())));
     actions.andExpect(jsonPath("$.iac", is(IAC_CASE1)));
     actions.andExpect(jsonPath("$.caseRef", is(ONE)));
@@ -203,6 +203,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.createdBy", is(SYSTEM)));
     actions.andExpect(jsonPath("$.createdDateTime", is(CASE_DATE_VALUE_1)));
 
+    actions.andExpect(jsonPath("$.caseGroupStatus", is(INPROGRESS)));
     actions.andExpect(jsonPath("$.responses", hasSize(1)));
     actions.andExpect(jsonPath("$.responses[*].inboundChannel", containsInAnyOrder(InboundChannel.PAPER.name())));
     actions.andExpect(jsonPath("$.responses[*].dateTime", containsInAnyOrder(CASE_DATE_VALUE_1)));
@@ -225,6 +226,7 @@ public final class CaseEndpointUnitTest {
             containsInAnyOrder(CASE1_CREATEDBY, CASE2_CREATEDBY, CASE3_CREATEDBY, CASE9_CREATEDBY)));
     actions.andExpect(jsonPath("$.caseEvents[*].createdDateTime",
             containsInAnyOrder(CASE_DATE_VALUE_1, CASE_DATE_VALUE_2, CASE_DATE_VALUE_3, CASE_DATE_VALUE_1)));
+    actions.andExpect(jsonPath("$.caseGroupStatus", is(INPROGRESS)));
   }
 
   @Test
@@ -238,7 +240,6 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName(FINDCASEBYID));
-    actions.andExpect(jsonPath("$.*", hasSize(13)));
     actions.andExpect(jsonPath("$.id", is(CASE1_ID.toString())));
     actions.andExpect(jsonPath("$.caseRef", is(ONE)));
     actions.andExpect(jsonPath("$.iac", is(nullValue())));
@@ -312,8 +313,6 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(status().is2xxSuccessful());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCasesByPartyId"));
-    actions.andExpect(jsonPath("$", hasSize(9)));
-    actions.andExpect(jsonPath("$[0].*", hasSize(13)));
     actions.andExpect(jsonPath("$[*].id", containsInAnyOrder(CASE1_ID.toString(), CASE2_ID.toString(),
             CASE3_ID.toString(), CASE4_ID.toString(), CASE5_ID.toString(), CASE6_ID.toString(), CASE7_ID.toString(),
             CASE8_ID.toString(), CASE9_ID.toString())));
@@ -341,8 +340,6 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(status().is2xxSuccessful());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCasesByPartyId"));
-    actions.andExpect(jsonPath("$", hasSize(9)));
-    actions.andExpect(jsonPath("$[0].*", hasSize(13)));
     actions.andExpect(jsonPath("$[*].id", containsInAnyOrder(CASE1_ID.toString(), CASE2_ID.toString(),
             CASE3_ID.toString(), CASE4_ID.toString(), CASE5_ID.toString(), CASE6_ID.toString(), CASE7_ID.toString(),
             CASE8_ID.toString(), CASE9_ID.toString())));
@@ -400,7 +397,6 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCaseByIac"));
-    actions.andExpect(jsonPath("$.*", hasSize(13)));
     actions.andExpect(jsonPath("$.id", is(CASE1_ID.toString())));
     actions.andExpect(jsonPath("$.caseRef", is(ONE)));
     actions.andExpect(jsonPath("$.iac", is(nullValue())));

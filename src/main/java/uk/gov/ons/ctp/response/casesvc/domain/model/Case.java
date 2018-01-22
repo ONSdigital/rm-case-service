@@ -9,6 +9,7 @@ import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
 
@@ -94,6 +95,10 @@ public class Case implements Serializable {
 
   @Column(name = "createdby")
   private String createdBy;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "casegroupstatus")
+  private CaseGroupStatus caseGroupStatus;
 
   @OneToMany(mappedBy = "caseFK", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   private List<Response> responses;
