@@ -203,7 +203,6 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.createdBy", is(SYSTEM)));
     actions.andExpect(jsonPath("$.createdDateTime", is(CASE_DATE_VALUE_1)));
 
-    actions.andExpect(jsonPath("$.caseGroupStatus", is(INPROGRESS)));
     actions.andExpect(jsonPath("$.responses", hasSize(1)));
     actions.andExpect(jsonPath("$.responses[*].inboundChannel", containsInAnyOrder(InboundChannel.PAPER.name())));
     actions.andExpect(jsonPath("$.responses[*].dateTime", containsInAnyOrder(CASE_DATE_VALUE_1)));
@@ -214,6 +213,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.caseGroup.partyId", is(CASE1_CASEGROUP_PARTY_ID.toString())));
     actions.andExpect(jsonPath("$.caseGroup.sampleUnitRef", is(CASE1_CASEGROUP_SAMPLE_UNIT_REF)));
     actions.andExpect(jsonPath("$.caseGroup.sampleUnitType", is(CASE1_CASEGROUP_SAMPLE_UNIT_TYPE)));
+    actions.andExpect(jsonPath("$.caseGroup.caseGroupStatus", is(INPROGRESS)));
 
     actions.andExpect(jsonPath("$.caseEvents", hasSize(4)));
     actions.andExpect(jsonPath("$.caseEvents[*].description",
@@ -226,7 +226,6 @@ public final class CaseEndpointUnitTest {
             containsInAnyOrder(CASE1_CREATEDBY, CASE2_CREATEDBY, CASE3_CREATEDBY, CASE9_CREATEDBY)));
     actions.andExpect(jsonPath("$.caseEvents[*].createdDateTime",
             containsInAnyOrder(CASE_DATE_VALUE_1, CASE_DATE_VALUE_2, CASE_DATE_VALUE_3, CASE_DATE_VALUE_1)));
-    actions.andExpect(jsonPath("$.caseGroupStatus", is(INPROGRESS)));
   }
 
   @Test

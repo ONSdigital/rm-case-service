@@ -171,11 +171,15 @@ public class CaseServiceImplTest {
   @Mock
   private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
+  @Mock
+  private StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName> caseGroupStatusTransitionManager;
+
   @InjectMocks
   private CaseServiceImpl caseService;
 
   private List<Case> cases;
   private List<Category> categories;
+  private List<CaseGroup> caseGroups;
 
   /**
    * All of these tests require the mocked repos to respond with predictable
@@ -187,6 +191,7 @@ public class CaseServiceImplTest {
   public void setUp() throws Exception {
     cases = FixtureHelper.loadClassFixtures(Case[].class);
     categories = FixtureHelper.loadClassFixtures(Category[].class);
+    caseGroups = FixtureHelper.loadClassFixtures(CaseGroup[].class);
     mockStateTransitions();
     mockupCaseGroupRepo();
     mockAppConfigUse();
@@ -592,6 +597,10 @@ public class CaseServiceImplTest {
     when(categoryRepo.findOne(CategoryDTO.CategoryName.REFUSAL)).thenReturn(categories.get(CAT_REFUSAL));
     when(categoryRepo.findOne(CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE)).thenReturn(categories.
             get(CAT_ONLINE_QUESTIONNAIRE_RESPONSE));
+    when(caseGroupStatusTransitionManager.transition(CaseGroupStatus.NOTSTARTED,
+            CategoryDTO.CategoryName.REFUSAL)).thenReturn(CaseGroupStatus.NOTSTARTED);
+    when(caseGroupStatusTransitionManager.transition(CaseGroupStatus.NOTSTARTED,
+            CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE)).thenReturn(CaseGroupStatus.NOTSTARTED);
 
     CaseEvent refusalCaseEvent = fabricateEvent(CategoryDTO.CategoryName.REFUSAL, ACTIONABLE_H_INDIVIDUAL_CASE_FK);
     caseService.createCaseEvent(refusalCaseEvent, null);
@@ -823,13 +832,15 @@ public class CaseServiceImplTest {
   }
 
   @Test
-  public void testResponseStateUpdatedToComplete() throws Exception {
+  public void testCaseGroupStatusUpdatedToComplete() throws Exception {
     when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(
             cases.get(ACTIONABLE_BI_CASE_FK));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED)).thenReturn(categories.
-            get(CAT_COLLECTION_INSTRUMENT_DOWNLOADED));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD)).thenReturn(categories.
-            get(CAT_SUCCESSFUL_RESPONSE_UPLOAD));
+    when(caseGroupRepo.findById(cases.get(ACTIONABLE_BI_CASE_FK).getId())).thenReturn(caseGroups.get(0));
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED)).thenReturn(
+            categories.get(CAT_COLLECTION_INSTRUMENT_DOWNLOADED));
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED)).thenReturn(
+            categories.get(CAT_SUCCESSFUL_RESPONSE_UPLOAD));
+
 
     CaseEvent caseEvent1 = fabricateEvent(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED, ACTIONABLE_BI_CASE_FK);
 
@@ -839,10 +850,56 @@ public class CaseServiceImplTest {
 
     caseService.createCaseEvent(caseEvent2, null);
 
-    Case updatedCase = cases.get(ACTIONABLE_BI_CASE_FK);
-    updatedCase.setCaseGroupStatus(CaseGroupStatus.COMPLETE);
-    verify(caseRepo, times(1)).saveAndFlush(updatedCase);
+    //TODO: check casegroup repo called with updated casegroupstatus
+    CaseGroup updatedCaseGroup = caseGroups.get(0);
+    updatedCaseGroup.setCaseGroupStatus(CaseGroupStatus.COMPLETE);
+    verify(caseGroupRepo, times(1)).saveAndFlush(updatedCaseGroup);
   }
+
+  @Test
+  public void testCaseGroupStatusUpdatedToInprogress() throws Exception {
+    when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(
+            cases.get(ACTIONABLE_BI_CASE_FK));
+    when(caseGroupRepo.findById(cases.get(ACTIONABLE_BI_CASE_FK).getId())).thenReturn(caseGroups.get(0));
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED)).thenReturn(
+            categories.get(CAT_COLLECTION_INSTRUMENT_DOWNLOADED));
+    //I DON'T WANT TO MOCK THIS, I WANT TO TEST IT!
+    when(caseGroupStatusTransitionManager.transition(CaseGroupStatus.NOTSTARTED,
+            CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED)).thenReturn(CaseGroupStatus.INPROGRESS);
+
+
+    CaseEvent caseEvent1 = fabricateEvent(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED, ACTIONABLE_BI_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent1, null);
+
+    //TODO: check casegroup repo called with updated casegroupstatus
+    CaseGroup updatedCaseGroup = caseGroups.get(0);
+    updatedCaseGroup.setCaseGroupStatus(CaseGroupStatus.INPROGRESS);
+    verify(caseGroupRepo, times(1)).saveAndFlush(updatedCaseGroup);
+  }
+
+  @Test
+  public void testCaseGroupStatusUpdatedToCompleteFromInprogress() throws Exception {
+    when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(
+            cases.get(ACTIONABLE_BI_CASE_FK));
+    when(caseGroupRepo.findById(any(UUID.class))).thenReturn(caseGroups.get(1));
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD)).thenReturn(
+            categories.get(CAT_SUCCESSFUL_RESPONSE_UPLOAD));
+    //I DON'T WANT TO MOCK THIS, I WANT TO TEST IT!
+    when(caseGroupStatusTransitionManager.transition(CaseGroupStatus.INPROGRESS,
+            CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD)).thenReturn(CaseGroupStatus.COMPLETE);
+
+
+    CaseEvent caseEvent1 = fabricateEvent(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, ACTIONABLE_BI_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent1, null);
+
+    //TODO: check casegroup repo called with updated casegroupstatus
+    CaseGroup updatedCaseGroup = caseGroups.get(1);
+    updatedCaseGroup.setCaseGroupStatus(CaseGroupStatus.COMPLETE);
+    verify(caseGroupRepo, times(1)).saveAndFlush(updatedCaseGroup);
+  }
+
 
   /**
    * We create a CaseEvent with category ACTION_CANCELLATION_COMPLETED on an ACTIONABLE BRES case
@@ -868,6 +925,7 @@ public class CaseServiceImplTest {
     verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
     verify(caseSvcStateTransitionManager, never()).transition(any(CaseState.class),
             any(CaseDTO.CaseEvent.class));
+    verify(caseGroupStatusTransitionManager, times(1)).transition(CaseGroupStatus.NOTSTARTED, CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED);
     verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
     verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(UUID.class),
             any(String.class));

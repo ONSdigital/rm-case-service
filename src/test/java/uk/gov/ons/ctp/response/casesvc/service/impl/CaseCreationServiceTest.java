@@ -81,6 +81,7 @@ public class CaseCreationServiceTest {
         capturedCaseGroup.get(0).getPartyId());
     assertEquals(sampleUnitParent.getSampleUnitRef(), capturedCaseGroup.get(0).getSampleUnitRef());
     assertEquals(sampleUnitParent.getSampleUnitType(), capturedCaseGroup.get(0).getSampleUnitType());
+    assertEquals(CaseGroupStatus.NOTSTARTED, capturedCaseGroup.get(0).getCaseGroupStatus());
 
     ArgumentCaptor<Case> caze = ArgumentCaptor.forClass(Case.class);
 
@@ -101,7 +102,6 @@ public class CaseCreationServiceTest {
         capturedCase.get(0).getCollectionInstrumentId());
     assertEquals(UUID.fromString(sampleUnitParent.getActionPlanId()),
         capturedCase.get(0).getActionPlanId());
-    assertEquals(CaseGroupStatus.NOTSTARTED, capturedCase.get(0).getCaseGroupStatus());
   }
 
   /**
@@ -150,6 +150,8 @@ public class CaseCreationServiceTest {
         capturedCaseGroup.get(0).getPartyId());
     assertEquals(sampleUnitParent.getSampleUnitRef(), capturedCaseGroup.get(0).getSampleUnitRef());
     assertEquals(sampleUnitParent.getSampleUnitType(), capturedCaseGroup.get(0).getSampleUnitType());
+    assertEquals(CaseGroupStatus.NOTSTARTED, capturedCaseGroup.get(0).getCaseGroupStatus());
+
 
     ArgumentCaptor<Case> caze = ArgumentCaptor.forClass(Case.class);
 
@@ -170,6 +172,5 @@ public class CaseCreationServiceTest {
         capturedCase.get(0).getCollectionInstrumentId());
     assertEquals(UUID.fromString(sampleUnitChild.getActionPlanId()),
         capturedCase.get(0).getActionPlanId());
-    assertEquals(CaseGroupStatus.NOTSTARTED, capturedCase.get(0).getCaseGroupStatus());
   }
 }

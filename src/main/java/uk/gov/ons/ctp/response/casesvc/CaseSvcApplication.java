@@ -33,7 +33,9 @@ import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.state.CaseSvcStateTransitionManagerFactory;
 
 /**
@@ -60,13 +62,23 @@ public class CaseSvcApplication {
   private StateTransitionManagerFactory caseSvcStateTransitionManagerFactory;
 
   /**
-   * Bean to allow application to make controlled state transitions of Actions
-   * @return the state transition manager specifically for Actions
+   * Bean to allow application to make controlled state transitions of Cases
+   * @return the state transition manager specifically for Cases
    */
   @Bean
   public StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager() {
     return caseSvcStateTransitionManagerFactory.getStateTransitionManager(
             CaseSvcStateTransitionManagerFactory.CASE_ENTITY);
+  }
+
+  /**
+   * Bean to allow application to make controlled state transitions of CaseGroupStatus
+   * @return the state transition manager specifically for CaseGroup
+   */
+  @Bean
+  public StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName> caseGroupStatusTransitionManager() {
+    return caseSvcStateTransitionManagerFactory.getStateTransitionManager(
+            CaseSvcStateTransitionManagerFactory.CASE_GROUP);
   }
 
   /**

@@ -96,10 +96,6 @@ public class Case implements Serializable {
   @Column(name = "createdby")
   private String createdBy;
 
-  @Enumerated(EnumType.STRING)
-  @Column(name = "casegroupstatus")
-  private CaseGroupStatus caseGroupStatus;
-
   @OneToMany(mappedBy = "caseFK", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   private List<Response> responses;
 

@@ -73,6 +73,9 @@ public class CaseServiceImpl implements CaseService {
   private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
   @Autowired
+  private StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName> caseGroupStatusTransitionManager;
+
+  @Autowired
   private CaseEventRepository caseEventRepo;
 
   @Autowired
@@ -197,33 +200,35 @@ public class CaseServiceImpl implements CaseService {
       // should a new case be created?
       createNewCase(category, caseEvent, targetCase, newCase);
 
-      updateCaseGroupStatus(caseEvent, targetCase);
+      // transition case group status
+      transitionCaseGroupStatus(caseEvent, targetCase);
     }
 
     return createdCaseEvent;
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
-  public void updateCaseGroupStatus(final CaseEvent caseEvent, final Case targetCase) {
-    List<CaseEvent> caseEvents = findCaseEventsByCaseFK(caseEvent.getCaseFK());
+  public void transitionCaseGroupStatus(final CaseEvent caseEvent, final Case targetCase) {
+    CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
 
-    Boolean collectionInstrumentDownloaded = getCaseEvent(caseEvents, CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED);
-    Boolean successfullyUploaded = getCaseEvent(caseEvents, CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD);
+    CaseGroupStatus oldCaseGroupStatus = caseGroup.getCaseGroupStatus();
+    CaseGroupStatus newCaseGroupStatus = null;
 
-    //TODO: Update logic once matrix analysis of how EQ's, SEFT's etc map to these statuses.
-    if(collectionInstrumentDownloaded && !successfullyUploaded){
-      targetCase.setCaseGroupStatus(CaseGroupStatus.INPROGRESS);
-      caseRepo.saveAndFlush(targetCase);
+    try {
+       newCaseGroupStatus = caseGroupStatusTransitionManager.transition(oldCaseGroupStatus, caseEvent.getCategory());
+    } catch (CTPException e) {
+      //Couldn't transition state
+      //TODO: what to do?!
     }
 
-    if(collectionInstrumentDownloaded && successfullyUploaded) {
-      targetCase.setCaseGroupStatus(CaseGroupStatus.COMPLETE);
-      caseRepo.saveAndFlush(targetCase);
+    // was a state change effected?
+    if (!oldCaseGroupStatus.equals(newCaseGroupStatus)) {
+      caseGroup.setCaseGroupStatus(newCaseGroupStatus);
+      caseGroupRepo.saveAndFlush(caseGroup);
+      //TODO: need to notify action of casegroup update??
+      //notificationPublisher.sendNotification(prepareCaseNotification(targetCase, transitionEvent));
     }
-  }
 
-  private Boolean getCaseEvent(List<CaseEvent> caseEvents, CategoryDTO.CategoryName categoryName) {
-    return caseEvents.stream().anyMatch(caseEvent -> caseEvent.getCategory().equals(categoryName));
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
@@ -486,7 +491,6 @@ public class CaseServiceImpl implements CaseService {
     newCase.setCaseGroupFK(targetCase.getCaseGroupFK());
     newCase.setCreatedBy(caseEvent.getCreatedBy());
     newCase.setSourceCaseId(targetCase.getCasePK());
-    newCase.setCaseGroupStatus(CaseGroupStatus.NOTSTARTED);
     return caseRepo.saveAndFlush(newCase);
   }
 
@@ -525,6 +529,7 @@ public class CaseServiceImpl implements CaseService {
     newCaseGroup.setCollectionExerciseId(UUID.fromString(caseGroupData.getCollectionExerciseId()));
     newCaseGroup.setSampleUnitRef(caseGroupData.getSampleUnitRef());
     newCaseGroup.setSampleUnitType(caseGroupData.getSampleUnitType());
+    newCaseGroup.setCaseGroupStatus(CaseGroupStatus.NOTSTARTED);
 
     caseGroupRepo.saveAndFlush(newCaseGroup);
     log.debug("New CaseGroup created: {}", newCaseGroup.getId().toString());
@@ -555,7 +560,6 @@ public class CaseServiceImpl implements CaseService {
     newCase.setState(CaseState.SAMPLED_INIT);
     newCase.setCreatedDateTime(DateTimeUtil.nowUTC());
     newCase.setCreatedBy(Constants.SYSTEM);
-    newCase.setCaseGroupStatus(CaseGroupStatus.NOTSTARTED);
 
     return newCase;
   }
