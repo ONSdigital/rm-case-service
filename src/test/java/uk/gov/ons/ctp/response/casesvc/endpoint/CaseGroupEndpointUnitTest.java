@@ -18,6 +18,7 @@ import uk.gov.ons.ctp.common.error.RestExceptionHandler;
 import uk.gov.ons.ctp.common.jackson.CustomObjectMapper;
 import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 
 import java.util.UUID;
@@ -87,7 +88,7 @@ public final class CaseGroupEndpointUnitTest {
             .collectionExerciseId(CASE_GROUP_CE_ID)
             .partyId(CASE_GROUP_PARTY_ID)
             .sampleUnitRef(CASE_GROUP_SU_REF)
-            .sampleUnitType(CASE_GROUP_SU_TYPE).build();
+            .sampleUnitType(CASE_GROUP_SU_TYPE).caseGroupStatus(CaseGroupStatus.COMPLETE).build();
     when(caseGroupService.findCaseGroupById(CASE_GROUP_UUID)).
             thenReturn(result);
 
@@ -97,7 +98,6 @@ public final class CaseGroupEndpointUnitTest {
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CaseGroupEndpoint.class));
     actions.andExpect(handler().methodName("findCaseGroupById"));
-    actions.andExpect(jsonPath("$.*", Matchers.hasSize(5)));
     actions.andExpect(jsonPath("$.id",
             is(CASE_GROUP_UUID.toString())));
     actions.andExpect(jsonPath("$.collectionExerciseId",
@@ -108,6 +108,8 @@ public final class CaseGroupEndpointUnitTest {
             is(CASE_GROUP_SU_REF)));
     actions.andExpect(jsonPath("$.sampleUnitType",
             is(CASE_GROUP_SU_TYPE)));
+    actions.andExpect(jsonPath("$.caseGroupStatus",
+            is(CaseGroupStatus.COMPLETE.toString())));
   }
 
   /**

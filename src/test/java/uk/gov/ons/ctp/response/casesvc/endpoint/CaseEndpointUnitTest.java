@@ -213,7 +213,8 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.caseGroup.partyId", is(CASE1_CASEGROUP_PARTY_ID.toString())));
     actions.andExpect(jsonPath("$.caseGroup.sampleUnitRef", is(CASE1_CASEGROUP_SAMPLE_UNIT_REF)));
     actions.andExpect(jsonPath("$.caseGroup.sampleUnitType", is(CASE1_CASEGROUP_SAMPLE_UNIT_TYPE)));
-    actions.andExpect(jsonPath("$.caseGroup.caseGroupStatus", is(INPROGRESS)));
+    //TODO: will only work when the updated casesvc api is done
+    actions.andExpect(jsonPath("$.caseGroup.caseGroupStatus", is("NOTSTARTED")));
 
     actions.andExpect(jsonPath("$.caseEvents", hasSize(4)));
     actions.andExpect(jsonPath("$.caseEvents[*].description",
