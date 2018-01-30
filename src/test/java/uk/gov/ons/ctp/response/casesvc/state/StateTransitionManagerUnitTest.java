@@ -5,9 +5,13 @@ import org.testng.annotations.Test;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseEvent;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,31 +32,52 @@ public class StateTransitionManagerUnitTest {
   private static final int TIMEOUT = 10000;
   private static final int INVOCATIONS = 50;
   private static final int THREAD_POOL_SIZE = 10;
-  private Map<CaseState, Map<CaseEvent, CaseState>> validTransitions = new HashMap<>();
+  private Map<CaseState, Map<CaseEvent, CaseState>> validCaseTransitions = new HashMap<>();
+  private Map<CaseGroupStatus, Map<CategoryDTO.CategoryName, CaseGroupStatus>> validCaseGroupTransitions = new HashMap<>();
+  //TODO: check that passing in a
 
   /**
    * Setup the transitions
    */
   @BeforeClass
   public void setup() {
+    populateCaseTransitions();
+    populateCaseGroupStatusTransitions();
+
+  }
+
+  private void populateCaseTransitions() {
     Map<CaseEvent, CaseState> sampledInitTransitions = new HashMap<>();
     sampledInitTransitions.put(CaseEvent.ACTIVATED, CaseState.ACTIONABLE);
-    validTransitions.put(CaseState.SAMPLED_INIT, sampledInitTransitions);
+    validCaseTransitions.put(CaseState.SAMPLED_INIT, sampledInitTransitions);
 
     Map<CaseEvent, CaseState> replacementInitTransitions = new HashMap<>();
     replacementInitTransitions.put(CaseEvent.REPLACED, CaseState.ACTIONABLE);
-    validTransitions.put(CaseState.REPLACEMENT_INIT, replacementInitTransitions);
+    validCaseTransitions.put(CaseState.REPLACEMENT_INIT, replacementInitTransitions);
 
     Map<CaseEvent, CaseState> actionableTransitions = new HashMap<>();
     actionableTransitions.put(CaseEvent.ACCOUNT_CREATED, CaseState.ACTIONABLE);
     actionableTransitions.put(CaseEvent.DEACTIVATED, CaseState.INACTIONABLE);
     actionableTransitions.put(CaseEvent.DISABLED, CaseState.INACTIONABLE);
-    validTransitions.put(CaseState.ACTIONABLE, actionableTransitions);
+    validCaseTransitions.put(CaseState.ACTIONABLE, actionableTransitions);
 
     Map<CaseEvent, CaseState> inactionableTransitions = new HashMap<>();
     inactionableTransitions.put(CaseEvent.DEACTIVATED, CaseState.INACTIONABLE);
     inactionableTransitions.put(CaseEvent.DISABLED, CaseState.INACTIONABLE);
-    validTransitions.put(CaseState.INACTIONABLE, inactionableTransitions);
+    validCaseTransitions.put(CaseState.INACTIONABLE, inactionableTransitions);
+  }
+
+  private void populateCaseGroupStatusTransitions() {
+    //transitions from not started to in progress
+    Map<CategoryDTO.CategoryName, CaseGroupStatus> caseNotStartedTransitions = new HashMap<>();
+    caseNotStartedTransitions.put(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED, CaseGroupStatus.INPROGRESS);
+    validCaseGroupTransitions.put(CaseGroupStatus.NOTSTARTED, caseNotStartedTransitions);
+
+    //transitions from inprogress to completed
+    Map<CategoryDTO.CategoryName, CaseGroupStatus> caseInProgressTransitions = new HashMap<>();
+    caseInProgressTransitions.put(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, CaseGroupStatus.COMPLETE);
+    validCaseGroupTransitions.put(CaseGroupStatus.INPROGRESS, caseInProgressTransitions);
+
   }
 
   /**
@@ -64,7 +89,7 @@ public class StateTransitionManagerUnitTest {
     StateTransitionManager<CaseState, CaseEvent> stm = stmFactory.getStateTransitionManager(
             CaseSvcStateTransitionManagerFactory.CASE_ENTITY);
 
-    validTransitions.forEach((sourceState, transitions) -> {
+    validCaseTransitions.forEach((sourceState, transitions) -> {
       transitions.forEach((caseEvent, caseState) -> {
         try {
           assertEquals(caseState, stm.transition(sourceState, caseEvent));
@@ -80,6 +105,36 @@ public class StateTransitionManagerUnitTest {
             fail();
           } catch (CTPException ste) {
             assertEquals(String.format(TRANSITION_ERROR_MSG, sourceState, event), ste.getMessage());
+          }
+        }
+      });
+    });
+  }
+
+  @Test
+  public void testCaseGroupTransitions() {
+    StateTransitionManagerFactory factory = new CaseSvcStateTransitionManagerFactory();
+    StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName> caseGroupStageManager =
+            factory.getStateTransitionManager(CaseSvcStateTransitionManagerFactory.CASE_GROUP);
+
+    validCaseGroupTransitions.forEach((currentState, transitions) -> {
+      transitions.forEach((caseEvent, caseState) ->{
+        try {
+          CaseGroupStatus newStatus = caseGroupStageManager.transition(currentState, caseEvent);
+          assertEquals(caseState, newStatus);
+        } catch (CTPException e) {
+          fail();
+        }
+      });
+
+      Arrays.asList(CategoryDTO.CategoryName.values()).forEach(event -> {
+        if(!transitions.keySet().contains(event)) {
+          try {
+            //invalid state transition should fail
+            CaseGroupStatus newStatus = caseGroupStageManager.transition(currentState, event);
+            fail();
+          } catch (CTPException ste) {
+            assertEquals(String.format(TRANSITION_ERROR_MSG, currentState, event), ste.getMessage());
           }
         }
       });

@@ -226,7 +226,7 @@ public class CaseServiceImpl implements CaseService {
       log.error("Error transitioning caseGroupStatus", e);
     }
 
-    if (!oldCaseGroupStatus.equals(newCaseGroupStatus)) {
+    if (!oldCaseGroupStatus.equals(newCaseGroupStatus) && newCaseGroupStatus != null) {
       caseGroup.setCaseGroupStatus(newCaseGroupStatus);
       caseGroupRepo.saveAndFlush(caseGroup);
     }
