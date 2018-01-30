@@ -17,6 +17,7 @@ import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.error.InvalidRequestException;
 import uk.gov.ons.ctp.common.error.RestExceptionHandler;
 import uk.gov.ons.ctp.common.jackson.CustomObjectMapper;
+import uk.gov.ons.ctp.common.matcher.DateMatcher;
 import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
@@ -37,6 +38,7 @@ import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
@@ -102,9 +104,9 @@ public final class CaseEndpointUnitTest {
   private static final String CASE1_SUBCATEGORY = "subcat 1";
   private static final String CASE2_SUBCATEGORY = "subcat 2";
   private static final String CASE3_SUBCATEGORY = "subcat 3";
-  private static final String CASE_DATE_VALUE_1 = createTestDate("2016-04-15T17:02:39.699+0100");
-  private static final String CASE_DATE_VALUE_2 = createTestDate("2016-04-15T17:02:39.799+0100");
-  private static final String CASE_DATE_VALUE_3 = createTestDate("2016-04-15T17:02:39.899+0100");
+  private static final String CASE_DATE_VALUE_1 = "2016-04-15T17:02:39.699+01:00";
+  private static final String CASE_DATE_VALUE_2 = "2016-04-15T17:02:39.799+01:00";
+  private static final String CASE_DATE_VALUE_3 = "2016-04-15T17:02:39.899+01:00";
   private static final String IAC_CASE1 = "bbbb cccc dddd";
   private static final String IAC_CASE2 = "cccc dddd ffff";
   private static final String IAC_CASE3 = "dddd ffff gggg";
@@ -201,11 +203,12 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.sampleUnitType", is(CASE_SAMPLE_UNIT_TYPE_B)));
     actions.andExpect(jsonPath("$.state", is(CaseState.SAMPLED_INIT.name())));
     actions.andExpect(jsonPath("$.createdBy", is(SYSTEM)));
-    actions.andExpect(jsonPath("$.createdDateTime", is(CASE_DATE_VALUE_1)));
+     actions.andExpect(jsonPath("$.createdDateTime", is(new DateMatcher(CASE_DATE_VALUE_1))));
 
     actions.andExpect(jsonPath("$.responses", hasSize(1)));
     actions.andExpect(jsonPath("$.responses[*].inboundChannel", containsInAnyOrder(InboundChannel.PAPER.name())));
-    actions.andExpect(jsonPath("$.responses[*].dateTime", containsInAnyOrder(CASE_DATE_VALUE_1)));
+
+    actions.andExpect(jsonPath("$.responses[*].dateTime", contains(new DateMatcher(CASE_DATE_VALUE_1))));
 
     actions.andExpect(jsonPath("$.caseGroup.id", is(CASE1_CASEGROUP_ID.toString())));
     actions.andExpect(jsonPath("$.caseGroup.collectionExerciseId",
@@ -225,7 +228,10 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.caseEvents[*].createdBy",
             containsInAnyOrder(CASE1_CREATEDBY, CASE2_CREATEDBY, CASE3_CREATEDBY, CASE9_CREATEDBY)));
     actions.andExpect(jsonPath("$.caseEvents[*].createdDateTime",
-            containsInAnyOrder(CASE_DATE_VALUE_1, CASE_DATE_VALUE_2, CASE_DATE_VALUE_3, CASE_DATE_VALUE_1)));
+            contains(new DateMatcher(CASE_DATE_VALUE_1),
+                    new DateMatcher(CASE_DATE_VALUE_2),
+                    new DateMatcher(CASE_DATE_VALUE_3),
+                    new DateMatcher(CASE_DATE_VALUE_1))));
   }
 
   @Test
@@ -248,11 +254,11 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.sampleUnitType", is(CASE_SAMPLE_UNIT_TYPE_B)));
     actions.andExpect(jsonPath("$.state", is(CaseState.SAMPLED_INIT.name())));
     actions.andExpect(jsonPath("$.createdBy", is(SYSTEM)));
-    actions.andExpect(jsonPath("$.createdDateTime", is(CASE_DATE_VALUE_1)));
+    actions.andExpect(jsonPath("$.createdDateTime", is(new DateMatcher(CASE_DATE_VALUE_1))));
 
     actions.andExpect(jsonPath("$.responses", hasSize(1)));
     actions.andExpect(jsonPath("$.responses[*].inboundChannel", containsInAnyOrder(InboundChannel.PAPER.name())));
-    actions.andExpect(jsonPath("$.responses[*].dateTime", containsInAnyOrder(CASE_DATE_VALUE_1)));
+    actions.andExpect(jsonPath("$.responses[*].dateTime", contains(new DateMatcher(CASE_DATE_VALUE_1))));
 
     actions.andExpect(jsonPath("$.caseGroup.id", is(CASE1_CASEGROUP_ID.toString())));
     actions.andExpect(jsonPath("$.caseGroup.collectionExerciseId",
@@ -405,11 +411,11 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.sampleUnitType", is(CASE_SAMPLE_UNIT_TYPE_B)));
     actions.andExpect(jsonPath("$.state", is(CaseState.SAMPLED_INIT.name())));
     actions.andExpect(jsonPath("$.createdBy", is(SYSTEM)));
-    actions.andExpect(jsonPath("$.createdDateTime", is(CASE_DATE_VALUE_1)));
+     actions.andExpect(jsonPath("$.createdDateTime", is(new DateMatcher(CASE_DATE_VALUE_1))));
 
     actions.andExpect(jsonPath("$.responses", hasSize(1)));
     actions.andExpect(jsonPath("$.responses[*].inboundChannel", containsInAnyOrder(InboundChannel.PAPER.name())));
-    actions.andExpect(jsonPath("$.responses[*].dateTime", containsInAnyOrder(CASE_DATE_VALUE_1)));
+    actions.andExpect(jsonPath("$.responses[*].dateTime", contains(new DateMatcher(CASE_DATE_VALUE_1))));
 
     actions.andExpect(jsonPath("$.caseGroup.id", is(CASE1_CASEGROUP_ID.toString())));
     actions.andExpect(jsonPath("$.caseGroup.collectionExerciseId",
@@ -511,8 +517,10 @@ public final class CaseEndpointUnitTest {
             CASE3_SUBCATEGORY, null)));
     actions.andExpect(jsonPath("$[*].createdBy", containsInAnyOrder(CASE1_CREATEDBY, CASE2_CREATEDBY, CASE3_CREATEDBY,
             CASE9_CREATEDBY)));
-    actions.andExpect(jsonPath("$[*].createdDateTime", containsInAnyOrder(CASE_DATE_VALUE_1, CASE_DATE_VALUE_2,
-            CASE_DATE_VALUE_3, CASE_DATE_VALUE_1)));
+     actions.andExpect(jsonPath("$[*].createdDateTime", contains(new DateMatcher(CASE_DATE_VALUE_1),
+             new DateMatcher(CASE_DATE_VALUE_2),
+             new DateMatcher(CASE_DATE_VALUE_3),
+             new DateMatcher(CASE_DATE_VALUE_1))));
   }
 
   /**
@@ -588,7 +596,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.caseId", is(CASE9_ID.toString())));
     actions.andExpect(jsonPath("$.description", is(CASE9_DESCRIPTION)));
     actions.andExpect(jsonPath("$.createdBy", is(CASE9_CREATEDBY)));
-    actions.andExpect(jsonPath("$.createdDateTime", is(CASE_DATE_VALUE_1)));
+     actions.andExpect(jsonPath("$.createdDateTime", is(new DateMatcher(CASE_DATE_VALUE_1))));
     actions.andExpect(jsonPath("$.category", is(CASE9_CATEGORY)));
     actions.andExpect(jsonPath("$.partyId", is(CASE9_PARTYID.toString())));
     actions.andExpect(jsonPath("$.subCategory").doesNotExist());
