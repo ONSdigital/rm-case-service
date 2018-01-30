@@ -1,7 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -250,8 +249,9 @@ public class CaseServiceImplTest {
             .thenReturn(categories.get(CAT_ADDRESS_DETAILS_INCORRECT));
 
     Timestamp currentTime = DateTimeUtil.nowUTC();
-    CaseEvent caseEvent = new CaseEvent(1, NON_EXISTING_PARENT_CASE_FK, CASEEVENT_DESCRIPTION, CASEEVENT_CREATEDBY,
-        currentTime, CategoryDTO.CategoryName.ADDRESS_DETAILS_INCORRECT, CASEEVENT_SUBCATEGORY);
+    CaseEvent caseEvent = new CaseEvent(1, NON_EXISTING_PARENT_CASE_FK, CASEEVENT_DESCRIPTION,
+            CASEEVENT_CREATEDBY, currentTime, CategoryDTO.CategoryName.ADDRESS_DETAILS_INCORRECT,
+            CASEEVENT_SUBCATEGORY);
     CaseEvent result = caseService.createCaseEvent(caseEvent, null);
 
     verify(caseRepo).findOne(NON_EXISTING_PARENT_CASE_FK);
@@ -454,12 +454,12 @@ public class CaseServiceImplTest {
     verify(caseRepo, times(2)).saveAndFlush(any(Case.class));
     Case oldCase = caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
     verify(internetAccessCodeSvcClientService, times(1)).disableIAC(oldCase.getIac());
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-            any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
 
     // no new action to be created
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-        any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
 
     // action service should be told of case state change
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
@@ -492,8 +492,8 @@ public class CaseServiceImplTest {
     Case oldCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
     verify(internetAccessCodeSvcClientService, times(1)).disableIAC(oldCase.getIac());
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-            any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(caseEventRepository, times(1)).save(caseEvent);
   }
 
@@ -523,8 +523,8 @@ public class CaseServiceImplTest {
     // action service should be told of case state change
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
     // no new action to be created
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-        any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(caseEventRepository, times(1)).save(caseEvent);
   }
 
@@ -555,8 +555,8 @@ public class CaseServiceImplTest {
     // action service should be told of case state change
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
     // no new action to be created
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-        any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(caseEventRepository, times(1)).save(caseEvent);
   }
 
@@ -586,8 +586,8 @@ public class CaseServiceImplTest {
     Case oldCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(oldCase.getIac());
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-        any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(caseEventRepository, times(1)).save(caseEvent);
   }
 
@@ -643,8 +643,8 @@ public class CaseServiceImplTest {
     // IAC should not be disabled
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-          any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(caseEventRepository, times(0)).save(caseEvent);
   }
 
@@ -677,8 +677,8 @@ public class CaseServiceImplTest {
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.HOUSEHOLD_PAPER_REQUESTED);
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-          any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
     verify(caseEventRepository, times(0)).save(caseEvent);
   }
@@ -710,8 +710,8 @@ public class CaseServiceImplTest {
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED);
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-          any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
     verify(caseEventRepository, times(0)).save(caseEvent);
   }
@@ -846,7 +846,8 @@ public class CaseServiceImplTest {
             CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD)).thenReturn(CaseGroupStatus.COMPLETE);
 
 
-    CaseEvent caseEvent1 = fabricateEvent(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED, ACTIONABLE_BI_CASE_FK);
+    CaseEvent caseEvent1 = fabricateEvent(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED,
+            ACTIONABLE_BI_CASE_FK);
 
     caseService.createCaseEvent(caseEvent1, null);
 
@@ -879,7 +880,8 @@ public class CaseServiceImplTest {
             CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED)).thenReturn(CaseGroupStatus.INPROGRESS);
 
 
-    CaseEvent caseEvent1 = fabricateEvent(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED, ACTIONABLE_BI_CASE_FK);
+    CaseEvent caseEvent1 = fabricateEvent(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED,
+            ACTIONABLE_BI_CASE_FK);
 
     caseService.createCaseEvent(caseEvent1, null);
 
@@ -911,7 +913,7 @@ public class CaseServiceImplTest {
 
 
   @Test
-  public void testCaseGroupStatusNotUpdated() throws Exception{
+  public void testCaseGroupStatusNotUpdated() throws Exception {
     when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(
             cases.get(ACTIONABLE_BI_CASE_FK));
     when(caseGroupRepo.findOne(cases.get(ACTIONABLE_BI_CASE_FK).getCaseGroupFK())).thenReturn(caseGroups.get(1));
@@ -952,7 +954,8 @@ public class CaseServiceImplTest {
     verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
     verify(caseSvcStateTransitionManager, never()).transition(any(CaseState.class),
             any(CaseDTO.CaseEvent.class));
-    verify(caseGroupStatusTransitionManager, times(1)).transition(CaseGroupStatus.NOTSTARTED, CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED);
+    verify(caseGroupStatusTransitionManager, times(1)).transition(CaseGroupStatus.NOTSTARTED,
+            CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED);
     verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
     verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(UUID.class),
             any(String.class));
@@ -1045,8 +1048,8 @@ public class CaseServiceImplTest {
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-            any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
     verify(caseEventRepository, times(0)).save(caseEvent);
   }
@@ -1150,8 +1153,8 @@ public class CaseServiceImplTest {
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED);
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-            any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
     verify(caseEventRepository, times(0)).save(caseEvent);
   }
@@ -1206,8 +1209,8 @@ public class CaseServiceImplTest {
 
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
     // no new action to be created
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-            any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
   }
 
   /**
@@ -1237,8 +1240,8 @@ public class CaseServiceImplTest {
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED);
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-            any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
     verify(caseEventRepository, times(0)).save(caseEvent);
   }
@@ -1271,8 +1274,8 @@ public class CaseServiceImplTest {
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED);
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-            any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
     verify(caseEventRepository, times(0)).save(caseEvent);
   }
@@ -1333,8 +1336,8 @@ public class CaseServiceImplTest {
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED);
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-            any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
     verify(caseEventRepository, times(0)).save(caseEvent);
   }
@@ -1396,8 +1399,8 @@ public class CaseServiceImplTest {
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOAD);
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-              any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
     verify(caseEventRepository, times(0)).save(caseEvent);
   }
@@ -1459,8 +1462,8 @@ public class CaseServiceImplTest {
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED);
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-              any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
     verify(caseEventRepository, times(0)).save(caseEvent);
   }
@@ -1493,8 +1496,8 @@ public class CaseServiceImplTest {
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD);
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-              any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
     verify(caseEventRepository, times(0)).save(caseEvent);
   }
@@ -1531,8 +1534,8 @@ public class CaseServiceImplTest {
 
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
     // no new action to be created
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-            any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
   }
 
   /**

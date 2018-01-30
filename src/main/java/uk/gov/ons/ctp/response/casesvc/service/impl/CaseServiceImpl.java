@@ -207,8 +207,14 @@ public class CaseServiceImpl implements CaseService {
     return createdCaseEvent;
   }
 
+  /**
+   * Uses the state transition manager to transition the overarching casegroupstatus,
+   * this is the status for the overall progress of the survey.
+   * @param caseEvent
+   * @param targetCase
+   */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
-  public void transitionCaseGroupStatus(final CaseEvent caseEvent, final Case targetCase) {
+  private void transitionCaseGroupStatus(final CaseEvent caseEvent, final Case targetCase) {
     CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
 
     CaseGroupStatus oldCaseGroupStatus = caseGroup.getCaseGroupStatus();
@@ -217,16 +223,12 @@ public class CaseServiceImpl implements CaseService {
     try {
        newCaseGroupStatus = caseGroupStatusTransitionManager.transition(oldCaseGroupStatus, caseEvent.getCategory());
     } catch (CTPException e) {
-      //Couldn't transition state
-      //TODO: what to do?!
+      log.error("Error transitioning caseGroupStatus", e);
     }
 
-    // was a state change effected?
     if (!oldCaseGroupStatus.equals(newCaseGroupStatus)) {
       caseGroup.setCaseGroupStatus(newCaseGroupStatus);
       caseGroupRepo.saveAndFlush(caseGroup);
-      //TODO: need to notify action of casegroup update??
-      //notificationPublisher.sendNotification(prepareCaseNotification(targetCase, transitionEvent));
     }
 
   }

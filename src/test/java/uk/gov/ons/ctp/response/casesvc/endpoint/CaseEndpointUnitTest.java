@@ -23,6 +23,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
 import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
@@ -126,7 +127,6 @@ public final class CaseEndpointUnitTest {
   private static final String NINE = "9";
   private static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
   private static final String FINDCASEBYID = "findCaseById";
-  private static final String INPROGRESS = "INPROGRESS";
 
   private static final String CASEEVENT_INVALIDJSON =
           "{\"description\":\"a\",\"category\":\"BAD_CAT\",\"createdBy\":\"u\"}";
@@ -213,8 +213,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.caseGroup.partyId", is(CASE1_CASEGROUP_PARTY_ID.toString())));
     actions.andExpect(jsonPath("$.caseGroup.sampleUnitRef", is(CASE1_CASEGROUP_SAMPLE_UNIT_REF)));
     actions.andExpect(jsonPath("$.caseGroup.sampleUnitType", is(CASE1_CASEGROUP_SAMPLE_UNIT_TYPE)));
-    //TODO: will only work when the updated casesvc api is done
-    actions.andExpect(jsonPath("$.caseGroup.caseGroupStatus", is("NOTSTARTED")));
+    actions.andExpect(jsonPath("$.caseGroup.caseGroupStatus", is(CaseGroupStatus.NOTSTARTED.toString())));
 
     actions.andExpect(jsonPath("$.caseEvents", hasSize(4)));
     actions.andExpect(jsonPath("$.caseEvents[*].description",
