@@ -164,6 +164,7 @@ An `HTTP 404 Not Found` status code is returned if the case with the specified I
       "partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
       "sampleUnitRef": "0123456789",
       "sampleUnitType": "B",
+      "caseGroupStatus": "INPROGRESS"
     },
     "caseEvents": [
       {
@@ -215,6 +216,7 @@ An `HTTP 204 No Content` status code is returned if there are no cases found wit
     "partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
     "sampleUnitRef": "0123456789",
     "sampleUnitType": "B",
+    "caseGroupStatus": "INPROGRESS"
   },
   "caseEvents": [
     {

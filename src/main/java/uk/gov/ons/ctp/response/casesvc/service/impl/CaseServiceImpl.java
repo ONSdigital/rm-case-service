@@ -216,7 +216,7 @@ public class CaseServiceImpl implements CaseService {
     try {
        newCaseGroupStatus = caseGroupStatusTransitionManager.transition(oldCaseGroupStatus, caseEvent.getCategory());
     } catch (CTPException e) {
-      log.error("Error transitioning caseGroupStatus", e);
+      log.error("Error transitioning caseGroupStatus:, {}", e.getMessage());
     }
 
     if (!oldCaseGroupStatus.equals(newCaseGroupStatus) && newCaseGroupStatus != null) {
