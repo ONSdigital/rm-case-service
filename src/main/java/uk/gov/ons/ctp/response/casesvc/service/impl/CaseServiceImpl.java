@@ -203,10 +203,7 @@ public class CaseServiceImpl implements CaseService {
   /**
    * Uses the state transition manager to transition the overarching casegroupstatus,
    * this is the status for the overall progress of the survey.
-   * @param caseEvent
-   * @param targetCase
    */
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   private void transitionCaseGroupStatus(final CaseEvent caseEvent, final Case targetCase) {
     CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
 

@@ -5,3 +5,5 @@ CREATE TABLE casesvc.casegroupstatusaudit (
     status  character varying(20),
     createddatetime timestamp with time zone
 );
+
+CREATE SEQUENCE casesvc.casegroupstatusauditseq;
