@@ -266,6 +266,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.caseGroup.partyId", is(CASE1_CASEGROUP_PARTY_ID.toString())));
     actions.andExpect(jsonPath("$.caseGroup.sampleUnitRef", is(CASE1_CASEGROUP_SAMPLE_UNIT_REF)));
     actions.andExpect(jsonPath("$.caseGroup.sampleUnitType", is(CASE1_CASEGROUP_SAMPLE_UNIT_TYPE)));
+    actions.andExpect(jsonPath("$.caseGroup.caseGroupStatus", is(CaseGroupStatus.NOTSTARTED.toString())));
 
     actions.andExpect(jsonPath("$.caseEvents", is(nullValue())));
   }
@@ -423,6 +424,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.caseGroup.partyId", is(CASE1_CASEGROUP_PARTY_ID.toString())));
     actions.andExpect(jsonPath("$.caseGroup.sampleUnitRef", is(CASE1_CASEGROUP_SAMPLE_UNIT_REF)));
     actions.andExpect(jsonPath("$.caseGroup.sampleUnitType", is(CASE1_CASEGROUP_SAMPLE_UNIT_TYPE)));
+    actions.andExpect(jsonPath("$.caseGroup.caseGroupStatus", is(CaseGroupStatus.NOTSTARTED.toString())));
 
     actions.andExpect(jsonPath("$.caseEvents", is(nullValue())));
 

@@ -34,7 +34,6 @@ public class StateTransitionManagerUnitTest {
   private static final int THREAD_POOL_SIZE = 10;
   private Map<CaseState, Map<CaseEvent, CaseState>> validCaseTransitions = new HashMap<>();
   private Map<CaseGroupStatus, Map<CategoryDTO.CategoryName, CaseGroupStatus>> validCaseGroupTransitions = new HashMap<>();
-  //TODO: check that passing in a
 
   /**
    * Setup the transitions
