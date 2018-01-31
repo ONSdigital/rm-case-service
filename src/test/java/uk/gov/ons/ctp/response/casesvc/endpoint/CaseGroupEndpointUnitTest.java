@@ -88,7 +88,7 @@ public final class CaseGroupEndpointUnitTest {
             .collectionExerciseId(CASE_GROUP_CE_ID)
             .partyId(CASE_GROUP_PARTY_ID)
             .sampleUnitRef(CASE_GROUP_SU_REF)
-            .sampleUnitType(CASE_GROUP_SU_TYPE).caseGroupStatus(CaseGroupStatus.COMPLETE).build();
+            .sampleUnitType(CASE_GROUP_SU_TYPE).status(CaseGroupStatus.COMPLETE).build();
     when(caseGroupService.findCaseGroupById(CASE_GROUP_UUID)).
             thenReturn(result);
 

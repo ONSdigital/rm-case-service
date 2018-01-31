@@ -10,15 +10,8 @@ import org.springframework.util.StringUtils;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
-import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
-import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
-import uk.gov.ons.ctp.response.casesvc.domain.model.Response;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.model.*;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.*;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType;
@@ -30,10 +23,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
-import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
-import uk.gov.ons.ctp.response.casesvc.service.CaseService;
-import uk.gov.ons.ctp.response.casesvc.service.CollectionExerciseSvcClientService;
-import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
+import uk.gov.ons.ctp.response.casesvc.service.*;
 import uk.gov.ons.ctp.response.casesvc.utility.Constants;
 import uk.gov.ons.ctp.response.collection.exercise.representation.CaseTypeDTO;
 import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
@@ -80,6 +70,9 @@ public class CaseServiceImpl implements CaseService {
 
   @Autowired
   private CategoryRepository categoryRepo;
+
+  @Autowired
+  private CaseGroupAuditService caseGroupAuditService;
 
   @Autowired
   private ActionSvcClientService actionSvcClientService;
@@ -217,7 +210,7 @@ public class CaseServiceImpl implements CaseService {
   private void transitionCaseGroupStatus(final CaseEvent caseEvent, final Case targetCase) {
     CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
 
-    CaseGroupStatus oldCaseGroupStatus = caseGroup.getCaseGroupStatus();
+    CaseGroupStatus oldCaseGroupStatus = caseGroup.getStatus();
     CaseGroupStatus newCaseGroupStatus = null;
 
     try {
@@ -227,8 +220,9 @@ public class CaseServiceImpl implements CaseService {
     }
 
     if (!oldCaseGroupStatus.equals(newCaseGroupStatus) && newCaseGroupStatus != null) {
-      caseGroup.setCaseGroupStatus(newCaseGroupStatus);
+      caseGroup.setStatus(newCaseGroupStatus);
       caseGroupRepo.saveAndFlush(caseGroup);
+      caseGroupAuditService.updateAuditTable(caseGroup, caseEvent);
     }
 
   }
@@ -531,7 +525,7 @@ public class CaseServiceImpl implements CaseService {
     newCaseGroup.setCollectionExerciseId(UUID.fromString(caseGroupData.getCollectionExerciseId()));
     newCaseGroup.setSampleUnitRef(caseGroupData.getSampleUnitRef());
     newCaseGroup.setSampleUnitType(caseGroupData.getSampleUnitType());
-    newCaseGroup.setCaseGroupStatus(CaseGroupStatus.NOTSTARTED);
+    newCaseGroup.setStatus(CaseGroupStatus.NOTSTARTED);
 
     caseGroupRepo.saveAndFlush(newCaseGroup);
     log.debug("New CaseGroup created: {}", newCaseGroup.getId().toString());

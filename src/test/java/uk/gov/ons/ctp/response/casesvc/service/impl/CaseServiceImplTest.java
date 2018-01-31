@@ -28,6 +28,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
+import uk.gov.ons.ctp.response.casesvc.service.CaseGroupAuditService;
 import uk.gov.ons.ctp.response.casesvc.service.CollectionExerciseSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
@@ -172,6 +173,9 @@ public class CaseServiceImplTest {
 
   @Mock
   private StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName> caseGroupStatusTransitionManager;
+
+  @Mock
+  private CaseGroupAuditService caseGroupAuditService;
 
   @InjectMocks
   private CaseServiceImpl caseService;
@@ -858,10 +862,10 @@ public class CaseServiceImplTest {
     ArgumentCaptor<CaseGroup> captor = ArgumentCaptor.forClass(CaseGroup.class);
 
     CaseGroup initialUpdatedCaseGroup = caseGroups.get(0);
-    initialUpdatedCaseGroup.setCaseGroupStatus(CaseGroupStatus.INPROGRESS);
+    initialUpdatedCaseGroup.setStatus(CaseGroupStatus.INPROGRESS);
 
     CaseGroup finalUpdatedCaseGroup = caseGroups.get(0);
-    finalUpdatedCaseGroup.setCaseGroupStatus(CaseGroupStatus.COMPLETE);
+    finalUpdatedCaseGroup.setStatus(CaseGroupStatus.COMPLETE);
 
     verify(caseGroupRepo, times(2)).saveAndFlush(captor.capture());
     List<CaseGroup> caseGroupUpdates = captor.getAllValues();
@@ -886,7 +890,8 @@ public class CaseServiceImplTest {
     caseService.createCaseEvent(caseEvent1, null);
 
     CaseGroup updatedCaseGroup = caseGroups.get(0);
-    updatedCaseGroup.setCaseGroupStatus(CaseGroupStatus.INPROGRESS);
+    updatedCaseGroup
+            .setStatus(CaseGroupStatus.INPROGRESS);
     verify(caseGroupRepo, times(1)).saveAndFlush(updatedCaseGroup);
   }
 
@@ -907,7 +912,7 @@ public class CaseServiceImplTest {
     caseService.createCaseEvent(caseEvent1, null);
 
     CaseGroup updatedCaseGroup = caseGroups.get(1);
-    updatedCaseGroup.setCaseGroupStatus(CaseGroupStatus.COMPLETE);
+    updatedCaseGroup.setStatus(CaseGroupStatus.COMPLETE);
     verify(caseGroupRepo, times(1)).saveAndFlush(updatedCaseGroup);
   }
 

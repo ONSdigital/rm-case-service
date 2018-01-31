@@ -57,7 +57,7 @@ public class CaseGroup implements Serializable {
   private String sampleUnitType;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "casegroupstatus")
-  private CaseGroupStatus caseGroupStatus;
+  @Column(name = "status")
+  private CaseGroupStatus status;
 
 }

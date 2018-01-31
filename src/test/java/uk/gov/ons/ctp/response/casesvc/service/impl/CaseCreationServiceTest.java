@@ -81,7 +81,7 @@ public class CaseCreationServiceTest {
         capturedCaseGroup.get(0).getPartyId());
     assertEquals(sampleUnitParent.getSampleUnitRef(), capturedCaseGroup.get(0).getSampleUnitRef());
     assertEquals(sampleUnitParent.getSampleUnitType(), capturedCaseGroup.get(0).getSampleUnitType());
-    assertEquals(CaseGroupStatus.NOTSTARTED, capturedCaseGroup.get(0).getCaseGroupStatus());
+    assertEquals(CaseGroupStatus.NOTSTARTED, capturedCaseGroup.get(0).getStatus());
 
     ArgumentCaptor<Case> caze = ArgumentCaptor.forClass(Case.class);
 
@@ -150,7 +150,7 @@ public class CaseCreationServiceTest {
         capturedCaseGroup.get(0).getPartyId());
     assertEquals(sampleUnitParent.getSampleUnitRef(), capturedCaseGroup.get(0).getSampleUnitRef());
     assertEquals(sampleUnitParent.getSampleUnitType(), capturedCaseGroup.get(0).getSampleUnitType());
-    assertEquals(CaseGroupStatus.NOTSTARTED, capturedCaseGroup.get(0).getCaseGroupStatus());
+    assertEquals(CaseGroupStatus.NOTSTARTED, capturedCaseGroup.get(0).getStatus());
 
 
     ArgumentCaptor<Case> caze = ArgumentCaptor.forClass(Case.class);

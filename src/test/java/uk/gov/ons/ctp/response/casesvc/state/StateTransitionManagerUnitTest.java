@@ -43,7 +43,6 @@ public class StateTransitionManagerUnitTest {
   public void setup() {
     populateCaseTransitions();
     populateCaseGroupStatusTransitions();
-
   }
 
   private void populateCaseTransitions() {
