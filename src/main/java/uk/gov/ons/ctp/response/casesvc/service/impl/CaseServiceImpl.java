@@ -222,7 +222,7 @@ public class CaseServiceImpl implements CaseService {
     if (!oldCaseGroupStatus.equals(newCaseGroupStatus) && newCaseGroupStatus != null) {
       caseGroup.setStatus(newCaseGroupStatus);
       caseGroupRepo.saveAndFlush(caseGroup);
-      caseGroupAuditService.updateAuditTable(caseGroup, caseEvent);
+      caseGroupAuditService.updateAuditTable(caseGroup, caseEvent, targetCase);
     }
 
   }

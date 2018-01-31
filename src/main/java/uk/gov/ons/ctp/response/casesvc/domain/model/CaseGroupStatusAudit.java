@@ -10,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.sql.Timestamp;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -22,8 +23,8 @@ public class CaseGroupStatusAudit {
     @Column(name = "casegroupfk")
     private int caseGroupFK;
 
-    @Column(name = "createdby")
-    private String createdBy;
+    @Column(name = "partyid")
+    private UUID partyId;
 
     @Column(name = "status")
     private CaseGroupStatus status;

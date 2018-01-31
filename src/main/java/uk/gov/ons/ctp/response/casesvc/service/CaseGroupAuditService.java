@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.service;
 
+import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 
@@ -10,6 +11,6 @@ public interface CaseGroupAuditService {
      * @param caseGroup
      * @param caseEvent
      */
-    void updateAuditTable(final CaseGroup caseGroup, final CaseEvent caseEvent) ;
+    void updateAuditTable(final CaseGroup caseGroup, final CaseEvent caseEvent, final Case caze) ;
 
 }
