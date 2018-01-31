@@ -24,7 +24,6 @@ public class CaseGroupAuditServiceImpl implements CaseGroupAuditService {
         auditEntity.setCaseGroupFK(caseGroup.getCaseGroupPK());
         auditEntity.setStatus(caseGroup.getStatus());
         auditEntity.setCreatedDateTime(DateTimeUtil.nowUTC());
-        //TODO: DON'T ACTUALLY HAVE THE PARTY ID? OR IS THIS IT IN STRING
         auditEntity.setCreatedBy(caseEvent.getCreatedBy());
         caseGroupStatusAuditRepository.saveAndFlush(auditEntity);
 
