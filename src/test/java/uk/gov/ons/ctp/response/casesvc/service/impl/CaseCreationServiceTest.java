@@ -24,6 +24,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitChild;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitChildren;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
 
@@ -80,6 +81,7 @@ public class CaseCreationServiceTest {
         capturedCaseGroup.get(0).getPartyId());
     assertEquals(sampleUnitParent.getSampleUnitRef(), capturedCaseGroup.get(0).getSampleUnitRef());
     assertEquals(sampleUnitParent.getSampleUnitType(), capturedCaseGroup.get(0).getSampleUnitType());
+    assertEquals(CaseGroupStatus.NOTSTARTED, capturedCaseGroup.get(0).getStatus());
 
     ArgumentCaptor<Case> caze = ArgumentCaptor.forClass(Case.class);
 
@@ -148,6 +150,8 @@ public class CaseCreationServiceTest {
         capturedCaseGroup.get(0).getPartyId());
     assertEquals(sampleUnitParent.getSampleUnitRef(), capturedCaseGroup.get(0).getSampleUnitRef());
     assertEquals(sampleUnitParent.getSampleUnitType(), capturedCaseGroup.get(0).getSampleUnitType());
+    assertEquals(CaseGroupStatus.NOTSTARTED, capturedCaseGroup.get(0).getStatus());
+
 
     ArgumentCaptor<Case> caze = ArgumentCaptor.forClass(Case.class);
 

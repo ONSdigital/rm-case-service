@@ -4,6 +4,7 @@
     "collectionExerciseId": "dab9db7f-3aa0-4866-be20-54d72ee185fb",
     "partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
     "sampleUnitRef": "0123456789",
-    "sampleUnitType": "B"
+    "sampleUnitType": "B",
+    "status": "NOTSTARTED"
   }
 ]

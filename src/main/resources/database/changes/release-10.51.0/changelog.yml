@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 10.51.0-1
+      author: Lewis Babbage
+      changes:
+        - sqlFile:
+            comment: Migrate existing data to casegroupstatus
+            path: update_case_group_status.sql
+            relativeToChangelogFile: true
+            splitStatements: false

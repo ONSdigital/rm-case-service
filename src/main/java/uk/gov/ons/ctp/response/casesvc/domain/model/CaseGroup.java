@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +14,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Enumerated;
+import javax.persistence.EnumType;
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -52,5 +55,9 @@ public class CaseGroup implements Serializable {
 
   @Column(name = "sampleunittype")
   private String sampleUnitType;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "status")
+  private CaseGroupStatus status;
 
 }

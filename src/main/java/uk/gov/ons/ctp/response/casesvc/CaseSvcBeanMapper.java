@@ -42,6 +42,7 @@ public class CaseSvcBeanMapper extends ConfigurableMapper {
 
     factory
         .classMap(CaseGroup.class, CaseGroupDTO.class)
+            .field("status", "caseGroupStatus")
         .byDefault()
         .register();
 

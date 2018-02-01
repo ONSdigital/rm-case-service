@@ -24,6 +24,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
 import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
@@ -193,7 +194,6 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName(FINDCASEBYID));
-    actions.andExpect(jsonPath("$.*", hasSize(13)));
     actions.andExpect(jsonPath("$.id", is(CASE1_ID.toString())));
     actions.andExpect(jsonPath("$.iac", is(IAC_CASE1)));
     actions.andExpect(jsonPath("$.caseRef", is(ONE)));
@@ -216,6 +216,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.caseGroup.partyId", is(CASE1_CASEGROUP_PARTY_ID.toString())));
     actions.andExpect(jsonPath("$.caseGroup.sampleUnitRef", is(CASE1_CASEGROUP_SAMPLE_UNIT_REF)));
     actions.andExpect(jsonPath("$.caseGroup.sampleUnitType", is(CASE1_CASEGROUP_SAMPLE_UNIT_TYPE)));
+    actions.andExpect(jsonPath("$.caseGroup.caseGroupStatus", is(CaseGroupStatus.NOTSTARTED.toString())));
 
     actions.andExpect(jsonPath("$.caseEvents", hasSize(4)));
     actions.andExpect(jsonPath("$.caseEvents[*].description",
@@ -244,7 +245,6 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName(FINDCASEBYID));
-    actions.andExpect(jsonPath("$.*", hasSize(13)));
     actions.andExpect(jsonPath("$.id", is(CASE1_ID.toString())));
     actions.andExpect(jsonPath("$.caseRef", is(ONE)));
     actions.andExpect(jsonPath("$.iac", is(nullValue())));
@@ -266,6 +266,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.caseGroup.partyId", is(CASE1_CASEGROUP_PARTY_ID.toString())));
     actions.andExpect(jsonPath("$.caseGroup.sampleUnitRef", is(CASE1_CASEGROUP_SAMPLE_UNIT_REF)));
     actions.andExpect(jsonPath("$.caseGroup.sampleUnitType", is(CASE1_CASEGROUP_SAMPLE_UNIT_TYPE)));
+    actions.andExpect(jsonPath("$.caseGroup.caseGroupStatus", is(CaseGroupStatus.NOTSTARTED.toString())));
 
     actions.andExpect(jsonPath("$.caseEvents", is(nullValue())));
   }
@@ -318,8 +319,6 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(status().is2xxSuccessful());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCasesByPartyId"));
-    actions.andExpect(jsonPath("$", hasSize(9)));
-    actions.andExpect(jsonPath("$[0].*", hasSize(13)));
     actions.andExpect(jsonPath("$[*].id", containsInAnyOrder(CASE1_ID.toString(), CASE2_ID.toString(),
             CASE3_ID.toString(), CASE4_ID.toString(), CASE5_ID.toString(), CASE6_ID.toString(), CASE7_ID.toString(),
             CASE8_ID.toString(), CASE9_ID.toString())));
@@ -347,8 +346,6 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(status().is2xxSuccessful());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCasesByPartyId"));
-    actions.andExpect(jsonPath("$", hasSize(9)));
-    actions.andExpect(jsonPath("$[0].*", hasSize(13)));
     actions.andExpect(jsonPath("$[*].id", containsInAnyOrder(CASE1_ID.toString(), CASE2_ID.toString(),
             CASE3_ID.toString(), CASE4_ID.toString(), CASE5_ID.toString(), CASE6_ID.toString(), CASE7_ID.toString(),
             CASE8_ID.toString(), CASE9_ID.toString())));
@@ -406,7 +403,6 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCaseByIac"));
-    actions.andExpect(jsonPath("$.*", hasSize(13)));
     actions.andExpect(jsonPath("$.id", is(CASE1_ID.toString())));
     actions.andExpect(jsonPath("$.caseRef", is(ONE)));
     actions.andExpect(jsonPath("$.iac", is(nullValue())));
@@ -428,6 +424,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.caseGroup.partyId", is(CASE1_CASEGROUP_PARTY_ID.toString())));
     actions.andExpect(jsonPath("$.caseGroup.sampleUnitRef", is(CASE1_CASEGROUP_SAMPLE_UNIT_REF)));
     actions.andExpect(jsonPath("$.caseGroup.sampleUnitType", is(CASE1_CASEGROUP_SAMPLE_UNIT_TYPE)));
+    actions.andExpect(jsonPath("$.caseGroup.caseGroupStatus", is(CaseGroupStatus.NOTSTARTED.toString())));
 
     actions.andExpect(jsonPath("$.caseEvents", is(nullValue())));
 

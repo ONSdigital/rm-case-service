@@ -24,9 +24,11 @@ import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
+import uk.gov.ons.ctp.response.casesvc.service.CaseGroupAuditService;
 import uk.gov.ons.ctp.response.casesvc.service.CollectionExerciseSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
@@ -169,11 +171,18 @@ public class CaseServiceImplTest {
   @Mock
   private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
+  @Mock
+  private StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName> caseGroupStatusTransitionManager;
+
+  @Mock
+  private CaseGroupAuditService caseGroupAuditService;
+
   @InjectMocks
   private CaseServiceImpl caseService;
 
   private List<Case> cases;
   private List<Category> categories;
+  private List<CaseGroup> caseGroups;
 
   /**
    * All of these tests require the mocked repos to respond with predictable
@@ -185,6 +194,7 @@ public class CaseServiceImplTest {
   public void setUp() throws Exception {
     cases = FixtureHelper.loadClassFixtures(Case[].class);
     categories = FixtureHelper.loadClassFixtures(Category[].class);
+    caseGroups = FixtureHelper.loadClassFixtures(CaseGroup[].class);
     mockStateTransitions();
     mockupCaseGroupRepo();
     mockAppConfigUse();
@@ -243,8 +253,9 @@ public class CaseServiceImplTest {
             .thenReturn(categories.get(CAT_ADDRESS_DETAILS_INCORRECT));
 
     Timestamp currentTime = DateTimeUtil.nowUTC();
-    CaseEvent caseEvent = new CaseEvent(1, NON_EXISTING_PARENT_CASE_FK, CASEEVENT_DESCRIPTION, CASEEVENT_CREATEDBY,
-        currentTime, CategoryDTO.CategoryName.ADDRESS_DETAILS_INCORRECT, CASEEVENT_SUBCATEGORY);
+    CaseEvent caseEvent = new CaseEvent(1, NON_EXISTING_PARENT_CASE_FK, CASEEVENT_DESCRIPTION,
+            CASEEVENT_CREATEDBY, currentTime, CategoryDTO.CategoryName.ADDRESS_DETAILS_INCORRECT,
+            CASEEVENT_SUBCATEGORY);
     CaseEvent result = caseService.createCaseEvent(caseEvent, null);
 
     verify(caseRepo).findOne(NON_EXISTING_PARENT_CASE_FK);
@@ -447,12 +458,12 @@ public class CaseServiceImplTest {
     verify(caseRepo, times(2)).saveAndFlush(any(Case.class));
     Case oldCase = caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
     verify(internetAccessCodeSvcClientService, times(1)).disableIAC(oldCase.getIac());
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-            any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
 
     // no new action to be created
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-        any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
 
     // action service should be told of case state change
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
@@ -485,8 +496,8 @@ public class CaseServiceImplTest {
     Case oldCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
     verify(internetAccessCodeSvcClientService, times(1)).disableIAC(oldCase.getIac());
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-            any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(caseEventRepository, times(1)).save(caseEvent);
   }
 
@@ -516,8 +527,8 @@ public class CaseServiceImplTest {
     // action service should be told of case state change
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
     // no new action to be created
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-        any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(caseEventRepository, times(1)).save(caseEvent);
   }
 
@@ -548,8 +559,8 @@ public class CaseServiceImplTest {
     // action service should be told of case state change
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
     // no new action to be created
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-        any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(caseEventRepository, times(1)).save(caseEvent);
   }
 
@@ -579,8 +590,8 @@ public class CaseServiceImplTest {
     Case oldCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(oldCase.getIac());
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-        any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(caseEventRepository, times(1)).save(caseEvent);
   }
 
@@ -590,6 +601,11 @@ public class CaseServiceImplTest {
     when(categoryRepo.findOne(CategoryDTO.CategoryName.REFUSAL)).thenReturn(categories.get(CAT_REFUSAL));
     when(categoryRepo.findOne(CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE)).thenReturn(categories.
             get(CAT_ONLINE_QUESTIONNAIRE_RESPONSE));
+    when(caseGroupStatusTransitionManager.transition(CaseGroupStatus.NOTSTARTED,
+            CategoryDTO.CategoryName.REFUSAL)).thenThrow(new CTPException(CTPException.Fault.BAD_REQUEST));
+    when(caseGroupStatusTransitionManager.transition(CaseGroupStatus.NOTSTARTED,
+            CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE))
+            .thenThrow(new CTPException(CTPException.Fault.BAD_REQUEST));
 
     CaseEvent refusalCaseEvent = fabricateEvent(CategoryDTO.CategoryName.REFUSAL, ACTIONABLE_H_INDIVIDUAL_CASE_FK);
     caseService.createCaseEvent(refusalCaseEvent, null);
@@ -632,8 +648,8 @@ public class CaseServiceImplTest {
     // IAC should not be disabled
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-          any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(caseEventRepository, times(0)).save(caseEvent);
   }
 
@@ -666,8 +682,8 @@ public class CaseServiceImplTest {
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.HOUSEHOLD_PAPER_REQUESTED);
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-          any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
     verify(caseEventRepository, times(0)).save(caseEvent);
   }
@@ -699,8 +715,8 @@ public class CaseServiceImplTest {
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED);
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-          any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
     verify(caseEventRepository, times(0)).save(caseEvent);
   }
@@ -820,6 +836,106 @@ public class CaseServiceImplTest {
             any(String.class));
   }
 
+  @Test
+  public void testCaseGroupStatusUpdatedToComplete() throws Exception {
+    when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(
+            cases.get(ACTIONABLE_BI_CASE_FK));
+    when(caseGroupRepo.findById(cases.get(ACTIONABLE_BI_CASE_FK).getCaseGroupId())).thenReturn(caseGroups.get(0));
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED)).thenReturn(
+            categories.get(CAT_COLLECTION_INSTRUMENT_DOWNLOADED));
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD)).thenReturn(
+            categories.get(CAT_SUCCESSFUL_RESPONSE_UPLOAD));
+    when(caseGroupStatusTransitionManager.transition(CaseGroupStatus.NOTSTARTED,
+            CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED)).thenReturn(CaseGroupStatus.INPROGRESS);
+    when(caseGroupStatusTransitionManager.transition(CaseGroupStatus.INPROGRESS,
+            CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD)).thenReturn(CaseGroupStatus.COMPLETE);
+
+
+    CaseEvent caseEvent1 = fabricateEvent(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED,
+            ACTIONABLE_BI_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent1, null);
+
+    CaseEvent caseEvent2 = fabricateEvent(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, ACTIONABLE_BI_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent2, null);
+
+    ArgumentCaptor<CaseGroup> captor = ArgumentCaptor.forClass(CaseGroup.class);
+
+    CaseGroup initialUpdatedCaseGroup = caseGroups.get(0);
+    initialUpdatedCaseGroup.setStatus(CaseGroupStatus.INPROGRESS);
+
+    CaseGroup finalUpdatedCaseGroup = caseGroups.get(0);
+    finalUpdatedCaseGroup.setStatus(CaseGroupStatus.COMPLETE);
+
+    verify(caseGroupRepo, times(2)).saveAndFlush(captor.capture());
+    List<CaseGroup> caseGroupUpdates = captor.getAllValues();
+    assertEquals(caseGroupUpdates.get(0), initialUpdatedCaseGroup);
+    assertEquals(caseGroupUpdates.get(1), finalUpdatedCaseGroup);
+  }
+
+  @Test
+  public void testCaseGroupStatusUpdatedToInprogress() throws Exception {
+    when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(
+            cases.get(ACTIONABLE_BI_CASE_FK));
+    when(caseGroupRepo.findById(cases.get(ACTIONABLE_BI_CASE_FK).getCaseGroupId())).thenReturn(caseGroups.get(1));
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED)).thenReturn(
+            categories.get(CAT_COLLECTION_INSTRUMENT_DOWNLOADED));
+    when(caseGroupStatusTransitionManager.transition(CaseGroupStatus.NOTSTARTED,
+            CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED)).thenReturn(CaseGroupStatus.INPROGRESS);
+
+
+    CaseEvent caseEvent1 = fabricateEvent(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED,
+            ACTIONABLE_BI_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent1, null);
+
+    CaseGroup updatedCaseGroup = caseGroups.get(0);
+    updatedCaseGroup
+            .setStatus(CaseGroupStatus.INPROGRESS);
+    verify(caseGroupRepo, times(1)).saveAndFlush(updatedCaseGroup);
+  }
+
+  @Test
+  public void testCaseGroupStatusUpdatedToCompleteFromInprogress() throws Exception {
+    when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(
+            cases.get(ACTIONABLE_BI_CASE_FK));
+    when(caseGroupRepo.findOne(cases.get(ACTIONABLE_BI_CASE_FK).getCaseGroupFK())).thenReturn(caseGroups.get(1));
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD)).thenReturn(
+            categories.get(CAT_SUCCESSFUL_RESPONSE_UPLOAD));
+    when(caseGroupStatusTransitionManager.transition(CaseGroupStatus.INPROGRESS,
+            CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD)).thenReturn(CaseGroupStatus.COMPLETE);
+
+
+    CaseEvent caseEvent1 = fabricateEvent(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, ACTIONABLE_BI_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent1, null);
+
+    CaseGroup updatedCaseGroup = caseGroups.get(1);
+    updatedCaseGroup.setStatus(CaseGroupStatus.COMPLETE);
+    verify(caseGroupRepo, times(1)).saveAndFlush(updatedCaseGroup);
+  }
+
+
+  @Test
+  public void testCaseGroupStatusNotUpdated() throws Exception {
+    when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(
+            cases.get(ACTIONABLE_BI_CASE_FK));
+    when(caseGroupRepo.findOne(cases.get(ACTIONABLE_BI_CASE_FK).getCaseGroupFK())).thenReturn(caseGroups.get(1));
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.GENERAL_COMPLAINT)).thenReturn(
+            categories.get(CAT_GENERAL_COMPLAINT));
+    when(caseGroupStatusTransitionManager.transition(CaseGroupStatus.INPROGRESS,
+            CategoryDTO.CategoryName.GENERAL_COMPLAINT))
+            .thenThrow(new CTPException(CTPException.Fault.BAD_REQUEST));
+
+
+    CaseEvent caseEvent1 = fabricateEvent(CategoryDTO.CategoryName.GENERAL_COMPLAINT, ACTIONABLE_BI_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent1, null);
+
+    verify(caseGroupRepo, times(0)).saveAndFlush(any(CaseGroup.class));
+  }
+
   /**
    * We create a CaseEvent with category ACTION_CANCELLATION_COMPLETED on an ACTIONABLE BRES case
    * (the one created for a respondent BI, accountant replying on behalf of Tesco for instance)
@@ -844,6 +960,8 @@ public class CaseServiceImplTest {
     verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
     verify(caseSvcStateTransitionManager, never()).transition(any(CaseState.class),
             any(CaseDTO.CaseEvent.class));
+    verify(caseGroupStatusTransitionManager, times(1)).transition(CaseGroupStatus.NOTSTARTED,
+            CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED);
     verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
     verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(UUID.class),
             any(String.class));
@@ -936,8 +1054,8 @@ public class CaseServiceImplTest {
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-            any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
     verify(caseEventRepository, times(0)).save(caseEvent);
   }
@@ -1041,8 +1159,8 @@ public class CaseServiceImplTest {
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED);
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-            any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
     verify(caseEventRepository, times(0)).save(caseEvent);
   }
@@ -1097,8 +1215,8 @@ public class CaseServiceImplTest {
 
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
     // no new action to be created
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-            any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
   }
 
   /**
@@ -1128,8 +1246,8 @@ public class CaseServiceImplTest {
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED);
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-            any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
     verify(caseEventRepository, times(0)).save(caseEvent);
   }
@@ -1162,8 +1280,8 @@ public class CaseServiceImplTest {
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED);
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-            any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
     verify(caseEventRepository, times(0)).save(caseEvent);
   }
@@ -1224,8 +1342,8 @@ public class CaseServiceImplTest {
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED);
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-            any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
     verify(caseEventRepository, times(0)).save(caseEvent);
   }
@@ -1287,8 +1405,8 @@ public class CaseServiceImplTest {
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOAD);
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-              any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
     verify(caseEventRepository, times(0)).save(caseEvent);
   }
@@ -1350,8 +1468,8 @@ public class CaseServiceImplTest {
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED);
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-              any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
     verify(caseEventRepository, times(0)).save(caseEvent);
   }
@@ -1384,8 +1502,8 @@ public class CaseServiceImplTest {
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD);
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-              any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
     verify(caseEventRepository, times(0)).save(caseEvent);
   }
@@ -1422,8 +1540,8 @@ public class CaseServiceImplTest {
 
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
     // no new action to be created
-    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class), any(UUID.class),
-            any(String.class));
+    verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
+            any(UUID.class), any(String.class));
   }
 
   /**

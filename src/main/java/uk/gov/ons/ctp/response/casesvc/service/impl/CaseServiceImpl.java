@@ -10,29 +10,20 @@ import org.springframework.util.StringUtils;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
-import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
-import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
-import uk.gov.ons.ctp.response.casesvc.domain.model.Response;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.model.*;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.*;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitBase;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitChild;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
-import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
-import uk.gov.ons.ctp.response.casesvc.service.CaseService;
-import uk.gov.ons.ctp.response.casesvc.service.CollectionExerciseSvcClientService;
-import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
+import uk.gov.ons.ctp.response.casesvc.service.*;
 import uk.gov.ons.ctp.response.casesvc.utility.Constants;
 import uk.gov.ons.ctp.response.collection.exercise.representation.CaseTypeDTO;
 import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
@@ -72,10 +63,16 @@ public class CaseServiceImpl implements CaseService {
   private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
   @Autowired
+  private StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName> caseGroupStatusTransitionManager;
+
+  @Autowired
   private CaseEventRepository caseEventRepo;
 
   @Autowired
   private CategoryRepository categoryRepo;
+
+  @Autowired
+  private CaseGroupAuditService caseGroupAuditService;
 
   @Autowired
   private ActionSvcClientService actionSvcClientService;
@@ -195,9 +192,38 @@ public class CaseServiceImpl implements CaseService {
 
       // should a new case be created?
       createNewCase(category, caseEvent, targetCase, newCase);
+
+      // transition case group status
+      transitionCaseGroupStatus(caseEvent, targetCase);
     }
 
     return createdCaseEvent;
+  }
+
+  /**
+   * Uses the state transition manager to transition the overarching casegroupstatus,
+   * this is the status for the overall progress of the survey.
+   */
+  private void transitionCaseGroupStatus(final CaseEvent caseEvent, final Case targetCase) {
+    CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
+
+    CaseGroupStatus oldCaseGroupStatus = caseGroup.getStatus();
+    CaseGroupStatus newCaseGroupStatus = null;
+
+    try {
+       newCaseGroupStatus = caseGroupStatusTransitionManager.transition(oldCaseGroupStatus, caseEvent.getCategory());
+    } catch (CTPException e) {
+      //The transition manager throws an exception if the event doesn't cause a transition, however there are lots of
+      // events which do not cause CaseGroupStatus transitions, (this is valid behaviour).
+      log.debug(e.getMessage());
+    }
+
+    if (newCaseGroupStatus != null && !oldCaseGroupStatus.equals(newCaseGroupStatus)) {
+      caseGroup.setStatus(newCaseGroupStatus);
+      caseGroupRepo.saveAndFlush(caseGroup);
+      caseGroupAuditService.updateAuditTable(caseGroup, caseEvent, targetCase);
+    }
+
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
@@ -498,6 +524,7 @@ public class CaseServiceImpl implements CaseService {
     newCaseGroup.setCollectionExerciseId(UUID.fromString(caseGroupData.getCollectionExerciseId()));
     newCaseGroup.setSampleUnitRef(caseGroupData.getSampleUnitRef());
     newCaseGroup.setSampleUnitType(caseGroupData.getSampleUnitType());
+    newCaseGroup.setStatus(CaseGroupStatus.NOTSTARTED);
 
     caseGroupRepo.saveAndFlush(newCaseGroup);
     log.debug("New CaseGroup created: {}", newCaseGroup.getId().toString());

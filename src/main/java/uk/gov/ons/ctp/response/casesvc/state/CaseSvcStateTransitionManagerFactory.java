@@ -5,7 +5,9 @@ import uk.gov.ons.ctp.common.state.BasicStateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseEvent;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +21,7 @@ import java.util.Map;
 public class CaseSvcStateTransitionManagerFactory implements StateTransitionManagerFactory {
 
   public static final String CASE_ENTITY = "Case";
+  public static final String CASE_GROUP = "CaseGroup";
 
   private Map<String, StateTransitionManager<?, ?>> managers;
 
@@ -54,6 +57,27 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
             new BasicStateTransitionManager<>(transitions);
 
     managers.put(CASE_ENTITY, caseStateTransitionManager);
+
+    //CASE GROUP TRANSITIONS
+    Map<CaseGroupStatus, Map<CategoryDTO.CategoryName, CaseGroupStatus>> caseGroupTransitions = new HashMap<>();
+
+    //Transition from NOTSTARTED TO INPROGRESS
+    //TODO: Update with transitions for EQ's and Non-seft surveys
+    Map<CategoryDTO.CategoryName, CaseGroupStatus> transitionMapForCaseStarted = new HashMap<>();
+    transitionMapForCaseStarted.put(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED,
+            CaseGroupStatus.INPROGRESS);
+    caseGroupTransitions.put(CaseGroupStatus.NOTSTARTED, transitionMapForCaseStarted);
+
+    //Transition from INPROGRESS to COMPLETED
+    //TODO: Update with transitions for EQ's and Non-seft surveys
+    Map<CategoryDTO.CategoryName, CaseGroupStatus> transitionMapForCaseInProgress = new HashMap<>();
+    transitionMapForCaseInProgress.put(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, CaseGroupStatus.COMPLETE);
+    caseGroupTransitions.put(CaseGroupStatus.INPROGRESS, transitionMapForCaseInProgress);
+
+    StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName> caseGroupStatusTransitionManager =
+            new BasicStateTransitionManager<>(caseGroupTransitions);
+
+    managers.put(CASE_GROUP, caseGroupStatusTransitionManager);
   }
 
   @SuppressWarnings("unchecked")

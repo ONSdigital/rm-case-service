@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 10.52.0-1
+      author: Joe Walton
+      changes:
+        - sqlFile:
+            comment: Constrain casegroupstatus to not null
+            path: constrain_case_group_status_not_null.sql
+            relativeToChangelogFile: true
+            splitStatements: false
