@@ -602,9 +602,10 @@ public class CaseServiceImplTest {
     when(categoryRepo.findOne(CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE)).thenReturn(categories.
             get(CAT_ONLINE_QUESTIONNAIRE_RESPONSE));
     when(caseGroupStatusTransitionManager.transition(CaseGroupStatus.NOTSTARTED,
-            CategoryDTO.CategoryName.REFUSAL)).thenReturn(CaseGroupStatus.NOTSTARTED);
+            CategoryDTO.CategoryName.REFUSAL)).thenThrow(new CTPException(CTPException.Fault.BAD_REQUEST));
     when(caseGroupStatusTransitionManager.transition(CaseGroupStatus.NOTSTARTED,
-            CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE)).thenReturn(CaseGroupStatus.NOTSTARTED);
+            CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE))
+            .thenThrow(new CTPException(CTPException.Fault.BAD_REQUEST));
 
     CaseEvent refusalCaseEvent = fabricateEvent(CategoryDTO.CategoryName.REFUSAL, ACTIONABLE_H_INDIVIDUAL_CASE_FK);
     caseService.createCaseEvent(refusalCaseEvent, null);
@@ -902,7 +903,6 @@ public class CaseServiceImplTest {
     when(caseGroupRepo.findOne(cases.get(ACTIONABLE_BI_CASE_FK).getCaseGroupFK())).thenReturn(caseGroups.get(1));
     when(categoryRepo.findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD)).thenReturn(
             categories.get(CAT_SUCCESSFUL_RESPONSE_UPLOAD));
-    //I DON'T WANT TO MOCK THIS, I WANT TO TEST IT!
     when(caseGroupStatusTransitionManager.transition(CaseGroupStatus.INPROGRESS,
             CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD)).thenReturn(CaseGroupStatus.COMPLETE);
 
@@ -925,7 +925,8 @@ public class CaseServiceImplTest {
     when(categoryRepo.findOne(CategoryDTO.CategoryName.GENERAL_COMPLAINT)).thenReturn(
             categories.get(CAT_GENERAL_COMPLAINT));
     when(caseGroupStatusTransitionManager.transition(CaseGroupStatus.INPROGRESS,
-            CategoryDTO.CategoryName.GENERAL_COMPLAINT)).thenReturn(CaseGroupStatus.INPROGRESS);
+            CategoryDTO.CategoryName.GENERAL_COMPLAINT))
+            .thenThrow(new CTPException(CTPException.Fault.BAD_REQUEST));
 
 
     CaseEvent caseEvent1 = fabricateEvent(CategoryDTO.CategoryName.GENERAL_COMPLAINT, ACTIONABLE_BI_CASE_FK);
