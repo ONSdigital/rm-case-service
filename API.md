@@ -43,7 +43,7 @@ If this query parameter is omitted the unique access code **will not** be return
 ```
 
 ## Get Case Group
-* `GET /casegroups/{casegroupId}` will return the details of the case group with an ID of `9a5f2be5-f944-41f9-982c-3517cfcfef3c`.
+* `GET /casegroups/{casegroupId}` will return the details of the case group with the given ID.
 
 ### Example JSON Response
 ```json
@@ -59,7 +59,7 @@ If this query parameter is omitted the unique access code **will not** be return
 An `HTTP 404 Not Found` status code is returned if the case group with the specified ID could not be found.
 
 ## List Cases for Case Group
-* `GET /cases/casegroupid/{casegroupId}` will return a list of cases for the case group with the given case group id.
+* `GET /cases/casegroupid/{casegroupId}` will return a list of cases for the case group with the given case group ID.
 
 ### Example JSON Response
 ```json
@@ -86,7 +86,7 @@ An `HTTP 404 Not Found` status code is returned if the case group with the speci
 An `HTTP 404 Not Found` status code is returned if the case group with the specified ID could not be found.
 
 ## Get Case
-* `GET /cases/{caseId}` will return the details of the case with the given case id.
+* `GET /cases/{caseId}` will return the details of the case with the given case ID.
 
 ### Example JSON Response
 ```json
@@ -136,7 +136,7 @@ An `HTTP 404 Not Found` status code is returned if the case group with the speci
 An `HTTP 404 Not Found` status code is returned if the case with the specified ID could not be found.
 
 ## List Cases for Party
-* `GET /cases/partyid/{partyId}` will return a list of cases with the given party id.
+* `GET /cases/partyid/{partyId}` will return a list of cases with the given party ID.
 
 ### Example JSON Response
 ```json
@@ -240,7 +240,7 @@ An `HTTP 204 No Content` status code is returned if there are no cases found wit
 An `HTTP 404 Not Found` status code is returned if the case with the specified unique access code could not be found.
 
 ## List Case Events for Case
-* `GET /cases/{caseId}/events` will return a list of case events for the case with given case id.
+* `GET /cases/{caseId}/events` will return a list of case events for the case with given case ID.
 
 ### Example JSON Response
 ```json
@@ -265,7 +265,7 @@ An `HTTP 404 Not Found` status code is returned if the case with the specified u
 An `HTTP 404 Not Found` status code is returned if the case with the specified ID could not be found. An `HTTP 204 No Content` status code is returned if there are no case events for the case with the specified ID.
 
 ## Create Case Event
-* `POST /cases/{caseId}/events` will create a case event for the case with the given case id.
+* `POST /cases/{caseId}/events` will create a case event for the case with the given case ID.
 
 **Required parameters:** `description` as the description of the case event, `category` as the category of the case event and `createdBy` as the creator of the case event.
 
