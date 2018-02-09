@@ -10,7 +10,7 @@ For the endpoints that return the details of a case:
 
 &mdash;an optional `caseevents` boolean query parameter can be used to specify that the JSON response include an array of case events associated with the case. For example:
 
-* `GET /cases/partyid/3b136c4b-7a14-4904-9e01-13364dd7b972?caseevents=true`
+* `GET /cases/partyid/{partyId}?caseevents=true`
 
 If this query parameter is omitted these case events **will not** be returned with the case details. In this scenario case events for a case can be retrieved separately using the `GET /cases/<case_id>/events` endpoint. The JSON examples provided for the three endpoints mentioned above include the case events for illustration purposes.
 
@@ -23,7 +23,7 @@ For the endpoints that return the details of a case:
 
 &mdash;an optional `iac` boolean query parameter can be used to specify that the JSON response include the unique access code associated with the case. For example:
 
-* `GET /cases/partyid/3b136c4b-7a14-4904-9e01-13364dd7b972?iac=true`
+* `GET /cases/partyid/{partyId}?iac=true`
 
 If this query parameter is omitted the unique access code **will not** be returned with the case details. The JSON examples provided for the three endpoints mentioned above include the code for illustration purposes.
 
@@ -43,7 +43,7 @@ If this query parameter is omitted the unique access code **will not** be return
 ```
 
 ## Get Case Group
-* `GET /casegroups/9a5f2be5-f944-41f9-982c-3517cfcfef3c` will return the details of the case group with an ID of `9a5f2be5-f944-41f9-982c-3517cfcfef3c`.
+* `GET /casegroups/{casegroupId}` will return the details of the case group with the given ID.
 
 ### Example JSON Response
 ```json
@@ -59,7 +59,7 @@ If this query parameter is omitted the unique access code **will not** be return
 An `HTTP 404 Not Found` status code is returned if the case group with the specified ID could not be found.
 
 ## List Cases for Case Group
-* `GET /cases/casegroupid/9a5f2be5-f944-41f9-982c-3517cfcfef3c` will return a list of cases for the case group with an ID of `9a5f2be5-f944-41f9-982c-3517cfcfef3c`.
+* `GET /cases/casegroupid/{casegroupId}` will return a list of cases for the case group with the given case group ID.
 
 ### Example JSON Response
 ```json
@@ -86,7 +86,7 @@ An `HTTP 404 Not Found` status code is returned if the case group with the speci
 An `HTTP 404 Not Found` status code is returned if the case group with the specified ID could not be found.
 
 ## Get Case
-* `GET /cases/7bc5d41b-0549-40b3-ba76-42f6d4cf3fdb` will return the details of the case with an ID of `7bc5d41b-0549-40b3-ba76-42f6d4cf3fdb`.
+* `GET /cases/{caseId}` will return the details of the case with the given case ID.
 
 ### Example JSON Response
 ```json
@@ -136,7 +136,7 @@ An `HTTP 404 Not Found` status code is returned if the case group with the speci
 An `HTTP 404 Not Found` status code is returned if the case with the specified ID could not be found.
 
 ## List Cases for Party
-* `GET /cases/partyid/3b136c4b-7a14-4904-9e01-13364dd7b972` will return a list of cases with a party ID of `3b136c4b-7a14-4904-9e01-13364dd7b972`.
+* `GET /cases/partyid/{partyId}` will return a list of cases with the given party ID.
 
 ### Example JSON Response
 ```json
@@ -189,7 +189,7 @@ An `HTTP 404 Not Found` status code is returned if the case with the specified I
 An `HTTP 204 No Content` status code is returned if there are no cases found with the specified party ID.
 
 ## Get Case by Unique Access Code
-* `GET /cases/iac/fb747cq725lj` will return the details of the case with a unique access code of `fb747cq725lj`.
+* `GET /cases/iac/{iac}` will return the details of the case with the unique access code provided.
 
 ### Example JSON Response
 ```json
@@ -240,7 +240,7 @@ An `HTTP 204 No Content` status code is returned if there are no cases found wit
 An `HTTP 404 Not Found` status code is returned if the case with the specified unique access code could not be found.
 
 ## List Case Events for Case
-* `GET /cases/7bc5d41b-0549-40b3-ba76-42f6d4cf3fdb/events` will return a list of case events for the case with an ID of `7bc5d41b-0549-40b3-ba76-42f6d4cf3fdb`.
+* `GET /cases/{caseId}/events` will return a list of case events for the case with given case ID.
 
 ### Example JSON Response
 ```json
@@ -265,7 +265,7 @@ An `HTTP 404 Not Found` status code is returned if the case with the specified u
 An `HTTP 404 Not Found` status code is returned if the case with the specified ID could not be found. An `HTTP 204 No Content` status code is returned if there are no case events for the case with the specified ID.
 
 ## Create Case Event
-* `POST /cases/7bc5d41b-0549-40b3-ba76-42f6d4cf3fdb/events` will create a case event for the case with an ID of `7bc5d41b-0549-40b3-ba76-42f6d4cf3fdb`.
+* `POST /cases/{caseId}/events` will create a case event for the case with the given case ID.
 
 **Required parameters:** `description` as the description of the case event, `category` as the category of the case event and `createdBy` as the creator of the case event.
 
@@ -324,7 +324,7 @@ An `HTTP 201 Created` status code is returned if the case event creation was a s
 An `HTTP 204 No Content` status code is returned if there are no available categories.
 
 ## Get Category
-* `GET /categories/name/case_created` will return the details of the category with the name `case_created`.
+* `GET /categories/name/{categoryName}` will return the details of the category with the name provided.
 
 ### Example JSON Response
 ```json
