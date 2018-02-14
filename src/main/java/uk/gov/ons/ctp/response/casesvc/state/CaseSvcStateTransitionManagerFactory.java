@@ -68,6 +68,13 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
             CaseGroupStatus.INPROGRESS);
     caseGroupTransitions.put(CaseGroupStatus.NOTSTARTED, transitionMapForCaseStarted);
 
+    //Transition from NOTSTARTED TO COMPLETED
+    //TODO: Update with transitions for EQ's and Non-seft surveys
+    Map<CategoryDTO.CategoryName, CaseGroupStatus> transitionMapForCaseNotStarted = new HashMap<>();
+    transitionMapForCaseNotStarted.put(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD,
+            CaseGroupStatus.COMPLETE);
+    caseGroupTransitions.put(CaseGroupStatus.NOTSTARTED, transitionMapForCaseNotStarted);
+
     //Transition from INPROGRESS to COMPLETED
     //TODO: Update with transitions for EQ's and Non-seft surveys
     Map<CategoryDTO.CategoryName, CaseGroupStatus> transitionMapForCaseInProgress = new HashMap<>();
