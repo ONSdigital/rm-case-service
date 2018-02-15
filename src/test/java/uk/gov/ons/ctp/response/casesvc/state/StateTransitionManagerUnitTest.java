@@ -69,6 +69,7 @@ public class StateTransitionManagerUnitTest {
     //transitions from not started to in progress
     Map<CategoryDTO.CategoryName, CaseGroupStatus> caseNotStartedTransitions = new HashMap<>();
     caseNotStartedTransitions.put(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED, CaseGroupStatus.INPROGRESS);
+    caseNotStartedTransitions.put(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, CaseGroupStatus.COMPLETE);
     validCaseGroupTransitions.put(CaseGroupStatus.NOTSTARTED, caseNotStartedTransitions);
 
     //transitions from inprogress to completed
