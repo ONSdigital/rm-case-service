@@ -1,8 +1,10 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,8 +65,26 @@ public class CollectionExerciseSvcClientServiceImpl implements CollectionExercis
       try {
         result = objectMapper.readValue(responseBody, CollectionExerciseDTO.class);
       } catch (IOException e) {
-        String msg = String.format("cause = %s - message = %s", e.getCause(), e.getMessage());
-        log.error(msg);
+        log.error(String.format("cause = %s - message = %s", e.getCause(), e.getMessage()));
+      }
+    }
+    return result;
+  }
+
+  @Retryable(value = {RestClientException.class}, maxAttemptsExpression = "#{${retries.maxAttempts}}",
+          backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
+  @Override
+  public List<CollectionExerciseDTO> getCollectionExercises(String surveyId) {
+    UriComponents uriComponents = restUtility.createUriComponents(appConfig.getCollectionExerciseSvc().getCollectionExerciseSurveyPath(), null, surveyId);
+    HttpEntity<?> httpEntity = restUtility.createHttpEntity(null);
+    ResponseEntity<String> responseEntity = restTemplate.exchange(uriComponents.toUri(), HttpMethod.GET, httpEntity, String.class);
+    List<CollectionExerciseDTO> result = null;
+    if (responseEntity != null && responseEntity.getStatusCode().is2xxSuccessful()) {
+      String responseBody = responseEntity.getBody();
+      try {
+        result = objectMapper.readValue(responseBody, new TypeReference<List<CollectionExerciseDTO>>(){});
+      } catch (IOException e) {
+        log.error(String.format("cause = %s - message = %s", e.getCause(), e.getMessage()));
       }
     }
     return result;

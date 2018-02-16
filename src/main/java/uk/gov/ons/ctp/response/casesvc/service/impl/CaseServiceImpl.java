@@ -174,6 +174,11 @@ public class CaseServiceImpl implements CaseService {
     if (targetCase != null) {
       Category category = categoryRepo.findOne(caseEvent.getCategory());
 
+      // remove after dev
+      // are there other case groups that need updating
+      // transitionOtherCaseGroups(caseEvent, targetCase);
+
+
       validateCaseEventRequest(category, targetCase, newCase);
 
       // save the case event to db
@@ -195,9 +200,32 @@ public class CaseServiceImpl implements CaseService {
 
       // transition case group status
       transitionCaseGroupStatus(caseEvent, targetCase);
+
+      // are there other case groups that need updating
+      transitionOtherCaseGroups(caseEvent, targetCase);
     }
 
     return createdCaseEvent;
+  }
+
+  /**
+   * Use case ID to find case group
+   * Use case group to find collectionEx
+   * Then use CollEx service to find survey ID, then find all collexs for survey
+   * Then get all casge groups for the party ID where Collex ID is in list of collexs
+   * TODO: null checking
+   */
+  private void transitionOtherCaseGroups(final CaseEvent caseEvent, final Case targetCase) {
+    CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
+    CollectionExerciseDTO collectionExercise = collectionExerciseSvcClientService
+            .getCollectionExercise(caseGroup.getCollectionExerciseId());
+    // fetch all the collection exercises for a survey
+    List<CollectionExerciseDTO> collectionExercises = collectionExerciseSvcClientService.getCollectionExercises(collectionExercise.getSurveyId());
+    // fetch party ID for the RU
+    UUID partyId = targetCase.getPartyId();
+    //select id from casesvc.casegroup where partyid = partyId and collectionexerciseid in collectionExercisesgit
+    List<CaseGroup> caseGroups = caseGroupRepo.findByPartyId(partyId);
+    log.debug("Test");
   }
 
   /**
