@@ -31,9 +31,11 @@ import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
 import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO.SampleUnitType;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * A CaseService implementation which encapsulates all business logic operating
@@ -176,7 +178,7 @@ public class CaseServiceImpl implements CaseService {
 
       // remove after dev
       // are there other case groups that need updating
-      // transitionOtherCaseGroups(caseEvent, targetCase);
+      transitionOtherCaseGroups(caseEvent, targetCase);
 
 
       validateCaseEventRequest(category, targetCase, newCase);
@@ -223,9 +225,9 @@ public class CaseServiceImpl implements CaseService {
     List<CollectionExerciseDTO> collectionExercises = collectionExerciseSvcClientService.getCollectionExercises(collectionExercise.getSurveyId());
     // fetch party ID for the RU
     UUID partyId = targetCase.getPartyId();
-    //select id from casesvc.casegroup where partyid = partyId and collectionexerciseid in collectionExercisesgit
-    List<CaseGroup> caseGroups = caseGroupRepo.findByPartyId(partyId);
-    log.debug("Test");
+    List<UUID> collExs = collectionExercises.stream().map(CollectionExerciseDTO::getId).collect(Collectors.toList());
+    //select id from casesvc.casegroup where partyid = partyId and collectionexerciseid in collectionExercises
+    List<CaseGroup> caseGroups = caseGroupRepo.retrieveByPartyIdInListOfCollEx(partyId, collExs);
   }
 
   /**
