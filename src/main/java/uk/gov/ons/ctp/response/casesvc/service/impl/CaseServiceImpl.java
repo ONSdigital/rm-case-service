@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -169,17 +170,12 @@ public class CaseServiceImpl implements CaseService {
         caseEvent.getSubCategory(),
         caseEvent.getCreatedBy());
 
-    CaseEvent createdCaseEvent = null;
+     CaseEvent createdCaseEvent = null;
 
     Case targetCase = caseRepo.findOne(caseEvent.getCaseFK());
     log.debug("targetCase is {}", targetCase);
     if (targetCase != null) {
       Category category = categoryRepo.findOne(caseEvent.getCategory());
-
-      // remove after dev
-      // are there other case groups that need updating
-      transitionOtherCaseGroups(caseEvent, targetCase);
-
 
       validateCaseEventRequest(category, targetCase, newCase);
 
@@ -198,13 +194,19 @@ public class CaseServiceImpl implements CaseService {
       createAdHocAction(category, caseEvent);
 
       // should a new case be created?
-      createNewCase(category, caseEvent, targetCase, newCase);
+      //createNewCase(category, caseEvent, targetCase, newCase);
 
       // transition case group status
-      transitionCaseGroupStatus(caseEvent, targetCase);
+      //transitionCaseGroupStatus(caseEvent, targetCase);
 
-      // are there other case groups that need updating
-      transitionOtherCaseGroups(caseEvent, targetCase);
+      // if this is a respondent enrolling event
+      if (caseEvent.getCategory().toString().equals("RESPONDENT_ENROLED")) {
+        // are there other case groups that need updating
+        transitionOtherCaseGroups(category, caseEvent, targetCase, newCase);
+      } else {
+        createNewCase(category, caseEvent, targetCase, newCase);
+        transitionCaseGroupStatus(caseEvent, targetCase);
+      }
     }
 
     return createdCaseEvent;
@@ -217,18 +219,44 @@ public class CaseServiceImpl implements CaseService {
    * Then get all casge groups for the party ID where Collex ID is in list of collexs
    * TODO: null checking
    */
-  private void transitionOtherCaseGroups(final CaseEvent caseEvent, final Case targetCase) {
+  private void transitionOtherCaseGroups(final Category category, final CaseEvent caseEvent, final Case targetCase, Case newCase) throws CTPException {
     CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
     CollectionExerciseDTO collectionExercise = collectionExerciseSvcClientService
             .getCollectionExercise(caseGroup.getCollectionExerciseId());
     // fetch all the collection exercises for a survey
     List<CollectionExerciseDTO> collectionExercises = collectionExerciseSvcClientService.getCollectionExercises(collectionExercise.getSurveyId());
+    // get published collection exercise
+    List<CollectionExerciseDTO> publishedCollexs = collectionExercises.stream().filter(ce -> ce.getState().toString().equals("READY_FOR_LIVE")).collect(Collectors.toList());
+    // get list of collection exercise ids
+    List<UUID> collExs = publishedCollexs.stream().map(CollectionExerciseDTO::getId).collect(Collectors.toList());
     // fetch party ID for the RU
     UUID partyId = targetCase.getPartyId();
-    List<UUID> collExs = collectionExercises.stream().map(CollectionExerciseDTO::getId).collect(Collectors.toList());
-    //select id from casesvc.casegroup where partyid = partyId and collectionexerciseid in collectionExercises
+    //select * from casesvc.casegroup where partyid = partyId and collectionexerciseid in collectionExercises
     List<CaseGroup> caseGroups = caseGroupRepo.retrieveByPartyIdInListOfCollEx(partyId, collExs);
+    checkCaseState(category, caseGroups, caseEvent, newCase);
   }
+
+  /**
+   * This has been triggered by a 'RESPONDENT_ENROLED' event. If we find any associated Case Groups
+   * with only B cases we need to make case 'INACTIONABLE' and create BI case.
+   */
+  private void checkCaseState(final Category category, List<CaseGroup> caseGroups, CaseEvent caseEvent, Case newCase) throws CTPException {
+    // check all case groups are type B. For surveys this is always true
+    List<CaseGroup> caseGroupsToUpdate = caseGroups.stream().filter(cg -> cg.getSampleUnitType().toString().equals("B")).collect(Collectors.toList());
+    for(CaseGroup cg : caseGroupsToUpdate) {
+      // fetch cases associated to case group
+      List<Case> cases = caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(cg.getCaseGroupPK());
+      List<Case> bCases = cases.stream().filter(c -> c.getSampleUnitType().toString().equals("B")).collect(Collectors.toList());
+      //List<Case> biCases = cases.stream().filter(c -> c.getSampleUnitType().toString().equals("BI")).collect(Collectors.toList());
+      for(Case bCase : bCases) {
+        effectTargetCaseStateTransition(category, bCase);
+        Case c = new Case();
+        c.setPartyId(newCase.getPartyId());
+        createNewCase(category, caseEvent, bCase, c);
+      }
+    }
+  }
+
 
   /**
    * Uses the state transition manager to transition the overarching casegroupstatus,
