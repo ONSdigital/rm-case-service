@@ -188,7 +188,7 @@ public class CaseServiceImpl implements CaseService {
       recordCaseResponse(category, targetCase, timestamp);
 
       // does the event transition the case?
-      effectTargetCaseStateTransition(category, targetCase);
+      //effectTargetCaseStateTransition(category, targetCase);
 
       // should we create an ad hoc action?
       createAdHocAction(category, caseEvent);
@@ -197,7 +197,7 @@ public class CaseServiceImpl implements CaseService {
       //createNewCase(category, caseEvent, targetCase, newCase);
 
       // transition case group status
-      //transitionCaseGroupStatus(caseEvent, targetCase);
+      transitionCaseGroupStatus(caseEvent, targetCase);
 
       // if this is a respondent enrolling event
       if (caseEvent.getCategory().toString().equals("RESPONDENT_ENROLED")) {
@@ -205,7 +205,7 @@ public class CaseServiceImpl implements CaseService {
         transitionOtherCaseGroups(category, caseEvent, targetCase, newCase);
       } else {
         createNewCase(category, caseEvent, targetCase, newCase);
-        transitionCaseGroupStatus(caseEvent, targetCase);
+        effectTargetCaseStateTransition(category, targetCase);
       }
     }
 

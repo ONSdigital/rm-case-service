@@ -32,9 +32,11 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseGroupAuditService;
 import uk.gov.ons.ctp.response.casesvc.service.CollectionExerciseSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
+import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,15 +45,10 @@ import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.*;
 import static uk.gov.ons.ctp.common.state.BasicStateTransitionManager.TRANSITION_ERROR_MSG;
 import static uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseEvent.ACCOUNT_CREATED;
-import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.IAC_OVERUSE_MSG;
-import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.MISSING_NEW_CASE_MSG;
-import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.WRONG_OLD_SAMPLE_UNIT_TYPE_MSG;
+import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.*;
 
 /**
  * Test the CaseServiceImpl primarily the createCaseEvent functionality. Note
@@ -1185,6 +1182,19 @@ public class CaseServiceImplTest {
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ENROLED,
             ACTIONABLE_BUSINESS_UNIT_CASE_FK);
     Case newCase = caseRepo.findOne(ENROLMENT_CASE_INDIVIDUAL_FK);
+
+    // new mocks
+
+    List<CollectionExerciseDTO> listCollex = Collections.singletonList(makeCollectionExercise());
+    when(collectionExerciseSvcClientService.getCollectionExercises(null)).thenReturn(listCollex);
+    List<CaseGroup> caseGroups = Collections.singletonList(makeCaseGroup());
+    CaseGroup caseGroup = makeCaseGroup();
+    when(caseGroupRepo.retrieveByPartyIdInListOfCollEx(any(), any())).thenReturn(caseGroups);
+    when(caseGroupRepo.findOne(ENROLMENT_CASE_INDIVIDUAL_FK)).thenReturn(caseGroup);
+    List<Case> c = Collections.singletonList(makeCase());
+    when(caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(any())).thenReturn(c);
+
+    // execute tests
     caseService.createCaseEvent(caseEvent, newCase);
 
     verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
@@ -1217,6 +1227,32 @@ public class CaseServiceImplTest {
     // no new action to be created
     verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
             any(UUID.class), any(String.class));
+  }
+
+  private CollectionExerciseDTO makeCollectionExercise() {
+    CollectionExerciseDTO collex = new CollectionExerciseDTO();
+    collex.setId(UUID.randomUUID());
+    collex.setState(CollectionExerciseDTO.CollectionExerciseState.READY_FOR_LIVE);
+    return collex;
+  }
+
+  private CaseGroup makeCaseGroup() {
+    CaseGroup cg = new CaseGroup();
+    cg.setId(UUID.randomUUID());
+    cg.setStatus(CaseGroupStatus.NOTSTARTED);
+    cg.setSampleUnitType("B");
+    return cg;
+  }
+
+  private Case makeCase() {
+    Case c = new Case();
+    c.setId(UUID.randomUUID());
+    c.setSampleUnitType(SampleUnitDTO.SampleUnitType.B);
+    c.setState(CaseState.ACTIONABLE);
+    c.setActionPlanId(UUID.randomUUID());
+    c.setCaseGroupId(UUID.randomUUID());
+    c.setCaseGroupFK(ENROLMENT_CASE_INDIVIDUAL_FK);
+    return c;
   }
 
   /**
