@@ -262,7 +262,6 @@ public final class CaseGroupEndpointUnitTest {
         when(caseService.findCasesByCaseGroupFK(caseGroupResult.getCaseGroupPK())).thenReturn(Collections.singletonList(aCase));
         when(categoryService.findCategory(CategoryDTO.CategoryName.COMPLETED_BY_PHONE)).thenReturn(Category.builder().build());
 
-        CategoryDTO.CategoryName categoryName = CategoryDTO.CategoryName.COMPLETED_BY_PHONE;
         CaseGroupEvent caseGroupEvent = new CaseGroupEvent();
         caseGroupEvent.setEvent("COMPLETED_BY_PHONE");
 
