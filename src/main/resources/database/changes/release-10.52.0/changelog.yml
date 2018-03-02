@@ -9,3 +9,12 @@ databaseChangeLog:
             path: constrain_case_group_status_not_null.sql
             relativeToChangelogFile: true
             splitStatements: false
+  - changeSet:
+      id: 10.52.0-2
+      author: Ben Jefferies
+      changes:
+        - sqlFile:
+            comment: Add category for case event when completed by phone
+            path: add_completed_by_phone_category.sql
+            relativeToChangelogFile: true
+            splitStatements: false
