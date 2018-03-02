@@ -66,6 +66,7 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
     Map<CategoryDTO.CategoryName, CaseGroupStatus> transitionMapForCaseStarted = new HashMap<>();
     transitionMapForCaseStarted.put(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED,
             CaseGroupStatus.INPROGRESS);
+    transitionMapForCaseStarted.put(CategoryDTO.CategoryName.EQ_LAUNCH, CaseGroupStatus.INPROGRESS);
     transitionMapForCaseStarted.put(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD,
             CaseGroupStatus.COMPLETE);
     caseGroupTransitions.put(CaseGroupStatus.NOTSTARTED, transitionMapForCaseStarted);
