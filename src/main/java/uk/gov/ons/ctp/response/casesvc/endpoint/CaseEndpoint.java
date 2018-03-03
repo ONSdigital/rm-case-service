@@ -166,7 +166,7 @@ public final class CaseEndpoint implements CTPEndpoint {
     CaseGroup caseGroup = caseGroupService.findCaseGroupById(casegroupId);
     if (caseGroup == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-          String.format("CaseGroup not found for %s", casegroupId));
+          String.format("CaseGroup not found for casegroup id %s", casegroupId));
     }
 
     List<Case> casesList = caseService.findCasesByCaseGroupFK(caseGroup.getCaseGroupPK());
