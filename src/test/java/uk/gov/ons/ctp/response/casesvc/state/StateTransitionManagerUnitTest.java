@@ -118,6 +118,19 @@ public class StateTransitionManagerUnitTest {
     assertEquals(destinationState, CaseGroupStatus.INPROGRESS);
   }
 
+    @Test
+    public void givenCaseGroupStateNotStartedWhenEQLaunchThenInProgress() throws CTPException {
+      // Given
+      CaseGroupStatus notStarted = CaseGroupStatus.NOTSTARTED;
+
+      // When
+      CaseGroupStatus destinationState = caseGroupStateMachine.transition(notStarted,
+              CategoryDTO.CategoryName.EQ_LAUNCH);
+
+      // Then
+      assertEquals(destinationState, CaseGroupStatus.INPROGRESS);
+    }
+
   @Test
   public void givenCaseGroupStateNotStartedWhenSuccessfulResponseUploadedThenComplete() throws CTPException {
     // Given
