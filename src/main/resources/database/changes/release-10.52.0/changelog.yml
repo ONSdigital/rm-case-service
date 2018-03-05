@@ -12,6 +12,16 @@ databaseChangeLog:
 
   - changeSet:
       id: 10.52.0-2
+      author: Ben Jefferies
+      changes:
+        - sqlFile:
+            comment: Add category for case event when completed by phone
+            path: add_completed_by_phone_category.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 10.52.0-3
       author: Tejas Patel
       changes:
         - sqlFile:
@@ -19,4 +29,3 @@ databaseChangeLog:
             path: add_case_event_category.sql
             relativeToChangelogFile: true
             splitStatements: false
-

@@ -63,10 +63,10 @@ public class CaseServiceImpl implements CaseService {
   private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
   @Autowired
-  private StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName> caseGroupStatusTransitionManager;
+  private CaseEventRepository caseEventRepo;
 
   @Autowired
-  private CaseEventRepository caseEventRepo;
+  private CaseGroupService caseGroupService;
 
   @Autowired
   private CategoryRepository categoryRepo;
@@ -194,37 +194,19 @@ public class CaseServiceImpl implements CaseService {
       createNewCase(category, caseEvent, targetCase, newCase);
 
       // transition case group status
-      transitionCaseGroupStatus(caseEvent, targetCase);
+      CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
+      try {
+        caseGroupService.transitionCaseGroupStatus(caseGroup, caseEvent.getCategory(), targetCase.getPartyId());
+      } catch (CTPException e) {
+        //The transition manager throws an exception if the event doesn't cause a transition, however there are lots of
+        // events which do not cause CaseGroupStatus transitions, (this is valid behaviour).
+        log.debug(e.getMessage());
+      }
     }
 
     return createdCaseEvent;
   }
 
-  /**
-   * Uses the state transition manager to transition the overarching casegroupstatus,
-   * this is the status for the overall progress of the survey.
-   */
-  private void transitionCaseGroupStatus(final CaseEvent caseEvent, final Case targetCase) {
-    CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
-
-    CaseGroupStatus oldCaseGroupStatus = caseGroup.getStatus();
-    CaseGroupStatus newCaseGroupStatus = null;
-
-    try {
-       newCaseGroupStatus = caseGroupStatusTransitionManager.transition(oldCaseGroupStatus, caseEvent.getCategory());
-    } catch (CTPException e) {
-      //The transition manager throws an exception if the event doesn't cause a transition, however there are lots of
-      // events which do not cause CaseGroupStatus transitions, (this is valid behaviour).
-      log.debug(e.getMessage());
-    }
-
-    if (newCaseGroupStatus != null && !oldCaseGroupStatus.equals(newCaseGroupStatus)) {
-      caseGroup.setStatus(newCaseGroupStatus);
-      caseGroupRepo.saveAndFlush(caseGroup);
-      caseGroupAuditService.updateAuditTable(caseGroup, caseEvent, targetCase);
-    }
-
-  }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override

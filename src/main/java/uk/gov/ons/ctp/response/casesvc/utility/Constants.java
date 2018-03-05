@@ -9,4 +9,5 @@ import net.sourceforge.cobertura.CoverageIgnore;
 public class Constants {
   public static final String QUESTIONNAIRE_RESPONSE = "Questionnaire response";
   public static final String SYSTEM = "SYSTEM";
+  public static final String USER = "USER";
 }

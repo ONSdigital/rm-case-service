@@ -18,4 +18,6 @@ public interface CaseGroupRepository extends JpaRepository<CaseGroup, Integer> {
      * @return the matching CaseGroup
      */
     CaseGroup findById(UUID id);
+
+    CaseGroup findCaseGroupByCollectionExerciseIdAndSampleUnitRef(UUID collectionExerciseId, String ruRef);
 }
