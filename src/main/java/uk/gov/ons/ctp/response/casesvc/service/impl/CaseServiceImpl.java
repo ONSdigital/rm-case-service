@@ -191,8 +191,14 @@ public class CaseServiceImpl implements CaseService {
       createAdHocAction(category, caseEvent);
 
       // transition case group status
-
-      transitionCaseGroupStatus(caseEvent, targetCase);
+      CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
+      try {
+        caseGroupService.transitionCaseGroupStatus(caseGroup, caseEvent.getCategory(), targetCase.getPartyId());
+      } catch (CTPException e) {
+        //The transition manager throws an exception if the event doesn't cause a transition, however there are lots of
+        // events which do not cause CaseGroupStatus transitions, (this is valid behaviour).
+        log.debug(e.getMessage());
+      }
 
       // if this is a respondent enrolling event
       if (caseEvent.getCategory().toString().equals("RESPONDENT_ENROLED")) {
@@ -252,33 +258,6 @@ public class CaseServiceImpl implements CaseService {
         createNewCase(category, caseEvent, bCase, c);
       }
     }
-  }
-
-
-  /**
-   * Uses the state transition manager to transition the overarching casegroupstatus,
-   * this is the status for the overall progress of the survey.
-   */
-  private void transitionCaseGroupStatus(final CaseEvent caseEvent, final Case targetCase) {
-    CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
-
-    CaseGroupStatus oldCaseGroupStatus = caseGroup.getStatus();
-    CaseGroupStatus newCaseGroupStatus = null;
-
-    try {
-       newCaseGroupStatus = caseGroupStatusTransitionManager.transition(oldCaseGroupStatus, caseEvent.getCategory());
-    } catch (CTPException e) {
-      //The transition manager throws an exception if the event doesn't cause a transition, however there are lots of
-      // events which do not cause CaseGroupStatus transitions, (this is valid behaviour).
-      log.debug(e.getMessage());
-    }
-
-    if (newCaseGroupStatus != null && !oldCaseGroupStatus.equals(newCaseGroupStatus)) {
-      caseGroup.setStatus(newCaseGroupStatus);
-      caseGroupRepo.saveAndFlush(caseGroup);
-      caseGroupAuditService.updateAuditTable(caseGroup, caseEvent, targetCase);
-    }
-
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
