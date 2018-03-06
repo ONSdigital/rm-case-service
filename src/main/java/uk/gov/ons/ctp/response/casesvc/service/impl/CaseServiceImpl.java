@@ -186,7 +186,7 @@ public class CaseServiceImpl implements CaseService {
 
       // do we need to record a response?
       recordCaseResponse(category, targetCase, timestamp);
-      
+
       // should we create an ad hoc action?
       createAdHocAction(category, caseEvent);
 
@@ -241,8 +241,9 @@ public class CaseServiceImpl implements CaseService {
     for(CaseGroup cg : caseGroupsToUpdate) {
       // fetch cases associated to case group
       List<Case> cases = caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(cg.getCaseGroupPK());
+      // find b cases
       List<Case> bCases = cases.stream().filter(c -> c.getSampleUnitType().toString().equals("B")).collect(Collectors.toList());
-      //List<Case> biCases = cases.stream().filter(c -> c.getSampleUnitType().toString().equals("BI")).collect(Collectors.toList());
+      // see if any case needs to transition
       for(Case bCase : bCases) {
         effectTargetCaseStateTransition(category, bCase);
         Case c = new Case();
