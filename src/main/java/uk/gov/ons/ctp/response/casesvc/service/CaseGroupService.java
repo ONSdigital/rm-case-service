@@ -1,10 +1,14 @@
 package uk.gov.ons.ctp.response.casesvc.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.service.CTPService;
+import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
+import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 
 /**
@@ -39,4 +43,7 @@ public interface CaseGroupService extends CTPService {
    * @throws CTPException if transition is not executed
    */
   void transitionCaseGroupStatus(final CaseGroup caseGroup, final CategoryDTO.CategoryName categoryName, final UUID partyId) throws CTPException;
-}
+
+  List<CaseGroup> transitionOtherCaseGroups(final Category category, final CaseEvent caseEvent, final Case targetCase, Case newCase) throws CTPException;
+
+  }

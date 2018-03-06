@@ -1,6 +1,8 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,13 +12,19 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
+import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
+import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupAuditService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
+import uk.gov.ons.ctp.response.casesvc.service.CollectionExerciseSvcClientService;
+import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
 
 /**
  * A CaseGroupService implementation which encapsulates all business logic
@@ -31,6 +39,12 @@ public class CaseGroupServiceImpl implements CaseGroupService {
    */
   @Autowired
   private CaseGroupRepository caseGroupRepo;
+
+  @Autowired
+  private CategoryRepository categoryRepo;
+
+  @Autowired
+  private CollectionExerciseSvcClientService collectionExerciseSvcClientService;
 
   @Autowired
   private StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName> caseGroupStatusTransitionManager;
@@ -73,5 +87,31 @@ public class CaseGroupServiceImpl implements CaseGroupService {
     }
 
   }
+
+  /**
+   * Use case ID to find case group
+   * Use case group to find collectionEx
+   * Then use CollEx service to find survey ID, then find all collexs for survey
+   * Then get all casge groups for the party ID where Collex ID is in list of collexs
+   * TODO: null checking
+   */
+  public List<CaseGroup> transitionOtherCaseGroups(final Category category, final CaseEvent caseEvent, final Case targetCase, Case newCase) throws CTPException {
+    CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
+    CollectionExerciseDTO collectionExercise = collectionExerciseSvcClientService
+            .getCollectionExercise(caseGroup.getCollectionExerciseId());
+    // fetch all the collection exercises for a survey
+    List<CollectionExerciseDTO> collectionExercises = collectionExerciseSvcClientService.getCollectionExercises(collectionExercise.getSurveyId());
+    // get published collection exercise
+    List<CollectionExerciseDTO> publishedCollexs = collectionExercises.stream().filter(ce -> ce.getState().toString().equals("READY_FOR_LIVE")).collect(Collectors.toList());
+    // get list of collection exercise ids
+    List<UUID> collExs = publishedCollexs.stream().map(CollectionExerciseDTO::getId).collect(Collectors.toList());
+    // fetch party ID for the RU
+    UUID partyId = targetCase.getPartyId();
+    //select * from casesvc.casegroup where partyid = partyId and collectionexerciseid in collectionExercises
+    List<CaseGroup> caseGroups = caseGroupRepo.retrieveByPartyIdInListOfCollEx(partyId, collExs);
+    return caseGroups;
+  }
+
+
 
 }

@@ -11,7 +11,10 @@ import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.casesvc.domain.model.*;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.*;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType;
@@ -31,11 +34,9 @@ import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
 import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO.SampleUnitType;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -203,7 +204,8 @@ public class CaseServiceImpl implements CaseService {
       // if this is a respondent enrolling event
       if (caseEvent.getCategory().toString().equals("RESPONDENT_ENROLED")) {
         // are there other case groups that need updating
-        transitionOtherCaseGroups(category, caseEvent, targetCase, newCase);
+        List<CaseGroup> caseGroups = caseGroupService.transitionOtherCaseGroups(category, caseEvent, targetCase, newCase);
+        checkCaseState(category, caseGroups, caseEvent, newCase);
       } else {
         // should a new case be created?
         createNewCase(category, caseEvent, targetCase, newCase);
@@ -212,30 +214,6 @@ public class CaseServiceImpl implements CaseService {
     }
 
     return createdCaseEvent;
-  }
-
-  /**
-   * Use case ID to find case group
-   * Use case group to find collectionEx
-   * Then use CollEx service to find survey ID, then find all collexs for survey
-   * Then get all casge groups for the party ID where Collex ID is in list of collexs
-   * TODO: null checking
-   */
-  private void transitionOtherCaseGroups(final Category category, final CaseEvent caseEvent, final Case targetCase, Case newCase) throws CTPException {
-    CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
-    CollectionExerciseDTO collectionExercise = collectionExerciseSvcClientService
-            .getCollectionExercise(caseGroup.getCollectionExerciseId());
-    // fetch all the collection exercises for a survey
-    List<CollectionExerciseDTO> collectionExercises = collectionExerciseSvcClientService.getCollectionExercises(collectionExercise.getSurveyId());
-    // get published collection exercise
-    List<CollectionExerciseDTO> publishedCollexs = collectionExercises.stream().filter(ce -> ce.getState().toString().equals("READY_FOR_LIVE")).collect(Collectors.toList());
-    // get list of collection exercise ids
-    List<UUID> collExs = publishedCollexs.stream().map(CollectionExerciseDTO::getId).collect(Collectors.toList());
-    // fetch party ID for the RU
-    UUID partyId = targetCase.getPartyId();
-    //select * from casesvc.casegroup where partyid = partyId and collectionexerciseid in collectionExercises
-    List<CaseGroup> caseGroups = caseGroupRepo.retrieveByPartyIdInListOfCollEx(partyId, collExs);
-    checkCaseState(category, caseGroups, caseEvent, newCase);
   }
 
   /**
