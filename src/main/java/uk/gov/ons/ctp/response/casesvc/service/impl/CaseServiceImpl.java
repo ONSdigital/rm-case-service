@@ -186,15 +186,9 @@ public class CaseServiceImpl implements CaseService {
 
       // do we need to record a response?
       recordCaseResponse(category, targetCase, timestamp);
-
-      // does the event transition the case?
-      //effectTargetCaseStateTransition(category, targetCase);
-
+      
       // should we create an ad hoc action?
       createAdHocAction(category, caseEvent);
-
-      // should a new case be created?
-      //createNewCase(category, caseEvent, targetCase, newCase);
 
       // transition case group status
       transitionCaseGroupStatus(caseEvent, targetCase);
@@ -204,6 +198,7 @@ public class CaseServiceImpl implements CaseService {
         // are there other case groups that need updating
         transitionOtherCaseGroups(category, caseEvent, targetCase, newCase);
       } else {
+        // should a new case be created?
         createNewCase(category, caseEvent, targetCase, newCase);
         effectTargetCaseStateTransition(category, targetCase);
       }
