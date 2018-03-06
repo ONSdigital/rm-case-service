@@ -21,7 +21,7 @@ public interface CaseGroupRepository extends JpaRepository<CaseGroup, Integer> {
      * @return the matching CaseGroup
      */
     CaseGroup findById(UUID id);
-
+  
     /**
      * To find CaseGroup by party UUID
      * @param id the UUID of the Party
@@ -37,5 +37,7 @@ public interface CaseGroupRepository extends JpaRepository<CaseGroup, Integer> {
      */
     @Query("SELECT c FROM CaseGroup c WHERE c.partyId = :partyId AND c.collectionExerciseId IN :collExs")
     List<CaseGroup> retrieveByPartyIdInListOfCollEx(@Param("partyId") UUID partyId, @Param("collExs") List<UUID> collExs);
+
+    CaseGroup findCaseGroupByCollectionExerciseIdAndSampleUnitRef(UUID collectionExerciseId, String ruRef);
 
 }

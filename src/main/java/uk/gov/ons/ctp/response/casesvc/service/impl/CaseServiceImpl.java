@@ -66,10 +66,10 @@ public class CaseServiceImpl implements CaseService {
   private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
   @Autowired
-  private StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName> caseGroupStatusTransitionManager;
+  private CaseEventRepository caseEventRepo;
 
   @Autowired
-  private CaseEventRepository caseEventRepo;
+  private CaseGroupService caseGroupService;
 
   @Autowired
   private CategoryRepository categoryRepo;
@@ -197,6 +197,7 @@ public class CaseServiceImpl implements CaseService {
       //createNewCase(category, caseEvent, targetCase, newCase);
 
       // transition case group status
+
       transitionCaseGroupStatus(caseEvent, targetCase);
 
       // if this is a respondent enrolling event

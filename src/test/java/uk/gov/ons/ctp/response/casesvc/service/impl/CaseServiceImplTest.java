@@ -27,10 +27,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
-import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
-import uk.gov.ons.ctp.response.casesvc.service.CaseGroupAuditService;
-import uk.gov.ons.ctp.response.casesvc.service.CollectionExerciseSvcClientService;
-import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
+import uk.gov.ons.ctp.response.casesvc.service.*;
 import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
 
@@ -45,7 +42,13 @@ import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.never;
+
 import static uk.gov.ons.ctp.common.state.BasicStateTransitionManager.TRANSITION_ERROR_MSG;
 import static uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseEvent.ACCOUNT_CREATED;
 import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.*;
@@ -62,7 +65,6 @@ public class CaseServiceImplTest {
   private static final String IAC_SVC_PUT_PATH = "iacs/123";
   private static final String IAC_SVC_POST_PATH = "iacs/123";
 
-//  private static final int CAT_ACCESSIBILITY_MATERIALS = 0;
   private static final int CAT_ACTION_CANCELLATION_COMPLETED = 1;
   private static final int CAT_ACTION_CANCELLATION_CREATED = 2;
   private static final int CAT_ACTION_COMPLETED = 3;
@@ -70,42 +72,17 @@ public class CaseServiceImplTest {
   private static final int CAT_ACTION_UPDATED = 5;
   private static final int CAT_ADDRESS_DETAILS_INCORRECT = 6;
   private static final int CAT_CASE_CREATED = 7;
-//  private static final int CAT_CLASSIFICATION_INCORRECT = 8;
-//  private static final int CAT_CLOSE_ESCALATION = 9;
-//  private static final int CAT_FIELD_COMPLAINT_ESCALATED = 10;
-//  private static final int CAT_FIELD_EMERGENCY_ESCALATED = 11;
   private static final int CAT_GENERAL_COMPLAINT = 12;
-//  private static final int CAT_GENERAL_COMPLAINT_ESCALATED = 13;
-//  private static final int CAT_GENERAL_ENQUIRY = 14;
-//  private static final int CAT_GENERAL_ENQUIRY_ESCALATED = 15;
   private static final int CAT_HOUSEHOLD_PAPER_REQUESTED = 16;
   private static final int CAT_HOUSEHOLD_REPLACEMENT_IAC_REQUESTED = 17;
-//  private static final int CAT_INCORRECT_ESCALATION = 18;
   private static final int CAT_H_INDIVIDUAL_PAPER_REQUESTED = 19;
   private static final int CAT_H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED = 20;
   private static final int CAT_H_INDIVIDUAL_RESPONSE_REQUESTED = 21;
-//  private static final int CAT_MISCELLANEOUS = 22;
   private static final int CAT_ONLINE_QUESTIONNAIRE_RESPONSE = 23;
   private static final int CAT_PAPER_QUESTIONNAIRE_RESPONSE = 24;
-//  private static final int CAT_PENDING = 25;
   private static final int CAT_REFUSAL = 26;
   private static final int CAT_RESPONDENT_ENROLED = 27;
-//  private static final int CAT_TECHNICAL_QUERY = 28;
   private static final int CAT_TRANSLATION_ARABIC = 29;
-//  private static final int CAT_TRANSLATION_BENGALI = 30;
-//  private static final int CAT_TRANSLATION_CANTONESE = 31;
-//  private static final int CAT_TRANSLATION_GUJARATI = 32;
-//  private static final int CAT_TRANSLATION_LITHUANIAN = 33;
-//  private static final int CAT_TRANSLATION_MANDARIN = 34;
-//  private static final int CAT_TRANSLATION_POLISH = 35;
-//  private static final int CAT_TRANSLATION_PORTUGUESE = 36;
-//  private static final int CAT_TRANSLATION_PUNJABI_GURMUKHI = 37;
-//  private static final int CAT_TRANSLATION_PUNJABI_SHAHMUKI = 38;
-//  private static final int CAT_TRANSLATION_SOMALI = 39;
-//  private static final int CAT_TRANSLATION_SPANISH = 40;
-//  private static final int CAT_TRANSLATION_TURKISH = 41;
-//  private static final int CAT_TRANSLATION_URDU = 42;
-//  private static final int CAT_UNDELIVERABLE = 43;
   private static final int CAT_RESPONDENT_ACCOUNT_CREATED = 44;
   private static final int CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT = 45;
   private static final int CAT_COLLECTION_INSTRUMENT_DOWNLOADED = 46;
@@ -151,6 +128,9 @@ public class CaseServiceImplTest {
   private CaseGroupRepository caseGroupRepo;
 
   @Mock
+  private CaseGroupService caseGroupService;
+
+  @Mock
   private AppConfig appConfig;
 
   @Mock
@@ -167,9 +147,6 @@ public class CaseServiceImplTest {
 
   @Mock
   private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
-
-  @Mock
-  private StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName> caseGroupStatusTransitionManager;
 
   @Mock
   private CaseGroupAuditService caseGroupAuditService;
@@ -598,11 +575,6 @@ public class CaseServiceImplTest {
     when(categoryRepo.findOne(CategoryDTO.CategoryName.REFUSAL)).thenReturn(categories.get(CAT_REFUSAL));
     when(categoryRepo.findOne(CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE)).thenReturn(categories.
             get(CAT_ONLINE_QUESTIONNAIRE_RESPONSE));
-    when(caseGroupStatusTransitionManager.transition(CaseGroupStatus.NOTSTARTED,
-            CategoryDTO.CategoryName.REFUSAL)).thenThrow(new CTPException(CTPException.Fault.BAD_REQUEST));
-    when(caseGroupStatusTransitionManager.transition(CaseGroupStatus.NOTSTARTED,
-            CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE))
-            .thenThrow(new CTPException(CTPException.Fault.BAD_REQUEST));
 
     CaseEvent refusalCaseEvent = fabricateEvent(CategoryDTO.CategoryName.REFUSAL, ACTIONABLE_H_INDIVIDUAL_CASE_FK);
     caseService.createCaseEvent(refusalCaseEvent, null);
@@ -834,85 +806,24 @@ public class CaseServiceImplTest {
   }
 
   @Test
-  public void testCaseGroupStatusUpdatedToComplete() throws Exception {
+  public void testCaseGroupStatusIsTransitioned() throws Exception {
+    Case targetCase = cases.get(ACTIONABLE_BI_CASE_FK);
+    CaseGroup caseGroup = caseGroups.get(1);
+
     when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(
             cases.get(ACTIONABLE_BI_CASE_FK));
-    when(caseGroupRepo.findById(cases.get(ACTIONABLE_BI_CASE_FK).getCaseGroupId())).thenReturn(caseGroups.get(0));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED)).thenReturn(
-            categories.get(CAT_COLLECTION_INSTRUMENT_DOWNLOADED));
+    when(caseGroupRepo.findOne(cases.get(ACTIONABLE_BI_CASE_FK).getCaseGroupFK())).thenReturn(caseGroup);
     when(categoryRepo.findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD)).thenReturn(
             categories.get(CAT_SUCCESSFUL_RESPONSE_UPLOAD));
-    when(caseGroupStatusTransitionManager.transition(CaseGroupStatus.NOTSTARTED,
-            CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED)).thenReturn(CaseGroupStatus.INPROGRESS);
-    when(caseGroupStatusTransitionManager.transition(CaseGroupStatus.INPROGRESS,
-            CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD)).thenReturn(CaseGroupStatus.COMPLETE);
-
-
-    CaseEvent caseEvent1 = fabricateEvent(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED,
-            ACTIONABLE_BI_CASE_FK);
-
-    caseService.createCaseEvent(caseEvent1, null);
-
-    CaseEvent caseEvent2 = fabricateEvent(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, ACTIONABLE_BI_CASE_FK);
-
-    caseService.createCaseEvent(caseEvent2, null);
-
-    ArgumentCaptor<CaseGroup> captor = ArgumentCaptor.forClass(CaseGroup.class);
-
-    CaseGroup initialUpdatedCaseGroup = caseGroups.get(0);
-    initialUpdatedCaseGroup.setStatus(CaseGroupStatus.INPROGRESS);
-
-    CaseGroup finalUpdatedCaseGroup = caseGroups.get(0);
-    finalUpdatedCaseGroup.setStatus(CaseGroupStatus.COMPLETE);
-
-    verify(caseGroupRepo, times(2)).saveAndFlush(captor.capture());
-    List<CaseGroup> caseGroupUpdates = captor.getAllValues();
-    assertEquals(caseGroupUpdates.get(0), initialUpdatedCaseGroup);
-    assertEquals(caseGroupUpdates.get(1), finalUpdatedCaseGroup);
-  }
-
-  @Test
-  public void testCaseGroupStatusUpdatedToInprogress() throws Exception {
-    when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(
-            cases.get(ACTIONABLE_BI_CASE_FK));
-    when(caseGroupRepo.findById(cases.get(ACTIONABLE_BI_CASE_FK).getCaseGroupId())).thenReturn(caseGroups.get(1));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED)).thenReturn(
-            categories.get(CAT_COLLECTION_INSTRUMENT_DOWNLOADED));
-    when(caseGroupStatusTransitionManager.transition(CaseGroupStatus.NOTSTARTED,
-            CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED)).thenReturn(CaseGroupStatus.INPROGRESS);
-
-
-    CaseEvent caseEvent1 = fabricateEvent(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED,
-            ACTIONABLE_BI_CASE_FK);
-
-    caseService.createCaseEvent(caseEvent1, null);
-
-    CaseGroup updatedCaseGroup = caseGroups.get(0);
-    updatedCaseGroup
-            .setStatus(CaseGroupStatus.INPROGRESS);
-    verify(caseGroupRepo, times(1)).saveAndFlush(updatedCaseGroup);
-  }
-
-  @Test
-  public void testCaseGroupStatusUpdatedToCompleteFromInprogress() throws Exception {
-    when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(
-            cases.get(ACTIONABLE_BI_CASE_FK));
-    when(caseGroupRepo.findOne(cases.get(ACTIONABLE_BI_CASE_FK).getCaseGroupFK())).thenReturn(caseGroups.get(1));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD)).thenReturn(
-            categories.get(CAT_SUCCESSFUL_RESPONSE_UPLOAD));
-    when(caseGroupStatusTransitionManager.transition(CaseGroupStatus.INPROGRESS,
-            CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD)).thenReturn(CaseGroupStatus.COMPLETE);
 
 
     CaseEvent caseEvent1 = fabricateEvent(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, ACTIONABLE_BI_CASE_FK);
 
     caseService.createCaseEvent(caseEvent1, null);
 
-    CaseGroup updatedCaseGroup = caseGroups.get(1);
-    updatedCaseGroup.setStatus(CaseGroupStatus.COMPLETE);
-    verify(caseGroupRepo, times(1)).saveAndFlush(updatedCaseGroup);
+    verify(caseGroupService, times(1)).transitionCaseGroupStatus(caseGroup,
+        CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, targetCase.getPartyId());
   }
-
 
   @Test
   public void testCaseGroupStatusNotUpdated() throws Exception {
@@ -921,9 +832,6 @@ public class CaseServiceImplTest {
     when(caseGroupRepo.findOne(cases.get(ACTIONABLE_BI_CASE_FK).getCaseGroupFK())).thenReturn(caseGroups.get(1));
     when(categoryRepo.findOne(CategoryDTO.CategoryName.GENERAL_COMPLAINT)).thenReturn(
             categories.get(CAT_GENERAL_COMPLAINT));
-    when(caseGroupStatusTransitionManager.transition(CaseGroupStatus.INPROGRESS,
-            CategoryDTO.CategoryName.GENERAL_COMPLAINT))
-            .thenThrow(new CTPException(CTPException.Fault.BAD_REQUEST));
 
 
     CaseEvent caseEvent1 = fabricateEvent(CategoryDTO.CategoryName.GENERAL_COMPLAINT, ACTIONABLE_BI_CASE_FK);
@@ -941,9 +849,11 @@ public class CaseServiceImplTest {
    */
   @Test
   public void testEventActionCancellationCompleted() throws Exception {
-    when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BI_CASE_FK));
+    Case targetCase = cases.get(ACTIONABLE_BI_CASE_FK);
+    when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(targetCase);
+    Category category = categories.get(CAT_ACTION_CANCELLATION_COMPLETED);
     when(categoryRepo.findOne(CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED)).
-            thenReturn(categories.get(CAT_ACTION_CANCELLATION_COMPLETED));
+            thenReturn(category);
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED,
             ACTIONABLE_BI_CASE_FK);
@@ -957,8 +867,8 @@ public class CaseServiceImplTest {
     verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
     verify(caseSvcStateTransitionManager, never()).transition(any(CaseState.class),
             any(CaseDTO.CaseEvent.class));
-    verify(caseGroupStatusTransitionManager, times(1)).transition(CaseGroupStatus.NOTSTARTED,
-            CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED);
+    verify(caseGroupService, times(1)).transitionCaseGroupStatus(caseGroups.get(CASEGROUP_PK - 1),
+            CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED, targetCase.getPartyId());
     verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
     verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(UUID.class),
             any(String.class));
@@ -1578,6 +1488,26 @@ public class CaseServiceImplTest {
     // no new action to be created
     verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
             any(UUID.class), any(String.class));
+  }
+
+  /**
+   * caseService.createCaseEvent will be called with invalid state transitions
+   * but suppress the exception. This is expected behaviour. This code smells but keeping as is.
+   */
+  @Test
+  public void testGivenCaseGroupChangeIsInvalidWhenTransitionFailGracefully() throws Exception {
+    when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BI_CASE_FK));
+    Category successfulResponseUploadedCategory = categories.get(CAT_SUCCESSFUL_RESPONSE_UPLOAD);
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD)).thenReturn(
+            successfulResponseUploadedCategory);
+
+    doThrow(new CTPException(CTPException.Fault.BAD_REQUEST))
+            .when(caseGroupService).transitionCaseGroupStatus(any(), any(), any());
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, ACTIONABLE_BI_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, null);
+
+    verify(caseGroupService).transitionCaseGroupStatus(any(), any(), any());
   }
 
   /**
