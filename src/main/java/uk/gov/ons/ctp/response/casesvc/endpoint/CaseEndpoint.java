@@ -183,9 +183,6 @@ public final class CaseEndpoint implements CTPEndpoint {
     SampleUnitBase sampleUnitBase = new SampleUnitBase(caseGroup.getSampleUnitRef(), Character.toString('B'),
             caseGroup.getPartyId().toString(), latestCase.getCollectionInstrumentId().toString());
     Case newCase = caseService.generateNewCase(sampleUnitBase, caseGroup, iacs.get(0), latestCase.getActionPlanId());
-    if (newCase == null) {
-      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND, "Failed to create new case");
-    }
     log.info("Successfully created new case {}", newCase.getId());
     return ResponseEntity.ok(buildDetailedCaseDTO(newCase, false, true));
   }

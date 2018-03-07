@@ -678,26 +678,4 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.error.timestamp",
             isA(String.class)));
   }
-
-  /**
-   * Tests if new code is generated from the endpoint
-   */
-  @Test
-  public void verifyNoNewCaseCaseThrowsException() throws Exception {
-    when(caseGroupService.findCaseGroupByCollectionExerciseIdAndRuRef(any(), any())).thenReturn(caseGroupResults.get(0));
-    when(caseService.findCasesByCaseGroupFK(any())).thenReturn(caseResults);
-    when(internetAccessCodeSvcClientService.generateIACs(1)).thenReturn(IACList);
-    when(caseService.generateNewCase(any(), any(), any(), any())).thenReturn(null);
-
-    String postUrl = String.format("/cases/iac/%s/%s", CASE1_CASEGROUP_COLLECTION_EXERCISE_ID, CASE1_CASEGROUP_SAMPLE_UNIT_REF);
-    ResultActions actions = mockMvc.perform(postJson(postUrl, ""));
-
-    actions.andExpect(status().isNotFound());
-    actions.andExpect(handler().handlerType(CaseEndpoint.class));
-    actions.andExpect(handler().methodName("generateNewIac"));
-    actions.andExpect(jsonPath("$.error.code",
-            is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
-    actions.andExpect(jsonPath("$.error.timestamp",
-            isA(String.class)));
-  }
 }
