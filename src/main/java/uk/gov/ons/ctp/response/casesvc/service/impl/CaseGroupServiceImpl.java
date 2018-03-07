@@ -108,10 +108,7 @@ public class CaseGroupServiceImpl implements CaseGroupService {
     // fetch party ID for the RU
     UUID partyId = targetCase.getPartyId();
     //select * from casesvc.casegroup where partyid = partyId and collectionexerciseid in collectionExercises
-    List<CaseGroup> caseGroups = caseGroupRepo.retrieveByPartyIdInListOfCollEx(partyId, collExs);
-    return caseGroups;
+    return caseGroupRepo.retrieveByPartyIdInListOfCollEx(partyId, collExs);
   }
-
-
 
 }
