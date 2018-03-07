@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.state;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableTable;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.ctp.common.state.BasicStateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
@@ -9,7 +11,6 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -23,61 +24,49 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
   public static final String CASE_ENTITY = "Case";
   public static final String CASE_GROUP = "CaseGroup";
 
-  private Map<String, StateTransitionManager<?, ?>> managers;
+  private final Map<String, StateTransitionManager<?, ?>> managers = ImmutableMap.<String, StateTransitionManager<?, ?>>builder()
+          .put(CASE_ENTITY, caseStateTransitionManager())
+          .put(CASE_GROUP, caseGroupStateTransitionManager())
+          .build();
 
-  /**
-   * Create and init the factory with concrete StateTransitionManagers for each
-   * required entity
-   */
-  public CaseSvcStateTransitionManagerFactory() {
-    managers = new HashMap<>();
+  private StateTransitionManager<CaseState, CaseEvent> caseStateTransitionManager() {
+    ImmutableTable.Builder<CaseState, CaseEvent, CaseState> builder = ImmutableTable.builder();
 
-    Map<CaseState, Map<CaseEvent, CaseState>> transitions = new HashMap<>();
+    // From sample init on activated to actionable
+    builder.put(CaseState.SAMPLED_INIT, CaseEvent.ACTIVATED, CaseState.ACTIONABLE);
 
-    Map<CaseEvent, CaseState> transitionMapForSampledInit = new HashMap<>();
-    transitionMapForSampledInit.put(CaseEvent.ACTIVATED, CaseState.ACTIONABLE);
-    transitions.put(CaseState.SAMPLED_INIT, transitionMapForSampledInit);
+    // From replacement init on replaced to actionable
+    builder.put(CaseState.REPLACEMENT_INIT, CaseEvent.REPLACED, CaseState.ACTIONABLE);
 
-    Map<CaseEvent, CaseState> transitionMapForReplacementInit = new HashMap<>();
-    transitionMapForReplacementInit.put(CaseEvent.REPLACED, CaseState.ACTIONABLE);
-    transitions.put(CaseState.REPLACEMENT_INIT, transitionMapForReplacementInit);
+    // From actionable on account created, deactivated, disabled to actionable, inactionable
+    builder.put(CaseState.ACTIONABLE, CaseEvent.ACCOUNT_CREATED, CaseState.ACTIONABLE);
+    builder.put(CaseState.ACTIONABLE, CaseEvent.DEACTIVATED, CaseState.INACTIONABLE);
+    builder.put(CaseState.ACTIONABLE, CaseEvent.DISABLED, CaseState.INACTIONABLE);
 
-    Map<CaseEvent, CaseState> transitionMapForActionable = new HashMap<>();
-    transitionMapForActionable.put(CaseEvent.ACCOUNT_CREATED, CaseState.ACTIONABLE);
-    transitionMapForActionable.put(CaseEvent.DEACTIVATED, CaseState.INACTIONABLE);
-    transitionMapForActionable.put(CaseEvent.DISABLED, CaseState.INACTIONABLE);
-    transitions.put(CaseState.ACTIONABLE, transitionMapForActionable);
+    // From inactionable on deactivated, disabled to inactionable
+    builder.put(CaseState.INACTIONABLE, CaseEvent.DEACTIVATED, CaseState.INACTIONABLE);
+    builder.put(CaseState.INACTIONABLE, CaseEvent.DISABLED, CaseState.INACTIONABLE);
 
-    Map<CaseEvent, CaseState> transitionMapForInactionable = new HashMap<>();
-    transitionMapForInactionable.put(CaseEvent.DEACTIVATED, CaseState.INACTIONABLE);
-    transitionMapForInactionable.put(CaseEvent.DISABLED, CaseState.INACTIONABLE);
-    transitions.put(CaseState.INACTIONABLE, transitionMapForInactionable);
+    return new BasicStateTransitionManager<>(builder.build().rowMap());
+  }
 
-    StateTransitionManager<CaseState, CaseEvent> caseStateTransitionManager =
-            new BasicStateTransitionManager<>(transitions);
+  private StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName> caseGroupStateTransitionManager() {
+    ImmutableTable.Builder<CaseGroupStatus, CategoryDTO.CategoryName, CaseGroupStatus> builder = ImmutableTable.builder();
 
-    managers.put(CASE_ENTITY, caseStateTransitionManager);
+    // From not started on ci downloaded, eq launch, successful response upload, completed by phone to in progress, in progress, completed, completed by phone
+    builder.put(CaseGroupStatus.NOTSTARTED, CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED, CaseGroupStatus.INPROGRESS);
+    builder.put(CaseGroupStatus.NOTSTARTED, CategoryDTO.CategoryName.EQ_LAUNCH, CaseGroupStatus.INPROGRESS);
+    builder.put(CaseGroupStatus.NOTSTARTED, CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, CaseGroupStatus.COMPLETE);
+    builder.put(CaseGroupStatus.NOTSTARTED, CategoryDTO.CategoryName.COMPLETED_BY_PHONE, CaseGroupStatus.COMPLETEDBYPHONE);
 
-    //CASE GROUP TRANSITIONS
-    Map<CaseGroupStatus, Map<CategoryDTO.CategoryName, CaseGroupStatus>> caseGroupTransitions = new HashMap<>();
+    // From in progress on successful response upload, completed by phone to completed, completed by phone
+    builder.put(CaseGroupStatus.INPROGRESS, CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, CaseGroupStatus.COMPLETE);
+    builder.put(CaseGroupStatus.INPROGRESS, CategoryDTO.CategoryName.COMPLETED_BY_PHONE, CaseGroupStatus.COMPLETEDBYPHONE);
 
-    //Transition from NOTSTARTED TO INPROGRESS
-    //TODO: Update with transitions for EQ's and Non-seft surveys
-    Map<CategoryDTO.CategoryName, CaseGroupStatus> transitionMapForCaseStarted = new HashMap<>();
-    transitionMapForCaseStarted.put(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED,
-            CaseGroupStatus.INPROGRESS);
-    caseGroupTransitions.put(CaseGroupStatus.NOTSTARTED, transitionMapForCaseStarted);
+    // From reopened on completed by phone to completed by phone
+    builder.put(CaseGroupStatus.REOPENED, CategoryDTO.CategoryName.COMPLETED_BY_PHONE, CaseGroupStatus.COMPLETEDBYPHONE);
 
-    //Transition from INPROGRESS to COMPLETED
-    //TODO: Update with transitions for EQ's and Non-seft surveys
-    Map<CategoryDTO.CategoryName, CaseGroupStatus> transitionMapForCaseInProgress = new HashMap<>();
-    transitionMapForCaseInProgress.put(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, CaseGroupStatus.COMPLETE);
-    caseGroupTransitions.put(CaseGroupStatus.INPROGRESS, transitionMapForCaseInProgress);
-
-    StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName> caseGroupStatusTransitionManager =
-            new BasicStateTransitionManager<>(caseGroupTransitions);
-
-    managers.put(CASE_GROUP, caseGroupStatusTransitionManager);
+    return new BasicStateTransitionManager<>(builder.build().rowMap());
   }
 
   @SuppressWarnings("unchecked")
