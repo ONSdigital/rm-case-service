@@ -570,4 +570,14 @@ public class CaseServiceImpl implements CaseService {
 
     return newCase;
   }
+
+  @Override
+  public Case generateNewCase(SampleUnitBase caseData, CaseGroup caseGroup, String iac, UUID actionplanid) {
+    Case newCase = createNewCase(caseData, caseGroup);
+    newCase.setIac(iac);
+    newCase.setActionPlanId(actionplanid);
+    newCase.setState(CaseState.ACTIONABLE);
+    caseRepo.saveAndFlush(newCase);
+    return newCase;
+  }
 }
