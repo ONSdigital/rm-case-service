@@ -58,6 +58,7 @@ spring:
     username: casesvc
     password: casesvc
     driverClassName: org.postgresql.Driver
+    continue-on-error: true
     tomcat:
       initial-size: 5
       max-active: 10
