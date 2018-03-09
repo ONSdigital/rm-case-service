@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.domain.repository;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,6 +19,13 @@ public interface CaseGroupRepository extends JpaRepository<CaseGroup, Integer> {
      * @return the matching CaseGroup
      */
     CaseGroup findById(UUID id);
+  
+    /**
+     * To find CaseGroup by party UUID
+     * @param id the UUID of the Party
+     * @return the matching CaseGroups
+     */
+    List<CaseGroup> findByPartyId(UUID id);
 
     CaseGroup findCaseGroupByCollectionExerciseIdAndSampleUnitRef(UUID collectionExerciseId, String ruRef);
 }

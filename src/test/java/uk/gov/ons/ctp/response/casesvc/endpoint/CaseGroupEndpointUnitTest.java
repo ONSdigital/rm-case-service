@@ -14,6 +14,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import uk.gov.ons.ctp.common.FixtureHelper;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.error.RestExceptionHandler;
 import uk.gov.ons.ctp.common.jackson.CustomObjectMapper;
@@ -33,6 +34,7 @@ import uk.gov.ons.ctp.response.casesvc.state.CaseSvcStateTransitionManagerFactor
 import uk.gov.ons.ctp.response.casesvc.utility.Constants;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -87,6 +89,10 @@ public final class CaseGroupEndpointUnitTest {
     private static final String CASE_GROUP_SU_REF = "0123456789";
     private static final String CASE_GROUP_SU_TYPE = "B";
     private static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
+    private static final UUID NON_EXISTING_PARTY_UUID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfe666");
+    private static final UUID EXISTING_PARTY_UUID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfe111");
+
+    private List<CaseGroup> caseGroupResults;
 
     /**
      * Initialises Mockito
@@ -104,6 +110,8 @@ public final class CaseGroupEndpointUnitTest {
                 .setMessageConverters(new MappingJackson2HttpMessageConverter(
                         new CustomObjectMapper()))
                 .build();
+
+//        this.caseGroupResults = FixtureHelper.loadClassFixtures(CaseGroup[].class);
     }
 
     /**
@@ -312,5 +320,25 @@ public final class CaseGroupEndpointUnitTest {
 
         // Then
         actions.andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void findCaseGroupsByPartyIdNotFound() throws Exception {
+        ResultActions actions = mockMvc.perform(getJson(String.format("/casegroups/partyid/%s", NON_EXISTING_PARTY_UUID)));
+
+        actions.andExpect(status().isNoContent());
+        actions.andExpect(handler().handlerType(CaseGroupEndpoint.class));
+        actions.andExpect(handler().methodName("findCaseGroupsByPartyId"));
+    }
+
+    @Test
+    public void findCaseGroupsByPartyId() throws Exception {
+        when(caseGroupService.findCaseGroupByPartyId(EXISTING_PARTY_UUID)).thenReturn(caseGroupResults);
+
+        ResultActions actions = mockMvc.perform(getJson(String.format("/casegroups/partyid/%s", EXISTING_PARTY_UUID)));
+
+        actions.andExpect(status().is2xxSuccessful());
+        actions.andExpect(handler().handlerType(CaseGroupEndpoint.class));
+        actions.andExpect(handler().methodName("findCaseGroupsByPartyId"));
     }
 }
