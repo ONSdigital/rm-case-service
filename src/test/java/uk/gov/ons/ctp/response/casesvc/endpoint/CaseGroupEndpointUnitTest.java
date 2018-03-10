@@ -24,7 +24,6 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
@@ -38,11 +37,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.contains;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -76,6 +75,7 @@ public final class CaseGroupEndpointUnitTest {
             new CaseSvcStateTransitionManagerFactory().getStateTransitionManager(CaseSvcStateTransitionManagerFactory.CASE_GROUP);
 
     private MockMvc mockMvc;
+    private List<CaseGroup> caseGroupResults;
 
     private static final UUID CASE_GROUP_UUID = UUID.randomUUID();
     private static final String NON_EXISTENT_CASE_GROUP_UUID =
@@ -90,9 +90,11 @@ public final class CaseGroupEndpointUnitTest {
     private static final String CASE_GROUP_SU_TYPE = "B";
     private static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
     private static final UUID NON_EXISTING_PARTY_UUID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfe666");
-    private static final UUID EXISTING_PARTY_UUID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfe111");
-
-    private List<CaseGroup> caseGroupResults;
+    private static final UUID EXISTING_PARTY_UUID = UUID.fromString("3b136c4b-7a14-4904-9e01-13364dd7b972");
+    private static final UUID CASEGROUP1_ID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfef3c");
+    private static final UUID CASEGROUP2_ID = UUID.fromString("2d31f300-246d-11e8-b467-0ed5f89f718b");
+    private static final UUID COLLEX1_ID = UUID.fromString("dab9db7f-3aa0-4866-be20-54d72ee185fb");
+    private static final UUID COLLEX2_ID = UUID.fromString("24535ac6-246d-11e8-b467-0ed5f89f718b");
 
     /**
      * Initialises Mockito
@@ -111,7 +113,7 @@ public final class CaseGroupEndpointUnitTest {
                         new CustomObjectMapper()))
                 .build();
 
-//        this.caseGroupResults = FixtureHelper.loadClassFixtures(CaseGroup[].class);
+        this.caseGroupResults = FixtureHelper.loadClassFixtures(CaseGroup[].class);
     }
 
     /**
@@ -340,5 +342,8 @@ public final class CaseGroupEndpointUnitTest {
         actions.andExpect(status().is2xxSuccessful());
         actions.andExpect(handler().handlerType(CaseGroupEndpoint.class));
         actions.andExpect(handler().methodName("findCaseGroupsByPartyId"));
+        actions.andExpect(jsonPath("$[*].id", containsInAnyOrder(CASEGROUP1_ID.toString(), CASEGROUP2_ID.toString())));
+        actions.andExpect(jsonPath("$[*].partyId", containsInAnyOrder(EXISTING_PARTY_UUID.toString(), EXISTING_PARTY_UUID.toString())));
+        actions.andExpect(jsonPath("$[*].collectionExerciseId", containsInAnyOrder(COLLEX1_ID.toString(), COLLEX2_ID.toString())));
     }
 }
