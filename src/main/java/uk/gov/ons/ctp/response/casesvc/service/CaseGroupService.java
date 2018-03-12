@@ -33,6 +33,14 @@ public interface CaseGroupService extends CTPService {
    */
   CaseGroup findCaseGroupById(UUID id);
 
+  /**
+   * Find CaseGroups by party Id.
+   *
+   * @param id UUID of party
+   * @return CaseGroup entity or null
+   */
+  List<CaseGroup> findCaseGroupByPartyId(UUID id);
+
   CaseGroup findCaseGroupByCollectionExerciseIdAndRuRef(final UUID collectionExerciseId, final String ruRef);
 
   /**
