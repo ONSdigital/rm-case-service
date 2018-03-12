@@ -231,10 +231,10 @@ public class CaseServiceImpl implements CaseService {
       // see if any case needs to transition
       for(Case bCase : bCases) {
         effectTargetCaseStateTransition(category, bCase);
-        Case c = new Case();
-        c.setPartyId(newCase.getPartyId());
-        createNewCase(category, caseEvent, bCase, c);
       }
+      Case c = new Case();
+      c.setPartyId(newCase.getPartyId());
+      createNewCase(category, caseEvent, cases.get(0), c);
     }
   }
 

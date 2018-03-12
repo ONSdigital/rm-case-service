@@ -108,7 +108,7 @@ public class CaseGroupServiceImpl implements CaseGroupService {
     // fetch all the collection exercises for a survey
     List<CollectionExerciseDTO> collectionExercises = collectionExerciseSvcClientService.getCollectionExercises(collectionExercise.getSurveyId());
     // get published collection exercise
-    List<CollectionExerciseDTO> publishedCollexs = collectionExercises.stream().filter(ce -> ce.getState().toString().equals("READY_FOR_LIVE")).collect(Collectors.toList());
+    List<CollectionExerciseDTO> publishedCollexs = collectionExercises.stream().filter(ce -> ce.getState().toString().equals("READY_FOR_LIVE") || ce.getState().toString().equals("LIVE")).collect(Collectors.toList());
     // get list of collection exercise ids
     List<UUID> collExs = publishedCollexs.stream().map(CollectionExerciseDTO::getId).collect(Collectors.toList());
     // fetch party ID for the RU
