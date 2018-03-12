@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import uk.gov.ons.ctp.common.error.CTPException;
@@ -28,6 +29,14 @@ public interface CaseGroupService extends CTPService {
    * @return CaseGroup entity or null
    */
   CaseGroup findCaseGroupById(UUID id);
+
+  /**
+   * Find CaseGroups by party Id.
+   *
+   * @param id UUID of party
+   * @return CaseGroup entity or null
+   */
+  List<CaseGroup> findCaseGroupByPartyId(UUID id);
 
   CaseGroup findCaseGroupByCollectionExerciseIdAndRuRef(final UUID collectionExerciseId, final String ruRef);
 

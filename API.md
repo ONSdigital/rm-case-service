@@ -58,6 +58,33 @@ If this query parameter is omitted the unique access code **will not** be return
 
 An `HTTP 404 Not Found` status code is returned if the case group with the specified ID could not be found.
 
+## List Case Groups for Party
+* `GET /casegroups/partyid/{partyId}` will return a list of case groups with the given party ID.
+
+### Example JSON Response
+```json
+[
+  {
+    "id": "9a5f2be5-f944-41f9-982c-3517cfcfef3c",
+    "collectionExerciseId": "dab9db7f-3aa0-4866-be20-54d72ee185fb",
+    "partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
+    "sampleUnitRef": "0123456789",
+    "sampleUnitType": "B",
+    "status": "NOTSTARTED"
+  },
+  {
+    "id": "2d31f300-246d-11e8-b467-0ed5f89f718b",
+    "collectionExerciseId": "24535ac6-246d-11e8-b467-0ed5f89f718b",
+    "partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972",
+    "sampleUnitRef": "0123456789",
+    "sampleUnitType": "B",
+    "status": "NOTSTARTED"
+  }
+]
+```
+
+An `HTTP 204 No Content` status code is returned if there are no case groups found with the specified party ID.
+
 ## List Cases for Case Group
 * `GET /cases/casegroupid/{casegroupId}` will return a list of cases for the case group with the given case group ID.
 

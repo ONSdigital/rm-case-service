@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,12 @@ public class CaseGroupServiceImpl implements CaseGroupService {
   public CaseGroup findCaseGroupById(final UUID id) {
     log.debug("Entering findCaseGroupById with {}", id);
     return caseGroupRepo.findById(id);
+  }
+
+  @Override
+  public List<CaseGroup> findCaseGroupByPartyId(final UUID id) {
+    log.debug("Entering findCaseGroupByPartyId with {}", id);
+    return caseGroupRepo.findByPartyId(id);
   }
 
   @Override
