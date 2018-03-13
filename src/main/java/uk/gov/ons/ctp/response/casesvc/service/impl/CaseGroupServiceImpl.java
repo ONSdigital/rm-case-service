@@ -115,7 +115,7 @@ public class CaseGroupServiceImpl implements CaseGroupService {
             collectionExerciseSvcClientService.getCollectionExercises(collectionExercise.getSurveyId());
     if (collectionExercises == null){
       // This will happen if say the collection exercise service is down
-      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, String.format("Cannot find collection exercises for survey %s", collectionExercise.getSurveyId());
+      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, String.format("Cannot find collection exercises for survey %s", collectionExercise.getSurveyId()));
     }
     // get published collection exercise
     List<CollectionExerciseDTO> publishedCollexs =
