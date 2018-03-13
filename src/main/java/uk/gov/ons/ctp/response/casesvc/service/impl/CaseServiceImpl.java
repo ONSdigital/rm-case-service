@@ -11,7 +11,10 @@ import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.casesvc.domain.model.*;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.*;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType;
@@ -34,6 +37,7 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * A CaseService implementation which encapsulates all business logic operating
@@ -159,7 +163,7 @@ public class CaseServiceImpl implements CaseService {
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
-  public CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase, Timestamp timestamp) throws CTPException {
+  public CaseEvent createCaseEvent(final CaseEvent caseEvent, final Case newCase, final Timestamp timestamp) throws CTPException {
     log.debug("Entering createCaseEvent with caseEvent {}", caseEvent);
     log.info("SPLUNK: CaseEventCreation: casePK={}, category={}, subCategory={}, createdBy={}",
         caseEvent.getCaseFK(),
@@ -167,7 +171,7 @@ public class CaseServiceImpl implements CaseService {
         caseEvent.getSubCategory(),
         caseEvent.getCreatedBy());
 
-    CaseEvent createdCaseEvent = null;
+     CaseEvent createdCaseEvent = null;
 
     Case targetCase = caseRepo.findOne(caseEvent.getCaseFK());
     log.debug("targetCase is {}", targetCase);
@@ -184,14 +188,8 @@ public class CaseServiceImpl implements CaseService {
       // do we need to record a response?
       recordCaseResponse(category, targetCase, timestamp);
 
-      // does the event transition the case?
-      effectTargetCaseStateTransition(category, targetCase);
-
       // should we create an ad hoc action?
       createAdHocAction(category, caseEvent);
-
-      // should a new case be created?
-      createNewCase(category, caseEvent, targetCase, newCase);
 
       // transition case group status
       CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
@@ -202,11 +200,56 @@ public class CaseServiceImpl implements CaseService {
         // events which do not cause CaseGroupStatus transitions, (this is valid behaviour).
         log.debug(e.getMessage());
       }
+
+      // if this is a respondent enrolling event
+      if (caseEvent.getCategory().toString().equals("RESPONDENT_ENROLED")) {
+        // are there other case groups that need updating
+        List<CaseGroup> caseGroups = caseGroupService.transitionOtherCaseGroups(targetCase);
+        checkCaseState(category, caseGroups, caseEvent, newCase);
+      } else {
+        // should a new case be created?
+        createNewCase(category, caseEvent, targetCase, newCase);
+        effectTargetCaseStateTransition(category, targetCase);
+      }
     }
 
     return createdCaseEvent;
   }
 
+  /**
+   * This has been triggered by a 'RESPONDENT_ENROLED' event. If we find any associated Case Groups
+   * with only B cases we need to make case 'INACTIONABLE' and create BI case.
+   *
+   * @param category a category - currently only called for RESPONDENT_ENROLED
+   * @param caseGroups a list of case groups
+   * @param caseEvent a case event
+   * @param newCase a case to provide a party id
+   * @throws CTPException thrown if database error etc
+   */
+  private void checkCaseState(final Category category, final List<CaseGroup> caseGroups, final CaseEvent caseEvent,
+                              final Case newCase) throws CTPException {
+    // check all case groups are type B. For surveys this is always true
+    List<CaseGroup> caseGroupsToUpdate = caseGroups
+            .stream()
+            .filter(cg -> cg.getSampleUnitType().toString().equals("B"))
+            .collect(Collectors.toList());
+    for (CaseGroup cg : caseGroupsToUpdate) {
+      // fetch cases associated to case group
+      List<Case> cases = caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(cg.getCaseGroupPK());
+      // find b cases
+      List<Case> bCases = cases
+              .stream()
+              .filter(c -> c.getSampleUnitType().toString().equals("B"))
+              .collect(Collectors.toList());
+      // see if any case needs to transition
+      for (Case bCase : bCases) {
+        effectTargetCaseStateTransition(category, bCase);
+      }
+      Case c = new Case();
+      c.setPartyId(newCase.getPartyId());
+      createNewCase(category, caseEvent, cases.get(0), c);
+    }
+  }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
