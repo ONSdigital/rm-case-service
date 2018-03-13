@@ -163,7 +163,7 @@ public class CaseServiceImpl implements CaseService {
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
-  public CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase, Timestamp timestamp) throws CTPException {
+  public CaseEvent createCaseEvent(final CaseEvent caseEvent, final Case newCase, final Timestamp timestamp) throws CTPException {
     log.debug("Entering createCaseEvent with caseEvent {}", caseEvent);
     log.info("SPLUNK: CaseEventCreation: casePK={}, category={}, subCategory={}, createdBy={}",
         caseEvent.getCaseFK(),
@@ -204,7 +204,7 @@ public class CaseServiceImpl implements CaseService {
       // if this is a respondent enrolling event
       if (caseEvent.getCategory().toString().equals("RESPONDENT_ENROLED")) {
         // are there other case groups that need updating
-        List<CaseGroup> caseGroups = caseGroupService.transitionOtherCaseGroups(category, caseEvent, targetCase, newCase);
+        List<CaseGroup> caseGroups = caseGroupService.transitionOtherCaseGroups(targetCase);
         checkCaseState(category, caseGroups, caseEvent, newCase);
       } else {
         // should a new case be created?
@@ -219,17 +219,30 @@ public class CaseServiceImpl implements CaseService {
   /**
    * This has been triggered by a 'RESPONDENT_ENROLED' event. If we find any associated Case Groups
    * with only B cases we need to make case 'INACTIONABLE' and create BI case.
+   *
+   * @param category a category - currently only called for RESPONDENT_ENROLED
+   * @param caseGroups a list of case groups
+   * @param caseEvent a case event
+   * @param newCase a case to provide a party id
+   * @throws CTPException thrown if database error etc
    */
-  private void checkCaseState(final Category category, List<CaseGroup> caseGroups, CaseEvent caseEvent, Case newCase) throws CTPException {
+  private void checkCaseState(final Category category, final List<CaseGroup> caseGroups, final CaseEvent caseEvent,
+                              final Case newCase) throws CTPException {
     // check all case groups are type B. For surveys this is always true
-    List<CaseGroup> caseGroupsToUpdate = caseGroups.stream().filter(cg -> cg.getSampleUnitType().toString().equals("B")).collect(Collectors.toList());
-    for(CaseGroup cg : caseGroupsToUpdate) {
+    List<CaseGroup> caseGroupsToUpdate = caseGroups
+            .stream()
+            .filter(cg -> cg.getSampleUnitType().toString().equals("B"))
+            .collect(Collectors.toList());
+    for (CaseGroup cg : caseGroupsToUpdate) {
       // fetch cases associated to case group
       List<Case> cases = caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(cg.getCaseGroupPK());
       // find b cases
-      List<Case> bCases = cases.stream().filter(c -> c.getSampleUnitType().toString().equals("B")).collect(Collectors.toList());
+      List<Case> bCases = cases
+              .stream()
+              .filter(c -> c.getSampleUnitType().toString().equals("B"))
+              .collect(Collectors.toList());
       // see if any case needs to transition
-      for(Case bCase : bCases) {
+      for (Case bCase : bCases) {
         effectTargetCaseStateTransition(category, bCase);
       }
       Case c = new Case();

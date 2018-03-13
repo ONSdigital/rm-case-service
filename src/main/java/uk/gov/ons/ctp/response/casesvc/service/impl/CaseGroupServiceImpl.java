@@ -17,8 +17,6 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupAuditService;
@@ -39,9 +37,6 @@ public class CaseGroupServiceImpl implements CaseGroupService {
    */
   @Autowired
   private CaseGroupRepository caseGroupRepo;
-
-  @Autowired
-  private CategoryRepository categoryRepo;
 
   @Autowired
   private CollectionExerciseSvcClientService collectionExerciseSvcClientService;
@@ -98,17 +93,23 @@ public class CaseGroupServiceImpl implements CaseGroupService {
    * Use case ID to find case group
    * Use case group to find collectionEx
    * Then use CollEx service to find survey ID, then find all collexs for survey
-   * Then get all casge groups for the party ID where Collex ID is in list of collexs
-   * TODO: null checking
+   * Then get all case groups for the party ID where Collex ID is in list of collexs
    */
-  public List<CaseGroup> transitionOtherCaseGroups(final Category category, final CaseEvent caseEvent, final Case targetCase, Case newCase) throws CTPException {
+  public List<CaseGroup> transitionOtherCaseGroups(final Case targetCase) throws CTPException {
+    // TODO: null checking
     CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
     CollectionExerciseDTO collectionExercise = collectionExerciseSvcClientService
             .getCollectionExercise(caseGroup.getCollectionExerciseId());
     // fetch all the collection exercises for a survey
-    List<CollectionExerciseDTO> collectionExercises = collectionExerciseSvcClientService.getCollectionExercises(collectionExercise.getSurveyId());
+    List<CollectionExerciseDTO> collectionExercises =
+            collectionExerciseSvcClientService.getCollectionExercises(collectionExercise.getSurveyId());
     // get published collection exercise
-    List<CollectionExerciseDTO> publishedCollexs = collectionExercises.stream().filter(ce -> ce.getState().toString().equals("READY_FOR_LIVE") || ce.getState().toString().equals("LIVE")).collect(Collectors.toList());
+    List<CollectionExerciseDTO> publishedCollexs =
+            collectionExercises
+                    .stream()
+                    .filter(ce -> ce.getState().toString().equals("READY_FOR_LIVE")
+                            || ce.getState().toString().equals("LIVE"))
+                    .collect(Collectors.toList());
     // get list of collection exercise ids
     List<UUID> collExs = publishedCollexs.stream().map(CollectionExerciseDTO::getId).collect(Collectors.toList());
     // fetch party ID for the RU

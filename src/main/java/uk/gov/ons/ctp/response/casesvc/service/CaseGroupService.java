@@ -50,8 +50,15 @@ public interface CaseGroupService extends CTPService {
    * @param partyId party ID for auditing the transition
    * @throws CTPException if transition is not executed
    */
-  void transitionCaseGroupStatus(final CaseGroup caseGroup, final CategoryDTO.CategoryName categoryName, final UUID partyId) throws CTPException;
+  void transitionCaseGroupStatus(CaseGroup caseGroup, CategoryDTO.CategoryName categoryName,
+                                 UUID partyId) throws CTPException;
 
-  List<CaseGroup> transitionOtherCaseGroups(final Category category, final CaseEvent caseEvent, final Case targetCase, Case newCase) throws CTPException;
+  /**
+   *
+   * @param targetCase the case for which related case groups should be found
+   * @return a list of case groups related to the target by party and collection exercise
+   * @throws CTPException thrown if an error occurs
+   */
+  List<CaseGroup> transitionOtherCaseGroups(Case targetCase) throws CTPException;
 
-  }
+}

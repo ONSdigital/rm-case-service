@@ -51,7 +51,9 @@ import static org.mockito.Mockito.never;
 
 import static uk.gov.ons.ctp.common.state.BasicStateTransitionManager.TRANSITION_ERROR_MSG;
 import static uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseEvent.ACCOUNT_CREATED;
-import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.*;
+import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.IAC_OVERUSE_MSG;
+import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.MISSING_NEW_CASE_MSG;
+import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.WRONG_OLD_SAMPLE_UNIT_TYPE_MSG;
 
 /**
  * Test the CaseServiceImpl primarily the createCaseEvent functionality. Note
@@ -1097,8 +1099,8 @@ public class CaseServiceImplTest {
 
     List<CollectionExerciseDTO> listCollex = Collections.singletonList(makeCollectionExercise());
     when(collectionExerciseSvcClientService.getCollectionExercises(null)).thenReturn(listCollex);
-    List<CaseGroup> caseGroups = Collections.singletonList(makeCaseGroup());
-    when(caseGroupService.transitionOtherCaseGroups(any(), any(), any(), any())).thenReturn(caseGroups);
+    List<CaseGroup> theseCaseGroups = Collections.singletonList(makeCaseGroup());
+    when(caseGroupService.transitionOtherCaseGroups(any())).thenReturn(theseCaseGroups);
     CaseGroup caseGroup = makeCaseGroup();
     when(caseGroupRepo.findOne(ENROLMENT_CASE_INDIVIDUAL_FK)).thenReturn(caseGroup);
     List<Case> c = Collections.singletonList(makeCase());
@@ -1139,6 +1141,10 @@ public class CaseServiceImplTest {
             any(UUID.class), any(String.class));
   }
 
+  /**
+   * Make a test collection exercise
+   * @return a new test collection exercise
+   */
   private CollectionExerciseDTO makeCollectionExercise() {
     CollectionExerciseDTO collex = new CollectionExerciseDTO();
     collex.setId(UUID.randomUUID());
@@ -1146,6 +1152,10 @@ public class CaseServiceImplTest {
     return collex;
   }
 
+  /**
+   * Make a test case group
+   * @return a new test case group
+   */
   private CaseGroup makeCaseGroup() {
     CaseGroup cg = new CaseGroup();
     cg.setId(UUID.randomUUID());
@@ -1154,6 +1164,10 @@ public class CaseServiceImplTest {
     return cg;
   }
 
+  /**
+   * Make a test case
+   * @return a new test case
+   */
   private Case makeCase() {
     Case c = new Case();
     c.setId(UUID.randomUUID());

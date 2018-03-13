@@ -37,7 +37,7 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
 
   /**
    * Find cases assigned to the given casegroupid
-   * @param caseGroupId the group id
+   * @param caseGroupFK the case group UUID
    * @return the cases in the group
    */
   List<Case> findByCaseGroupId(UUID caseGroupFK);

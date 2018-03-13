@@ -49,7 +49,7 @@ public class CollectionExerciseSvcClientServiceImpl implements CollectionExercis
   @Retryable(value = {RestClientException.class}, maxAttemptsExpression = "#{${retries.maxAttempts}}",
       backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
   @Override
-  public CollectionExerciseDTO getCollectionExercise(UUID collectionExerciseId) {
+  public CollectionExerciseDTO getCollectionExercise(final UUID collectionExerciseId) {
     UriComponents uriComponents = restUtility.createUriComponents(
         appConfig.getCollectionExerciseSvc().getCollectionExercisePath(), null, collectionExerciseId);
 
@@ -74,15 +74,17 @@ public class CollectionExerciseSvcClientServiceImpl implements CollectionExercis
   @Retryable(value = {RestClientException.class}, maxAttemptsExpression = "#{${retries.maxAttempts}}",
           backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
   @Override
-  public List<CollectionExerciseDTO> getCollectionExercises(String surveyId) {
-    UriComponents uriComponents = restUtility.createUriComponents(appConfig.getCollectionExerciseSvc().getCollectionExerciseSurveyPath(), null, surveyId);
+  public List<CollectionExerciseDTO> getCollectionExercises(final String surveyId) {
+    UriComponents uriComponents = restUtility.createUriComponents(
+            appConfig.getCollectionExerciseSvc().getCollectionExerciseSurveyPath(), null, surveyId);
     HttpEntity<?> httpEntity = restUtility.createHttpEntity(null);
-    ResponseEntity<String> responseEntity = restTemplate.exchange(uriComponents.toUri(), HttpMethod.GET, httpEntity, String.class);
+    ResponseEntity<String> responseEntity = restTemplate.exchange(
+            uriComponents.toUri(), HttpMethod.GET, httpEntity, String.class);
     List<CollectionExerciseDTO> result = null;
     if (responseEntity != null && responseEntity.getStatusCode().is2xxSuccessful()) {
       String responseBody = responseEntity.getBody();
       try {
-        result = objectMapper.readValue(responseBody, new TypeReference<List<CollectionExerciseDTO>>(){});
+        result = objectMapper.readValue(responseBody, new TypeReference<List<CollectionExerciseDTO>>() {});
       } catch (IOException e) {
         log.error(String.format("cause = %s - message = %s", e.getCause(), e.getMessage()));
       }
