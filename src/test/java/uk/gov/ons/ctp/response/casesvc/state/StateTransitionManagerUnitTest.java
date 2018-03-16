@@ -190,5 +190,17 @@ public class StateTransitionManagerUnitTest {
     // Then
     assertEquals(destinationState, CaseGroupStatus.COMPLETEDBYPHONE);
   }
+  
+  @Test
+  public void givenCaseGroupStateInProgressWhenOfflineResponseProcessedThenComplete() throws CTPException {
+    // Given
+    CaseGroupStatus reopened = CaseGroupStatus.INPROGRESS;
+
+    // When
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(reopened, CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED);
+
+    // Then
+    assertEquals(destinationState, CaseGroupStatus.COMPLETE);
+  }
 
 }
