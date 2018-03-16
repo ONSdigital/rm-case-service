@@ -36,6 +36,13 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
   List<Case> findByCaseGroupFKOrderByCreatedDateTimeDesc(Integer caseGroupFK);
 
   /**
+   * Find cases assigned to the given casegroupid
+   * @param caseGroupFK the case group UUID
+   * @return the cases in the group
+   */
+  List<Case> findByCaseGroupId(UUID caseGroupFK);
+
+  /**
    * Find cases assigned to the given iac
    * There should only be one - it is the job of the caller to complain if there is >1
    * @param iac the iac

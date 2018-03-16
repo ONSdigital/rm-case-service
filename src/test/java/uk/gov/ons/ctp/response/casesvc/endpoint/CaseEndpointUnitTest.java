@@ -23,6 +23,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
+import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitBase;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
@@ -31,8 +32,10 @@ import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
+import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -127,6 +130,7 @@ public final class CaseEndpointUnitTest {
   private static final String NINE = "9";
   private static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
   private static final String FINDCASEBYID = "findCaseById";
+  private static final List<String> IACList = Arrays.asList("jkbvyklkwj88");
 
   private static final String CASEEVENT_INVALIDJSON =
           "{\"description\":\"a\",\"category\":\"BAD_CAT\",\"createdBy\":\"u\"}";
@@ -147,6 +151,9 @@ public final class CaseEndpointUnitTest {
 
   @Mock
   private CaseGroupService caseGroupService;
+
+  @Mock
+  private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
 
   @Spy
   private MapperFacade mapperFacade = new CaseSvcBeanMapper();
@@ -634,6 +641,41 @@ public final class CaseEndpointUnitTest {
    CaseEventCreationRequestDTO caseEventDTO = new CaseEventCreationRequestDTO();
    caseEndpoint.createCaseEvent(CASE1_ID, caseEventDTO, bindingResult);
   }
-  
-  
+
+  /**
+   * Tests if new code is generated from the endpoint
+   */
+  @Test
+  public void verifyGenerateNewIac() throws Exception {
+    when(caseGroupService.findCaseGroupByCollectionExerciseIdAndRuRef(any(), any())).thenReturn(caseGroupResults.get(0));
+    when(caseService.findCasesByCaseGroupFK(any())).thenReturn(caseResults);
+    when(internetAccessCodeSvcClientService.generateIACs(1)).thenReturn(IACList);
+    when(caseService.generateNewCase(any(), any(), any(), any())).thenReturn(caseResults.get(0));
+
+    String postUrl = String.format("/cases/iac/%s/%s", CASE1_CASEGROUP_COLLECTION_EXERCISE_ID, CASE1_CASEGROUP_SAMPLE_UNIT_REF);
+    ResultActions actions = mockMvc.perform(postJson(postUrl, ""));
+
+    actions.andExpect(status().isOk());
+    actions.andExpect(jsonPath("$.iac", is(caseResults.get(0).getIac())));
+  }
+
+  /**
+   * Tests if no caseGroup is found for ce_id and ru_ref that Exception is thrown
+   * @throws Exception exception thrown
+   */
+  @Test
+  public void verifyNoCaseGroupThrowsException() throws Exception {
+    when(caseGroupService.findCaseGroupByCollectionExerciseIdAndRuRef(any(), any())).thenReturn(null);
+
+    String postUrl = String.format("/cases/iac/%s/%s", CASE1_CASEGROUP_COLLECTION_EXERCISE_ID, CASE1_CASEGROUP_SAMPLE_UNIT_REF);
+    ResultActions actions = mockMvc.perform(postJson(postUrl, ""));
+
+    actions.andExpect(status().isNotFound());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("generateNewIac"));
+    actions.andExpect(jsonPath("$.error.code",
+            is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
+    actions.andExpect(jsonPath("$.error.timestamp",
+            isA(String.class)));
+  }
 }

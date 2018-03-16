@@ -13,4 +13,5 @@ import uk.gov.ons.ctp.common.rest.RestUtilityConfig;
 public class CollectionExerciseSvc {
   private RestUtilityConfig connectionConfig;
   private String collectionExercisePath;
+  private String collectionExerciseSurveyPath;
 }

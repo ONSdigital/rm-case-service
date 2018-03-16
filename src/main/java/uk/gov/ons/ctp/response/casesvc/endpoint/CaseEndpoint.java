@@ -22,6 +22,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
+import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitBase;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
@@ -32,6 +33,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CreatedCaseEventDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
+import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.utility.Constants;
 
 import javax.validation.Valid;
@@ -64,6 +66,9 @@ public final class CaseEndpoint implements CTPEndpoint {
 
   @Autowired
   private CaseService caseService;
+
+  @Autowired
+  private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
 
   @Qualifier("caseSvcBeanMapper")
   @Autowired
@@ -101,7 +106,7 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @param partyId to find by
    * @param caseevents flag used to return or not CaseEvents
    * @param iac flag used to return or not the iac
-   * @return the case found
+   * @return the cases found
    * @throws CTPException something went wrong
    */
   @RequestMapping(value = "/partyid/{partyId}", method = RequestMethod.GET)
@@ -149,6 +154,37 @@ public final class CaseEndpoint implements CTPEndpoint {
     createNewEventForAccessCodeAuthAttempt(caseObj);
 
     return ResponseEntity.ok(buildDetailedCaseDTO(caseObj, caseevents, iacFlag));
+  }
+
+  /**
+   * the POST endpoint to generate and return a new iac
+   *
+   * @param collectionexerciseid to generate iac for
+   * @param ruref to generate iac for
+   * @return the case created
+   * @throws CTPException something went wrong
+   */
+  @RequestMapping(value = "/iac/{collectionexerciseid}/{ruref}", method = RequestMethod.POST)
+  public ResponseEntity<CaseDetailsDTO> generateNewIac(@PathVariable("collectionexerciseid") final UUID collectionexerciseid,
+                                                       @PathVariable("ruref") final String ruref)
+          throws CTPException {
+    log.info("Entering generateNewIac with collectionexerciseid {} and ruref {}", collectionexerciseid, ruref);
+
+    CaseGroup caseGroup = caseGroupService.findCaseGroupByCollectionExerciseIdAndRuRef(collectionexerciseid, ruref);
+    if (caseGroup == null) {
+      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
+              String.format("CaseGroup not found for collectionexerciseid %s and ruref %s",
+                      collectionexerciseid, ruref));
+    }
+    List<Case> casesList = caseService.findCasesByCaseGroupFK(caseGroup.getCaseGroupPK());
+    Case latestCase = casesList.get(casesList.size() - 1);
+    List<String> iacs = internetAccessCodeSvcClientService.generateIACs(1);
+
+    SampleUnitBase sampleUnitBase = new SampleUnitBase(caseGroup.getSampleUnitRef(), Character.toString('B'),
+            caseGroup.getPartyId().toString(), latestCase.getCollectionInstrumentId().toString());
+    Case newCase = caseService.generateNewCase(sampleUnitBase, caseGroup, iacs.get(0), latestCase.getActionPlanId());
+    log.info("Successfully created new case {}", newCase.getId());
+    return ResponseEntity.ok(buildDetailedCaseDTO(newCase, false, true));
   }
 
   /**
