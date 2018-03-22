@@ -1115,7 +1115,7 @@ public class CaseServiceImplTest {
     ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
     verify(caseRepo, times(2)).saveAndFlush(argument.capture());
 
-    verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
+    verify(internetAccessCodeSvcClientService, times(1)).disableIAC(any(String.class));
     verify(caseSvcStateTransitionManager, times(2)).transition(any(CaseState.class),
             any(CaseDTO.CaseEvent.class));    // action service should be told of the old case state change
     // Now verifying that the old case has been moved to INACTIONABLE and the new case is at REPLACEMENT_INIT

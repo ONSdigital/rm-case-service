@@ -305,7 +305,7 @@
     "generatedActionType": null,
     "newCaseSampleUnitType": "BI",
     "oldCaseSampleUnitTypes": "B",
-    "eventType": "DEACTIVATED",
+    "eventType": "DISABLED",
     "recalcCollectionInstrument": false
   },
   {
