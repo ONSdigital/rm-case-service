@@ -99,6 +99,7 @@ action-svc:
     
 collection-exercise-svc:
   collection-exercise-path: /collectionexercises/{exerciseId}
+  collection-exercise-survey-path: /collectionexercises/survey/{surveyId}
   connection-config:
     scheme: http
     host: localhost

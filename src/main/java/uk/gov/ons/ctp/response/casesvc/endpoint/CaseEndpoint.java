@@ -106,7 +106,7 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @param partyId to find by
    * @param caseevents flag used to return or not CaseEvents
    * @param iac flag used to return or not the iac
-   * @return the case found
+   * @return the cases found
    * @throws CTPException something went wrong
    */
   @RequestMapping(value = "/partyid/{partyId}", method = RequestMethod.GET)

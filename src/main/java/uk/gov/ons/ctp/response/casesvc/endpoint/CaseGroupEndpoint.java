@@ -5,11 +5,8 @@ import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.*;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
@@ -17,6 +14,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
@@ -25,10 +23,8 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
 import uk.gov.ons.ctp.response.casesvc.utility.Constants;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * The REST endpoint controller for CaseSvc CaseGroups
@@ -55,10 +51,10 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
     private MapperFacade mapperFacade;
 
     /**
-     * the GET endpoint to find CaseGroups by caseGroupId
+     * the GET endpoint to find CaseGroup by caseGroupId
      *
      * @param caseGroupId UUID to find by
-     * @return the casegroups found
+     * @return the casegroup found
      * @throws CTPException something went wrong
      */
     @RequestMapping(value = "/{caseGroupId}", method = RequestMethod.GET)
@@ -72,6 +68,30 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
         }
 
         return mapperFacade.map(caseGroupObj, CaseGroupDTO.class);
+    }
+
+    /**
+     * the GET endpoint to find CaseGroups by partyid UUID
+     *
+     * @param partyId to find by
+     * @return the casegroups found
+     * @throws CTPException something went wrong
+     */
+    @RequestMapping(value = "/partyid/{partyId}", method = RequestMethod.GET)
+    public ResponseEntity<List<CaseGroupDTO>> findCaseGroupsByPartyId(
+            @PathVariable("partyId") final UUID partyId)
+            throws CTPException {
+        log.info("Entering findCaseGroupsByPartyId with {}", partyId);
+        List<CaseGroup> caseGroupList = caseGroupService.findCaseGroupByPartyId(partyId);
+
+        if (CollectionUtils.isEmpty(caseGroupList)) {
+            return ResponseEntity.noContent().build();
+        }
+
+        List<CaseGroupDTO> resultList = caseGroupList.stream().map(cg -> mapperFacade.map(cg, CaseGroupDTO.class))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(resultList);
     }
 
     /**
