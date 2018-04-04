@@ -58,6 +58,9 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
     builder.put(CaseGroupStatus.NOTSTARTED, CategoryDTO.CategoryName.EQ_LAUNCH, CaseGroupStatus.INPROGRESS);
     builder.put(CaseGroupStatus.NOTSTARTED, CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, CaseGroupStatus.COMPLETE);
     builder.put(CaseGroupStatus.NOTSTARTED, CategoryDTO.CategoryName.COMPLETED_BY_PHONE, CaseGroupStatus.COMPLETEDBYPHONE);
+    
+    // From in progress on response processed by SDX to complete   
+    builder.put(CaseGroupStatus.INPROGRESS, CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED, CaseGroupStatus.COMPLETE);
 
     // From in progress on successful response upload, completed by phone to completed, completed by phone
     builder.put(CaseGroupStatus.INPROGRESS, CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, CaseGroupStatus.COMPLETE);

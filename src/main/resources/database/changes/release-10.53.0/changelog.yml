@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 10.53.0-1
+      author: Joe Walton
+      changes:
+        - sqlFile:
+            comment: Update RESPONDENT_ENROLLED caseevent eventtype from DEACTIVATED to DISABLED
+            path: update_case_event_respondent_enroled.sql
+            relativeToChangelogFile: true
+            splitStatements: false

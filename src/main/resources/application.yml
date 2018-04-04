@@ -58,6 +58,7 @@ spring:
     username: casesvc
     password: casesvc
     driverClassName: org.postgresql.Driver
+    continue-on-error: true
     tomcat:
       initial-size: 5
       max-active: 10
@@ -98,6 +99,7 @@ action-svc:
     
 collection-exercise-svc:
   collection-exercise-path: /collectionexercises/{exerciseId}
+  collection-exercise-survey-path: /collectionexercises/survey/{surveyId}
   connection-config:
     scheme: http
     host: localhost
