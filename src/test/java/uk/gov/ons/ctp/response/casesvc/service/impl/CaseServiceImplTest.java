@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.Arrays;
 
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.fail;
@@ -107,6 +108,7 @@ public class CaseServiceImplTest {
   private static final Integer INITIAL_BUSINESS_UNIT_CASE_FK = 10;
   private static final Integer ACTIONABLE_BI_CASE_FK = 11;
   private static final Integer INACTIONABLE_BUSINESS_UNIT_CASE_FK = 12;
+  private static final Integer ANOTHER_ACTIONABLE_BI_CASE_FK = 13;
 
   private static final Integer CASEGROUP_PK = 1;
 
@@ -1469,9 +1471,8 @@ public class CaseServiceImplTest {
   }
 
   /**
-   * We create a CaseEvent with category SUCCESSFUL_RESPONSE_UPLOAD on an ACTIONABLE BRES case
-   * (the one created for a respondent BI, accountant replying on behalf of Tesco for instance)
-   *
+   * A SUCCESSFUL_RESPONSE_UPLOAD event transitions an actionable BI case to INACTIONABLE, and all associated BI cases in the case group.
+   * The action service is notified of the transition of all BI Cases to stop them receiving communications.
    * @throws Exception if fabricateEvent does
    */
   @Test
@@ -1482,6 +1483,9 @@ public class CaseServiceImplTest {
     when(categoryRepo.findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD)).thenReturn(
             successfulResponseUploadedCategory);
 
+    when(caseRepo.findByCaseGroupId(null)).thenReturn(Arrays.asList(cases.get(ACTIONABLE_BI_CASE_FK),
+            cases.get(ANOTHER_ACTIONABLE_BI_CASE_FK)));
+
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, ACTIONABLE_BI_CASE_FK);
     caseService.createCaseEvent(caseEvent, null);
 
@@ -1489,16 +1493,20 @@ public class CaseServiceImplTest {
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD);
     verify(caseEventRepository, times(1)).save(caseEvent);
     ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
-    verify(caseRepo, times(1)).saveAndFlush(argument.capture());
+    verify(caseRepo, times(2)).saveAndFlush(argument.capture());
 
-    verify(internetAccessCodeSvcClientService, times(1)).disableIAC(any(String.class));
-    verify(caseSvcStateTransitionManager, times(2)).transition(any(CaseState.class),
-            any(CaseDTO.CaseEvent.class));    // action service should be told of the old case state change
-    // Now verifying that the old case has been moved to INACTIONABLE
-    Case oldCase = argument.getValue();
+    verify(internetAccessCodeSvcClientService, times(2)).disableIAC(any(String.class));
+    verify(caseSvcStateTransitionManager, times(3)).transition(any(CaseState.class),
+            any(CaseDTO.CaseEvent.class));    // action service should be told of the old case state change for both cases
+
+    // Now verifying that both cases has been moved to INACTIONABLE
+    Case oldCase = argument.getAllValues().get(0);
     assertEquals(CaseState.INACTIONABLE, oldCase.getState());
 
-    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
+    Case associatedOldCase = argument.getAllValues().get(1);
+    assertEquals(CaseState.INACTIONABLE, associatedOldCase.getState());
+
+    verify(notificationPublisher, times(2)).sendNotification(any(CaseNotification.class));
     // no new action to be created
     verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
             any(UUID.class), any(String.class));

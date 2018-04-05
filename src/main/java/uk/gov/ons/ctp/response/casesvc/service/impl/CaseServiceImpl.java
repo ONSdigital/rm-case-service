@@ -191,31 +191,60 @@ public class CaseServiceImpl implements CaseService {
       // should we create an ad hoc action?
       createAdHocAction(category, caseEvent);
 
-      // transition case group status
-      CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
-      try {
-        caseGroupService.transitionCaseGroupStatus(caseGroup, caseEvent.getCategory(), targetCase.getPartyId());
-      } catch (CTPException e) {
-        //The transition manager throws an exception if the event doesn't cause a transition, however there are lots of
-        // events which do not cause CaseGroupStatus transitions, (this is valid behaviour).
-        log.debug(e.getMessage());
-      }
+      transitionCaseGroupStatus(targetCase, caseEvent);
 
       // if this is a respondent enrolling event
-      if (caseEvent.getCategory().toString().equals("RESPONDENT_ENROLED")) {
+      if (caseEvent.getCategory().equals(CategoryDTO.CategoryName.RESPONDENT_ENROLED)) {
         // are there other case groups that need updating
         List<CaseGroup> caseGroups = caseGroupService.transitionOtherCaseGroups(targetCase);
         checkCaseState(category, caseGroups, caseEvent, newCase);
+
       } else {
+
         // should a new case be created?
         createNewCase(category, caseEvent, targetCase, newCase);
-        effectTargetCaseStateTransition(category, targetCase);
+
+        if (caseEvent.getCategory().equals(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD) ||
+                caseEvent.getCategory().equals(CategoryDTO.CategoryName.COMPLETED_BY_PHONE)) {
+          //Update state of all BI's so they don't receive comms
+          updateAllAssociatedBiCases(targetCase, category);
+        } else {
+          effectTargetCaseStateTransition(category, targetCase);
+        }
+
       }
+
     }
 
     return createdCaseEvent;
   }
 
+  /**
+   * If BI case is transitioned to Inactionable transition all other BI Cases associated with the B case,
+   * they should all be inactionable after a successful upload & not receive any reminder communications.
+   * @param targetCase
+   * @param category
+   * @throws CTPException
+   */
+  private void updateAllAssociatedBiCases (final Case targetCase, final Category category) throws CTPException  {
+    UUID caseGroupId = targetCase.getCaseGroupId();
+    List<Case> associatedBiCases = caseRepo.findByCaseGroupId(caseGroupId);
+
+    for (Case caze : associatedBiCases) {
+      effectTargetCaseStateTransition(category, caze);
+    }
+  }
+
+  private void transitionCaseGroupStatus(final Case targetCase, final CaseEvent caseEvent) {
+    CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
+    try {
+      caseGroupService.transitionCaseGroupStatus(caseGroup, caseEvent.getCategory(), targetCase.getPartyId());
+    } catch (CTPException e) {
+      //The transition manager throws an exception if the event doesn't cause a transition, however there are lots of
+      // events which do not cause CaseGroupStatus transitions, (this is valid behaviour).
+      log.debug(e.getMessage());
+    }
+  }
   /**
    * This has been triggered by a 'RESPONDENT_ENROLED' event. If we find any associated Case Groups
    * with only B cases we need to make case 'INACTIONABLE' and create BI case.
