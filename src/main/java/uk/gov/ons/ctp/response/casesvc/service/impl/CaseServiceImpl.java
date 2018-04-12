@@ -193,27 +193,33 @@ public class CaseServiceImpl implements CaseService {
 
       transitionCaseGroupStatus(targetCase, caseEvent);
 
-      // if this is a respondent enrolling event
       if (caseEvent.getCategory().equals(CategoryDTO.CategoryName.RESPONDENT_ENROLED)) {
         // are there other case groups that need updating
         List<CaseGroup> caseGroups = caseGroupService.transitionOtherCaseGroups(targetCase);
         checkCaseState(category, caseGroups, caseEvent, newCase);
-
-      } else {
-
-        // should a new case be created?
-        createNewCase(category, caseEvent, targetCase, newCase);
-
-        if (caseEvent.getCategory().equals(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD) ||
-                caseEvent.getCategory().equals(CategoryDTO.CategoryName.COMPLETED_BY_PHONE)) {
-          //Update state of all BI's so they don't receive comms
-          updateAllAssociatedBiCases(targetCase, category);
-        } else {
-          effectTargetCaseStateTransition(category, targetCase);
-        }
-
       }
 
+      else if (caseEvent.getCategory().equals(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD) ||
+                 caseEvent.getCategory().equals(CategoryDTO.CategoryName.COMPLETED_BY_PHONE)) {
+        // should a new case be created?
+        createNewCase(category, caseEvent, targetCase, newCase);
+        updateAllAssociatedBiCases(targetCase, category);
+      }
+
+      else if (caseEvent.getCategory().equals(CategoryDTO.CategoryName.DISABLE_RESPONDENT_ENROLMENT)) {
+        effectTargetCaseStateTransition(category, targetCase);
+        List<Case> actionableCases = caseRepo.findByCaseGroupIdAndState(
+                targetCase.getCaseGroupId(), CaseState.ACTIONABLE);
+        if (actionableCases.isEmpty()) {
+          createNewCase(category, caseEvent, targetCase, newCase);
+        }
+      }
+
+      else {
+        // should a new case be created?
+        createNewCase(category, caseEvent, targetCase, newCase);
+        effectTargetCaseStateTransition(category, targetCase);
+      }
     }
 
     return createdCaseEvent;
