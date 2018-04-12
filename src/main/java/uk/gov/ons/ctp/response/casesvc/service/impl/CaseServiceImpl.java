@@ -201,7 +201,6 @@ public class CaseServiceImpl implements CaseService {
 
       else if (caseEvent.getCategory().equals(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD) ||
                  caseEvent.getCategory().equals(CategoryDTO.CategoryName.COMPLETED_BY_PHONE)) {
-        // should a new case be created?
         createNewCase(category, caseEvent, targetCase, newCase);
         updateAllAssociatedBiCases(targetCase, category);
       }
@@ -211,6 +210,8 @@ public class CaseServiceImpl implements CaseService {
         List<Case> actionableCases = caseRepo.findByCaseGroupIdAndState(
                 targetCase.getCaseGroupId(), CaseState.ACTIONABLE);
         CaseGroup caseGroup = caseGroupRepo.findById(targetCase.getCaseGroupId());
+
+        // Create a new case if no actionable case remain and casegroup is not in a complete state
         if (actionableCases.isEmpty() && (!caseGroup.getStatus().equals(CaseGroupStatus.COMPLETE) &&
                                           !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETEDBYPHONE))) {
           createNewCase(category, caseEvent, targetCase, newCase);
@@ -218,7 +219,6 @@ public class CaseServiceImpl implements CaseService {
       }
 
       else {
-        // should a new case be created?
         createNewCase(category, caseEvent, targetCase, newCase);
         effectTargetCaseStateTransition(category, targetCase);
       }
