@@ -210,7 +210,9 @@ public class CaseServiceImpl implements CaseService {
         effectTargetCaseStateTransition(category, targetCase);
         List<Case> actionableCases = caseRepo.findByCaseGroupIdAndState(
                 targetCase.getCaseGroupId(), CaseState.ACTIONABLE);
-        if (actionableCases.isEmpty()) {
+        CaseGroup caseGroup = caseGroupRepo.findById(targetCase.getCaseGroupId());
+        if (actionableCases.isEmpty() && (!caseGroup.getStatus().equals(CaseGroupStatus.COMPLETE) &&
+                                          !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETEDBYPHONE))) {
           createNewCase(category, caseEvent, targetCase, newCase);
         }
       }
