@@ -9,6 +9,7 @@ import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitBase;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -35,6 +36,16 @@ public interface CaseService extends CTPService {
    * @return the cases for the partyId
    */
   List<Case> findCasesByPartyId(UUID partyId);
+
+  /**
+   * Find the cases for a partyId and state.
+   *
+   * @param partyId the partyId
+   * @param state the state of the case
+   * @return the cases for the partyId in provided state
+   */
+  List<Case> findCasesByPartyIdAndState(UUID partyId, CaseState state)
+
 
   /**
    * Find Case entity by Unique Case PK.

@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.domain.repository;
 
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -66,9 +67,16 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
 
   /**
    * Find cases assigned to a given partyId
-   *
    * @param partyId the partyId
    * @return the cases associated with the partyId
    */
   List<Case> findByPartyId(UUID partyId);
+
+  /**
+   * Find cases assigned to a given partyId in given state
+   * @param partyId the partyId
+   * @param state the case state
+   * @return the cases associated with the partyId
+   */
+  List<Case> findByPartyIdAndState(UUID partyId, CaseState state)
 }
