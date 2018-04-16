@@ -555,4 +555,16 @@
     "oldCaseSampleUnitTypes": "BI",
     "eventType": null
   }
+,
+  {
+    "group": null,
+    "categoryName": "DISABLE_RESPONDENT_ENROLMENT",
+    "longDescription": "Offline Response Processed",
+    "shortDescription": "Offline Response Processed",
+    "role": null,
+    "generatedActionType": null,
+    "newCaseSampleUnitType": "B",
+    "oldCaseSampleUnitTypes": "BI",
+    "eventType": "DISABLED"
+  }
 ]
