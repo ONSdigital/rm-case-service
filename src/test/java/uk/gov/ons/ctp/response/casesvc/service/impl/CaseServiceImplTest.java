@@ -110,7 +110,6 @@ public class CaseServiceImplTest {
   private static final Integer ACTIONABLE_BI_CASE_FK = 11;
   private static final Integer INACTIONABLE_BUSINESS_UNIT_CASE_FK = 12;
   private static final Integer ANOTHER_ACTIONABLE_BI_CASE_FK = 13;
-  private static final Integer NEW_EMPTY_CASE = 14;
 
   private static final Integer CASEGROUP_PK = 1;
 
@@ -1164,18 +1163,6 @@ public class CaseServiceImplTest {
     CaseGroup cg = new CaseGroup();
     cg.setId(UUID.randomUUID());
     cg.setStatus(CaseGroupStatus.NOTSTARTED);
-    cg.setSampleUnitType("B");
-    return cg;
-  }
-
-  /**
-   * Make a completedtest case group
-   * @return a new test case group
-   */
-  private CaseGroup makeCompletedCaseGroup() {
-    CaseGroup cg = new CaseGroup();
-    cg.setId(UUID.randomUUID());
-    cg.setStatus(CaseGroupStatus.COMPLETE);
     cg.setSampleUnitType("B");
     return cg;
   }

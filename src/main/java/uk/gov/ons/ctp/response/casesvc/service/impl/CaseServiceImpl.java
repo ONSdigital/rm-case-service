@@ -199,12 +199,11 @@ public class CaseServiceImpl implements CaseService {
         checkCaseState(category, caseGroups, caseEvent, newCase);
       }
 
-      else if (caseEvent.getCategory().equals(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD) ||
-                 caseEvent.getCategory().equals(CategoryDTO.CategoryName.COMPLETED_BY_PHONE)) {
+      else if (caseEvent.getCategory().equals(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD)
+               || caseEvent.getCategory().equals(CategoryDTO.CategoryName.COMPLETED_BY_PHONE)) {
         createNewCase(category, caseEvent, targetCase, newCase);
         updateAllAssociatedBiCases(targetCase, category);
       }
-
       else if (caseEvent.getCategory().equals(CategoryDTO.CategoryName.DISABLE_RESPONDENT_ENROLMENT)) {
         effectTargetCaseStateTransition(category, targetCase);
         List<Case> actionableCases = caseRepo.findByCaseGroupIdAndState(
@@ -212,12 +211,12 @@ public class CaseServiceImpl implements CaseService {
         CaseGroup caseGroup = caseGroupRepo.findById(targetCase.getCaseGroupId());
 
         // Create a new case if no actionable case remain and casegroup is not in a complete state
-        if (actionableCases.isEmpty() && (!caseGroup.getStatus().equals(CaseGroupStatus.COMPLETE) &&
-                                          !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETEDBYPHONE))) {
+        if (actionableCases.isEmpty()
+            && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETE)
+            && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETEDBYPHONE)) {
           createNewCase(category, caseEvent, targetCase, newCase);
         }
       }
-
       else {
         createNewCase(category, caseEvent, targetCase, newCase);
         effectTargetCaseStateTransition(category, targetCase);
