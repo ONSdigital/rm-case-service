@@ -42,7 +42,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
     builder.put(CaseState.ACTIONABLE, CaseEvent.ACCOUNT_CREATED, CaseState.ACTIONABLE);
     builder.put(CaseState.ACTIONABLE, CaseEvent.DEACTIVATED, CaseState.INACTIONABLE);
     builder.put(CaseState.ACTIONABLE, CaseEvent.DISABLED, CaseState.INACTIONABLE);
-    builder.put(CaseState.ACTIONABLE, CaseEvent.DISABLE_RESPONDENT_ENROLMENT, CaseState.INACTIONABLE);
 
     // From inactionable on deactivated, disabled to inactionable
     builder.put(CaseState.INACTIONABLE, CaseEvent.DEACTIVATED, CaseState.INACTIONABLE);
