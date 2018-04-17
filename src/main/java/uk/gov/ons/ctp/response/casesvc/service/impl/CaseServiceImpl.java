@@ -204,6 +204,7 @@ public class CaseServiceImpl implements CaseService {
         createNewCase(category, caseEvent, targetCase, newCase);
         updateAllAssociatedBiCases(targetCase, category);
       }
+
       else if (caseEvent.getCategory().equals(CategoryDTO.CategoryName.DISABLE_RESPONDENT_ENROLMENT)) {
         effectTargetCaseStateTransition(category, targetCase);
         List<Case> actionableCases = caseRepo.findByCaseGroupIdAndState(
@@ -217,6 +218,7 @@ public class CaseServiceImpl implements CaseService {
           createNewCase(category, caseEvent, targetCase, newCase);
         }
       }
+
       else {
         createNewCase(category, caseEvent, targetCase, newCase);
         effectTargetCaseStateTransition(category, targetCase);

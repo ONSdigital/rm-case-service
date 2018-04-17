@@ -1168,18 +1168,6 @@ public class CaseServiceImplTest {
   }
 
   /**
-   * Make a completed test case group
-   * @return a new test case group with status COMPLETE
-   */
-  private CaseGroup makeCompletedCaseGroup() {
-    CaseGroup cg = new CaseGroup();
-    cg.setId(UUID.randomUUID());
-    cg.setStatus(CaseGroupStatus.COMPLETE);
-    cg.setSampleUnitType("BI");
-    return cg;
-  }
-
-  /**
    * Make a test case
    * @return a new test case
    */
@@ -1565,33 +1553,31 @@ public class CaseServiceImplTest {
    * @throws Exception if fabricateEvent does
    */
   @Test
-  public void testEventSuccessfulDisableRespondentEnrolmentCompleteCasegroup() throws Exception {
+  public void testEventSuccessfulDisableRespondentEnrolmentCreateNewBCase() throws Exception {
     when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BI_CASE_FK));
     Category disableRespondentEnrolmentCategory = categories.get(CAT_DISABLE_RESPONDENT_ENROLMENT);
     when(categoryRepo.findOne(CategoryDTO.CategoryName.DISABLE_RESPONDENT_ENROLMENT)).thenReturn(
             disableRespondentEnrolmentCategory);
     when(caseRepo.findByCaseGroupId(null)).thenReturn(Arrays.asList(cases.get(ACTIONABLE_BI_CASE_FK),
             cases.get(ANOTHER_ACTIONABLE_BI_CASE_FK)));
-    when(caseRepo.findByCaseGroupIdAndState(null, CaseState.ACTIONABLE))
-            .thenReturn(Collections.singletonList(cases.get(ACTIONABLE_BI_CASE_FK)));
-    CaseGroup caseGroup = makeCompletedCaseGroup();
+    when(caseRepo.findByCaseGroupIdAndState(null, CaseState.ACTIONABLE)).thenReturn(Collections.emptyList());
+    CaseGroup caseGroup = makeCaseGroup();
     when(caseGroupRepo.findById(null)).thenReturn(caseGroup);
+    Case newCase = cases.get(ANOTHER_ACTIONABLE_BI_CASE_FK);
+    when(caseRepo.saveAndFlush(newCase)).thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
 
     CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.DISABLE_RESPONDENT_ENROLMENT, ACTIONABLE_BI_CASE_FK);
-    Case newCase = cases.get(ANOTHER_ACTIONABLE_BI_CASE_FK);
     caseService.createCaseEvent(caseEvent, newCase);
 
     verify(caseRepo, times(1)).findOne(ACTIONABLE_BI_CASE_FK);
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.DISABLE_RESPONDENT_ENROLMENT);
     verify(caseEventRepository, times(1)).save(caseEvent);
     ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
-    verify(caseRepo, times(1)).saveAndFlush(argument.capture());
+    verify(caseRepo, times(2)).saveAndFlush(argument.capture());
     verify(internetAccessCodeSvcClientService, times(1)).disableIAC(any(String.class));
-    verify(caseRepo, times(1)).saveAndFlush(argument.capture());
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
     verify(caseRepo, times(1)).findByCaseGroupIdAndState(null, CaseState.ACTIONABLE);
     verify(caseGroupRepo, times(1)).findById(null);
-    verify(caseRepo, times(1)).saveAndFlush(argument.capture());
   }
 
   /**
