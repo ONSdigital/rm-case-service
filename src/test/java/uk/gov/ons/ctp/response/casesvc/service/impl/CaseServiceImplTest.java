@@ -92,6 +92,7 @@ public class CaseServiceImplTest {
   private static final int CAT_UNSUCCESSFUL_RESPONSE_UPLOAD = 47;
   private static final int CAT_SUCCESSFUL_RESPONSE_UPLOAD = 48;
   private static final int CAT_OFFLINE_RESPONSE_PROCESSED = 49;
+  private static final int CAT_DISABLE_RESPONDENT_ENROLMENT = 50;
 
   /**
    * Note that the Integer values below are linked to the order in which cases appear
@@ -1510,6 +1511,73 @@ public class CaseServiceImplTest {
     // no new action to be created
     verify(actionSvcClientService, times(0)).createAndPostAction(any(String.class),
             any(UUID.class), any(String.class));
+  }
+
+  /**
+   * A SUCCESSFUL_RESPONSE_UPLOAD event transitions an actionable BI case to INACTIONABLE, and all associated BI cases in the case group.
+   * The action service is notified of the transition of all BI Cases to stop them receiving communications.
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventSuccessfulDisableRespondentEnrolment() throws Exception {
+    when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BI_CASE_FK));
+    Category disableRespondentEnrolmentCategory = categories.get(CAT_DISABLE_RESPONDENT_ENROLMENT);
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.DISABLE_RESPONDENT_ENROLMENT)).thenReturn(
+            disableRespondentEnrolmentCategory);
+    when(caseRepo.findByCaseGroupId(null)).thenReturn(Arrays.asList(cases.get(ACTIONABLE_BI_CASE_FK),
+            cases.get(ANOTHER_ACTIONABLE_BI_CASE_FK)));
+    when(caseRepo.findByCaseGroupIdAndState(null, CaseState.ACTIONABLE))
+            .thenReturn(Collections.singletonList(cases.get(ACTIONABLE_BI_CASE_FK)));
+    CaseGroup caseGroup = makeCaseGroup();
+    when(caseGroupRepo.findById(null)).thenReturn(caseGroup);
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.DISABLE_RESPONDENT_ENROLMENT, ACTIONABLE_BI_CASE_FK);
+    Case newCase = cases.get(ANOTHER_ACTIONABLE_BI_CASE_FK);
+    caseService.createCaseEvent(caseEvent, newCase);
+
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_BI_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.DISABLE_RESPONDENT_ENROLMENT);
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
+    verify(caseRepo, times(1)).saveAndFlush(argument.capture());
+    verify(internetAccessCodeSvcClientService, times(1)).disableIAC(any(String.class));
+    verify(caseRepo, times(1)).saveAndFlush(argument.capture());
+    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
+    verify(caseRepo, times(1)).findByCaseGroupIdAndState(null, CaseState.ACTIONABLE);
+    verify(caseGroupRepo, times(1)).findById(null);
+  }
+
+  /**
+   * A SUCCESSFUL_RESPONSE_UPLOAD event transitions an actionable BI case to INACTIONABLE, and all associated BI cases in the case group.
+   * The action service is notified of the transition of all BI Cases to stop them receiving communications.
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventSuccessfulDisableRespondentEnrolmentCreateNewBCase() throws Exception {
+    when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BI_CASE_FK));
+    Category disableRespondentEnrolmentCategory = categories.get(CAT_DISABLE_RESPONDENT_ENROLMENT);
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.DISABLE_RESPONDENT_ENROLMENT)).thenReturn(
+            disableRespondentEnrolmentCategory);
+    when(caseRepo.findByCaseGroupId(null)).thenReturn(Arrays.asList(cases.get(ACTIONABLE_BI_CASE_FK),
+            cases.get(ANOTHER_ACTIONABLE_BI_CASE_FK)));
+    when(caseRepo.findByCaseGroupIdAndState(null, CaseState.ACTIONABLE)).thenReturn(Collections.emptyList());
+    CaseGroup caseGroup = makeCaseGroup();
+    when(caseGroupRepo.findById(null)).thenReturn(caseGroup);
+    Case newCase = cases.get(ANOTHER_ACTIONABLE_BI_CASE_FK);
+    when(caseRepo.saveAndFlush(newCase)).thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.DISABLE_RESPONDENT_ENROLMENT, ACTIONABLE_BI_CASE_FK);
+    caseService.createCaseEvent(caseEvent, newCase);
+
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_BI_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.DISABLE_RESPONDENT_ENROLMENT);
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
+    verify(caseRepo, times(2)).saveAndFlush(argument.capture());
+    verify(internetAccessCodeSvcClientService, times(1)).disableIAC(any(String.class));
+    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
+    verify(caseRepo, times(1)).findByCaseGroupIdAndState(null, CaseState.ACTIONABLE);
+    verify(caseGroupRepo, times(1)).findById(null);
   }
 
   /**
