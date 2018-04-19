@@ -253,15 +253,10 @@ public final class CaseEndpoint implements CTPEndpoint {
    */
   @RequestMapping(value = "/{caseId}/events", method = RequestMethod.POST)
   public ResponseEntity<CreatedCaseEventDTO> createCaseEvent(@PathVariable("caseId") final UUID caseId,
-<<<<<<< HEAD
-                                                             @RequestBody @Valid final CaseEventCreationRequestDTO caseEventCreationRequestDTO,
-                                                             BindingResult bindingResult) throws CTPException, InvalidRequestException {
-    log.debug("Entering createCaseEvent with caseId {} and requestObject {}", caseId, caseEventCreationRequestDTO);
-=======
                                       @RequestBody @Valid final CaseEventCreationRequestDTO caseEventCreationRequestDTO,
                                       BindingResult bindingResult) throws CTPException, InvalidRequestException {
     log.info("Entering createCaseEvent with caseId {} and requestObject {}", caseId, caseEventCreationRequestDTO);
->>>>>>> master
+
 
     if (bindingResult.hasErrors()) {
       throw new InvalidRequestException("Binding errors for case event creation: ", bindingResult);

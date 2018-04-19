@@ -44,7 +44,7 @@ public interface CaseService extends CTPService {
    * @param state the state of the case
    * @return the cases for the partyId in provided state
    */
-  List<Case> findCasesByPartyIdAndState(UUID partyId, CaseState state)
+  List<Case> findCasesByPartyIdAndState(UUID partyId, CaseState state);
 
 
   /**

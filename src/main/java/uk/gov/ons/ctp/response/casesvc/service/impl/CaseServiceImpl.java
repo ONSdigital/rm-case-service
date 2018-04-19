@@ -225,6 +225,20 @@ public class CaseServiceImpl implements CaseService {
         }
       }
 
+      else if (caseEvent.getCategory().equals(CategoryDTO.CategoryName.DEACTIVATED)) {
+        effectTargetCaseStateTransition(category, targetCase);
+        List<Case> actionableCases = caseRepo.findByCaseGroupIdAndState(
+                targetCase.getCaseGroupId(), CaseState.ACTIONABLE);
+        CaseGroup caseGroup = caseGroupRepo.findById(targetCase.getCaseGroupId());
+
+        // Create a new case if no actionable case remain and casegroup is not in a complete state
+        if (actionableCases.isEmpty()
+                && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETE)
+                && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETEDBYPHONE)) {
+          createNewCase(category, caseEvent, targetCase, newCase);
+        }
+      }
+
       else {
         createNewCase(category, caseEvent, targetCase, newCase);
         effectTargetCaseStateTransition(category, targetCase);

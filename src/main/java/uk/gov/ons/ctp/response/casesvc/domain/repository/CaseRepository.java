@@ -86,5 +86,5 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
    * @param state the case state
    * @return the cases associated with the partyId
    */
-  List<Case> findByPartyIdAndState(UUID partyId, CaseState state)
+  List<Case> findByPartyIdAndState(UUID partyId, CaseState state);
 }
