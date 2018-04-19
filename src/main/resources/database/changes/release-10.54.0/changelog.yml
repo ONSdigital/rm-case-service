@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 10.54.0-1
+      author: Andrew Millar
+      changes:
+        - sqlFile:
+            comment: Add DISABLE_RESPONDENT_ENROLMENT case event category
+            path: add_disable_respondent_enrolment_category.sql
+            relativeToChangelogFile: true
+            splitStatements: false
