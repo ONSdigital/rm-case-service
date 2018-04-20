@@ -23,7 +23,14 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitBase;
-import uk.gov.ons.ctp.response.casesvc.representation.*;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CreatedCaseEventDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
@@ -108,14 +115,14 @@ public final class CaseEndpoint implements CTPEndpoint {
           @PathVariable("partyId") final UUID partyId,
           @RequestParam(value = "caseevents", required = false)
                   boolean caseevents,
-          @RequestParam(value = "iac", required = false) boolean iac,
-          @RequestParam(value = "state", required = false) CaseState state)
+          @RequestParam(value = "iac", required = false) final boolean iac,
+          @RequestParam(value = "state", required = false) final CaseState state)
           throws CTPException {
     log.info("Entering findCasesByPartyId with {}", partyId);
 
     List<Case> casesList = caseService.findCasesByPartyId(partyId);
 
-    if (state!=null) {
+    if (state != null) {
       casesList = caseService.findCasesByPartyIdAndState(partyId, state);
     }
 
