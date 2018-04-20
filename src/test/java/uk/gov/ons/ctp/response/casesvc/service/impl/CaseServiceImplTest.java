@@ -1624,9 +1624,9 @@ public class CaseServiceImplTest {
   @Test
   public void testEventSuccessfulDeactivateRespondentAccountCreateNewBCase() throws Exception {
     when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BI_CASE_FK));
-    Category disableRespondentEnrolmentCategory = categories.get(CAT_DEACTIVATED);
+    Category deactivateRespondentEnrolmentCategory = categories.get(CAT_DEACTIVATED);
     when(categoryRepo.findOne(CategoryDTO.CategoryName.DEACTIVATED)).thenReturn(
-            disableRespondentEnrolmentCategory);
+            deactivateRespondentEnrolmentCategory);
     when(caseRepo.findByCaseGroupId(null)).thenReturn(Arrays.asList(cases.get(ACTIONABLE_BI_CASE_FK),
             cases.get(ANOTHER_ACTIONABLE_BI_CASE_FK)));
     when(caseRepo.findByCaseGroupIdAndState(null, CaseState.ACTIONABLE)).thenReturn(Collections.emptyList());

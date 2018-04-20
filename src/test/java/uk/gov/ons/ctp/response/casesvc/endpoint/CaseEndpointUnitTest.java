@@ -1,6 +1,5 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
-import com.sun.tools.internal.ws.wsdl.document.jaxws.Exception;
 import ma.glasnost.orika.MapperFacade;
 import org.junit.Before;
 import org.junit.Test;
