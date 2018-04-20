@@ -148,8 +148,10 @@ public final class CaseEndpoint implements CTPEndpoint {
    */
   @RequestMapping(value = "/iac/{iac}", method = RequestMethod.GET)
   public ResponseEntity<CaseDetailsDTO> findCaseByIac(@PathVariable("iac") final String iac,
-                                                      @RequestParam(value = "caseevents", required = false) final boolean caseevents,
-                                                      @RequestParam(value = "iac", required = false) final boolean iacFlag)
+                                                      @RequestParam(value = "caseevents", required = false)
+                                                        final boolean caseevents,
+                                                      @RequestParam(value = "iac", required = false)
+                                                        final boolean iacFlag)
           throws CTPException {
     log.info("Entering findCaseByIac with {}", iac);
     Case caseObj = caseService.findCaseByIac(iac);

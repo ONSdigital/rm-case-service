@@ -138,7 +138,7 @@ public class CaseServiceImpl implements CaseService {
   }
 
   @Override
-  public List<Case> findCasesByPartyIdAndState(final UUID partyId, CaseState state) {
+  public List<Case> findCasesByPartyIdAndState(final UUID partyId, final CaseState state) {
     log.debug("Entering findCasesByPartyIdAndState");
     return caseRepo.findByPartyIdAndState(partyId, state);
   }

@@ -372,7 +372,8 @@ public final class CaseEndpointUnitTest {
     when(caseGroupService.findCaseGroupByCaseGroupPK(any(Integer.class))).thenReturn(caseGroupResults.get(0));
     when(caseService.findCaseEventsByCaseFK(any(Integer.class))).thenReturn(caseEventsResults);
 
-    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/partyid/%s?state=%s", EXISTING_PARTY_UUID, CASE_STATE_ACTIONABLE)));
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/partyid/%s?state=%s",
+                            EXISTING_PARTY_UUID, CASE_STATE_ACTIONABLE)));
 
     actions.andExpect(status().is2xxSuccessful());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
