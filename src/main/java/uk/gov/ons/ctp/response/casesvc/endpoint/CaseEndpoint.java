@@ -1,7 +1,5 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
-import antlr.collections.List;
-import com.fasterxml.jackson.databind.JsonSerializer;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,11 +113,10 @@ public final class CaseEndpoint implements CTPEndpoint {
           throws CTPException {
     log.info("Entering findCasesByPartyId with {}", partyId);
 
-    if (state != null) {
-      List<Case> casesList = caseService.findCasesByPartyIdAndState(partyId, state);
-    }
-    else {
-      List<Case> casesList = caseService.findCasesByPartyId(partyId);
+    List<Case> casesList = caseService.findCasesByPartyId(partyId);
+
+    if (state!=null) {
+      casesList = caseService.findCasesByPartyIdAndState(partyId, state);
     }
 
     if (CollectionUtils.isEmpty(casesList)) {

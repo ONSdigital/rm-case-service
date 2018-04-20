@@ -132,7 +132,7 @@ public final class CaseEndpointUnitTest {
   private static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
   private static final String FINDCASEBYID = "findCaseById";
   private static final List<String> IACList = Arrays.asList("jkbvyklkwj88");
-  private static final String CASE_STATE_ACTIONABLE = CaseState.ACTIONABLE;
+  private static final CaseState CASE_STATE_ACTIONABLE = CaseState.ACTIONABLE;
 
   private static final String CASEEVENT_INVALIDJSON =
           "{\"description\":\"a\",\"category\":\"BAD_CAT\",\"createdBy\":\"u\"}";
