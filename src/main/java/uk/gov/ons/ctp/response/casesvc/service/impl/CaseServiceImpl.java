@@ -280,12 +280,14 @@ public class CaseServiceImpl implements CaseService {
               .filter(c -> c.getSampleUnitType().toString().equals("BI") && c.getPartyId().equals(newCase.getPartyId()))
               .collect(Collectors.toList());
       if (biCases.size() != 0) {
-    	  	 log.warn("Existing BI case found during enrolment for partyid: {} for casegroup: {}", newCase.getPartyId().toString(), caseGroup.getCaseGroupPK());
+    	  	 log.warn("Existing BI case found during enrolment for partyid: {} for casegroup: {} with caseid: {}",
+    	  			 newCase.getPartyId().toString(), caseGroup.getCaseGroupPK(), biCases.get(0));
       } else {
           Case c = new Case();
           c.setPartyId(newCase.getPartyId());
           createNewCase(category, caseEvent, cases.get(0), c);
-          log.info("BI case created during enrolment for partyid: {} for casegroup: {}", newCase.getPartyId().toString(), caseGroup.getCaseGroupPK());
+          log.info("BI case created during enrolment for partyid: {} for casegroup: {}",
+        		  newCase.getPartyId().toString(), caseGroup.getId());
       }
     	  
       // Transition each of the B cases for the casegroup being enrolled for
