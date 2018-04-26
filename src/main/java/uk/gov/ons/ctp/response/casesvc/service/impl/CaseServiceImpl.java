@@ -281,7 +281,7 @@ public class CaseServiceImpl implements CaseService {
               .collect(Collectors.toList());
       if (biCases.size() != 0) {
     	  	 log.warn("Existing BI case found during enrolment for partyid: {} for casegroup: {} with caseid: {}",
-    	  			 newCase.getPartyId().toString(), caseGroup.getCaseGroupPK(), biCases.get(0).getId());
+    	  			 newCase.getPartyId().toString(), caseGroup.getId(), biCases.get(0).getId());
       } else {
           Case c = new Case();
           c.setPartyId(newCase.getPartyId());
