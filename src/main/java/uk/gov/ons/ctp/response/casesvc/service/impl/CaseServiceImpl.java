@@ -269,6 +269,8 @@ public class CaseServiceImpl implements CaseService {
 	  
     for (CaseGroup caseGroup : caseGroups) {
     	
+      log.debug("RESPONDENT_ENROLED case event :: Processing casegroup: {} for partyid: {}", caseGroup.getId(), newCase.getPartyId().toString());
+    	
       // fetch all B and BI cases associated to the case group being processed
       List<Case> cases = caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(caseGroup.getCaseGroupPK());
 
@@ -279,6 +281,9 @@ public class CaseServiceImpl implements CaseService {
               .stream()
               .filter(c -> c.getSampleUnitType().toString().equals("BI") && c.getPartyId().equals(newCase.getPartyId()))
               .collect(Collectors.toList());
+      
+      log.debug("RESPONDENT_ENROLED case event :: number of BI cases found: {} for casegroupid: {} partyid {}", biCases.size(), caseGroup.getId(), newCase.getPartyId().toString());
+  	
       if (biCases.size() != 0) {
     	  	 log.warn("Existing BI case found during enrolment for partyid: {} for casegroup: {} with caseid: {}",
     	  			 newCase.getPartyId().toString(), caseGroup.getId(), biCases.get(0).getId());
@@ -289,14 +294,19 @@ public class CaseServiceImpl implements CaseService {
           log.info("BI case created during enrolment for partyid: {} for casegroup: {}",
         		  newCase.getPartyId().toString(), caseGroup.getId());
       }
-    	  
+    	
       // Transition each of the B cases for the casegroup being enrolled for
       List<Case> bCases = cases
               .stream()
               .filter(c -> c.getSampleUnitType().toString().equals("B"))
               .collect(Collectors.toList());
+    
+      log.debug("RESPONDENT_ENROLED case event :: number of B cases found: {} for casegroupid: {} partyid {}", bCases.size(), caseGroup.getId(), newCase.getPartyId().toString());
+      
       for (Case bCase : bCases) {
+    	    log.debug("RESPONDENT_ENROLED case event :: about to effectTargetCaseStateTransition() for {} for B case {}", category, bCase.getPartyId().toString());
         effectTargetCaseStateTransition(category, bCase);
+        log.debug("RESPONDENT_ENROLED case event :: completed effectTargetCaseStateTransition() for {} for B case {}", category, bCase.getPartyId().toString());
       }
       
     }
@@ -505,19 +515,25 @@ public class CaseServiceImpl implements CaseService {
       // so newstate == oldstate, but always want to disable iac if event is
       // DISABLED (ie as the result
       // of an online response after a refusal) or ACCOUNT_CREATED (for BRES)
+    	  log.debug("RESPONDENT_ENROLED case event :: In effectTargetCaseStateTransition() for {} for B case {}", category, targetCase.getPartyId().toString());
       if (transitionEvent == CaseDTO.CaseEvent.DISABLED || transitionEvent == CaseDTO.CaseEvent.ACCOUNT_CREATED) {
-        internetAccessCodeSvcClientService.disableIAC(targetCase.getIac());
+    	  	log.debug("RESPONDENT_ENROLED case event :: About to internetAccessCodeSvcClientService() for iac {} for B case {}", targetCase.getIac(), targetCase.getPartyId().toString());
+    	  	internetAccessCodeSvcClientService.disableIAC(targetCase.getIac());
+    	  	log.debug("RESPONDENT_ENROLED case event :: Completed internetAccessCodeSvcClientService() for iac {} for B case {}", targetCase.getIac(), targetCase.getPartyId().toString());
       }
 
       CaseState oldState = targetCase.getState();
       CaseState newState = null;
       // make the transition
+      log.debug("RESPONDENT_ENROLED case event :: About to caseSvcStateTransitionManager() for case {} oldstate: {}", targetCase.getPartyId().toString(), oldState);
       newState = caseSvcStateTransitionManager.transition(oldState, transitionEvent);
 
       // was a state change effected?
       if (!oldState.equals(newState)) {
         targetCase.setState(newState);
+        log.debug("RESPONDENT_ENROLED case event :: About to saveAndFlush() for case {}", targetCase.getPartyId().toString());
         caseRepo.saveAndFlush(targetCase);
+        log.debug("RESPONDENT_ENROLED case event :: About to sendNotification() for case {}", targetCase.getPartyId().toString());
         notificationPublisher.sendNotification(prepareCaseNotification(targetCase, transitionEvent));
       }
     }
