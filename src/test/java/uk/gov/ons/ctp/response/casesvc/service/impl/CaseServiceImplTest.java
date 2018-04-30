@@ -1585,7 +1585,7 @@ public class CaseServiceImplTest {
   }
 
   /**
-   * A REPLACED event transistions an REPLACEMENT_INIT BI case to ACTIONABLE.
+   * A REPLACED event transistions a REPLACEMENT_INIT BI case to ACTIONABLE.
    * The action service is notified of the transition.
    * @throws Exception if fabricateEvent does
    */
@@ -1595,6 +1595,9 @@ public class CaseServiceImplTest {
             get(REPLACEMENT_INIT_BI_CASE_FK));
     when(categoryRepo.findOne(CategoryDTO.CategoryName.REPLACED)).
             thenReturn(categories.get(CAT_REPLACED));
+    when(caseRepo.findByCaseGroupIdAndState(null, CaseState.ACTIONABLE)).thenReturn(Collections.emptyList());
+    CaseGroup caseGroup = makeCaseGroup();
+    when(caseGroupRepo.findById(null)).thenReturn(caseGroup);
     Case newCase = cases.get(ACTIONABLE_BI_CASE_FK);
     when(caseRepo.saveAndFlush(newCase)).thenReturn(cases.get(ACTIONABLE_BI_CASE_FK));
 
@@ -1603,18 +1606,54 @@ public class CaseServiceImplTest {
 
     caseService.createCaseEvent(caseEvent, newCase);
 
-    verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED);
+    verify(caseRepo, times(1)).findOne(REPLACEMENT_INIT_BI_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.REPLACED);
     verify(caseEventRepository, times(1)).save(caseEvent);
-    verify(caseRepo, never()).saveAndFlush(any(Case.class));
-    verify(internetAccessCodeSvcClientService, times(1)).disableIAC(any(String.class));
+    ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
+    verify(caseRepo, times(2)).saveAndFlush(argument.capture());
     verify(caseSvcStateTransitionManager, times(2)).transition(any(CaseState.class),
             any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
+    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
     verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(UUID.class),
             any(String.class));
 
   }
+
+  /**
+   * A REPLACED event transitions a REPLACEMENT_INIT B case to ACTIONABLE.
+   * The action service is notified of the transition
+   * @throws Exception if fabricatedEvent does
+   */
+  @Test
+  public void testEventSucessfulReplacedForBCase() throws Exception {
+    when(caseRepo.findOne(REPLACEMENT_INIT_B_CASE_FK)).thenReturn(cases.
+            get(REPLACEMENT_INIT_B_CASE_FK));
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.REPLACED)).
+            thenReturn(categories.get(CAT_REPLACED));
+    when(caseRepo.findByCaseGroupIdAndState(null, CaseState.ACTIONABLE)).thenReturn(Collections.emptyList());
+    CaseGroup caseGroup = makeCaseGroup();
+    when(caseGroupRepo.findById(null)).thenReturn(caseGroup);
+    Case newCase = cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    when(caseRepo.saveAndFlush(newCase)).thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.REPLACED,
+            REPLACEMENT_INIT_B_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, newCase);
+
+    verify(caseRepo, times(1)).findOne(REPLACEMENT_INIT_B_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.REPLACED);
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
+    verify(caseRepo, times(2)).saveAndFlush(argument.capture());
+    verify(caseSvcStateTransitionManager, times(2)).transition(any(CaseState.class),
+            any(CaseDTO.CaseEvent.class));
+    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
+    verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(UUID.class),
+            any(String.class));
+
+  }
+
 
   /**
    * caseService.createCaseEvent will be called with invalid state transitions
@@ -1697,6 +1736,8 @@ public class CaseServiceImplTest {
             .thenReturn(CaseState.INACTIONABLE);
     when(caseSvcStateTransitionManager.transition(CaseState.INACTIONABLE, CaseDTO.CaseEvent.DEACTIVATED))
             .thenReturn(CaseState.INACTIONABLE);
+    when(caseSvcStateTransitionManager.transition(CaseState.REPLACEMENT_INIT, CaseDTO.CaseEvent.REPLACED))
+            .thenReturn(CaseState.ACTIONABLE);
   }
 
   /**

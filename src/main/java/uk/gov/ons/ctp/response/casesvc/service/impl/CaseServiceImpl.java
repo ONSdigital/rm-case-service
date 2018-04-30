@@ -215,8 +215,11 @@ public class CaseServiceImpl implements CaseService {
             createNewCase(category, caseEvent, targetCase, newCase);
           }
           break;
-        case REPLACED: if (newCase.getSampleUnitType().equals(SampleUnitType.B))
-          newCase.setPartyId(caseGroupRepo.findById(targetCase.getCaseGroupId()).getPartyId());
+        case REPLACED:
+          if (newCase.getSampleUnitType().equals(SampleUnitType.B)) {
+            newCase.setPartyId(caseGroupRepo.findById(targetCase.getCaseGroupId()).getPartyId());
+            newCase.setSampleUnitType(SampleUnitType.B);
+          }
           createNewCase(category, caseEvent, targetCase, newCase);
           effectTargetCaseStateTransition(category, targetCase);
           break;
@@ -418,7 +421,9 @@ public class CaseServiceImpl implements CaseService {
    * @param newCase the new case to be created
    */
   private void buildNewCase(Category category, Case newCase, Case targetCase) {
-    newCase.setSampleUnitType(SampleUnitType.valueOf(category.getNewCaseSampleUnitType()));
+    if (newCase.getSampleUnitType() == null) {
+      newCase.setSampleUnitType(SampleUnitType.valueOf(category.getNewCaseSampleUnitType()));
+    }
 
     // set case group id to the same as
     newCase.setCaseGroupId(targetCase.getCaseGroupId());
