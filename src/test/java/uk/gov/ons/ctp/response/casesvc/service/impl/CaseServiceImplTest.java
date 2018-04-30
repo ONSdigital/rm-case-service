@@ -1164,6 +1164,7 @@ public class CaseServiceImplTest {
     cg.setId(UUID.randomUUID());
     cg.setStatus(CaseGroupStatus.NOTSTARTED);
     cg.setSampleUnitType("B");
+    cg.setPartyId(UUID.randomUUID());
     return cg;
   }
 
