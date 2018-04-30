@@ -410,7 +410,6 @@ public class CaseServiceImpl implements CaseService {
         newCase.setCollectionInstrumentId(targetCase.getCollectionInstrumentId());
       }
 
-      log.info(newCase.getPartyId().toString(), '2');
       createNewCaseFromEvent(caseEvent, targetCase, newCase, category);
     }
   }
@@ -424,7 +423,6 @@ public class CaseServiceImpl implements CaseService {
    */
   private void buildNewCase(Category category, Case newCase, Case targetCase) {
 
-    log.info(newCase.getPartyId().toString(), '3');
     newCase.setSampleUnitType(SampleUnitType.valueOf(category.getNewCaseSampleUnitType()));
 
     // set case group id to the same as
@@ -441,7 +439,6 @@ public class CaseServiceImpl implements CaseService {
       }
     }
 
-    log.info(newCase.getPartyId().toString(), '4');
   }
 
   /**
@@ -547,7 +544,6 @@ public class CaseServiceImpl implements CaseService {
    * @return the new case
    */
   private Case createNewCaseFromEvent(CaseEvent caseEvent, Case targetCase, Case newCase, Category caseEventCategory) {
-    log.info(newCase.getPartyId().toString(), '5');
     Case persistedCase = saveNewCase(caseEvent, targetCase, newCase);
     // NOTE the action service does not need to be notified of the creation of
     // the new case - yet
@@ -569,7 +565,6 @@ public class CaseServiceImpl implements CaseService {
    * @return the persisted case
    */
   private Case saveNewCase(CaseEvent caseEvent, Case targetCase, Case newCase) {
-    log.info(newCase.getPartyId().toString(), '6');
     newCase.setId(UUID.randomUUID());
     newCase.setState(CaseState.REPLACEMENT_INIT);
     newCase.setCreatedDateTime(DateTimeUtil.nowUTC());
