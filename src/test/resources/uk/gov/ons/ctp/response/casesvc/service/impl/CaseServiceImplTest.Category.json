@@ -567,4 +567,16 @@
     "oldCaseSampleUnitTypes": "BI",
     "eventType": "DISABLED"
   }
+,
+  {
+    "group": null,
+    "categoryName": "REPLACED",
+    "longDescription": "Case replaced",
+    "shortDescription": "Case replaced",
+    "role": null,
+    "generatedActionType": null,
+    "newCaseSampleUnitType": "B,BI",
+    "oldCaseSampleUnitTypes": "B,BI",
+    "eventType": "REPLACED"
+  }
 ]

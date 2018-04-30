@@ -193,42 +193,38 @@ public class CaseServiceImpl implements CaseService {
 
       transitionCaseGroupStatus(targetCase, caseEvent);
 
-      if (caseEvent.getCategory().equals(CategoryDTO.CategoryName.RESPONDENT_ENROLED)) {
-        // are there other case groups that need updating
-        List<CaseGroup> caseGroups = caseGroupService.findCaseGroupsForExecutedCollectionExercises(targetCase);
-        processCaseCreationAndTransitionsDuringEnrolment(category, caseGroups, caseEvent, newCase);
-      }
-
-      else if (caseEvent.getCategory().equals(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD)
-               || caseEvent.getCategory().equals(CategoryDTO.CategoryName.COMPLETED_BY_PHONE)) {
-        createNewCase(category, caseEvent, targetCase, newCase);
-        updateAllAssociatedBiCases(targetCase, category);
-      }
-
-      else if (caseEvent.getCategory().equals(CategoryDTO.CategoryName.DISABLE_RESPONDENT_ENROLMENT)) {
-        effectTargetCaseStateTransition(category, targetCase);
-        List<Case> actionableCases = caseRepo.findByCaseGroupIdAndState(
-                targetCase.getCaseGroupId(), CaseState.ACTIONABLE);
-        CaseGroup caseGroup = caseGroupRepo.findById(targetCase.getCaseGroupId());
-
-        // Create a new case if no actionable case remain and casegroup is not in a complete state
-        if (actionableCases.isEmpty()
-            && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETE)
-            && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETEDBYPHONE)) {
+      switch (caseEvent.getCategory()) {
+        case RESPONDENT_ENROLED:
+          List<CaseGroup> caseGroups = caseGroupService.findCaseGroupsForExecutedCollectionExercises(targetCase);
+          processCaseCreationAndTransitionsDuringEnrolment(category, caseGroups, caseEvent, newCase);
+          break;
+        case SUCCESSFUL_RESPONSE_UPLOAD: case COMPLETED_BY_PHONE:
           createNewCase(category, caseEvent, targetCase, newCase);
-        }
-      }
-
-      else if (caseEvent.getCategory().equals(CategoryDTO.CategoryName.REPLACED) && category.getNewCaseSampleUnitType().equals(SampleUnitType.B))  {
+          updateAllAssociatedBiCases(targetCase, category);
+          break;
+        case DISABLE_RESPONDENT_ENROLMENT:
+          effectTargetCaseStateTransition(category, targetCase);
+          List<Case> actionableCases = caseRepo.findByCaseGroupIdAndState(
+                  targetCase.getCaseGroupId(), CaseState.ACTIONABLE);
           CaseGroup caseGroup = caseGroupRepo.findById(targetCase.getCaseGroupId());
-          newCase.setPartyId(caseGroup.getPartyId());
+
+          // Create a new case if no actionable case remain and casegroup is not in a complete state
+          if (actionableCases.isEmpty()
+                  && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETE)
+                  && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETEDBYPHONE)) {
+            createNewCase(category, caseEvent, targetCase, newCase);
+          }
+          break;
+        case REPLACED: if (newCase.getSampleUnitType().equals(SampleUnitType.B))
+          newCase.setPartyId(caseGroupRepo.findById(targetCase.getCaseGroupId()).getPartyId());
           createNewCase(category, caseEvent, targetCase, newCase);
           effectTargetCaseStateTransition(category, targetCase);
-      }
+          break;
+        default:
+          createNewCase(category, caseEvent, targetCase, newCase);
+          effectTargetCaseStateTransition(category, targetCase);
+          break;
 
-      else {
-        createNewCase(category, caseEvent, targetCase, newCase);
-        effectTargetCaseStateTransition(category, targetCase);
       }
     }
 
@@ -422,7 +418,6 @@ public class CaseServiceImpl implements CaseService {
    * @param newCase the new case to be created
    */
   private void buildNewCase(Category category, Case newCase, Case targetCase) {
-
     newCase.setSampleUnitType(SampleUnitType.valueOf(category.getNewCaseSampleUnitType()));
 
     // set case group id to the same as
@@ -438,7 +433,6 @@ public class CaseServiceImpl implements CaseService {
         newCase.setActionPlanId(caseType.getActionPlanId());
       }
     }
-
   }
 
   /**

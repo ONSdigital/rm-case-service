@@ -93,6 +93,7 @@ public class CaseServiceImplTest {
   private static final int CAT_SUCCESSFUL_RESPONSE_UPLOAD = 48;
   private static final int CAT_OFFLINE_RESPONSE_PROCESSED = 49;
   private static final int CAT_DISABLE_RESPONDENT_ENROLMENT = 50;
+  private static final int CAT_REPLACED = 51;
 
   /**
    * Note that the Integer values below are linked to the order in which cases appear
@@ -110,6 +111,8 @@ public class CaseServiceImplTest {
   private static final Integer ACTIONABLE_BI_CASE_FK = 11;
   private static final Integer INACTIONABLE_BUSINESS_UNIT_CASE_FK = 12;
   private static final Integer ANOTHER_ACTIONABLE_BI_CASE_FK = 13;
+  private static final Integer REPLACEMENT_INIT_BI_CASE_FK = 15;
+  private static final Integer REPLACEMENT_INIT_B_CASE_FK = 16;
 
   private static final Integer CASEGROUP_PK = 1;
 
@@ -1579,6 +1582,38 @@ public class CaseServiceImplTest {
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
     verify(caseRepo, times(1)).findByCaseGroupIdAndState(null, CaseState.ACTIONABLE);
     verify(caseGroupRepo, times(1)).findById(null);
+  }
+
+  /**
+   * A REPLACED event transistions an REPLACEMENT_INIT BI case to ACTIONABLE.
+   * The action service is notified of the transition.
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventSucessfulReplacedForBICase() throws Exception {
+    when(caseRepo.findOne(REPLACEMENT_INIT_BI_CASE_FK)).thenReturn(cases.
+            get(REPLACEMENT_INIT_BI_CASE_FK));
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.REPLACED)).
+            thenReturn(categories.get(CAT_REPLACED));
+    Case newCase = cases.get(ACTIONABLE_BI_CASE_FK);
+    when(caseRepo.saveAndFlush(newCase)).thenReturn(cases.get(ACTIONABLE_BI_CASE_FK));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.REPLACED,
+            REPLACEMENT_INIT_BI_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, newCase);
+
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ACCOUNT_CREATED);
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    verify(caseRepo, never()).saveAndFlush(any(Case.class));
+    verify(internetAccessCodeSvcClientService, times(1)).disableIAC(any(String.class));
+    verify(caseSvcStateTransitionManager, times(2)).transition(any(CaseState.class),
+            any(CaseDTO.CaseEvent.class));
+    verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
+    verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(UUID.class),
+            any(String.class));
+
   }
 
   /**
