@@ -201,8 +201,8 @@ public class CaseServiceImpl implements CaseService {
 
       if (caseEvent.getCategory().equals(CategoryDTO.CategoryName.RESPONDENT_ENROLED)) {
         // are there other case groups that need updating
-        List<CaseGroup> caseGroups = caseGroupService.transitionOtherCaseGroups(targetCase);
-        checkCaseState(category, caseGroups, caseEvent, newCase);
+        List<CaseGroup> caseGroups = caseGroupService.findCaseGroupsForExecutedCollectionExercises(targetCase);
+        processCaseCreationAndTransitionsDuringEnrolment(category, caseGroups, caseEvent, newCase);
       }
 
       else if (caseEvent.getCategory().equals(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD)
@@ -284,28 +284,41 @@ public class CaseServiceImpl implements CaseService {
    * @param newCase a case to provide a party id
    * @throws CTPException thrown if database error etc
    */
-  private void checkCaseState(final Category category, final List<CaseGroup> caseGroups, final CaseEvent caseEvent,
+  private void processCaseCreationAndTransitionsDuringEnrolment(final Category category, final List<CaseGroup> caseGroups, final CaseEvent caseEvent,
                               final Case newCase) throws CTPException {
-    // check all case groups are type B. For surveys this is always true
-    List<CaseGroup> caseGroupsToUpdate = caseGroups
-            .stream()
-            .filter(cg -> cg.getSampleUnitType().toString().equals("B"))
-            .collect(Collectors.toList());
-    for (CaseGroup cg : caseGroupsToUpdate) {
-      // fetch cases associated to case group
-      List<Case> cases = caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(cg.getCaseGroupPK());
-      // find b cases
+	  
+    for (CaseGroup caseGroup : caseGroups) {
+    	
+      // fetch all B and BI cases associated to the case group being processed
+      List<Case> cases = caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(caseGroup.getCaseGroupPK());
+
+      // Create a new BI case for the respondent enrolling (if one doesn't already exit)
+      // This is primarily to guard against multiple RESPONDENT_ENROLED case events for the same user
+      // caused by a double click scenario in the verification email journey 
+      List<Case> biCases = cases
+              .stream()
+              .filter(c -> c.getSampleUnitType().toString().equals("BI") && c.getPartyId().equals(newCase.getPartyId()))
+              .collect(Collectors.toList());
+      if (biCases.size() != 0) {
+    	  	 log.warn("Existing BI case found during enrolment for partyid: {} for casegroup: {} with caseid: {}",
+    	  			 newCase.getPartyId().toString(), caseGroup.getId(), biCases.get(0).getId());
+      } else {
+          Case c = new Case();
+          c.setPartyId(newCase.getPartyId());
+          createNewCase(category, caseEvent, cases.get(0), c);
+          log.info("BI case created during enrolment for partyid: {} for casegroup: {}",
+        		  newCase.getPartyId().toString(), caseGroup.getId());
+      }
+    	  
+      // Transition each of the B cases for the casegroup being enrolled for
       List<Case> bCases = cases
               .stream()
               .filter(c -> c.getSampleUnitType().toString().equals("B"))
               .collect(Collectors.toList());
-      // see if any case needs to transition
       for (Case bCase : bCases) {
         effectTargetCaseStateTransition(category, bCase);
       }
-      Case c = new Case();
-      c.setPartyId(newCase.getPartyId());
-      createNewCase(category, caseEvent, cases.get(0), c);
+      
     }
   }
 

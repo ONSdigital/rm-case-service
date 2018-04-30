@@ -1104,7 +1104,7 @@ public class CaseServiceImplTest {
     List<CollectionExerciseDTO> listCollex = Collections.singletonList(makeCollectionExercise());
     when(collectionExerciseSvcClientService.getCollectionExercises(null)).thenReturn(listCollex);
     List<CaseGroup> theseCaseGroups = Collections.singletonList(makeCaseGroup());
-    when(caseGroupService.transitionOtherCaseGroups(any())).thenReturn(theseCaseGroups);
+    when(caseGroupService.findCaseGroupsForExecutedCollectionExercises(any())).thenReturn(theseCaseGroups);
     CaseGroup caseGroup = makeCaseGroup();
     when(caseGroupRepo.findOne(ENROLMENT_CASE_INDIVIDUAL_FK)).thenReturn(caseGroup);
     List<Case> c = Collections.singletonList(makeCase());

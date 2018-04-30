@@ -97,7 +97,7 @@ public class CaseGroupServiceImpl implements CaseGroupService {
    * @return a list of other case groups related to the target by party and collection exercise
    * @throws CTPException thrown if database error etc
    */
-  public List<CaseGroup> transitionOtherCaseGroups(final Case targetCase) throws CTPException {
+  public List<CaseGroup> findCaseGroupsForExecutedCollectionExercises(final Case targetCase) throws CTPException {
     if (targetCase == null){
         throw new CTPException(CTPException.Fault.SYSTEM_ERROR, "Target case must be supplied");
     }

@@ -59,6 +59,6 @@ public interface CaseGroupService extends CTPService {
    * @return a list of case groups related to the target by party and collection exercise
    * @throws CTPException thrown if an error occurs
    */
-  List<CaseGroup> transitionOtherCaseGroups(Case targetCase) throws CTPException;
+  List<CaseGroup> findCaseGroupsForExecutedCollectionExercises(Case targetCase) throws CTPException;
 
 }
