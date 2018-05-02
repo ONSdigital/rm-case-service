@@ -93,6 +93,7 @@ public class CaseServiceImplTest {
   private static final int CAT_SUCCESSFUL_RESPONSE_UPLOAD = 48;
   private static final int CAT_OFFLINE_RESPONSE_PROCESSED = 49;
   private static final int CAT_DISABLE_RESPONDENT_ENROLMENT = 50;
+  private static final int CAT_REPLACED = 51;
 
   /**
    * Note that the Integer values below are linked to the order in which cases appear
@@ -110,6 +111,8 @@ public class CaseServiceImplTest {
   private static final Integer ACTIONABLE_BI_CASE_FK = 11;
   private static final Integer INACTIONABLE_BUSINESS_UNIT_CASE_FK = 12;
   private static final Integer ANOTHER_ACTIONABLE_BI_CASE_FK = 13;
+  private static final Integer REPLACEMENT_INIT_BI_CASE_FK = 15;
+  private static final Integer REPLACEMENT_INIT_B_CASE_FK = 16;
 
   private static final Integer CASEGROUP_PK = 1;
 
@@ -1164,6 +1167,7 @@ public class CaseServiceImplTest {
     cg.setId(UUID.randomUUID());
     cg.setStatus(CaseGroupStatus.NOTSTARTED);
     cg.setSampleUnitType("B");
+    cg.setPartyId(UUID.randomUUID());
     return cg;
   }
 
@@ -1581,6 +1585,77 @@ public class CaseServiceImplTest {
   }
 
   /**
+   * A REPLACED event transistions a REPLACEMENT_INIT BI case to ACTIONABLE.
+   * The action service is notified of the transition.
+   * @throws Exception if fabricateEvent does
+   */
+  @Test
+  public void testEventSucessfulReplacedForBICase() throws Exception {
+    when(caseRepo.findOne(REPLACEMENT_INIT_BI_CASE_FK)).thenReturn(cases.
+            get(REPLACEMENT_INIT_BI_CASE_FK));
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.REPLACED)).
+            thenReturn(categories.get(CAT_REPLACED));
+    when(caseRepo.findByCaseGroupIdAndState(null, CaseState.ACTIONABLE)).thenReturn(Collections.emptyList());
+    CaseGroup caseGroup = makeCaseGroup();
+    when(caseGroupRepo.findById(null)).thenReturn(caseGroup);
+    Case newCase = cases.get(ACTIONABLE_BI_CASE_FK);
+    when(caseRepo.saveAndFlush(newCase)).thenReturn(cases.get(ACTIONABLE_BI_CASE_FK));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.REPLACED,
+            REPLACEMENT_INIT_BI_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, newCase);
+
+    verify(caseRepo, times(1)).findOne(REPLACEMENT_INIT_BI_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.REPLACED);
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
+    verify(caseRepo, times(2)).saveAndFlush(argument.capture());
+    verify(caseSvcStateTransitionManager, times(2)).transition(any(CaseState.class),
+            any(CaseDTO.CaseEvent.class));
+    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
+    verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(UUID.class),
+            any(String.class));
+
+  }
+
+  /**
+   * A REPLACED event transitions a REPLACEMENT_INIT B case to ACTIONABLE.
+   * The action service is notified of the transition
+   * @throws Exception if fabricatedEvent does
+   */
+  @Test
+  public void testEventSucessfulReplacedForBCase() throws Exception {
+    when(caseRepo.findOne(REPLACEMENT_INIT_B_CASE_FK)).thenReturn(cases.
+            get(REPLACEMENT_INIT_B_CASE_FK));
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.REPLACED)).
+            thenReturn(categories.get(CAT_REPLACED));
+    when(caseRepo.findByCaseGroupIdAndState(null, CaseState.ACTIONABLE)).thenReturn(Collections.emptyList());
+    CaseGroup caseGroup = makeCaseGroup();
+    when(caseGroupRepo.findById(null)).thenReturn(caseGroup);
+    Case newCase = cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    when(caseRepo.saveAndFlush(newCase)).thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
+
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.REPLACED,
+            REPLACEMENT_INIT_B_CASE_FK);
+
+    caseService.createCaseEvent(caseEvent, newCase);
+
+    verify(caseRepo, times(1)).findOne(REPLACEMENT_INIT_B_CASE_FK);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.REPLACED);
+    verify(caseEventRepository, times(1)).save(caseEvent);
+    ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
+    verify(caseRepo, times(2)).saveAndFlush(argument.capture());
+    verify(caseSvcStateTransitionManager, times(2)).transition(any(CaseState.class),
+            any(CaseDTO.CaseEvent.class));
+    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
+    verify(actionSvcClientService, never()).createAndPostAction(any(String.class), any(UUID.class),
+            any(String.class));
+
+  }
+
+
+  /**
    * caseService.createCaseEvent will be called with invalid state transitions
    * but suppress the exception. This is expected behaviour. This code smells but keeping as is.
    */
@@ -1661,6 +1736,8 @@ public class CaseServiceImplTest {
             .thenReturn(CaseState.INACTIONABLE);
     when(caseSvcStateTransitionManager.transition(CaseState.INACTIONABLE, CaseDTO.CaseEvent.DEACTIVATED))
             .thenReturn(CaseState.INACTIONABLE);
+    when(caseSvcStateTransitionManager.transition(CaseState.REPLACEMENT_INIT, CaseDTO.CaseEvent.REPLACED))
+            .thenReturn(CaseState.ACTIONABLE);
   }
 
   /**
