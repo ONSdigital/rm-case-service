@@ -207,8 +207,8 @@ public class CaseServiceImpl implements CaseService {
 
       else if (caseEvent.getCategory().equals(CategoryDTO.CategoryName.DISABLE_RESPONDENT_ENROLMENT)) {
         effectTargetCaseStateTransition(category, targetCase);
-        List<Case> actionableCases = caseRepo.findByCaseGroupIdAndState(
-                targetCase.getCaseGroupId(), CaseState.ACTIONABLE);
+        List<Case> actionableCases = caseRepo.findByCaseGroupIdAndStateAndSampleUnitType(
+                targetCase.getCaseGroupId(), CaseState.ACTIONABLE, SampleUnitType.BI);
         CaseGroup caseGroup = caseGroupRepo.findById(targetCase.getCaseGroupId());
 
         // Create a new case if no actionable case remain and casegroup is not in a complete state
