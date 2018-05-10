@@ -1,0 +1,2 @@
+INSERT INTO casesvc.category (categorypk, shortdescription, longdescription, eventtype, role, generatedactiontype, "group", oldcasesampleunittypes, newcasesampleunittype, recalccollectioninstrument)
+VALUES ('DEACTIVATED', 'Deactivate respondent account', 'Deactivate respondent account', 'DISABLED',  NULL, NULL, NULL, 'BI', 'B', NULL);

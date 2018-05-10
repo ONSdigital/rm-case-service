@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+        id: 10.56.0-1
+        author: Gemma Irving
+        changes:
+          - sqlFile:
+              comment: Add DEACTIVATED category
+              path: add_deactivated_category.sql
+              relativeToChangelogFile: true
+              splitStatements: false

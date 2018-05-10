@@ -131,6 +131,7 @@ public final class CaseEndpointUnitTest {
   private static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
   private static final String FINDCASEBYID = "findCaseById";
   private static final List<String> IACList = Arrays.asList("jkbvyklkwj88");
+  private static final CaseState CASE_STATE_ACTIONABLE = CaseState.ACTIONABLE;
 
   private static final String CASEEVENT_INVALIDJSON =
           "{\"description\":\"a\",\"category\":\"BAD_CAT\",\"createdBy\":\"u\"}";
@@ -359,6 +360,33 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$[*].iac", containsInAnyOrder(IAC_CASE1, IAC_CASE2, IAC_CASE3, IAC_CASE4,
             IAC_CASE5, IAC_CASE6, IAC_CASE7, IAC_CASE8, IAC_CASE9)));
     actions.andExpect(jsonPath("$[*].caseEvents", hasSize(9)));
+    actions.andExpect(jsonPath("$[*].caseGroup.id", containsInAnyOrder(CASE1_CASEGROUP_ID.toString(),
+            CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(),
+            CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(),
+            CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString())));
+  }
+
+  @Test
+  public void findCasesByPartyIdFoundWithState() throws Exception {
+    when(caseService.findCasesByPartyIdAndState(EXISTING_PARTY_UUID, CASE_STATE_ACTIONABLE)).thenReturn(caseResults);
+    when(caseGroupService.findCaseGroupByCaseGroupPK(any(Integer.class))).thenReturn(caseGroupResults.get(0));
+    when(caseService.findCaseEventsByCaseFK(any(Integer.class))).thenReturn(caseEventsResults);
+
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/partyid/%s?state=%s",
+                            EXISTING_PARTY_UUID, CASE_STATE_ACTIONABLE)));
+
+    actions.andExpect(status().is2xxSuccessful());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("findCasesByPartyId"));
+    actions.andExpect(jsonPath("$[*].id", containsInAnyOrder(CASE1_ID.toString(), CASE2_ID.toString(),
+            CASE3_ID.toString(), CASE4_ID.toString(), CASE5_ID.toString(), CASE6_ID.toString(), CASE7_ID.toString(),
+            CASE8_ID.toString(), CASE9_ID.toString())));
+    actions.andExpect(jsonPath("$[*].caseRef", containsInAnyOrder(ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN,
+            EIGHT, NINE)));
+    actions.andExpect(jsonPath("$[*].iac", containsInAnyOrder(nullValue(), nullValue(), nullValue(), nullValue(),
+            nullValue(), nullValue(), nullValue(), nullValue(), nullValue())));
+    actions.andExpect(jsonPath("$[*].caseEvents", containsInAnyOrder(nullValue(), nullValue(), nullValue(),
+            nullValue(), nullValue(), nullValue(), nullValue(), nullValue(), nullValue())));
     actions.andExpect(jsonPath("$[*].caseGroup.id", containsInAnyOrder(CASE1_CASEGROUP_ID.toString(),
             CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(),
             CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(), CASE1_CASEGROUP_ID.toString(),

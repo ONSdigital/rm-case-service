@@ -138,6 +138,12 @@ public class CaseServiceImpl implements CaseService {
   }
 
   @Override
+  public List<Case> findCasesByPartyIdAndState(final UUID partyId, final CaseState state) {
+    log.debug("Entering findCasesByPartyIdAndState");
+    return caseRepo.findByPartyIdAndState(partyId, state);
+  }
+
+  @Override
   public List<CaseEvent> findCaseEventsByCaseFK(final Integer caseFK) {
     log.debug("Entering findCaseEventsByCaseFK");
     return caseEventRepo.findByCaseFKOrderByCreatedDateTimeDesc(caseFK);
@@ -205,7 +211,7 @@ public class CaseServiceImpl implements CaseService {
         updateAllAssociatedBiCases(targetCase, category);
       }
 
-      else if (caseEvent.getCategory().equals(CategoryDTO.CategoryName.DISABLE_RESPONDENT_ENROLMENT)) {
+      else if (caseEvent.getCategory().equals(CategoryDTO.CategoryName.DISABLE_RESPONDENT_ENROLMENT) || caseEvent.getCategory().equals(CategoryDTO.CategoryName.DEACTIVATED)) {
         effectTargetCaseStateTransition(category, targetCase);
         List<Case> actionableCases = caseRepo.findByCaseGroupIdAndStateAndSampleUnitType(
                 targetCase.getCaseGroupId(), CaseState.ACTIONABLE, SampleUnitType.BI);
