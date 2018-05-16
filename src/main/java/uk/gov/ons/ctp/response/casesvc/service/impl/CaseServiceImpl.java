@@ -2,7 +2,6 @@ package uk.gov.ons.ctp.response.casesvc.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.eclipse.jdt.core.dom.NullLiteral;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
