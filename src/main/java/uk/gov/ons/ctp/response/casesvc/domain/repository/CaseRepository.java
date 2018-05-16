@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
+import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
 
 import java.util.List;
 import java.util.UUID;
@@ -48,7 +49,8 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
    * @param state the case group state
    * @return the cases in the group
    */
-  List<Case> findByCaseGroupIdAndState(UUID caseGroupFK, CaseState state);
+  List<Case> findByCaseGroupIdAndStateAndSampleUnitType(UUID caseGroupFK, CaseState state,
+                                                        SampleUnitDTO.SampleUnitType sampleUnitType);
 
   /**
    * Find cases assigned to the given iac
