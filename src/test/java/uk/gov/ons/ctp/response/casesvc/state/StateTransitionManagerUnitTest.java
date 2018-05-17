@@ -156,6 +156,18 @@ public class StateTransitionManagerUnitTest {
   }
 
   @Test
+  public void givenCaseGroupStateNotStartedWhenNoLongerRequiredThenNoLongerRequired() throws CTPException {
+    // Given
+    CaseGroupStatus notStarted = CaseGroupStatus.NOTSTARTED;
+
+    // When
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(notStarted, CategoryDTO.CategoryName.NO_LONGER_REQUIRED);
+
+    // Then
+    assertEquals(destinationState, CaseGroupStatus.NOLONGERREQUIRED);
+  }
+
+  @Test
   public void givenCaseGroupStateInProgressWhenSuccessfulResponseUploadThenComplete() throws CTPException {
     // Given
     CaseGroupStatus inProgress = CaseGroupStatus.INPROGRESS;
@@ -180,6 +192,18 @@ public class StateTransitionManagerUnitTest {
   }
 
   @Test
+  public void givenCaseGroupStateInProgressWhenNoLongerRequiredThenNoLongerRequired() throws CTPException {
+    // Given
+    CaseGroupStatus inProgress = CaseGroupStatus.INPROGRESS;
+
+    // When
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(inProgress, CategoryDTO.CategoryName.NO_LONGER_REQUIRED);
+
+    // Then
+    assertEquals(destinationState, CaseGroupStatus.NOLONGERREQUIRED);
+  }
+
+  @Test
   public void givenCaseGroupStateReopenedWhenCompletedByPhoneThenCompletedByPhone() throws CTPException {
     // Given
     CaseGroupStatus reopened = CaseGroupStatus.REOPENED;
@@ -189,6 +213,18 @@ public class StateTransitionManagerUnitTest {
 
     // Then
     assertEquals(destinationState, CaseGroupStatus.COMPLETEDBYPHONE);
+  }
+
+  @Test
+  public void givenCaseGroupStateReopenedWhenNoLongerRequiredThenNoLongerRequired() throws CTPException {
+    // Given
+    CaseGroupStatus reopened = CaseGroupStatus.REOPENED;
+
+    // When
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(reopened, CategoryDTO.CategoryName.NO_LONGER_REQUIRED);
+
+    // Then
+    assertEquals(destinationState, CaseGroupStatus.NOLONGERREQUIRED);
   }
   
   @Test
