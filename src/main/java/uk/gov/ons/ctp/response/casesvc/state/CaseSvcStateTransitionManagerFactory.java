@@ -53,21 +53,24 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
   private StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName> caseGroupStateTransitionManager() {
     ImmutableTable.Builder<CaseGroupStatus, CategoryDTO.CategoryName, CaseGroupStatus> builder = ImmutableTable.builder();
 
-    // From not started on ci downloaded, eq launch, successful response upload, completed by phone to in progress, in progress, completed, completed by phone
+    // From not started on ci downloaded, eq launch, successful response upload, completed by phone to in progress, in progress, completed, completed by phone, no longer required
     builder.put(CaseGroupStatus.NOTSTARTED, CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED, CaseGroupStatus.INPROGRESS);
     builder.put(CaseGroupStatus.NOTSTARTED, CategoryDTO.CategoryName.EQ_LAUNCH, CaseGroupStatus.INPROGRESS);
     builder.put(CaseGroupStatus.NOTSTARTED, CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, CaseGroupStatus.COMPLETE);
     builder.put(CaseGroupStatus.NOTSTARTED, CategoryDTO.CategoryName.COMPLETED_BY_PHONE, CaseGroupStatus.COMPLETEDBYPHONE);
+    builder.put(CaseGroupStatus.NOTSTARTED, CategoryDTO.CategoryName.NO_LONGER_REQUIRED, CaseGroupStatus.NOLONGERREQUIRED);
     
     // From in progress on response processed by SDX to complete   
     builder.put(CaseGroupStatus.INPROGRESS, CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED, CaseGroupStatus.COMPLETE);
 
-    // From in progress on successful response upload, completed by phone to completed, completed by phone
+    // From in progress on successful response upload, completed by phone to completed, completed by phone, no longer required
     builder.put(CaseGroupStatus.INPROGRESS, CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, CaseGroupStatus.COMPLETE);
     builder.put(CaseGroupStatus.INPROGRESS, CategoryDTO.CategoryName.COMPLETED_BY_PHONE, CaseGroupStatus.COMPLETEDBYPHONE);
+    builder.put(CaseGroupStatus.INPROGRESS, CategoryDTO.CategoryName.NO_LONGER_REQUIRED, CaseGroupStatus.NOLONGERREQUIRED);
 
     // From reopened on completed by phone to completed by phone
     builder.put(CaseGroupStatus.REOPENED, CategoryDTO.CategoryName.COMPLETED_BY_PHONE, CaseGroupStatus.COMPLETEDBYPHONE);
+    builder.put(CaseGroupStatus.REOPENED, CategoryDTO.CategoryName.NO_LONGER_REQUIRED, CaseGroupStatus.NOLONGERREQUIRED);
 
     return new BasicStateTransitionManager<>(builder.build().rowMap());
   }

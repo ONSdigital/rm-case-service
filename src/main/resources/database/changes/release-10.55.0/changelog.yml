@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 10.55.0-1
+      author: Andrew Millar
+      changes:
+        - sqlFile:
+            comment: Add NO_LONGER_REQUIRED case event category
+            path: add_no_longer_required_event.sql
+            relativeToChangelogFile: true
+            splitStatements: false

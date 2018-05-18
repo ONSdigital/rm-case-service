@@ -193,35 +193,33 @@ public class CaseServiceImpl implements CaseService {
 
       transitionCaseGroupStatus(targetCase, caseEvent);
 
-      if (caseEvent.getCategory().equals(CategoryDTO.CategoryName.RESPONDENT_ENROLED)) {
-        // are there other case groups that need updating
-        List<CaseGroup> caseGroups = caseGroupService.findCaseGroupsForExecutedCollectionExercises(targetCase);
-        processCaseCreationAndTransitionsDuringEnrolment(category, caseGroups, caseEvent, newCase);
-      }
+      switch (caseEvent.getCategory()) {
 
-      else if (caseEvent.getCategory().equals(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD)
-               || caseEvent.getCategory().equals(CategoryDTO.CategoryName.COMPLETED_BY_PHONE)) {
-        createNewCase(category, caseEvent, targetCase, newCase);
-        updateAllAssociatedBiCases(targetCase, category);
-      }
-
-      else if (caseEvent.getCategory().equals(CategoryDTO.CategoryName.DISABLE_RESPONDENT_ENROLMENT)) {
-        effectTargetCaseStateTransition(category, targetCase);
-        List<Case> actionableCases = caseRepo.findByCaseGroupIdAndStateAndSampleUnitType(
-                targetCase.getCaseGroupId(), CaseState.ACTIONABLE, SampleUnitType.BI);
-        CaseGroup caseGroup = caseGroupRepo.findById(targetCase.getCaseGroupId());
-
-        // Create a new case if no actionable case remain and casegroup is not in a complete state
-        if (actionableCases.isEmpty()
-            && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETE)
-            && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETEDBYPHONE)) {
+        case RESPONDENT_ENROLED:
+          List<CaseGroup> caseGroups = caseGroupService.findCaseGroupsForExecutedCollectionExercises(targetCase);
+          processCaseCreationAndTransitionsDuringEnrolment(category, caseGroups, caseEvent, newCase);
+          break;
+        case SUCCESSFUL_RESPONSE_UPLOAD: case COMPLETED_BY_PHONE:
           createNewCase(category, caseEvent, targetCase, newCase);
-        }
-      }
+          updateAllAssociatedBiCases(targetCase, category);
+          break;
+        case DISABLE_RESPONDENT_ENROLMENT:
+          effectTargetCaseStateTransition(category, targetCase);
+          List<Case> actionableCases = caseRepo.findByCaseGroupIdAndStateAndSampleUnitType(
+                  targetCase.getCaseGroupId(), CaseState.ACTIONABLE, SampleUnitType.BI);
+          CaseGroup caseGroup = caseGroupRepo.findById(targetCase.getCaseGroupId());
 
-      else {
-        createNewCase(category, caseEvent, targetCase, newCase);
-        effectTargetCaseStateTransition(category, targetCase);
+          // Create a new case if no actionable case remain and casegroup is not in a complete state
+          if (actionableCases.isEmpty()
+                  && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETE)
+                  && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETEDBYPHONE)) {
+            createNewCase(category, caseEvent, targetCase, newCase);
+          }
+          break;
+        default:
+          createNewCase(category, caseEvent, targetCase, newCase);
+          effectTargetCaseStateTransition(category, targetCase);
+          break;
       }
     }
 
@@ -561,7 +559,13 @@ public class CaseServiceImpl implements CaseService {
     newCase.setCreatedDateTime(DateTimeUtil.nowUTC());
     newCase.setCaseGroupFK(targetCase.getCaseGroupFK());
     newCase.setCreatedBy(caseEvent.getCreatedBy());
-    newCase.setSourceCaseId(targetCase.getCasePK());
+    if (newCase.getSampleUnitType() == SampleUnitType.B) {
+      newCase.setSourceCaseId(null);
+    }
+    else {
+      newCase.setSourceCaseId(targetCase.getCasePK());
+    }
+
     return caseRepo.saveAndFlush(newCase);
   }
 
