@@ -32,6 +32,7 @@ import uk.gov.ons.ctp.common.rest.RestUtility;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
+import uk.gov.ons.ctp.response.casesvc.config.DataSourceConfiguration;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
@@ -57,6 +58,9 @@ public class CaseSvcApplication {
 
   @Autowired
   private AppConfig appConfig;
+  
+  @Autowired
+  private DataSourceConfiguration dataSource;
 
   @Autowired
   private StateTransitionManagerFactory caseSvcStateTransitionManagerFactory;
