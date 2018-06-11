@@ -25,7 +25,7 @@ public class DataSourceConfiguration {
 	}
 	
 	@Bean
-	@ConfigurationProperties(prefix="spring.datasource")
+	@ConfigurationProperties(prefix="spring.datasource.tomcat")
 	public DataSource dataSource() {
 		return cloud().getSingletonServiceConnector(DataSource.class, null);
 	}

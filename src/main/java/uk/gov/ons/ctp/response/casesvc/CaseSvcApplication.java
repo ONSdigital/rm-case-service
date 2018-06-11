@@ -1,6 +1,8 @@
 package uk.gov.ons.ctp.response.casesvc;
 
 import net.sourceforge.cobertura.CoverageIgnore;
+
+import org.apache.tomcat.jdbc.pool.DataSource;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -60,7 +62,7 @@ public class CaseSvcApplication {
   private AppConfig appConfig;
   
   @Autowired
-  private DataSourceConfiguration dataSource;
+  private DataSource dataSource;
 
   @Autowired
   private StateTransitionManagerFactory caseSvcStateTransitionManagerFactory;
