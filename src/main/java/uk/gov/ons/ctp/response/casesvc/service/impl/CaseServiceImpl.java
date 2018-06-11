@@ -145,8 +145,10 @@ public class CaseServiceImpl implements CaseService {
 
   @Override
   public CaseNotification prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent) {
+    CaseGroup caseGroup = caseGroupRepo.findOne(caze.getCaseGroupFK());
     return new CaseNotification(caze.getId().toString(), caze.getActionPlanId().toString(),
-        NotificationType.valueOf(transitionEvent.name()));
+            caseGroup.getCollectionExerciseId().toString(), caze.getPartyId().toString(),
+            NotificationType.valueOf(transitionEvent.name()));
   }
 
   /**
@@ -171,7 +173,7 @@ public class CaseServiceImpl implements CaseService {
         caseEvent.getSubCategory(),
         caseEvent.getCreatedBy());
 
-     CaseEvent createdCaseEvent = null;
+    CaseEvent createdCaseEvent = null;
 
     Case targetCase = caseRepo.findOne(caseEvent.getCaseFK());
     log.debug("targetCase is {}", targetCase);
