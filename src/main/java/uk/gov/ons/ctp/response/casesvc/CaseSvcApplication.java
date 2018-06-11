@@ -60,9 +60,6 @@ public class CaseSvcApplication {
 
   @Autowired
   private AppConfig appConfig;
-  
-  @Autowired
-  private DataSource dataSource;
 
   @Autowired
   private StateTransitionManagerFactory caseSvcStateTransitionManagerFactory;
