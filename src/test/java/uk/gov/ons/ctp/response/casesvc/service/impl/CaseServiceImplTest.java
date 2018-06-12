@@ -243,7 +243,7 @@ public class CaseServiceImplTest {
 
   /**
    * Tries to apply an actionable event against a case already inactionable. Should allow.
-   * 
+   *
    * @throws Exception if fabricateEvent does
    */
   @Test
@@ -270,7 +270,7 @@ public class CaseServiceImplTest {
   /**
    * Tries to apply a general event against a case already inactionable. Should
    * allow it.
-   * 
+   *
    * @throws Exception if fabricateEvent does
    */
   @Test
@@ -297,7 +297,7 @@ public class CaseServiceImplTest {
   /**
    * Tries to apply a response event against an actionable case Should allow it
    * and record response.
-   * 
+   *
    * @throws Exception if fabricateEvent does
    */
   @Test
@@ -337,7 +337,7 @@ public class CaseServiceImplTest {
   /**
    * Tries to apply an online response event against an actionable case Should
    * allow it and record response.
-   * 
+   *
    * @throws Exception if fabricateEvent does
    */
   @Test
@@ -377,7 +377,7 @@ public class CaseServiceImplTest {
   /**
    * Tries to apply a response event against an already inactionable case Should
    * allow it and record response but the state should remain inactionable.
-   * 
+   *
    * @throws Exception exception thrown
    */
   @Test
@@ -416,7 +416,7 @@ public class CaseServiceImplTest {
 
   /**
    * Bluesky test for creating a replacement household case
-   * 
+   *
    * @throws Exception exception thrown
    * */
   @Test
@@ -452,7 +452,7 @@ public class CaseServiceImplTest {
 
   /**
    * Bluesky test for creating a IndividualReplacementIACRequested
-   * 
+   *
    * @throws Exception exception thrown
    */
   @Test
@@ -513,7 +513,7 @@ public class CaseServiceImplTest {
 
   /**
    * Bluesky test for creating a replacement individual case
-   * 
+   *
    * @throws Exception exception thrown
    */
   @Test
@@ -546,7 +546,7 @@ public class CaseServiceImplTest {
 
   /**
    * Bluesky test for creating an individual paper request event
-   * 
+   *
    * @throws Exception exception thrown
    */
   @Test
@@ -595,7 +595,7 @@ public class CaseServiceImplTest {
   /**
    * Tries to create an individual response requested against an individual case
    * - should be household case so should throw and not do anything
-   * 
+   *
    * @throws Exception exception thrown
    */
   @Test
@@ -665,7 +665,7 @@ public class CaseServiceImplTest {
   /**
    * Tries to create a individual request without providing the individual case.
    * Should throw and not save anything
-   * 
+   *
    * @throws Exception if fabricateEvent does
    */
   @Test
@@ -1085,33 +1085,25 @@ public class CaseServiceImplTest {
    */
   @Test
   public void testEventRespondentEnrolled() throws Exception {
-    when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(
-            cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
-    when(caseRepo.findOne(ENROLMENT_CASE_INDIVIDUAL_FK)).thenReturn(cases.get(ENROLMENT_CASE_INDIVIDUAL_FK));
-    when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(cases.get(ENROLMENT_CASE_INDIVIDUAL_FK)); //new case
-
+    // Given
+    when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
     Category respondentEnrolledCategory = categories.get(CAT_RESPONDENT_ENROLED);
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED)).thenReturn(
-            respondentEnrolledCategory);
-
-    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ENROLED,
-            ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    Case newCase = caseRepo.findOne(ENROLMENT_CASE_INDIVIDUAL_FK);
-
-    // new mocks
-
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED)).thenReturn(respondentEnrolledCategory);
+    when(caseGroupRepo.findOne(CASEGROUP_PK)).thenReturn(caseGroups.get(CASEGROUP_PK));
+    List<CaseGroup> caseGroupList = Collections.singletonList(caseGroups.get(CASEGROUP_PK));
+    when(caseGroupService.findCaseGroupsForExecutedCollectionExercises(any())).thenReturn(caseGroupList);
+    List<Case> caseList = Collections.singletonList(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
+    when(caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(any())).thenReturn(caseList);
     List<CollectionExerciseDTO> listCollex = Collections.singletonList(makeCollectionExercise());
     when(collectionExerciseSvcClientService.getCollectionExercises(null)).thenReturn(listCollex);
-    List<CaseGroup> theseCaseGroups = Collections.singletonList(makeCaseGroup());
-    when(caseGroupService.findCaseGroupsForExecutedCollectionExercises(any())).thenReturn(theseCaseGroups);
-    CaseGroup caseGroup = makeCaseGroup();
-    when(caseGroupRepo.findOne(ENROLMENT_CASE_INDIVIDUAL_FK)).thenReturn(caseGroup);
-    List<Case> c = Collections.singletonList(makeCase());
-    when(caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(any())).thenReturn(c);
+    when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(cases.get(ENROLMENT_CASE_INDIVIDUAL_FK));
 
-    // execute tests
-    caseService.createCaseEvent(caseEvent, newCase);
+    // When
+    CaseEvent caseEvent = fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ENROLED,
+          ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    caseService.createCaseEvent(caseEvent, cases.get(ENROLMENT_CASE_INDIVIDUAL_FK));
 
+    // Then
     verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED);
     verify(caseEventRepository, times(1)).save(caseEvent);
@@ -1642,7 +1634,7 @@ public class CaseServiceImplTest {
 
   /**
    * mock the collection exercise service
-   * 
+   *
    * @throws Exception if fixtures loading fails
    */
   private void mockupCollectionExerciseServiceClient() throws Exception {
