@@ -19,12 +19,12 @@ import org.springframework.context.annotation.Profile;
 public class DataSourceConfiguration {
 
 	@Bean
-	public Cloud cloud() {
+	public final Cloud cloud() {
 		return new CloudFactory().getCloud();
 	}
-	
+
 	@Bean
-	@ConfigurationProperties(prefix="spring.datasource.tomcat")
+	@ConfigurationProperties(prefix = "spring.datasource.tomcat")
 	public DataSource dataSource() {
 		return cloud().getSingletonServiceConnector(DataSource.class, null);
 	}
