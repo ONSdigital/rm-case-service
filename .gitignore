@@ -61,3 +61,6 @@ target
 *.DS_Store
 /.apt_generated/
 /.apt_generated/
+
+diagrams/*.svg
+plantuml.jar

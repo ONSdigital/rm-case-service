@@ -1,0 +1,15 @@
+@startuml
+skinparam state {
+    BackgroundColor HoneyDew
+}
+
+[*] --> SAMPLED_INIT
+[*] --> REPLACEMENT_INIT
+SAMPLED_INIT --> ACTIONABLE : activated [[https://github.com/ONSdigital/rm-case-service/blob/master/src/main/java/uk/gov/ons/ctp/response/casesvc/scheduled/distribution/CaseDistributor.java#L197 *]]
+REPLACEMENT_INIT --> ACTIONABLE : replaced [[https://github.com/ONSdigital/rm-case-service/blob/master/src/main/java/uk/gov/ons/ctp/response/casesvc/scheduled/distribution/CaseDistributor.java#L201 *]]
+ACTIONABLE --> ACTIONABLE : account_created
+ACTIONABLE --> INACTIONABLE : deactivated
+ACTIONABLE --> INACTIONABLE : disabled
+INACTIONABLE --> INACTIONABLE : deactivated
+INACTIONABLE --> INACTIONABLE : disabled
+@enduml
