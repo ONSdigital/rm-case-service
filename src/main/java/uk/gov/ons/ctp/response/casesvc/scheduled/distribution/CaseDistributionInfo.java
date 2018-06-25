@@ -6,10 +6,7 @@ import lombok.NoArgsConstructor;
 import net.sourceforge.cobertura.CoverageIgnore;
 import uk.gov.ons.ctp.common.health.ScheduledHealthInfo;
 
-/**
- * info regarding the last case distribution to handlers
- *
- */
+/** info regarding the last case distribution to handlers */
 @CoverageIgnore
 @Data
 @NoArgsConstructor
@@ -18,5 +15,4 @@ public class CaseDistributionInfo extends ScheduledHealthInfo {
 
   private long casesSucceeded;
   private long casesFailed;
-
 }

@@ -1,5 +1,13 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
+
+import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,18 +27,7 @@ import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.casesvc.config.ActionSvc;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 
-import java.util.UUID;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
-
-/**
- * A test of the case frame service client service
- */
+/** A test of the case frame service client service */
 @RunWith(MockitoJUnitRunner.class)
 public class ActionSvcClientServiceImplTest {
 
@@ -39,45 +36,39 @@ public class ActionSvcClientServiceImplTest {
   private static final String HTTP = "http";
   private static final String LOCALHOST = "localhost";
 
-  private static final UUID EXISTING_CASE_ID = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd1");
+  private static final UUID EXISTING_CASE_ID =
+      UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd1");
 
-  @InjectMocks
-  private ActionSvcClientServiceImpl actionSvcClientService;
+  @InjectMocks private ActionSvcClientServiceImpl actionSvcClientService;
 
-  @Mock
-  private AppConfig appConfig;
+  @Mock private AppConfig appConfig;
 
-  @Mock
-  private RestTemplate restTemplate;
+  @Mock private RestTemplate restTemplate;
 
-  @Mock
-  private RestUtility restUtility;
+  @Mock private RestUtility restUtility;
 
-  /**
-   * Sets up Mockito for tests
-   */
+  /** Sets up Mockito for tests */
   @Before
   public void setUp() {
     MockitoAnnotations.initMocks(this);
   }
 
-  /**
-   * Happy path scenario for createAndPostAction
-   */
+  /** Happy path scenario for createAndPostAction */
   @Test
   public void testCreateAndPostAction() {
     ActionSvc actionSvcConfig = new ActionSvc();
     actionSvcConfig.setActionsPath(ACTION_PATH);
     Mockito.when(appConfig.getActionSvc()).thenReturn(actionSvcConfig);
 
-    UriComponents uriComponents = UriComponentsBuilder.newInstance()
-        .scheme(HTTP)
-        .host(LOCALHOST)
-        .port(80)
-        .path(ACTION_PATH)
-        .build();
-    when(restUtility.createUriComponents(any(String.class), any(MultiValueMap.class))).
-        thenReturn(uriComponents);
+    UriComponents uriComponents =
+        UriComponentsBuilder.newInstance()
+            .scheme(HTTP)
+            .host(LOCALHOST)
+            .port(80)
+            .path(ACTION_PATH)
+            .build();
+    when(restUtility.createUriComponents(any(String.class), any(MultiValueMap.class)))
+        .thenReturn(uriComponents);
 
     ActionDTO actionDTO = new ActionDTO();
     actionDTO.setCaseId(EXISTING_CASE_ID);
@@ -90,8 +81,8 @@ public class ActionSvcClientServiceImplTest {
 
     verify(restUtility, times(1)).createUriComponents(ACTION_PATH, null);
     verify(restUtility, times(1)).createHttpEntity(eq(actionDTO));
-    verify(restTemplate, times(1)).exchange(eq(uriComponents.toUri()), eq(HttpMethod.POST),
-        eq(httpEntity), eq(ActionDTO.class));
-
+    verify(restTemplate, times(1))
+        .exchange(
+            eq(uriComponents.toUri()), eq(HttpMethod.POST), eq(httpEntity), eq(ActionDTO.class));
   }
 }
