@@ -1,17 +1,17 @@
 version: '2'
 services:
  postgres:
-  container_name: postgres-it
+  container_name: postgres-case-it
   image: sdcplatform/ras-rm-docker-postgres
   ports:
    - "15432:5432"
  redis:
-  container_name: redis-it
+  container_name: redis-case-it
   image: redis:3.2.9
   ports:
    - "17379:6379"
  rabbitmq:
-  container_name: rabbitmq-it
+  container_name: rabbitmq-case-it
   image: rabbitmq:3.6.10-management
   ports:
     - "34369:4369"
@@ -21,7 +21,7 @@ services:
     - "46671:15671"
     - "46672:15672"
  sftp:
-    container_name: sftp-it
+    container_name: sftp-case-it
     image: atmoz/sftp
     volumes:
         - ~/Documents/sftp:/home/centos/Documents/sftp

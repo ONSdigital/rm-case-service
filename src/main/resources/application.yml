@@ -15,8 +15,8 @@ logging:
   profile: DEV
 
 liquibase:
-  user: casesvc
-  password: casesvc
+  user: postgres
+  password: postgres
   default-schema: casesvc
   url: jdbc:postgresql://localhost:6432/postgres
   changeLog: classpath:/database/changelog-master.yml
@@ -55,8 +55,8 @@ spring:
     name: ONS CaseService
   datasource:
     url: jdbc:postgresql://localhost:6432/postgres
-    username: casesvc
-    password: casesvc
+    username: postgres
+    password: postgres
     driverClassName: org.postgresql.Driver
     continue-on-error: true
     tomcat:
@@ -67,10 +67,11 @@ spring:
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: false
+    show-sql: true
     properties:
       hibernate:
-        ddl-auto: update
+        ddl-auto: none
+        default_schema: casesvc
 
 data-grid:
   address: localhost:7379
