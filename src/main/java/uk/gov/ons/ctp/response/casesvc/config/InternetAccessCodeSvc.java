@@ -12,6 +12,7 @@ import uk.gov.ons.ctp.common.rest.RestUtilityConfig;
 @CoverageIgnore
 public class InternetAccessCodeSvc {
   private RestUtilityConfig connectionConfig;
+  private String iacGetPath;
   private String iacPostPath;
   private String iacPutPath;
 }

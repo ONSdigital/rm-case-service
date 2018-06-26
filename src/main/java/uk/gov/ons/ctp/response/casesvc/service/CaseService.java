@@ -108,6 +108,21 @@ public interface CaseService extends CTPService {
   CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase, Timestamp timestamp) throws CTPException;
 
   /**
+   * Create a CaseEvent for the specific scenario of an incoming CaseReceipt
+   * (sent by the SDX Gateway and containing the responseDateTime of the
+   * online/paper response).
+   *
+   * @param caseEvent CaseEvent to be created
+   * @param newCase optional case object containing partial details of the case
+   *          to be created by this event.
+   * @param timestamp timestamp equals to the incoming CaseReceipt's
+   *          responseDateTime.
+   * @return the created CaseEvent.
+   * @throws CTPException when case state transition error
+   */
+  CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase, Timestamp timestamp, Case targetCase) throws CTPException;
+
+  /**
    * Not sure this is the best place for this method, but .. several parts of
    * case svc need to build a CaseNotification for a Case and need the services
    * of the ActionPlanMappingService to get the actionPlanId This method just

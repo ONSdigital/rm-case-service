@@ -76,9 +76,6 @@ public class CaseServiceImpl implements CaseService {
   private CategoryRepository categoryRepo;
 
   @Autowired
-  private CaseGroupAuditService caseGroupAuditService;
-
-  @Autowired
   private ActionSvcClientService actionSvcClientService;
 
   @Autowired
@@ -166,63 +163,77 @@ public class CaseServiceImpl implements CaseService {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
   public CaseEvent createCaseEvent(final CaseEvent caseEvent, final Case newCase, final Timestamp timestamp) throws CTPException {
-    log.debug("Entering createCaseEvent with caseEvent {}", caseEvent);
-    log.info("SPLUNK: CaseEventCreation: casePK={}, category={}, subCategory={}, createdBy={}",
+    log.info("Creating case event, casePK={}, category={}, subCategory={}, createdBy={}",
+            caseEvent.getCaseFK(),
+            caseEvent.getCategory(),
+            caseEvent.getSubCategory(),
+            caseEvent.getCreatedBy());
+
+    Case targetCase = caseRepo.findOne(caseEvent.getCaseFK());
+    log.debug("targetCase is {}", targetCase);
+    if (targetCase == null) {
+      return null;
+    }
+    return createCaseEvent(caseEvent, newCase, timestamp, targetCase);
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
+  @Override
+  public CaseEvent createCaseEvent(final CaseEvent caseEvent, final Case newCase, final Timestamp timestamp, final Case targetCase) throws CTPException {
+    log.info("Creating case event, casePK={}, category={}, subCategory={}, createdBy={}",
         caseEvent.getCaseFK(),
         caseEvent.getCategory(),
         caseEvent.getSubCategory(),
         caseEvent.getCreatedBy());
 
-    CaseEvent createdCaseEvent = null;
+    Category category = categoryRepo.findOne(caseEvent.getCategory());
+    validateCaseEventRequest(category, targetCase, newCase);
 
-    Case targetCase = caseRepo.findOne(caseEvent.getCaseFK());
-    log.debug("targetCase is {}", targetCase);
-    if (targetCase != null) {
-      Category category = categoryRepo.findOne(caseEvent.getCategory());
+    // save the case event to db
+    caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
+    CaseEvent createdCaseEvent = caseEventRepo.save(caseEvent);
+    log.debug("createdCaseEvent is {}", createdCaseEvent);
 
-      validateCaseEventRequest(category, targetCase, newCase);
+    // do we need to record a response?
+    recordCaseResponse(category, targetCase, timestamp);
 
-      // save the case event to db
-      caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
-      createdCaseEvent = caseEventRepo.save(caseEvent);
-      log.debug("createdCaseEvent is {}", createdCaseEvent);
+    // should we create an ad hoc action?
+    createAdHocAction(category, caseEvent);
 
-      // do we need to record a response?
-      recordCaseResponse(category, targetCase, timestamp);
+    transitionCaseGroupStatus(targetCase, caseEvent);
 
-      // should we create an ad hoc action?
-      createAdHocAction(category, caseEvent);
+    switch (caseEvent.getCategory()) {
 
-      transitionCaseGroupStatus(targetCase, caseEvent);
+      case RESPONDENT_ENROLED:
+        List<CaseGroup> caseGroups = caseGroupService.findCaseGroupsForExecutedCollectionExercises(targetCase);
+        processCaseCreationAndTransitionsDuringEnrolment(category, caseGroups, caseEvent, newCase);
+        break;
+      case SUCCESSFUL_RESPONSE_UPLOAD: case COMPLETED_BY_PHONE:
+        createNewCase(category, caseEvent, targetCase, newCase);
+        updateAllAssociatedBiCases(targetCase, category);
+        break;
+      case DISABLE_RESPONDENT_ENROLMENT:
+        effectTargetCaseStateTransition(category, targetCase);
+        List<Case> actionableCases = caseRepo.findByCaseGroupIdAndStateAndSampleUnitType(
+                targetCase.getCaseGroupId(), CaseState.ACTIONABLE, SampleUnitType.BI);
+        CaseGroup caseGroup = caseGroupRepo.findById(targetCase.getCaseGroupId());
 
-      switch (caseEvent.getCategory()) {
-
-        case RESPONDENT_ENROLED:
-          List<CaseGroup> caseGroups = caseGroupService.findCaseGroupsForExecutedCollectionExercises(targetCase);
-          processCaseCreationAndTransitionsDuringEnrolment(category, caseGroups, caseEvent, newCase);
-          break;
-        case SUCCESSFUL_RESPONSE_UPLOAD: case COMPLETED_BY_PHONE:
+        // Create a new case if no actionable case remain and casegroup is not in a complete state
+        if (actionableCases.isEmpty()
+                && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETE)
+                && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETEDBYPHONE)) {
           createNewCase(category, caseEvent, targetCase, newCase);
-          updateAllAssociatedBiCases(targetCase, category);
-          break;
-        case DISABLE_RESPONDENT_ENROLMENT:
-          effectTargetCaseStateTransition(category, targetCase);
-          List<Case> actionableCases = caseRepo.findByCaseGroupIdAndStateAndSampleUnitType(
-                  targetCase.getCaseGroupId(), CaseState.ACTIONABLE, SampleUnitType.BI);
-          CaseGroup caseGroup = caseGroupRepo.findById(targetCase.getCaseGroupId());
-
-          // Create a new case if no actionable case remain and casegroup is not in a complete state
-          if (actionableCases.isEmpty()
-                  && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETE)
-                  && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETEDBYPHONE)) {
-            createNewCase(category, caseEvent, targetCase, newCase);
-          }
-          break;
-        default:
-          createNewCase(category, caseEvent, targetCase, newCase);
-          effectTargetCaseStateTransition(category, targetCase);
-          break;
-      }
+        }
+        break;
+      case GENERATE_ENROLMENT_CODE:
+        if (!internetAccessCodeSvcClientService.isIacActive(targetCase.getIac())) {
+          targetCase.setIac(internetAccessCodeSvcClientService.generateIACs(1).get(0));
+          caseRepo.saveAndFlush(targetCase);
+        }
+      default:
+        createNewCase(category, caseEvent, targetCase, newCase);
+        effectTargetCaseStateTransition(category, targetCase);
+        break;
     }
 
     return createdCaseEvent;

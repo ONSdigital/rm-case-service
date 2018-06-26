@@ -33,15 +33,20 @@ import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 @Service
 public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCodeSvcClientService {
 
-  @Autowired
   private AppConfig appConfig;
 
-  @Autowired
   private RestTemplate restTemplate;
 
-  @Qualifier("iacServiceRestUtility")
-  @Autowired
   private RestUtility restUtility;
+
+  @Autowired
+  public InternetAccessCodeSvcClientServiceImpl(AppConfig appConfig,
+                                                RestTemplate restTemplate,
+                                                @Qualifier("iacServiceRestUtility") RestUtility restUtility) {
+    this.appConfig = appConfig;
+    this.restTemplate = restTemplate;
+    this.restUtility = restUtility;
+  }
 
   @Retryable(value = {RestClientException.class}, maxAttemptsExpression = "#{${retries.maxAttempts}}",
       backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
@@ -72,4 +77,16 @@ public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCod
     restTemplate.exchange(uriComponents.toUri(), HttpMethod.PUT, httpEntity, InternetAccessCodeDTO.class);
     log.debug("gone past the call to the IAC Svc...");
   }
+
+  @Retryable(value = {RestClientException.class}, maxAttemptsExpression = "#{${retries.maxAttempts}}",
+          backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
+  @Override
+  public Boolean isIacActive(String iac) {
+    UriComponents uriComponents = restUtility.createUriComponents(
+            appConfig.getInternetAccessCodeSvc().getIacGetPath(), null, iac);
+    ResponseEntity<InternetAccessCodeDTO> responseEntity = restTemplate.exchange(
+            uriComponents.toUri(), HttpMethod.GET, null, InternetAccessCodeDTO.class);
+    return responseEntity.getBody().getActive();
+  }
+
 }

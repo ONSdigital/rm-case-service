@@ -157,37 +157,6 @@ public final class CaseEndpoint implements CTPEndpoint {
   }
 
   /**
-   * the POST endpoint to generate and return a new iac
-   *
-   * @param collectionexerciseid to generate iac for
-   * @param ruref to generate iac for
-   * @return the case created
-   * @throws CTPException something went wrong
-   */
-  @RequestMapping(value = "/iac/{collectionexerciseid}/{ruref}", method = RequestMethod.POST)
-  public ResponseEntity<CaseDetailsDTO> generateNewIac(@PathVariable("collectionexerciseid") final UUID collectionexerciseid,
-                                                       @PathVariable("ruref") final String ruref)
-          throws CTPException {
-    log.info("Entering generateNewIac with collectionexerciseid {} and ruref {}", collectionexerciseid, ruref);
-
-    CaseGroup caseGroup = caseGroupService.findCaseGroupByCollectionExerciseIdAndRuRef(collectionexerciseid, ruref);
-    if (caseGroup == null) {
-      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-              String.format("CaseGroup not found for collectionexerciseid %s and ruref %s",
-                      collectionexerciseid, ruref));
-    }
-    List<Case> casesList = caseService.findCasesByCaseGroupFK(caseGroup.getCaseGroupPK());
-    Case latestCase = casesList.get(casesList.size() - 1);
-    List<String> iacs = internetAccessCodeSvcClientService.generateIACs(1);
-
-    SampleUnitBase sampleUnitBase = new SampleUnitBase(caseGroup.getSampleUnitRef(), Character.toString('B'),
-            caseGroup.getPartyId().toString(), latestCase.getCollectionInstrumentId().toString());
-    Case newCase = caseService.generateNewCase(sampleUnitBase, caseGroup, iacs.get(0), latestCase.getActionPlanId());
-    log.info("Successfully created new case {}", newCase.getId());
-    return ResponseEntity.ok(buildDetailedCaseDTO(newCase, false, true));
-  }
-
-  /**
    * the GET endpoint to find cases by case group UUID
    *
    * @param casegroupId UUID to find by
@@ -252,8 +221,7 @@ public final class CaseEndpoint implements CTPEndpoint {
   public ResponseEntity<CreatedCaseEventDTO> createCaseEvent(@PathVariable("caseId") final UUID caseId,
                                       @RequestBody @Valid final CaseEventCreationRequestDTO caseEventCreationRequestDTO,
                                       BindingResult bindingResult) throws CTPException, InvalidRequestException {
-    log.info("Entering createCaseEvent with caseId {} and requestObject {}", caseId, caseEventCreationRequestDTO);
-
+    log.info("Case event received, caseId: {}", caseId);
     if (bindingResult.hasErrors()) {
       throw new InvalidRequestException("Binding errors for case event creation: ", bindingResult);
     }
@@ -335,6 +303,6 @@ public final class CaseEndpoint implements CTPEndpoint {
     caseEvent.setCreatedBy(Constants.SYSTEM);
     caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
     caseEvent.setDescription(cat.getShortDescription());
-    caseService.createCaseEvent(caseEvent, caseObj);
+    caseService.createCaseEvent(caseEvent, null);
   }
 }

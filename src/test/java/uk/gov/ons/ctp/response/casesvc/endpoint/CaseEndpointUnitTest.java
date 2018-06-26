@@ -641,41 +641,4 @@ public final class CaseEndpointUnitTest {
    CaseEventCreationRequestDTO caseEventDTO = new CaseEventCreationRequestDTO();
    caseEndpoint.createCaseEvent(CASE1_ID, caseEventDTO, bindingResult);
   }
-
-  /**
-   * Tests if new code is generated from the endpoint
-   */
-  @Test
-  public void verifyGenerateNewIac() throws Exception {
-    when(caseGroupService.findCaseGroupByCollectionExerciseIdAndRuRef(any(), any())).thenReturn(caseGroupResults.get(0));
-    when(caseService.findCasesByCaseGroupFK(any())).thenReturn(caseResults);
-    when(internetAccessCodeSvcClientService.generateIACs(1)).thenReturn(IACList);
-    when(caseService.generateNewCase(any(), any(), any(), any())).thenReturn(caseResults.get(0));
-
-    String postUrl = String.format("/cases/iac/%s/%s", CASE1_CASEGROUP_COLLECTION_EXERCISE_ID, CASE1_CASEGROUP_SAMPLE_UNIT_REF);
-    ResultActions actions = mockMvc.perform(postJson(postUrl, ""));
-
-    actions.andExpect(status().isOk());
-    actions.andExpect(jsonPath("$.iac", is(caseResults.get(0).getIac())));
-  }
-
-  /**
-   * Tests if no caseGroup is found for ce_id and ru_ref that Exception is thrown
-   * @throws Exception exception thrown
-   */
-  @Test
-  public void verifyNoCaseGroupThrowsException() throws Exception {
-    when(caseGroupService.findCaseGroupByCollectionExerciseIdAndRuRef(any(), any())).thenReturn(null);
-
-    String postUrl = String.format("/cases/iac/%s/%s", CASE1_CASEGROUP_COLLECTION_EXERCISE_ID, CASE1_CASEGROUP_SAMPLE_UNIT_REF);
-    ResultActions actions = mockMvc.perform(postJson(postUrl, ""));
-
-    actions.andExpect(status().isNotFound());
-    actions.andExpect(handler().handlerType(CaseEndpoint.class));
-    actions.andExpect(handler().methodName("generateNewIac"));
-    actions.andExpect(jsonPath("$.error.code",
-            is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
-    actions.andExpect(jsonPath("$.error.timestamp",
-            isA(String.class)));
-  }
 }
