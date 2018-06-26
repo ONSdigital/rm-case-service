@@ -37,8 +37,7 @@ public class ActionSvcClientServiceImpl implements ActionSvcClientService {
 
     log.debug("about to post to the Action SVC with {}", actionDTO);
     UriComponents uriComponents =
-        restUtility.createUriComponents(appConfig.getActionSvc().getActionsPath(),
-            null);
+        restUtility.createUriComponents(appConfig.getActionSvc().getActionsPath(), null);
     restTemplate.exchange(uriComponents.toUri(), HttpMethod.POST, httpEntity, ActionDTO.class);
   }
 }
