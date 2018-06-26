@@ -162,6 +162,12 @@ public class CaseServiceImpl implements CaseService {
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
   @Override
+  public CaseEvent createCaseEvent(final CaseEvent caseEvent, final Case newCase, final Case targetCase) throws CTPException {
+    return createCaseEvent(caseEvent, newCase, DateTimeUtil.nowUTC(), targetCase);
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
+  @Override
   public CaseEvent createCaseEvent(final CaseEvent caseEvent, final Case newCase, final Timestamp timestamp) throws CTPException {
     log.info("Creating case event, casePK={}, category={}, subCategory={}, createdBy={}",
             caseEvent.getCaseFK(),

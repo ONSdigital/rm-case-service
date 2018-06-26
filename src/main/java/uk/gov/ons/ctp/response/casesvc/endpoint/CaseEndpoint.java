@@ -107,15 +107,13 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @param caseevents flag used to return or not CaseEvents
    * @param iac flag used to return or not the iac
    * @return the cases found
-   * @throws CTPException something went wrong
    */
   @RequestMapping(value = "/partyid/{partyId}", method = RequestMethod.GET)
   public ResponseEntity<List<CaseDetailsDTO>> findCasesByPartyId(
           @PathVariable("partyId") final UUID partyId,
           @RequestParam(value = "caseevents", required = false)
                   boolean caseevents,
-          @RequestParam(value = "iac", required = false) boolean iac)
-          throws CTPException {
+          @RequestParam(value = "iac", required = false) boolean iac) {
     log.info("Entering findCasesByPartyId with {}", partyId);
     List<Case> casesList = caseService.findCasesByPartyId(partyId);
 
@@ -145,15 +143,35 @@ public final class CaseEndpoint implements CTPEndpoint {
                                          @RequestParam(value = "iac", required = false) final boolean iacFlag)
           throws CTPException {
     log.info("Entering findCaseByIac with {}", iac);
-    Case caseObj = caseService.findCaseByIac(iac);
-    if (caseObj == null) {
+    Case targetCase = caseService.findCaseByIac(iac);
+    if (targetCase == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
               String.format("%s iac %s", ERRORMSG_CASENOTFOUND, iac));
     }
 
-    createNewEventForAccessCodeAuthAttempt(caseObj);
+    createNewEventForAccessCodeAuthAttempt(targetCase);
 
-    return ResponseEntity.ok(buildDetailedCaseDTO(caseObj, caseevents, iacFlag));
+    return ResponseEntity.ok(buildDetailedCaseDTO(targetCase, caseevents, iacFlag));
+  }
+
+  /**
+   * Creates a new event for the Access Code Authorisation Attempt
+   * @param targetCase Case Object for event to be created
+   * @throws CTPException if IAC not found
+   */
+  private void createNewEventForAccessCodeAuthAttempt(Case targetCase) throws CTPException {
+    Category cat = categoryService.findCategory(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
+    if (cat == null) {
+      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, CATEGORY_ACCESS_CODE_AUTHENTICATION_ATTEMPT_NOT_FOUND);
+    }
+
+    CaseEvent caseEvent = new CaseEvent();
+    caseEvent.setCaseFK(targetCase.getCasePK());
+    caseEvent.setCategory(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
+    caseEvent.setCreatedBy(Constants.SYSTEM);
+    caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
+    caseEvent.setDescription(cat.getShortDescription());
+    caseService.createCaseEvent(caseEvent, null, targetCase);
   }
 
   /**
@@ -221,34 +239,38 @@ public final class CaseEndpoint implements CTPEndpoint {
   public ResponseEntity<CreatedCaseEventDTO> createCaseEvent(@PathVariable("caseId") final UUID caseId,
                                       @RequestBody @Valid final CaseEventCreationRequestDTO caseEventCreationRequestDTO,
                                       BindingResult bindingResult) throws CTPException, InvalidRequestException {
-    log.info("Case event received, caseId: {}", caseId);
     if (bindingResult.hasErrors()) {
       throw new InvalidRequestException("Binding errors for case event creation: ", bindingResult);
     }
 
     CaseEvent caseEvent = mapperFacade.map(caseEventCreationRequestDTO, CaseEvent.class);
-    Case caseFound = caseService.findCaseById(caseId);
-    log.debug("caseFound is {}", caseFound);
-    if (caseFound == null) {
+
+    // Find target case and add to event
+    Case targetCase = caseService.findCaseById(caseId);
+    if (targetCase == null) {
       throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
           String.format(CASE_ID, ERRORMSG_CASENOTFOUND, caseId));
     }
-    caseEvent.setCaseFK(caseFound.getCasePK());
+    caseEvent.setCaseFK(targetCase.getCasePK());
 
-    Case caze = null;
-    if (caseEventCreationRequestDTO.getPartyId() != null) {
-      caze = new Case();
-      caze.setPartyId(caseEventCreationRequestDTO.getPartyId());
-    }
-
+    // If category has a new sample unit type then a party id must be provided in the case event
     Category category = categoryService.findCategory(caseEvent.getCategory());
-    log.debug("category is {}", category);
-    if (category.getNewCaseSampleUnitType() != null && caze == null) {
-      throw new CTPException(CTPException.Fault.VALIDATION_FAILED,
-          String.format(EVENT_REQUIRES_NEW_CASE, caseId));
+    if (category.getNewCaseSampleUnitType() != null && caseEventCreationRequestDTO.getPartyId() == null) {
+      throw new CTPException(CTPException.Fault.VALIDATION_FAILED, String.format(EVENT_REQUIRES_NEW_CASE, caseId));
     }
 
-    CaseEvent createdCaseEvent = caseService.createCaseEvent(caseEvent, caze);
+    // Create new case if required
+    // NOTE this isn't an ideal point to do this,
+    // however, we will not be creating new cases from case events when BI cases are removed
+    Case newCase;
+    if (category.getNewCaseSampleUnitType() != null) {
+      newCase = new Case();
+      newCase.setPartyId(caseEventCreationRequestDTO.getPartyId());
+    } else {
+      newCase = null;
+    }
+
+    CaseEvent createdCaseEvent = caseService.createCaseEvent(caseEvent, newCase, targetCase);
 
     CreatedCaseEventDTO mappedCaseEvent = mapperFacade.map(createdCaseEvent, CreatedCaseEventDTO.class);
     mappedCaseEvent.setCaseId(caseId);
@@ -284,25 +306,5 @@ public final class CaseEndpoint implements CTPEndpoint {
     }
 
     return caseDetailsDTO;
-  }
-
-  /**
-   * Creates a new event for the Access Code Authorisation Attempt
-   * @param caseObj Case Object for event to be created
-   * @throws CTPException if IAC not found
-   */
-  private void createNewEventForAccessCodeAuthAttempt(Case caseObj) throws CTPException {
-    Category cat = categoryService.findCategory(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
-    if (cat == null) {
-      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, CATEGORY_ACCESS_CODE_AUTHENTICATION_ATTEMPT_NOT_FOUND);
-    }
-
-    CaseEvent caseEvent = new CaseEvent();
-    caseEvent.setCaseFK(caseObj.getCasePK());
-    caseEvent.setCategory(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
-    caseEvent.setCreatedBy(Constants.SYSTEM);
-    caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
-    caseEvent.setDescription(cat.getShortDescription());
-    caseService.createCaseEvent(caseEvent, null);
   }
 }

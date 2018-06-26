@@ -136,7 +136,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
             @RequestBody CaseGroupEvent caseGroupEvent)
             throws CTPException {
         String event = caseGroupEvent.getEvent();
-        log.info("Entering changeCaseGroupStatus with collectionExerciseId {}, ruRef {}, caseGroupEvent {}",
+        log.info("Updating case group status, collectionExerciseId: {}, ruRef: {}, caseGroupEvent: {}",
                 collectionExerciseId, ruRef, event);
 
         if (!isValidEvent(event)) {

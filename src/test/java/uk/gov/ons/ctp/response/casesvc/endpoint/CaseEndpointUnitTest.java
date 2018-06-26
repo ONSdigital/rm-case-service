@@ -23,7 +23,6 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
-import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitBase;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
@@ -47,6 +46,7 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
@@ -433,7 +433,8 @@ public final class CaseEndpointUnitTest {
 
     actions.andExpect(jsonPath("$.caseEvents", is(nullValue())));
 
-    verify(caseService).createCaseEvent(any(CaseEvent.class), any(Case.class));
+    verify(caseService, times(1))
+            .createCaseEvent(any(CaseEvent.class), any(Case.class), any(Case.class));
   }
 
   @Test
@@ -590,8 +591,10 @@ public final class CaseEndpointUnitTest {
    */
   @Test
   public void createCaseEventGoodJson() throws Exception {
-    when(categoryService.findCategory(CategoryName.RESPONDENT_ENROLED)).thenReturn(categoryResults.get(3));
-    when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class))).thenReturn(caseEventsResults.get(3));
+    when(categoryService.findCategory(CategoryName.RESPONDENT_ENROLED))
+            .thenReturn(categoryResults.get(3));
+    when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class), any(Case.class)))
+            .thenReturn(caseEventsResults.get(3));
     when(caseService.findCaseById(CASE9_ID)).thenReturn(caseResults.get(8));
 
     ResultActions actions = mockMvc.perform(postJson(String.format("/cases/%s/events", CASE9_ID), CASEEVENT_VALIDJSON));
@@ -603,7 +606,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.caseId", is(CASE9_ID.toString())));
     actions.andExpect(jsonPath("$.description", is(CASE9_DESCRIPTION)));
     actions.andExpect(jsonPath("$.createdBy", is(CASE9_CREATEDBY)));
-     actions.andExpect(jsonPath("$.createdDateTime", is(new DateMatcher(CASE_DATE_VALUE_1))));
+    actions.andExpect(jsonPath("$.createdDateTime", is(new DateMatcher(CASE_DATE_VALUE_1))));
     actions.andExpect(jsonPath("$.category", is(CASE9_CATEGORY)));
     actions.andExpect(jsonPath("$.partyId", is(CASE9_PARTYID.toString())));
     actions.andExpect(jsonPath("$.subCategory").doesNotExist());
@@ -617,8 +620,8 @@ public final class CaseEndpointUnitTest {
   public void createCaseEventGoodJsonButVersusIncorrectSampleUnitType() throws Exception {
     when(categoryService.findCategory(CategoryName.RESPONDENT_ENROLED)).thenReturn(categoryResults.get(3));
     when(caseService.findCaseById(CASE9_ID)).thenReturn(caseResults.get(8));
-    when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class))).thenThrow(new CTPException(
-            CTPException.Fault.VALIDATION_FAILED, OUR_EXCEPTION_MESSAGE));
+    when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class), any(Case.class)))
+            .thenThrow(new CTPException(CTPException.Fault.VALIDATION_FAILED, OUR_EXCEPTION_MESSAGE));
 
     ResultActions actions = mockMvc.perform(postJson(String.format("/cases/%s/events", CASE9_ID), CASEEVENT_VALIDJSON));
 
