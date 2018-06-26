@@ -22,7 +22,6 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
-import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitBase;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
@@ -33,7 +32,6 @@ import uk.gov.ons.ctp.response.casesvc.representation.CreatedCaseEventDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
-import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.utility.Constants;
 
 import javax.validation.Valid;
@@ -58,21 +56,21 @@ public final class CaseEndpoint implements CTPEndpoint {
 
   private static final String CASE_ID = "%s case id %s";
 
-  @Autowired
   private CaseGroupService caseGroupService;
-
-  @Autowired
   private CategoryService categoryService;
-
-  @Autowired
   private CaseService caseService;
-
-  @Autowired
-  private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
-
-  @Qualifier("caseSvcBeanMapper")
-  @Autowired
   private MapperFacade mapperFacade;
+
+  @Autowired
+  public CaseEndpoint(CaseGroupService caseGroupService,
+                      CategoryService categoryService,
+                      CaseService caseService,
+                      @Qualifier("caseSvcBeanMapper") MapperFacade mapperFacade) {
+    this.caseGroupService = caseGroupService;
+    this.categoryService = categoryService;
+    this.caseService = caseService;
+    this.mapperFacade = mapperFacade;
+  }
 
   /**
    * the GET endpoint to find a Case by UUID
