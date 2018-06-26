@@ -258,6 +258,63 @@
           <check />
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <version>0.23.0</version>
+        <executions>
+          <execution>
+            <id>pre-stop</id>
+            <goals>
+              <goal>stop</goal>
+            </goals>
+            <phase>pre-integration-test</phase>
+            <configuration>
+              <images>
+                <image>
+                  <external>
+                    <type>compose</type>
+                    <basedir>${project.basedir}</basedir>
+                  </external>
+                </image>
+              </images>
+            </configuration>
+          </execution>
+          <execution>
+            <id>start</id>
+            <goals>
+              <goal>start</goal>
+            </goals>
+            <configuration>
+              <showLogs>false</showLogs>
+              <images>
+                <image>
+                  <external>
+                    <type>compose</type>
+                    <basedir>${project.basedir}</basedir>
+                  </external>
+                </image>
+              </images>
+            </configuration>
+          </execution>
+          <execution>
+            <id>stop</id>
+            <goals>
+              <goal>stop</goal>
+            </goals>
+            <configuration>
+              <images>
+                <image>
+                  <external>
+                    <type>compose</type>
+                    <basedir>${project.basedir}</basedir>
+                  </external>
+                </image>
+              </images>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
     <resources>
       <resource>
