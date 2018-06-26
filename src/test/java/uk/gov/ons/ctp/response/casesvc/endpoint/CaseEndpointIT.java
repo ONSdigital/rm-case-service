@@ -13,6 +13,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
+import uk.gov.ons.tools.rabbit.Rabbitmq;
+import uk.gov.ons.tools.rabbit.SimpleMessageSender;
+
+import java.util.concurrent.BlockingQueue;
 
 @Slf4j
 @ContextConfiguration
@@ -40,7 +44,24 @@ public class CaseEndpointIT {
 
   @Test
   public void test() {
+    SimpleMessageSender sender = getMessageSender();
+    // sending message
 
+    String xml = "";
+
+    sender.sendMessage("collection-outbound-exchange", "Case.CaseDelivery.binding",
+                       xml);
+  }
+
+  /**
+   * Creates a new SimpleMessageSender based on the config in AppConfig
+   *
+   * @return a new SimpleMessageSender
+   */
+  private SimpleMessageSender getMessageSender() {
+    Rabbitmq config = this.appConfig.getRabbitmq();
+
+    return new SimpleMessageSender(config.getHost(), config.getPort(), config.getUsername(), config.getPassword());
   }
 
 }

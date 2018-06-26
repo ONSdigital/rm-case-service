@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import lombok.Data;
 import net.sourceforge.cobertura.CoverageIgnore;
 import org.springframework.retry.annotation.EnableRetry;
+import  uk.gov.ons.tools.rabbit.Rabbitmq;
 
 /**
  * Application Config bean
@@ -24,4 +25,5 @@ public class AppConfig {
   private DataGrid dataGrid;
   private SwaggerSettings swaggerSettings;
   private ReportSettings reportSettings;
+  private Rabbitmq rabbitmq;
 }
