@@ -1,7 +1,10 @@
 package uk.gov.ons.ctp.response.casesvc.domain.model;
 
-import java.sql.Timestamp;
-import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -10,10 +13,8 @@ import javax.persistence.NamedStoredProcedureQuery;
 import javax.persistence.ParameterMode;
 import javax.persistence.StoredProcedureParameter;
 import javax.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.sql.Timestamp;
+import java.util.UUID;
 
 /** Domain entity representing the report table */
 @Entity
@@ -23,11 +24,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "report", schema = "casesvc")
 @NamedStoredProcedureQueries({
-    @NamedStoredProcedureQuery(
+  @NamedStoredProcedureQuery(
       name = "CaseReport.chasingReport",
       procedureName = "casesvc.generate_response_chasing_report",
       parameters = {@StoredProcedureParameter(mode = ParameterMode.OUT, type = Boolean.class)}),
-    @NamedStoredProcedureQuery(
+  @NamedStoredProcedureQuery(
       name = "CaseReport.caseEventsReport",
       procedureName = "casesvc.generate_case_events_report",
       parameters = {@StoredProcedureParameter(mode = ParameterMode.OUT, type = Boolean.class)})
