@@ -49,7 +49,7 @@ public class CaseEndpointIT {
 
     String xml = "";
 
-    sender.sendMessage("collection-outbound-exchange", "Case.CaseDelivery.binding",
+    sender.sendMessage("collection-inbound-exchange", "Case.CaseDelivery.binding",
                        xml);
   }
 
