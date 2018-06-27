@@ -15,9 +15,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
+import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitBase;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.tools.rabbit.Rabbitmq;
+import uk.gov.ons.tools.rabbit.SimpleMessageBase;
+import uk.gov.ons.tools.rabbit.SimpleMessageListener;
 import uk.gov.ons.tools.rabbit.SimpleMessageSender;
 
 import javax.xml.XMLConstants;
@@ -37,6 +40,8 @@ import java.util.concurrent.BlockingQueue;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
 
 @Slf4j
 @ContextConfiguration
@@ -68,8 +73,9 @@ public class CaseEndpointIT {
     SimpleMessageSender sender = getMessageSender();
 
     SampleUnitParent sampleUnit = new SampleUnitParent();
+    UUID sampleUnitId = UUID.randomUUID();
     sampleUnit.setCollectionExerciseId(UUID.randomUUID().toString());
-    sampleUnit.setId(UUID.randomUUID().toString());
+    sampleUnit.setId(sampleUnitId.toString());
     sampleUnit.setActionPlanId(UUID.randomUUID().toString());
     sampleUnit.setSampleUnitRef("LMS0001");
     sampleUnit.setCollectionInstrumentId(UUID.randomUUID().toString());
@@ -82,7 +88,19 @@ public class CaseEndpointIT {
 
     sender.sendMessage("collection-inbound-exchange", "Case.CaseDelivery.binding", xml);
 
-    Thread.sleep(10_000_000);
+    SimpleMessageListener listener = getMessageListener();
+    BlockingQueue<String> queue = listener.listen(SimpleMessageBase.ExchangeType.Direct,
+                                                  "case-outbound-exchange", "Case.LifecycleEvents.binding");
+
+    String message = queue.take();
+    log.info("message = " + message);
+    assertNotNull("Timeout waiting for message to arrive in Case.LifecycleEvents", message);
+
+    jaxbContext = JAXBContext.newInstance(CaseNotification.class);
+    CaseNotification caseNotification = (CaseNotification) jaxbContext.createUnmarshaller()
+                                                                      .unmarshal(new ByteArrayInputStream(message.getBytes()));
+
+    assertThat(caseNotification.getSampleUnitId()).isEqualTo(sampleUnitId.toString());
   }
 
   /**
@@ -119,6 +137,17 @@ public class CaseEndpointIT {
 
     return new SimpleMessageSender(
         config.getHost(), config.getPort(), config.getUsername(), config.getPassword());
+  }
+
+  /**
+   * Creates a new SimpleMessageListener based on the config in AppConfig
+   *
+   * @return a new SimpleMessageListener
+   */
+  private SimpleMessageListener getMessageListener() {
+    Rabbitmq config = this.appConfig.getRabbitmq();
+
+    return new SimpleMessageListener(config.getHost(), config.getPort(), config.getUsername(), config.getPassword());
   }
 
   private void createIACStub() throws IOException {
