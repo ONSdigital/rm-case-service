@@ -6,9 +6,6 @@ import java.util.UUID;
 
 public interface CaseGroupAuditService {
 
-    /**
-     * Updates the audit table for any alterations to the casegroupstatus for any casegroup
-     */
-    void updateAuditTable(final CaseGroup caseGroup, final UUID partyId) ;
-
+  /** Updates the audit table for any alterations to the casegroupstatus for any casegroup */
+  void updateAuditTable(final CaseGroup caseGroup, final UUID partyId);
 }

@@ -12,8 +12,8 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 
 /**
- * The CaseGroup Service interface defines all business behaviours for operations
- * on the CaseGroup entity model.
+ * The CaseGroup Service interface defines all business behaviours for operations on the CaseGroup
+ * entity model.
  */
 public interface CaseGroupService extends CTPService {
 
@@ -41,24 +41,24 @@ public interface CaseGroupService extends CTPService {
    */
   List<CaseGroup> findCaseGroupByPartyId(UUID id);
 
-  CaseGroup findCaseGroupByCollectionExerciseIdAndRuRef(final UUID collectionExerciseId, final String ruRef);
+  CaseGroup findCaseGroupByCollectionExerciseIdAndRuRef(
+      final UUID collectionExerciseId, final String ruRef);
 
   /**
    * For a given event, this will update and audit a transition
+   *
    * @param caseGroup Case Group to transition
    * @param categoryName The name of the event for a transition
    * @param partyId party ID for auditing the transition
    * @throws CTPException if transition is not executed
    */
-  void transitionCaseGroupStatus(CaseGroup caseGroup, CategoryDTO.CategoryName categoryName,
-                                 UUID partyId) throws CTPException;
+  void transitionCaseGroupStatus(
+      CaseGroup caseGroup, CategoryDTO.CategoryName categoryName, UUID partyId) throws CTPException;
 
   /**
-   *
    * @param targetCase the case for which related case groups should be found
    * @return a list of case groups related to the target by party and collection exercise
    * @throws CTPException thrown if an error occurs
    */
   List<CaseGroup> findCaseGroupsForExecutedCollectionExercises(Case targetCase) throws CTPException;
-
 }

@@ -16,35 +16,37 @@ import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.util.UUID;
 
-/**
- * Domain entity representing the report table
- */
+/** Domain entity representing the report table */
 @Entity
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "report", schema = "casesvc")
-@NamedStoredProcedureQueries(
-        {@NamedStoredProcedureQuery(name = "CaseReport.chasingReport",
-                procedureName = "casesvc.generate_response_chasing_report",
-                parameters = {@StoredProcedureParameter(mode = ParameterMode.OUT, type = Boolean.class)}),
-        @NamedStoredProcedureQuery(name = "CaseReport.caseEventsReport",
-                procedureName = "casesvc.generate_case_events_report",
-                parameters = {@StoredProcedureParameter(mode = ParameterMode.OUT, type = Boolean.class)})})
+@NamedStoredProcedureQueries({
+  @NamedStoredProcedureQuery(
+      name = "CaseReport.chasingReport",
+      procedureName = "casesvc.generate_response_chasing_report",
+      parameters = {@StoredProcedureParameter(mode = ParameterMode.OUT, type = Boolean.class)}),
+  @NamedStoredProcedureQuery(
+      name = "CaseReport.caseEventsReport",
+      procedureName = "casesvc.generate_case_events_report",
+      parameters = {@StoredProcedureParameter(mode = ParameterMode.OUT, type = Boolean.class)})
+})
 public class CaseReport {
-    @Id @Column(name = "id")
-    private UUID id;
+  @Id
+  @Column(name = "id")
+  private UUID id;
 
-    @Column(name = "reportpk")
-    private Integer reportPK;
+  @Column(name = "reportpk")
+  private Integer reportPK;
 
-    @Column(name = "reporttypefk")
-    private String reportTypeFK;
+  @Column(name = "reporttypefk")
+  private String reportTypeFK;
 
-    @Column(name = "contents")
-    private String contents;
+  @Column(name = "contents")
+  private String contents;
 
-    @Column(name = "createddatetime")
-    private Timestamp createdDateTime;
+  @Column(name = "createddatetime")
+  private Timestamp createdDateTime;
 }

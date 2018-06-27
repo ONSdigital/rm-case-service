@@ -39,9 +39,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * Test the case distributor
- */
+/** Test the case distributor */
 @RunWith(MockitoJUnitRunner.class)
 public class CaseDistributorTest {
 
@@ -53,41 +51,31 @@ public class CaseDistributorTest {
 
   private List<Case> cases;
 
-  @Spy
-  private AppConfig appConfig = new AppConfig();
+  @Spy private AppConfig appConfig = new AppConfig();
 
-  @Mock
-  private PlatformTransactionManager transactionManager;  // required by transactionTemplate
+  @Mock private PlatformTransactionManager transactionManager; // required by transactionTemplate
 
-  @Mock
-  private TransactionTemplate transactionTemplate;
+  @Mock private TransactionTemplate transactionTemplate;
 
-  @Mock
-  private DistributedListManager<Integer> caseDistributionListManager;
+  @Mock private DistributedListManager<Integer> caseDistributionListManager;
 
-  @Mock
-  private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
+  @Mock private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
 
-  @Mock
-  private CaseRepository caseRepo;
+  @Mock private CaseRepository caseRepo;
 
-  @Mock
-  private CaseService caseService;
+  @Mock private CaseService caseService;
 
-  @Mock
-  private CaseNotificationPublisher notificationPublisher;
+  @Mock private CaseNotificationPublisher notificationPublisher;
 
-  @Mock
-  private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
+  @Mock private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
-  @Mock
-  private EventPublisher eventExchange;
+  @Mock private EventPublisher eventExchange;
 
-  @InjectMocks
-  private CaseDistributor caseDistributor;
+  @InjectMocks private CaseDistributor caseDistributor;
 
   /**
-   * All of these tests require the mocked repos to respond with predictable data loaded from test fixture json files.
+   * All of these tests require the mocked repos to respond with predictable data loaded from test
+   * fixture json files.
    *
    * @throws Exception exception thrown
    */
@@ -115,7 +103,8 @@ public class CaseDistributorTest {
   @SuppressWarnings("unchecked")
   @Test
   public void testFailRetrievingCases() throws LockingException {
-    when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class)))
+    when(caseRepo.findByStateInAndCasePKNotIn(
+            any(List.class), any(List.class), any(Pageable.class)))
         .thenThrow(new RuntimeException("Database access failed"));
 
     CaseDistributionInfo info = caseDistributor.distribute();
@@ -124,11 +113,10 @@ public class CaseDistributorTest {
 
     verify(internetAccessCodeSvcClientService, times(0)).generateIACs(any(Integer.class));
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-    verify(caseService, times(0)).prepareCaseNotification(any(Case.class),
-            any(CaseDTO.CaseEvent.class));
+    verify(caseService, times(0))
+        .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
-            any(Boolean.class));
+    verify(caseDistributionListManager, times(1)).deleteList(any(String.class), any(Boolean.class));
     verify(caseDistributionListManager, times(0)).unlockContainer();
   }
 
@@ -141,7 +129,9 @@ public class CaseDistributorTest {
   @Test
   public void testRetrieveZeroCase() throws LockingException {
     List<Case> cazes = new ArrayList<>();
-    when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class))).thenReturn(cazes);
+    when(caseRepo.findByStateInAndCasePKNotIn(
+            any(List.class), any(List.class), any(Pageable.class)))
+        .thenReturn(cazes);
 
     CaseDistributionInfo info = caseDistributor.distribute();
     assertEquals(0, info.getCasesFailed());
@@ -149,11 +139,10 @@ public class CaseDistributorTest {
 
     verify(internetAccessCodeSvcClientService, times(0)).generateIACs(any(Integer.class));
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-    verify(caseService, times(0)).prepareCaseNotification(any(Case.class),
-            any(CaseDTO.CaseEvent.class));
+    verify(caseService, times(0))
+        .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
-            any(Boolean.class));
+    verify(caseDistributionListManager, times(1)).deleteList(any(String.class), any(Boolean.class));
     verify(caseDistributionListManager, times(1)).unlockContainer();
   }
 
@@ -165,10 +154,11 @@ public class CaseDistributorTest {
   @SuppressWarnings("unchecked")
   @Test
   public void testFailIAC() throws LockingException {
-    when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class)))
-            .thenReturn(cases);
-    when(internetAccessCodeSvcClientService.generateIACs(any(Integer.class))).thenThrow(
-            new RuntimeException("IAC access failed"));
+    when(caseRepo.findByStateInAndCasePKNotIn(
+            any(List.class), any(List.class), any(Pageable.class)))
+        .thenReturn(cases);
+    when(internetAccessCodeSvcClientService.generateIACs(any(Integer.class)))
+        .thenThrow(new RuntimeException("IAC access failed"));
 
     CaseDistributionInfo info = caseDistributor.distribute();
     assertEquals(0, info.getCasesFailed());
@@ -176,11 +166,10 @@ public class CaseDistributorTest {
 
     verify(internetAccessCodeSvcClientService, times(1)).generateIACs(any(Integer.class));
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-    verify(caseService, times(0)).prepareCaseNotification(any(Case.class),
-            any(CaseDTO.CaseEvent.class));
+    verify(caseService, times(0))
+        .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
-            any(Boolean.class));
+    verify(caseDistributionListManager, times(1)).deleteList(any(String.class), any(Boolean.class));
     verify(caseDistributionListManager, times(0)).unlockContainer();
   }
 
@@ -193,8 +182,9 @@ public class CaseDistributorTest {
   @SuppressWarnings("unchecked")
   @Test
   public void testHappyPath() throws CTPException, LockingException {
-    when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class)))
-            .thenReturn(cases);
+    when(caseRepo.findByStateInAndCasePKNotIn(
+            any(List.class), any(List.class), any(Pageable.class)))
+        .thenReturn(cases);
 
     List<String> iacs = new ArrayList<>();
     for (int i = 0; i < 5; i++) {
@@ -202,15 +192,17 @@ public class CaseDistributorTest {
     }
     when(internetAccessCodeSvcClientService.generateIACs(any(Integer.class))).thenReturn(iacs);
 
-    when(caseSvcStateTransitionManager.transition(CaseState.SAMPLED_INIT, CaseDTO.CaseEvent.ACTIVATED)).
-            thenReturn(CaseState.ACTIONABLE);
-    when(caseSvcStateTransitionManager.transition(CaseState.REPLACEMENT_INIT, CaseDTO.CaseEvent.REPLACED)).
-            thenReturn(CaseState.ACTIONABLE);
+    when(caseSvcStateTransitionManager.transition(
+            CaseState.SAMPLED_INIT, CaseDTO.CaseEvent.ACTIVATED))
+        .thenReturn(CaseState.ACTIONABLE);
+    when(caseSvcStateTransitionManager.transition(
+            CaseState.REPLACEMENT_INIT, CaseDTO.CaseEvent.REPLACED))
+        .thenReturn(CaseState.ACTIONABLE);
 
     CaseNotification caseNotification = new CaseNotification();
     caseNotification.setCaseId(cases.get(0).getId().toString());
-    when(caseService.prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class))).
-            thenReturn(caseNotification);
+    when(caseService.prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class)))
+        .thenReturn(caseNotification);
 
     CaseDistributionInfo info = caseDistributor.distribute();
     assertEquals(0, info.getCasesFailed());
@@ -218,18 +210,18 @@ public class CaseDistributorTest {
 
     verify(internetAccessCodeSvcClientService, times(1)).generateIACs(any(Integer.class));
     verify(caseRepo, times(5)).saveAndFlush(any(Case.class));
-    verify(caseService, times(5)).prepareCaseNotification(any(Case.class),
-            any(CaseDTO.CaseEvent.class));
+    verify(caseService, times(5))
+        .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, times(5)).sendNotification(any(CaseNotification.class));
-    verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
-            any(Boolean.class));
+    verify(caseDistributionListManager, times(1)).deleteList(any(String.class), any(Boolean.class));
     verify(caseDistributionListManager, times(0)).unlockContainer();
   }
 
   /**
    * Test where we retrieve 6 cases but only 4 IACs correctly.
    *
-   * 5 Cases have a correct state (SAMPLED_INIT or REPLACEMENT_INIT). 1 case has an incorrect state (ACTIONABLE).
+   * <p>5 Cases have a correct state (SAMPLED_INIT or REPLACEMENT_INIT). 1 case has an incorrect
+   * state (ACTIONABLE).
    *
    * @throws CTPException when caseSvcStateTransitionManager.transition does
    * @throws LockingException when caseDistributionListManager does
@@ -237,8 +229,9 @@ public class CaseDistributorTest {
   @SuppressWarnings("unchecked")
   @Test
   public void testWeDontRetrieveEnoughIACs() throws CTPException, LockingException {
-    when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class)))
-            .thenReturn(cases);
+    when(caseRepo.findByStateInAndCasePKNotIn(
+            any(List.class), any(List.class), any(Pageable.class)))
+        .thenReturn(cases);
 
     List<String> iacs = new ArrayList<>();
     for (int i = 0; i < 4; i++) {
@@ -252,17 +245,16 @@ public class CaseDistributorTest {
 
     verify(internetAccessCodeSvcClientService, times(1)).generateIACs(any(Integer.class));
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-    verify(caseService, times(0)).prepareCaseNotification(any(Case.class),
-            any(CaseDTO.CaseEvent.class));
+    verify(caseService, times(0))
+        .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
-            any(Boolean.class));
+    verify(caseDistributionListManager, times(1)).deleteList(any(String.class), any(Boolean.class));
     verify(caseDistributionListManager, times(0)).unlockContainer();
   }
 
   /**
-   * Test where we retrieve 5 cases (all at SAMPLED_INIT or REPLACEMENT_INIT) and 5 IACs correctly. But, on processing,
-   * 1 case out of 5 is throwing an exception.
+   * Test where we retrieve 5 cases (all at SAMPLED_INIT or REPLACEMENT_INIT) and 5 IACs correctly.
+   * But, on processing, 1 case out of 5 is throwing an exception.
    *
    * @throws CTPException when caseSvcStateTransitionManager.transition does
    * @throws LockingException when caseDistributionListManager does
@@ -270,7 +262,8 @@ public class CaseDistributorTest {
   @SuppressWarnings("unchecked")
   @Test
   public void testDBExceptionThrownDuringProcessing() throws CTPException, LockingException {
-    when(caseRepo.findByStateInAndCasePKNotIn(any(List.class), any(List.class), any(Pageable.class)))
+    when(caseRepo.findByStateInAndCasePKNotIn(
+            any(List.class), any(List.class), any(Pageable.class)))
         .thenReturn(cases);
 
     List<String> iacs = new ArrayList<>();
@@ -279,12 +272,15 @@ public class CaseDistributorTest {
     }
     when(internetAccessCodeSvcClientService.generateIACs(any(Integer.class))).thenReturn(iacs);
 
-    when(caseSvcStateTransitionManager.transition(CaseState.SAMPLED_INIT, CaseDTO.CaseEvent.ACTIVATED)).
-        thenReturn(CaseState.ACTIONABLE);
-    when(caseSvcStateTransitionManager.transition(CaseState.REPLACEMENT_INIT, CaseDTO.CaseEvent.REPLACED)).
-        thenReturn(CaseState.ACTIONABLE);
+    when(caseSvcStateTransitionManager.transition(
+            CaseState.SAMPLED_INIT, CaseDTO.CaseEvent.ACTIVATED))
+        .thenReturn(CaseState.ACTIONABLE);
+    when(caseSvcStateTransitionManager.transition(
+            CaseState.REPLACEMENT_INIT, CaseDTO.CaseEvent.REPLACED))
+        .thenReturn(CaseState.ACTIONABLE);
 
-    when(caseRepo.saveAndFlush(any(Case.class))).thenThrow(new RuntimeException("The DB is KO at the moment."));
+    when(caseRepo.saveAndFlush(any(Case.class)))
+        .thenThrow(new RuntimeException("The DB is KO at the moment."));
 
     CaseDistributionInfo info = caseDistributor.distribute();
     assertEquals(5, info.getCasesFailed());
@@ -292,11 +288,10 @@ public class CaseDistributorTest {
 
     verify(internetAccessCodeSvcClientService, times(1)).generateIACs(any(Integer.class));
     verify(caseRepo, times(5)).saveAndFlush(any(Case.class));
-    verify(caseService, times(0)).prepareCaseNotification(any(Case.class),
-        any(CaseDTO.CaseEvent.class));
+    verify(caseService, times(0))
+        .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(caseDistributionListManager, times(1)).deleteList(any(String.class),
-        any(Boolean.class));
+    verify(caseDistributionListManager, times(1)).deleteList(any(String.class), any(Boolean.class));
     verify(caseDistributionListManager, times(0)).unlockContainer();
   }
 }

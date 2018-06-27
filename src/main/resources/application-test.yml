@@ -4,7 +4,6 @@ liquibase:
 spring:
   datasource:
     url: jdbc:postgresql://localhost:15432/postgres
-    platform: test
 
 survey-svc:
   connection-config:
@@ -36,3 +35,12 @@ party-svc:
     connection-config:
         port: 18002
 
+internet-access-code-svc:
+  iac-post-path: /iacs
+  iac-put-path: /iacs/{iac}
+  connection-config:
+    scheme: http
+    host: localhost
+    port: 18002
+    username: admin
+    password: secret

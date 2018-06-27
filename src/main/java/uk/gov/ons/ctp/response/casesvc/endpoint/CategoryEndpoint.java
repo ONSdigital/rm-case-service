@@ -20,17 +20,14 @@ import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * The REST endpoint controller for Category
- */
+/** The REST endpoint controller for Category */
 @RestController
 @RequestMapping(value = "/categories", produces = "application/json")
 @Slf4j
 public final class CategoryEndpoint implements CTPEndpoint {
   public static final String ERRORMSG_CATEGORYNOTFOUND = "Category not found for";
 
-  @Autowired
-  private CategoryService categoryService;
+  @Autowired private CategoryService categoryService;
 
   @Qualifier("caseSvcBeanMapper")
   @Autowired
@@ -44,17 +41,20 @@ public final class CategoryEndpoint implements CTPEndpoint {
    * @throws CTPException if category does not exist
    */
   @RequestMapping(value = "/name/{categoryName}", method = RequestMethod.GET)
-  public CategoryDTO findCategory(@PathVariable("categoryName") final String categoryName) throws CTPException {
+  public CategoryDTO findCategory(@PathVariable("categoryName") final String categoryName)
+      throws CTPException {
     log.info("Entering findCategory with categoryName {}", categoryName);
 
     Category category = null;
-    Optional<CategoryDTO.CategoryName> catTypeEnum = CategoryDTO.CategoryName.fromString(categoryName);
+    Optional<CategoryDTO.CategoryName> catTypeEnum =
+        CategoryDTO.CategoryName.fromString(categoryName);
     if (catTypeEnum.isPresent()) {
       category = categoryService.findCategory(catTypeEnum.get());
     }
     if (category == null) {
-      throw new CTPException(CTPException.Fault.RESOURCE_NOT_FOUND,
-              String.format("%s categoryName %s", ERRORMSG_CATEGORYNOTFOUND, categoryName));
+      throw new CTPException(
+          CTPException.Fault.RESOURCE_NOT_FOUND,
+          String.format("%s categoryName %s", ERRORMSG_CATEGORYNOTFOUND, categoryName));
     }
     return mapperFacade.map(category, CategoryDTO.class);
   }
@@ -68,11 +68,13 @@ public final class CategoryEndpoint implements CTPEndpoint {
    */
   @RequestMapping(method = RequestMethod.GET)
   public ResponseEntity<List<CategoryDTO>> findCategories(
-          @RequestParam(value = "role", required = false) final String role,
-          @RequestParam(value = "group", required = false) final String group) {
+      @RequestParam(value = "role", required = false) final String role,
+      @RequestParam(value = "group", required = false) final String group) {
     log.info("Entering findCategories with role {}", role);
     List<Category> categories = categoryService.findCategories(role, group);
     List<CategoryDTO> categoryDTOs = mapperFacade.mapAsList(categories, CategoryDTO.class);
-    return CollectionUtils.isEmpty(categoryDTOs) ? ResponseEntity.noContent().build() : ResponseEntity.ok(categoryDTOs);
+    return CollectionUtils.isEmpty(categoryDTOs)
+        ? ResponseEntity.noContent().build()
+        : ResponseEntity.ok(categoryDTOs);
   }
 }

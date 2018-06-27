@@ -12,11 +12,11 @@ import uk.gov.ons.ctp.response.casesvc.message.EventPublisher;
 @Slf4j
 public class EventPublisherImpl implements EventPublisher{
 
-  
+
   @Qualifier("amqpTemplate")
   @Autowired
   private RabbitTemplate rabbitTemplate;
-  
+
   @Override
   public void publishEvent(String event) {
     log.debug("Publish Event", event);

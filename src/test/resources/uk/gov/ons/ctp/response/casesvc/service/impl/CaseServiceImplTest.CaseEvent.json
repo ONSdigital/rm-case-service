@@ -1,57 +1,56 @@
 [
-{
-   "createdDateTime":1460736159699,
-   "caseEventPK":1,
-   "caseFK":2,
-   "category":"ONLINE_QUESTIONNAIRE_RESPONSE",
-   "subCategory":"subcat",
-   "createdBy":"me",
-   "description":"desc"
-},
-{
-   "createdDateTime":1460736159699,
-   "caseEventPK":2,
-   "caseFK":2,
-   "category":"CLASSIFICATION_INCORRECT",
-   "subCategory":"subcat",
-   "createdBy":"me",
-   "description":"desc"
-},
-{
-   "createdDateTime":1460736159699,
-   "caseEventPK":3,
-   "caseFK":2,
-   "category":"REFUSAL",
-   "subCategory":"subcat",
-   "createdBy":"me",
-   "description":"desc"
-},
-{
-   "createdDateTime":1460736159699,
-   "caseEventPK":4,
-   "caseFK":2,
-   "category":"UNDELIVERABLE",
-   "subCategory":"subcat",
-   "createdBy":"me",
-   "description":"desc"
-},
-{
-   "createdDateTime":1460736159699,
-   "caseEventPK":5,
-   "caseFK":1,
-   "category":"ONLINE_QUESTIONNAIRE_RESPONSE",
-   "subCategory":"subcat",
-   "createdBy":"me",
-   "description":"desc"
-},
-{
-   "createdDateTime":1460736159699,
-   "caseEventPK":6,
-   "caseFK":1,
-   "category":"TRANSLATION_ARABIC",
-   "subCategory":"subcat",
-   "createdBy":"me",
-   "description":"desc"
-}
-
+  {
+    "createdDateTime": 1460736159699,
+    "caseEventPK": 1,
+    "caseFK": 2,
+    "category": "ONLINE_QUESTIONNAIRE_RESPONSE",
+    "subCategory": "subcat",
+    "createdBy": "me",
+    "description": "desc"
+  },
+  {
+    "createdDateTime": 1460736159699,
+    "caseEventPK": 2,
+    "caseFK": 2,
+    "category": "CLASSIFICATION_INCORRECT",
+    "subCategory": "subcat",
+    "createdBy": "me",
+    "description": "desc"
+  },
+  {
+    "createdDateTime": 1460736159699,
+    "caseEventPK": 3,
+    "caseFK": 2,
+    "category": "REFUSAL",
+    "subCategory": "subcat",
+    "createdBy": "me",
+    "description": "desc"
+  },
+  {
+    "createdDateTime": 1460736159699,
+    "caseEventPK": 4,
+    "caseFK": 2,
+    "category": "UNDELIVERABLE",
+    "subCategory": "subcat",
+    "createdBy": "me",
+    "description": "desc"
+  },
+  {
+    "createdDateTime": 1460736159699,
+    "caseEventPK": 5,
+    "caseFK": 1,
+    "category": "ONLINE_QUESTIONNAIRE_RESPONSE",
+    "subCategory": "subcat",
+    "createdBy": "me",
+    "description": "desc"
+  },
+  {
+    "createdDateTime": 1460736159699,
+    "caseEventPK": 6,
+    "caseFK": 1,
+    "category": "TRANSLATION_ARABIC",
+    "subCategory": "subcat",
+    "createdBy": "me",
+    "description": "desc"
+  }
 ]

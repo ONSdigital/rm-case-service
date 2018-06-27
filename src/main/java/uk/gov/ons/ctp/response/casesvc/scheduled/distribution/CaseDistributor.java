@@ -31,15 +31,15 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 
 /**
- * This is the 'service' class that distributes cases to the action service. It has a number of injected beans,
- * including a RestClient, Repositories and the InstructionPublisher.
+ * This is the 'service' class that distributes cases to the action service. It has a number of
+ * injected beans, including a RestClient, Repositories and the InstructionPublisher.
  *
- * This class is scheduled to wake and looks for Cases in SAMPLED_INIT & REPLACEMENT_INIT states to send to the action
- * service. On each wake cycle, it fetches the first n cases, by createddatetime. It then fetches n IACs from the IAC
- * service and loops through those n cases to update each case with an IAC taken from the set of n codes and transitions
- * the case state to ACTIVE. It takes each case and constructs a notification message to send to the action service -
+ * <p>This class is scheduled to wake and looks for Cases in SAMPLED_INIT & REPLACEMENT_INIT states
+ * to send to the action service. On each wake cycle, it fetches the first n cases, by
+ * createddatetime. It then fetches n IACs from the IAC service and loops through those n cases to
+ * update each case with an IAC taken from the set of n codes and transitions the case state to
+ * ACTIVE. It takes each case and constructs a notification message to send to the action service -
  * when it has x notifications it publishes them.
- *
  */
 @CoverageIgnore
 @Component
@@ -49,41 +49,34 @@ public class CaseDistributor {
   private static final String CASE_DISTRIBUTOR_LIST_ID = "case";
 
   // this is a bit of a kludge - jpa does not like having an IN clause with an empty list
-  // it does not return results when you expect it to - so ... always have this in the list of excluded case ids
+  // it does not return results when you expect it to - so ... always have this in the list of
+  // excluded case ids
   private static final int IMPOSSIBLE_CASE_ID = Integer.MAX_VALUE;
 
-  @Autowired
-  private DistributedListManager<Integer> caseDistributionListManager;
+  @Autowired private DistributedListManager<Integer> caseDistributionListManager;
 
-  @Autowired
-  private AppConfig appConfig;
+  @Autowired private AppConfig appConfig;
 
   @Autowired
   private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
-  @Autowired
-  private CaseNotificationPublisher notificationPublisher;
+  @Autowired private CaseNotificationPublisher notificationPublisher;
 
-  @Autowired
-  private CaseRepository caseRepo;
+  @Autowired private CaseRepository caseRepo;
 
-  @Autowired
-  private CaseService caseService;
+  @Autowired private CaseService caseService;
 
-  @Autowired
-  private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
-  
-  @Autowired
-  private EventPublisher eventPublisher;
- // private EventExchange eventExchange;
+  @Autowired private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
+
+  @Autowired private EventPublisher eventPublisher;
+  // private EventExchange eventExchange;
 
   /**
-   * wake up on schedule and check for cases that are in INIT state - fetch IACs
-   * for them, adding the IAC to the case questionnaire, and send a notificaiton
-   * of the activation to the action service
+   * wake up on schedule and check for cases that are in INIT state - fetch IACs for them, adding
+   * the IAC to the case questionnaire, and send a notificaiton of the activation to the action
+   * service
    *
-   * @return the info for the health endpoint regarding the distribution just
-   *         performed
+   * @return the info for the health endpoint regarding the distribution just performed
    */
   public final CaseDistributionInfo distribute() {
     log.debug("CaseDistributor awoken...");
@@ -109,8 +102,10 @@ public class CaseDistributor {
                   processCase(caze, codes.get(idx));
                   successes++;
                 } catch (Exception e) {
-                  log.error("Exception msg {} thrown processing case with id {}. Processing postponed", e.getMessage(),
-                          caze.getId());
+                  log.error(
+                      "Exception msg {} thrown processing case with id {}. Processing postponed",
+                      e.getMessage(),
+                      caze.getId());
                   log.error("Stacktrace ", e);
                   failures++;
                 }
@@ -132,7 +127,8 @@ public class CaseDistributor {
       try {
         caseDistributionListManager.deleteList(CASE_DISTRIBUTOR_LIST_ID, true);
       } catch (LockingException e) {
-        log.error("Failed to release caseDistributionListManager data - error msg is {}", e.getMessage());
+        log.error(
+            "Failed to release caseDistributionListManager data - error msg is {}", e.getMessage());
         log.error("Stacktrace ", e);
       }
     }
@@ -142,32 +138,42 @@ public class CaseDistributor {
   }
 
   /**
-   * Get the oldest page of SAMPLED_INIT & REPLACEMENT_INIT cases to activate - but do not retrieve the
-   * same cases as other CaseSvc' in the cluster
+   * Get the oldest page of SAMPLED_INIT & REPLACEMENT_INIT cases to activate - but do not retrieve
+   * the same cases as other CaseSvc' in the cluster
    *
    * @throws LockingException locking exception thrown when caseDistributionListManager does
-   *
    * @return list of cases
    */
   private List<Case> retrieveCases() throws LockingException {
     List<Case> cases;
 
-    List<Integer> excludedCases = caseDistributionListManager.findList(CASE_DISTRIBUTOR_LIST_ID, false);
+    List<Integer> excludedCases =
+        caseDistributionListManager.findList(CASE_DISTRIBUTOR_LIST_ID, false);
     log.debug("retrieve cases excluding {}", excludedCases);
 
-    // prepare and execute the query to find the oldest N cases that are in SAMPLED_INIT & REPLACEMENT_INIT states and
+    // prepare and execute the query to find the oldest N cases that are in SAMPLED_INIT &
+    // REPLACEMENT_INIT states and
     // not in the excluded list
-    Pageable pageable = new PageRequest(0, appConfig.getCaseDistribution().getRetrievalMax(),
+    Pageable pageable =
+        new PageRequest(
+            0,
+            appConfig.getCaseDistribution().getRetrievalMax(),
             new Sort(new Sort.Order(Direction.ASC, "createdDateTime")));
     excludedCases.add(Integer.valueOf(IMPOSSIBLE_CASE_ID));
-    cases = caseRepo.findByStateInAndCasePKNotIn(Arrays.asList(CaseState.SAMPLED_INIT, CaseState.REPLACEMENT_INIT),
-            excludedCases, pageable);
+    cases =
+        caseRepo.findByStateInAndCasePKNotIn(
+            Arrays.asList(CaseState.SAMPLED_INIT, CaseState.REPLACEMENT_INIT),
+            excludedCases,
+            pageable);
 
     if (!CollectionUtils.isEmpty(cases)) {
-      log.debug("RETRIEVED case ids {}", cases.stream().map(caze -> caze.getId().toString()).collect(
-              Collectors.joining(",")));
-      caseDistributionListManager.saveList(CASE_DISTRIBUTOR_LIST_ID, cases.
-              stream().map(caze -> caze.getCasePK()).collect(Collectors.toList()), true);
+      log.debug(
+          "RETRIEVED case ids {}",
+          cases.stream().map(caze -> caze.getId().toString()).collect(Collectors.joining(",")));
+      caseDistributionListManager.saveList(
+          CASE_DISTRIBUTOR_LIST_ID,
+          cases.stream().map(caze -> caze.getCasePK()).collect(Collectors.toList()),
+          true);
     } else {
       log.debug("RETRIEVED 0 case id");
       caseDistributionListManager.unlockContainer();
@@ -179,8 +185,8 @@ public class CaseDistributor {
   /**
    * Deal with a single case.
    *
-   * The processing requires to write to our own case table. A CaseNotification is also produced and added to the
-   * outbound CaseNotifications sent to the action service.
+   * <p>The processing requires to write to our own case table. A CaseNotification is also produced
+   * and added to the outbound CaseNotifications sent to the action service.
    *
    * @param caze the case to deal with
    * @param iac the IAC to assign to the Case
@@ -214,9 +220,8 @@ public class CaseDistributor {
   }
 
   /**
-   * Change the case status in db to indicate we have sent this case downstream,
-   * and clear previous situation (in the scenario where the case has prev.
-   * failed)
+   * Change the case status in db to indicate we have sent this case downstream, and clear previous
+   * situation (in the scenario where the case has prev. failed)
    *
    * @param caze the case to change and persist
    * @param event the event to transition the case with

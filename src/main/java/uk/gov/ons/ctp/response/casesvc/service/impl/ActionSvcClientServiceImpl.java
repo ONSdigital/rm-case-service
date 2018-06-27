@@ -16,19 +16,14 @@ import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
 
 import java.util.UUID;
 
-/**
- * The impl of the service which calls the action service via REST
- *
- */
+/** The impl of the service which calls the action service via REST */
 @Slf4j
 @Service
 public class ActionSvcClientServiceImpl implements ActionSvcClientService {
 
-  @Autowired
-  private AppConfig appConfig;
+  @Autowired private AppConfig appConfig;
 
-  @Autowired
-  private RestTemplate restTemplate;
+  @Autowired private RestTemplate restTemplate;
 
   @Qualifier("collectionExerciseRestUtility")
   @Autowired
@@ -36,8 +31,8 @@ public class ActionSvcClientServiceImpl implements ActionSvcClientService {
 
   @Override
   public void createAndPostAction(String actionType, UUID caseId, String createdBy) {
-    UriComponents uriComponents = restUtility.createUriComponents(appConfig.getActionSvc().getActionsPath(),
-        null);
+    UriComponents uriComponents =
+        restUtility.createUriComponents(appConfig.getActionSvc().getActionsPath(), null);
 
     ActionDTO actionDTO = new ActionDTO();
     actionDTO.setCaseId(caseId);

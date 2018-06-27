@@ -36,6 +36,7 @@ import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO.SampleUnitTyp
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -146,8 +147,8 @@ public class CaseServiceImpl implements CaseService {
   @Override
   public CaseNotification prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent) {
     CaseGroup caseGroup = caseGroupRepo.findOne(caze.getCaseGroupFK());
-    return new CaseNotification(caze.getId().toString(), caze.getActionPlanId().toString(),
-            caseGroup.getCollectionExerciseId().toString(), caze.getPartyId().toString(),
+    return new CaseNotification(caze.getSampleUnitId().toString(), caze.getId().toString(), caze.getActionPlanId().toString(),
+            caseGroup.getCollectionExerciseId().toString(), Objects.toString(caze.getPartyId(), null),
             NotificationType.valueOf(transitionEvent.name()));
   }
 
@@ -266,15 +267,15 @@ public class CaseServiceImpl implements CaseService {
    */
   private void processCaseCreationAndTransitionsDuringEnrolment(final Category category, final List<CaseGroup> caseGroups, final CaseEvent caseEvent,
                               final Case newCase) throws CTPException {
-	  
+
     for (CaseGroup caseGroup : caseGroups) {
-    	
+
       // fetch all B and BI cases associated to the case group being processed
       List<Case> cases = caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(caseGroup.getCaseGroupPK());
 
       // Create a new BI case for the respondent enrolling (if one doesn't already exit)
       // This is primarily to guard against multiple RESPONDENT_ENROLED case events for the same user
-      // caused by a double click scenario in the verification email journey 
+      // caused by a double click scenario in the verification email journey
       List<Case> biCases = cases
               .stream()
               .filter(c -> c.getSampleUnitType().toString().equals("BI") && c.getPartyId().equals(newCase.getPartyId()))
@@ -289,7 +290,7 @@ public class CaseServiceImpl implements CaseService {
           log.info("BI case created during enrolment for partyid: {} for casegroup: {}",
         		  newCase.getPartyId().toString(), caseGroup.getId());
       }
-    	  
+
       // Transition each of the B cases for the casegroup being enrolled for
       List<Case> bCases = cases
               .stream()
@@ -298,7 +299,7 @@ public class CaseServiceImpl implements CaseService {
       for (Case bCase : bCases) {
         effectTargetCaseStateTransition(category, bCase);
       }
-      
+
     }
   }
 
@@ -602,7 +603,8 @@ public class CaseServiceImpl implements CaseService {
     CaseGroup newCaseGroup = new CaseGroup();
 
     newCaseGroup.setId(UUID.randomUUID());
-    newCaseGroup.setPartyId(UUID.fromString(caseGroupData.getPartyId()));
+    if (caseGroupData.getPartyId() != null)
+      newCaseGroup.setPartyId(UUID.fromString(caseGroupData.getPartyId()));
     newCaseGroup.setCollectionExerciseId(UUID.fromString(caseGroupData.getCollectionExerciseId()));
     newCaseGroup.setSampleUnitRef(caseGroupData.getSampleUnitRef());
     newCaseGroup.setSampleUnitType(caseGroupData.getSampleUnitType());
@@ -627,10 +629,14 @@ public class CaseServiceImpl implements CaseService {
     // values from case group
     newCase.setCaseGroupId(caseGroup.getId());
     newCase.setCaseGroupFK(caseGroup.getCaseGroupPK());
+    newCase.setSampleUnitId(UUID.fromString(caseData.getId()));
 
     // set case values from sampleUnit
     newCase.setSampleUnitType(SampleUnitDTO.SampleUnitType.valueOf(caseData.getSampleUnitType()));
-    newCase.setPartyId(UUID.fromString(caseData.getPartyId()));
+
+    if (caseData.getPartyId() != null)
+      newCase.setPartyId(UUID.fromString(caseData.getPartyId()));
+
     newCase.setCollectionInstrumentId(UUID.fromString(caseData.getCollectionInstrumentId()));
 
     // HardCoded values

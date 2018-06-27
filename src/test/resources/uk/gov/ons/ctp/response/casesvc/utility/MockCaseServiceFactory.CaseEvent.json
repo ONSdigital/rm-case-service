@@ -1,28 +1,29 @@
 [
-{
-   "createdDateTime":1460736159699,
-   "caseEventPK":1,
-   "casePK":124,
-   "category":"GENERAL_ENQUIRY",
-   "subCategory":"subcat",
-   "createdBy":"UnitTester",
-   "description":"Test Event 1"
-},
-{
-   "createdDateTime":1460736159699,
-   "caseEventPK":2,
-   "casePK":124,
-   "category":"GENERAL_ENQUIRY",
-   "subCategory":"subcat",
-   "createdBy":"UnitTester",
-   "description":"Test Event 2"
-},
-{
-   "createdDateTime":1460736159699,
-   "caseEventPK":3,
-   "casePK":124,
-   "category":"GENERAL_ENQUIRY",
-   "subCategory":"subcat",
-   "createdBy":"UnitTester",
-   "description":"Test Event 3"
-}]
+  {
+    "createdDateTime": 1460736159699,
+    "caseEventPK": 1,
+    "casePK": 124,
+    "category": "GENERAL_ENQUIRY",
+    "subCategory": "subcat",
+    "createdBy": "UnitTester",
+    "description": "Test Event 1"
+  },
+  {
+    "createdDateTime": 1460736159699,
+    "caseEventPK": 2,
+    "casePK": 124,
+    "category": "GENERAL_ENQUIRY",
+    "subCategory": "subcat",
+    "createdBy": "UnitTester",
+    "description": "Test Event 2"
+  },
+  {
+    "createdDateTime": 1460736159699,
+    "caseEventPK": 3,
+    "casePK": 124,
+    "category": "GENERAL_ENQUIRY",
+    "subCategory": "subcat",
+    "createdBy": "UnitTester",
+    "description": "Test Event 3"
+  }
+]

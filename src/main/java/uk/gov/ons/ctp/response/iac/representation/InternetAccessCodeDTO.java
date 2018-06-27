@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 
-/**
- * Domain model object.
- */
+/** Domain model object. */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)

@@ -6,12 +6,9 @@ import org.springframework.context.annotation.Configuration;
 import lombok.Data;
 import net.sourceforge.cobertura.CoverageIgnore;
 import org.springframework.retry.annotation.EnableRetry;
-import  uk.gov.ons.tools.rabbit.Rabbitmq;
+import uk.gov.ons.tools.rabbit.Rabbitmq;
 
-/**
- * Application Config bean
- *
- */
+/** Application Config bean */
 @CoverageIgnore
 @EnableRetry
 @Configuration

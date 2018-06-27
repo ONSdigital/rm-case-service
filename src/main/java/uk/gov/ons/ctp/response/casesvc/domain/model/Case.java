@@ -30,9 +30,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Domain model object.
- */
+/** Domain model object. */
 @CoverageIgnore
 @Entity
 @Data
@@ -45,15 +43,21 @@ public class Case implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "caseseq_gen")
-  @GenericGenerator(name = "caseseq_gen", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
-      @Parameter(name = "sequence_name", value = "casesvc.caseseq"),
-      @Parameter(name = "increment_size", value = "1")
-  })
+  @GenericGenerator(
+      name = "caseseq_gen",
+      strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+      parameters = {
+        @Parameter(name = "sequence_name", value = "casesvc.caseseq"),
+        @Parameter(name = "increment_size", value = "1")
+      })
   @Column(name = "casepk")
   private Integer casePK;
 
   @Column(name = "id")
   private UUID id;
+
+  @Column(name = "sampleunit_id")
+  private UUID sampleUnitId;
 
   @Version
   @Column(name = "optlockversion")
@@ -100,9 +104,7 @@ public class Case implements Serializable {
 
   private String iac;
 
-  /**
-   * Trims spaces from IAC after load
-   */
+  /** Trims spaces from IAC after load */
   @PostLoad
   public void trimIACAfterLoad() {
     if (iac != null) {
@@ -110,4 +112,3 @@ public class Case implements Serializable {
     }
   }
 }
-

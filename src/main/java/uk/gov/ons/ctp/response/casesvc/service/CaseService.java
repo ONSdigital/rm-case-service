@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * The Case Service interface defines all business behaviours for operations on
- * the Case entity model.
+ * The Case Service interface defines all business behaviours for operations on the Case entity
+ * model.
  */
 public interface CaseService extends CTPService {
 
@@ -78,54 +78,49 @@ public interface CaseService extends CTPService {
   List<CaseEvent> findCaseEventsByCaseFK(Integer caseFK);
 
   /**
-   * Create a CaseEvent from the details provided in the passed CaseEvent. Some
-   * events will also as a side effect create a new case - if so the details
-   * must be provided in the newCase argument, otherwise it may remain null. If
-   * the newCase is passed it must also contain the contact details for the new
-   * case.
+   * Create a CaseEvent from the details provided in the passed CaseEvent. Some events will also as
+   * a side effect create a new case - if so the details must be provided in the newCase argument,
+   * otherwise it may remain null. If the newCase is passed it must also contain the contact details
+   * for the new case.
    *
    * @param caseEvent CaseEvent to be created.
-   * @param newCase optional case object containing partial details of the case
-   *          to be created by this event.
+   * @param newCase optional case object containing partial details of the case to be created by
+   *     this event.
    * @return the created CaseEvent.
    * @throws CTPException when case state transition error
    */
   CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase) throws CTPException;
 
   /**
-   * Create a CaseEvent for the specific scenario of an incoming CaseReceipt
-   * (sent by the SDX Gateway and containing the responseDateTime of the
-   * online/paper response).
+   * Create a CaseEvent for the specific scenario of an incoming CaseReceipt (sent by the SDX
+   * Gateway and containing the responseDateTime of the online/paper response).
    *
    * @param caseEvent CaseEvent to be created
-   * @param newCase optional case object containing partial details of the case
-   *          to be created by this event.
-   * @param timestamp timestamp equals to the incoming CaseReceipt's
-   *          responseDateTime.
+   * @param newCase optional case object containing partial details of the case to be created by
+   *     this event.
+   * @param timestamp timestamp equals to the incoming CaseReceipt's responseDateTime.
    * @return the created CaseEvent.
    * @throws CTPException when case state transition error
    */
-  CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase, Timestamp timestamp) throws CTPException;
+  CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase, Timestamp timestamp)
+      throws CTPException;
 
   /**
-   * Not sure this is the best place for this method, but .. several parts of
-   * case svc need to build a CaseNotification for a Case and need the services
-   * of the ActionPlanMappingService to get the actionPlanId This method just
-   * creates a CaseNotification
+   * Not sure this is the best place for this method, but .. several parts of case svc need to build
+   * a CaseNotification for a Case and need the services of the ActionPlanMappingService to get the
+   * actionPlanId This method just creates a CaseNotification
    *
    * @param caze The Case
    * @param transitionEvent the event to inform the recipient of
    * @return the newly created notification object
    */
-  CaseNotification prepareCaseNotification(Case caze,
-                                           CaseDTO.CaseEvent transitionEvent);
+  CaseNotification prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent);
 
   /**
-   * Create a CaseEvent from the details provided in the passed CaseEvent. Some
-   * events will also as a side effect create a new case - if so the details
-   * must be provided in the newCase argument, otherwise it may remain null. If
-   * the newCase is passed it must also contain the contact details for the new
-   * case.
+   * Create a CaseEvent from the details provided in the passed CaseEvent. Some events will also as
+   * a side effect create a new case - if so the details must be provided in the newCase argument,
+   * otherwise it may remain null. If the newCase is passed it must also contain the contact details
+   * for the new case.
    *
    * @param caseData the CaseCreation data
    */

@@ -19,25 +19,29 @@ import java.util.UUID;
 @Table(name = "casegroupstatusaudit", schema = "casesvc")
 public class CaseGroupStatusAudit {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "casegroupstatusauditseq_gen")
-    @GenericGenerator(name = "casegroupstatusauditseq_gen", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-            parameters = {
-                    @org.hibernate.annotations.Parameter(name = "sequence_name", value = "casesvc.casegroupstatusauditseq"),
-                    @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
-            })
-    @Column(name = "casegroupstatusauditpk")
-    private Integer caseGroupStatusAuditPK;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "casegroupstatusauditseq_gen")
+  @GenericGenerator(
+      name = "casegroupstatusauditseq_gen",
+      strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+      parameters = {
+        @org.hibernate.annotations.Parameter(
+            name = "sequence_name",
+            value = "casesvc.casegroupstatusauditseq"),
+        @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
+      })
+  @Column(name = "casegroupstatusauditpk")
+  private Integer caseGroupStatusAuditPK;
 
-    @Column(name = "casegroupfk")
-    private int caseGroupFK;
+  @Column(name = "casegroupfk")
+  private int caseGroupFK;
 
-    @Column(name = "partyid")
-    private UUID partyId;
+  @Column(name = "partyid")
+  private UUID partyId;
 
-    @Column(name = "status")
-    private CaseGroupStatus status;
+  @Column(name = "status")
+  private CaseGroupStatus status;
 
-    @Column(name = "createddatetime")
-    private Timestamp createdDateTime;
+  @Column(name = "createddatetime")
+  private Timestamp createdDateTime;
 }
