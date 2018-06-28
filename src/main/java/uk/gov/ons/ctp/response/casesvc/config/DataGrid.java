@@ -3,10 +3,7 @@ package uk.gov.ons.ctp.response.casesvc.config;
 import lombok.Data;
 import net.sourceforge.cobertura.CoverageIgnore;
 
-/**
- * Config POJO for action plan exec params
- *
- */
+/** Config POJO for action plan exec params */
 @Data
 @CoverageIgnore
 public class DataGrid {

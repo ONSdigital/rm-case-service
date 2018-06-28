@@ -1,5 +1,15 @@
 package uk.gov.ons.ctp.response.casesvc.domain.model;
 
+import java.io.Serializable;
+import java.util.UUID;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,20 +18,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Enumerated;
-import javax.persistence.EnumType;
-import java.io.Serializable;
-import java.util.UUID;
-
-/**
- * Domain model object.
- */
+/** Domain model object. */
 @Entity
 @Data
 @Builder
@@ -34,11 +31,13 @@ public class CaseGroup implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "casegroupidseq_gen")
-  @GenericGenerator(name = "casegroupidseq_gen", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-          parameters = {
-            @Parameter(name = "sequence_name", value = "casesvc.casegroupseq"),
-            @Parameter(name = "increment_size", value = "1")
-  })
+  @GenericGenerator(
+      name = "casegroupidseq_gen",
+      strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+      parameters = {
+        @Parameter(name = "sequence_name", value = "casesvc.casegroupseq"),
+        @Parameter(name = "increment_size", value = "1")
+      })
   @Column(name = "casegrouppk")
   private int caseGroupPK;
 
@@ -56,8 +55,7 @@ public class CaseGroup implements Serializable {
   @Column(name = "sampleunittype")
   private String sampleUnitType;
 
-    @Enumerated(EnumType.STRING)
+  @Enumerated(EnumType.STRING)
   @Column(name = "status")
   private CaseGroupStatus status;
-
 }

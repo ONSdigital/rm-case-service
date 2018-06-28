@@ -1,92 +1,97 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
+import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
+
 import java.util.Arrays;
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
-
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import uk.gov.ons.ctp.common.rest.RestUtility;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
-
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 import uk.gov.ons.ctp.response.iac.representation.CreateInternetAccessCodeDTO;
 import uk.gov.ons.ctp.response.iac.representation.InternetAccessCodeDTO;
 import uk.gov.ons.ctp.response.iac.representation.UpdateInternetAccessCodeDTO;
 
-import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
-
-/**
- * The impl of the service which calls the IAC service via REST
- *
- */
+/** The impl of the service which calls the IAC service via REST */
 @Slf4j
 @Service
 public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCodeSvcClientService {
 
   private AppConfig appConfig;
-
   private RestTemplate restTemplate;
-
   private RestUtility restUtility;
 
   @Autowired
-  public InternetAccessCodeSvcClientServiceImpl(AppConfig appConfig,
-                                                RestTemplate restTemplate,
-                                                @Qualifier("iacServiceRestUtility") RestUtility restUtility) {
+  public InternetAccessCodeSvcClientServiceImpl(
+      AppConfig appConfig,
+      RestTemplate restTemplate,
+      @Qualifier("iacServiceRestUtility") RestUtility restUtility) {
     this.appConfig = appConfig;
     this.restTemplate = restTemplate;
     this.restUtility = restUtility;
   }
 
-  @Retryable(value = {RestClientException.class}, maxAttemptsExpression = "#{${retries.maxAttempts}}",
+  @Retryable(
+      value = {RestClientException.class},
+      maxAttemptsExpression = "#{${retries.maxAttempts}}",
       backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
   @Override
   public List<String> generateIACs(int count) {
-    UriComponents uriComponents = restUtility.createUriComponents(appConfig.getInternetAccessCodeSvc().getIacPostPath(),
-        null);
+    UriComponents uriComponents =
+        restUtility.createUriComponents(
+            appConfig.getInternetAccessCodeSvc().getIacPostPath(), null);
 
     CreateInternetAccessCodeDTO createCodesDTO = new CreateInternetAccessCodeDTO(count, SYSTEM);
-    HttpEntity<CreateInternetAccessCodeDTO> httpEntity = restUtility.createHttpEntity(createCodesDTO);
+    HttpEntity<CreateInternetAccessCodeDTO> httpEntity =
+        restUtility.createHttpEntity(createCodesDTO);
 
     log.debug("about to post to the IAC SVC with {}", createCodesDTO);
-    ResponseEntity<String[]> responseEntity = restTemplate.exchange(uriComponents.toUri(), HttpMethod.POST, httpEntity,
-        String[].class);
+    ResponseEntity<String[]> responseEntity =
+        restTemplate.exchange(uriComponents.toUri(), HttpMethod.POST, httpEntity, String[].class);
     return Arrays.asList(responseEntity.getBody());
   }
 
-  @Retryable(value = {RestClientException.class}, maxAttemptsExpression = "#{${retries.maxAttempts}}",
+  @Retryable(
+      value = {RestClientException.class},
+      maxAttemptsExpression = "#{${retries.maxAttempts}}",
       backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
   @Override
   public void disableIAC(String iac) {
     log.debug("about to put to the IAC SVC with {}", iac);
-    UriComponents uriComponents = restUtility.createUriComponents(appConfig.getInternetAccessCodeSvc().getIacPutPath(),
-        null, iac);
-    HttpEntity<UpdateInternetAccessCodeDTO> httpEntity = restUtility.createHttpEntity(
-        new UpdateInternetAccessCodeDTO(SYSTEM));
+    UriComponents uriComponents =
+        restUtility.createUriComponents(
+            appConfig.getInternetAccessCodeSvc().getIacPutPath(), null, iac);
+    HttpEntity<UpdateInternetAccessCodeDTO> httpEntity =
+        restUtility.createHttpEntity(new UpdateInternetAccessCodeDTO(SYSTEM));
 
-    restTemplate.exchange(uriComponents.toUri(), HttpMethod.PUT, httpEntity, InternetAccessCodeDTO.class);
+    restTemplate.exchange(
+        uriComponents.toUri(), HttpMethod.PUT, httpEntity, InternetAccessCodeDTO.class);
     log.debug("gone past the call to the IAC Svc...");
   }
 
-  @Retryable(value = {RestClientException.class}, maxAttemptsExpression = "#{${retries.maxAttempts}}",
-          backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
+  @Retryable(
+      value = {RestClientException.class},
+      maxAttemptsExpression = "#{${retries.maxAttempts}}",
+      backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
   @Override
   public Boolean isIacActive(String iac) {
-    UriComponents uriComponents = restUtility.createUriComponents(
+    UriComponents uriComponents =
+        restUtility.createUriComponents(
             appConfig.getInternetAccessCodeSvc().getIacGetPath(), null, iac);
-    ResponseEntity<InternetAccessCodeDTO> responseEntity = restTemplate.exchange(
+    ResponseEntity<InternetAccessCodeDTO> responseEntity =
+        restTemplate.exchange(
             uriComponents.toUri(), HttpMethod.GET, null, InternetAccessCodeDTO.class);
     return responseEntity.getBody().getActive();
   }
-
 }

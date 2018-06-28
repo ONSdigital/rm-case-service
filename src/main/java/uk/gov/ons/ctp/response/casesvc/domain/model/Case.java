@@ -1,17 +1,9 @@
 package uk.gov.ons.ctp.response.casesvc.domain.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import net.sourceforge.cobertura.CoverageIgnore;
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
-import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
-
+import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,14 +17,19 @@ import javax.persistence.OneToMany;
 import javax.persistence.PostLoad;
 import javax.persistence.Table;
 import javax.persistence.Version;
-import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import net.sourceforge.cobertura.CoverageIgnore;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
+import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
 
-/**
- * Domain model object.
- */
+/** Domain model object. */
 @CoverageIgnore
 @Entity
 @Data
@@ -45,10 +42,13 @@ public class Case implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "caseseq_gen")
-  @GenericGenerator(name = "caseseq_gen", strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", parameters = {
-      @Parameter(name = "sequence_name", value = "casesvc.caseseq"),
-      @Parameter(name = "increment_size", value = "1")
-  })
+  @GenericGenerator(
+      name = "caseseq_gen",
+      strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+      parameters = {
+        @Parameter(name = "sequence_name", value = "casesvc.caseseq"),
+        @Parameter(name = "increment_size", value = "1")
+      })
   @Column(name = "casepk")
   private Integer casePK;
 
@@ -100,9 +100,7 @@ public class Case implements Serializable {
 
   private String iac;
 
-  /**
-   * Trims spaces from IAC after load
-   */
+  /** Trims spaces from IAC after load */
   @PostLoad
   public void trimIACAfterLoad() {
     if (iac != null) {
@@ -110,4 +108,3 @@ public class Case implements Serializable {
     }
   }
 }
-

@@ -1,5 +1,9 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+
+import java.util.UUID;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -12,40 +16,37 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupAuditService;
 
-import java.util.UUID;
-
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-
-
 @RunWith(MockitoJUnitRunner.class)
 public class CaseGroupServiceImplTest {
 
-  @InjectMocks
-  private CaseGroupServiceImpl caseGroupService;
+  @InjectMocks private CaseGroupServiceImpl caseGroupService;
+
+  @Mock private CaseGroupRepository caseGroupRepo;
 
   @Mock
-  private CaseGroupRepository caseGroupRepo;
+  private StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName>
+      caseGroupStatusTransitionManager;
 
-  @Mock
-  private StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName> caseGroupStatusTransitionManager;
-
-  @Mock
-  private CaseGroupAuditService caseGroupAuditService;
+  @Mock private CaseGroupAuditService caseGroupAuditService;
 
   @Test
-  public void givenCaseGroupStatusWhenCaseGroupStatusTransitionedThenTransitionIsSaved() throws Exception {
+  public void givenCaseGroupStatusWhenCaseGroupStatusTransitionedThenTransitionIsSaved()
+      throws Exception {
     // Given
-    CaseGroup caseGroup = CaseGroup.builder()
-        .id(UUID.randomUUID())
-        .collectionExerciseId(UUID.randomUUID())
-        .partyId(UUID.randomUUID())
-        .sampleUnitRef("12345")
-        .sampleUnitType("B")
-        .status(CaseGroupStatus.NOTSTARTED).build();
+    CaseGroup caseGroup =
+        CaseGroup.builder()
+            .id(UUID.randomUUID())
+            .collectionExerciseId(UUID.randomUUID())
+            .partyId(UUID.randomUUID())
+            .sampleUnitRef("12345")
+            .sampleUnitType("B")
+            .status(CaseGroupStatus.NOTSTARTED)
+            .build();
 
-    CategoryDTO.CategoryName categoryName = CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED;
-    given(caseGroupStatusTransitionManager.transition(caseGroup.getStatus(), categoryName)).willReturn(CaseGroupStatus.COMPLETE);
+    CategoryDTO.CategoryName categoryName =
+        CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED;
+    given(caseGroupStatusTransitionManager.transition(caseGroup.getStatus(), categoryName))
+        .willReturn(CaseGroupStatus.COMPLETE);
 
     // When
     caseGroupService.transitionCaseGroupStatus(caseGroup, categoryName, caseGroup.getPartyId());
@@ -55,18 +56,23 @@ public class CaseGroupServiceImplTest {
   }
 
   @Test
-  public void givenCaseGroupStatusWhenCaseGroupStatusTransitionedThenTransitionIsAudited() throws Exception {
+  public void givenCaseGroupStatusWhenCaseGroupStatusTransitionedThenTransitionIsAudited()
+      throws Exception {
     // Given
-    CaseGroup caseGroup = CaseGroup.builder()
-        .id(UUID.randomUUID())
-        .collectionExerciseId(UUID.randomUUID())
-        .partyId(UUID.randomUUID())
-        .sampleUnitRef("12345")
-        .sampleUnitType("B")
-        .status(CaseGroupStatus.NOTSTARTED).build();
+    CaseGroup caseGroup =
+        CaseGroup.builder()
+            .id(UUID.randomUUID())
+            .collectionExerciseId(UUID.randomUUID())
+            .partyId(UUID.randomUUID())
+            .sampleUnitRef("12345")
+            .sampleUnitType("B")
+            .status(CaseGroupStatus.NOTSTARTED)
+            .build();
 
-    CategoryDTO.CategoryName categoryName = CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED;
-    given(caseGroupStatusTransitionManager.transition(caseGroup.getStatus(), categoryName)).willReturn(CaseGroupStatus.COMPLETE);
+    CategoryDTO.CategoryName categoryName =
+        CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED;
+    given(caseGroupStatusTransitionManager.transition(caseGroup.getStatus(), categoryName))
+        .willReturn(CaseGroupStatus.COMPLETE);
 
     // When
     caseGroupService.transitionCaseGroupStatus(caseGroup, categoryName, caseGroup.getPartyId());
@@ -74,5 +80,4 @@ public class CaseGroupServiceImplTest {
     // Then
     verify(caseGroupAuditService).updateAuditTable(caseGroup, caseGroup.getPartyId());
   }
-
 }
