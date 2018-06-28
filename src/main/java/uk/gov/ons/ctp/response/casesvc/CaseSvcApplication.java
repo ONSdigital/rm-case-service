@@ -38,9 +38,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.state.CaseSvcStateTransitionManagerFactory;
 
-/**
- * The 'main' entry point for the CaseSvc SpringBoot Application.
- */
+/** The 'main' entry point for the CaseSvc SpringBoot Application. */
 @CoverageIgnore
 @SpringBootApplication
 @EnableTransactionManagement
@@ -55,53 +53,59 @@ public class CaseSvcApplication {
   public static final String CASE_DISTRIBUTION_LIST = "casesvc.case.distribution";
   public static final String REPORT_EXECUTION_LOCK = "casesvc.report.execution";
 
-  @Autowired
-  private AppConfig appConfig;
+  @Autowired private AppConfig appConfig;
 
-  @Autowired
-  private StateTransitionManagerFactory caseSvcStateTransitionManagerFactory;
+  @Autowired private StateTransitionManagerFactory caseSvcStateTransitionManagerFactory;
 
   /**
    * Bean to allow application to make controlled state transitions of Cases
+   *
    * @return the state transition manager specifically for Cases
    */
   @Bean
   public StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager() {
     return caseSvcStateTransitionManagerFactory.getStateTransitionManager(
-            CaseSvcStateTransitionManagerFactory.CASE_ENTITY);
+        CaseSvcStateTransitionManagerFactory.CASE_ENTITY);
   }
 
   /**
    * Bean to allow application to make controlled state transitions of CaseGroupStatus
+   *
    * @return the state transition manager specifically for CaseGroup
    */
   @Bean
-  public StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName> caseGroupStatusTransitionManager() {
+  public StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName>
+      caseGroupStatusTransitionManager() {
     return caseSvcStateTransitionManagerFactory.getStateTransitionManager(
-            CaseSvcStateTransitionManagerFactory.CASE_GROUP);
+        CaseSvcStateTransitionManagerFactory.CASE_GROUP);
   }
 
   /**
    * The DistributedListManager for CaseDistribution
+   *
    * @param redissonClient the redissonClient
    * @return the DistributedListManager
    */
   @Bean
-  public DistributedListManager<Integer> caseDistributionListManager(RedissonClient redissonClient) {
+  public DistributedListManager<Integer> caseDistributionListManager(
+      RedissonClient redissonClient) {
     return new DistributedListManagerRedissonImpl<Integer>(
-            CASE_DISTRIBUTION_LIST, redissonClient,
+        CASE_DISTRIBUTION_LIST,
+        redissonClient,
         appConfig.getDataGrid().getListTimeToWaitSeconds(),
         appConfig.getDataGrid().getListTimeToLiveSeconds());
   }
 
   /**
    * The RedissonClient
+   *
    * @return the RedissonClient
    */
   @Bean
   public RedissonClient redissonClient() {
     Config config = new Config();
-    config.useSingleServer()
+    config
+        .useSingleServer()
         .setAddress(appConfig.getDataGrid().getAddress())
         .setPassword(appConfig.getDataGrid().getPassword());
     return Redisson.create(config);
@@ -119,17 +123,20 @@ public class CaseSvcApplication {
 
   /**
    * The RestUtility bean for the IAC service
+   *
    * @return the RestUtility bean for the IAC service
    */
   @Bean
   @Qualifier("iacServiceRestUtility")
   public RestUtility iacServiceRestUtility() {
-    RestUtility restUtility = new RestUtility(appConfig.getInternetAccessCodeSvc().getConnectionConfig());
+    RestUtility restUtility =
+        new RestUtility(appConfig.getInternetAccessCodeSvc().getConnectionConfig());
     return restUtility;
   }
 
   /**
    * The RestUtility bean for the Action service
+   *
    * @return the RestUtility bean for the Action service
    */
   @Bean
@@ -141,17 +148,20 @@ public class CaseSvcApplication {
 
   /**
    * The RestUtility bean for the CollectionExercise service
+   *
    * @return the RestUtility bean for the CollectionExercise service
    */
   @Bean
   @Qualifier("collectionExerciseRestUtility")
   public RestUtility collectionExerciseRestUtility() {
-    RestUtility restUtility = new RestUtility(appConfig.getCollectionExerciseSvc().getConnectionConfig());
+    RestUtility restUtility =
+        new RestUtility(appConfig.getCollectionExerciseSvc().getConnectionConfig());
     return restUtility;
   }
 
   /**
    * The RestExceptionHandler to handle exceptions thrown in our endpoints
+   *
    * @return the RestExceptionHandler
    */
   @Bean
@@ -161,9 +171,11 @@ public class CaseSvcApplication {
 
   /**
    * The CustomObjectMapper to output dates in the json in our agreed format
+   *
    * @return the CustomObjectMapper
    */
-  @Bean @Primary
+  @Bean
+  @Primary
   public CustomObjectMapper customObjectMapper() {
     return new CustomObjectMapper();
   }
@@ -175,7 +187,8 @@ public class CaseSvcApplication {
    * @return the Distributed Lock Manager
    */
   @Bean
-  public DistributedInstanceManager reportDistributedInstanceManager(RedissonClient redissonClient) {
+  public DistributedInstanceManager reportDistributedInstanceManager(
+      RedissonClient redissonClient) {
     return new DistributedInstanceManagerRedissonImpl(REPORT_EXECUTION_LOCK, redissonClient);
   }
 
@@ -187,8 +200,10 @@ public class CaseSvcApplication {
    */
   @Bean
   public DistributedLatchManager reportDistributedLatchManager(RedissonClient redissonClient) {
-    return new DistributedLatchManagerRedissonImpl(REPORT_EXECUTION_LOCK, redissonClient,
-            appConfig.getDataGrid().getReportLockTimeToLiveSeconds());
+    return new DistributedLatchManagerRedissonImpl(
+        REPORT_EXECUTION_LOCK,
+        redissonClient,
+        appConfig.getDataGrid().getReportLockTimeToLiveSeconds());
   }
 
   /**
@@ -199,10 +214,11 @@ public class CaseSvcApplication {
    */
   @Bean
   public DistributedLockManager reportDistributedLockManager(RedissonClient redissonClient) {
-    return new DistributedLockManagerRedissonImpl(REPORT_EXECUTION_LOCK, redissonClient,
-            appConfig.getDataGrid().getReportLockTimeToLiveSeconds());
+    return new DistributedLockManagerRedissonImpl(
+        REPORT_EXECUTION_LOCK,
+        redissonClient,
+        appConfig.getDataGrid().getReportLockTimeToLiveSeconds());
   }
-
 
   /**
    * The main entry point for this applicaion.

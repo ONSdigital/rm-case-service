@@ -494,8 +494,7 @@
     "newCaseSampleUnitType": null,
     "oldCaseSampleUnitTypes": "B",
     "eventType": "ACCOUNT_CREATED"
-  }
-,
+  },
   {
     "group": null,
     "categoryName": "ACCESS_CODE_AUTHENTICATION_ATTEMPT",
@@ -506,8 +505,7 @@
     "newCaseSampleUnitType": null,
     "oldCaseSampleUnitTypes": "B",
     "eventType": null
-  }
-,
+  },
   {
     "group": null,
     "categoryName": "COLLECTION_INSTRUMENT_DOWNLOADED",
@@ -518,8 +516,7 @@
     "newCaseSampleUnitType": null,
     "oldCaseSampleUnitTypes": "BI",
     "eventType": null
-  }
-,
+  },
   {
     "group": null,
     "categoryName": "UNSUCCESSFUL_RESPONSE_UPLOAD",
@@ -530,8 +527,7 @@
     "newCaseSampleUnitType": null,
     "oldCaseSampleUnitTypes": "BI",
     "eventType": null
-  }
-,
+  },
   {
     "group": null,
     "categoryName": "SUCCESSFUL_RESPONSE_UPLOAD",
@@ -542,8 +538,7 @@
     "newCaseSampleUnitType": null,
     "oldCaseSampleUnitTypes": "BI",
     "eventType": "DISABLED"
-  }
-,
+  },
   {
     "group": null,
     "categoryName": "OFFLINE_RESPONSE_PROCESSED",
@@ -554,8 +549,7 @@
     "newCaseSampleUnitType": null,
     "oldCaseSampleUnitTypes": "BI",
     "eventType": null
-  }
-,
+  },
   {
     "group": null,
     "categoryName": "DISABLE_RESPONDENT_ENROLMENT",

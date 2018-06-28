@@ -4,10 +4,7 @@ import lombok.Data;
 import net.sourceforge.cobertura.CoverageIgnore;
 import uk.gov.ons.ctp.common.rest.RestUtilityConfig;
 
-/**
- * App config POJO for CollectionExercise service access
- *
- */
+/** App config POJO for CollectionExercise service access */
 @Data
 @CoverageIgnore
 public class CollectionExerciseSvc {

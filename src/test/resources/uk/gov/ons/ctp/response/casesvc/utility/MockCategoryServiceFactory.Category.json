@@ -1,32 +1,32 @@
 [
   {
-  "categoryType": "GENERAL_ENQUIRY",
-  "longDescription": "General Enquiry Blah",
-  "shortDescription": "General Enquiry",
-  "role": "collect-admins",
-  "group": "general",
-  "eventType": "DISABLED",
-  "generatedActionType": "",
-  "manual": "true"
+    "categoryType": "GENERAL_ENQUIRY",
+    "longDescription": "General Enquiry Blah",
+    "shortDescription": "General Enquiry",
+    "role": "collect-admins",
+    "group": "general",
+    "eventType": "DISABLED",
+    "generatedActionType": "",
+    "manual": "true"
   },
   {
-  "categoryType": "ONLINE_QUESTIONNAIRE_RESPONSE",
-  "longDescription": "Online Questionnaire Response Blah",
-  "shortDescription": "Online Questionnaire Response",
-  "role": "collect-csos",
-  "group": "general",
-  "eventType": "DISABLED",
-  "generatedActionType": "",
-  "manual": "false"
+    "categoryType": "ONLINE_QUESTIONNAIRE_RESPONSE",
+    "longDescription": "Online Questionnaire Response Blah",
+    "shortDescription": "Online Questionnaire Response",
+    "role": "collect-csos",
+    "group": "general",
+    "eventType": "DISABLED",
+    "generatedActionType": "",
+    "manual": "false"
   },
   {
-  "categoryType": "GENERAL_ENQUIRY_ESCALATED",
-  "longDescription": "General Enquiry Escalated Blah",
-  "shortDescription": "General Enquiry Escalated",
-  "role": "collect-csos",
-  "group": "general",
-  "eventType": "DISABLED",
-  "generatedActionType": "GeneralEscalation",
-  "manual": "true"
+    "categoryType": "GENERAL_ENQUIRY_ESCALATED",
+    "longDescription": "General Enquiry Escalated Blah",
+    "shortDescription": "General Enquiry Escalated",
+    "role": "collect-csos",
+    "group": "general",
+    "eventType": "DISABLED",
+    "generatedActionType": "GeneralEscalation",
+    "manual": "true"
   }
 ]
