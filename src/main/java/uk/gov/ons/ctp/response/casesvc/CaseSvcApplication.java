@@ -58,6 +58,15 @@ public class CaseSvcApplication {
   @Autowired private StateTransitionManagerFactory caseSvcStateTransitionManagerFactory;
 
   /**
+   * The main entry point for this applicaion.
+   *
+   * @param args runtime command line args
+   */
+  public static void main(final String[] args) {
+    SpringApplication.run(CaseSvcApplication.class, args);
+  }
+
+  /**
    * Bean to allow application to make controlled state transitions of Cases
    *
    * @return the state transition manager specifically for Cases
@@ -218,14 +227,5 @@ public class CaseSvcApplication {
         REPORT_EXECUTION_LOCK,
         redissonClient,
         appConfig.getDataGrid().getReportLockTimeToLiveSeconds());
-  }
-
-  /**
-   * The main entry point for this applicaion.
-   *
-   * @param args runtime command line args
-   */
-  public static void main(final String[] args) {
-    SpringApplication.run(CaseSvcApplication.class, args);
   }
 }

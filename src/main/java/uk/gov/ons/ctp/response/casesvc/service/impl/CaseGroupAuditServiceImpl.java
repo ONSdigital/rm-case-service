@@ -1,15 +1,14 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroupStatusAudit;
-import uk.gov.ons.ctp.response.casesvc.service.CaseGroupAuditService;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupStatusAuditRepository;
-
-import java.util.UUID;
+import uk.gov.ons.ctp.response.casesvc.service.CaseGroupAuditService;
 
 @Service
 @Slf4j

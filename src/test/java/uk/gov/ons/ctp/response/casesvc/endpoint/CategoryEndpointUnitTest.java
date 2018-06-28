@@ -1,5 +1,19 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.Is.isA;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.ons.ctp.common.MvcHelper.getJson;
+import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
+import static uk.gov.ons.ctp.response.casesvc.endpoint.CategoryEndpoint.ERRORMSG_CATEGORYNOTFOUND;
+
+import java.util.ArrayList;
+import java.util.List;
 import ma.glasnost.orika.MapperFacade;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -20,32 +34,8 @@ import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.Is.isA;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static uk.gov.ons.ctp.common.MvcHelper.getJson;
-import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
-import static uk.gov.ons.ctp.response.casesvc.endpoint.CategoryEndpoint.ERRORMSG_CATEGORYNOTFOUND;
-
 /** A test of the category endpoint */
 public final class CategoryEndpointUnitTest {
-
-  @InjectMocks private CategoryEndpoint categoryEndpoint;
-
-  @Mock private CategoryService categoryService;
-
-  @Spy private MapperFacade mapperFacade = new CaseSvcBeanMapper();
-
-  private MockMvc mockMvc;
-  private List<Category> categoryResults;
 
   private static final String CATEGORY_UNKNOWN = "Felix The Cat";
   private static final String CATEGORY1_NAME = "ACCESSIBILITY_MATERIALS";
@@ -60,6 +50,11 @@ public final class CategoryEndpointUnitTest {
   private static final String CATEGORY1_ROLE = "collect-csos, collect-admins";
   private static final String ADMIN_ROLE = "collect-admins";
   private static final String CATEGORY1_GROUP = "general";
+  @InjectMocks private CategoryEndpoint categoryEndpoint;
+  @Mock private CategoryService categoryService;
+  @Spy private MapperFacade mapperFacade = new CaseSvcBeanMapper();
+  private MockMvc mockMvc;
+  private List<Category> categoryResults;
 
   /**
    * Sets up Mockito for tests

@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
+import java.util.List;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +18,6 @@ import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
-
-import java.util.List;
-import java.util.Optional;
 
 /** The REST endpoint controller for Category */
 @RestController

@@ -17,6 +17,9 @@ There are two ways of running this service
     mvn spring-boot:run
     ```
 
+# Code Styler
+To use the code styler please goto this url (https://github.com/google/google-java-format) and follow the Intellij instructions or Eclipse depending on what you use
+
 ## API
 See [API.md](https://github.com/ONSdigital/rm-case-service/blob/master/API.md) for API documentation.
 
