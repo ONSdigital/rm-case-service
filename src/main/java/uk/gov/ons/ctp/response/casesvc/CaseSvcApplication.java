@@ -53,9 +53,15 @@ public class CaseSvcApplication {
   public static final String CASE_DISTRIBUTION_LIST = "casesvc.case.distribution";
   public static final String REPORT_EXECUTION_LOCK = "casesvc.report.execution";
 
-  @Autowired private AppConfig appConfig;
+  private AppConfig appConfig;
+  private StateTransitionManagerFactory caseSvcStateTransitionManagerFactory;
 
-  @Autowired private StateTransitionManagerFactory caseSvcStateTransitionManagerFactory;
+  @Autowired
+  public CaseSvcApplication(
+      AppConfig appConfig, StateTransitionManagerFactory caseSvcStateTransitionManagerFactory) {
+    this.appConfig = appConfig;
+    this.caseSvcStateTransitionManagerFactory = caseSvcStateTransitionManagerFactory;
+  }
 
   /**
    * Bean to allow application to make controlled state transitions of Cases
@@ -89,7 +95,7 @@ public class CaseSvcApplication {
   @Bean
   public DistributedListManager<Integer> caseDistributionListManager(
       RedissonClient redissonClient) {
-    return new DistributedListManagerRedissonImpl<Integer>(
+    return new DistributedListManagerRedissonImpl<>(
         CASE_DISTRIBUTION_LIST,
         redissonClient,
         appConfig.getDataGrid().getListTimeToWaitSeconds(),
@@ -129,9 +135,7 @@ public class CaseSvcApplication {
   @Bean
   @Qualifier("iacServiceRestUtility")
   public RestUtility iacServiceRestUtility() {
-    RestUtility restUtility =
-        new RestUtility(appConfig.getInternetAccessCodeSvc().getConnectionConfig());
-    return restUtility;
+    return new RestUtility(appConfig.getInternetAccessCodeSvc().getConnectionConfig());
   }
 
   /**
@@ -142,8 +146,7 @@ public class CaseSvcApplication {
   @Bean
   @Qualifier("actionServiceRestUtility")
   public RestUtility actionServiceRestUtility() {
-    RestUtility restUtility = new RestUtility(appConfig.getActionSvc().getConnectionConfig());
-    return restUtility;
+    return new RestUtility(appConfig.getActionSvc().getConnectionConfig());
   }
 
   /**
@@ -154,9 +157,7 @@ public class CaseSvcApplication {
   @Bean
   @Qualifier("collectionExerciseRestUtility")
   public RestUtility collectionExerciseRestUtility() {
-    RestUtility restUtility =
-        new RestUtility(appConfig.getCollectionExerciseSvc().getConnectionConfig());
-    return restUtility;
+    return new RestUtility(appConfig.getCollectionExerciseSvc().getConnectionConfig());
   }
 
   /**

@@ -7,9 +7,7 @@ import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.service.CTPService;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
-import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitBase;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 
@@ -36,28 +34,12 @@ public interface CaseService extends CTPService {
   List<Case> findCasesByPartyId(UUID partyId);
 
   /**
-   * Find Case entity by Unique Case PK.
-   *
-   * @param casePK Unique Case Id
-   * @return Case object or null
-   */
-  Case findCaseByCasePK(Integer casePK);
-
-  /**
    * Find Case entity by UUID.
    *
    * @param id Unique Case UUID
    * @return Case object or null
    */
   Case findCaseById(UUID id);
-
-  /**
-   * Find Case entity by unique caseRef.
-   *
-   * @param caseRef Unique caseRef
-   * @return Case object or null
-   */
-  Case findCaseByCaseRef(String caseRef);
 
   /**
    * Find Case entity by IAC.
@@ -154,6 +136,4 @@ public interface CaseService extends CTPService {
    * @param caseData the CaseCreation data
    */
   void createInitialCase(SampleUnitParent caseData);
-
-  Case generateNewCase(SampleUnitBase caseData, CaseGroup caseGroup, String iac, UUID actionplanid);
 }

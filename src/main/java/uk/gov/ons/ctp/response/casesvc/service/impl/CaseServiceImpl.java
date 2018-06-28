@@ -102,21 +102,9 @@ public class CaseServiceImpl implements CaseService {
   }
 
   @Override
-  public Case findCaseByCasePK(final Integer casePK) {
-    log.debug("Entering findCaseByCaseId");
-    return caseRepo.findOne(casePK);
-  }
-
-  @Override
   public Case findCaseById(final UUID id) {
     log.debug("Entering findCaseById");
     return caseRepo.findById(id);
-  }
-
-  @Override
-  public Case findCaseByCaseRef(final String caseRef) {
-    log.debug("Entering findCaseByCaseRef");
-    return caseRepo.findByCaseRef(caseRef);
   }
 
   @Override
@@ -269,7 +257,12 @@ public class CaseServiceImpl implements CaseService {
         effectTargetCaseStateTransition(category, targetCase);
         break;
     }
-
+    log.info(
+        "Successfully created case event, casePK={}, category={}, subCategory={}, createdBy={}",
+        caseEvent.getCaseFK(),
+        caseEvent.getCategory(),
+        caseEvent.getSubCategory(),
+        caseEvent.getCreatedBy());
     return createdCaseEvent;
   }
 
@@ -714,16 +707,5 @@ public class CaseServiceImpl implements CaseService {
     caseGroupRepo.saveAndFlush(newCaseGroup);
     log.debug("New CaseGroup created: {}", newCaseGroup.getId().toString());
     return newCaseGroup;
-  }
-
-  @Override
-  public Case generateNewCase(
-      SampleUnitBase caseData, CaseGroup caseGroup, String iac, UUID actionplanid) {
-    Case newCase = createNewCase(caseData, caseGroup);
-    newCase.setIac(iac);
-    newCase.setActionPlanId(actionplanid);
-    newCase.setState(CaseState.ACTIONABLE);
-    caseRepo.saveAndFlush(newCase);
-    return newCase;
   }
 }

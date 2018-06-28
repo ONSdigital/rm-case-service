@@ -263,8 +263,8 @@ public final class CaseEndpoint implements CTPEndpoint {
     }
     caseEvent.setCaseFK(targetCase.getCasePK());
 
-    // If category has a new sample unit type then a party id must be provided in the case event
     Category category = categoryService.findCategory(caseEvent.getCategory());
+    // If category has a new sample unit type then a party id must be provided in the case event
     if (category.getNewCaseSampleUnitType() != null
         && caseEventCreationRequestDTO.getPartyId() == null) {
       throw new CTPException(
@@ -272,8 +272,9 @@ public final class CaseEndpoint implements CTPEndpoint {
     }
 
     // Create new case if required
-    // NOTE this isn't an ideal point to do this,
-    // however, we will not be creating new cases from case events when BI cases are removed
+    // NOTE this isn't an ideal point to do this
+    // We will not be creating new cases from case events when BI cases are removed so will leave
+    // for now
     Case newCase;
     if (category.getNewCaseSampleUnitType() != null) {
       newCase = new Case();

@@ -48,6 +48,7 @@ public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCod
       backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
   @Override
   public List<String> generateIACs(int count) {
+    log.debug("Generating iac codes, count: {}", count);
     UriComponents uriComponents =
         restUtility.createUriComponents(
             appConfig.getInternetAccessCodeSvc().getIacPostPath(), null);
@@ -56,9 +57,9 @@ public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCod
     HttpEntity<CreateInternetAccessCodeDTO> httpEntity =
         restUtility.createHttpEntity(createCodesDTO);
 
-    log.debug("about to post to the IAC SVC with {}", createCodesDTO);
     ResponseEntity<String[]> responseEntity =
         restTemplate.exchange(uriComponents.toUri(), HttpMethod.POST, httpEntity, String[].class);
+    log.debug("Successfully generated iac codes, count: {}", count);
     return Arrays.asList(responseEntity.getBody());
   }
 
@@ -68,7 +69,7 @@ public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCod
       backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
   @Override
   public void disableIAC(String iac) {
-    log.debug("about to put to the IAC SVC with {}", iac);
+    log.debug("Disabling iac code");
     UriComponents uriComponents =
         restUtility.createUriComponents(
             appConfig.getInternetAccessCodeSvc().getIacPutPath(), null, iac);
@@ -77,7 +78,7 @@ public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCod
 
     restTemplate.exchange(
         uriComponents.toUri(), HttpMethod.PUT, httpEntity, InternetAccessCodeDTO.class);
-    log.debug("gone past the call to the IAC Svc...");
+    log.debug("Successfully disabled iac code");
   }
 
   @Retryable(
@@ -86,12 +87,17 @@ public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCod
       backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
   @Override
   public Boolean isIacActive(String iac) {
+    log.info("Checking if iac code is active");
     UriComponents uriComponents =
         restUtility.createUriComponents(
-            appConfig.getInternetAccessCodeSvc().getIacGetPath(), null, iac);
+            appConfig.getInternetAccessCodeSvc().getIacPutPath(), null, iac);
+    HttpEntity<?> httpEntity = restUtility.createHttpEntity(null);
+
     ResponseEntity<InternetAccessCodeDTO> responseEntity =
         restTemplate.exchange(
-            uriComponents.toUri(), HttpMethod.GET, null, InternetAccessCodeDTO.class);
-    return responseEntity.getBody().getActive();
+            uriComponents.toUri(), HttpMethod.GET, httpEntity, InternetAccessCodeDTO.class);
+    Boolean isActive = responseEntity.getBody().getActive();
+    log.info("Checking if iac code is active, isActive: {}", isActive);
+    return isActive;
   }
 }
