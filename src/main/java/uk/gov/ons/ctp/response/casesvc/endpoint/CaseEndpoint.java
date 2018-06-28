@@ -181,15 +181,9 @@ public final class CaseEndpoint implements CTPEndpoint {
     Case latestCase = casesList.get(casesList.size() - 1);
     List<String> iacs = internetAccessCodeSvcClientService.generateIACs(1);
 
-    SampleUnitBase sampleUnitBase =
-        new SampleUnitBase(
-            caseGroup.getSampleUnitRef(),
-            Character.toString('B'),
-            caseGroup.getPartyId().toString(),
-            latestCase.getCollectionInstrumentId().toString());
-    Case newCase =
-        caseService.generateNewCase(
-            sampleUnitBase, caseGroup, iacs.get(0), latestCase.getActionPlanId());
+    SampleUnitBase sampleUnitBase = new SampleUnitBase(UUID.randomUUID().toString(), caseGroup.getSampleUnitRef(), Character.toString('B'),
+            caseGroup.getPartyId().toString(), latestCase.getCollectionInstrumentId().toString());
+    Case newCase = caseService.generateNewCase(sampleUnitBase, caseGroup, iacs.get(0), latestCase.getActionPlanId());
     log.info("Successfully created new case {}", newCase.getId());
     return ResponseEntity.ok(buildDetailedCaseDTO(newCase, false, true));
   }
