@@ -22,17 +22,20 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import ma.glasnost.orika.MapperFacade;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.ons.ctp.common.FixtureHelper;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
+import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.config.InternetAccessCodeSvc;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
@@ -93,6 +96,7 @@ public class CaseServiceImplTest {
   private static final int CAT_SUCCESSFUL_RESPONSE_UPLOAD = 48;
   private static final int CAT_OFFLINE_RESPONSE_PROCESSED = 49;
   private static final int CAT_DISABLE_RESPONDENT_ENROLMENT = 50;
+  private static final int CAT_GENERATE_ENROLMENT_CODE = 51;
 
   /**
    * Note that the Integer values below are linked to the order in which cases appear in the array
@@ -146,6 +150,8 @@ public class CaseServiceImplTest {
   @Mock private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
   @Mock private CaseGroupAuditService caseGroupAuditService;
+
+  @Spy private MapperFacade mapperFacade = new CaseSvcBeanMapper();
 
   @InjectMocks private CaseServiceImpl caseService;
 
@@ -1703,6 +1709,27 @@ public class CaseServiceImplTest {
     caseService.createCaseEvent(caseEvent, null);
 
     verify(caseGroupService).transitionCaseGroupStatus(any(), any(), any());
+  }
+
+  @Test
+  public void testGenerateEnrolmentCodeCaseEvent() throws CTPException {
+    Case actionableBCase = cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(actionableBCase);
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.GENERATE_ENROLMENT_CODE))
+        .thenReturn(categories.get(CAT_GENERATE_ENROLMENT_CODE));
+    when(internetAccessCodeSvcClientService.isIacActive(actionableBCase.getIac()))
+        .thenReturn(false);
+    when(internetAccessCodeSvcClientService.generateIACs(1))
+        .thenReturn(Collections.singletonList(IAC_FOR_TEST));
+
+    CaseEvent caseEvent =
+        fabricateEvent(
+            CategoryDTO.CategoryName.GENERATE_ENROLMENT_CODE, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    caseService.createCaseEvent(caseEvent, null);
+
+    Case updatedBCase = mapperFacade.map(actionableBCase, Case.class);
+    updatedBCase.setIac(IAC_FOR_TEST);
+    verify(caseRepo, times(1)).saveAndFlush(updatedBCase);
   }
 
   /**
