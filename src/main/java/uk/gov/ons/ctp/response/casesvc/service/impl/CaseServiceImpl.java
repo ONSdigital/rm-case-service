@@ -18,10 +18,12 @@ import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseIacAudit;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Response;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseIacAuditRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
@@ -67,6 +69,7 @@ public class CaseServiceImpl implements CaseService {
   private CaseRepository caseRepo;
   private CaseEventRepository caseEventRepo;
   private CaseGroupRepository caseGroupRepo;
+  private CaseIacAuditRepository caseIacAuditRepo;
   private CategoryRepository categoryRepo;
 
   private ActionSvcClientService actionSvcClientService;
@@ -82,6 +85,7 @@ public class CaseServiceImpl implements CaseService {
       CaseRepository caseRepo,
       CaseEventRepository caseEventRepo,
       CaseGroupRepository caseGroupRepo,
+      CaseIacAuditRepository caseIacAuditRepo,
       CategoryRepository categoryRepo,
       ActionSvcClientService actionSvcClientService,
       CaseGroupService caseGroupService,
@@ -92,6 +96,7 @@ public class CaseServiceImpl implements CaseService {
     this.caseRepo = caseRepo;
     this.caseEventRepo = caseEventRepo;
     this.caseGroupRepo = caseGroupRepo;
+    this.caseIacAuditRepo = caseIacAuditRepo;
     this.categoryRepo = categoryRepo;
     this.actionSvcClientService = actionSvcClientService;
     this.caseGroupService = caseGroupService;
@@ -248,8 +253,15 @@ public class CaseServiceImpl implements CaseService {
         break;
       case GENERATE_ENROLMENT_CODE:
         if (!internetAccessCodeSvcClientService.isIacActive(targetCase.getIac())) {
-          targetCase.setIac(internetAccessCodeSvcClientService.generateIACs(1).get(0));
+          String iac = internetAccessCodeSvcClientService.generateIACs(1).get(0);
+          targetCase.setIac(iac);
           caseRepo.saveAndFlush(targetCase);
+
+          CaseIacAudit caseIacAudit = new CaseIacAudit();
+          caseIacAudit.setCaseFK(targetCase.getCasePK());
+          caseIacAudit.setIac(iac);
+          caseIacAudit.setCreatedDateTime(DateTimeUtil.nowUTC());
+          caseIacAuditRepo.saveAndFlush(caseIacAudit);
         }
         break;
       default:
@@ -369,7 +381,7 @@ public class CaseServiceImpl implements CaseService {
   @Override
   public void createInitialCase(SampleUnitParent sampleUnitParent) {
     Category category = new Category();
-    category.setShortDescription(String.format("Initial creation of case"));
+    category.setShortDescription("Initial creation of case");
     CaseGroup newCaseGroup = createNewCaseGroup(sampleUnitParent);
     if (sampleUnitParent.getSampleUnitChildren() != null) {
       for (SampleUnitChild sampleUnitChild :

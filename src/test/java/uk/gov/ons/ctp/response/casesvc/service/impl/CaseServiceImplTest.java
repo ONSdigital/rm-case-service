@@ -44,6 +44,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseIacAuditRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
@@ -128,29 +129,20 @@ public class CaseServiceImplTest {
       "91fda7f2-3825-4bd4-baef-943a0ccf0856";
 
   @Mock private CaseRepository caseRepo;
-
   @Mock private CaseEventRepository caseEventRepository;
-
+  @Mock private CaseGroupRepository caseGroupRepo;
+  @Mock private CaseIacAuditRepository caseIacAuditRepo;
   @Mock private CategoryRepository categoryRepo;
 
-  @Mock private CaseGroupRepository caseGroupRepo;
-
+  @Mock private ActionSvcClientService actionSvcClientService;
   @Mock private CaseGroupService caseGroupService;
-
-  @Mock private AppConfig appConfig;
-
-  @Mock private CaseNotificationPublisher notificationPublisher;
-
+  @Mock private CaseGroupAuditService caseGroupAuditService;
+  @Mock private CollectionExerciseSvcClientService collectionExerciseSvcClientService;
   @Mock private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
 
-  @Mock private CollectionExerciseSvcClientService collectionExerciseSvcClientService;
-
-  @Mock private ActionSvcClientService actionSvcClientService;
-
+  @Mock private AppConfig appConfig;
+  @Mock private CaseNotificationPublisher notificationPublisher;
   @Mock private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
-
-  @Mock private CaseGroupAuditService caseGroupAuditService;
-
   @Spy private MapperFacade mapperFacade = new CaseSvcBeanMapper();
 
   @InjectMocks private CaseServiceImpl caseService;
@@ -1730,6 +1722,7 @@ public class CaseServiceImplTest {
     Case updatedBCase = mapperFacade.map(actionableBCase, Case.class);
     updatedBCase.setIac(IAC_FOR_TEST);
     verify(caseRepo, times(1)).saveAndFlush(updatedBCase);
+    verify(caseIacAuditRepo, times(1)).saveAndFlush(any());
   }
 
   /**
