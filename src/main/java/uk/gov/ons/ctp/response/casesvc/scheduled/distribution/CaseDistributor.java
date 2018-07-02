@@ -17,10 +17,8 @@ import uk.gov.ons.ctp.common.distributed.DistributedListManager;
 import uk.gov.ons.ctp.common.distributed.LockingException;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
-import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseIacAudit;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseIacAuditRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
@@ -209,7 +207,7 @@ public class CaseDistributor {
    */
   private void processCase(final Case caze, final String iac) throws CTPException {
     UUID caseID = caze.getId();
-    log.info("processing caseid {}", caseID);
+    log.info("Processing case, caseId: {}", caseID);
 
     CaseDTO.CaseEvent event = null;
     CaseState initialState = caze.getState();
@@ -229,11 +227,7 @@ public class CaseDistributor {
     updatedCase.setIac(iac);
     caseRepo.saveAndFlush(updatedCase);
 
-    CaseIacAudit caseIacAudit = new CaseIacAudit();
-    caseIacAudit.setCaseFK(updatedCase.getCasePK());
-    caseIacAudit.setIac(iac);
-    caseIacAudit.setCreatedDateTime(DateTimeUtil.nowUTC());
-    caseIacAuditRepo.saveAndFlush(caseIacAudit);
+    caseService.saveCaseIacAudit(updatedCase);
 
     CaseNotification caseNotification = caseService.prepareCaseNotification(caze, event);
     log.debug("Publishing caseNotification...");

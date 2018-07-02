@@ -137,4 +137,11 @@ public interface CaseService extends CTPService {
    * @param caseData the CaseCreation data
    */
   void createInitialCase(SampleUnitParent caseData);
+
+  /**
+   * Adds a new row to the caseiacaudit table with the case id and iac of given case
+   *
+   * @param updatedCase the CaseCreation data
+   */
+  void saveCaseIacAudit(Case updatedCase);
 }

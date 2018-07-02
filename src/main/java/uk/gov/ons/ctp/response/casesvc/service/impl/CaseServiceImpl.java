@@ -159,21 +159,19 @@ public class CaseServiceImpl implements CaseService {
         NotificationType.valueOf(transitionEvent.name()));
   }
 
-  /**
-   * This is where it all happens kids. After the creation of the cases from sample and their
-   * subsequent distribution, this is where everything happens. Anything that happens to the case
-   * from then on is thru events - created here.
-   */
+  @Override
   public CaseEvent createCaseEvent(final CaseEvent caseEvent, final Case newCase)
       throws CTPException {
     return createCaseEvent(caseEvent, newCase, DateTimeUtil.nowUTC());
   }
 
+  @Override
   public CaseEvent createCaseEvent(
       final CaseEvent caseEvent, final Case newCase, final Case targetCase) throws CTPException {
     return createCaseEvent(caseEvent, newCase, DateTimeUtil.nowUTC(), targetCase);
   }
 
+  @Override
   public CaseEvent createCaseEvent(
       final CaseEvent caseEvent, final Case newCase, final Timestamp timestamp)
       throws CTPException {
@@ -257,11 +255,7 @@ public class CaseServiceImpl implements CaseService {
           targetCase.setIac(iac);
           caseRepo.saveAndFlush(targetCase);
 
-          CaseIacAudit caseIacAudit = new CaseIacAudit();
-          caseIacAudit.setCaseFK(targetCase.getCasePK());
-          caseIacAudit.setIac(iac);
-          caseIacAudit.setCreatedDateTime(DateTimeUtil.nowUTC());
-          caseIacAuditRepo.saveAndFlush(caseIacAudit);
+          saveCaseIacAudit(targetCase);
         }
         break;
       default:
@@ -276,6 +270,16 @@ public class CaseServiceImpl implements CaseService {
         caseEvent.getSubCategory(),
         caseEvent.getCreatedBy());
     return createdCaseEvent;
+  }
+
+  @Override
+  public void saveCaseIacAudit(final Case updatedCase) {
+    log.debug("Saving case iac audit, caseId: {}", updatedCase.getId());
+    CaseIacAudit caseIacAudit = new CaseIacAudit();
+    caseIacAudit.setCaseFK(updatedCase.getCasePK());
+    caseIacAudit.setIac(updatedCase.getIac());
+    caseIacAudit.setCreatedDateTime(DateTimeUtil.nowUTC());
+    caseIacAuditRepo.saveAndFlush(caseIacAudit);
   }
 
   /**

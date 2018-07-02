@@ -87,7 +87,7 @@ public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCod
       backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
   @Override
   public Boolean isIacActive(String iac) {
-    log.info("Checking if iac code is active");
+    log.debug("Checking if iac code is active");
     UriComponents uriComponents =
         restUtility.createUriComponents(
             appConfig.getInternetAccessCodeSvc().getIacPutPath(), null, iac);
@@ -96,8 +96,6 @@ public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCod
     ResponseEntity<InternetAccessCodeDTO> responseEntity =
         restTemplate.exchange(
             uriComponents.toUri(), HttpMethod.GET, httpEntity, InternetAccessCodeDTO.class);
-    Boolean isActive = responseEntity.getBody().getActive();
-    log.info("Checking if iac code is active, isActive: {}", isActive);
-    return isActive;
+    return responseEntity.getBody().getActive();
   }
 }

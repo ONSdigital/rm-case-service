@@ -53,20 +53,20 @@ public final class CaseEndpoint implements CTPEndpoint {
 
   private static final String CASE_ID = "%s case id %s";
 
+  private CaseService caseService;
   private CaseGroupService caseGroupService;
   private CategoryService categoryService;
-  private CaseService caseService;
   private MapperFacade mapperFacade;
 
   @Autowired
   public CaseEndpoint(
+      CaseService caseService,
       CaseGroupService caseGroupService,
       CategoryService categoryService,
-      CaseService caseService,
       @Qualifier("caseSvcBeanMapper") MapperFacade mapperFacade) {
+    this.caseService = caseService;
     this.caseGroupService = caseGroupService;
     this.categoryService = categoryService;
-    this.caseService = caseService;
     this.mapperFacade = mapperFacade;
   }
 
@@ -109,7 +109,7 @@ public final class CaseEndpoint implements CTPEndpoint {
       @PathVariable("partyId") final UUID partyId,
       @RequestParam(value = "caseevents", required = false) boolean caseevents,
       @RequestParam(value = "iac", required = false) boolean iac) {
-    log.info("Entering findCasesByPartyId with {}", partyId);
+    log.info("Retrieving cases by party, partyId: {}", partyId);
     List<Case> casesList = caseService.findCasesByPartyId(partyId);
 
     if (CollectionUtils.isEmpty(casesList)) {
@@ -138,7 +138,7 @@ public final class CaseEndpoint implements CTPEndpoint {
       @RequestParam(value = "caseevents", required = false) final boolean caseevents,
       @RequestParam(value = "iac", required = false) final boolean iacFlag)
       throws CTPException {
-    log.info("Entering findCaseByIac with {}", iac);
+    log.info("Retrieving case by iac, iac: {}", iac);
     Case targetCase = caseService.findCaseByIac(iac);
     if (targetCase == null) {
       throw new CTPException(
@@ -251,9 +251,9 @@ public final class CaseEndpoint implements CTPEndpoint {
       BindingResult bindingResult)
       throws CTPException, InvalidRequestException {
     log.info(
-        "Entering createCaseEvent with caseId {} and requestObject {}",
+        "Creating case event, caseId: {}, category: {}",
         caseId,
-        caseEventCreationRequestDTO);
+        caseEventCreationRequestDTO.getCategory());
     if (bindingResult.hasErrors()) {
       throw new InvalidRequestException("Binding errors for case event creation: ", bindingResult);
     }
@@ -280,7 +280,6 @@ public final class CaseEndpoint implements CTPEndpoint {
     // Create new case if required
     // NOTE this isn't an ideal point to do this
     // We will not be creating new cases from case events when BI cases are removed so will leave
-    // for now
     Case newCase;
     if (category.getNewCaseSampleUnitType() != null) {
       newCase = new Case();

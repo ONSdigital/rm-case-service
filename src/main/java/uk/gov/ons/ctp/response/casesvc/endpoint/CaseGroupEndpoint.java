@@ -88,7 +88,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   @RequestMapping(value = "/partyid/{partyId}", method = RequestMethod.GET)
   public ResponseEntity<List<CaseGroupDTO>> findCaseGroupsByPartyId(
       @PathVariable("partyId") final UUID partyId) {
-    log.info("Entering findCaseGroupsByPartyId with {}", partyId);
+    log.info("Retrieving case groups by party id, partyId: {}", partyId);
     List<CaseGroup> caseGroupList = caseGroupService.findCaseGroupByPartyId(partyId);
 
     if (CollectionUtils.isEmpty(caseGroupList)) {
@@ -119,7 +119,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
       @PathVariable("ruRef") final String ruRef)
       throws CTPException {
     log.info(
-        "Entering findTransitionsByCollexIdAndRuRef with collectionExerciseId {}, ruRef {}",
+        "Retrieving casegroup transistions, collectionExerciseId: {}, ruRef: {}",
         collectionExerciseId,
         ruRef);
 

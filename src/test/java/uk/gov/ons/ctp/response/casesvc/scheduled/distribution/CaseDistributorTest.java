@@ -28,8 +28,6 @@ import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.config.CaseDistribution;
 import uk.gov.ons.ctp.response.casesvc.config.InternetAccessCodeSvc;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseIacAudit;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseIacAuditRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.EventPublisher;
@@ -62,8 +60,6 @@ public class CaseDistributorTest {
   @Mock private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
 
   @Mock private CaseRepository caseRepo;
-
-  @Mock private CaseIacAuditRepository caseIacAuditRepository;
 
   @Mock private CaseService caseService;
 
@@ -212,7 +208,7 @@ public class CaseDistributorTest {
 
     verify(internetAccessCodeSvcClientService, times(1)).generateIACs(any(Integer.class));
     verify(caseRepo, times(5)).saveAndFlush(any(Case.class));
-    verify(caseIacAuditRepository, times(5)).saveAndFlush(any(CaseIacAudit.class));
+    verify(caseService, times(5)).saveCaseIacAudit(any());
     verify(caseService, times(5))
         .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, times(5)).sendNotification(any(CaseNotification.class));
