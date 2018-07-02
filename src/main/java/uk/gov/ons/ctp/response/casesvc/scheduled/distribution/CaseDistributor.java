@@ -17,8 +17,11 @@ import uk.gov.ons.ctp.common.distributed.DistributedListManager;
 import uk.gov.ons.ctp.common.distributed.LockingException;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
+import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseIacAudit;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseIacAuditRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.EventPublisher;
@@ -51,23 +54,37 @@ public class CaseDistributor {
   // excluded case ids
   private static final int IMPOSSIBLE_CASE_ID = Integer.MAX_VALUE;
 
-  @Autowired private DistributedListManager<Integer> caseDistributionListManager;
-
-  @Autowired private AppConfig appConfig;
+  private AppConfig appConfig;
+  private CaseRepository caseRepo;
+  private CaseIacAuditRepository caseIacAuditRepo;
+  private CaseService caseService;
+  private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
+  private DistributedListManager<Integer> caseDistributionListManager;
+  private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
+  private CaseNotificationPublisher notificationPublisher;
+  private EventPublisher eventPublisher;
 
   @Autowired
-  private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
-
-  @Autowired private CaseNotificationPublisher notificationPublisher;
-
-  @Autowired private CaseRepository caseRepo;
-
-  @Autowired private CaseService caseService;
-
-  @Autowired private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
-
-  @Autowired private EventPublisher eventPublisher;
-  // private EventExchange eventExchange;
+  public CaseDistributor(
+      AppConfig appConfig,
+      DistributedListManager<Integer> caseDistributionListManager,
+      CaseRepository caseRepo,
+      CaseIacAuditRepository caseIacAuditRepo,
+      CaseService caseService,
+      InternetAccessCodeSvcClientService internetAccessCodeSvcClientService,
+      StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager,
+      CaseNotificationPublisher notificationPublisher,
+      EventPublisher eventPublisher) {
+    this.appConfig = appConfig;
+    this.caseRepo = caseRepo;
+    this.caseIacAuditRepo = caseIacAuditRepo;
+    this.caseService = caseService;
+    this.internetAccessCodeSvcClientService = internetAccessCodeSvcClientService;
+    this.caseDistributionListManager = caseDistributionListManager;
+    this.caseSvcStateTransitionManager = caseSvcStateTransitionManager;
+    this.notificationPublisher = notificationPublisher;
+    this.eventPublisher = eventPublisher;
+  }
 
   /**
    * wake up on schedule and check for cases that are in INIT state - fetch IACs for them, adding
@@ -157,7 +174,7 @@ public class CaseDistributor {
             0,
             appConfig.getCaseDistribution().getRetrievalMax(),
             new Sort(new Sort.Order(Direction.ASC, "createdDateTime")));
-    excludedCases.add(Integer.valueOf(IMPOSSIBLE_CASE_ID));
+    excludedCases.add(IMPOSSIBLE_CASE_ID);
     cases =
         caseRepo.findByStateInAndCasePKNotIn(
             Arrays.asList(CaseState.SAMPLED_INIT, CaseState.REPLACEMENT_INIT),
@@ -211,6 +228,12 @@ public class CaseDistributor {
     Case updatedCase = transitionCase(caze, event);
     updatedCase.setIac(iac);
     caseRepo.saveAndFlush(updatedCase);
+
+    CaseIacAudit caseIacAudit = new CaseIacAudit();
+    caseIacAudit.setCaseFK(updatedCase.getCasePK());
+    caseIacAudit.setIac(iac);
+    caseIacAudit.setCreatedDateTime(DateTimeUtil.nowUTC());
+    caseIacAuditRepo.saveAndFlush(caseIacAudit);
 
     CaseNotification caseNotification = caseService.prepareCaseNotification(caze, event);
     log.debug("Publishing caseNotification...");
