@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -27,7 +28,6 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
@@ -182,8 +182,10 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @throws CTPException something went wrong
    */
   @RequestMapping(value = "/casegroupid/{casegroupId}", method = RequestMethod.GET)
-  public ResponseEntity<List<CaseDTO>> findCasesInCaseGroup(
-      @PathVariable("casegroupId") final UUID casegroupId) throws CTPException {
+  public ResponseEntity<List<CaseDetailsDTO>> findCasesInCaseGroup(
+      @PathVariable("casegroupId") final UUID casegroupId,
+      @RequestParam(value = "iac", required = false) final boolean iacFlag)
+      throws CTPException {
     log.info("Entering findCasesInCaseGroup with {}", casegroupId);
 
     CaseGroup caseGroup = caseGroupService.findCaseGroupById(casegroupId);
@@ -197,8 +199,12 @@ public final class CaseEndpoint implements CTPEndpoint {
     if (CollectionUtils.isEmpty(casesList)) {
       return ResponseEntity.noContent().build();
     } else {
-      List<CaseDTO> caseDTOs = mapperFacade.mapAsList(casesList, CaseDTO.class);
-      return ResponseEntity.ok(caseDTOs);
+      List<CaseDetailsDTO> caseDetailsDTOList =
+          casesList
+              .stream()
+              .map(c -> buildDetailedCaseDTO(c, false, iacFlag))
+              .collect(Collectors.toList());
+      return ResponseEntity.ok(caseDetailsDTOList);
     }
   }
 
