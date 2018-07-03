@@ -80,19 +80,20 @@ public class CaseServiceImpl implements CaseService {
   private CaseNotificationPublisher notificationPublisher;
   private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
+  /** Constructor for CaseServiceImpl */
   @Autowired
   public CaseServiceImpl(
-      CaseRepository caseRepo,
-      CaseEventRepository caseEventRepo,
-      CaseGroupRepository caseGroupRepo,
-      CaseIacAuditRepository caseIacAuditRepo,
-      CategoryRepository categoryRepo,
-      ActionSvcClientService actionSvcClientService,
-      CaseGroupService caseGroupService,
-      CollectionExerciseSvcClientService collectionExerciseSvcClientService,
-      InternetAccessCodeSvcClientService internetAccessCodeSvcClientService,
-      CaseNotificationPublisher notificationPublisher,
-      StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager) {
+      final CaseRepository caseRepo,
+      final CaseEventRepository caseEventRepo,
+      final CaseGroupRepository caseGroupRepo,
+      final CaseIacAuditRepository caseIacAuditRepo,
+      final CategoryRepository categoryRepo,
+      final ActionSvcClientService actionSvcClientService,
+      final CaseGroupService caseGroupService,
+      final CollectionExerciseSvcClientService collectionExerciseSvcClientService,
+      final InternetAccessCodeSvcClientService internetAccessCodeSvcClientService,
+      final CaseNotificationPublisher notificationPublisher,
+      final StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager) {
     this.caseRepo = caseRepo;
     this.caseEventRepo = caseEventRepo;
     this.caseGroupRepo = caseGroupRepo;

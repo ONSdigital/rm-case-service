@@ -58,12 +58,13 @@ public final class CaseEndpoint implements CTPEndpoint {
   private CategoryService categoryService;
   private MapperFacade mapperFacade;
 
+  /** Contructor for CaseEndpoint */
   @Autowired
   public CaseEndpoint(
-      CaseService caseService,
-      CaseGroupService caseGroupService,
-      CategoryService categoryService,
-      @Qualifier("caseSvcBeanMapper") MapperFacade mapperFacade) {
+      final CaseService caseService,
+      final CaseGroupService caseGroupService,
+      final CategoryService categoryService,
+      final @Qualifier("caseSvcBeanMapper") MapperFacade mapperFacade) {
     this.caseService = caseService;
     this.caseGroupService = caseGroupService;
     this.categoryService = categoryService;
@@ -107,8 +108,8 @@ public final class CaseEndpoint implements CTPEndpoint {
   @RequestMapping(value = "/partyid/{partyId}", method = RequestMethod.GET)
   public ResponseEntity<List<CaseDetailsDTO>> findCasesByPartyId(
       @PathVariable("partyId") final UUID partyId,
-      @RequestParam(value = "caseevents", required = false) boolean caseevents,
-      @RequestParam(value = "iac", required = false) boolean iac) {
+      @RequestParam(value = "caseevents", required = false) final boolean caseevents,
+      @RequestParam(value = "iac", required = false) final boolean iac) {
     log.info("Retrieving cases by party, partyId: {}", partyId);
     List<Case> casesList = caseService.findCasesByPartyId(partyId);
 
@@ -157,7 +158,7 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @param targetCase Case Object for event to be created
    * @throws CTPException if IAC not found
    */
-  private void createNewEventForAccessCodeAuthAttempt(Case targetCase) throws CTPException {
+  private void createNewEventForAccessCodeAuthAttempt(final Case targetCase) throws CTPException {
     Category cat =
         categoryService.findCategory(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
     if (cat == null) {
@@ -178,6 +179,7 @@ public final class CaseEndpoint implements CTPEndpoint {
    * the GET endpoint to find cases by case group UUID
    *
    * @param casegroupId UUID to find by
+   * @param iacFlag Boolean flag for returning iac's with cases
    * @return the case events found
    * @throws CTPException something went wrong
    */

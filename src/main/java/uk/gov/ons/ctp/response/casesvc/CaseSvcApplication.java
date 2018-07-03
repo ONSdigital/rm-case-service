@@ -56,9 +56,11 @@ public class CaseSvcApplication {
   private AppConfig appConfig;
   private StateTransitionManagerFactory caseSvcStateTransitionManagerFactory;
 
+  /** Constructor for CaseSvcApplication */
   @Autowired
   public CaseSvcApplication(
-      AppConfig appConfig, StateTransitionManagerFactory caseSvcStateTransitionManagerFactory) {
+      final AppConfig appConfig,
+      StateTransitionManagerFactory caseSvcStateTransitionManagerFactory) {
     this.appConfig = appConfig;
     this.caseSvcStateTransitionManagerFactory = caseSvcStateTransitionManagerFactory;
   }

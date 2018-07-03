@@ -19,7 +19,6 @@ import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseIacAuditRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.EventPublisher;
@@ -54,7 +53,6 @@ public class CaseDistributor {
 
   private AppConfig appConfig;
   private CaseRepository caseRepo;
-  private CaseIacAuditRepository caseIacAuditRepo;
   private CaseService caseService;
   private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
   private DistributedListManager<Integer> caseDistributionListManager;
@@ -64,18 +62,16 @@ public class CaseDistributor {
 
   @Autowired
   public CaseDistributor(
-      AppConfig appConfig,
-      DistributedListManager<Integer> caseDistributionListManager,
-      CaseRepository caseRepo,
-      CaseIacAuditRepository caseIacAuditRepo,
-      CaseService caseService,
-      InternetAccessCodeSvcClientService internetAccessCodeSvcClientService,
-      StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager,
-      CaseNotificationPublisher notificationPublisher,
-      EventPublisher eventPublisher) {
+      final AppConfig appConfig,
+      final DistributedListManager<Integer> caseDistributionListManager,
+      final CaseRepository caseRepo,
+      final CaseService caseService,
+      final InternetAccessCodeSvcClientService internetAccessCodeSvcClientService,
+      final StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager,
+      final CaseNotificationPublisher notificationPublisher,
+      final EventPublisher eventPublisher) {
     this.appConfig = appConfig;
     this.caseRepo = caseRepo;
-    this.caseIacAuditRepo = caseIacAuditRepo;
     this.caseService = caseService;
     this.internetAccessCodeSvcClientService = internetAccessCodeSvcClientService;
     this.caseDistributionListManager = caseDistributionListManager;

@@ -32,11 +32,12 @@ public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCod
   private RestTemplate restTemplate;
   private RestUtility restUtility;
 
+  /** Constructor for InternetAccessCodeSvcClientServiceImpl */
   @Autowired
   public InternetAccessCodeSvcClientServiceImpl(
-      AppConfig appConfig,
-      RestTemplate restTemplate,
-      @Qualifier("iacServiceRestUtility") RestUtility restUtility) {
+      final AppConfig appConfig,
+      final RestTemplate restTemplate,
+      final @Qualifier("iacServiceRestUtility") RestUtility restUtility) {
     this.appConfig = appConfig;
     this.restTemplate = restTemplate;
     this.restUtility = restUtility;
@@ -86,7 +87,7 @@ public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCod
       maxAttemptsExpression = "#{${retries.maxAttempts}}",
       backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
   @Override
-  public Boolean isIacActive(String iac) {
+  public Boolean isIacActive(final String iac) {
     log.debug("Checking if iac code is active");
     UriComponents uriComponents =
         restUtility.createUriComponents(

@@ -22,7 +22,6 @@ import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.ERRORMSG_CAS
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import ma.glasnost.orika.MapperFacade;
@@ -56,7 +55,6 @@ import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
-import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 
 /** Case Endpoint Unit tests */
 public final class CaseEndpointUnitTest {
@@ -136,7 +134,6 @@ public final class CaseEndpointUnitTest {
   private static final String NINE = "9";
   private static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
   private static final String FINDCASEBYID = "findCaseById";
-  private static final List<String> IACList = Collections.singletonList("jkbvyklkwj88");
 
   private static final String CASEEVENT_INVALIDJSON =
       "{\"description\":\"a\",\"category\":\"BAD_CAT\",\"createdBy\":\"u\"}";
@@ -153,8 +150,6 @@ public final class CaseEndpointUnitTest {
   @Mock private CaseService caseService;
 
   @Mock private CaseGroupService caseGroupService;
-
-  @Mock private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
 
   @Spy private MapperFacade mapperFacade = new CaseSvcBeanMapper();
 

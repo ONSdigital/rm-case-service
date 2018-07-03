@@ -43,13 +43,14 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   private StateTransitionManager<CaseGroupStatus, CategoryName> caseGroupStatusTransitionManager;
   private MapperFacade mapperFacade;
 
+  /** Constructor for CaseGroupEndpoint */
   @Autowired
   public CaseGroupEndpoint(
-      CaseService caseService,
-      CaseGroupService caseGroupService,
-      CategoryService categoryService,
-      StateTransitionManager<CaseGroupStatus, CategoryName> caseGroupStatusTransitionManager,
-      @Qualifier("caseSvcBeanMapper") MapperFacade mapperFacade) {
+      final CaseService caseService,
+      final CaseGroupService caseGroupService,
+      final CategoryService categoryService,
+      final StateTransitionManager<CaseGroupStatus, CategoryName> caseGroupStatusTransitionManager,
+      final @Qualifier("caseSvcBeanMapper") MapperFacade mapperFacade) {
     this.caseService = caseService;
     this.caseGroupService = caseGroupService;
     this.categoryService = categoryService;
