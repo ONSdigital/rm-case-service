@@ -140,6 +140,9 @@ public final class CaseEndpointUnitTest {
   private static final String CASEEVENT_VALIDJSON =
       "{\"description\":\"sometest\",\"category\":\"RESPONDENT_ENROLED\",\"partyId\":"
           + "\"3b136c4b-7a14-4904-9e01-13364dd7b971\",\"createdBy\":\"unittest\"}";
+  private static final String CASEEVENT_VALIDJSON_NO_NEW_CASE =
+      "{\"description\":\"sometest\",\"category\":\"GENERAL_ENQUIRY\",\"partyId\":"
+          + "\"3b136c4b-7a14-4904-9e01-13364dd7b971\",\"createdBy\":\"unittest\"}";
   private static final String CASEEVENT_VALIDJSON_NO_PARTY =
       "{\"description\":\"sometest\",\"category\":\"RESPONDENT_ENROLED\",\"createdBy\":\"unittest\"}";
 
@@ -757,6 +760,36 @@ public final class CaseEndpointUnitTest {
 
     ResultActions actions =
         mockMvc.perform(postJson(String.format("/cases/%s/events", CASE9_ID), CASEEVENT_VALIDJSON));
+
+    actions.andExpect(status().isCreated());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("createCaseEvent"));
+    actions.andExpect(jsonPath("$.*", hasSize(7)));
+    actions.andExpect(jsonPath("$.caseId", is(CASE9_ID.toString())));
+    actions.andExpect(jsonPath("$.description", is(CASE9_DESCRIPTION)));
+    actions.andExpect(jsonPath("$.createdBy", is(CASE9_CREATEDBY)));
+    actions.andExpect(jsonPath("$.createdDateTime", is(new DateMatcher(CASE_DATE_VALUE_1))));
+    actions.andExpect(jsonPath("$.category", is(CASE9_CATEGORY)));
+    actions.andExpect(jsonPath("$.partyId", is(CASE9_PARTYID.toString())));
+    actions.andExpect(jsonPath("$.subCategory").doesNotExist());
+  }
+
+  /**
+   * a test creating a new case event with no new case
+   *
+   * @throws Exception exception thrown
+   */
+  @Test
+  public void createCaseEventNoNewCase() throws Exception {
+    when(categoryService.findCategory(CategoryName.GENERAL_ENQUIRY))
+        .thenReturn(categoryResults.get(0));
+    when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class), any(Case.class)))
+        .thenReturn(caseEventsResults.get(3));
+    when(caseService.findCaseById(CASE9_ID)).thenReturn(caseResults.get(8));
+
+    ResultActions actions =
+        mockMvc.perform(
+            postJson(String.format("/cases/%s/events", CASE9_ID), CASEEVENT_VALIDJSON_NO_NEW_CASE));
 
     actions.andExpect(status().isCreated());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
