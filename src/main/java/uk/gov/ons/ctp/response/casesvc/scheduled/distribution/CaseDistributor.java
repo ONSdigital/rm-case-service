@@ -60,6 +60,7 @@ public class CaseDistributor {
   private CaseNotificationPublisher notificationPublisher;
   private EventPublisher eventPublisher;
 
+  /** Constructor for CaseDistributor */
   @Autowired
   public CaseDistributor(
       final AppConfig appConfig,
