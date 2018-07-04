@@ -2,7 +2,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>casesvc</artifactId>
-  <version>10.49.15-SNAPSHOT</version>
+  <version>10.49.16-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>CTP : CaseService</name>
