@@ -1,9 +1,9 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
+import java.util.UUID;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
@@ -13,8 +13,6 @@ import uk.gov.ons.ctp.common.rest.RestUtility;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
-
-import java.util.UUID;
 
 /** The impl of the service which calls the action service via REST */
 @Slf4j
@@ -31,14 +29,14 @@ public class ActionSvcClientServiceImpl implements ActionSvcClientService {
 
   @Override
   public void createAndPostAction(String actionType, UUID caseId, String createdBy) {
-    UriComponents uriComponents =
-        restUtility.createUriComponents(appConfig.getActionSvc().getActionsPath(), null);
-
     ActionDTO actionDTO = new ActionDTO();
     actionDTO.setCaseId(caseId);
     actionDTO.setActionTypeName(actionType);
     actionDTO.setCreatedBy(createdBy);
     HttpEntity<ActionDTO> httpEntity = restUtility.createHttpEntity(actionDTO);
+
+    UriComponents uriComponents =
+        restUtility.createUriComponents(appConfig.getActionSvc().getActionsPath(), null);
 
     log.debug("about to post to the Action SVC with {}", actionDTO);
     restTemplate.exchange(uriComponents.toUri(), HttpMethod.POST, httpEntity, ActionDTO.class);

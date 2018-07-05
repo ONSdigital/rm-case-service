@@ -1,1 +1,2 @@
-ALTER TABLE casesvc.case ADD COLUMN sampleunit_id uuid;
+ALTER TABLE casesvc.case
+  ADD COLUMN sampleunit_id uuid;

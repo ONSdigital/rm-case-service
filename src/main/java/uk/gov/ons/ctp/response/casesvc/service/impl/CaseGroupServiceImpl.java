@@ -3,11 +3,9 @@ package uk.gov.ons.ctp.response.casesvc.service.impl;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.common.error.CTPException;
@@ -63,7 +61,8 @@ public class CaseGroupServiceImpl implements CaseGroupService {
   public CaseGroup findCaseGroupByCollectionExerciseIdAndRuRef(
       final UUID collectionExerciseId, final String ruRef) {
     log.debug(
-        "Entering findCaseGroupByCollectionExerciseIdAndRuRef for collectionExerciseId {}, ruRef {}");
+        "Entering findCaseGroupByCollectionExerciseIdAndRuRef for "
+            + "collectionExerciseId {}, ruRef {}");
     return caseGroupRepo.findCaseGroupByCollectionExerciseIdAndSampleUnitRef(
         collectionExerciseId, ruRef);
   }

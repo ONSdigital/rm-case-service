@@ -1,8 +1,9 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import net.sourceforge.cobertura.CoverageIgnore;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -10,9 +11,6 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * A CategoryService implementation which encapsulates all business logic operating on the Category

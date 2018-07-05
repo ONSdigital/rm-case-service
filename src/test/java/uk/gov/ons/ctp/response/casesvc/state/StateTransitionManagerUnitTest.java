@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.state;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
@@ -7,8 +9,6 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
-
-import static org.junit.Assert.assertEquals;
 
 public class StateTransitionManagerUnitTest {
 

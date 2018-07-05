@@ -1,5 +1,13 @@
 package uk.gov.ons.ctp.response.casesvc.message.impl;
 
+import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED;
+import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE;
+import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE;
+import static uk.gov.ons.ctp.response.casesvc.utility.Constants.QUESTIONNAIRE_RESPONSE;
+import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
+
+import java.sql.Timestamp;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.annotation.MessageEndpoint;
@@ -15,26 +23,14 @@ import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 
-import java.sql.Timestamp;
-import java.util.UUID;
-
-import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE;
-import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE;
-import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED;
-import static uk.gov.ons.ctp.response.casesvc.utility.Constants.QUESTIONNAIRE_RESPONSE;
-import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
-
-/**
- * The reader of CaseReceipts from queue
- */
+/** The reader of CaseReceipts from queue */
 @Slf4j
 @MessageEndpoint
 public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
 
   private static final String EXISTING_CASE_NOT_FOUND = "No existing case found for caseId %s";
 
-  @Autowired
-  private CaseService caseService;
+  @Autowired private CaseService caseService;
 
   /**
    * To process CaseReceipts read from queue
@@ -48,8 +44,8 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
     log.debug("entering process with caseReceipt {}", caseReceipt);
     UUID caseId = UUID.fromString(caseReceipt.getCaseId());
     InboundChannel inboundChannel = caseReceipt.getInboundChannel();
-    Timestamp responseTimestamp = new Timestamp(caseReceipt.getResponseDateTime().toGregorianCalendar()
-            .getTimeInMillis());
+    Timestamp responseTimestamp =
+        new Timestamp(caseReceipt.getResponseDateTime().toGregorianCalendar().getTimeInMillis());
 
     Case existingCase = caseService.findCaseById(caseId);
     log.debug("existingCase is {}", existingCase);

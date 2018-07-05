@@ -1,7 +1,23 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.net.URL;
+import java.util.UUID;
+import java.util.concurrent.BlockingQueue;
+import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -16,32 +32,11 @@ import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
-import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitBase;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.tools.rabbit.Rabbitmq;
 import uk.gov.ons.tools.rabbit.SimpleMessageBase;
 import uk.gov.ons.tools.rabbit.SimpleMessageListener;
 import uk.gov.ons.tools.rabbit.SimpleMessageSender;
-
-import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.UUID;
-import java.util.concurrent.BlockingQueue;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
 
 @Slf4j
 @ContextConfiguration
@@ -49,19 +44,13 @@ import static org.junit.Assert.assertNotNull;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CaseEndpointIT {
 
-  @Autowired private ResourceLoader resourceLoader;
-
-  @LocalServerPort private int port;
-
-  @Autowired private ObjectMapper mapper;
-
-  @Autowired private AppConfig appConfig;
-
-  @Rule public WireMockRule wireMockRule = new WireMockRule(options().port(18002));
-
   @ClassRule public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
-
   @Rule public final SpringMethodRule springMethodRule = new SpringMethodRule();
+  @Rule public WireMockRule wireMockRule = new WireMockRule(options().port(18002));
+  @Autowired private ResourceLoader resourceLoader;
+  @LocalServerPort private int port;
+  @Autowired private ObjectMapper mapper;
+  @Autowired private AppConfig appConfig;
 
   //  @Rule
   //  public WireMockRule wireMockRule = new WireMockRule(options().port(18002));
@@ -89,16 +78,22 @@ public class CaseEndpointIT {
     sender.sendMessage("collection-inbound-exchange", "Case.CaseDelivery.binding", xml);
 
     SimpleMessageListener listener = getMessageListener();
-    BlockingQueue<String> queue = listener.listen(SimpleMessageBase.ExchangeType.Direct,
-                                                  "case-outbound-exchange", "Case.LifecycleEvents.binding");
+    BlockingQueue<String> queue =
+        listener.listen(
+            SimpleMessageBase.ExchangeType.Direct,
+            "case-outbound-exchange",
+            "Case.LifecycleEvents.binding");
 
     String message = queue.take();
     log.info("message = " + message);
     assertNotNull("Timeout waiting for message to arrive in Case.LifecycleEvents", message);
 
     jaxbContext = JAXBContext.newInstance(CaseNotification.class);
-    CaseNotification caseNotification = (CaseNotification) jaxbContext.createUnmarshaller()
-                                                                      .unmarshal(new ByteArrayInputStream(message.getBytes()));
+    CaseNotification caseNotification =
+        (CaseNotification)
+            jaxbContext
+                .createUnmarshaller()
+                .unmarshal(new ByteArrayInputStream(message.getBytes()));
 
     assertThat(caseNotification.getSampleUnitId()).isEqualTo(sampleUnitId.toString());
   }
@@ -147,7 +142,8 @@ public class CaseEndpointIT {
   private SimpleMessageListener getMessageListener() {
     Rabbitmq config = this.appConfig.getRabbitmq();
 
-    return new SimpleMessageListener(config.getHost(), config.getPort(), config.getUsername(), config.getPassword());
+    return new SimpleMessageListener(
+        config.getHost(), config.getPort(), config.getUsername(), config.getPassword());
   }
 
   private void createIACStub() throws IOException {

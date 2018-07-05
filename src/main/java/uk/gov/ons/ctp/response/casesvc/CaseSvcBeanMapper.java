@@ -1,8 +1,8 @@
 package uk.gov.ons.ctp.response.casesvc;
 
-import org.springframework.stereotype.Component;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.ConfigurableMapper;
+import org.springframework.stereotype.Component;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
