@@ -1,5 +1,11 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
+import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +16,11 @@ import org.springframework.util.StringUtils;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
-import uk.gov.ons.ctp.response.casesvc.domain.model.*;
+import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
+import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
+import uk.gov.ons.ctp.response.casesvc.domain.model.Response;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
@@ -21,28 +31,26 @@ import uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitBase;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitChild;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
-import uk.gov.ons.ctp.response.casesvc.service.*;
+import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
+import uk.gov.ons.ctp.response.casesvc.service.CaseGroupAuditService;
+import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
+import uk.gov.ons.ctp.response.casesvc.service.CaseService;
+import uk.gov.ons.ctp.response.casesvc.service.CollectionExerciseSvcClientService;
+import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.utility.Constants;
 import uk.gov.ons.ctp.response.collection.exercise.representation.CaseTypeDTO;
 import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
 import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO.SampleUnitType;
 
-import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 /**
- * A CaseService implementation which encapsulates all business logic operating
- * on the Case entity model.
+ * A CaseService implementation which encapsulates all business logic operating on the Case entity
+ * model.
  */
 @Service
 @Slf4j
@@ -58,38 +66,28 @@ public class CaseServiceImpl implements CaseService {
 
   private static final int TRANSACTION_TIMEOUT = 30;
 
-  @Autowired
-  private CaseRepository caseRepo;
+  @Autowired private CaseRepository caseRepo;
 
-  @Autowired
-  private CaseGroupRepository caseGroupRepo;
+  @Autowired private CaseGroupRepository caseGroupRepo;
 
   @Autowired
   private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
-  @Autowired
-  private CaseEventRepository caseEventRepo;
+  @Autowired private CaseEventRepository caseEventRepo;
 
-  @Autowired
-  private CaseGroupService caseGroupService;
+  @Autowired private CaseGroupService caseGroupService;
 
-  @Autowired
-  private CategoryRepository categoryRepo;
+  @Autowired private CategoryRepository categoryRepo;
 
-  @Autowired
-  private CaseGroupAuditService caseGroupAuditService;
+  @Autowired private CaseGroupAuditService caseGroupAuditService;
 
-  @Autowired
-  private ActionSvcClientService actionSvcClientService;
+  @Autowired private ActionSvcClientService actionSvcClientService;
 
-  @Autowired
-  private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
+  @Autowired private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
 
-  @Autowired
-  private CollectionExerciseSvcClientService collectionExerciseSvcClientService;
+  @Autowired private CollectionExerciseSvcClientService collectionExerciseSvcClientService;
 
-  @Autowired
-  private CaseNotificationPublisher notificationPublisher;
+  @Autowired private CaseNotificationPublisher notificationPublisher;
 
   @Override
   public Case findCaseByCasePK(final Integer casePK) {
@@ -118,7 +116,8 @@ public class CaseServiceImpl implements CaseService {
     Case caze = null;
     if (!CollectionUtils.isEmpty(cases)) {
       if (cases.size() != 1) {
-        throw new CTPException(CTPException.Fault.SYSTEM_ERROR, String.format(IAC_OVERUSE_MSG, iac));
+        throw new CTPException(
+            CTPException.Fault.SYSTEM_ERROR, String.format(IAC_OVERUSE_MSG, iac));
       }
       caze = cases.get(0);
     }
@@ -153,22 +152,31 @@ public class CaseServiceImpl implements CaseService {
   }
 
   /**
-   * This is where it all happens kids. After the creation of the cases from
-   * sample and their subsequent distribution, this is where everything happens.
-   * Anything that happens to the case from then on is thru events - created
-   * here.
+   * This is where it all happens kids. After the creation of the cases from sample and their
+   * subsequent distribution, this is where everything happens. Anything that happens to the case
+   * from then on is thru events - created here.
    */
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
+  @Transactional(
+      propagation = Propagation.REQUIRED,
+      readOnly = false,
+      timeout = TRANSACTION_TIMEOUT)
   @Override
-  public CaseEvent createCaseEvent(final CaseEvent caseEvent, final Case newCase) throws CTPException {
+  public CaseEvent createCaseEvent(final CaseEvent caseEvent, final Case newCase)
+      throws CTPException {
     return createCaseEvent(caseEvent, newCase, DateTimeUtil.nowUTC());
   }
 
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
+  @Transactional(
+      propagation = Propagation.REQUIRED,
+      readOnly = false,
+      timeout = TRANSACTION_TIMEOUT)
   @Override
-  public CaseEvent createCaseEvent(final CaseEvent caseEvent, final Case newCase, final Timestamp timestamp) throws CTPException {
+  public CaseEvent createCaseEvent(
+      final CaseEvent caseEvent, final Case newCase, final Timestamp timestamp)
+      throws CTPException {
     log.debug("Entering createCaseEvent with caseEvent {}", caseEvent);
-    log.info("SPLUNK: CaseEventCreation: casePK={}, category={}, subCategory={}, createdBy={}",
+    log.info(
+        "SPLUNK: CaseEventCreation: casePK={}, category={}, subCategory={}, createdBy={}",
         caseEvent.getCaseFK(),
         caseEvent.getCategory(),
         caseEvent.getSubCategory(),
@@ -197,25 +205,28 @@ public class CaseServiceImpl implements CaseService {
       transitionCaseGroupStatus(targetCase, caseEvent);
 
       switch (caseEvent.getCategory()) {
-
         case RESPONDENT_ENROLED:
-          List<CaseGroup> caseGroups = caseGroupService.findCaseGroupsForExecutedCollectionExercises(targetCase);
-          processCaseCreationAndTransitionsDuringEnrolment(category, caseGroups, caseEvent, newCase);
+          List<CaseGroup> caseGroups =
+              caseGroupService.findCaseGroupsForExecutedCollectionExercises(targetCase);
+          processCaseCreationAndTransitionsDuringEnrolment(
+              category, caseGroups, caseEvent, newCase);
           break;
-        case SUCCESSFUL_RESPONSE_UPLOAD: case COMPLETED_BY_PHONE:
+        case SUCCESSFUL_RESPONSE_UPLOAD:
+        case COMPLETED_BY_PHONE:
           createNewCase(category, caseEvent, targetCase, newCase);
           updateAllAssociatedBiCases(targetCase, category);
           break;
         case DISABLE_RESPONDENT_ENROLMENT:
           effectTargetCaseStateTransition(category, targetCase);
-          List<Case> actionableCases = caseRepo.findByCaseGroupIdAndStateAndSampleUnitType(
+          List<Case> actionableCases =
+              caseRepo.findByCaseGroupIdAndStateAndSampleUnitType(
                   targetCase.getCaseGroupId(), CaseState.ACTIONABLE, SampleUnitType.BI);
           CaseGroup caseGroup = caseGroupRepo.findById(targetCase.getCaseGroupId());
 
           // Create a new case if no actionable case remain and casegroup is not in a complete state
           if (actionableCases.isEmpty()
-                  && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETE)
-                  && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETEDBYPHONE)) {
+              && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETE)
+              && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETEDBYPHONE)) {
             createNewCase(category, caseEvent, targetCase, newCase);
           }
           break;
@@ -230,13 +241,16 @@ public class CaseServiceImpl implements CaseService {
   }
 
   /**
-   * If BI case is transitioned to Inactionable transition all other BI Cases associated with the B case,
-   * they should all be inactionable after a successful upload & not receive any reminder communications.
+   * If BI case is transitioned to Inactionable transition all other BI Cases associated with the B
+   * case, they should all be inactionable after a successful upload & not receive any reminder
+   * communications.
+   *
    * @param targetCase
    * @param category
    * @throws CTPException
    */
-  private void updateAllAssociatedBiCases (final Case targetCase, final Category category) throws CTPException  {
+  private void updateAllAssociatedBiCases(final Case targetCase, final Category category)
+      throws CTPException {
     UUID caseGroupId = targetCase.getCaseGroupId();
     List<Case> associatedBiCases = caseRepo.findByCaseGroupId(caseGroupId);
 
@@ -248,13 +262,16 @@ public class CaseServiceImpl implements CaseService {
   private void transitionCaseGroupStatus(final Case targetCase, final CaseEvent caseEvent) {
     CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
     try {
-      caseGroupService.transitionCaseGroupStatus(caseGroup, caseEvent.getCategory(), targetCase.getPartyId());
+      caseGroupService.transitionCaseGroupStatus(
+          caseGroup, caseEvent.getCategory(), targetCase.getPartyId());
     } catch (CTPException e) {
-      //The transition manager throws an exception if the event doesn't cause a transition, however there are lots of
+      // The transition manager throws an exception if the event doesn't cause a transition, however
+      // there are lots of
       // events which do not cause CaseGroupStatus transitions, (this is valid behaviour).
       log.debug(e.getMessage());
     }
   }
+
   /**
    * This has been triggered by a 'RESPONDENT_ENROLED' event. If we find any associated Case Groups
    * with only B cases we need to make case 'INACTIONABLE' and create BI case.
@@ -265,52 +282,72 @@ public class CaseServiceImpl implements CaseService {
    * @param newCase a case to provide a party id
    * @throws CTPException thrown if database error etc
    */
-  private void processCaseCreationAndTransitionsDuringEnrolment(final Category category, final List<CaseGroup> caseGroups, final CaseEvent caseEvent,
-                              final Case newCase) throws CTPException {
+  private void processCaseCreationAndTransitionsDuringEnrolment(
+      final Category category,
+      final List<CaseGroup> caseGroups,
+      final CaseEvent caseEvent,
+      final Case newCase)
+      throws CTPException {
 
     for (CaseGroup caseGroup : caseGroups) {
 
       // fetch all B and BI cases associated to the case group being processed
-      List<Case> cases = caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(caseGroup.getCaseGroupPK());
+      List<Case> cases =
+          caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(caseGroup.getCaseGroupPK());
 
       // Create a new BI case for the respondent enrolling (if one doesn't already exit)
-      // This is primarily to guard against multiple RESPONDENT_ENROLED case events for the same user
+      // This is primarily to guard against multiple RESPONDENT_ENROLED case events for the same
+      // user
       // caused by a double click scenario in the verification email journey
-      List<Case> biCases = cases
+      List<Case> biCases =
+          cases
               .stream()
-              .filter(c -> c.getSampleUnitType().toString().equals("BI") && c.getPartyId().equals(newCase.getPartyId()))
+              .filter(
+                  c ->
+                      c.getSampleUnitType().toString().equals("BI")
+                          && c.getPartyId().equals(newCase.getPartyId()))
               .collect(Collectors.toList());
       if (biCases.size() != 0) {
-    	  	 log.warn("Existing BI case found during enrolment for partyid: {} for casegroup: {} with caseid: {}",
-    	  			 newCase.getPartyId().toString(), caseGroup.getId(), biCases.get(0).getId());
+        log.warn(
+            "Existing BI case found during enrolment for "
+                + "partyid: {} for casegroup: {} with caseid: {}",
+            newCase.getPartyId().toString(),
+            caseGroup.getId(),
+            biCases.get(0).getId());
       } else {
-          Case c = new Case();
-          c.setPartyId(newCase.getPartyId());
-          createNewCase(category, caseEvent, cases.get(0), c);
-          log.info("BI case created during enrolment for partyid: {} for casegroup: {}",
-        		  newCase.getPartyId().toString(), caseGroup.getId());
+        Case c = new Case();
+        c.setPartyId(newCase.getPartyId());
+        createNewCase(category, caseEvent, cases.get(0), c);
+        log.info(
+            "BI case created during enrolment for partyid: {} for casegroup: {}",
+            newCase.getPartyId().toString(),
+            caseGroup.getId());
       }
 
       // Transition each of the B cases for the casegroup being enrolled for
-      List<Case> bCases = cases
+      List<Case> caseTypeBs =
+          cases
               .stream()
               .filter(c -> c.getSampleUnitType().toString().equals("B"))
               .collect(Collectors.toList());
-      for (Case bCase : bCases) {
-        effectTargetCaseStateTransition(category, bCase);
+      for (Case caseTypeB : caseTypeBs) {
+        effectTargetCaseStateTransition(category, caseTypeB);
       }
-
     }
   }
 
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = false, timeout = TRANSACTION_TIMEOUT)
+  @Transactional(
+      propagation = Propagation.REQUIRED,
+      readOnly = false,
+      timeout = TRANSACTION_TIMEOUT)
   @Override
   public void createInitialCase(SampleUnitParent sampleUnitParent) {
     Category category = new Category();
     category.setShortDescription(String.format("Initial creation of case"));
     CaseGroup newCaseGroup = createNewCaseGroup(sampleUnitParent);
     if (sampleUnitParent.getSampleUnitChildren() != null) {
-      for (SampleUnitChild sampleUnitChild : sampleUnitParent.getSampleUnitChildren().getSampleUnitchildren()) {
+      for (SampleUnitChild sampleUnitChild :
+          sampleUnitParent.getSampleUnitChildren().getSampleUnitchildren()) {
         Case caze = createNewCase(sampleUnitChild, newCaseGroup);
         caze.setActionPlanId(UUID.fromString(sampleUnitChild.getActionPlanId()));
         caseRepo.saveAndFlush(caze);
@@ -327,21 +364,25 @@ public class CaseServiceImpl implements CaseService {
   }
 
   /**
-   * Upfront fail fast validation - if this event is going to require a new case
-   * to be created, let's check the request is valid before we do something we
-   * cannot rollback ie IAC disable, or Action creation.
+   * Upfront fail fast validation - if this event is going to require a new case to be created,
+   * let's check the request is valid before we do something we cannot rollback ie IAC disable, or
+   * Action creation.
    *
    * @param category the category details
    * @param oldCase the case the event is being created against
    * @param newCase the details provided in the event request for the new case
    * @throws CTPException if the CaseEventRequest is invalid
    */
-  private void validateCaseEventRequest(Category category, Case oldCase, Case newCase) throws CTPException {
+  private void validateCaseEventRequest(Category category, Case oldCase, Case newCase)
+      throws CTPException {
     String oldCaseSampleUnitType = oldCase.getSampleUnitType().name();
     String expectedOldCaseSampleUnitTypes = category.getOldCaseSampleUnitTypes();
     if (!compareOldCaseSampleUnitType(oldCaseSampleUnitType, expectedOldCaseSampleUnitTypes)) {
-      String errorMsg = String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, oldCaseSampleUnitType,
-          expectedOldCaseSampleUnitTypes);
+      String errorMsg =
+          String.format(
+              WRONG_OLD_SAMPLE_UNIT_TYPE_MSG,
+              oldCaseSampleUnitType,
+              expectedOldCaseSampleUnitTypes);
       log.error(errorMsg);
       throw new CTPException(CTPException.Fault.VALIDATION_FAILED, errorMsg);
     }
@@ -355,7 +396,8 @@ public class CaseServiceImpl implements CaseService {
     CaseDTO.CaseEvent transitionEvent = category.getEventType();
     if (transitionEvent != null) {
       try {
-        CaseState result = caseSvcStateTransitionManager.transition(oldCase.getState(), transitionEvent);
+        CaseState result =
+            caseSvcStateTransitionManager.transition(oldCase.getState(), transitionEvent);
       } catch (CTPException e) {
         throw new CTPException(CTPException.Fault.VALIDATION_FAILED, e.getMessage());
       }
@@ -363,15 +405,14 @@ public class CaseServiceImpl implements CaseService {
   }
 
   /**
-   * To compare the old case sample unit type with the expected sample unit
-   * types
+   * To compare the old case sample unit type with the expected sample unit types
    *
    * @param oldCaseSampleUnitType the old case sample unit type
-   * @param expectedOldCaseSampleUnitTypes a comma separated list of expected
-   *          sample unit types
+   * @param expectedOldCaseSampleUnitTypes a comma separated list of expected sample unit types
    * @return true if the expected types contain the old case sample unit type
    */
-  private boolean compareOldCaseSampleUnitType(String oldCaseSampleUnitType, String expectedOldCaseSampleUnitTypes) {
+  private boolean compareOldCaseSampleUnitType(
+      String oldCaseSampleUnitType, String expectedOldCaseSampleUnitTypes) {
     boolean result = false;
     if (expectedOldCaseSampleUnitTypes != null) {
       List<String> expectedTypes = Arrays.asList(expectedOldCaseSampleUnitTypes.split("\\s*,\\s*"));
@@ -383,16 +424,15 @@ public class CaseServiceImpl implements CaseService {
   }
 
   /**
-   * Check to see if a new case creation is indicated by the event category and
-   * if so create it
+   * Check to see if a new case creation is indicated by the event category and if so create it
    *
    * @param category the category details of the event
    * @param caseEvent the basic event
    * @param targetCase the 'source' case the event is being created for
-   * @param newCase the details for the new case (if indeed one is required)
-   *          else null
+   * @param newCase the details for the new case (if indeed one is required) else null
    */
-  private void createNewCase(Category category, CaseEvent caseEvent, Case targetCase, Case newCase) {
+  private void createNewCase(
+      Category category, CaseEvent caseEvent, Case targetCase, Case newCase) {
     if (category.getNewCaseSampleUnitType() != null) {
       // add sampleUnitType and actionplanId to newCase
       buildNewCase(category, newCase, targetCase);
@@ -406,213 +446,6 @@ public class CaseServiceImpl implements CaseService {
 
       createNewCaseFromEvent(caseEvent, targetCase, newCase, category);
     }
-  }
-
-  /**
-   * Add required values to the new case to be created
-   *
-   * @param category the category details of the event
-   * @param targetCase the 'source' case the event is being created for
-   * @param newCase the new case to be created
-   */
-  private void buildNewCase(Category category, Case newCase, Case targetCase) {
-    newCase.setSampleUnitType(SampleUnitType.valueOf(category.getNewCaseSampleUnitType()));
-
-    // set case group id to the same as
-    newCase.setCaseGroupId(targetCase.getCaseGroupId());
-
-    CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
-    CollectionExerciseDTO collectionExercise = collectionExerciseSvcClientService
-        .getCollectionExercise(caseGroup.getCollectionExerciseId());
-
-    List<CaseTypeDTO> caseTypes = collectionExercise.getCaseTypes();
-    for (CaseTypeDTO caseType : caseTypes) {
-      if (caseType.getSampleUnitTypeFK().equals(newCase.getSampleUnitType().name())) {
-        newCase.setActionPlanId(caseType.getActionPlanId());
-      }
-    }
-  }
-
-  /**
-   * Check to see if the event requires a response to be recorded for the case
-   * and if so ... record it
-   *
-   * @param category the category details of the event
-   * @param targetCase the 'source' case the event is being created for
-   * @param timestamp timestamp the timestamp of the CaseResponse
-   */
-  private void recordCaseResponse(Category category, Case targetCase, Timestamp timestamp) {
-    InboundChannel channel = null;
-    switch (category.getCategoryName()) {
-    case OFFLINE_RESPONSE_PROCESSED:
-      channel = InboundChannel.OFFLINE;
-      break;
-    case ONLINE_QUESTIONNAIRE_RESPONSE:
-      channel = InboundChannel.ONLINE;
-      break;
-    case PAPER_QUESTIONNAIRE_RESPONSE:
-      channel = InboundChannel.PAPER;
-      break;
-    default:
-      break;
-    }
-    if (channel != null) {
-      Response response = Response.builder()
-          .inboundChannel(channel)
-          .caseFK(targetCase.getCasePK())
-          .dateTime(timestamp).build();
-      targetCase.getResponses().add(response);
-      caseRepo.save(targetCase);
-    }
-  }
-
-  /**
-   * Send a request to the action service to create an ad-hoc action for the
-   * event if required
-   *
-   * @param category the category details of the event
-   * @param caseEvent the basic event
-   */
-  private void createAdHocAction(Category category, CaseEvent caseEvent) {
-    String actionType = category.getGeneratedActionType();
-    log.debug("actionType = {}", actionType);
-    if (!StringUtils.isEmpty(actionType)) {
-      Integer caseFk = caseEvent.getCaseFK();
-      Case existingCase = caseRepo.findOne(caseFk);
-      if (existingCase != null) {
-        actionSvcClientService.createAndPostAction(actionType, existingCase.getId(), caseEvent.getCreatedBy());
-      } else {
-        log.error(String.format(MISSING_EXISTING_CASE_MSG, caseFk));
-      }
-    }
-  }
-
-  /**
-   * Effect a state transition for the target case if the category indicates one
-   * is required If a transition was made and the state changes as a result,
-   * notify the action service of the state change AND if the event was type
-   * DISABLED then also call the IAC service to disable/deactivate the IAC code
-   * related to the target case.
-   *
-   * @param category the category details of the event
-   * @param targetCase the 'source' case the event is being created for
-   * @throws CTPException when case state transition error
-   */
-  private void effectTargetCaseStateTransition(Category category, Case targetCase) throws CTPException {
-    CaseDTO.CaseEvent transitionEvent = category.getEventType();
-    if (transitionEvent != null) {
-      // case might have transitioned from actionable to inactionable prev via
-      // DEACTIVATED
-      // so newstate == oldstate, but always want to disable iac if event is
-      // DISABLED (ie as the result
-      // of an online response after a refusal) or ACCOUNT_CREATED (for BRES)
-      if (transitionEvent == CaseDTO.CaseEvent.DISABLED || transitionEvent == CaseDTO.CaseEvent.ACCOUNT_CREATED) {
-        internetAccessCodeSvcClientService.disableIAC(targetCase.getIac());
-      }
-
-      CaseState oldState = targetCase.getState();
-      CaseState newState = null;
-      // make the transition
-      newState = caseSvcStateTransitionManager.transition(oldState, transitionEvent);
-
-      // was a state change effected?
-      if (!oldState.equals(newState)) {
-        targetCase.setState(newState);
-        caseRepo.saveAndFlush(targetCase);
-        notificationPublisher.sendNotification(prepareCaseNotification(targetCase, transitionEvent));
-      }
-    }
-  }
-
-  /**
-   * Go ahead and create a new case using the new case details, associate it
-   * with the target case and create the CASE_CREATED event on the new case
-   *
-   * @param caseEvent the basic event
-   * @param targetCase the 'source' case the event is being created for
-   * @param newCase the details for the new case (if indeed one is required)
-   *          else null
-   * @param caseEventCategory the caseEventCategory
-   * @return the new case
-   */
-  private Case createNewCaseFromEvent(CaseEvent caseEvent, Case targetCase, Case newCase, Category caseEventCategory) {
-    Case persistedCase = saveNewCase(caseEvent, targetCase, newCase);
-    // NOTE the action service does not need to be notified of the creation of
-    // the new case - yet
-    // That will be done when the CaseDistributor wakes up and assigns an IAC to
-    // the newly created case
-    // ie it might be created here, but it is not yet ready for prime time
-    // without its IAC!
-    createCaseCreatedEvent(persistedCase, caseEventCategory);
-    return persistedCase;
-  }
-
-  /**
-   * Create a new case row for a replacement/new case
-   *
-   * @param caseEvent the event that lead to the creation of the new case
-   * @param targetCase the case the caseEvent was applied to
-   * @param newCase the case we have been asked to create off the back of the
-   *          event
-   * @return the persisted case
-   */
-  private Case saveNewCase(CaseEvent caseEvent, Case targetCase, Case newCase) {
-    newCase.setId(UUID.randomUUID());
-    newCase.setState(CaseState.REPLACEMENT_INIT);
-    newCase.setCreatedDateTime(DateTimeUtil.nowUTC());
-    newCase.setCaseGroupFK(targetCase.getCaseGroupFK());
-    newCase.setCreatedBy(caseEvent.getCreatedBy());
-    if (newCase.getSampleUnitType() == SampleUnitType.B) {
-      newCase.setSourceCaseId(null);
-    }
-    else {
-      newCase.setSourceCaseId(targetCase.getCasePK());
-    }
-
-    return caseRepo.saveAndFlush(newCase);
-  }
-
-  /**
-   * Create an event for a newly created case
-   *
-   * @param caze the case for which we want to record the event
-   * @param caseEventCategory the category of the event that led to the creation
-   *          of the case
-   * @return the created event
-   */
-  private CaseEvent createCaseCreatedEvent(Case caze, Category caseEventCategory) {
-    CaseEvent newCaseCaseEvent = new CaseEvent();
-    newCaseCaseEvent.setCaseFK(caze.getCasePK());
-    newCaseCaseEvent.setCategory(CategoryDTO.CategoryName.CASE_CREATED);
-    newCaseCaseEvent.setCreatedBy(Constants.SYSTEM);
-    newCaseCaseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
-    newCaseCaseEvent
-        .setDescription(String.format(CASE_CREATED_EVENT_DESCRIPTION, caseEventCategory.getShortDescription()));
-
-    caseEventRepo.saveAndFlush(newCaseCaseEvent);
-    return newCaseCaseEvent;
-  }
-
-  /**
-   * Create the CaseGroup for the Case.
-   *
-   * @param caseGroupData SampleUnitParent from which to create CaseGroup.
-   * @return newcaseGroup created caseGroup.
-   */
-  private CaseGroup createNewCaseGroup(SampleUnitParent caseGroupData) {
-    CaseGroup newCaseGroup = new CaseGroup();
-
-    newCaseGroup.setId(UUID.randomUUID());
-    if (caseGroupData.getPartyId() != null)
-      newCaseGroup.setPartyId(UUID.fromString(caseGroupData.getPartyId()));
-    newCaseGroup.setCollectionExerciseId(UUID.fromString(caseGroupData.getCollectionExerciseId()));
-    newCaseGroup.setSampleUnitRef(caseGroupData.getSampleUnitRef());
-    newCaseGroup.setSampleUnitType(caseGroupData.getSampleUnitType());
-    newCaseGroup.setStatus(CaseGroupStatus.NOTSTARTED);
-
-    caseGroupRepo.saveAndFlush(newCaseGroup);
-    log.debug("New CaseGroup created: {}", newCaseGroup.getId().toString());
-    return newCaseGroup;
   }
 
   /**
@@ -634,8 +467,9 @@ public class CaseServiceImpl implements CaseService {
     // set case values from sampleUnit
     newCase.setSampleUnitType(SampleUnitDTO.SampleUnitType.valueOf(caseData.getSampleUnitType()));
 
-    if (caseData.getPartyId() != null)
+    if (caseData.getPartyId() != null) {
       newCase.setPartyId(UUID.fromString(caseData.getPartyId()));
+    }
 
     newCase.setCollectionInstrumentId(UUID.fromString(caseData.getCollectionInstrumentId()));
 
@@ -647,8 +481,219 @@ public class CaseServiceImpl implements CaseService {
     return newCase;
   }
 
+  /**
+   * Add required values to the new case to be created
+   *
+   * @param category the category details of the event
+   * @param targetCase the 'source' case the event is being created for
+   * @param newCase the new case to be created
+   */
+  private void buildNewCase(Category category, Case newCase, Case targetCase) {
+    newCase.setSampleUnitType(SampleUnitType.valueOf(category.getNewCaseSampleUnitType()));
+
+    // set case group id to the same as
+    newCase.setCaseGroupId(targetCase.getCaseGroupId());
+
+    CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
+    CollectionExerciseDTO collectionExercise =
+        collectionExerciseSvcClientService.getCollectionExercise(
+            caseGroup.getCollectionExerciseId());
+
+    List<CaseTypeDTO> caseTypes = collectionExercise.getCaseTypes();
+    for (CaseTypeDTO caseType : caseTypes) {
+      if (caseType.getSampleUnitTypeFK().equals(newCase.getSampleUnitType().name())) {
+        newCase.setActionPlanId(caseType.getActionPlanId());
+      }
+    }
+  }
+
+  /**
+   * Check to see if the event requires a response to be recorded for the case and if so ... record
+   * it
+   *
+   * @param category the category details of the event
+   * @param targetCase the 'source' case the event is being created for
+   * @param timestamp timestamp the timestamp of the CaseResponse
+   */
+  private void recordCaseResponse(Category category, Case targetCase, Timestamp timestamp) {
+    InboundChannel channel = null;
+    switch (category.getCategoryName()) {
+      case OFFLINE_RESPONSE_PROCESSED:
+        channel = InboundChannel.OFFLINE;
+        break;
+      case ONLINE_QUESTIONNAIRE_RESPONSE:
+        channel = InboundChannel.ONLINE;
+        break;
+      case PAPER_QUESTIONNAIRE_RESPONSE:
+        channel = InboundChannel.PAPER;
+        break;
+      default:
+        break;
+    }
+    if (channel != null) {
+      Response response =
+          Response.builder()
+              .inboundChannel(channel)
+              .caseFK(targetCase.getCasePK())
+              .dateTime(timestamp)
+              .build();
+      targetCase.getResponses().add(response);
+      caseRepo.save(targetCase);
+    }
+  }
+
+  /**
+   * Send a request to the action service to create an ad-hoc action for the event if required
+   *
+   * @param category the category details of the event
+   * @param caseEvent the basic event
+   */
+  private void createAdHocAction(Category category, CaseEvent caseEvent) {
+    String actionType = category.getGeneratedActionType();
+    log.debug("actionType = {}", actionType);
+    if (!StringUtils.isEmpty(actionType)) {
+      Integer caseFk = caseEvent.getCaseFK();
+      Case existingCase = caseRepo.findOne(caseFk);
+      if (existingCase != null) {
+        actionSvcClientService.createAndPostAction(
+            actionType, existingCase.getId(), caseEvent.getCreatedBy());
+      } else {
+        log.error(String.format(MISSING_EXISTING_CASE_MSG, caseFk));
+      }
+    }
+  }
+
+  /**
+   * Effect a state transition for the target case if the category indicates one is required If a
+   * transition was made and the state changes as a result, notify the action service of the state
+   * change AND if the event was type DISABLED then also call the IAC service to disable/deactivate
+   * the IAC code related to the target case.
+   *
+   * @param category the category details of the event
+   * @param targetCase the 'source' case the event is being created for
+   * @throws CTPException when case state transition error
+   */
+  private void effectTargetCaseStateTransition(Category category, Case targetCase)
+      throws CTPException {
+    CaseDTO.CaseEvent transitionEvent = category.getEventType();
+    if (transitionEvent != null) {
+      // case might have transitioned from actionable to inactionable prev via
+      // DEACTIVATED
+      // so newstate == oldstate, but always want to disable iac if event is
+      // DISABLED (ie as the result
+      // of an online response after a refusal) or ACCOUNT_CREATED (for BRES)
+      if (transitionEvent == CaseDTO.CaseEvent.DISABLED
+          || transitionEvent == CaseDTO.CaseEvent.ACCOUNT_CREATED) {
+        internetAccessCodeSvcClientService.disableIAC(targetCase.getIac());
+      }
+
+      CaseState oldState = targetCase.getState();
+      CaseState newState = null;
+      // make the transition
+      newState = caseSvcStateTransitionManager.transition(oldState, transitionEvent);
+
+      // was a state change effected?
+      if (!oldState.equals(newState)) {
+        targetCase.setState(newState);
+        caseRepo.saveAndFlush(targetCase);
+        notificationPublisher.sendNotification(
+            prepareCaseNotification(targetCase, transitionEvent));
+      }
+    }
+  }
+
+  /**
+   * Go ahead and create a new case using the new case details, associate it with the target case
+   * and create the CASE_CREATED event on the new case
+   *
+   * @param caseEvent the basic event
+   * @param targetCase the 'source' case the event is being created for
+   * @param newCase the details for the new case (if indeed one is required) else null
+   * @param caseEventCategory the caseEventCategory
+   * @return the new case
+   */
+  private Case createNewCaseFromEvent(
+      CaseEvent caseEvent, Case targetCase, Case newCase, Category caseEventCategory) {
+    Case persistedCase = saveNewCase(caseEvent, targetCase, newCase);
+    // NOTE the action service does not need to be notified of the creation of
+    // the new case - yet
+    // That will be done when the CaseDistributor wakes up and assigns an IAC to
+    // the newly created case
+    // ie it might be created here, but it is not yet ready for prime time
+    // without its IAC!
+    createCaseCreatedEvent(persistedCase, caseEventCategory);
+    return persistedCase;
+  }
+
+  /**
+   * Create a new case row for a replacement/new case
+   *
+   * @param caseEvent the event that lead to the creation of the new case
+   * @param targetCase the case the caseEvent was applied to
+   * @param newCase the case we have been asked to create off the back of the event
+   * @return the persisted case
+   */
+  private Case saveNewCase(CaseEvent caseEvent, Case targetCase, Case newCase) {
+    newCase.setId(UUID.randomUUID());
+    newCase.setState(CaseState.REPLACEMENT_INIT);
+    newCase.setCreatedDateTime(DateTimeUtil.nowUTC());
+    newCase.setCaseGroupFK(targetCase.getCaseGroupFK());
+    newCase.setCreatedBy(caseEvent.getCreatedBy());
+    if (newCase.getSampleUnitType() == SampleUnitType.B) {
+      newCase.setSourceCaseId(null);
+    } else {
+      newCase.setSourceCaseId(targetCase.getCasePK());
+    }
+
+    return caseRepo.saveAndFlush(newCase);
+  }
+
+  /**
+   * Create an event for a newly created case
+   *
+   * @param caze the case for which we want to record the event
+   * @param caseEventCategory the category of the event that led to the creation of the case
+   * @return the created event
+   */
+  private CaseEvent createCaseCreatedEvent(Case caze, Category caseEventCategory) {
+    CaseEvent newCaseCaseEvent = new CaseEvent();
+    newCaseCaseEvent.setCaseFK(caze.getCasePK());
+    newCaseCaseEvent.setCategory(CategoryDTO.CategoryName.CASE_CREATED);
+    newCaseCaseEvent.setCreatedBy(Constants.SYSTEM);
+    newCaseCaseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
+    newCaseCaseEvent.setDescription(
+        String.format(CASE_CREATED_EVENT_DESCRIPTION, caseEventCategory.getShortDescription()));
+
+    caseEventRepo.saveAndFlush(newCaseCaseEvent);
+    return newCaseCaseEvent;
+  }
+
+  /**
+   * Create the CaseGroup for the Case.
+   *
+   * @param caseGroupData SampleUnitParent from which to create CaseGroup.
+   * @return newcaseGroup created caseGroup.
+   */
+  private CaseGroup createNewCaseGroup(SampleUnitParent caseGroupData) {
+    CaseGroup newCaseGroup = new CaseGroup();
+
+    newCaseGroup.setId(UUID.randomUUID());
+    if (caseGroupData.getPartyId() != null) {
+      newCaseGroup.setPartyId(UUID.fromString(caseGroupData.getPartyId()));
+    }
+    newCaseGroup.setCollectionExerciseId(UUID.fromString(caseGroupData.getCollectionExerciseId()));
+    newCaseGroup.setSampleUnitRef(caseGroupData.getSampleUnitRef());
+    newCaseGroup.setSampleUnitType(caseGroupData.getSampleUnitType());
+    newCaseGroup.setStatus(CaseGroupStatus.NOTSTARTED);
+
+    caseGroupRepo.saveAndFlush(newCaseGroup);
+    log.debug("New CaseGroup created: {}", newCaseGroup.getId().toString());
+    return newCaseGroup;
+  }
+
   @Override
-  public Case generateNewCase(SampleUnitBase caseData, CaseGroup caseGroup, String iac, UUID actionplanid) {
+  public Case generateNewCase(
+      SampleUnitBase caseData, CaseGroup caseGroup, String iac, UUID actionplanid) {
     Case newCase = createNewCase(caseData, caseGroup);
     newCase.setIac(iac);
     newCase.setActionPlanId(actionplanid);
