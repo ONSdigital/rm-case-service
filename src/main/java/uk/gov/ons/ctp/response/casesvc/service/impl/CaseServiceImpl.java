@@ -275,9 +275,9 @@ public class CaseServiceImpl implements CaseService {
    * @param updatedCase Case to create audit table row for
    */
   @Transactional(
-          propagation = Propagation.REQUIRED,
-          readOnly = false,
-          timeout = TRANSACTION_TIMEOUT)
+      propagation = Propagation.REQUIRED,
+      readOnly = false,
+      timeout = TRANSACTION_TIMEOUT)
   @Override
   public void saveCaseIacAudit(final Case updatedCase) {
     log.debug("Saving case iac audit, caseId: {}", updatedCase.getId());

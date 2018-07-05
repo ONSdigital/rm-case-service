@@ -7,4 +7,6 @@ CREATE TABLE casesvc.caseiacaudit (
 );
 
 INSERT INTO casesvc.caseiacaudit (casefk, iac, createddatetime)
-SELECT casepk, iac, now() FROM casesvc.case ORDER BY casepk;
+SELECT casepk, iac, now() FROM casesvc.case
+WHERE sampleunittype = 'B'
+ORDER BY casepk;

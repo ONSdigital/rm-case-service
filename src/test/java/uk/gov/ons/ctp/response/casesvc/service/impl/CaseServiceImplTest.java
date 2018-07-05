@@ -1639,7 +1639,7 @@ public class CaseServiceImplTest {
         .thenReturn(
             Arrays.asList(
                 cases.get(ACTIONABLE_BI_CASE_FK), cases.get(ANOTHER_ACTIONABLE_BI_CASE_FK)));
-    when(caseRepo.findByCaseGroupIdAndStateAndSampleUnitType(
+    when(caseRepo.findByCaseGroupIdAndStateAndSampleUnitTypeOrderByCreatedDateTimeAsc(
             null, CaseState.ACTIONABLE, SampleUnitDTO.SampleUnitType.BI))
         .thenReturn(Collections.singletonList(cases.get(ACTIONABLE_BI_CASE_FK)));
     CaseGroup caseGroup = makeCaseGroup();
@@ -1660,7 +1660,7 @@ public class CaseServiceImplTest {
     verify(caseRepo, times(1)).saveAndFlush(argument.capture());
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
     verify(caseRepo, times(1))
-        .findByCaseGroupIdAndStateAndSampleUnitType(
+        .findByCaseGroupIdAndStateAndSampleUnitTypeOrderByCreatedDateTimeAsc(
             null, CaseState.ACTIONABLE, SampleUnitDTO.SampleUnitType.BI);
     verify(caseGroupRepo, times(1)).findById(null);
   }
