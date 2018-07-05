@@ -238,26 +238,22 @@ public class CaseServiceImpl implements CaseService {
         break;
       case DISABLE_RESPONDENT_ENROLMENT:
         effectTargetCaseStateTransition(category, targetCase);
+
         List<Case> actionableCases =
-            caseRepo.findByCaseGroupIdAndStateAndSampleUnitType(
+            caseRepo.findByCaseGroupIdAndStateAndSampleUnitTypeOrderByCreatedDateTimeAsc(
                 targetCase.getCaseGroupId(), CaseState.ACTIONABLE, SampleUnitType.BI);
         CaseGroup caseGroup = caseGroupRepo.findById(targetCase.getCaseGroupId());
 
         // Create a new case if no actionable case remain and casegroup is not in a complete state
         if (actionableCases.isEmpty()
+            && !caseGroup.getStatus().equals(CaseGroupStatus.NOLONGERREQUIRED)
             && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETE)
             && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETEDBYPHONE)) {
           createNewCase(category, caseEvent, targetCase, newCase);
         }
         break;
       case GENERATE_ENROLMENT_CODE:
-        if (!internetAccessCodeSvcClientService.isIacActive(targetCase.getIac())) {
-          String iac = internetAccessCodeSvcClientService.generateIACs(1).get(0);
-          targetCase.setIac(iac);
-          caseRepo.saveAndFlush(targetCase);
-
-          saveCaseIacAudit(targetCase);
-        }
+        replaceIAC(targetCase);
         break;
       default:
         createNewCase(category, caseEvent, targetCase, newCase);
@@ -273,6 +269,15 @@ public class CaseServiceImpl implements CaseService {
     return createdCaseEvent;
   }
 
+  /**
+   * Add new row to caseiacaudit table with casefk and iac of given case
+   *
+   * @param updatedCase Case to create audit table row for
+   */
+  @Transactional(
+          propagation = Propagation.REQUIRED,
+          readOnly = false,
+          timeout = TRANSACTION_TIMEOUT)
   @Override
   public void saveCaseIacAudit(final Case updatedCase) {
     log.debug("Saving case iac audit, caseId: {}", updatedCase.getId());
@@ -281,6 +286,24 @@ public class CaseServiceImpl implements CaseService {
     caseIacAudit.setIac(updatedCase.getIac());
     caseIacAudit.setCreatedDateTime(DateTimeUtil.nowUTC());
     caseIacAuditRepo.saveAndFlush(caseIacAudit);
+  }
+
+  /**
+   * Overwrites existing iac for given case if iac is not active and adds new iac to caseiacaudit
+   * table
+   *
+   * @param targetCase Case to update
+   */
+  private void replaceIAC(final Case targetCase) {
+    if (!internetAccessCodeSvcClientService.isIacActive(targetCase.getIac())) {
+      log.debug("Replacing existing case IAC, caseId: {}", targetCase.getId());
+      String iac = internetAccessCodeSvcClientService.generateIACs(1).get(0);
+      targetCase.setIac(iac);
+      caseRepo.saveAndFlush(targetCase);
+      saveCaseIacAudit(targetCase);
+    } else {
+      log.debug("Existing IAC is still active, caseId: {}", targetCase.getId());
+    }
   }
 
   /**
@@ -637,19 +660,13 @@ public class CaseServiceImpl implements CaseService {
       throws CTPException {
     CaseDTO.CaseEvent transitionEvent = category.getEventType();
     if (transitionEvent != null) {
-      // case might have transitioned from actionable to inactionable prev via
-      // DEACTIVATED
-      // so newstate == oldstate, but always want to disable iac if event is
-      // DISABLED (ie as the result
-      // of an online response after a refusal) or ACCOUNT_CREATED (for BRES)
       if (transitionEvent == CaseDTO.CaseEvent.DISABLED
           || transitionEvent == CaseDTO.CaseEvent.ACCOUNT_CREATED) {
         internetAccessCodeSvcClientService.disableIAC(targetCase.getIac());
       }
 
       CaseState oldState = targetCase.getState();
-      CaseState newState = null;
-      // make the transition
+      CaseState newState;
       newState = caseSvcStateTransitionManager.transition(oldState, transitionEvent);
 
       // was a state change effected?
