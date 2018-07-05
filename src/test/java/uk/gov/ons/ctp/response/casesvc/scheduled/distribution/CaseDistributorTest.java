@@ -208,6 +208,7 @@ public class CaseDistributorTest {
 
     verify(internetAccessCodeSvcClientService, times(1)).generateIACs(any(Integer.class));
     verify(caseRepo, times(5)).saveAndFlush(any(Case.class));
+    verify(caseService, times(5)).saveCaseIacAudit(any());
     verify(caseService, times(5))
         .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, times(5)).sendNotification(any(CaseNotification.class));

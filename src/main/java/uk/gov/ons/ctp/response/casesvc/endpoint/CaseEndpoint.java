@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -27,8 +28,6 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
-import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitBase;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
@@ -38,7 +37,6 @@ import uk.gov.ons.ctp.response.casesvc.representation.CreatedCaseEventDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
-import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.utility.Constants;
 
 /** The REST endpoint controller for CaseSvc Cases */
@@ -55,17 +53,23 @@ public final class CaseEndpoint implements CTPEndpoint {
 
   private static final String CASE_ID = "%s case id %s";
 
-  @Autowired private CaseGroupService caseGroupService;
-
-  @Autowired private CategoryService categoryService;
-
-  @Autowired private CaseService caseService;
-
-  @Autowired private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
-
-  @Qualifier("caseSvcBeanMapper")
-  @Autowired
+  private CaseService caseService;
+  private CaseGroupService caseGroupService;
+  private CategoryService categoryService;
   private MapperFacade mapperFacade;
+
+  /** Contructor for CaseEndpoint */
+  @Autowired
+  public CaseEndpoint(
+      final CaseService caseService,
+      final CaseGroupService caseGroupService,
+      final CategoryService categoryService,
+      final @Qualifier("caseSvcBeanMapper") MapperFacade mapperFacade) {
+    this.caseService = caseService;
+    this.caseGroupService = caseGroupService;
+    this.categoryService = categoryService;
+    this.mapperFacade = mapperFacade;
+  }
 
   /**
    * the GET endpoint to find a Case by UUID
@@ -100,15 +104,13 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @param caseevents flag used to return or not CaseEvents
    * @param iac flag used to return or not the iac
    * @return the cases found
-   * @throws CTPException something went wrong
    */
   @RequestMapping(value = "/partyid/{partyId}", method = RequestMethod.GET)
   public ResponseEntity<List<CaseDetailsDTO>> findCasesByPartyId(
       @PathVariable("partyId") final UUID partyId,
-      @RequestParam(value = "caseevents", required = false) boolean caseevents,
-      @RequestParam(value = "iac", required = false) boolean iac)
-      throws CTPException {
-    log.info("Entering findCasesByPartyId with {}", partyId);
+      @RequestParam(value = "caseevents", required = false) final boolean caseevents,
+      @RequestParam(value = "iac", required = false) final boolean iac) {
+    log.info("Retrieving cases by party, partyId: {}", partyId);
     List<Case> casesList = caseService.findCasesByPartyId(partyId);
 
     if (CollectionUtils.isEmpty(casesList)) {
@@ -137,67 +139,55 @@ public final class CaseEndpoint implements CTPEndpoint {
       @RequestParam(value = "caseevents", required = false) final boolean caseevents,
       @RequestParam(value = "iac", required = false) final boolean iacFlag)
       throws CTPException {
-    log.info("Entering findCaseByIac with {}", iac);
-    Case caseObj = caseService.findCaseByIac(iac);
-    if (caseObj == null) {
+    log.info("Retrieving case by iac, iac: {}", iac);
+    Case targetCase = caseService.findCaseByIac(iac);
+    if (targetCase == null) {
       throw new CTPException(
           CTPException.Fault.RESOURCE_NOT_FOUND,
           String.format("%s iac %s", ERRORMSG_CASENOTFOUND, iac));
     }
 
-    createNewEventForAccessCodeAuthAttempt(caseObj);
+    createNewEventForAccessCodeAuthAttempt(targetCase);
 
-    return ResponseEntity.ok(buildDetailedCaseDTO(caseObj, caseevents, iacFlag));
+    return ResponseEntity.ok(buildDetailedCaseDTO(targetCase, caseevents, iacFlag));
   }
 
   /**
-   * the POST endpoint to generate and return a new iac
+   * Creates a new event for the Access Code Authorisation Attempt
    *
-   * @param collectionexerciseid to generate iac for
-   * @param ruref to generate iac for
-   * @return the case created
-   * @throws CTPException something went wrong
+   * @param targetCase Case Object for event to be created
+   * @throws CTPException if IAC not found
    */
-  @RequestMapping(value = "/iac/{collectionexerciseid}/{ruref}", method = RequestMethod.POST)
-  public ResponseEntity<CaseDetailsDTO> generateNewIac(
-      @PathVariable("collectionexerciseid") final UUID collectionexerciseid,
-      @PathVariable("ruref") final String ruref)
-      throws CTPException {
-    log.info(
-        "Entering generateNewIac with collectionexerciseid {} and ruref {}",
-        collectionexerciseid,
-        ruref);
-
-    CaseGroup caseGroup =
-        caseGroupService.findCaseGroupByCollectionExerciseIdAndRuRef(collectionexerciseid, ruref);
-    if (caseGroup == null) {
+  private void createNewEventForAccessCodeAuthAttempt(final Case targetCase) throws CTPException {
+    Category cat =
+        categoryService.findCategory(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
+    if (cat == null) {
       throw new CTPException(
-          CTPException.Fault.RESOURCE_NOT_FOUND,
-          String.format(
-              "CaseGroup not found for collectionexerciseid %s and ruref %s",
-              collectionexerciseid, ruref));
+          CTPException.Fault.SYSTEM_ERROR, CATEGORY_ACCESS_CODE_AUTHENTICATION_ATTEMPT_NOT_FOUND);
     }
-    List<Case> casesList = caseService.findCasesByCaseGroupFK(caseGroup.getCaseGroupPK());
-    Case latestCase = casesList.get(casesList.size() - 1);
-    List<String> iacs = internetAccessCodeSvcClientService.generateIACs(1);
 
-    SampleUnitBase sampleUnitBase = new SampleUnitBase(UUID.randomUUID().toString(), caseGroup.getSampleUnitRef(), Character.toString('B'),
-            caseGroup.getPartyId().toString(), latestCase.getCollectionInstrumentId().toString());
-    Case newCase = caseService.generateNewCase(sampleUnitBase, caseGroup, iacs.get(0), latestCase.getActionPlanId());
-    log.info("Successfully created new case {}", newCase.getId());
-    return ResponseEntity.ok(buildDetailedCaseDTO(newCase, false, true));
+    CaseEvent caseEvent = new CaseEvent();
+    caseEvent.setCaseFK(targetCase.getCasePK());
+    caseEvent.setCategory(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
+    caseEvent.setCreatedBy(Constants.SYSTEM);
+    caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
+    caseEvent.setDescription(cat.getShortDescription());
+    caseService.createCaseEvent(caseEvent, null, targetCase);
   }
 
   /**
    * the GET endpoint to find cases by case group UUID
    *
    * @param casegroupId UUID to find by
+   * @param iacFlag Boolean flag for returning iac's with cases
    * @return the case events found
    * @throws CTPException something went wrong
    */
   @RequestMapping(value = "/casegroupid/{casegroupId}", method = RequestMethod.GET)
-  public ResponseEntity<List<CaseDTO>> findCasesInCaseGroup(
-      @PathVariable("casegroupId") final UUID casegroupId) throws CTPException {
+  public ResponseEntity<List<CaseDetailsDTO>> findCasesInCaseGroup(
+      @PathVariable("casegroupId") final UUID casegroupId,
+      @RequestParam(value = "iac", required = false) final boolean iacFlag)
+      throws CTPException {
     log.info("Entering findCasesInCaseGroup with {}", casegroupId);
 
     CaseGroup caseGroup = caseGroupService.findCaseGroupById(casegroupId);
@@ -211,8 +201,12 @@ public final class CaseEndpoint implements CTPEndpoint {
     if (CollectionUtils.isEmpty(casesList)) {
       return ResponseEntity.noContent().build();
     } else {
-      List<CaseDTO> caseDTOs = mapperFacade.mapAsList(casesList, CaseDTO.class);
-      return ResponseEntity.ok(caseDTOs);
+      List<CaseDetailsDTO> caseDetailsDTOList =
+          casesList
+              .stream()
+              .map(c -> buildDetailedCaseDTO(c, false, iacFlag))
+              .collect(Collectors.toList());
+      return ResponseEntity.ok(caseDetailsDTOList);
     }
   }
 
@@ -259,38 +253,44 @@ public final class CaseEndpoint implements CTPEndpoint {
       BindingResult bindingResult)
       throws CTPException, InvalidRequestException {
     log.info(
-        "Entering createCaseEvent with caseId {} and requestObject {}",
+        "Creating case event, caseId: {}, category: {}",
         caseId,
-        caseEventCreationRequestDTO);
-
+        caseEventCreationRequestDTO.getCategory());
     if (bindingResult.hasErrors()) {
       throw new InvalidRequestException("Binding errors for case event creation: ", bindingResult);
     }
 
     CaseEvent caseEvent = mapperFacade.map(caseEventCreationRequestDTO, CaseEvent.class);
-    Case caseFound = caseService.findCaseById(caseId);
-    log.debug("caseFound is {}", caseFound);
-    if (caseFound == null) {
+
+    // Find target case and add to event
+    Case targetCase = caseService.findCaseById(caseId);
+    if (targetCase == null) {
       throw new CTPException(
           CTPException.Fault.RESOURCE_NOT_FOUND,
           String.format(CASE_ID, ERRORMSG_CASENOTFOUND, caseId));
     }
-    caseEvent.setCaseFK(caseFound.getCasePK());
-
-    Case caze = null;
-    if (caseEventCreationRequestDTO.getPartyId() != null) {
-      caze = new Case();
-      caze.setPartyId(caseEventCreationRequestDTO.getPartyId());
-    }
+    caseEvent.setCaseFK(targetCase.getCasePK());
 
     Category category = categoryService.findCategory(caseEvent.getCategory());
-    log.debug("category is {}", category);
-    if (category.getNewCaseSampleUnitType() != null && caze == null) {
+    // If category has a new sample unit type then a party id must be provided in the case event
+    if (category.getNewCaseSampleUnitType() != null
+        && caseEventCreationRequestDTO.getPartyId() == null) {
       throw new CTPException(
           CTPException.Fault.VALIDATION_FAILED, String.format(EVENT_REQUIRES_NEW_CASE, caseId));
     }
 
-    CaseEvent createdCaseEvent = caseService.createCaseEvent(caseEvent, caze);
+    // Create new case if required
+    // NOTE this isn't an ideal point to do this
+    // We will not be creating new cases from case events when BI cases are removed so will leave
+    Case newCase;
+    if (category.getNewCaseSampleUnitType() != null) {
+      newCase = new Case();
+      newCase.setPartyId(caseEventCreationRequestDTO.getPartyId());
+    } else {
+      newCase = null;
+    }
+
+    CaseEvent createdCaseEvent = caseService.createCaseEvent(caseEvent, newCase, targetCase);
 
     CreatedCaseEventDTO mappedCaseEvent =
         mapperFacade.map(createdCaseEvent, CreatedCaseEventDTO.class);
@@ -331,28 +331,5 @@ public final class CaseEndpoint implements CTPEndpoint {
     }
 
     return caseDetailsDTO;
-  }
-
-  /**
-   * Creates a new event for the Access Code Authorisation Attempt
-   *
-   * @param caseObj Case Object for event to be created
-   * @throws CTPException if IAC not found
-   */
-  private void createNewEventForAccessCodeAuthAttempt(Case caseObj) throws CTPException {
-    Category cat =
-        categoryService.findCategory(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
-    if (cat == null) {
-      throw new CTPException(
-          CTPException.Fault.SYSTEM_ERROR, CATEGORY_ACCESS_CODE_AUTHENTICATION_ATTEMPT_NOT_FOUND);
-    }
-
-    CaseEvent caseEvent = new CaseEvent();
-    caseEvent.setCaseFK(caseObj.getCasePK());
-    caseEvent.setCategory(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
-    caseEvent.setCreatedBy(Constants.SYSTEM);
-    caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
-    caseEvent.setDescription(cat.getShortDescription());
-    caseService.createCaseEvent(caseEvent, caseObj);
   }
 }

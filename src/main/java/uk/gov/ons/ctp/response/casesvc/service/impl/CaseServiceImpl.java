@@ -18,10 +18,12 @@ import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseIacAudit;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Response;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseIacAuditRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
@@ -36,7 +38,6 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
-import uk.gov.ons.ctp.response.casesvc.service.CaseGroupAuditService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CollectionExerciseSvcClientService;
@@ -65,45 +66,51 @@ public class CaseServiceImpl implements CaseService {
 
   private static final int TRANSACTION_TIMEOUT = 30;
 
-  @Autowired private CaseRepository caseRepo;
+  private CaseRepository caseRepo;
+  private CaseEventRepository caseEventRepo;
+  private CaseGroupRepository caseGroupRepo;
+  private CaseIacAuditRepository caseIacAuditRepo;
+  private CategoryRepository categoryRepo;
 
-  @Autowired private CaseGroupRepository caseGroupRepo;
+  private ActionSvcClientService actionSvcClientService;
+  private CaseGroupService caseGroupService;
+  private CollectionExerciseSvcClientService collectionExerciseSvcClientService;
+  private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
 
-  @Autowired
+  private CaseNotificationPublisher notificationPublisher;
   private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
-  @Autowired private CaseEventRepository caseEventRepo;
-
-  @Autowired private CaseGroupService caseGroupService;
-
-  @Autowired private CategoryRepository categoryRepo;
-
-  @Autowired private CaseGroupAuditService caseGroupAuditService;
-
-  @Autowired private ActionSvcClientService actionSvcClientService;
-
-  @Autowired private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
-
-  @Autowired private CollectionExerciseSvcClientService collectionExerciseSvcClientService;
-
-  @Autowired private CaseNotificationPublisher notificationPublisher;
-
-  @Override
-  public Case findCaseByCasePK(final Integer casePK) {
-    log.debug("Entering findCaseByCaseId");
-    return caseRepo.findOne(casePK);
+  /** Constructor for CaseServiceImpl */
+  @Autowired
+  public CaseServiceImpl(
+      final CaseRepository caseRepo,
+      final CaseEventRepository caseEventRepo,
+      final CaseGroupRepository caseGroupRepo,
+      final CaseIacAuditRepository caseIacAuditRepo,
+      final CategoryRepository categoryRepo,
+      final ActionSvcClientService actionSvcClientService,
+      final CaseGroupService caseGroupService,
+      final CollectionExerciseSvcClientService collectionExerciseSvcClientService,
+      final InternetAccessCodeSvcClientService internetAccessCodeSvcClientService,
+      final CaseNotificationPublisher notificationPublisher,
+      final StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager) {
+    this.caseRepo = caseRepo;
+    this.caseEventRepo = caseEventRepo;
+    this.caseGroupRepo = caseGroupRepo;
+    this.caseIacAuditRepo = caseIacAuditRepo;
+    this.categoryRepo = categoryRepo;
+    this.actionSvcClientService = actionSvcClientService;
+    this.caseGroupService = caseGroupService;
+    this.collectionExerciseSvcClientService = collectionExerciseSvcClientService;
+    this.internetAccessCodeSvcClientService = internetAccessCodeSvcClientService;
+    this.notificationPublisher = notificationPublisher;
+    this.caseSvcStateTransitionManager = caseSvcStateTransitionManager;
   }
 
   @Override
   public Case findCaseById(final UUID id) {
     log.debug("Entering findCaseById");
     return caseRepo.findById(id);
-  }
-
-  @Override
-  public Case findCaseByCaseRef(final String caseRef) {
-    log.debug("Entering findCaseByCaseRef");
-    return caseRepo.findByCaseRef(caseRef);
   }
 
   @Override
@@ -153,19 +160,35 @@ public class CaseServiceImpl implements CaseService {
         NotificationType.valueOf(transitionEvent.name()));
   }
 
-  /**
-   * This is where it all happens kids. After the creation of the cases from sample and their
-   * subsequent distribution, this is where everything happens. Anything that happens to the case
-   * from then on is thru events - created here.
-   */
-  @Transactional(
-      propagation = Propagation.REQUIRED,
-      readOnly = false,
-      timeout = TRANSACTION_TIMEOUT)
   @Override
   public CaseEvent createCaseEvent(final CaseEvent caseEvent, final Case newCase)
       throws CTPException {
     return createCaseEvent(caseEvent, newCase, DateTimeUtil.nowUTC());
+  }
+
+  @Override
+  public CaseEvent createCaseEvent(
+      final CaseEvent caseEvent, final Case newCase, final Case targetCase) throws CTPException {
+    return createCaseEvent(caseEvent, newCase, DateTimeUtil.nowUTC(), targetCase);
+  }
+
+  @Override
+  public CaseEvent createCaseEvent(
+      final CaseEvent caseEvent, final Case newCase, final Timestamp timestamp)
+      throws CTPException {
+    log.info(
+        "Creating case event, casePK={}, category={}, subCategory={}, createdBy={}",
+        caseEvent.getCaseFK(),
+        caseEvent.getCategory(),
+        caseEvent.getSubCategory(),
+        caseEvent.getCreatedBy());
+
+    Case targetCase = caseRepo.findOne(caseEvent.getCaseFK());
+    log.debug("targetCase is {}", targetCase);
+    if (targetCase == null) {
+      return null;
+    }
+    return createCaseEvent(caseEvent, newCase, timestamp, targetCase);
   }
 
   @Transactional(
@@ -174,72 +197,113 @@ public class CaseServiceImpl implements CaseService {
       timeout = TRANSACTION_TIMEOUT)
   @Override
   public CaseEvent createCaseEvent(
-      final CaseEvent caseEvent, final Case newCase, final Timestamp timestamp)
+      final CaseEvent caseEvent,
+      final Case newCase,
+      final Timestamp timestamp,
+      final Case targetCase)
       throws CTPException {
-    log.debug("Entering createCaseEvent with caseEvent {}", caseEvent);
     log.info(
-        "SPLUNK: CaseEventCreation: casePK={}, category={}, subCategory={}, createdBy={}",
+        "Creating case event, casePK={}, category={}, subCategory={}, createdBy={}",
         caseEvent.getCaseFK(),
         caseEvent.getCategory(),
         caseEvent.getSubCategory(),
         caseEvent.getCreatedBy());
 
-    CaseEvent createdCaseEvent = null;
+    Category category = categoryRepo.findOne(caseEvent.getCategory());
+    validateCaseEventRequest(category, targetCase, newCase);
 
-    Case targetCase = caseRepo.findOne(caseEvent.getCaseFK());
-    log.debug("targetCase is {}", targetCase);
-    if (targetCase != null) {
-      Category category = categoryRepo.findOne(caseEvent.getCategory());
+    // save the case event to db
+    caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
+    CaseEvent createdCaseEvent = caseEventRepo.save(caseEvent);
+    log.debug("createdCaseEvent is {}", createdCaseEvent);
 
-      validateCaseEventRequest(category, targetCase, newCase);
+    // do we need to record a response?
+    recordCaseResponse(category, targetCase, timestamp);
 
-      // save the case event to db
-      caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
-      createdCaseEvent = caseEventRepo.save(caseEvent);
-      log.debug("createdCaseEvent is {}", createdCaseEvent);
+    // should we create an ad hoc action?
+    createAdHocAction(category, caseEvent);
 
-      // do we need to record a response?
-      recordCaseResponse(category, targetCase, timestamp);
+    transitionCaseGroupStatus(targetCase, caseEvent);
 
-      // should we create an ad hoc action?
-      createAdHocAction(category, caseEvent);
+    switch (caseEvent.getCategory()) {
+      case RESPONDENT_ENROLED:
+        List<CaseGroup> caseGroups =
+            caseGroupService.findCaseGroupsForExecutedCollectionExercises(targetCase);
+        processCaseCreationAndTransitionsDuringEnrolment(category, caseGroups, caseEvent, newCase);
+        break;
+      case SUCCESSFUL_RESPONSE_UPLOAD:
+      case COMPLETED_BY_PHONE:
+        createNewCase(category, caseEvent, targetCase, newCase);
+        updateAllAssociatedBiCases(targetCase, category);
+        break;
+      case DISABLE_RESPONDENT_ENROLMENT:
+        effectTargetCaseStateTransition(category, targetCase);
 
-      transitionCaseGroupStatus(targetCase, caseEvent);
+        List<Case> actionableCases =
+            caseRepo.findByCaseGroupIdAndStateAndSampleUnitTypeOrderByCreatedDateTimeAsc(
+                targetCase.getCaseGroupId(), CaseState.ACTIONABLE, SampleUnitType.BI);
+        CaseGroup caseGroup = caseGroupRepo.findById(targetCase.getCaseGroupId());
 
-      switch (caseEvent.getCategory()) {
-        case RESPONDENT_ENROLED:
-          List<CaseGroup> caseGroups =
-              caseGroupService.findCaseGroupsForExecutedCollectionExercises(targetCase);
-          processCaseCreationAndTransitionsDuringEnrolment(
-              category, caseGroups, caseEvent, newCase);
-          break;
-        case SUCCESSFUL_RESPONSE_UPLOAD:
-        case COMPLETED_BY_PHONE:
+        // Create a new case if no actionable case remain and casegroup is not in a complete state
+        if (actionableCases.isEmpty()
+            && !caseGroup.getStatus().equals(CaseGroupStatus.NOLONGERREQUIRED)
+            && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETE)
+            && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETEDBYPHONE)) {
           createNewCase(category, caseEvent, targetCase, newCase);
-          updateAllAssociatedBiCases(targetCase, category);
-          break;
-        case DISABLE_RESPONDENT_ENROLMENT:
-          effectTargetCaseStateTransition(category, targetCase);
-          List<Case> actionableCases =
-              caseRepo.findByCaseGroupIdAndStateAndSampleUnitType(
-                  targetCase.getCaseGroupId(), CaseState.ACTIONABLE, SampleUnitType.BI);
-          CaseGroup caseGroup = caseGroupRepo.findById(targetCase.getCaseGroupId());
-
-          // Create a new case if no actionable case remain and casegroup is not in a complete state
-          if (actionableCases.isEmpty()
-              && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETE)
-              && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETEDBYPHONE)) {
-            createNewCase(category, caseEvent, targetCase, newCase);
-          }
-          break;
-        default:
-          createNewCase(category, caseEvent, targetCase, newCase);
-          effectTargetCaseStateTransition(category, targetCase);
-          break;
-      }
+        }
+        break;
+      case GENERATE_ENROLMENT_CODE:
+        replaceIAC(targetCase);
+        break;
+      default:
+        createNewCase(category, caseEvent, targetCase, newCase);
+        effectTargetCaseStateTransition(category, targetCase);
+        break;
     }
-
+    log.info(
+        "Successfully created case event, casePK={}, category={}, subCategory={}, createdBy={}",
+        caseEvent.getCaseFK(),
+        caseEvent.getCategory(),
+        caseEvent.getSubCategory(),
+        caseEvent.getCreatedBy());
     return createdCaseEvent;
+  }
+
+  /**
+   * Add new row to caseiacaudit table with casefk and iac of given case
+   *
+   * @param updatedCase Case to create audit table row for
+   */
+  @Transactional(
+      propagation = Propagation.REQUIRED,
+      readOnly = false,
+      timeout = TRANSACTION_TIMEOUT)
+  @Override
+  public void saveCaseIacAudit(final Case updatedCase) {
+    log.debug("Saving case iac audit, caseId: {}", updatedCase.getId());
+    CaseIacAudit caseIacAudit = new CaseIacAudit();
+    caseIacAudit.setCaseFK(updatedCase.getCasePK());
+    caseIacAudit.setIac(updatedCase.getIac());
+    caseIacAudit.setCreatedDateTime(DateTimeUtil.nowUTC());
+    caseIacAuditRepo.saveAndFlush(caseIacAudit);
+  }
+
+  /**
+   * Overwrites existing iac for given case if iac is not active and adds new iac to caseiacaudit
+   * table
+   *
+   * @param targetCase Case to update
+   */
+  private void replaceIAC(final Case targetCase) {
+    if (!internetAccessCodeSvcClientService.isIacActive(targetCase.getIac())) {
+      log.debug("Replacing existing case IAC, caseId: {}", targetCase.getId());
+      String iac = internetAccessCodeSvcClientService.generateIACs(1).get(0);
+      targetCase.setIac(iac);
+      caseRepo.saveAndFlush(targetCase);
+      saveCaseIacAudit(targetCase);
+    } else {
+      log.debug("Existing IAC is still active, caseId: {}", targetCase.getId());
+    }
   }
 
   /**
@@ -345,7 +409,7 @@ public class CaseServiceImpl implements CaseService {
   @Override
   public void createInitialCase(SampleUnitParent sampleUnitParent) {
     Category category = new Category();
-    category.setShortDescription(String.format("Initial creation of case"));
+    category.setShortDescription("Initial creation of case");
     CaseGroup newCaseGroup = createNewCaseGroup(sampleUnitParent);
     if (sampleUnitParent.getSampleUnitChildren() != null) {
       for (SampleUnitChild sampleUnitChild :
@@ -398,8 +462,7 @@ public class CaseServiceImpl implements CaseService {
     CaseDTO.CaseEvent transitionEvent = category.getEventType();
     if (transitionEvent != null) {
       try {
-        CaseState result =
-            caseSvcStateTransitionManager.transition(oldCase.getState(), transitionEvent);
+        caseSvcStateTransitionManager.transition(oldCase.getState(), transitionEvent);
       } catch (CTPException e) {
         throw new CTPException(CTPException.Fault.VALIDATION_FAILED, e.getMessage());
       }
@@ -597,19 +660,13 @@ public class CaseServiceImpl implements CaseService {
       throws CTPException {
     CaseDTO.CaseEvent transitionEvent = category.getEventType();
     if (transitionEvent != null) {
-      // case might have transitioned from actionable to inactionable prev via
-      // DEACTIVATED
-      // so newstate == oldstate, but always want to disable iac if event is
-      // DISABLED (ie as the result
-      // of an online response after a refusal) or ACCOUNT_CREATED (for BRES)
       if (transitionEvent == CaseDTO.CaseEvent.DISABLED
           || transitionEvent == CaseDTO.CaseEvent.ACCOUNT_CREATED) {
         internetAccessCodeSvcClientService.disableIAC(targetCase.getIac());
       }
 
       CaseState oldState = targetCase.getState();
-      CaseState newState = null;
-      // make the transition
+      CaseState newState;
       newState = caseSvcStateTransitionManager.transition(oldState, transitionEvent);
 
       // was a state change effected?
@@ -684,16 +741,5 @@ public class CaseServiceImpl implements CaseService {
     caseGroupRepo.saveAndFlush(newCaseGroup);
     log.debug("New CaseGroup created: {}", newCaseGroup.getId().toString());
     return newCaseGroup;
-  }
-
-  @Override
-  public Case generateNewCase(
-      SampleUnitBase caseData, CaseGroup caseGroup, String iac, UUID actionplanid) {
-    Case newCase = createNewCase(caseData, caseGroup);
-    newCase.setIac(iac);
-    newCase.setActionPlanId(actionplanid);
-    newCase.setState(CaseState.ACTIONABLE);
-    caseRepo.saveAndFlush(newCase);
-    return newCase;
   }
 }

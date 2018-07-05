@@ -1,0 +1,21 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 10.56.0-1
+      author: Andrew Millar
+      changes:
+        - sqlFile:
+            comment: Add GENERATE_ENROLMENT_CODE case event category
+            path: add_generate_enrolment_code_event.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+        id: 10.56.0-2
+        author: Andrew Millar
+        changes:
+          - sqlFile:
+              comment: Add caseiacaudit table
+              path: add_case_iac_audit_table.sql
+              relativeToChangelogFile: true
+              splitStatements: false
