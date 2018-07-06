@@ -236,24 +236,10 @@ public class CaseServiceImpl implements CaseService {
         createNewCase(category, caseEvent, targetCase, newCase);
         updateAllAssociatedBiCases(targetCase, category);
         break;
-      case DISABLE_RESPONDENT_ENROLMENT:
-        effectTargetCaseStateTransition(category, targetCase);
-
-        List<Case> actionableCases =
-            caseRepo.findByCaseGroupIdAndStateAndSampleUnitTypeOrderByCreatedDateTimeAsc(
-                targetCase.getCaseGroupId(), CaseState.ACTIONABLE, SampleUnitType.BI);
-        CaseGroup caseGroup = caseGroupRepo.findById(targetCase.getCaseGroupId());
-
-        // Create a new case if no actionable case remain and casegroup is not in a complete state
-        if (actionableCases.isEmpty()
-            && !caseGroup.getStatus().equals(CaseGroupStatus.NOLONGERREQUIRED)
-            && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETE)
-            && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETEDBYPHONE)) {
-          createNewCase(category, caseEvent, targetCase, newCase);
-        }
-        break;
       case GENERATE_ENROLMENT_CODE:
+      case NO_ACTIVE_ENROLMENTS:
         replaceIAC(targetCase);
+        effectTargetCaseStateTransition(category, targetCase);
         break;
       default:
         createNewCase(category, caseEvent, targetCase, newCase);
@@ -666,10 +652,8 @@ public class CaseServiceImpl implements CaseService {
       }
 
       CaseState oldState = targetCase.getState();
-      CaseState newState;
-      newState = caseSvcStateTransitionManager.transition(oldState, transitionEvent);
+      CaseState newState = caseSvcStateTransitionManager.transition(oldState, transitionEvent);
 
-      // was a state change effected?
       if (!oldState.equals(newState)) {
         targetCase.setState(newState);
         caseRepo.saveAndFlush(targetCase);
