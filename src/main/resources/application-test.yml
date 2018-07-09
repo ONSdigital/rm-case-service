@@ -24,8 +24,8 @@ data-grid:
   address: localhost:17379
 
 schedules:
-  validation-schedule-delay-milli-seconds: 5000
-  distribution-schedule-delay-milli-seconds: 5000
+  validation-schedule-delay-milli-seconds: 1000
+  distribution-schedule-delay-milli-seconds: 1000
 
 collection-instrument-svc:
     connection-config:
