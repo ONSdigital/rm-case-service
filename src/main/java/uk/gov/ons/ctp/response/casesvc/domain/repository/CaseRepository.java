@@ -50,7 +50,7 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
    * @param state the case group state
    * @return the cases in the group
    */
-  List<Case> findByCaseGroupIdAndStateAndSampleUnitType(
+  List<Case> findByCaseGroupIdAndStateAndSampleUnitTypeOrderByCreatedDateTimeAsc(
       UUID caseGroupFK, CaseState state, SampleUnitDTO.SampleUnitType sampleUnitType);
 
   /**

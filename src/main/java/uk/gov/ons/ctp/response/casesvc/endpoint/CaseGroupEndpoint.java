@@ -25,7 +25,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
-import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
@@ -37,19 +37,26 @@ import uk.gov.ons.ctp.response.casesvc.utility.Constants;
 @Slf4j
 public final class CaseGroupEndpoint implements CTPEndpoint {
 
-  @Autowired private CaseGroupService caseGroupService;
-
-  @Autowired private CaseService caseService;
-
-  @Autowired
-  private StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName>
-      caseGroupStatusTransitionManager;
-
-  @Autowired private CategoryService categoryService;
-
-  @Qualifier("caseSvcBeanMapper")
-  @Autowired
+  private CaseGroupService caseGroupService;
+  private CaseService caseService;
+  private CategoryService categoryService;
+  private StateTransitionManager<CaseGroupStatus, CategoryName> caseGroupStatusTransitionManager;
   private MapperFacade mapperFacade;
+
+  /** Constructor for CaseGroupEndpoint */
+  @Autowired
+  public CaseGroupEndpoint(
+      final CaseService caseService,
+      final CaseGroupService caseGroupService,
+      final CategoryService categoryService,
+      final StateTransitionManager<CaseGroupStatus, CategoryName> caseGroupStatusTransitionManager,
+      final @Qualifier("caseSvcBeanMapper") MapperFacade mapperFacade) {
+    this.caseService = caseService;
+    this.caseGroupService = caseGroupService;
+    this.categoryService = categoryService;
+    this.caseGroupStatusTransitionManager = caseGroupStatusTransitionManager;
+    this.mapperFacade = mapperFacade;
+  }
 
   /**
    * the GET endpoint to find CaseGroup by caseGroupId
@@ -78,12 +85,11 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
    *
    * @param partyId to find by
    * @return the casegroups found
-   * @throws CTPException something went wrong
    */
   @RequestMapping(value = "/partyid/{partyId}", method = RequestMethod.GET)
   public ResponseEntity<List<CaseGroupDTO>> findCaseGroupsByPartyId(
-      @PathVariable("partyId") final UUID partyId) throws CTPException {
-    log.info("Entering findCaseGroupsByPartyId with {}", partyId);
+      @PathVariable("partyId") final UUID partyId) {
+    log.info("Retrieving case groups by party id, partyId: {}", partyId);
     List<CaseGroup> caseGroupList = caseGroupService.findCaseGroupByPartyId(partyId);
 
     if (CollectionUtils.isEmpty(caseGroupList)) {
@@ -109,13 +115,12 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
    * @throws CTPException something went wrong
    */
   @RequestMapping(value = "/transitions/{collectionExerciseId}/{ruRef}", method = RequestMethod.GET)
-  public Map<CategoryDTO.CategoryName, CaseGroupStatus>
-      findTransitionsByCollectionExerciseIdAndRuRef(
-          @PathVariable("collectionExerciseId") final UUID collectionExerciseId,
-          @PathVariable("ruRef") final String ruRef)
-          throws CTPException {
+  public Map<CategoryName, CaseGroupStatus> findTransitionsByCollectionExerciseIdAndRuRef(
+      @PathVariable("collectionExerciseId") final UUID collectionExerciseId,
+      @PathVariable("ruRef") final String ruRef)
+      throws CTPException {
     log.info(
-        "Entering findTransitionsByCollexIdAndRuRef with collectionExerciseId {}, ruRef {}",
+        "Retrieving casegroup transistions, collectionExerciseId: {}, ruRef: {}",
         collectionExerciseId,
         ruRef);
 
@@ -128,6 +133,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
               "CaseGroup not found for collectionExerciseId %s, ruRef %s",
               collectionExerciseId, ruRef));
     }
+
     CaseGroupStatus caseGroupStatus = caseGroupObj.getStatus();
 
     return caseGroupStatusTransitionManager.getAvailableTransitions(caseGroupStatus);
@@ -150,7 +156,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
       throws CTPException {
     String event = caseGroupEvent.getEvent();
     log.info(
-        "Entering changeCaseGroupStatus with collectionExerciseId {}, ruRef {}, caseGroupEvent {}",
+        "Updating case group status, collectionExerciseId: {}, ruRef: {}, caseGroupEvent: {}",
         collectionExerciseId,
         ruRef,
         event);
@@ -159,7 +165,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
       throw new CTPException(
           CTPException.Fault.BAD_REQUEST, String.format("Invalid event %s", event));
     }
-    CategoryDTO.CategoryName eventCategory = CategoryDTO.CategoryName.valueOf(event);
+    CategoryName eventCategory = CategoryName.valueOf(event);
 
     CaseGroup caseGroupObj =
         caseGroupService.findCaseGroupByCollectionExerciseIdAndRuRef(collectionExerciseId, ruRef);
@@ -187,10 +193,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   }
 
   private boolean isValidEvent(String event) {
-    return Arrays.stream(CategoryDTO.CategoryName.values())
-            .map(Enum::name)
-            .filter(e -> e.equals(event))
-            .count()
+    return Arrays.stream(CategoryName.values()).map(Enum::name).filter(e -> e.equals(event)).count()
         == 1;
   }
 }

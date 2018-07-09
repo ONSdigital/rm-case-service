@@ -41,13 +41,12 @@ public class InternetAccessCodeSvcClientServiceImplTest {
   private static final String HTTP = "http";
   private static final String LOCALHOST = "localhost";
   private static final String IAC = "ABCD-EFGH-IJKL-MNOP";
+  private static final String IAC_GET_PATH = "/iacs/{}";
   private static final String IAC_POST_PATH = "/iacs";
   private static final String IAC_PUT_PATH = "/iacs/{iac}";
 
   @Mock private AppConfig appConfig;
-
   @Mock private RestTemplate restTemplate;
-
   @Mock private RestUtility restUtility;
 
   @InjectMocks private InternetAccessCodeSvcClientServiceImpl iacSvcClientService;
@@ -133,5 +132,35 @@ public class InternetAccessCodeSvcClientServiceImplTest {
             eq(HttpMethod.PUT),
             eq(httpEntity),
             eq(InternetAccessCodeDTO.class));
+  }
+
+  @Test
+  public void testIsIACActive() {
+    InternetAccessCodeSvc iacSvcConfig = new InternetAccessCodeSvc();
+    iacSvcConfig.setIacPostPath(IAC_GET_PATH);
+    when(appConfig.getInternetAccessCodeSvc()).thenReturn(iacSvcConfig);
+    UriComponents uriComponents =
+        UriComponentsBuilder.newInstance()
+            .scheme(HTTP)
+            .host(LOCALHOST)
+            .port(80)
+            .path(IAC_GET_PATH)
+            .build();
+    when(restUtility.createUriComponents(any(String.class), eq(null), eq(IAC)))
+        .thenReturn(uriComponents);
+    when(restUtility.createHttpEntity(any())).thenReturn(null);
+    InternetAccessCodeDTO iacDTO = new InternetAccessCodeDTO();
+    iacDTO.setActive(true);
+    ResponseEntity<InternetAccessCodeDTO> responseEntity =
+        new ResponseEntity<>(iacDTO, HttpStatus.OK);
+    when(restTemplate.exchange(
+            uriComponents.toUri(), HttpMethod.GET, null, InternetAccessCodeDTO.class))
+        .thenReturn(responseEntity);
+
+    Boolean isActive = iacSvcClientService.isIacActive(IAC);
+
+    assertEquals(isActive, true);
+    verify(restTemplate, times(1))
+        .exchange(uriComponents.toUri(), HttpMethod.GET, null, InternetAccessCodeDTO.class);
   }
 }

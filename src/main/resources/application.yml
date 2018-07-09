@@ -80,6 +80,7 @@ data-grid:
   report-lock-time-to-live-seconds: 300
 
 internet-access-code-svc:
+  iac-get-path: /iacs/{iac}
   iac-post-path: /iacs
   iac-put-path: /iacs/{iac}
   connection-config:

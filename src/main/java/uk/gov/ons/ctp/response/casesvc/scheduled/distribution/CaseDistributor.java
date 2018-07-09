@@ -51,23 +51,35 @@ public class CaseDistributor {
   // excluded case ids
   private static final int IMPOSSIBLE_CASE_ID = Integer.MAX_VALUE;
 
-  @Autowired private DistributedListManager<Integer> caseDistributionListManager;
-
-  @Autowired private AppConfig appConfig;
-
-  @Autowired
+  private AppConfig appConfig;
+  private CaseRepository caseRepo;
+  private CaseService caseService;
+  private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
+  private DistributedListManager<Integer> caseDistributionListManager;
   private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
+  private CaseNotificationPublisher notificationPublisher;
+  private EventPublisher eventPublisher;
 
-  @Autowired private CaseNotificationPublisher notificationPublisher;
-
-  @Autowired private CaseRepository caseRepo;
-
-  @Autowired private CaseService caseService;
-
-  @Autowired private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
-
-  @Autowired private EventPublisher eventPublisher;
-  // private EventExchange eventExchange;
+  /** Constructor for CaseDistributor */
+  @Autowired
+  public CaseDistributor(
+      final AppConfig appConfig,
+      final DistributedListManager<Integer> caseDistributionListManager,
+      final CaseRepository caseRepo,
+      final CaseService caseService,
+      final InternetAccessCodeSvcClientService internetAccessCodeSvcClientService,
+      final StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager,
+      final CaseNotificationPublisher notificationPublisher,
+      final EventPublisher eventPublisher) {
+    this.appConfig = appConfig;
+    this.caseRepo = caseRepo;
+    this.caseService = caseService;
+    this.internetAccessCodeSvcClientService = internetAccessCodeSvcClientService;
+    this.caseDistributionListManager = caseDistributionListManager;
+    this.caseSvcStateTransitionManager = caseSvcStateTransitionManager;
+    this.notificationPublisher = notificationPublisher;
+    this.eventPublisher = eventPublisher;
+  }
 
   /**
    * wake up on schedule and check for cases that are in INIT state - fetch IACs for them, adding
@@ -157,7 +169,7 @@ public class CaseDistributor {
             0,
             appConfig.getCaseDistribution().getRetrievalMax(),
             new Sort(new Sort.Order(Direction.ASC, "createdDateTime")));
-    excludedCases.add(Integer.valueOf(IMPOSSIBLE_CASE_ID));
+    excludedCases.add(IMPOSSIBLE_CASE_ID);
     cases =
         caseRepo.findByStateInAndCasePKNotIn(
             Arrays.asList(CaseState.SAMPLED_INIT, CaseState.REPLACEMENT_INIT),
@@ -192,7 +204,7 @@ public class CaseDistributor {
    */
   private void processCase(final Case caze, final String iac) throws CTPException {
     UUID caseID = caze.getId();
-    log.info("processing caseid {}", caseID);
+    log.info("Processing case, caseId: {}", caseID);
 
     CaseDTO.CaseEvent event = null;
     CaseState initialState = caze.getState();
@@ -211,6 +223,8 @@ public class CaseDistributor {
     Case updatedCase = transitionCase(caze, event);
     updatedCase.setIac(iac);
     caseRepo.saveAndFlush(updatedCase);
+
+    caseService.saveCaseIacAudit(updatedCase);
 
     CaseNotification caseNotification = caseService.prepareCaseNotification(caze, event);
     log.debug("Publishing caseNotification...");
