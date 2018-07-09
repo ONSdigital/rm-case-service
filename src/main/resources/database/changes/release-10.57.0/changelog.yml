@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 10.57.0-1
+      author: Gemma Irving
+      changes:
+        - sqlFile:
+            comment: Update EQ_LAUNCH category to work with B cases
+            path: update_eq_launch_event_to_include_b_case.sql
+            relativeToChangelogFile: true
+            splitStatements: false
