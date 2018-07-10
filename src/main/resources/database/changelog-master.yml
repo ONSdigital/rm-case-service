@@ -50,3 +50,6 @@ databaseChangeLog:
 
   - include:
       file: database/changes/release-10.57.0/changelog.yml
+
+  - include:
+      file: database/changes/release-10.58.0/changelog.yml
