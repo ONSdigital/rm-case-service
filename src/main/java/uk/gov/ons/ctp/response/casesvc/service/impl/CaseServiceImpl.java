@@ -411,21 +411,22 @@ public class CaseServiceImpl implements CaseService {
     Category category = new Category();
     category.setShortDescription("Initial creation of case");
     CaseGroup newCaseGroup = createNewCaseGroup(sampleUnitParent);
+
+    Case parentCase = createNewCase(sampleUnitParent, newCaseGroup);
+    parentCase.setActionPlanId(UUID.fromString(sampleUnitParent.getActionPlanId()));
+    caseRepo.saveAndFlush(parentCase);
+    createCaseCreatedEvent(parentCase, category);
+    log.info("New Case created, caseId: {}", parentCase.getId().toString());
+
     if (sampleUnitParent.getSampleUnitChildren() != null) {
       for (SampleUnitChild sampleUnitChild :
           sampleUnitParent.getSampleUnitChildren().getSampleUnitchildren()) {
-        Case caze = createNewCase(sampleUnitChild, newCaseGroup);
-        caze.setActionPlanId(UUID.fromString(sampleUnitChild.getActionPlanId()));
-        caseRepo.saveAndFlush(caze);
-        createCaseCreatedEvent(caze, category);
-        log.debug("New Case created: {}", caze.getId().toString());
+        Case childCase = createNewCase(sampleUnitChild, newCaseGroup);
+        childCase.setActionPlanId(UUID.fromString(sampleUnitChild.getActionPlanId()));
+        caseRepo.saveAndFlush(childCase);
+        createCaseCreatedEvent(childCase, category);
+        log.info("New Case created, caseId: {}", childCase.getId().toString());
       }
-    } else {
-      Case caze = createNewCase(sampleUnitParent, newCaseGroup);
-      caze.setActionPlanId(UUID.fromString(sampleUnitParent.getActionPlanId()));
-      caseRepo.saveAndFlush(caze);
-      createCaseCreatedEvent(caze, category);
-      log.debug("New Case created: {}", caze.getId().toString());
     }
   }
 
