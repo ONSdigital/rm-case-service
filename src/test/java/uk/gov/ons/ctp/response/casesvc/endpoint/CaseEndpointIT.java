@@ -52,11 +52,8 @@ public class CaseEndpointIT {
   @Autowired private ObjectMapper mapper;
   @Autowired private AppConfig appConfig;
 
-  //  @Rule
-  //  public WireMockRule wireMockRule = new WireMockRule(options().port(18002));
-
   @Test
-  public void ensureSampleAttributesReceived() throws Exception {
+  public void ensureSampleUnitIdReceived() throws Exception {
     createIACStub();
 
     SimpleMessageSender sender = getMessageSender();

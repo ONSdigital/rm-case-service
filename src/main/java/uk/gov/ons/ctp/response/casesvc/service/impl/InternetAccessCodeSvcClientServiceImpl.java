@@ -28,13 +28,20 @@ import uk.gov.ons.ctp.response.iac.representation.UpdateInternetAccessCodeDTO;
 @Service
 public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCodeSvcClientService {
 
-  @Autowired private AppConfig appConfig;
-
-  @Autowired private RestTemplate restTemplate;
-
-  @Qualifier("iacServiceRestUtility")
-  @Autowired
+  private AppConfig appConfig;
+  private RestTemplate restTemplate;
   private RestUtility restUtility;
+
+  /** Constructor for InternetAccessCodeSvcClientServiceImpl */
+  @Autowired
+  public InternetAccessCodeSvcClientServiceImpl(
+      final AppConfig appConfig,
+      final RestTemplate restTemplate,
+      final @Qualifier("iacServiceRestUtility") RestUtility restUtility) {
+    this.appConfig = appConfig;
+    this.restTemplate = restTemplate;
+    this.restUtility = restUtility;
+  }
 
   @Retryable(
       value = {RestClientException.class},
@@ -42,6 +49,7 @@ public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCod
       backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
   @Override
   public List<String> generateIACs(int count) {
+    log.debug("Generating iac codes, count: {}", count);
     UriComponents uriComponents =
         restUtility.createUriComponents(
             appConfig.getInternetAccessCodeSvc().getIacPostPath(), null);
@@ -50,10 +58,9 @@ public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCod
     HttpEntity<CreateInternetAccessCodeDTO> httpEntity =
         restUtility.createHttpEntity(createCodesDTO);
 
-    log.debug("about to post to the IAC SVC with {}", createCodesDTO);
     ResponseEntity<String[]> responseEntity =
         restTemplate.exchange(uriComponents.toUri(), HttpMethod.POST, httpEntity, String[].class);
-    log.debug("responseEntity = " + responseEntity.getBody());
+    log.debug("Successfully generated iac codes, count: {}", count);
     return Arrays.asList(responseEntity.getBody());
   }
 
@@ -63,7 +70,7 @@ public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCod
       backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
   @Override
   public void disableIAC(String iac) {
-    log.debug("about to put to the IAC SVC with {}", iac);
+    log.debug("Disabling iac code");
     UriComponents uriComponents =
         restUtility.createUriComponents(
             appConfig.getInternetAccessCodeSvc().getIacPutPath(), null, iac);
@@ -72,6 +79,24 @@ public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCod
 
     restTemplate.exchange(
         uriComponents.toUri(), HttpMethod.PUT, httpEntity, InternetAccessCodeDTO.class);
-    log.debug("gone past the call to the IAC Svc...");
+    log.debug("Successfully disabled iac code");
+  }
+
+  @Retryable(
+      value = {RestClientException.class},
+      maxAttemptsExpression = "#{${retries.maxAttempts}}",
+      backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
+  @Override
+  public Boolean isIacActive(final String iac) {
+    log.debug("Checking if iac code is active");
+    UriComponents uriComponents =
+        restUtility.createUriComponents(
+            appConfig.getInternetAccessCodeSvc().getIacPutPath(), null, iac);
+    HttpEntity<?> httpEntity = restUtility.createHttpEntity(null);
+
+    ResponseEntity<InternetAccessCodeDTO> responseEntity =
+        restTemplate.exchange(
+            uriComponents.toUri(), HttpMethod.GET, httpEntity, InternetAccessCodeDTO.class);
+    return responseEntity.getBody().getActive();
   }
 }

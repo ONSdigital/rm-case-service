@@ -7,9 +7,7 @@ import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.service.CTPService;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
-import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitBase;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 
@@ -36,28 +34,12 @@ public interface CaseService extends CTPService {
   List<Case> findCasesByPartyId(UUID partyId);
 
   /**
-   * Find Case entity by Unique Case PK.
-   *
-   * @param casePK Unique Case Id
-   * @return Case object or null
-   */
-  Case findCaseByCasePK(Integer casePK);
-
-  /**
    * Find Case entity by UUID.
    *
    * @param id Unique Case UUID
    * @return Case object or null
    */
   Case findCaseById(UUID id);
-
-  /**
-   * Find Case entity by unique caseRef.
-   *
-   * @param caseRef Unique caseRef
-   * @return Case object or null
-   */
-  Case findCaseByCaseRef(String caseRef);
 
   /**
    * Find Case entity by IAC.
@@ -105,9 +87,40 @@ public interface CaseService extends CTPService {
       throws CTPException;
 
   /**
+   * Create a CaseEvent for the specific scenario of an incoming CaseReceipt (sent by the SDX
+   * Gateway and containing the responseDateTime of the online/paper response).
+   *
+   * @param caseEvent CaseEvent to be created
+   * @param newCase optional case object containing partial details of the case to be created by
+   *     this event.
+   * @param targetCase case to post caseEvent against
+   * @return the created CaseEvent.
+   * @throws CTPException when case state transition error
+   */
+  CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase, Case targetCase) throws CTPException;
+
+  /**
+   * Create a CaseEvent for the specific scenario of an incoming CaseReceipt (sent by the SDX
+   * Gateway and containing the responseDateTime of the online/paper response).
+   *
+   * @param caseEvent CaseEvent to be created
+   * @param newCase optional case object containing partial details of the case to be created by
+   *     this event.
+   * @param timestamp timestamp equals to the incoming CaseReceipt's responseDateTime.
+   * @param targetCase case to post caseEvent against
+   * @return the created CaseEvent.
+   * @throws CTPException when case state transition error
+   */
+  CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase, Timestamp timestamp, Case targetCase)
+      throws CTPException;
+
+  /**
    * Not sure this is the best place for this method, but .. several parts of case svc need to build
    * a CaseNotification for a Case and need the services of the ActionPlanMappingService to get the
-   * actionPlanId This method just creates a CaseNotification
+   * actionPlanId This method just creates a CaseNotification ======= Not sure this is the best
+   * place for this method, but .. several parts of case svc need to build a CaseNotification for a
+   * Case and need the services of the ActionPlanMappingService to get the actionPlanId This method
+   * just creates a CaseNotification >>>>>>> master
    *
    * @param caze The Case
    * @param transitionEvent the event to inform the recipient of
@@ -125,5 +138,10 @@ public interface CaseService extends CTPService {
    */
   void createInitialCase(SampleUnitParent caseData);
 
-  Case generateNewCase(SampleUnitBase caseData, CaseGroup caseGroup, String iac, UUID actionplanid);
+  /**
+   * Adds a new row to the caseiacaudit table with the case id and iac of given case
+   *
+   * @param updatedCase the CaseCreation data
+   */
+  void saveCaseIacAudit(Case updatedCase);
 }

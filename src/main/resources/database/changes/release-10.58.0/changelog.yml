@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 10.58.0-1
+      author: Damien Lloyd
+      changes:
+        - sqlFile:
+            comment: Add sample unit id to case table
+            path: add_sample_unit_id_to_case.sql
+            relativeToChangelogFile: true
+            splitStatements: false

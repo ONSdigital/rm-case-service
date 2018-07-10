@@ -560,5 +560,16 @@
     "newCaseSampleUnitType": "B",
     "oldCaseSampleUnitTypes": "BI",
     "eventType": "DISABLED"
+  },
+  {
+    "group": "general",
+    "categoryName": "GENERATE_ENROLMENT_CODE",
+    "longDescription": "Generate new enrolment code",
+    "shortDescription": "General code",
+    "role": null,
+    "generatedActionType": null,
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,B",
+    "eventType": null
   }
 ]
