@@ -408,9 +408,11 @@ public class CaseServiceImpl implements CaseService {
       timeout = TRANSACTION_TIMEOUT)
   @Override
   public void createInitialCase(SampleUnitParent sampleUnitParent) {
+    CaseGroup newCaseGroup = createNewCaseGroup(sampleUnitParent);
+    log.info("Created new casegroup, casegroupId: {}", newCaseGroup.getId());
+
     Category category = new Category();
     category.setShortDescription("Initial creation of case");
-    CaseGroup newCaseGroup = createNewCaseGroup(sampleUnitParent);
 
     Case parentCase = createNewCase(sampleUnitParent, newCaseGroup);
     parentCase.setActionPlanId(UUID.fromString(sampleUnitParent.getActionPlanId()));
