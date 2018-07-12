@@ -152,10 +152,12 @@ public class CaseServiceImpl implements CaseService {
   public CaseNotification prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent) {
     CaseGroup caseGroup = caseGroupRepo.findOne(caze.getCaseGroupFK());
     return new CaseNotification(
+        "",
         caze.getId().toString(),
         caze.getActionPlanId().toString(),
         caseGroup.getCollectionExerciseId().toString(),
         caze.getPartyId().toString(),
+        caze.getSampleUnitType().toString(),
         NotificationType.valueOf(transitionEvent.name()));
   }
 
@@ -526,7 +528,7 @@ public class CaseServiceImpl implements CaseService {
   /**
    * Create the new Case.
    *
-   * @param caseData SampleUnitParent from which to create Case.
+   * @param caseData SampleUnitBase from which to create Case.
    * @param caseGroup to which Case belongs.
    * @return newCase created Case.
    */
