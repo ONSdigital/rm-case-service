@@ -701,6 +701,7 @@ public class CaseServiceImpl implements CaseService {
     newCase.setCreatedDateTime(DateTimeUtil.nowUTC());
     newCase.setCaseGroupFK(targetCase.getCaseGroupFK());
     newCase.setCreatedBy(caseEvent.getCreatedBy());
+    newCase.setSampleUnitId(targetCase.getSampleUnitId());
     if (newCase.getSampleUnitType() == SampleUnitType.B) {
       newCase.setSourceCaseId(null);
     } else {
