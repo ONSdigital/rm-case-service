@@ -55,6 +55,9 @@ public class Case implements Serializable {
   @Column(name = "id")
   private UUID id;
 
+  @Column(name = "sampleunit_id")
+  private UUID sampleUnitId;
+
   @Version
   @Column(name = "optlockversion")
   private int optLockVersion;

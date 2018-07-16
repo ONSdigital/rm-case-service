@@ -56,6 +56,7 @@ public class CaseCreationServiceTest {
     sampleUnitParent.setPartyId("7bc5d41b-0549-40b3-ba76-42f6d4cf3992");
     sampleUnitParent.setSampleUnitRef("str1234");
     sampleUnitParent.setSampleUnitType("B");
+    sampleUnitParent.setId(UUID.randomUUID().toString());
 
     caseService.createInitialCase(sampleUnitParent);
 
@@ -118,6 +119,7 @@ public class CaseCreationServiceTest {
     sampleUnitChild.setPartyId("73528fd7-ef04-4697-a94c-54edf3e73282");
     sampleUnitChild.setSampleUnitRef("str1235");
     sampleUnitChild.setSampleUnitType("BI");
+    sampleUnitChild.setId(UUID.randomUUID().toString());
 
     // Parent Only field
     sampleUnitParent.setCollectionExerciseId("14fb3e68-4dca-46db-bf49-04b84e07e77c");
@@ -128,6 +130,7 @@ public class CaseCreationServiceTest {
     sampleUnitParent.setPartyId("7bc5d41b-0549-40b3-ba76-42f6d4cf3992");
     sampleUnitParent.setSampleUnitRef("str1234");
     sampleUnitParent.setSampleUnitType("B");
+    sampleUnitParent.setId(UUID.randomUUID().toString());
 
     caseService.createInitialCase(sampleUnitParent);
 

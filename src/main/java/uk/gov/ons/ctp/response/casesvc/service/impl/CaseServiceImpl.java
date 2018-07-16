@@ -3,6 +3,7 @@ package uk.gov.ons.ctp.response.casesvc.service.impl;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -153,10 +154,12 @@ public class CaseServiceImpl implements CaseService {
   public CaseNotification prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent) {
     CaseGroup caseGroup = caseGroupRepo.findOne(caze.getCaseGroupFK());
     return new CaseNotification(
+        caze.getSampleUnitId().toString(),
         caze.getId().toString(),
         caze.getActionPlanId().toString(),
         caseGroup.getCollectionExerciseId().toString(),
-        caze.getPartyId().toString(),
+        Objects.toString(caze.getPartyId(), null),
+        caze.getSampleUnitType().toString(),
         NotificationType.valueOf(transitionEvent.name()));
   }
 
@@ -375,8 +378,8 @@ public class CaseServiceImpl implements CaseService {
               .collect(Collectors.toList());
       if (biCases.size() != 0) {
         log.warn(
-            "Existing BI case found during enrolment for partyid: {} for casegroup: {} "
-                + "with caseid: {}",
+            "Existing BI case found during enrolment for "
+                + "partyid: {} for casegroup: {} with caseid: {}",
             newCase.getPartyId().toString(),
             caseGroup.getId(),
             biCases.get(0).getId());
@@ -391,13 +394,13 @@ public class CaseServiceImpl implements CaseService {
       }
 
       // Transition each of the B cases for the casegroup being enrolled for
-      List<Case> bcCases =
+      List<Case> caseTypeBs =
           cases
               .stream()
               .filter(c -> c.getSampleUnitType().toString().equals("B"))
               .collect(Collectors.toList());
-      for (Case bcCase : bcCases) {
-        effectTargetCaseStateTransition(category, bcCase);
+      for (Case caseTypeB : caseTypeBs) {
+        effectTargetCaseStateTransition(category, caseTypeB);
       }
     }
   }
@@ -527,10 +530,15 @@ public class CaseServiceImpl implements CaseService {
     // values from case group
     newCase.setCaseGroupId(caseGroup.getId());
     newCase.setCaseGroupFK(caseGroup.getCaseGroupPK());
+    newCase.setSampleUnitId(UUID.fromString(caseData.getId()));
 
     // set case values from sampleUnit
     newCase.setSampleUnitType(SampleUnitDTO.SampleUnitType.valueOf(caseData.getSampleUnitType()));
-    newCase.setPartyId(UUID.fromString(caseData.getPartyId()));
+
+    if (caseData.getPartyId() != null) {
+      newCase.setPartyId(UUID.fromString(caseData.getPartyId()));
+    }
+
     newCase.setCollectionInstrumentId(UUID.fromString(caseData.getCollectionInstrumentId()));
 
     // HardCoded values
@@ -539,29 +547,6 @@ public class CaseServiceImpl implements CaseService {
     newCase.setCreatedBy(Constants.SYSTEM);
 
     return newCase;
-  }
-
-  /**
-   * Go ahead and create a new case using the new case details, associate it with the target case
-   * and create the CASE_CREATED event on the new case
-   *
-   * @param caseEvent the basic event
-   * @param targetCase the 'source' case the event is being created for
-   * @param newCase the details for the new case (if indeed one is required) else null
-   * @param caseEventCategory the caseEventCategory
-   * @return the new case
-   */
-  private Case createNewCaseFromEvent(
-      CaseEvent caseEvent, Case targetCase, Case newCase, Category caseEventCategory) {
-    Case persistedCase = saveNewCase(caseEvent, targetCase, newCase);
-    // NOTE the action service does not need to be notified of the creation of
-    // the new case - yet
-    // That will be done when the CaseDistributor wakes up and assigns an IAC to
-    // the newly created case
-    // ie it might be created here, but it is not yet ready for prime time
-    // without its IAC!
-    createCaseCreatedEvent(persistedCase, caseEventCategory);
-    return persistedCase;
   }
 
   /**
@@ -680,6 +665,29 @@ public class CaseServiceImpl implements CaseService {
   }
 
   /**
+   * Go ahead and create a new case using the new case details, associate it with the target case
+   * and create the CASE_CREATED event on the new case
+   *
+   * @param caseEvent the basic event
+   * @param targetCase the 'source' case the event is being created for
+   * @param newCase the details for the new case (if indeed one is required) else null
+   * @param caseEventCategory the caseEventCategory
+   * @return the new case
+   */
+  private Case createNewCaseFromEvent(
+      CaseEvent caseEvent, Case targetCase, Case newCase, Category caseEventCategory) {
+    Case persistedCase = saveNewCase(caseEvent, targetCase, newCase);
+    // NOTE the action service does not need to be notified of the creation of
+    // the new case - yet
+    // That will be done when the CaseDistributor wakes up and assigns an IAC to
+    // the newly created case
+    // ie it might be created here, but it is not yet ready for prime time
+    // without its IAC!
+    createCaseCreatedEvent(persistedCase, caseEventCategory);
+    return persistedCase;
+  }
+
+  /**
    * Create a new case row for a replacement/new case
    *
    * @param caseEvent the event that lead to the creation of the new case
@@ -693,6 +701,7 @@ public class CaseServiceImpl implements CaseService {
     newCase.setCreatedDateTime(DateTimeUtil.nowUTC());
     newCase.setCaseGroupFK(targetCase.getCaseGroupFK());
     newCase.setCreatedBy(caseEvent.getCreatedBy());
+    newCase.setSampleUnitId(targetCase.getSampleUnitId());
     if (newCase.getSampleUnitType() == SampleUnitType.B) {
       newCase.setSourceCaseId(null);
     } else {
@@ -732,7 +741,9 @@ public class CaseServiceImpl implements CaseService {
     CaseGroup newCaseGroup = new CaseGroup();
 
     newCaseGroup.setId(UUID.randomUUID());
-    newCaseGroup.setPartyId(UUID.fromString(caseGroupData.getPartyId()));
+    if (caseGroupData.getPartyId() != null) {
+      newCaseGroup.setPartyId(UUID.fromString(caseGroupData.getPartyId()));
+    }
     newCaseGroup.setCollectionExerciseId(UUID.fromString(caseGroupData.getCollectionExerciseId()));
     newCaseGroup.setSampleUnitRef(caseGroupData.getSampleUnitRef());
     newCaseGroup.setSampleUnitType(caseGroupData.getSampleUnitType());

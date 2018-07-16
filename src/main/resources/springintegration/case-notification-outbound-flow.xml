@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans xmlns:rabbit="http://www.springframework.org/schema/rabbit"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+  xmlns="http://www.springframework.org/schema/beans"
   xsi:schemaLocation="http://www.springframework.org/schema/beans
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
   http://www.springframework.org/schema/rabbit
   http://www.springframework.org/schema/rabbit/spring-rabbit-1.6.xsd">
 
-  <bean id="caseNotificationMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+  <bean class="org.springframework.oxm.jaxb.Jaxb2Marshaller" id="caseNotificationMarshaller">
     <property name="contextPath" value="uk.gov.ons.ctp.response.casesvc.message.notification"/>
   </bean>
 
-  <bean id="caseNotificationMarshallingMessageConverter"
-    class="org.springframework.amqp.support.converter.MarshallingMessageConverter">
+  <bean class="org.springframework.amqp.support.converter.MarshallingMessageConverter"
+    id="caseNotificationMarshallingMessageConverter">
     <constructor-arg ref="caseNotificationMarshaller"/>
     <property name="contentType" value="text/xml"/>
   </bean>
 
-  <rabbit:template id="caseNotificationRabbitTemplate" connection-factory="connectionFactory"
-    exchange="case-outbound-exchange" routing-key="Case.LifecycleEvents.binding"
-    message-converter="caseNotificationMarshallingMessageConverter" mandatory="true"
-    channel-transacted="true"/>
+  <rabbit:template channel-transacted="true" connection-factory="connectionFactory"
+    exchange="case-outbound-exchange" id="caseNotificationRabbitTemplate"
+    mandatory="true" message-converter="caseNotificationMarshallingMessageConverter"
+    routing-key="Case.LifecycleEvents.binding"/>
 
 </beans>
