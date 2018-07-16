@@ -261,14 +261,19 @@ public class CaseServiceImplTest {
     CollectionExerciseDTO collectionExercise = new CollectionExerciseDTO();
     collectionExercise.setCaseTypes(new ArrayList<>());
 
-    when(caseGroupService.findCaseGroupsForExecutedCollectionExercises(any(Case.class))).thenReturn(Arrays.asList(new CaseGroup[]{ testCaseGroup }));
-    when(caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(anyInt())).thenReturn(Arrays.asList(new Case[]{ testCase }));
+    when(caseGroupService.findCaseGroupsForExecutedCollectionExercises(any(Case.class)))
+        .thenReturn(Arrays.asList(new CaseGroup[] {testCaseGroup}));
+    when(caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(anyInt()))
+        .thenReturn(Arrays.asList(new Case[] {testCase}));
     when(caseRepo.saveAndFlush(any(Case.class))).then(returnsFirstArg());
     when(caseRepo.save(any(Case.class))).then(returnsFirstArg());
     when(caseGroupRepo.findOne(anyInt())).thenReturn(testCaseGroup);
     when(caseEventRepo.save(any(CaseEvent.class))).then(returnsFirstArg());
-    when(collectionExerciseSvcClientService.getCollectionExercise(any(UUID.class))).thenReturn(collectionExercise);
-    when(caseSvcStateTransitionManager.transition(any(CaseState.class), any(CaseDTO.CaseEvent.class))).thenReturn(CaseState.ACTIONABLE);
+    when(collectionExerciseSvcClientService.getCollectionExercise(any(UUID.class)))
+        .thenReturn(collectionExercise);
+    when(caseSvcStateTransitionManager.transition(
+            any(CaseState.class), any(CaseDTO.CaseEvent.class)))
+        .thenReturn(CaseState.ACTIONABLE);
 
     Timestamp currentTime = DateTimeUtil.nowUTC();
     CaseEvent caseEvent =
