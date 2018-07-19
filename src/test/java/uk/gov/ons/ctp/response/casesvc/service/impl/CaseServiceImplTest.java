@@ -3,8 +3,11 @@ package uk.gov.ons.ctp.response.casesvc.service.impl;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -53,6 +56,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
 import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupAuditService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
@@ -60,6 +64,7 @@ import uk.gov.ons.ctp.response.casesvc.service.CollectionExerciseSvcClientServic
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
+import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO.SampleUnitType;
 
 /**
  * Test the CaseServiceImpl primarily the createCaseEvent functionality. Note that these tests
@@ -231,6 +236,68 @@ public class CaseServiceImplTest {
     CaseEvent result = caseService.createCaseEvent(caseEvent, null, cases.get(0));
 
     verify(caseEventRepo, times(1)).save(caseEvent);
+    assertEquals(caseEvent, result);
+  }
+
+  @Test
+  public void testCreateCaseEventCreateNewCase() throws CTPException {
+    when(categoryRepo.findOne(CategoryName.RESPONDENT_ENROLED))
+        .thenReturn(categories.get(CAT_RESPONDENT_ENROLED));
+
+    UUID partyId = UUID.randomUUID();
+    UUID sampleUnitId = UUID.randomUUID();
+
+    Case testCase = new Case();
+    testCase.setSampleUnitType(SampleUnitType.B);
+    testCase.setPartyId(partyId);
+    testCase.setState(CaseState.ACTIONABLE);
+    testCase.setSampleUnitId(sampleUnitId);
+
+    Case newCase = new Case();
+    newCase.setPartyId(partyId);
+
+    CaseGroup testCaseGroup = new CaseGroup();
+
+    CollectionExerciseDTO collectionExercise = new CollectionExerciseDTO();
+    collectionExercise.setCaseTypes(new ArrayList<>());
+
+    when(caseGroupService.findCaseGroupsForExecutedCollectionExercises(any(Case.class)))
+        .thenReturn(Arrays.asList(new CaseGroup[] {testCaseGroup}));
+    when(caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(anyInt()))
+        .thenReturn(Arrays.asList(new Case[] {testCase}));
+    when(caseRepo.saveAndFlush(any(Case.class))).then(returnsFirstArg());
+    when(caseRepo.save(any(Case.class))).then(returnsFirstArg());
+    when(caseGroupRepo.findOne(anyInt())).thenReturn(testCaseGroup);
+    when(caseEventRepo.save(any(CaseEvent.class))).then(returnsFirstArg());
+    when(collectionExerciseSvcClientService.getCollectionExercise(any(UUID.class)))
+        .thenReturn(collectionExercise);
+    when(caseSvcStateTransitionManager.transition(
+            any(CaseState.class), any(CaseDTO.CaseEvent.class)))
+        .thenReturn(CaseState.ACTIONABLE);
+
+    Timestamp currentTime = DateTimeUtil.nowUTC();
+    CaseEvent caseEvent =
+        new CaseEvent(
+            1,
+            NON_EXISTING_PARENT_CASE_FK,
+            CASEEVENT_DESCRIPTION,
+            CASEEVENT_CREATEDBY,
+            currentTime,
+            CategoryName.RESPONDENT_ENROLED,
+            CASEEVENT_SUBCATEGORY);
+
+    CaseEvent result = caseService.createCaseEvent(caseEvent, newCase, cases.get(9));
+
+    verify(caseEventRepo, times(1)).save(caseEvent);
+    ArgumentCaptor<Case> caseParam = ArgumentCaptor.forClass(Case.class);
+    verify(caseRepo, times(1)).saveAndFlush(caseParam.capture());
+    Case savedCase = caseParam.getValue();
+
+    // Ensure our newly created case has a sample unit id
+    assertNotNull(savedCase.getSampleUnitId());
+    assertEquals(sampleUnitId, savedCase.getSampleUnitId());
+    assertNotNull(savedCase.getPartyId());
+    assertEquals(partyId, savedCase.getPartyId());
     assertEquals(caseEvent, result);
   }
 

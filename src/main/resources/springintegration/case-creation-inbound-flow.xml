@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:int="http://www.springframework.org/schema/integration"
+<beans xmlns:int="http://www.springframework.org/schema/integration"
   xmlns:int-amqp="http://www.springframework.org/schema/integration/amqp"
   xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.springframework.org/schema/beans"
   xsi:schemaLocation="http://www.springframework.org/schema/beans
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
   http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
   http://www.springframework.org/schema/integration/amqp http://www.springframework.org/schema/integration/amqp/spring-integration-amqp.xsd
   http://www.springframework.org/schema/integration/xml http://www.springframework.org/schema/integration/xml/spring-integration-xml.xsd">
 
-  <bean id="collectionListenerContainer"
-    class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer">
+  <bean class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer"
+    id="collectionListenerContainer">
     <property name="connectionFactory" ref="connectionFactory"/>
     <property name="queueNames" value="Case.CaseDelivery"/>
     <property name="concurrentConsumers" value="${messaging.consumingThreads}"/>
@@ -21,38 +21,39 @@
   </bean>
 
   <int:channel id="caseCreation"/>
-  <bean id="simpleMessageConverter"
-    class="org.springframework.amqp.support.converter.SimpleMessageConverter"/>
-  <int-amqp:inbound-channel-adapter id="collectionInboundAmqp"
-    listener-container="collectionListenerContainer" message-converter="simpleMessageConverter"
-    channel="caseCreation"/>
+  <bean class="org.springframework.amqp.support.converter.SimpleMessageConverter"
+    id="simpleMessageConverter"/>
+  <int-amqp:inbound-channel-adapter channel="caseCreation"
+    id="collectionInboundAmqp"
+    listener-container="collectionListenerContainer"
+    message-converter="simpleMessageConverter"/>
 
   <!-- Xml validated against the inbound schema -->
   <int:channel id="caseCreationInvalid"/>
   <int-amqp:outbound-channel-adapter
-    id="invalidCaseOutboundAmqp" channel="caseCreationInvalid"
-    exchange-name="collection-invalid-exchange" routing-key="Case.CaseDelivery.binding"/>
+    channel="caseCreationInvalid" exchange-name="collection-invalid-exchange"
+    id="invalidCaseOutboundAmqp" routing-key="Case.CaseDelivery.binding"/>
   <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
-  <int-xml:validating-filter id="caseValidator"
-    input-channel="caseCreation" output-channel="caseCreationValid"
-    schema-location="classpath:casesvc/xsd/inbound/SampleUnitNotification.xsd"
-    discard-channel="caseCreationInvalid"/>
+  <int-xml:validating-filter discard-channel="caseCreationInvalid"
+    id="caseValidator" input-channel="caseCreation"
+    output-channel="caseCreationValid"
+    schema-location="classpath:casesvc/xsd/inbound/SampleUnitNotification.xsd"/>
 
 
   <!-- Validated xml is transformed into the jaxb generated object model -->
-  <int:channel id="caseTransformed"
-    datatype="uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent"/>
+  <int:channel datatype="uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent"
+    id="caseTransformed"/>
   <int-xml:unmarshalling-transformer
     input-channel="caseCreationValid" output-channel="caseTransformed"
     unmarshaller="caseCreationMarshaller"/>
 
-  <bean id="caseCreationMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+  <bean class="org.springframework.oxm.jaxb.Jaxb2Marshaller" id="caseCreationMarshaller">
     <property name="contextPath"
       value="uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification"/>
   </bean>
 
   <!-- Finally see the @ServiceActivator(inputChannel = "sampleUnitTransformed",
-    adviceChain = "caseRetryAdvice") -->
+      adviceChain = "caseRetryAdvice") -->
 
   <!-- Start of section to deal with retries and DLQ after max attempts -->
   <int:channel id="caseDlqChannel"/>
@@ -72,7 +73,7 @@
     </property>
     <property name="retryTemplate" ref="retryTemplate"/>
   </bean>
-  <bean id="retryTemplate" class="org.springframework.retry.support.RetryTemplate">
+  <bean class="org.springframework.retry.support.RetryTemplate" id="retryTemplate">
     <property name="backOffPolicy">
       <bean class="org.springframework.retry.backoff.ExponentialBackOffPolicy">
         <property name="initialInterval" value="${messaging.backoffInitial}"/>
@@ -90,18 +91,18 @@
   </bean>
 
   <int:channel id="caseDlqInterimChannel"/>
-  <int:transformer input-channel="caseDlqChannel"
-    output-channel="caseDlqInterimChannel" expression="payload.failedMessage.payload"/>
+  <int:transformer expression="payload.failedMessage.payload"
+    input-channel="caseDlqChannel" output-channel="caseDlqInterimChannel"/>
 
   <int:channel id="caseDlqChannelXml"/>
   <int-xml:marshalling-transformer
-    input-channel="caseDlqInterimChannel" output-channel="caseDlqChannel"
-    marshaller="caseCreationMarshaller" result-transformer="caseOutboundTransformer"/>
-  <bean id="caseOutboundTransformer"
-    class="org.springframework.integration.xml.transformer.ResultToStringTransformer"/>
+    input-channel="caseDlqInterimChannel" marshaller="caseCreationMarshaller"
+    output-channel="caseDlqChannel" result-transformer="caseOutboundTransformer"/>
+  <bean class="org.springframework.integration.xml.transformer.ResultToStringTransformer"
+    id="caseOutboundTransformer"/>
 
   <int-amqp:outbound-channel-adapter
-    id="caseDlqAmqp" channel="caseDlqChannelXml" exchange-name="case-deadletter-exchange"
+    channel="caseDlqChannelXml" exchange-name="case-deadletter-exchange" id="caseDlqAmqp"
     routing-key="Case.CaseDelivery.binding"/>
   <!-- End of section to deal with retries and DLQ after max attempts -->
 </beans>

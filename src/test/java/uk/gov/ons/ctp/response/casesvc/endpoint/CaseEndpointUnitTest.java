@@ -584,7 +584,6 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCasesInCaseGroup"));
     actions.andExpect(jsonPath("$", hasSize(9)));
-    actions.andExpect(jsonPath("$[0].*", hasSize(13)));
     actions.andExpect(
         jsonPath(
             "$[*].id",

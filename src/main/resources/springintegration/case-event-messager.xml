@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
+<beans xmlns:rabbit="http://www.springframework.org/schema/rabbit"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+  xmlns="http://www.springframework.org/schema/beans"
   xsi:schemaLocation="http://www.springframework.org/schema/beans
   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
   http://www.springframework.org/schema/rabbit
@@ -12,9 +12,9 @@
 
   <!-- <int:gateway id="dataSender" service-interface="uk.gov.ons.ctp.common.events.EventExchange" default-request-channel="messageOutput" />
  -->
-  <rabbit:template id="amqpTemplate" connection-factory="connectionFactory"
+  <rabbit:template channel-transacted="true" connection-factory="connectionFactory"
     exchange="event-message-outbound-exchange"
-    channel-transacted="true"/>
+    id="amqpTemplate"/>
 
   <!--     <int-amqp:publish-subscribe-channel id="messageOutput" connection-factory="connectionFactory" />
 
