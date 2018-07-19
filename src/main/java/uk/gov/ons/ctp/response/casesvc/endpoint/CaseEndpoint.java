@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
@@ -28,6 +30,9 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
+import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitBase;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
@@ -122,6 +127,38 @@ public final class CaseEndpoint implements CTPEndpoint {
       }
       return ResponseEntity.ok(resultList);
     }
+  }
+
+  @RequestMapping(method = RequestMethod.GET)
+  public ResponseEntity<List<CaseDetailsDTO>> findCases(
+      @RequestParam(required = false) String sampleUnitId,
+      @RequestParam(required = false) String partyId) {
+    log.info("Finding cases sampleUnitId={} partyId={}", sampleUnitId, partyId);
+    Case.CaseBuilder caseBuilder = Case.builder();
+    if (sampleUnitId != null) {
+      caseBuilder.sampleUnitId(UUID.fromString(sampleUnitId));
+    }
+    if (partyId != null) {
+      caseBuilder.partyId(UUID.fromString(partyId));
+    }
+    Case exampleCase = caseBuilder.build();
+    Example<Case> example = Example.of(exampleCase, ExampleMatcher.matchingAny());
+    List<Case> cases =
+        exampleCase.equals(new Case()) ? caseRepository.findAll() : caseRepository.findAll(example);
+    List<CaseDetailsDTO> caseResponses =
+        cases
+            .stream()
+            .map(
+                c -> {
+                  CaseDetailsDTO caseDetails = mapperFacade.map(c, CaseDetailsDTO.class);
+                  CaseGroup parentCaseGroup =
+                      caseGroupService.findCaseGroupByCaseGroupPK(c.getCaseGroupFK());
+                  caseDetails.setCaseGroup(mapperFacade.map(parentCaseGroup, CaseGroupDTO.class));
+                  return caseDetails;
+                })
+            .collect(Collectors.toList());
+
+    return ResponseEntity.ok(caseResponses);
   }
 
   /**

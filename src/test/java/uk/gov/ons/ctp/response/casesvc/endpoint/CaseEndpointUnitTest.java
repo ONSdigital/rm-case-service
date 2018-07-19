@@ -22,6 +22,8 @@ import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.ERRORMSG_CAS
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import ma.glasnost.orika.MapperFacade;
@@ -31,6 +33,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -47,6 +51,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
@@ -153,6 +158,10 @@ public final class CaseEndpointUnitTest {
   @Mock private CaseService caseService;
 
   @Mock private CaseGroupService caseGroupService;
+
+  @Mock private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
+
+  @Mock private CaseRepository caseRepository;
 
   @Spy private MapperFacade mapperFacade = new CaseSvcBeanMapper();
 
@@ -839,5 +848,99 @@ public final class CaseEndpointUnitTest {
     when(bindingResult.hasErrors()).thenReturn(true);
     CaseEventCreationRequestDTO caseEventDTO = new CaseEventCreationRequestDTO();
     caseEndpoint.createCaseEvent(CASE1_ID, caseEventDTO, bindingResult);
+  }
+
+  /** Tests if new code is generated from the endpoint */
+  @Test
+  public void verifyGenerateNewIac() throws Exception {
+    when(caseGroupService.findCaseGroupByCollectionExerciseIdAndRuRef(any(), any()))
+        .thenReturn(caseGroupResults.get(0));
+    when(caseService.findCasesByCaseGroupFK(any())).thenReturn(caseResults);
+    when(internetAccessCodeSvcClientService.generateIACs(1)).thenReturn(IACList);
+    when(caseService.generateNewCase(any(), any(), any(), any())).thenReturn(caseResults.get(0));
+
+    String postUrl =
+        String.format(
+            "/cases/iac/%s/%s",
+            CASE1_CASEGROUP_COLLECTION_EXERCISE_ID, CASE1_CASEGROUP_SAMPLE_UNIT_REF);
+    ResultActions actions = mockMvc.perform(postJson(postUrl, ""));
+
+    actions.andExpect(status().isOk());
+    actions.andExpect(jsonPath("$.iac", is(caseResults.get(0).getIac())));
+  }
+
+  /**
+   * Tests if no caseGroup is found for ce_id and ru_ref that Exception is thrown
+   *
+   * @throws Exception exception thrown
+   */
+  @Test
+  public void verifyNoCaseGroupThrowsException() throws Exception {
+    when(caseGroupService.findCaseGroupByCollectionExerciseIdAndRuRef(any(), any()))
+        .thenReturn(null);
+
+    String postUrl =
+        String.format(
+            "/cases/iac/%s/%s",
+            CASE1_CASEGROUP_COLLECTION_EXERCISE_ID, CASE1_CASEGROUP_SAMPLE_UNIT_REF);
+    ResultActions actions = mockMvc.perform(postJson(postUrl, ""));
+
+    actions.andExpect(status().isNotFound());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("generateNewIac"));
+    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
+    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+  }
+
+  @Test
+  public void getBySampleUnitIdShouldReturnCases() throws Exception {
+    // Given
+    UUID sampleUnitId = UUID.randomUUID();
+    Example<Case> example =
+        Example.of(Case.builder().sampleUnitId(sampleUnitId).build(), ExampleMatcher.matchingAny());
+    Case resultCase = Case.builder().iac("test-iac").build();
+    when(caseRepository.findAll(example)).thenReturn(Collections.singletonList(resultCase));
+
+    // When
+    ResultActions actions =
+        mockMvc.perform(getJson("/cases").param("sampleUnitId", sampleUnitId.toString()));
+
+    // Then
+    actions.andExpect(status().isOk());
+    actions.andExpect(jsonPath("$[0].iac", is(resultCase.getIac())));
+  }
+
+  @Test
+  public void getByPartyIdShouldReturnCases() throws Exception {
+    // Given
+    UUID partyId = UUID.randomUUID();
+    Example<Case> example =
+        Example.of(Case.builder().partyId(partyId).build(), ExampleMatcher.matchingAny());
+    Case resultCase = Case.builder().iac("test-iac").build();
+    when(caseRepository.findAll(example)).thenReturn(Collections.singletonList(resultCase));
+
+    // When
+    ResultActions actions =
+        mockMvc.perform(getJson("/cases").param("partyId", partyId.toString()));
+
+    // Then
+    actions.andExpect(status().isOk());
+    actions.andExpect(jsonPath("$[0].iac", is(resultCase.getIac())));
+  }
+
+  @Test
+  public void noQueryParamsShouldReturnAllCases() throws Exception {
+    // Given
+    UUID partyId = UUID.randomUUID();
+    Case resultCase = Case.builder().iac("test-iac").build();
+    when(caseRepository.findAll()).thenReturn(Collections.singletonList(resultCase));
+
+    // When
+    ResultActions actions =
+        mockMvc.perform(getJson("/cases"));
+
+    // Then
+    actions.andExpect(status().isOk());
+    actions.andExpect(jsonPath("$[0].iac", is(resultCase.getIac())));
   }
 }
