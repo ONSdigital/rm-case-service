@@ -420,15 +420,7 @@ public class CaseServiceImpl implements CaseService {
     Case parentCase = createNewCase(sampleUnitParent, newCaseGroup);
     if (sampleUnitParent.getSampleUnitChildren() != null) {
       parentCase.setState(CaseState.INACTIONABLE);
-    }
-    caseRepo.saveAndFlush(parentCase);
-    createCaseCreatedEvent(parentCase, category);
-    log.info(
-        "New Case created, caseId: {}, sampleUnitType: {}",
-        parentCase.getId().toString(),
-        parentCase.getSampleUnitType().toString());
 
-    if (sampleUnitParent.getSampleUnitChildren() != null) {
       for (SampleUnitBase sampleUnitChild :
           sampleUnitParent.getSampleUnitChildren().getSampleUnitchildren()) {
         Case childCase = createNewCase(sampleUnitChild, newCaseGroup);
@@ -440,6 +432,12 @@ public class CaseServiceImpl implements CaseService {
             childCase.getSampleUnitType().toString());
       }
     }
+    caseRepo.saveAndFlush(parentCase);
+    createCaseCreatedEvent(parentCase, category);
+    log.info(
+        "New Case created, caseId: {}, sampleUnitType: {}",
+        parentCase.getId().toString(),
+        parentCase.getSampleUnitType().toString());
   }
 
   /**
