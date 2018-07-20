@@ -69,7 +69,7 @@ public class CaseEndpointIT {
   @Test
   public void ensureSampleUnitIdReceived() throws Exception {
     UUID sampleUnitId = UUID.randomUUID();
-    CaseNotification caseNotification = sendCaseWaitForNotification("LMS0001", "H", sampleUnitId);
+    CaseNotification caseNotification = sendSampleUnit("LMS0001", "H", sampleUnitId);
 
     assertThat(caseNotification.getSampleUnitId()).isEqualTo(sampleUnitId.toString());
   }
@@ -78,8 +78,7 @@ public class CaseEndpointIT {
   public void testCreateSocialCaseEvents() throws Exception {
 
     // Given
-    CaseNotification caseNotification =
-        sendCaseWaitForNotification("LMS0002", "H", UUID.randomUUID());
+    CaseNotification caseNotification = sendSampleUnit("LMS0002", "H", UUID.randomUUID());
 
     String caseID = caseNotification.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
@@ -161,7 +160,7 @@ public class CaseEndpointIT {
    *
    * @return a new CaseNotification
    */
-  private CaseNotification sendCaseWaitForNotification(
+  private CaseNotification sendSampleUnit(
       String sampleUnitRef, String sampleUnitType, UUID sampleUnitId) throws Exception {
     createIACStub();
 
@@ -182,6 +181,15 @@ public class CaseEndpointIT {
 
     sender.sendMessage("collection-inbound-exchange", "Case.CaseDelivery.binding", xml);
 
+    String message = waitForNotification();
+
+    jaxbContext = JAXBContext.newInstance(CaseNotification.class);
+    return (CaseNotification)
+        jaxbContext.createUnmarshaller().unmarshal(new ByteArrayInputStream(message.getBytes()));
+  }
+
+  private String waitForNotification() throws Exception {
+
     SimpleMessageListener listener = getMessageListener();
     BlockingQueue<String> queue =
         listener.listen(
@@ -192,9 +200,8 @@ public class CaseEndpointIT {
     String message = queue.take();
     log.info("message = " + message);
     assertNotNull("Timeout waiting for message to arrive in Case.LifecycleEvents", message);
-    jaxbContext = JAXBContext.newInstance(CaseNotification.class);
-    return (CaseNotification)
-        jaxbContext.createUnmarshaller().unmarshal(new ByteArrayInputStream(message.getBytes()));
+
+    return message;
   }
 
   private static void setUnirestMapper() {
