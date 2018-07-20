@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
@@ -31,8 +32,6 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
-import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitBase;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
@@ -62,6 +61,7 @@ public final class CaseEndpoint implements CTPEndpoint {
   private CaseGroupService caseGroupService;
   private CategoryService categoryService;
   private MapperFacade mapperFacade;
+  private CaseRepository caseRepository;
 
   /** Contructor for CaseEndpoint */
   @Autowired
@@ -69,10 +69,12 @@ public final class CaseEndpoint implements CTPEndpoint {
       final CaseService caseService,
       final CaseGroupService caseGroupService,
       final CategoryService categoryService,
+      final CaseRepository caseRepository,
       final @Qualifier("caseSvcBeanMapper") MapperFacade mapperFacade) {
     this.caseService = caseService;
     this.caseGroupService = caseGroupService;
     this.categoryService = categoryService;
+    this.caseRepository = caseRepository;
     this.mapperFacade = mapperFacade;
   }
 
@@ -134,17 +136,8 @@ public final class CaseEndpoint implements CTPEndpoint {
       @RequestParam(required = false) String sampleUnitId,
       @RequestParam(required = false) String partyId) {
     log.info("Finding cases sampleUnitId={} partyId={}", sampleUnitId, partyId);
-    Case.CaseBuilder caseBuilder = Case.builder();
-    if (sampleUnitId != null) {
-      caseBuilder.sampleUnitId(UUID.fromString(sampleUnitId));
-    }
-    if (partyId != null) {
-      caseBuilder.partyId(UUID.fromString(partyId));
-    }
-    Case exampleCase = caseBuilder.build();
-    Example<Case> example = Example.of(exampleCase, ExampleMatcher.matchingAny());
-    List<Case> cases =
-        exampleCase.equals(new Case()) ? caseRepository.findAll() : caseRepository.findAll(example);
+    Example<Case> exampleCase = buildExampleCase(sampleUnitId, partyId);
+    List<Case> cases = getCases(exampleCase);
     List<CaseDetailsDTO> caseResponses =
         cases
             .stream()
@@ -159,6 +152,28 @@ public final class CaseEndpoint implements CTPEndpoint {
             .collect(Collectors.toList());
 
     return ResponseEntity.ok(caseResponses);
+  }
+
+  private List<Case> getCases(Example<Case> exampleCase) {
+    // Limit to max 100 cases
+    PageRequest paging = new PageRequest(0, 100);
+    boolean emptyRequest = exampleCase.getProbe().equals(new Case());
+    if (emptyRequest) {
+      return caseRepository.findAll(paging).getContent();
+    } else {
+      return caseRepository.findAll(exampleCase, paging).getContent();
+    }
+  }
+
+  private Example<Case> buildExampleCase(String sampleUnitId, String partyId) {
+    Case.CaseBuilder caseBuilder = Case.builder();
+    if (sampleUnitId != null) {
+      caseBuilder.sampleUnitId(UUID.fromString(sampleUnitId));
+    }
+    if (partyId != null) {
+      caseBuilder.partyId(UUID.fromString(partyId));
+    }
+    return Example.of(caseBuilder.build(), ExampleMatcher.matchingAny());
   }
 
   /**
