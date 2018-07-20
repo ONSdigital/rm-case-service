@@ -1,0 +1,4 @@
+UPDATE casesvc.category
+SET oldcasesampleunittypes = 'B,BI'
+WHERE categorypk = 'COLLECTION_INSTRUMENT_DOWNLOADED' OR categorypk = 'COLLECTION_INSTRUMENT_ERROR'
+OR categorypk = 'UNSUCCESSFUL_RESPONSE_UPLOADED' OR categorypk = 'SUCCESSFUL_RESPONSE_UPLOADED';
