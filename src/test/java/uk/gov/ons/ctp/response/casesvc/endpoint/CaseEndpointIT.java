@@ -7,7 +7,6 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.mashape.unirest.http.HttpResponse;
@@ -36,6 +35,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
+import uk.gov.ons.ctp.common.UnirestInitialiser;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
@@ -63,7 +63,8 @@ public class CaseEndpointIT {
 
   @BeforeClass
   public static void setUp() {
-    setUnirestMapper();
+    ObjectMapper value = new ObjectMapper();
+    UnirestInitialiser.initialise(value);
   }
 
   @Test
@@ -202,29 +203,5 @@ public class CaseEndpointIT {
     assertNotNull("Timeout waiting for message to arrive in Case.LifecycleEvents", message);
 
     return message;
-  }
-
-  private static void setUnirestMapper() {
-    Unirest.setObjectMapper(
-        new com.mashape.unirest.http.ObjectMapper() {
-          private com.fasterxml.jackson.databind.ObjectMapper jacksonObjectMapper =
-              new com.fasterxml.jackson.databind.ObjectMapper();
-
-          public <T> T readValue(String value, Class<T> valueType) {
-            try {
-              return jacksonObjectMapper.readValue(value, valueType);
-            } catch (IOException e) {
-              throw new RuntimeException(e);
-            }
-          }
-
-          public String writeValue(Object value) {
-            try {
-              return jacksonObjectMapper.writeValueAsString(value);
-            } catch (JsonProcessingException e) {
-              throw new RuntimeException(e);
-            }
-          }
-        });
   }
 }
