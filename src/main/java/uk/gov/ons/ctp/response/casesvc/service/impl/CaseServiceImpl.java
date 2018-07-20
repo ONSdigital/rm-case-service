@@ -30,7 +30,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType;
-import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitBase;
+import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnit;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
@@ -421,7 +421,7 @@ public class CaseServiceImpl implements CaseService {
     if (sampleUnitParent.getSampleUnitChildren() != null) {
       parentCase.setState(CaseState.INACTIONABLE);
 
-      for (SampleUnitBase sampleUnitChild :
+      for (SampleUnit sampleUnitChild :
           sampleUnitParent.getSampleUnitChildren().getSampleUnitchildren()) {
         Case childCase = createNewCase(sampleUnitChild, newCaseGroup);
         caseRepo.saveAndFlush(childCase);
@@ -531,7 +531,7 @@ public class CaseServiceImpl implements CaseService {
    * @param caseGroup to which Case belongs.
    * @return newCase created Case.
    */
-  private Case createNewCase(SampleUnitBase caseData, CaseGroup caseGroup) {
+  private Case createNewCase(SampleUnit caseData, CaseGroup caseGroup) {
     Case newCase = new Case();
     newCase.setId(UUID.randomUUID());
 
