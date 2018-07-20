@@ -9,6 +9,8 @@ import static org.junit.Assert.assertNotNull;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -21,6 +23,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -32,9 +35,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
+import uk.gov.ons.ctp.common.UnirestInitialiser;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
+import uk.gov.ons.ctp.response.casesvc.representation.CreatedCaseEventDTO;
 import uk.gov.ons.tools.rabbit.Rabbitmq;
 import uk.gov.ons.tools.rabbit.SimpleMessageBase;
 import uk.gov.ons.tools.rabbit.SimpleMessageListener;
@@ -54,47 +61,41 @@ public class CaseEndpointIT {
   @Autowired private ObjectMapper mapper;
   @Autowired private AppConfig appConfig;
 
+  @BeforeClass
+  public static void setUp() {
+    ObjectMapper value = new ObjectMapper();
+    UnirestInitialiser.initialise(value);
+  }
+
   @Test
   public void ensureSampleUnitIdReceived() throws Exception {
-    createIACStub();
-
-    SimpleMessageSender sender = getMessageSender();
-
-    SampleUnitParent sampleUnit = new SampleUnitParent();
     UUID sampleUnitId = UUID.randomUUID();
-    sampleUnit.setCollectionExerciseId(UUID.randomUUID().toString());
-    sampleUnit.setId(sampleUnitId.toString());
-    sampleUnit.setActionPlanId(UUID.randomUUID().toString());
-    sampleUnit.setSampleUnitRef("LMS0001");
-    sampleUnit.setCollectionInstrumentId(UUID.randomUUID().toString());
-    sampleUnit.setSampleUnitType("H");
-
-    JAXBContext jaxbContext = JAXBContext.newInstance(SampleUnitParent.class);
-    String xml =
-        convertObjectToXml(
-            jaxbContext, sampleUnit, "casesvc/xsd/inbound/SampleUnitNotification.xsd");
-
-    sender.sendMessage("collection-inbound-exchange", "Case.CaseDelivery.binding", xml);
-
-    SimpleMessageListener listener = getMessageListener();
-    BlockingQueue<String> queue =
-        listener.listen(
-            SimpleMessageBase.ExchangeType.Direct,
-            "case-outbound-exchange",
-            "Case.LifecycleEvents.binding");
-
-    String message = queue.take();
-    log.info("message = " + message);
-    assertNotNull("Timeout waiting for message to arrive in Case.LifecycleEvents", message);
-
-    jaxbContext = JAXBContext.newInstance(CaseNotification.class);
-    CaseNotification caseNotification =
-        (CaseNotification)
-            jaxbContext
-                .createUnmarshaller()
-                .unmarshal(new ByteArrayInputStream(message.getBytes()));
+    CaseNotification caseNotification = sendSampleUnit("LMS0001", "H", sampleUnitId);
 
     assertThat(caseNotification.getSampleUnitId()).isEqualTo(sampleUnitId.toString());
+  }
+
+  @Test
+  public void testCreateSocialCaseEvents() throws Exception {
+
+    // Given
+    CaseNotification caseNotification = sendSampleUnit("LMS0002", "H", UUID.randomUUID());
+
+    String caseID = caseNotification.getCaseId();
+    CaseEventCreationRequestDTO caseEventCreationRequestDTO =
+        new CaseEventCreationRequestDTO(
+            "TestEvent", CategoryName.ACTION_CREATED, "SYSTEM", "SOCIALNOT", null);
+
+    // When
+    HttpResponse<CreatedCaseEventDTO> createdCaseResponse =
+        Unirest.post("http://localhost:" + port + "/cases/" + caseID + "/events")
+            .basicAuth("admin", "secret")
+            .header("Content-Type", "application/json")
+            .body(caseEventCreationRequestDTO)
+            .asObject(CreatedCaseEventDTO.class);
+
+    // Then
+    assertThat(createdCaseResponse.getStatus()).isEqualTo(201);
   }
 
   /**
@@ -152,5 +153,55 @@ public class CaseEndpointIT {
                 aResponse()
                     .withHeader("Content-Type", "application/json")
                     .withBody("[\"grtt7x2nhygg\"]")));
+  }
+
+  /**
+   * Sends a sample unit in a message so that casesvc creates a case, then waits for a message on
+   * the case lifecycle queue which confirms case creation
+   *
+   * @return a new CaseNotification
+   */
+  private CaseNotification sendSampleUnit(
+      String sampleUnitRef, String sampleUnitType, UUID sampleUnitId) throws Exception {
+    createIACStub();
+
+    SimpleMessageSender sender = getMessageSender();
+
+    SampleUnitParent sampleUnit = new SampleUnitParent();
+    sampleUnit.setCollectionExerciseId(UUID.randomUUID().toString());
+    sampleUnit.setId(sampleUnitId.toString());
+    sampleUnit.setActionPlanId(UUID.randomUUID().toString());
+    sampleUnit.setSampleUnitRef(sampleUnitRef);
+    sampleUnit.setCollectionInstrumentId(UUID.randomUUID().toString());
+    sampleUnit.setSampleUnitType(sampleUnitType);
+
+    JAXBContext jaxbContext = JAXBContext.newInstance(SampleUnitParent.class);
+    String xml =
+        convertObjectToXml(
+            jaxbContext, sampleUnit, "casesvc/xsd/inbound/SampleUnitNotification.xsd");
+
+    sender.sendMessage("collection-inbound-exchange", "Case.CaseDelivery.binding", xml);
+
+    String message = waitForNotification();
+
+    jaxbContext = JAXBContext.newInstance(CaseNotification.class);
+    return (CaseNotification)
+        jaxbContext.createUnmarshaller().unmarshal(new ByteArrayInputStream(message.getBytes()));
+  }
+
+  private String waitForNotification() throws Exception {
+
+    SimpleMessageListener listener = getMessageListener();
+    BlockingQueue<String> queue =
+        listener.listen(
+            SimpleMessageBase.ExchangeType.Direct,
+            "case-outbound-exchange",
+            "Case.LifecycleEvents.binding");
+
+    String message = queue.take();
+    log.info("message = " + message);
+    assertNotNull("Timeout waiting for message to arrive in Case.LifecycleEvents", message);
+
+    return message;
   }
 }
