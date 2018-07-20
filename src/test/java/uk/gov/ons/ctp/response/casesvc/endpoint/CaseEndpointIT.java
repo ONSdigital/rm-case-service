@@ -24,7 +24,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -61,8 +61,8 @@ public class CaseEndpointIT {
   @Autowired private ObjectMapper mapper;
   @Autowired private AppConfig appConfig;
 
-  @Before
-  public void setUp() {
+  @BeforeClass
+  public static void setUp() {
     setUnirestMapper();
   }
 
@@ -72,6 +72,30 @@ public class CaseEndpointIT {
     CaseNotification caseNotification = sendCaseWaitForNotification("LMS0001", "H", sampleUnitId);
 
     assertThat(caseNotification.getSampleUnitId()).isEqualTo(sampleUnitId.toString());
+  }
+
+  @Test
+  public void testCreateSocialCaseEvents() throws Exception {
+
+    // Given
+    CaseNotification caseNotification =
+        sendCaseWaitForNotification("LMS0002", "H", UUID.randomUUID());
+
+    String caseID = caseNotification.getCaseId();
+    CaseEventCreationRequestDTO caseEventCreationRequestDTO =
+        new CaseEventCreationRequestDTO(
+            "TestEvent", CategoryName.ACTION_CREATED, "SYSTEM", "SOCIALNOT", null);
+
+    // When
+    HttpResponse<CreatedCaseEventDTO> createdCaseResponse =
+        Unirest.post("http://localhost:" + port + "/cases/" + caseID + "/events")
+            .basicAuth("admin", "secret")
+            .header("Content-Type", "application/json")
+            .body(caseEventCreationRequestDTO)
+            .asObject(CreatedCaseEventDTO.class);
+
+    // Then
+    assertThat(createdCaseResponse.getStatus()).isEqualTo(201);
   }
 
   /**
@@ -131,30 +155,12 @@ public class CaseEndpointIT {
                     .withBody("[\"grtt7x2nhygg\"]")));
   }
 
-  @Test
-  public void testCreateSocialCaseEvents() throws Exception {
-
-    // Given
-    CaseNotification caseNotification =
-        sendCaseWaitForNotification("LMS0002", "H", UUID.randomUUID());
-
-    String caseID = caseNotification.getCaseId();
-    CaseEventCreationRequestDTO caseEventCreationRequestDTO =
-        new CaseEventCreationRequestDTO(
-            "TestEvent", CategoryName.ACTION_CREATED, "SYSTEM", "SOCIALNOT", null);
-
-    // When
-    HttpResponse<CreatedCaseEventDTO> createdCaseResponse =
-        Unirest.post("http://localhost:" + port + "/cases/" + caseID + "/events")
-            .basicAuth("admin", "secret")
-            .header("Content-Type", "application/json")
-            .body(caseEventCreationRequestDTO)
-            .asObject(CreatedCaseEventDTO.class);
-
-    // Then
-    assertThat(createdCaseResponse.getStatus()).isEqualTo(201);
-  }
-
+  /**
+   * Sends a sample unit in a message so that casesvc creates a case, then waits for a message on
+   * the case lifecycle queue which confirms case creation
+   *
+   * @return a new CaseNotification
+   */
   private CaseNotification sendCaseWaitForNotification(
       String sampleUnitRef, String sampleUnitType, UUID sampleUnitId) throws Exception {
     createIACStub();
@@ -191,7 +197,7 @@ public class CaseEndpointIT {
         jaxbContext.createUnmarshaller().unmarshal(new ByteArrayInputStream(message.getBytes()));
   }
 
-  private void setUnirestMapper() {
+  private static void setUnirestMapper() {
     Unirest.setObjectMapper(
         new com.mashape.unirest.http.ObjectMapper() {
           private com.fasterxml.jackson.databind.ObjectMapper jacksonObjectMapper =
