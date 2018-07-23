@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 10.59.0-1
+      author: Adam Hawtin, Emilio Ward
+      changes:
+        - sqlFile:
+            comment: Add H type sample units to case categories
+            path: add-H-type-to-case-categories.sql
+            relativeToChangelogFile: true
+            splitStatements: false

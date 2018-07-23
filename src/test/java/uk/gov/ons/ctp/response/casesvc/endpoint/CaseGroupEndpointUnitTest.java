@@ -52,26 +52,6 @@ import uk.gov.ons.ctp.response.casesvc.utility.Constants;
 /** A test of the CaseGroup endpoint */
 public final class CaseGroupEndpointUnitTest {
 
-  @InjectMocks private CaseGroupEndpoint caseGroupEndpoint;
-
-  @Mock private CaseGroupService caseGroupService;
-
-  @Mock private CaseService caseService;
-
-  @Mock private CategoryService categoryService;
-
-  @Spy private MapperFacade mapperFacade = new CaseSvcBeanMapper();
-
-  @Spy
-  @SuppressWarnings("unchecked")
-  private StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName> stm =
-      (StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName>)
-          new CaseSvcStateTransitionManagerFactory()
-              .getStateTransitionManager(CaseSvcStateTransitionManagerFactory.CASE_GROUP);
-
-  private MockMvc mockMvc;
-  private List<CaseGroup> caseGroupResults;
-
   private static final UUID CASE_GROUP_UUID = UUID.randomUUID();
   private static final String NON_EXISTENT_CASE_GROUP_UUID = "9a5f2be5-f944-41f9-982c-3517cfcfe666";
   private static final UUID CASE_GROUP_UUID_UNCHECKED_EXCEPTION = UUID.randomUUID();
@@ -90,6 +70,21 @@ public final class CaseGroupEndpointUnitTest {
   private static final UUID CASEGROUP2_ID = UUID.fromString("2d31f300-246d-11e8-b467-0ed5f89f718b");
   private static final UUID COLLEX1_ID = UUID.fromString("dab9db7f-3aa0-4866-be20-54d72ee185fb");
   private static final UUID COLLEX2_ID = UUID.fromString("24535ac6-246d-11e8-b467-0ed5f89f718b");
+  @InjectMocks private CaseGroupEndpoint caseGroupEndpoint;
+  @Mock private CaseGroupService caseGroupService;
+  @Mock private CaseService caseService;
+  @Mock private CategoryService categoryService;
+  @Spy private MapperFacade mapperFacade = new CaseSvcBeanMapper();
+
+  @Spy
+  @SuppressWarnings("unchecked")
+  private StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName> stm =
+      (StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName>)
+          new CaseSvcStateTransitionManagerFactory()
+              .getStateTransitionManager(CaseSvcStateTransitionManagerFactory.CASE_GROUP);
+
+  private MockMvc mockMvc;
+  private List<CaseGroup> caseGroupResults;
 
   /**
    * Initialises Mockito

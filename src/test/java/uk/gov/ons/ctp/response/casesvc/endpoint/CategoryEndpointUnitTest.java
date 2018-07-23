@@ -37,15 +37,6 @@ import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
 /** A test of the category endpoint */
 public final class CategoryEndpointUnitTest {
 
-  @InjectMocks private CategoryEndpoint categoryEndpoint;
-
-  @Mock private CategoryService categoryService;
-
-  @Spy private MapperFacade mapperFacade = new CaseSvcBeanMapper();
-
-  private MockMvc mockMvc;
-  private List<Category> categoryResults;
-
   private static final String CATEGORY_UNKNOWN = "Felix The Cat";
   private static final String CATEGORY1_NAME = "ACCESSIBILITY_MATERIALS";
   private static final String CATEGORY2_NAME = "ACTION_CANCELLATION_COMPLETED";
@@ -59,6 +50,11 @@ public final class CategoryEndpointUnitTest {
   private static final String CATEGORY1_ROLE = "collect-csos, collect-admins";
   private static final String ADMIN_ROLE = "collect-admins";
   private static final String CATEGORY1_GROUP = "general";
+  @InjectMocks private CategoryEndpoint categoryEndpoint;
+  @Mock private CategoryService categoryService;
+  @Spy private MapperFacade mapperFacade = new CaseSvcBeanMapper();
+  private MockMvc mockMvc;
+  private List<Category> categoryResults;
 
   /**
    * Sets up Mockito for tests

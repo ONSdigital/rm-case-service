@@ -2,20 +2,10 @@ databaseChangeLog:
 
   - changeSet:
       id: 10.57.0-1
-      author: Andrew Millar
+      author: Gemma Irving
       changes:
         - sqlFile:
-            comment: Remove DISABLE_RESPONDENT_ENROLMENT category newcasesampleunittype
-            path: remove_disable_respondent_enrolment_newcasesampleunittype.sql
+            comment: Update EQ_LAUNCH category to work with B cases
+            path: update_eq_launch_event_to_include_b_case.sql
             relativeToChangelogFile: true
             splitStatements: false
-
-  - changeSet:
-        id: 10.57.0-2
-        author: Andrew Millar
-        changes:
-          - sqlFile:
-              comment: Add NO_ACTIVE_ENROLMENTS category
-              path: add_no_active_enrolments_category.sql
-              relativeToChangelogFile: true
-              splitStatements: false
