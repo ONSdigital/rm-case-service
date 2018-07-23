@@ -527,7 +527,7 @@ public class CaseServiceImpl implements CaseService {
   /**
    * Create the new Case.
    *
-   * @param caseData SampleUnitBase from which to create Case.
+   * @param caseData SampleUnit from which to create Case.
    * @param caseGroup to which Case belongs.
    * @return newCase created Case.
    */
