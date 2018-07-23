@@ -2,21 +2,10 @@ databaseChangeLog:
 
   - changeSet:
       id: 10.59.0-1
-      author: Gemma Irving
+      author: Adam Hawtin, Emilio Ward
       changes:
         - sqlFile:
-            comment: Update case event categories to work with both B and BI cases
-            path: update_categories_to_use_both_b_and_bi_cases.sql
+            comment: Add H type sample units to case categories
+            path: add-H-type-to-case-categories.sql
             relativeToChangelogFile: true
             splitStatements: false
-
-
-
-
-
-
-
-
-
-
-

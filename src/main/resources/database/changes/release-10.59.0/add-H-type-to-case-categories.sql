@@ -1,0 +1,13 @@
+UPDATE casesvc.category
+SET oldcasesampleunittypes='BI,H'
+WHERE categorypk='SUCCESSFUL_RESPONSE_UPLOAD';
+
+UPDATE casesvc.category
+SET oldcasesampleunittypes='B,H'
+WHERE categorypk='ACCESS_CODE_AUTHENTICATION_ATTEMPT';
+
+UPDATE casesvc.category
+SET oldcasesampleunittypes='B,BI,H'
+WHERE categorypk IN ('ACTION_CANCELLATION_CREATED','COMPLETED_BY_PHONE','NO_LONGER_REQUIRED',
+'ACTION_CANCELLATION_COMPLETED','EQ_LAUNCH','CASE_CREATED','ACTION_COMPLETED','ACTION_UPDATED',
+'ACTION_CREATED');
