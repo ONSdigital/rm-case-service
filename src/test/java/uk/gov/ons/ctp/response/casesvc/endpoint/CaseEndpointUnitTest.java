@@ -1,32 +1,5 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.Is.isA;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static uk.gov.ons.ctp.common.MvcHelper.getJson;
-import static uk.gov.ons.ctp.common.MvcHelper.postJson;
-import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
-import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.CATEGORY_ACCESS_CODE_AUTHENTICATION_ATTEMPT_NOT_FOUND;
-import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.ERRORMSG_CASENOTFOUND;
-import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
 import ma.glasnost.orika.MapperFacade;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,9 +9,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.springframework.data.domain.Example;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -65,6 +35,33 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.Is.isA;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.ons.ctp.common.MvcHelper.getJson;
+import static uk.gov.ons.ctp.common.MvcHelper.postJson;
+import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
+import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.CATEGORY_ACCESS_CODE_AUTHENTICATION_ATTEMPT_NOT_FOUND;
+import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.ERRORMSG_CASENOTFOUND;
+import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
 /** Case Endpoint Unit tests */
 public final class CaseEndpointUnitTest {
@@ -820,12 +817,10 @@ public final class CaseEndpointUnitTest {
   @Test
   public void getCasesByPartyId() throws Exception {
     // Given
-    PageRequest pageRequest = new PageRequest(0, 100);
     UUID partyId = UUID.randomUUID();
     ArgumentCaptor<Example> captor = ArgumentCaptor.forClass(Example.class);
-    when(caseRepository.findAll(captor.capture(), eq(pageRequest)))
-        .thenReturn(
-            new PageImpl<>(Collections.singletonList(Case.builder().partyId(partyId).build())));
+    when(caseRepository.findAll(captor.capture()))
+        .thenReturn(Collections.singletonList(Case.builder().partyId(partyId).build()));
 
     // When
     ResultActions actions = mockMvc.perform(getJson("/cases").param("partyId", partyId.toString()));
@@ -839,13 +834,10 @@ public final class CaseEndpointUnitTest {
   @Test
   public void getCasesBySampleUnitId() throws Exception {
     // Given
-    PageRequest pageRequest = new PageRequest(0, 100);
     UUID sampleUnitId = UUID.randomUUID();
     ArgumentCaptor<Example> captor = ArgumentCaptor.forClass(Example.class);
-    when(caseRepository.findAll(captor.capture(), eq(pageRequest)))
-        .thenReturn(
-            new PageImpl<>(
-                Collections.singletonList(Case.builder().sampleUnitId(sampleUnitId).build())));
+    when(caseRepository.findAll(captor.capture()))
+        .thenReturn(Collections.singletonList(Case.builder().sampleUnitId(sampleUnitId).build()));
 
     // When
     ResultActions actions =
@@ -862,13 +854,10 @@ public final class CaseEndpointUnitTest {
   @Test
   public void getCasesNoParams() throws Exception {
     // Given
-    PageRequest pageRequest = new PageRequest(0, 100);
     UUID sampleUnitId = UUID.randomUUID();
     ArgumentCaptor<Example> captor = ArgumentCaptor.forClass(Example.class);
-    when(caseRepository.findAll(pageRequest))
-        .thenReturn(
-            new PageImpl<>(
-                Collections.singletonList(Case.builder().sampleUnitId(sampleUnitId).build())));
+    when(caseRepository.findAll())
+        .thenReturn(Collections.singletonList(Case.builder().sampleUnitId(sampleUnitId).build()));
 
     // When
     ResultActions actions = mockMvc.perform(getJson("/cases"));
@@ -880,14 +869,33 @@ public final class CaseEndpointUnitTest {
   }
 
   @Test
+  public void getCasesAllParams() throws Exception {
+    // Given
+    UUID sampleUnitId = UUID.randomUUID();
+    UUID partyId = UUID.randomUUID();
+    ArgumentCaptor<Example> captor = ArgumentCaptor.forClass(Example.class);
+    when(caseRepository.findAll())
+        .thenReturn(
+            Collections.singletonList(
+                Case.builder().sampleUnitId(sampleUnitId).partyId(partyId).build()));
+
+    // When
+    ResultActions actions = mockMvc.perform(getJson("/cases"));
+
+    // Then
+    actions
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$[0].partyId", is(partyId.toString())))
+        .andExpect(jsonPath("$[0].sampleUnitId", is(sampleUnitId.toString())));
+  }
+
+  @Test
   public void getCasesAndCaseGroups() throws Exception {
     // Given
     int caseGroupFK = 1;
     UUID partyId = UUID.randomUUID();
-    when(caseRepository.findAll(any(Pageable.class)))
-        .thenReturn(
-            new PageImpl<>(
-                Collections.singletonList(Case.builder().caseGroupFK(caseGroupFK).build())));
+    when(caseRepository.findAll())
+        .thenReturn(Collections.singletonList(Case.builder().caseGroupFK(caseGroupFK).build()));
     when(caseGroupService.findCaseGroupByCaseGroupPK(caseGroupFK))
         .thenReturn(CaseGroup.builder().partyId(partyId).build());
 

@@ -112,6 +112,7 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @param iac flag used to return or not the iac
    * @return the cases found
    */
+  @Deprecated // See findCases(sampleUnitId, partyId)
   @RequestMapping(value = "/partyid/{partyId}", method = RequestMethod.GET)
   public ResponseEntity<List<CaseDetailsDTO>> findCasesByPartyId(
       @PathVariable("partyId") final UUID partyId,
@@ -155,13 +156,11 @@ public final class CaseEndpoint implements CTPEndpoint {
   }
 
   private List<Case> getCases(Example<Case> exampleCase) {
-    // Limit to max 100 cases
-    PageRequest paging = new PageRequest(0, 100);
     boolean emptyRequest = exampleCase.getProbe().equals(new Case());
     if (emptyRequest) {
-      return caseRepository.findAll(paging).getContent();
+      return caseRepository.findAll();
     } else {
-      return caseRepository.findAll(exampleCase, paging).getContent();
+      return caseRepository.findAll(exampleCase);
     }
   }
 
