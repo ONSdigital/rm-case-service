@@ -49,9 +49,6 @@ databaseChangeLog:
       file: database/changes/release-10.56.0/changelog.yml
 
   - include:
-<<<<<<< HEAD
-      file: database/changes/release-10.57.0/changelog.yml
-=======
       file: database/changes/release-10.57.0/changelog.yml
 
   - include:
@@ -59,4 +56,7 @@ databaseChangeLog:
 
   - include:
       file: database/changes/release-10.59.0/changelog.yml
->>>>>>> master
+
+  - include:
+      file: database/changes/release-10.60.0/changelog.yml
+
