@@ -154,7 +154,7 @@ public class CaseServiceImpl implements CaseService {
   public CaseNotification prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent) {
     CaseGroup caseGroup = caseGroupRepo.findOne(caze.getCaseGroupFK());
     return new CaseNotification(
-        caze.getSampleUnitId().toString(),
+        Objects.toString(caze.getSampleUnitId(), null),
         caze.getId().toString(),
         caze.getActionPlanId().toString(),
         caseGroup.getCollectionExerciseId().toString(),

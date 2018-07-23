@@ -13,15 +13,9 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.StringWriter;
-import java.net.URL;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
-import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -36,6 +30,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import uk.gov.ons.ctp.common.UnirestInitialiser;
+import uk.gov.ons.ctp.common.utility.Mapzer;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
@@ -99,30 +94,6 @@ public class CaseEndpointIT {
   }
 
   /**
-   * Convert an object into its XML equivalent based on the provided schema
-   *
-   * @param context JAXBContext
-   * @param o Object to convert to XML
-   * @param cpSchemaLocation Location of *.xsd as a classpath location (don't prepend location with
-   *     classpath)
-   * @return xml of the object
-   * @throws Exception
-   */
-  String convertObjectToXml(JAXBContext context, Object o, String cpSchemaLocation)
-      throws Exception {
-    SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-    URL xsd = resourceLoader.getResource(String.format("classpath:%s", cpSchemaLocation)).getURL();
-    Schema schema = sf.newSchema(xsd);
-    Marshaller mars = context.createMarshaller();
-    StringWriter buffer = new StringWriter();
-
-    mars.setSchema(schema);
-    mars.marshal(o, buffer);
-
-    return buffer.toString();
-  }
-
-  /**
    * Creates a new SimpleMessageSender based on the config in AppConfig
    *
    * @return a new SimpleMessageSender
@@ -177,8 +148,9 @@ public class CaseEndpointIT {
 
     JAXBContext jaxbContext = JAXBContext.newInstance(SampleUnitParent.class);
     String xml =
-        convertObjectToXml(
-            jaxbContext, sampleUnit, "casesvc/xsd/inbound/SampleUnitNotification.xsd");
+        new Mapzer(resourceLoader)
+            .convertObjectToXml(
+                jaxbContext, sampleUnit, "casesvc/xsd/inbound/SampleUnitNotification.xsd");
 
     sender.sendMessage("collection-inbound-exchange", "Case.CaseDelivery.binding", xml);
 
