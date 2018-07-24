@@ -53,6 +53,9 @@ tools/addend/target/classes/
 out/
 tools/addend/target/classes/
 
+# Redis
+*.rdb
+
 target
 *.log
 *.data
