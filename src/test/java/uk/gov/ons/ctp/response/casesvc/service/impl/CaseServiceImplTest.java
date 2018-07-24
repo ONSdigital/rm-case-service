@@ -331,35 +331,6 @@ public class CaseServiceImplTest {
     assertNull(result);
   }
 
-  //  /**
-  //   * Tries to apply an actionable event against a case already inactionable. Should allow.
-  //   *
-  //   * @throws Exception if fabricateEvent does
-  //   */
-  //  @Test
-  //  public void testCreateActionableEventAgainstInactionableCase() throws Exception {
-  //    when(caseRepo.findOne(INACTIONABLE_HOUSEHOLD_CASE_FK))
-  //        .thenReturn(cases.get(INACTIONABLE_HOUSEHOLD_CASE_FK));
-  //    when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_ARABIC))
-  //        .thenReturn(categories.get(CAT_TRANSLATION_ARABIC));
-  //
-  //    CaseEvent caseEvent =
-  //        fabricateEvent(CategoryDTO.CategoryName.TRANSLATION_ARABIC,
-  // INACTIONABLE_HOUSEHOLD_CASE_FK);
-  //    caseService.createCaseEvent(caseEvent, null);
-  //
-  //    verify(caseRepo, times(2)).findOne(INACTIONABLE_HOUSEHOLD_CASE_FK);
-  //    verify(categoryRepo).findOne(CategoryDTO.CategoryName.TRANSLATION_ARABIC);
-  //    // there was no change to case - no state transition
-  //    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-  //    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
-  //    // event was saved
-  //    verify(caseEventRepo, times(1)).save(caseEvent);
-  //    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-  //    verify(actionSvcClientService, times(1))
-  //        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
-  //  }
-
   /**
    * Tries to apply a general event against a case already inactionable. Should allow it.
    *
@@ -1778,7 +1749,7 @@ public class CaseServiceImplTest {
     SampleUnitParent sampleUnitParent = new SampleUnitParent();
     SampleUnit sampleUnit = new SampleUnit();
     SampleUnitChildren sampleUnitChildren =
-            new SampleUnitChildren(new ArrayList<SampleUnit>(Arrays.asList(sampleUnit)));
+        new SampleUnitChildren(new ArrayList<SampleUnit>(Arrays.asList(sampleUnit)));
 
     sampleUnit.setActionPlanId(UUID.randomUUID().toString());
     sampleUnit.setCollectionInstrumentId(UUID.randomUUID().toString());
@@ -1880,6 +1851,4 @@ public class CaseServiceImplTest {
     iacSvc.setIacPostPath(IAC_SVC_POST_PATH);
     when(appConfig.getInternetAccessCodeSvc()).thenReturn(iacSvc);
   }
-
-
 }

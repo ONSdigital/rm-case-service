@@ -47,9 +47,8 @@ public class CaseCreationServiceTest {
 
     // Parent Only field
     sampleUnitParent.setCollectionExerciseId("14fb3e68-4dca-46db-bf49-04b84e07e77c");
-    // Parent has actionplanId or child sample unit
-    sampleUnitParent.setActionPlanId("7bc5d41b-0549-40b3-ba76-42f6d4cf3991");
     // Base sample unit data
+    sampleUnitParent.setActionPlanId("7bc5d41b-0549-40b3-ba76-42f6d4cf3991");
     sampleUnitParent.setCollectionInstrumentId("8bae64c5-a282-4e87-ae5d-cd4181ba6c73");
     sampleUnitParent.setPartyId("7bc5d41b-0549-40b3-ba76-42f6d4cf3992");
     sampleUnitParent.setSampleUnitRef("str1234");
@@ -105,25 +104,23 @@ public class CaseCreationServiceTest {
   @Test
   public void testCreateCaseAndCaseGroupWithChildFromMessage() {
 
-    SampleUnitParent sampleUnitParent = new SampleUnitParent();
     SampleUnit sampleUnitChild = new SampleUnit();
-    SampleUnitChildren sampleUnitChildren =
-        new SampleUnitChildren(new ArrayList<>(Collections.singletonList(sampleUnitChild)));
-
-    // Sample unit child has actionplanId
-    sampleUnitChild.setActionPlanId("7bc5d41b-0549-40b3-ba76-42f6d4cf3991");
     // Base sample unit data for child
+    sampleUnitChild.setActionPlanId("7bc5d41b-0549-40b3-ba76-42f6d4cf3991");
     sampleUnitChild.setCollectionInstrumentId("ed0015f0-2e7f-4cf3-ba6f-a752aebaf8a7");
     sampleUnitChild.setPartyId("73528fd7-ef04-4697-a94c-54edf3e73282");
     sampleUnitChild.setSampleUnitRef("str1235");
     sampleUnitChild.setSampleUnitType("BI");
     sampleUnitChild.setId(UUID.randomUUID().toString());
+    SampleUnitChildren sampleUnitChildren =
+        new SampleUnitChildren(new ArrayList<>(Collections.singletonList(sampleUnitChild)));
 
+    SampleUnitParent sampleUnitParent = new SampleUnitParent();
     // Parent Only field
-    sampleUnitParent.setCollectionExerciseId("14fb3e68-4dca-46db-bf49-04b84e07e77c");
-    // Parent has actionplanId or child sample unit
     sampleUnitParent.setSampleUnitChildren(sampleUnitChildren);
+    sampleUnitParent.setCollectionExerciseId("14fb3e68-4dca-46db-bf49-04b84e07e77c");
     // Base sample unit data for parent
+    sampleUnitParent.setActionPlanId("7bc5d41b-0549-40b3-ba76-42f6d4cf3992");
     sampleUnitParent.setCollectionInstrumentId("8bae64c5-a282-4e87-ae5d-cd4181ba6c73");
     sampleUnitParent.setPartyId("7bc5d41b-0549-40b3-ba76-42f6d4cf3992");
     sampleUnitParent.setSampleUnitRef("str1234");
@@ -151,7 +148,7 @@ public class CaseCreationServiceTest {
 
     ArgumentCaptor<Case> caze = ArgumentCaptor.forClass(Case.class);
 
-    verify(caseRepo, times(1)).saveAndFlush(caze.capture());
+    verify(caseRepo, times(2)).saveAndFlush(caze.capture());
 
     List<Case> capturedCase = caze.getAllValues();
 
