@@ -402,6 +402,7 @@ public class CaseServiceImpl implements CaseService {
     Case parentCase = createNewCase(sampleUnitParent, newCaseGroup);
     if (sampleUnitParent.getSampleUnitChildren() != null) {
       parentCase.setState(CaseState.INACTIONABLE);
+
       for (SampleUnit sampleUnitChild :
           sampleUnitParent.getSampleUnitChildren().getSampleUnitchildren()) {
         Case childCase = createNewCase(sampleUnitChild, newCaseGroup);
