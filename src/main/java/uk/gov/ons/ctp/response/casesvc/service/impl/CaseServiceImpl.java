@@ -30,8 +30,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType;
-import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitBase;
-import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitChild;
+import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnit;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
@@ -298,10 +297,11 @@ public class CaseServiceImpl implements CaseService {
    * @param targetCase Case to update
    */
   private void replaceIAC(final Case targetCase) {
-    if (!internetAccessCodeSvcClientService.isIacActive(targetCase.getIac())) {
+    String iac = targetCase.getIac();
+    if (iac == null || !internetAccessCodeSvcClientService.isIacActive(iac)) {
       log.debug("Replacing existing case IAC, caseId: {}", targetCase.getId());
-      String iac = internetAccessCodeSvcClientService.generateIACs(1).get(0);
-      targetCase.setIac(iac);
+      String newIac = internetAccessCodeSvcClientService.generateIACs(1).get(0);
+      targetCase.setIac(newIac);
       caseRepo.saveAndFlush(targetCase);
       saveCaseIacAudit(targetCase);
     } else {
@@ -411,25 +411,33 @@ public class CaseServiceImpl implements CaseService {
       timeout = TRANSACTION_TIMEOUT)
   @Override
   public void createInitialCase(SampleUnitParent sampleUnitParent) {
+    CaseGroup newCaseGroup = createNewCaseGroup(sampleUnitParent);
+    log.info("Created new casegroup, casegroupId: {}", newCaseGroup.getId());
+
     Category category = new Category();
     category.setShortDescription("Initial creation of case");
-    CaseGroup newCaseGroup = createNewCaseGroup(sampleUnitParent);
+
+    Case parentCase = createNewCase(sampleUnitParent, newCaseGroup);
     if (sampleUnitParent.getSampleUnitChildren() != null) {
-      for (SampleUnitChild sampleUnitChild :
+      parentCase.setState(CaseState.INACTIONABLE);
+
+      for (SampleUnit sampleUnitChild :
           sampleUnitParent.getSampleUnitChildren().getSampleUnitchildren()) {
-        Case caze = createNewCase(sampleUnitChild, newCaseGroup);
-        caze.setActionPlanId(UUID.fromString(sampleUnitChild.getActionPlanId()));
-        caseRepo.saveAndFlush(caze);
-        createCaseCreatedEvent(caze, category);
-        log.debug("New Case created: {}", caze.getId().toString());
+        Case childCase = createNewCase(sampleUnitChild, newCaseGroup);
+        caseRepo.saveAndFlush(childCase);
+        createCaseCreatedEvent(childCase, category);
+        log.info(
+            "New Case created, caseId: {}, sampleUnitType: {}",
+            childCase.getId().toString(),
+            childCase.getSampleUnitType().toString());
       }
-    } else {
-      Case caze = createNewCase(sampleUnitParent, newCaseGroup);
-      caze.setActionPlanId(UUID.fromString(sampleUnitParent.getActionPlanId()));
-      caseRepo.saveAndFlush(caze);
-      createCaseCreatedEvent(caze, category);
-      log.debug("New Case created: {}", caze.getId().toString());
     }
+    caseRepo.saveAndFlush(parentCase);
+    createCaseCreatedEvent(parentCase, category);
+    log.info(
+        "New Case created, caseId: {}, sampleUnitType: {}",
+        parentCase.getId().toString(),
+        parentCase.getSampleUnitType().toString());
   }
 
   /**
@@ -519,11 +527,11 @@ public class CaseServiceImpl implements CaseService {
   /**
    * Create the new Case.
    *
-   * @param caseData SampleUnitParent from which to create Case.
+   * @param caseData SampleUnit from which to create Case.
    * @param caseGroup to which Case belongs.
    * @return newCase created Case.
    */
-  private Case createNewCase(SampleUnitBase caseData, CaseGroup caseGroup) {
+  private Case createNewCase(SampleUnit caseData, CaseGroup caseGroup) {
     Case newCase = new Case();
     newCase.setId(UUID.randomUUID());
 
@@ -540,6 +548,7 @@ public class CaseServiceImpl implements CaseService {
     }
 
     newCase.setCollectionInstrumentId(UUID.fromString(caseData.getCollectionInstrumentId()));
+    newCase.setActionPlanId(UUID.fromString(caseData.getActionPlanId()));
 
     // HardCoded values
     newCase.setState(CaseState.SAMPLED_INIT);
@@ -647,7 +656,9 @@ public class CaseServiceImpl implements CaseService {
     if (transitionEvent != null) {
       if (transitionEvent == CaseDTO.CaseEvent.DISABLED
           || transitionEvent == CaseDTO.CaseEvent.ACCOUNT_CREATED) {
-        internetAccessCodeSvcClientService.disableIAC(targetCase.getIac());
+        if (targetCase.getIac() != null) {
+          internetAccessCodeSvcClientService.disableIAC(targetCase.getIac());
+        }
       }
 
       CaseState oldState = targetCase.getState();

@@ -65,6 +65,7 @@ public class CaseEndpointIT {
   @Test
   public void ensureSampleUnitIdReceived() throws Exception {
     UUID sampleUnitId = UUID.randomUUID();
+
     CaseNotification caseNotification = sendSampleUnit("LMS0001", "H", sampleUnitId);
 
     assertThat(caseNotification.getSampleUnitId()).isEqualTo(sampleUnitId.toString());
@@ -144,6 +145,7 @@ public class CaseEndpointIT {
     sampleUnit.setActionPlanId(UUID.randomUUID().toString());
     sampleUnit.setSampleUnitRef(sampleUnitRef);
     sampleUnit.setCollectionInstrumentId(UUID.randomUUID().toString());
+    sampleUnit.setPartyId(UUID.randomUUID().toString());
     sampleUnit.setSampleUnitType(sampleUnitType);
 
     JAXBContext jaxbContext = JAXBContext.newInstance(SampleUnitParent.class);
