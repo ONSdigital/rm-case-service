@@ -1749,7 +1749,7 @@ public class CaseServiceImplTest {
     SampleUnitParent sampleUnitParent = new SampleUnitParent();
     SampleUnit sampleUnit = new SampleUnit();
     SampleUnitChildren sampleUnitChildren =
-            new SampleUnitChildren(new ArrayList<>(Collections.singletonList(sampleUnit)));
+        new SampleUnitChildren(new ArrayList<>(Collections.singletonList(sampleUnit)));
 
     sampleUnit.setActionPlanId(UUID.randomUUID().toString());
     sampleUnit.setCollectionInstrumentId(UUID.randomUUID().toString());
@@ -1851,6 +1851,4 @@ public class CaseServiceImplTest {
     iacSvc.setIacPostPath(IAC_SVC_POST_PATH);
     when(appConfig.getInternetAccessCodeSvc()).thenReturn(iacSvc);
   }
-
-
 }
