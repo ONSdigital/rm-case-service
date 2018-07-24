@@ -10,6 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
@@ -28,6 +31,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
@@ -57,6 +61,7 @@ public final class CaseEndpoint implements CTPEndpoint {
   private CaseGroupService caseGroupService;
   private CategoryService categoryService;
   private MapperFacade mapperFacade;
+  private CaseRepository caseRepository;
 
   /** Contructor for CaseEndpoint */
   @Autowired
@@ -64,10 +69,12 @@ public final class CaseEndpoint implements CTPEndpoint {
       final CaseService caseService,
       final CaseGroupService caseGroupService,
       final CategoryService categoryService,
+      final CaseRepository caseRepository,
       final @Qualifier("caseSvcBeanMapper") MapperFacade mapperFacade) {
     this.caseService = caseService;
     this.caseGroupService = caseGroupService;
     this.categoryService = categoryService;
+    this.caseRepository = caseRepository;
     this.mapperFacade = mapperFacade;
   }
 
@@ -105,6 +112,7 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @param iac flag used to return or not the iac
    * @return the cases found
    */
+  @Deprecated // See findCases(sampleUnitId, partyId)
   @RequestMapping(value = "/partyid/{partyId}", method = RequestMethod.GET)
   public ResponseEntity<List<CaseDetailsDTO>> findCasesByPartyId(
       @PathVariable("partyId") final UUID partyId,
@@ -122,6 +130,49 @@ public final class CaseEndpoint implements CTPEndpoint {
       }
       return ResponseEntity.ok(resultList);
     }
+  }
+
+  @RequestMapping(method = RequestMethod.GET)
+  public ResponseEntity<List<CaseDetailsDTO>> findCases(
+      @RequestParam(required = false) String sampleUnitId,
+      @RequestParam(required = false) String partyId) {
+    log.info("Finding cases sampleUnitId={} partyId={}", sampleUnitId, partyId);
+    Example<Case> exampleCase = buildExampleCase(sampleUnitId, partyId);
+    List<Case> cases = getCases(exampleCase);
+    List<CaseDetailsDTO> caseResponses =
+        cases
+            .stream()
+            .map(
+                c -> {
+                  CaseDetailsDTO caseDetails = mapperFacade.map(c, CaseDetailsDTO.class);
+                  CaseGroup parentCaseGroup =
+                      caseGroupService.findCaseGroupByCaseGroupPK(c.getCaseGroupFK());
+                  caseDetails.setCaseGroup(mapperFacade.map(parentCaseGroup, CaseGroupDTO.class));
+                  return caseDetails;
+                })
+            .collect(Collectors.toList());
+
+    return ResponseEntity.ok(caseResponses);
+  }
+
+  private List<Case> getCases(Example<Case> exampleCase) {
+    boolean emptyRequest = exampleCase.getProbe().equals(new Case());
+    if (emptyRequest) {
+      return caseRepository.findAll();
+    } else {
+      return caseRepository.findAll(exampleCase);
+    }
+  }
+
+  private Example<Case> buildExampleCase(String sampleUnitId, String partyId) {
+    Case.CaseBuilder caseBuilder = Case.builder();
+    if (sampleUnitId != null) {
+      caseBuilder.sampleUnitId(UUID.fromString(sampleUnitId));
+    }
+    if (partyId != null) {
+      caseBuilder.partyId(UUID.fromString(partyId));
+    }
+    return Example.of(caseBuilder.build(), ExampleMatcher.matchingAny());
   }
 
   /**
