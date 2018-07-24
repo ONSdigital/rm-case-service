@@ -1,5 +1,31 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.Is.isA;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.gov.ons.ctp.common.MvcHelper.getJson;
+import static uk.gov.ons.ctp.common.MvcHelper.postJson;
+import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
+import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.CATEGORY_ACCESS_CODE_AUTHENTICATION_ATTEMPT_NOT_FOUND;
+import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.ERRORMSG_CASENOTFOUND;
+import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 import ma.glasnost.orika.MapperFacade;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,33 +61,6 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.Is.isA;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static uk.gov.ons.ctp.common.MvcHelper.getJson;
-import static uk.gov.ons.ctp.common.MvcHelper.postJson;
-import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
-import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.CATEGORY_ACCESS_CODE_AUTHENTICATION_ATTEMPT_NOT_FOUND;
-import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.ERRORMSG_CASENOTFOUND;
-import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
 /** Case Endpoint Unit tests */
 public final class CaseEndpointUnitTest {
