@@ -52,6 +52,9 @@ import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
+import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnit;
+import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitChildren;
+import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
@@ -1820,6 +1823,39 @@ public class CaseServiceImplTest {
     verify(caseIacAuditRepo, times(1)).saveAndFlush(any());
   }
 
+  @Test
+  public void testCreateInitialCaseWithSampleUnitChildren() {
+    SampleUnitParent sampleUnitParent = new SampleUnitParent();
+    SampleUnit sampleUnit = new SampleUnit();
+    SampleUnitChildren sampleUnitChildren =
+            new SampleUnitChildren(new ArrayList<SampleUnit>(Arrays.asList(sampleUnit)));
+
+    sampleUnit.setActionPlanId(UUID.randomUUID().toString());
+    sampleUnit.setCollectionInstrumentId(UUID.randomUUID().toString());
+    sampleUnit.setPartyId(UUID.randomUUID().toString());
+    sampleUnit.setSampleUnitRef("str1234");
+    sampleUnit.setSampleUnitType("BI");
+    sampleUnit.setId(UUID.randomUUID().toString());
+
+    sampleUnitParent.setActionPlanId(UUID.randomUUID().toString());
+    sampleUnitParent.setCollectionExerciseId(UUID.randomUUID().toString());
+    sampleUnitParent.setSampleUnitChildren(sampleUnitChildren);
+    sampleUnitParent.setCollectionInstrumentId(UUID.randomUUID().toString());
+    sampleUnitParent.setPartyId(UUID.randomUUID().toString());
+    sampleUnitParent.setSampleUnitRef("str1234");
+    sampleUnitParent.setSampleUnitType("B");
+    sampleUnitParent.setId(UUID.randomUUID().toString());
+
+    caseService.createInitialCase(sampleUnitParent);
+
+    ArgumentCaptor<CaseGroup> caseGroup = ArgumentCaptor.forClass(CaseGroup.class);
+    verify(caseGroupRepo, times(1)).saveAndFlush(caseGroup.capture());
+
+    List<CaseGroup> capturedCaseGroup = caseGroup.getAllValues();
+
+    verify(caseRepo, times(2)).saveAndFlush(any());
+  }
+
   /**
    * To mock the behaviour of caseGroupRepo
    *
@@ -1894,4 +1930,6 @@ public class CaseServiceImplTest {
     iacSvc.setIacPostPath(IAC_SVC_POST_PATH);
     when(appConfig.getInternetAccessCodeSvc()).thenReturn(iacSvc);
   }
+
+
 }
