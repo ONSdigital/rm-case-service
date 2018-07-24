@@ -4,10 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -19,7 +16,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
-import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitChild;
+import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnit;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitChildren;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
@@ -32,10 +29,8 @@ public class CaseCreationServiceTest {
 
   @InjectMocks private CaseServiceImpl caseService;
 
-  @Mock private CaseGroupRepository caseGroupRepo;
-
   @Mock private CaseRepository caseRepo;
-
+  @Mock private CaseGroupRepository caseGroupRepo;
   @Mock private CaseEventRepository caseEventRepo;
 
   /**
@@ -108,9 +103,9 @@ public class CaseCreationServiceTest {
   public void testCreateCaseAndCaseGroupWithChildFromMessage() {
 
     SampleUnitParent sampleUnitParent = new SampleUnitParent();
-    SampleUnitChild sampleUnitChild = new SampleUnitChild();
+    SampleUnit sampleUnitChild = new SampleUnit();
     SampleUnitChildren sampleUnitChildren =
-        new SampleUnitChildren(new ArrayList<SampleUnitChild>(Arrays.asList(sampleUnitChild)));
+        new SampleUnitChildren(new ArrayList<>(Collections.singletonList(sampleUnitChild)));
 
     // Sample unit child has actionplanId
     sampleUnitChild.setActionPlanId("7bc5d41b-0549-40b3-ba76-42f6d4cf3991");

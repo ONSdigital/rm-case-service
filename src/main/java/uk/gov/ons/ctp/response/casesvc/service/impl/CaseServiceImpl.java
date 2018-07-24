@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
@@ -30,8 +29,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType;
-import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitBase;
-import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitChild;
+import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnit;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
@@ -223,9 +221,6 @@ public class CaseServiceImpl implements CaseService {
     // do we need to record a response?
     recordCaseResponse(category, targetCase, timestamp);
 
-    // should we create an ad hoc action?
-    createAdHocAction(category, caseEvent);
-
     transitionCaseGroupStatus(targetCase, caseEvent);
 
     switch (caseEvent.getCategory()) {
@@ -401,7 +396,7 @@ public class CaseServiceImpl implements CaseService {
     category.setShortDescription("Initial creation of case");
     CaseGroup newCaseGroup = createNewCaseGroup(sampleUnitParent);
     if (sampleUnitParent.getSampleUnitChildren() != null) {
-      for (SampleUnitChild sampleUnitChild :
+      for (SampleUnit sampleUnitChild :
           sampleUnitParent.getSampleUnitChildren().getSampleUnitchildren()) {
         Case caze = createNewCase(sampleUnitChild, newCaseGroup);
         caze.setActionPlanId(UUID.fromString(sampleUnitChild.getActionPlanId()));
@@ -509,7 +504,7 @@ public class CaseServiceImpl implements CaseService {
    * @param caseGroup to which Case belongs.
    * @return newCase created Case.
    */
-  private Case createNewCase(SampleUnitBase caseData, CaseGroup caseGroup) {
+  private Case createNewCase(SampleUnit caseData, CaseGroup caseGroup) {
     Case newCase = new Case();
     newCase.setId(UUID.randomUUID());
 
@@ -593,27 +588,6 @@ public class CaseServiceImpl implements CaseService {
               .build();
       targetCase.getResponses().add(response);
       caseRepo.save(targetCase);
-    }
-  }
-
-  /**
-   * Send a request to the action service to create an ad-hoc action for the event if required
-   *
-   * @param category the category details of the event
-   * @param caseEvent the basic event
-   */
-  private void createAdHocAction(Category category, CaseEvent caseEvent) {
-    String actionType = category.getGeneratedActionType();
-    log.debug("actionType = {}", actionType);
-    if (!StringUtils.isEmpty(actionType)) {
-      Integer caseFk = caseEvent.getCaseFK();
-      Case existingCase = caseRepo.findOne(caseFk);
-      if (existingCase != null) {
-        actionSvcClientService.createAndPostAction(
-            actionType, existingCase.getId(), caseEvent.getCreatedBy());
-      } else {
-        log.error(String.format(MISSING_EXISTING_CASE_MSG, caseFk));
-      }
     }
   }
 
