@@ -67,3 +67,6 @@ target
 
 diagrams/*.svg
 plantuml.jar
+
+# Database
+*.rdb
