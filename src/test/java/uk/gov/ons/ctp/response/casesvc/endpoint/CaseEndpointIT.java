@@ -34,9 +34,8 @@ import uk.gov.ons.ctp.common.utility.Mapzer;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.*;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
-import uk.gov.ons.ctp.response.casesvc.representation.CreatedCaseEventDTO;
 import uk.gov.ons.tools.rabbit.Rabbitmq;
 import uk.gov.ons.tools.rabbit.SimpleMessageBase;
 import uk.gov.ons.tools.rabbit.SimpleMessageListener;
@@ -92,6 +91,174 @@ public class CaseEndpointIT {
 
     // Then
     assertThat(createdCaseResponse.getStatus()).isEqualTo(201);
+  }
+
+  /**
+   * Test Collection Instrument downloaded case event works with B cases, and case group status has
+   * transitioned to InProgress.
+   *
+   * @throws Exception
+   */
+  @Test
+  public void testCreateCollectionInstrumentDownloadedCaseEventWithBCaseSuccess() throws Exception {
+
+    // Given
+    CaseNotification caseNotification = sendSampleUnit("BS12345", "B", UUID.randomUUID());
+
+    String caseID = caseNotification.getCaseId();
+    CaseEventCreationRequestDTO caseEventCreationRequestDTO =
+        new CaseEventCreationRequestDTO(
+            "TestEvent",
+            CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED,
+            "SYSTEM",
+            "DUMMY",
+            UUID.randomUUID());
+
+    // When
+    HttpResponse<CreatedCaseEventDTO> createdCaseResponse =
+        Unirest.post("http://localhost:" + port + "/cases/" + caseID + "/events")
+            .basicAuth("admin", "secret")
+            .header("Content-Type", "application/json")
+            .body(caseEventCreationRequestDTO)
+            .asObject(CreatedCaseEventDTO.class);
+
+    HttpResponse<CaseDetailsDTO> returnedCaseResponse =
+        Unirest.get("http://localhost:" + port + "/cases/" + caseID)
+            .basicAuth("admin", "secret")
+            .asObject(CaseDetailsDTO.class);
+
+    CaseDetailsDTO affectedCase = returnedCaseResponse.getBody();
+
+    // Then
+    assertThat(createdCaseResponse.getStatus()).isEqualTo(201);
+    assertThat(affectedCase.getCaseGroup().getCaseGroupStatus())
+        .isEqualTo(CaseGroupStatus.INPROGRESS);
+  }
+
+  /**
+   * Test Collection Instrument downloaded case event works with B cases, and case group status has
+   * not transitioned to InProgress.
+   *
+   * @throws Exception
+   */
+  @Test
+  public void testCreateCollectionInstrumentErrorCaseEventWithBCaseSuccess() throws Exception {
+
+    // Given
+    CaseNotification caseNotification = sendSampleUnit("BS12345", "B", UUID.randomUUID());
+
+    String caseID = caseNotification.getCaseId();
+    CaseEventCreationRequestDTO caseEventCreationRequestDTO =
+        new CaseEventCreationRequestDTO(
+            "TestEvent",
+            CategoryName.COLLECTION_INSTRUMENT_ERROR,
+            "SYSTEM",
+            "DUMMY",
+            UUID.randomUUID());
+
+    // When
+    HttpResponse<CreatedCaseEventDTO> createdCaseResponse =
+        Unirest.post("http://localhost:" + port + "/cases/" + caseID + "/events")
+            .basicAuth("admin", "secret")
+            .header("Content-Type", "application/json")
+            .body(caseEventCreationRequestDTO)
+            .asObject(CreatedCaseEventDTO.class);
+
+    HttpResponse<CaseDetailsDTO> returnedCaseResponse =
+        Unirest.get("http://localhost:" + port + "/cases/" + caseID)
+            .basicAuth("admin", "secret")
+            .asObject(CaseDetailsDTO.class);
+
+    CaseDetailsDTO affectedCase = returnedCaseResponse.getBody();
+
+    // Then
+    assertThat(createdCaseResponse.getStatus()).isEqualTo(201);
+    assertThat(affectedCase.getCaseGroup().getCaseGroupStatus())
+        .isNotEqualTo(CaseGroupStatus.INPROGRESS);
+  }
+
+  /**
+   * Test Successful response upload case event works with B cases, and case group status has
+   * transitioned to Complete.
+   *
+   * @throws Exception
+   */
+  @Test
+  public void testCreateSuccessfulResponseUploadCaseEventWithBCaseSuccess() throws Exception {
+
+    // Given
+    CaseNotification caseNotification = sendSampleUnit("BS12345", "B", UUID.randomUUID());
+
+    String caseID = caseNotification.getCaseId();
+    CaseEventCreationRequestDTO caseEventCreationRequestDTO =
+        new CaseEventCreationRequestDTO(
+            "TestEvent",
+            CategoryName.SUCCESSFUL_RESPONSE_UPLOAD,
+            "SYSTEM",
+            "DUMMY",
+            UUID.randomUUID());
+
+    // When
+    HttpResponse<CreatedCaseEventDTO> createdCaseResponse =
+        Unirest.post("http://localhost:" + port + "/cases/" + caseID + "/events")
+            .basicAuth("admin", "secret")
+            .header("Content-Type", "application/json")
+            .body(caseEventCreationRequestDTO)
+            .asObject(CreatedCaseEventDTO.class);
+
+    HttpResponse<CaseDetailsDTO> returnedCaseResponse =
+        Unirest.get("http://localhost:" + port + "/cases/" + caseID)
+            .basicAuth("admin", "secret")
+            .asObject(CaseDetailsDTO.class);
+
+    CaseDetailsDTO affectedCase = returnedCaseResponse.getBody();
+
+    // Then
+    assertThat(createdCaseResponse.getStatus()).isEqualTo(201);
+    assertThat(affectedCase.getCaseGroup().getCaseGroupStatus())
+        .isEqualTo(CaseGroupStatus.COMPLETE);
+  }
+
+  /**
+   * Test Unsuccessful Response Upload case event works with B cases, and case group status has not
+   * transitioned to Complete.
+   *
+   * @throws Exception
+   */
+  @Test
+  public void testCreateUnsuccessfulResponseUploadCaseEventWithBCaseSuccess() throws Exception {
+
+    // Given
+    CaseNotification caseNotification = sendSampleUnit("BS12345", "B", UUID.randomUUID());
+
+    String caseID = caseNotification.getCaseId();
+    CaseEventCreationRequestDTO caseEventCreationRequestDTO =
+        new CaseEventCreationRequestDTO(
+            "TestEvent",
+            CategoryName.UNSUCCESSFUL_RESPONSE_UPLOAD,
+            "SYSTEM",
+            "DUMMY",
+            UUID.randomUUID());
+
+    // When
+    HttpResponse<CreatedCaseEventDTO> createdCaseResponse =
+        Unirest.post("http://localhost:" + port + "/cases/" + caseID + "/events")
+            .basicAuth("admin", "secret")
+            .header("Content-Type", "application/json")
+            .body(caseEventCreationRequestDTO)
+            .asObject(CreatedCaseEventDTO.class);
+
+    HttpResponse<CaseDetailsDTO> returnedCaseResponse =
+        Unirest.get("http://localhost:" + port + "/cases/" + caseID)
+            .basicAuth("admin", "secret")
+            .asObject(CaseDetailsDTO.class);
+
+    CaseDetailsDTO affectedCase = returnedCaseResponse.getBody();
+
+    // Then
+    assertThat(createdCaseResponse.getStatus()).isEqualTo(201);
+    assertThat(affectedCase.getCaseGroup().getCaseGroupStatus())
+        .isNotEqualTo(CaseGroupStatus.COMPLETE);
   }
 
   /**
