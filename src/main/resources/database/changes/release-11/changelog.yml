@@ -1,7 +1,7 @@
 databaseChangeLog:
 
   - changeSet:
-      id: 10.60.0-1
+      id: 11-1
       author: Gemma Irving
       changes:
         - sqlFile:
