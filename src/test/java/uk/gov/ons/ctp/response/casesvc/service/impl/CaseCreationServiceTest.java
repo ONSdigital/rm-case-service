@@ -60,41 +60,34 @@ public class CaseCreationServiceTest {
     // Both CaseGroup and Case attributes created from parent sample unit
     ArgumentCaptor<CaseGroup> caseGroup = ArgumentCaptor.forClass(CaseGroup.class);
     verify(caseGroupRepo, times(1)).saveAndFlush(caseGroup.capture());
+    CaseGroup capturedCaseGroup = caseGroup.getValue();
 
-    List<CaseGroup> capturedCaseGroup = caseGroup.getAllValues();
-
-    assertEquals(UUID.class, capturedCaseGroup.get(0).getId().getClass());
+    assertEquals(UUID.class, capturedCaseGroup.getId().getClass());
     assertEquals(
         UUID.fromString(sampleUnitParent.getCollectionExerciseId()),
-        capturedCaseGroup.get(0).getCollectionExerciseId());
-    assertEquals(
-        UUID.fromString(sampleUnitParent.getPartyId()), capturedCaseGroup.get(0).getPartyId());
-    assertEquals(sampleUnitParent.getSampleUnitRef(), capturedCaseGroup.get(0).getSampleUnitRef());
-    assertEquals(
-        sampleUnitParent.getSampleUnitType(), capturedCaseGroup.get(0).getSampleUnitType());
-    assertEquals(CaseGroupStatus.NOTSTARTED, capturedCaseGroup.get(0).getStatus());
+        capturedCaseGroup.getCollectionExerciseId());
+    assertEquals(UUID.fromString(sampleUnitParent.getPartyId()), capturedCaseGroup.getPartyId());
+    assertEquals(sampleUnitParent.getSampleUnitRef(), capturedCaseGroup.getSampleUnitRef());
+    assertEquals(sampleUnitParent.getSampleUnitType(), capturedCaseGroup.getSampleUnitType());
+    assertEquals(CaseGroupStatus.NOTSTARTED, capturedCaseGroup.getStatus());
 
     ArgumentCaptor<Case> caze = ArgumentCaptor.forClass(Case.class);
-
     verify(caseRepo, times(1)).saveAndFlush(caze.capture());
+    Case capturedCase = caze.getValue();
 
-    List<Case> capturedCase = caze.getAllValues();
-
-    assertEquals(UUID.class, capturedCase.get(0).getId().getClass());
-    assertEquals(
-        new Integer(capturedCaseGroup.get(0).getCaseGroupPK()),
-        capturedCase.get(0).getCaseGroupFK());
-    assertEquals(capturedCaseGroup.get(0).getId(), capturedCase.get(0).getCaseGroupId());
-    assertEquals(CaseState.SAMPLED_INIT, capturedCase.get(0).getState());
+    assertEquals(UUID.class, capturedCase.getId().getClass());
+    assertEquals(new Integer(capturedCaseGroup.getCaseGroupPK()), capturedCase.getCaseGroupFK());
+    assertEquals(capturedCaseGroup.getId(), capturedCase.getCaseGroupId());
+    assertEquals(CaseState.SAMPLED_INIT, capturedCase.getState());
     assertEquals(
         SampleUnitDTO.SampleUnitType.valueOf(sampleUnitParent.getSampleUnitType()),
-        capturedCase.get(0).getSampleUnitType());
-    assertEquals(UUID.fromString(sampleUnitParent.getPartyId()), capturedCase.get(0).getPartyId());
+        capturedCase.getSampleUnitType());
+    assertEquals(UUID.fromString(sampleUnitParent.getPartyId()), capturedCase.getPartyId());
     assertEquals(
         UUID.fromString(sampleUnitParent.getCollectionInstrumentId()),
-        capturedCase.get(0).getCollectionInstrumentId());
+        capturedCase.getCollectionInstrumentId());
     assertEquals(
-        UUID.fromString(sampleUnitParent.getActionPlanId()), capturedCase.get(0).getActionPlanId());
+        UUID.fromString(sampleUnitParent.getActionPlanId()), capturedCase.getActionPlanId());
   }
 
   /**
@@ -132,40 +125,47 @@ public class CaseCreationServiceTest {
     // CaseGroup attributes from parent data, case from child sample unit
     ArgumentCaptor<CaseGroup> caseGroup = ArgumentCaptor.forClass(CaseGroup.class);
     verify(caseGroupRepo, times(1)).saveAndFlush(caseGroup.capture());
+    CaseGroup capturedCaseGroup = caseGroup.getValue();
 
-    List<CaseGroup> capturedCaseGroup = caseGroup.getAllValues();
-
-    assertEquals(UUID.class, capturedCaseGroup.get(0).getId().getClass());
+    assertEquals(UUID.class, capturedCaseGroup.getId().getClass());
     assertEquals(
         UUID.fromString(sampleUnitParent.getCollectionExerciseId()),
-        capturedCaseGroup.get(0).getCollectionExerciseId());
-    assertEquals(
-        UUID.fromString(sampleUnitParent.getPartyId()), capturedCaseGroup.get(0).getPartyId());
-    assertEquals(sampleUnitParent.getSampleUnitRef(), capturedCaseGroup.get(0).getSampleUnitRef());
-    assertEquals(
-        sampleUnitParent.getSampleUnitType(), capturedCaseGroup.get(0).getSampleUnitType());
-    assertEquals(CaseGroupStatus.NOTSTARTED, capturedCaseGroup.get(0).getStatus());
+        capturedCaseGroup.getCollectionExerciseId());
+    assertEquals(UUID.fromString(sampleUnitParent.getPartyId()), capturedCaseGroup.getPartyId());
+    assertEquals(sampleUnitParent.getSampleUnitRef(), capturedCaseGroup.getSampleUnitRef());
+    assertEquals(sampleUnitParent.getSampleUnitType(), capturedCaseGroup.getSampleUnitType());
+    assertEquals(CaseGroupStatus.NOTSTARTED, capturedCaseGroup.getStatus());
 
     ArgumentCaptor<Case> caze = ArgumentCaptor.forClass(Case.class);
-
     verify(caseRepo, times(2)).saveAndFlush(caze.capture());
+    List<Case> capturedCases = caze.getAllValues();
 
-    List<Case> capturedCase = caze.getAllValues();
-
-    assertEquals(UUID.class, capturedCase.get(0).getId().getClass());
-    assertEquals(
-        new Integer(capturedCaseGroup.get(0).getCaseGroupPK()),
-        capturedCase.get(0).getCaseGroupFK());
-    assertEquals(capturedCaseGroup.get(0).getId(), capturedCase.get(0).getCaseGroupId());
-    assertEquals(CaseState.SAMPLED_INIT, capturedCase.get(0).getState());
+    Case childCase = capturedCases.get(0);
+    assertEquals(UUID.class, childCase.getId().getClass());
+    assertEquals(new Integer(capturedCaseGroup.getCaseGroupPK()), childCase.getCaseGroupFK());
+    assertEquals(capturedCaseGroup.getId(), childCase.getCaseGroupId());
+    assertEquals(CaseState.SAMPLED_INIT, childCase.getState());
     assertEquals(
         SampleUnitDTO.SampleUnitType.valueOf(sampleUnitChild.getSampleUnitType()),
-        capturedCase.get(0).getSampleUnitType());
-    assertEquals(UUID.fromString(sampleUnitChild.getPartyId()), capturedCase.get(0).getPartyId());
+        childCase.getSampleUnitType());
+    assertEquals(UUID.fromString(sampleUnitChild.getPartyId()), childCase.getPartyId());
     assertEquals(
         UUID.fromString(sampleUnitChild.getCollectionInstrumentId()),
-        capturedCase.get(0).getCollectionInstrumentId());
+        childCase.getCollectionInstrumentId());
+    assertEquals(UUID.fromString(sampleUnitChild.getActionPlanId()), childCase.getActionPlanId());
+
+    Case parentCase = capturedCases.get(1);
+    assertEquals(UUID.class, parentCase.getId().getClass());
+    assertEquals(new Integer(capturedCaseGroup.getCaseGroupPK()), parentCase.getCaseGroupFK());
+    assertEquals(capturedCaseGroup.getId(), parentCase.getCaseGroupId());
+    assertEquals(CaseState.INACTIONABLE, parentCase.getState());
     assertEquals(
-        UUID.fromString(sampleUnitChild.getActionPlanId()), capturedCase.get(0).getActionPlanId());
+        SampleUnitDTO.SampleUnitType.valueOf(sampleUnitParent.getSampleUnitType()),
+        parentCase.getSampleUnitType());
+    assertEquals(UUID.fromString(sampleUnitParent.getPartyId()), parentCase.getPartyId());
+    assertEquals(
+        UUID.fromString(sampleUnitParent.getCollectionInstrumentId()),
+        parentCase.getCollectionInstrumentId());
+    assertEquals(UUID.fromString(sampleUnitParent.getActionPlanId()), parentCase.getActionPlanId());
   }
 }
