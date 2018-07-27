@@ -1,18 +1,20 @@
 import logging
+import os
 
 from sqlalchemy import create_engine
 from structlog import wrap_logger
 
-from config import Config
-
 
 logger = wrap_logger(logging.getLogger(__name__))
+
+CASE_DB_URI = os.getenv('CASE_DB_URI')
+COLLEX_DB_URI = os.getenv('COLLEX_DB_URI')
 
 
 # Create missing B cases without actionplanid's
 def create_b_cases():
     logger.info('Creating missing B cases')
-    engine = create_engine(Config.CASE_DB_URI)
+    engine = create_engine(CASE_DB_URI)
     connection = engine.connect()
 
     with open('sql/create_b_cases.sql', 'r') as sqlScriptFile:
@@ -28,7 +30,7 @@ def create_b_cases():
 # for the b cases missing their actionplanid's
 def get_cases_without_actionplanids():
     logger.info("Retrieving B cases without actionplanid's")
-    engine = create_engine(Config.CASE_DB_URI)
+    engine = create_engine(CASE_DB_URI)
     connection = engine.connect()
 
     with open('sql/get_cases_without_actionplans.sql', 'r') as sqlScriptFile:
@@ -44,7 +46,7 @@ def get_cases_without_actionplanids():
 def get_actionplan_id(case_id, collection_exercise_id):
     logger.info('Retrieving actionplan_id for case',
                 case_id=case_id, collection_exercise_id=collection_exercise_id)
-    engine = create_engine(Config.COLLEX_DB_URI)
+    engine = create_engine(COLLEX_DB_URI)
     connection = engine.connect()
 
     with open('sql/get_actionplanid.sql', 'r') as sqlScriptFile:
@@ -64,7 +66,7 @@ def get_actionplan_id(case_id, collection_exercise_id):
 def add_actionplan_id(case_id, actionplan_id):
     logger.info('Updating case with actionplan_id',
                 case_id=case_id, actionplan_id=actionplan_id)
-    engine = create_engine(Config.CASE_DB_URI)
+    engine = create_engine(CASE_DB_URI)
     connection = engine.connect()
 
     with open('sql/add_actionplanid.sql', 'r') as sqlScriptFile:
