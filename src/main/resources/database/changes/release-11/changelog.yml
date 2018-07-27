@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 11-1
+      author: Gemma Irving
+      changes:
+        - sqlFile:
+            comment: Update case event categories to work with both B and BI cases
+            path: update_categories_to_use_both_b_and_bi_cases.sql
+            relativeToChangelogFile: true
+            splitStatements: false
