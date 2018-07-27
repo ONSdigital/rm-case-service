@@ -654,7 +654,10 @@ public class CaseServiceImpl implements CaseService {
       throws CTPException {
     CaseDTO.CaseEvent transitionEvent = category.getEventType();
     if (transitionEvent != null) {
-      if (transitionEvent == CaseDTO.CaseEvent.DISABLED
+      if ((transitionEvent == CaseDTO.CaseEvent.DISABLED
+              && !category
+                  .getCategoryName()
+                  .equals(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD))
           || transitionEvent == CaseDTO.CaseEvent.ACCOUNT_CREATED) {
         if (targetCase.getIac() != null) {
           internetAccessCodeSvcClientService.disableIAC(targetCase.getIac());
