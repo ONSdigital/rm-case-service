@@ -1747,11 +1747,7 @@ public class CaseServiceImplTest {
     SampleUnitParent sampleUnitParent = new SampleUnitParent();
     SampleUnit sampleUnit = new SampleUnit();
     SampleUnitChildren sampleUnitChildren =
-<<<<<<< HEAD
         new SampleUnitChildren(new ArrayList<>(Collections.singletonList(sampleUnit)));
-=======
-        new SampleUnitChildren(new ArrayList<SampleUnit>(Arrays.asList(sampleUnit)));
->>>>>>> master
 
     sampleUnit.setActionPlanId(UUID.randomUUID().toString());
     sampleUnit.setCollectionInstrumentId(UUID.randomUUID().toString());
