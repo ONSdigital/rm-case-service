@@ -1641,8 +1641,6 @@ public class CaseServiceImplTest {
     verify(caseEventRepo, times(1)).save(caseEvent);
     ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
     verify(caseRepo, times(2)).saveAndFlush(argument.capture());
-
-    verify(internetAccessCodeSvcClientService, times(2)).disableIAC(any(String.class));
     verify(caseSvcStateTransitionManager, times(3))
         .transition(
             any(CaseState.class),
@@ -1749,7 +1747,11 @@ public class CaseServiceImplTest {
     SampleUnitParent sampleUnitParent = new SampleUnitParent();
     SampleUnit sampleUnit = new SampleUnit();
     SampleUnitChildren sampleUnitChildren =
+<<<<<<< HEAD
         new SampleUnitChildren(new ArrayList<>(Collections.singletonList(sampleUnit)));
+=======
+        new SampleUnitChildren(new ArrayList<SampleUnit>(Arrays.asList(sampleUnit)));
+>>>>>>> master
 
     sampleUnit.setActionPlanId(UUID.randomUUID().toString());
     sampleUnit.setCollectionInstrumentId(UUID.randomUUID().toString());
