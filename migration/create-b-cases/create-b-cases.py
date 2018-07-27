@@ -23,6 +23,8 @@ def create_b_cases():
     trans = connection.begin()
     connection.execute(sql)
     trans.commit()
+    connection.close()
+
     logging.info('Successfully created B cases')
 
 
@@ -39,6 +41,8 @@ def get_cases_without_actionplanids():
     trans = connection.begin()
     response = connection.execute(sql)
     trans.commit()
+    connection.close()
+
     logging.info("Successfully retrieved B cases without actionplanid's")
     return [row for row in response]
 
@@ -55,7 +59,10 @@ def get_actionplan_id(case_id, collection_exercise_id):
     trans = connection.begin()
     response = connection.execute(sql)
     trans.commit()
+    connection.close()
+
     actionplan_id = next(str(_[0]) for _ in response)
+
     logger.info('Successfully retrieved actionplan_id',
                 case_id=case_id,
                 collection_exercise_id=collection_exercise_id,
@@ -75,6 +82,8 @@ def add_actionplan_id(case_id, actionplan_id):
     trans = connection.begin()
     connection.execute(sql)
     trans.commit()
+    connection.close()
+
     logger.info('Successfully updated case with actionplan_id',
                 case_id=case_id, actionplan_id=actionplan_id)
 
