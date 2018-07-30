@@ -15,14 +15,14 @@ bin/
 local.properties
 .settings/
 .loadpath
-.DS_Store
+*.DS_Store
 
 # Eclipse Core
 .project
 
 # IntelliJ
 *.iml
-.idea/
+*.idea/
 out/
 tools/addend/target/classes/
 
@@ -70,3 +70,6 @@ plantuml.jar
 
 # Database
 *.rdb
+
+*__pycache__
+*.env
