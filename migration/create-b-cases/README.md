@@ -15,3 +15,5 @@ Then import the table into the case database with `import-cto-table.sql`
 
 #### Create new B cases
 Once the temporary table has been created simply execute the `create-b-cases.sql` script to create missing B cases.
+
+Be sure to drop the temporary table when finished
