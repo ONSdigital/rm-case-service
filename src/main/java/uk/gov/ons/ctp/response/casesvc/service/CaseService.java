@@ -144,4 +144,13 @@ public interface CaseService extends CTPService {
    * @param updatedCase the CaseCreation data
    */
   void saveCaseIacAudit(Case updatedCase);
+  
+  
+  /**
+   * Get a case by the post code it pertains to
+   * 
+   * @param postcode
+   * @return
+   */
+  Case findCaseByPostcode(String postcode);
 }
