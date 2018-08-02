@@ -766,7 +766,7 @@ public class CaseServiceImpl implements CaseService {
   }
 
   @Override
-  public Case findCaseByPostcode(String postcode) {
-    return null;
+  public Case findCaseBySampleUnitId(UUID sampleUnitId) {
+    return caseRepo.findBySampleUnitId(sampleUnitId);
   }
 }
