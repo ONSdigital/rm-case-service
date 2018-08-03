@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
@@ -222,9 +221,6 @@ public class CaseServiceImpl implements CaseService {
     // do we need to record a response?
     recordCaseResponse(category, targetCase, timestamp);
 
-    // should we create an ad hoc action?
-    createAdHocAction(category, caseEvent);
-
     transitionCaseGroupStatus(targetCase, caseEvent);
 
     switch (caseEvent.getCategory()) {
@@ -238,24 +234,10 @@ public class CaseServiceImpl implements CaseService {
         createNewCase(category, caseEvent, targetCase, newCase);
         updateAllAssociatedBiCases(targetCase, category);
         break;
-      case DISABLE_RESPONDENT_ENROLMENT:
-        effectTargetCaseStateTransition(category, targetCase);
-
-        List<Case> actionableCases =
-            caseRepo.findByCaseGroupIdAndStateAndSampleUnitTypeOrderByCreatedDateTimeAsc(
-                targetCase.getCaseGroupId(), CaseState.ACTIONABLE, SampleUnitType.BI);
-        CaseGroup caseGroup = caseGroupRepo.findById(targetCase.getCaseGroupId());
-
-        // Create a new case if no actionable case remain and casegroup is not in a complete state
-        if (actionableCases.isEmpty()
-            && !caseGroup.getStatus().equals(CaseGroupStatus.NOLONGERREQUIRED)
-            && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETE)
-            && !caseGroup.getStatus().equals(CaseGroupStatus.COMPLETEDBYPHONE)) {
-          createNewCase(category, caseEvent, targetCase, newCase);
-        }
-        break;
       case GENERATE_ENROLMENT_CODE:
+      case NO_ACTIVE_ENROLMENTS:
         replaceIAC(targetCase);
+        effectTargetCaseStateTransition(category, targetCase);
         break;
       default:
         createNewCase(category, caseEvent, targetCase, newCase);
@@ -620,27 +602,6 @@ public class CaseServiceImpl implements CaseService {
   }
 
   /**
-   * Send a request to the action service to create an ad-hoc action for the event if required
-   *
-   * @param category the category details of the event
-   * @param caseEvent the basic event
-   */
-  private void createAdHocAction(Category category, CaseEvent caseEvent) {
-    String actionType = category.getGeneratedActionType();
-    log.debug("actionType = {}", actionType);
-    if (!StringUtils.isEmpty(actionType)) {
-      Integer caseFk = caseEvent.getCaseFK();
-      Case existingCase = caseRepo.findOne(caseFk);
-      if (existingCase != null) {
-        actionSvcClientService.createAndPostAction(
-            actionType, existingCase.getId(), caseEvent.getCreatedBy());
-      } else {
-        log.error(String.format(MISSING_EXISTING_CASE_MSG, caseFk));
-      }
-    }
-  }
-
-  /**
    * Effect a state transition for the target case if the category indicates one is required If a
    * transition was made and the state changes as a result, notify the action service of the state
    * change AND if the event was type DISABLED then also call the IAC service to disable/deactivate
@@ -665,10 +626,8 @@ public class CaseServiceImpl implements CaseService {
       }
 
       CaseState oldState = targetCase.getState();
-      CaseState newState;
-      newState = caseSvcStateTransitionManager.transition(oldState, transitionEvent);
+      CaseState newState = caseSvcStateTransitionManager.transition(oldState, transitionEvent);
 
-      // was a state change effected?
       if (!oldState.equals(newState)) {
         targetCase.setState(newState);
         caseRepo.saveAndFlush(targetCase);
