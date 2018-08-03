@@ -6,7 +6,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.mashape.unirest.http.HttpResponse;
@@ -34,6 +33,7 @@ import uk.gov.ons.ctp.common.utility.Mapzer;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
 import uk.gov.ons.ctp.response.casesvc.representation.CreatedCaseEventDTO;
@@ -48,13 +48,20 @@ import uk.gov.ons.tools.rabbit.SimpleMessageSender;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CaseEndpointIT {
 
-  @ClassRule public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
-  @Rule public final SpringMethodRule springMethodRule = new SpringMethodRule();
-  @Rule public WireMockRule wireMockRule = new WireMockRule(options().port(18002));
-  @Autowired private ResourceLoader resourceLoader;
-  @LocalServerPort private int port;
-  @Autowired private ObjectMapper mapper;
-  @Autowired private AppConfig appConfig;
+  @ClassRule
+  public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
+  @Rule
+  public final SpringMethodRule springMethodRule = new SpringMethodRule();
+  @Rule
+  public WireMockRule wireMockRule = new WireMockRule(options().port(18002));
+  @Autowired
+  private ResourceLoader resourceLoader;
+  @LocalServerPort
+  private int port;
+  @Autowired
+  private ObjectMapper mapper;
+  @Autowired
+  private AppConfig appConfig;
 
   @BeforeClass
   public static void setUp() {
@@ -78,20 +85,35 @@ public class CaseEndpointIT {
     CaseNotification caseNotification = sendSampleUnit("LMS0002", "H", UUID.randomUUID());
 
     String caseID = caseNotification.getCaseId();
-    CaseEventCreationRequestDTO caseEventCreationRequestDTO =
-        new CaseEventCreationRequestDTO(
-            "TestEvent", CategoryName.ACTION_CREATED, "SYSTEM", "SOCIALNOT", null);
+    CaseEventCreationRequestDTO caseEventCreationRequestDTO = new CaseEventCreationRequestDTO(
+        "TestEvent", CategoryName.ACTION_CREATED, "SYSTEM", "SOCIALNOT", null);
 
     // When
     HttpResponse<CreatedCaseEventDTO> createdCaseResponse =
         Unirest.post("http://localhost:" + port + "/cases/" + caseID + "/events")
-            .basicAuth("admin", "secret")
-            .header("Content-Type", "application/json")
-            .body(caseEventCreationRequestDTO)
-            .asObject(CreatedCaseEventDTO.class);
+            .basicAuth("admin", "secret").header("Content-Type", "application/json")
+            .body(caseEventCreationRequestDTO).asObject(CreatedCaseEventDTO.class);
 
     // Then
     assertThat(createdCaseResponse.getStatus()).isEqualTo(201);
+  }
+
+  @Test
+  public void ensureCaseReturnedBySampleUnitId() throws Exception {
+
+    UUID sampleUnitId = UUID.randomUUID();
+    CaseNotification caseNotif = sendSampleUnit("LMS0003", "H", sampleUnitId);
+
+    UUID caseId = UUID.fromString(caseNotif.getCaseId());
+
+    HttpResponse<CaseDetailsDTO[]> casesResponse =
+        Unirest.get(String.format("http://localhost:%d/cases/sampleunitids", port))
+            .basicAuth("admin", "secret").queryString("sampleUnitId", sampleUnitId)
+            .header("Content-Type", "application/json").asObject(CaseDetailsDTO[].class);
+    
+    UUID returnedCaseId = casesResponse.getBody()[0].getId();
+    
+    assertThat(returnedCaseId).isEqualTo(caseId);
   }
 
   /**
@@ -102,8 +124,8 @@ public class CaseEndpointIT {
   private SimpleMessageSender getMessageSender() {
     Rabbitmq config = this.appConfig.getRabbitmq();
 
-    return new SimpleMessageSender(
-        config.getHost(), config.getPort(), config.getUsername(), config.getPassword());
+    return new SimpleMessageSender(config.getHost(), config.getPort(), config.getUsername(),
+        config.getPassword());
   }
 
   /**
@@ -114,17 +136,13 @@ public class CaseEndpointIT {
   private SimpleMessageListener getMessageListener() {
     Rabbitmq config = this.appConfig.getRabbitmq();
 
-    return new SimpleMessageListener(
-        config.getHost(), config.getPort(), config.getUsername(), config.getPassword());
+    return new SimpleMessageListener(config.getHost(), config.getPort(), config.getUsername(),
+        config.getPassword());
   }
 
   private void createIACStub() throws IOException {
-    this.wireMockRule.stubFor(
-        post(urlPathEqualTo("/iacs"))
-            .willReturn(
-                aResponse()
-                    .withHeader("Content-Type", "application/json")
-                    .withBody("[\"grtt7x2nhygg\"]")));
+    this.wireMockRule.stubFor(post(urlPathEqualTo("/iacs")).willReturn(
+        aResponse().withHeader("Content-Type", "application/json").withBody("[\"grtt7x2nhygg\"]")));
   }
 
   /**
@@ -133,8 +151,8 @@ public class CaseEndpointIT {
    *
    * @return a new CaseNotification
    */
-  private CaseNotification sendSampleUnit(
-      String sampleUnitRef, String sampleUnitType, UUID sampleUnitId) throws Exception {
+  private CaseNotification sendSampleUnit(String sampleUnitRef, String sampleUnitType,
+      UUID sampleUnitId) throws Exception {
     createIACStub();
 
     SimpleMessageSender sender = getMessageSender();
@@ -149,28 +167,23 @@ public class CaseEndpointIT {
     sampleUnit.setSampleUnitType(sampleUnitType);
 
     JAXBContext jaxbContext = JAXBContext.newInstance(SampleUnitParent.class);
-    String xml =
-        new Mapzer(resourceLoader)
-            .convertObjectToXml(
-                jaxbContext, sampleUnit, "casesvc/xsd/inbound/SampleUnitNotification.xsd");
+    String xml = new Mapzer(resourceLoader).convertObjectToXml(jaxbContext, sampleUnit,
+        "casesvc/xsd/inbound/SampleUnitNotification.xsd");
 
     sender.sendMessage("collection-inbound-exchange", "Case.CaseDelivery.binding", xml);
 
     String message = waitForNotification();
 
     jaxbContext = JAXBContext.newInstance(CaseNotification.class);
-    return (CaseNotification)
-        jaxbContext.createUnmarshaller().unmarshal(new ByteArrayInputStream(message.getBytes()));
+    return (CaseNotification) jaxbContext.createUnmarshaller()
+        .unmarshal(new ByteArrayInputStream(message.getBytes()));
   }
 
   private String waitForNotification() throws Exception {
 
     SimpleMessageListener listener = getMessageListener();
-    BlockingQueue<String> queue =
-        listener.listen(
-            SimpleMessageBase.ExchangeType.Direct,
-            "case-outbound-exchange",
-            "Case.LifecycleEvents.binding");
+    BlockingQueue<String> queue = listener.listen(SimpleMessageBase.ExchangeType.Direct,
+        "case-outbound-exchange", "Case.LifecycleEvents.binding");
 
     String message = queue.take();
     log.info("message = " + message);

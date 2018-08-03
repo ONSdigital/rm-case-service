@@ -106,7 +106,7 @@ public final class CaseEndpoint implements CTPEndpoint {
 
   @RequestMapping(value = "/sampleunitids", method = RequestMethod.GET)
   public ResponseEntity<CaseDetailsDTO[]> findCasesBySampleUnitIds(
-      @RequestParam(value = "id") final UUID[] sampleUnitIds,
+      @RequestParam(value = "sampleUnitId") final UUID[] sampleUnitIds,
       @RequestParam(value = "caseevents", required = false) final boolean caseevents,
       @RequestParam(value = "iac", required = false) final boolean iac)
       throws CTPException {
