@@ -1,0 +1,21 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 12-1
+      author: Andrew Millar
+      changes:
+        - sqlFile:
+            comment: Remove DISABLE_RESPONDENT_ENROLMENT category newcasesampleunittype
+            path: remove_disable_respondent_enrolment_newcasesampleunittype.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+        id: 12-2
+        author: Andrew Millar
+        changes:
+          - sqlFile:
+              comment: Add NO_ACTIVE_ENROLMENTS category
+              path: add_no_active_enrolments_category.sql
+              relativeToChangelogFile: true
+              splitStatements: false

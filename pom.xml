@@ -1,11 +1,9 @@
 
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>casesvc</artifactId>
-    <version>10.49.16-SNAPSHOT</version>
+    <version>10.49.17-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>CTP : CaseService</name>
@@ -150,7 +148,7 @@
         <dependency>
             <groupId>uk.gov.ons.ctp.product</groupId>
             <artifactId>casesvc-api</artifactId>
-            <version>10.49.24</version>
+            <version>10.49.26</version>
         </dependency>
 
         <dependency>

@@ -557,7 +557,7 @@
     "shortDescription": "Offline Response Processed",
     "role": null,
     "generatedActionType": null,
-    "newCaseSampleUnitType": "B",
+    "newCaseSampleUnitType": null,
     "oldCaseSampleUnitTypes": "BI",
     "eventType": "DISABLED"
   },
