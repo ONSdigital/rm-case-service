@@ -94,8 +94,5 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
    * @param sampleUnitId
    * @return
    */
-  @Query(
-      value = "select caze.* from casesvc.case caze where sampleunit_id = :sampleUnitId",
-      nativeQuery = true)
   Case findBySampleUnitId(@Param("sampleUnitId") UUID sampleUnitId);
 }
