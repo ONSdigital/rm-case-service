@@ -1748,7 +1748,6 @@ public class CaseServiceImplTest {
     SampleUnit sampleUnit = new SampleUnit();
     SampleUnitChildren sampleUnitChildren =
         new SampleUnitChildren(new ArrayList<>(Collections.singletonList(sampleUnit)));
-
     sampleUnit.setActionPlanId(UUID.randomUUID().toString());
     sampleUnit.setCollectionInstrumentId(UUID.randomUUID().toString());
     sampleUnit.setPartyId(UUID.randomUUID().toString());

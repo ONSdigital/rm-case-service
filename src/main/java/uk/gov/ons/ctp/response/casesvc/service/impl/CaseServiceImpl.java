@@ -726,4 +726,9 @@ public class CaseServiceImpl implements CaseService {
     log.debug("New CaseGroup created: {}", newCaseGroup.getId().toString());
     return newCaseGroup;
   }
+
+  @Override
+  public Case findCaseBySampleUnitId(UUID sampleUnitId) {
+    return caseRepo.findBySampleUnitId(sampleUnitId);
+  }
 }
