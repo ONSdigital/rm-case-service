@@ -3,6 +3,7 @@ package uk.gov.ons.ctp.response.casesvc.endpoint;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
@@ -101,6 +102,27 @@ public final class CaseEndpoint implements CTPEndpoint {
     }
 
     return ResponseEntity.ok(buildDetailedCaseDTO(caseObj, caseevents, iac));
+  }
+
+  @RequestMapping(value = "/sampleunitids", method = RequestMethod.GET)
+  public ResponseEntity<List<CaseDetailsDTO>> findCasesBySampleUnitIds(
+      @RequestParam(value = "sampleUnitId") final List<UUID> sampleUnitIds,
+      @RequestParam(value = "caseevents", required = false) final boolean caseevents,
+      @RequestParam(value = "iac", required = false) final boolean iac) {
+
+    List<CaseDetailsDTO> cases =
+        sampleUnitIds
+            .stream()
+            .map(caze -> caseService.findCaseBySampleUnitId(caze))
+            .filter(Objects::nonNull)
+            .map(
+                caze -> {
+                  CaseDetailsDTO cdd = buildDetailedCaseDTO(caze, caseevents, iac);
+                  return cdd;
+                })
+            .collect(Collectors.toList());
+
+    return ResponseEntity.ok(cases);
   }
 
   /**

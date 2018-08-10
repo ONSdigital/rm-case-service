@@ -34,8 +34,11 @@ import uk.gov.ons.ctp.common.utility.Mapzer;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
-import uk.gov.ons.ctp.response.casesvc.representation.*;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
+import uk.gov.ons.ctp.response.casesvc.representation.CreatedCaseEventDTO;
 import uk.gov.ons.tools.rabbit.Rabbitmq;
 import uk.gov.ons.tools.rabbit.SimpleMessageBase;
 import uk.gov.ons.tools.rabbit.SimpleMessageListener;
@@ -48,11 +51,17 @@ import uk.gov.ons.tools.rabbit.SimpleMessageSender;
 public class CaseEndpointIT {
 
   @ClassRule public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
+
   @Rule public final SpringMethodRule springMethodRule = new SpringMethodRule();
+
   @Rule public WireMockRule wireMockRule = new WireMockRule(options().port(18002));
+
   @Autowired private ResourceLoader resourceLoader;
+
   @LocalServerPort private int port;
+
   @Autowired private ObjectMapper mapper;
+
   @Autowired private AppConfig appConfig;
 
   @BeforeClass
@@ -91,6 +100,26 @@ public class CaseEndpointIT {
 
     // Then
     assertThat(createdCaseResponse.getStatus()).isEqualTo(201);
+  }
+
+  @Test
+  public void ensureCaseReturnedBySampleUnitId() throws Exception {
+
+    UUID sampleUnitId = UUID.randomUUID();
+    CaseNotification caseNotif = sendSampleUnit("LMS0003", "H", sampleUnitId);
+
+    UUID caseId = UUID.fromString(caseNotif.getCaseId());
+
+    HttpResponse<CaseDetailsDTO[]> casesResponse =
+        Unirest.get(String.format("http://localhost:%d/cases/sampleunitids", port))
+            .basicAuth("admin", "secret")
+            .queryString("sampleUnitId", sampleUnitId)
+            .header("Content-Type", "application/json")
+            .asObject(CaseDetailsDTO[].class);
+
+    UUID returnedCaseId = casesResponse.getBody()[0].getId();
+
+    assertThat(returnedCaseId).isEqualTo(caseId);
   }
 
   /**

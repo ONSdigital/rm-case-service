@@ -144,4 +144,12 @@ public interface CaseService extends CTPService {
    * @param updatedCase the CaseCreation data
    */
   void saveCaseIacAudit(Case updatedCase);
+
+  /**
+   * Get a case by the sample unit id it relates to
+   *
+   * @param sample unit id
+   * @return the case
+   */
+  Case findCaseBySampleUnitId(UUID sampleUnitId);
 }
