@@ -332,34 +332,6 @@ public class CaseServiceImplTest {
   }
 
   /**
-   * Tries to apply an actionable event against a case already inactionable. Should allow.
-   *
-   * @throws Exception if fabricateEvent does
-   */
-  @Test
-  public void testCreateActionableEventAgainstInactionableCase() throws Exception {
-    when(caseRepo.findOne(INACTIONABLE_HOUSEHOLD_CASE_FK))
-        .thenReturn(cases.get(INACTIONABLE_HOUSEHOLD_CASE_FK));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.TRANSLATION_ARABIC))
-        .thenReturn(categories.get(CAT_TRANSLATION_ARABIC));
-
-    CaseEvent caseEvent =
-        fabricateEvent(CategoryDTO.CategoryName.TRANSLATION_ARABIC, INACTIONABLE_HOUSEHOLD_CASE_FK);
-    caseService.createCaseEvent(caseEvent, null);
-
-    verify(caseRepo, times(2)).findOne(INACTIONABLE_HOUSEHOLD_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.TRANSLATION_ARABIC);
-    // there was no change to case - no state transition
-    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
-    // event was saved
-    verify(caseEventRepo, times(1)).save(caseEvent);
-    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(1))
-        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
-  }
-
-  /**
    * Tries to apply a general event against a case already inactionable. Should allow it.
    *
    * @throws Exception if fabricateEvent does
@@ -1707,9 +1679,6 @@ public class CaseServiceImplTest {
         .thenReturn(
             Arrays.asList(
                 cases.get(ACTIONABLE_BI_CASE_FK), cases.get(ANOTHER_ACTIONABLE_BI_CASE_FK)));
-    when(caseRepo.findByCaseGroupIdAndStateAndSampleUnitTypeOrderByCreatedDateTimeAsc(
-            null, CaseState.ACTIONABLE, SampleUnitDTO.SampleUnitType.BI))
-        .thenReturn(Collections.singletonList(cases.get(ACTIONABLE_BI_CASE_FK)));
     CaseGroup caseGroup = makeCaseGroup();
     when(caseGroupRepo.findById(null)).thenReturn(caseGroup);
 
@@ -1727,54 +1696,6 @@ public class CaseServiceImplTest {
     verify(internetAccessCodeSvcClientService, times(1)).disableIAC(any(String.class));
     verify(caseRepo, times(1)).saveAndFlush(argument.capture());
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
-    verify(caseRepo, times(1))
-        .findByCaseGroupIdAndStateAndSampleUnitTypeOrderByCreatedDateTimeAsc(
-            null, CaseState.ACTIONABLE, SampleUnitDTO.SampleUnitType.BI);
-    verify(caseGroupRepo, times(1)).findById(null);
-  }
-
-  /**
-   * A SUCCESSFUL_RESPONSE_UPLOAD event transitions an actionable BI case to INACTIONABLE, and all
-   * associated BI cases in the case group. The action service is notified of the transition of all
-   * BI Cases to stop them receiving communications.
-   *
-   * @throws Exception if fabricateEvent does
-   */
-  @Test
-  public void testEventSuccessfulDisableRespondentEnrolmentCreateNewBCase() throws Exception {
-    when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BI_CASE_FK));
-    Category disableRespondentEnrolmentCategory = categories.get(CAT_DISABLE_RESPONDENT_ENROLMENT);
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.DISABLE_RESPONDENT_ENROLMENT))
-        .thenReturn(disableRespondentEnrolmentCategory);
-    when(caseRepo.findByCaseGroupId(null))
-        .thenReturn(
-            Arrays.asList(
-                cases.get(ACTIONABLE_BI_CASE_FK), cases.get(ANOTHER_ACTIONABLE_BI_CASE_FK)));
-    when(caseRepo.findByCaseGroupIdAndStateAndSampleUnitTypeOrderByCreatedDateTimeAsc(
-            null, CaseState.ACTIONABLE, SampleUnitDTO.SampleUnitType.BI))
-        .thenReturn(Collections.emptyList());
-    CaseGroup caseGroup = makeCaseGroup();
-    when(caseGroupRepo.findById(null)).thenReturn(caseGroup);
-    Case newCase = cases.get(ANOTHER_ACTIONABLE_BI_CASE_FK);
-
-    when(caseRepo.saveAndFlush(newCase)).thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
-
-    CaseEvent caseEvent =
-        fabricateEvent(
-            CategoryDTO.CategoryName.DISABLE_RESPONDENT_ENROLMENT, ACTIONABLE_BI_CASE_FK);
-    caseService.createCaseEvent(caseEvent, newCase);
-
-    verify(caseRepo, times(1)).findOne(ACTIONABLE_BI_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.DISABLE_RESPONDENT_ENROLMENT);
-    verify(caseEventRepo, times(1)).save(caseEvent);
-    ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
-    verify(caseRepo, times(2)).saveAndFlush(argument.capture());
-    verify(internetAccessCodeSvcClientService, times(1)).disableIAC(any(String.class));
-    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
-    verify(caseRepo, times(1))
-        .findByCaseGroupIdAndStateAndSampleUnitTypeOrderByCreatedDateTimeAsc(
-            null, CaseState.ACTIONABLE, SampleUnitDTO.SampleUnitType.BI);
-    verify(caseGroupRepo, times(1)).findById(null);
   }
 
   /**
@@ -1826,7 +1747,7 @@ public class CaseServiceImplTest {
     SampleUnitParent sampleUnitParent = new SampleUnitParent();
     SampleUnit sampleUnit = new SampleUnit();
     SampleUnitChildren sampleUnitChildren =
-        new SampleUnitChildren(new ArrayList<SampleUnit>(Arrays.asList(sampleUnit)));
+        new SampleUnitChildren(new ArrayList<>(Collections.singletonList(sampleUnit)));
 
     sampleUnit.setActionPlanId(UUID.randomUUID().toString());
     sampleUnit.setCollectionInstrumentId(UUID.randomUUID().toString());
