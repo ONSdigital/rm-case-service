@@ -68,7 +68,7 @@
     <property name="retryStateGenerator"> <!-- Important to make it a Stateful Retry -->
       <bean
         class="org.springframework.integration.handler.advice.SpelExpressionRetryStateGenerator">
-        <constructor-arg value="headers.ID"/>
+        <constructor-arg value="payload.collectionExerciseId + '|' + payload.sampleUnitChildren.sampleUnitchildren.size()"/>
       </bean>
     </property>
     <property name="retryTemplate" ref="retryTemplate"/>
