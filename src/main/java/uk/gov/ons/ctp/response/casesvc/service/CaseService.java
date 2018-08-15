@@ -1,8 +1,5 @@
 package uk.gov.ons.ctp.response.casesvc.service;
 
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.UUID;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.service.CTPService;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
@@ -10,6 +7,10 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * The Case Service interface defines all business behaviours for operations on the Case entity
@@ -152,4 +153,6 @@ public interface CaseService extends CTPService {
    * @return the case
    */
   Case findCaseBySampleUnitId(UUID sampleUnitId);
+
+  String generateNewCaseIACCode(UUID caseId);
 }

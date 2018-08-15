@@ -731,4 +731,10 @@ public class CaseServiceImpl implements CaseService {
   public Case findCaseBySampleUnitId(UUID sampleUnitId) {
     return caseRepo.findBySampleUnitId(sampleUnitId);
   }
+
+  @Override
+  public String generateNewCaseIACCode(UUID caseId) {
+    return null;
+    //return internetAccessCodeSvcClientService.generateIAC();
+  }
 }
