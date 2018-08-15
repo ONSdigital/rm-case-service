@@ -1,10 +1,26 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.arrayWithSize;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.UUID;
+import java.util.concurrent.BlockingQueue;
+import javax.xml.bind.JAXBContext;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Rule;
@@ -29,22 +45,6 @@ import uk.gov.ons.tools.rabbit.SimpleMessageBase;
 import uk.gov.ons.tools.rabbit.SimpleMessageListener;
 import uk.gov.ons.tools.rabbit.SimpleMessageSender;
 
-import javax.xml.bind.JAXBContext;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.UUID;
-import java.util.concurrent.BlockingQueue;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-
 @Slf4j
 @ContextConfiguration
 @ActiveProfiles("test")
@@ -52,20 +52,15 @@ import static org.junit.Assert.assertThat;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class CaseIACEndpointIT {
 
-  @Rule
-  public WireMockRule wireMockRule = new WireMockRule(options().port(18002));
+  @Rule public WireMockRule wireMockRule = new WireMockRule(options().port(18002));
 
-  @Autowired
-  private ResourceLoader resourceLoader;
+  @Autowired private ResourceLoader resourceLoader;
 
-  @Autowired
-  private AppConfig appConfig;
+  @Autowired private AppConfig appConfig;
 
-  @Autowired
-  private ObjectMapper objectMapper;
+  @Autowired private ObjectMapper objectMapper;
 
-  @LocalServerPort
-  private int port;
+  @LocalServerPort private int port;
 
   @Before
   public void setUp() {
@@ -74,24 +69,44 @@ public class CaseIACEndpointIT {
 
   @Test
   public void shouldCreateNewIACCode() throws Exception {
+    // Given
     CaseNotification caseNotification = sendSampleUnit("BS12345", "B", UUID.randomUUID());
-
     String notExpected = getCurrentIACCode(caseNotification.getCaseId());
 
-    // request IAC code
+    // When
     HttpResponse<String> actual = generateNewIACCode(caseNotification.getCaseId());
 
-    assertThat(actual.getStatus(), is(equalTo(HttpStatus.CREATED.value())));// assert IAC in model
+    // Then
+    assertThat(actual.getStatus(), is(equalTo(HttpStatus.CREATED.value()))); // assert IAC in model
     assertThat(actual.getBody(), not(equalTo(notExpected)));
   }
 
+  @Test
+  public void shouldGetIacCodes() throws Exception {
+    // Given
+    CaseNotification caseNotification = sendSampleUnit("BS123456", "B", UUID.randomUUID());
+
+    // When
+    HttpResponse<String[]> iacs =
+        Unirest.get("http://localhost:{port}/cases/{caseId}/iac")
+            .routeParam("port", Integer.toString(port))
+            .routeParam("caseId", caseNotification.getCaseId())
+            .basicAuth("admin", "secret")
+            .header("Content-Type", "application/json")
+            .asObject(String[].class);
+
+    assertThat(iacs.getBody(), arrayWithSize(1));
+    assertNotNull(iacs.getBody()[0]);
+  }
+
   private String getCurrentIACCode(String caseId) throws UnirestException {
-    HttpResponse<CaseDetailsDTO> caseDetails = Unirest.get("http://localhost:{port}/cases/{caseId}")
-        .routeParam("port", Integer.toString(port))
-        .routeParam("caseId", caseId)
-        .basicAuth("admin", "secret")
-        .header("Content-Type", "application/json")
-        .asObject(CaseDetailsDTO.class);
+    HttpResponse<CaseDetailsDTO> caseDetails =
+        Unirest.get("http://localhost:{port}/cases/{caseId}")
+            .routeParam("port", Integer.toString(port))
+            .routeParam("caseId", caseId)
+            .basicAuth("admin", "secret")
+            .header("Content-Type", "application/json")
+            .asObject(CaseDetailsDTO.class);
 
     return caseDetails.getBody().getIac();
   }

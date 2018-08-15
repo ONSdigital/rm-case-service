@@ -101,6 +101,9 @@ public class Case implements Serializable {
   @OneToMany(mappedBy = "caseFK", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   private List<Response> responses;
 
+  @OneToMany(mappedBy = "caseFK", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  private List<CaseIacAudit> iacAudits;
+
   private String iac;
 
   /** Trims spaces from IAC after load */

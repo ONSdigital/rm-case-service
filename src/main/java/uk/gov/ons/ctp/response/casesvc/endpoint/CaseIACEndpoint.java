@@ -1,31 +1,39 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
+import java.net.URI;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseIacAudit;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
-
-import java.net.URI;
-import java.util.UUID;
+import uk.gov.ons.ctp.response.casesvc.service.impl.CaseIACService;
 
 @RestController
 @RequestMapping(value = "/cases/{caseId}/iac", produces = "application/json")
 @Slf4j
 public final class CaseIACEndpoint implements CTPEndpoint {
 
-  @Autowired
   private CaseService caseService;
+  private CaseIACService caseIACService;
+
+  @Autowired
+  public CaseIACEndpoint(CaseService caseService, CaseIACService caseIACService) {
+    this.caseService = caseService;
+    this.caseIACService = caseIACService;
+  }
 
   @RequestMapping(method = RequestMethod.POST)
-  public ResponseEntity<String> generateIACCode(
-      @PathVariable("caseId") final UUID caseId) {
+  public ResponseEntity<String> generateIACCode(@PathVariable("caseId") final UUID caseId) {
 
     Case actualCase = caseService.findCaseById(caseId);
 
@@ -33,8 +41,24 @@ public final class CaseIACEndpoint implements CTPEndpoint {
       return ResponseEntity.notFound().build();
     }
 
-    String iac = caseService.generateNewCaseIACCode(caseId);
+    String iac = caseIACService.generateNewCaseIACCode(actualCase.getCasePK());
 
-    return ResponseEntity.created(URI.create("")).body(iac);
+    URI uri = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
+    return ResponseEntity.created(uri).body(iac);
+  }
+
+  @RequestMapping(method = RequestMethod.GET)
+  public ResponseEntity<List<String>> getIACCodes(@PathVariable("caseId") final UUID caseId) {
+
+    Case actualCase = caseService.findCaseById(caseId);
+
+    if (actualCase == null) {
+      return ResponseEntity.notFound().build();
+    }
+
+    List<String> iacs =
+        actualCase.getIacAudits().stream().map(CaseIacAudit::getIac).collect(Collectors.toList());
+
+    return ResponseEntity.ok(iacs);
   }
 }

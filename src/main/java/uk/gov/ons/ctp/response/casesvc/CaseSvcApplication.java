@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc;
 
+import java.time.Clock;
 import net.sourceforge.cobertura.CoverageIgnore;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -230,5 +231,10 @@ public class CaseSvcApplication {
         REPORT_EXECUTION_LOCK,
         redissonClient,
         appConfig.getDataGrid().getReportLockTimeToLiveSeconds());
+  }
+
+  @Bean
+  public Clock clock() {
+    return Clock.systemDefaultZone();
   }
 }
