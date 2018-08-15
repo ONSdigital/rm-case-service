@@ -1,6 +1,8 @@
 package uk.gov.ons.ctp.response.casesvc.service;
 
+import java.util.List;
 import java.util.UUID;
+import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 
 /** A Service which utilises the ActionSvc via RESTful client calls */
 public interface ActionSvcClientService {
@@ -14,4 +16,7 @@ public interface ActionSvcClientService {
    * @param createdBy who did this
    */
   void createAndPostAction(String actionType, UUID caseId, String createdBy);
+
+  /** */
+  List<ActionPlanDTO> getActionPlans(UUID collectionExerciseId, boolean activeEnrolments);
 }

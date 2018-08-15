@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
+import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
@@ -225,19 +225,21 @@ public class CaseServiceImpl implements CaseService {
 
     switch (caseEvent.getCategory()) {
       case RESPONDENT_ENROLED:
-        List<CaseGroup> caseGroups =
-            caseGroupService.findCaseGroupsForExecutedCollectionExercises(targetCase);
-        processCaseCreationAndTransitionsDuringEnrolment(category, caseGroups, caseEvent, newCase);
+        processActionPlanChange(targetCase, true);
         break;
+      case OFFLINE_RESPONSE_PROCESSED:
       case SUCCESSFUL_RESPONSE_UPLOAD:
+      case NO_LONGER_REQUIRED:
       case COMPLETED_BY_PHONE:
-        createNewCase(category, caseEvent, targetCase, newCase);
-        updateAllAssociatedBiCases(targetCase, category);
+        updateAllAssociatedCases(targetCase, category);
         break;
       case GENERATE_ENROLMENT_CODE:
-      case NO_ACTIVE_ENROLMENTS:
         replaceIAC(targetCase);
         effectTargetCaseStateTransition(category, targetCase);
+        break;
+      case NO_ACTIVE_ENROLMENTS:
+        replaceIAC(targetCase);
+        processActionPlanChange(targetCase, false);
         break;
       default:
         createNewCase(category, caseEvent, targetCase, newCase);
@@ -300,12 +302,12 @@ public class CaseServiceImpl implements CaseService {
    * @param category
    * @throws CTPException
    */
-  private void updateAllAssociatedBiCases(final Case targetCase, final Category category)
+  private void updateAllAssociatedCases(final Case targetCase, final Category category)
       throws CTPException {
     UUID caseGroupId = targetCase.getCaseGroupId();
-    List<Case> associatedBiCases = caseRepo.findByCaseGroupId(caseGroupId);
+    List<Case> associatedCases = caseRepo.findByCaseGroupId(caseGroupId);
 
-    for (Case caze : associatedBiCases) {
+    for (Case caze : associatedCases) {
       effectTargetCaseStateTransition(category, caze);
     }
   }
@@ -323,22 +325,11 @@ public class CaseServiceImpl implements CaseService {
     }
   }
 
-  /**
-   * This has been triggered by a 'RESPONDENT_ENROLED' event. If we find any associated Case Groups
-   * with only B cases we need to make case 'INACTIONABLE' and create BI case.
-   *
-   * @param category a category - currently only called for RESPONDENT_ENROLED
-   * @param caseGroups a list of case groups
-   * @param caseEvent a case event
-   * @param newCase a case to provide a party id
-   * @throws CTPException thrown if database error etc
-   */
-  private void processCaseCreationAndTransitionsDuringEnrolment(
-      final Category category,
-      final List<CaseGroup> caseGroups,
-      final CaseEvent caseEvent,
-      final Case newCase)
+  private void processActionPlanChange(final Case targetCase, final boolean enrolments)
       throws CTPException {
+
+    List<CaseGroup> caseGroups =
+        caseGroupService.findCaseGroupsForExecutedCollectionExercises(targetCase);
 
     for (CaseGroup caseGroup : caseGroups) {
 
@@ -346,43 +337,22 @@ public class CaseServiceImpl implements CaseService {
       List<Case> cases =
           caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(caseGroup.getCaseGroupPK());
 
-      // Create a new BI case for the respondent enrolling (if one doesn't already exit)
-      // This is primarily to guard against multiple RESPONDENT_ENROLED case events for the same
-      // user
-      // caused by a double click scenario in the verification email journey
-      List<Case> biCases =
-          cases
-              .stream()
-              .filter(
-                  c ->
-                      c.getSampleUnitType().toString().equals("BI")
-                          && c.getPartyId().equals(newCase.getPartyId()))
-              .collect(Collectors.toList());
-      if (biCases.size() != 0) {
-        log.warn(
-            "Existing BI case found during enrolment for "
-                + "partyid: {} for casegroup: {} with caseid: {}",
-            newCase.getPartyId().toString(),
-            caseGroup.getId(),
-            biCases.get(0).getId());
-      } else {
-        Case c = new Case();
-        c.setPartyId(newCase.getPartyId());
-        createNewCase(category, caseEvent, cases.get(0), c);
-        log.info(
-            "BI case created during enrolment for partyid: {} for casegroup: {}",
-            newCase.getPartyId().toString(),
-            caseGroup.getId());
+      List<ActionPlanDTO> actionPlans =
+          actionSvcClientService.getActionPlans(caseGroup.getCollectionExerciseId(), enrolments);
+
+      if (actionPlans.size() != 1) {
+        log.error(
+            "Only one action plan expected for collectionExerciseId={} with active enrolment",
+            caseGroup.getCollectionExerciseId());
+        throw new IllegalStateException(
+            "Expected only one action plan for collection exercise with active enrolments");
       }
 
-      // Transition each of the B cases for the casegroup being enrolled for
-      List<Case> caseTypeBs =
-          cases
-              .stream()
-              .filter(c -> c.getSampleUnitType().toString().equals("B"))
-              .collect(Collectors.toList());
-      for (Case caseTypeB : caseTypeBs) {
-        effectTargetCaseStateTransition(category, caseTypeB);
+      for (Case caze : cases) {
+        caze.setActionPlanId(actionPlans.get(0).getId());
+        caseRepo.saveAndFlush(caze);
+        notificationPublisher.sendNotification(
+            prepareCaseNotification(caze, CaseDTO.CaseEvent.ACTIONPLAN_CHANGED));
       }
     }
   }
@@ -619,12 +589,11 @@ public class CaseServiceImpl implements CaseService {
               && !category
                   .getCategoryName()
                   .equals(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD))
-          || transitionEvent == CaseDTO.CaseEvent.ACCOUNT_CREATED) {
+          || transitionEvent == CaseDTO.CaseEvent.ACTIONPLAN_CHANGED) {
         if (targetCase.getIac() != null) {
           internetAccessCodeSvcClientService.disableIAC(targetCase.getIac());
         }
       }
-
       CaseState oldState = targetCase.getState();
       CaseState newState = caseSvcStateTransitionManager.transition(oldState, transitionEvent);
 

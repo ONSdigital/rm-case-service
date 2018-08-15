@@ -486,17 +486,6 @@
   },
   {
     "group": null,
-    "categoryName": "RESPONDENT_ACCOUNT_CREATED",
-    "longDescription": "Account created for respondent",
-    "shortDescription": "Account created for respondent",
-    "role": null,
-    "generatedActionType": null,
-    "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "B",
-    "eventType": "ACCOUNT_CREATED"
-  },
-  {
-    "group": null,
     "categoryName": "ACCESS_CODE_AUTHENTICATION_ATTEMPT",
     "longDescription": "Access Code authentication attempted",
     "shortDescription": "Access Code authentication attempted",
