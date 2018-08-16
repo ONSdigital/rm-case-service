@@ -61,7 +61,7 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
    * @param iac the iac
    * @return the cases associated with the IAC (see above)
    */
-  List<Case> findByIac(String iac);
+  List<Case> findByIacAudits_iac(String iac);
 
   /**
    * Find a case by its external case reference

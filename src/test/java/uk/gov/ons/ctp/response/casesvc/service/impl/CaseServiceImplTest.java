@@ -190,7 +190,7 @@ public class CaseServiceImplTest {
   /** To test findCaseByIac when more than one case is found for given IAC */
   @Test
   public void testFindCaseByIacMoreThanOneCaseFound() {
-    when(caseRepo.findByIac(IAC_FOR_TEST)).thenReturn(cases);
+    when(caseRepo.findByIacAudits_iac(IAC_FOR_TEST)).thenReturn(cases);
 
     try {
       caseService.findCaseByIac(IAC_FOR_TEST);
@@ -210,7 +210,7 @@ public class CaseServiceImplTest {
   public void testFindCaseByIacOneCaseFound() throws CTPException {
     List<Case> result = new ArrayList<>();
     result.add(cases.get(0));
-    when(caseRepo.findByIac(IAC_FOR_TEST)).thenReturn(result);
+    when(caseRepo.findByIacAudits_iac(IAC_FOR_TEST)).thenReturn(result);
 
     assertEquals(cases.get(0), caseService.findCaseByIac(IAC_FOR_TEST));
   }

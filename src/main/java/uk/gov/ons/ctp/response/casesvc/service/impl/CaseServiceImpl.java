@@ -116,7 +116,7 @@ public class CaseServiceImpl implements CaseService {
   public Case findCaseByIac(final String iac) throws CTPException {
     log.debug("Entering findCaseByIac");
 
-    List<Case> cases = caseRepo.findByIac(iac);
+    List<Case> cases = caseRepo.findByIacAudits_iac(iac);
 
     Case caze = null;
     if (!CollectionUtils.isEmpty(cases)) {
