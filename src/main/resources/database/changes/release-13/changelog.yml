@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 13-1
+      author: Adrian Harrison
+      changes:
+        - sqlFile:
+            comment: Migrate case iac to caseiacaudit table
+            path: migrate_case_iac_to_caseiacaudit.sql
+            relativeToChangelogFile: true
+            splitStatements: false
