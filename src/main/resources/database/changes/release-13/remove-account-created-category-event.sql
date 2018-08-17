@@ -1,0 +1,2 @@
+DELETE FROM casesvc.category
+WHERE categorypk = 'RESPONDENT_ACCOUNT_CREATED';

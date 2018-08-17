@@ -227,12 +227,6 @@ public class CaseServiceImpl implements CaseService {
       case RESPONDENT_ENROLED:
         processActionPlanChange(targetCase, true);
         break;
-      case OFFLINE_RESPONSE_PROCESSED:
-      case SUCCESSFUL_RESPONSE_UPLOAD:
-      case NO_LONGER_REQUIRED:
-      case COMPLETED_BY_PHONE:
-        updateAllAssociatedCases(targetCase, category);
-        break;
       case GENERATE_ENROLMENT_CODE:
         replaceIAC(targetCase);
         effectTargetCaseStateTransition(category, targetCase);
@@ -293,25 +287,6 @@ public class CaseServiceImpl implements CaseService {
     }
   }
 
-  /**
-   * If BI case is transitioned to Inactionable transition all other BI Cases associated with the B
-   * case, they should all be inactionable after a successful upload & not receive any reminder
-   * communications.
-   *
-   * @param targetCase
-   * @param category
-   * @throws CTPException
-   */
-  private void updateAllAssociatedCases(final Case targetCase, final Category category)
-      throws CTPException {
-    UUID caseGroupId = targetCase.getCaseGroupId();
-    List<Case> associatedCases = caseRepo.findByCaseGroupId(caseGroupId);
-
-    for (Case caze : associatedCases) {
-      effectTargetCaseStateTransition(category, caze);
-    }
-  }
-
   private void transitionCaseGroupStatus(final Case targetCase, final CaseEvent caseEvent) {
     CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
     try {
@@ -340,19 +315,21 @@ public class CaseServiceImpl implements CaseService {
       List<ActionPlanDTO> actionPlans =
           actionSvcClientService.getActionPlans(caseGroup.getCollectionExerciseId(), enrolments);
 
-      if (actionPlans.size() != 1) {
+      if (actionPlans == null || actionPlans.size() != 1) {
         log.error(
-            "Only one action plan expected for collectionExerciseId={} with active enrolment",
+            "One action plan expected for collectionExerciseId={} with active enrolment",
             caseGroup.getCollectionExerciseId());
         throw new IllegalStateException(
-            "Expected only one action plan for collection exercise with active enrolments");
+            "Expected one action plan for collection exercise with active enrolments");
       }
 
       for (Case caze : cases) {
-        caze.setActionPlanId(actionPlans.get(0).getId());
-        caseRepo.saveAndFlush(caze);
-        notificationPublisher.sendNotification(
-            prepareCaseNotification(caze, CaseDTO.CaseEvent.ACTIONPLAN_CHANGED));
+        if (caze.getSampleUnitType() == SampleUnitType.B) {
+          caze.setActionPlanId(actionPlans.get(0).getId());
+          caseRepo.saveAndFlush(caze);
+          notificationPublisher.sendNotification(
+              prepareCaseNotification(caze, CaseDTO.CaseEvent.ACTIONPLAN_CHANGED));
+        }
       }
     }
   }

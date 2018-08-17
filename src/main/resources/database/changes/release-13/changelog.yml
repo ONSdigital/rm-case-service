@@ -9,3 +9,13 @@ databaseChangeLog:
         path: update-enrolment-category-event-type.sql
         relativeToChangelogFile: true
         splitStatements: false
+
+- changeSet:
+      id: 13-2
+      author: Gemma Irving
+      changes:
+      - sqlFile:
+            comment: Remove respondent account created category event
+            path: remove-account-created-category-event.sql
+            relativeToChangelogFile: true
+            splitStatements: false

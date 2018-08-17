@@ -92,6 +92,7 @@ internet-access-code-svc:
 
 action-svc:
   actions-path: /actions
+  action-plans-path: /actionplans
   connection-config:
     scheme: http
     host: localhost

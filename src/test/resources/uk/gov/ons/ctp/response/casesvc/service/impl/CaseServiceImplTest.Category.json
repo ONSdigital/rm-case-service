@@ -503,7 +503,7 @@
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "BI",
+    "oldCaseSampleUnitTypes": "B,BI",
     "eventType": null
   },
   {
@@ -514,7 +514,7 @@
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "BI",
+    "oldCaseSampleUnitTypes": "B,BI",
     "eventType": null
   },
   {
@@ -525,7 +525,7 @@
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "BI",
+    "oldCaseSampleUnitTypes": "B,BI",
     "eventType": "DISABLED"
   },
   {
@@ -536,7 +536,7 @@
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "BI",
+    "oldCaseSampleUnitTypes": "B,BI",
     "eventType": null
   },
   {
@@ -547,7 +547,7 @@
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "BI",
+    "oldCaseSampleUnitTypes": "B,BI",
     "eventType": "DISABLED"
   },
   {

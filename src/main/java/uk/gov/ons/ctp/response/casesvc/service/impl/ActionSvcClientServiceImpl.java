@@ -28,7 +28,7 @@ public class ActionSvcClientServiceImpl implements ActionSvcClientService {
 
   @Autowired private RestTemplate restTemplate;
 
-  @Qualifier("collectionExerciseRestUtility")
+  @Qualifier("actionServiceRestUtility")
   @Autowired
   private RestUtility restUtility;
 
@@ -53,7 +53,7 @@ public class ActionSvcClientServiceImpl implements ActionSvcClientService {
     MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
 
     queryParams.add("collectionExerciseId", collectionExerciseId.toString());
-    queryParams.add("activeEnrolments", Boolean.toString(activeEnrolments).toLowerCase());
+    queryParams.add("activeEnrolment", Boolean.toString(activeEnrolments).toLowerCase());
 
     UriComponents uriComponents =
         restUtility.createUriComponents(appConfig.getActionSvc().getActionPlansPath(), queryParams);
