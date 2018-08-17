@@ -18,6 +18,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseIacAudit;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseIacAuditRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
+import uk.gov.ons.ctp.response.casesvc.service.CaseIACService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -27,7 +28,7 @@ public class CaseIACServiceTest {
   @Mock private CaseIacAuditRepository caseIacAuditRepository;
   @Mock private CaseEventRepository caseEventRepository;
   @Mock private Clock clock;
-  @InjectMocks private CaseIACService caseIACService;
+  @InjectMocks private CaseIACServiceImpl caseIACService;
 
   @Test
   public void shouldGenerateNewIacCode() {

@@ -7,7 +7,6 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -38,6 +37,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
+import uk.gov.ons.ctp.response.casesvc.service.CaseIACService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CollectionExerciseSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
@@ -75,6 +75,7 @@ public class CaseServiceImpl implements CaseService {
   private CaseGroupService caseGroupService;
   private CollectionExerciseSvcClientService collectionExerciseSvcClientService;
   private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
+  private CaseIACService caseIacAuditService;
 
   private CaseNotificationPublisher notificationPublisher;
   private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
@@ -91,6 +92,7 @@ public class CaseServiceImpl implements CaseService {
       final CaseGroupService caseGroupService,
       final CollectionExerciseSvcClientService collectionExerciseSvcClientService,
       final InternetAccessCodeSvcClientService internetAccessCodeSvcClientService,
+      final CaseIACService caseIacAuditService,
       final CaseNotificationPublisher notificationPublisher,
       final StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager) {
     this.caseRepo = caseRepo;
@@ -102,30 +104,30 @@ public class CaseServiceImpl implements CaseService {
     this.caseGroupService = caseGroupService;
     this.collectionExerciseSvcClientService = collectionExerciseSvcClientService;
     this.internetAccessCodeSvcClientService = internetAccessCodeSvcClientService;
+    this.caseIacAuditService = caseIacAuditService;
     this.notificationPublisher = notificationPublisher;
     this.caseSvcStateTransitionManager = caseSvcStateTransitionManager;
   }
 
   @Override
-  public Case findCaseById(final UUID id) {
+  public Case findCaseById(final UUID id) throws CTPException {
     log.debug("Entering findCaseById");
-    return caseRepo.findById(id);
+
+    Case caze = caseRepo.findById(id);
+    String iac = caseIacAuditService.findCaseIacByCasePK(caze.getCasePK());
+
+    caze.setIac(iac);
+
+    return caze;
   }
 
   @Override
   public Case findCaseByIac(final String iac) throws CTPException {
     log.debug("Entering findCaseByIac");
 
-    List<Case> cases = caseRepo.findByIac(iac);
+    CaseIacAudit caseIacAudit = caseIacAuditService.findCaseByIac(iac);
 
-    Case caze = null;
-    if (!CollectionUtils.isEmpty(cases)) {
-      if (cases.size() != 1) {
-        throw new CTPException(
-            CTPException.Fault.SYSTEM_ERROR, String.format(IAC_OVERUSE_MSG, iac));
-      }
-      caze = cases.get(0);
-    }
+    Case caze = caseRepo.findByCasePK(caseIacAudit.getCaseFK());
 
     return caze;
   }
@@ -236,7 +238,7 @@ public class CaseServiceImpl implements CaseService {
         break;
       case GENERATE_ENROLMENT_CODE:
       case NO_ACTIVE_ENROLMENTS:
-        replaceIAC(targetCase);
+        generateAndStoreNewIAC(targetCase);
         effectTargetCaseStateTransition(category, targetCase);
         break;
       default:
@@ -278,13 +280,12 @@ public class CaseServiceImpl implements CaseService {
    *
    * @param targetCase Case to update
    */
-  private void replaceIAC(final Case targetCase) {
+  private void generateAndStoreNewIAC(final Case targetCase) {
     String iac = targetCase.getIac();
     if (iac == null || !internetAccessCodeSvcClientService.isIacActive(iac)) {
       log.debug("Replacing existing case IAC, caseId: {}", targetCase.getId());
       String newIac = internetAccessCodeSvcClientService.generateIACs(1).get(0);
       targetCase.setIac(newIac);
-      caseRepo.saveAndFlush(targetCase);
       saveCaseIacAudit(targetCase);
     } else {
       log.debug("Existing IAC is still active, caseId: {}", targetCase.getId());

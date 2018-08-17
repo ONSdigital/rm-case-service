@@ -55,15 +55,6 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
       UUID caseGroupFK, CaseState state, SampleUnitDTO.SampleUnitType sampleUnitType);
 
   /**
-   * Find cases assigned to the given iac There should only be one - it is the job of the caller to
-   * complain if there is >1
-   *
-   * @param iac the iac
-   * @return the cases associated with the IAC (see above)
-   */
-  List<Case> findByIac(String iac);
-
-  /**
    * Find a case by its external case reference
    *
    * @param caseRef the external ref
@@ -94,4 +85,12 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
    * @return
    */
   Case findBySampleUnitId(@Param("sampleUnitId") UUID sampleUnitId);
+
+  /**
+   * Find a case by it's PK
+   *
+   * @param casePK
+   * @return
+   */
+  Case findByCasePK(int casePK);
 }

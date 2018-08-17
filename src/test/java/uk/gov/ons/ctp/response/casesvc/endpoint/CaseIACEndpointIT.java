@@ -12,6 +12,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
@@ -22,6 +23,7 @@ import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import javax.xml.bind.JAXBContext;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -52,7 +54,9 @@ import uk.gov.ons.tools.rabbit.SimpleMessageSender;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class CaseIACEndpointIT {
 
-  @Rule public WireMockRule wireMockRule = new WireMockRule(options().port(18002));
+  @Rule
+  public WireMockRule wireMockRule = new WireMockRule(
+      options().extensions(new ResponseTemplateTransformer(false)).port(18002));
 
   @Autowired private ResourceLoader resourceLoader;
 
@@ -104,6 +108,7 @@ public class CaseIACEndpointIT {
         Unirest.get("http://localhost:{port}/cases/{caseId}")
             .routeParam("port", Integer.toString(port))
             .routeParam("caseId", caseId)
+            .queryString("iac", true)
             .basicAuth("admin", "secret")
             .header("Content-Type", "application/json")
             .asObject(CaseDetailsDTO.class);
@@ -162,7 +167,8 @@ public class CaseIACEndpointIT {
             .willReturn(
                 aResponse()
                     .withHeader("Content-Type", "application/json")
-                    .withBody("[\"grtt7x2nhygg\"]")));
+                    .withBody("[\"{{randomValue length=12 type='ALPHANUMERIC' lowercase=true}}\"]")
+                    .withTransformers("response-template")));
   }
 
   /**
