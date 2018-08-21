@@ -23,7 +23,6 @@ import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import javax.xml.bind.JAXBContext;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -56,8 +55,8 @@ import uk.gov.ons.tools.rabbit.SimpleMessageSender;
 public class CaseIACEndpointIT {
 
   @Rule
-  public WireMockRule wireMockRule = new WireMockRule(
-      options().extensions(new ResponseTemplateTransformer(false)).port(18002));
+  public WireMockRule wireMockRule =
+      new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
 
   @Autowired private ResourceLoader resourceLoader;
 

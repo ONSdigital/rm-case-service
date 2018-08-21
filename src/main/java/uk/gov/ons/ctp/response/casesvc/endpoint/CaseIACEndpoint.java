@@ -36,7 +36,8 @@ public final class CaseIACEndpoint implements CTPEndpoint {
   }
 
   @RequestMapping(method = RequestMethod.POST)
-  public ResponseEntity<CaseIACDTO> generateIACCode(@PathVariable("caseId") final UUID caseId) {
+  public ResponseEntity<CaseIACDTO> generateIACCode(@PathVariable("caseId") final UUID caseId)
+      throws CTPException {
 
     Case actualCase = caseService.findCaseById(caseId);
 
@@ -53,7 +54,8 @@ public final class CaseIACEndpoint implements CTPEndpoint {
   }
 
   @RequestMapping(method = RequestMethod.GET)
-  public ResponseEntity<List<CaseIACDTO>> getIACCodes(@PathVariable("caseId") final UUID caseId) {
+  public ResponseEntity<List<CaseIACDTO>> getIACCodes(@PathVariable("caseId") final UUID caseId)
+      throws CTPException {
 
     Case actualCase = caseService.findCaseById(caseId);
 

@@ -105,8 +105,7 @@ public class Case implements Serializable {
   @OneToMany(mappedBy = "caseFK", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private List<CaseIacAudit> iacAudits;
 
-  @Transient
-  private String iac;
+  @Transient private String iac;
 
   /** Trims spaces from IAC after load */
   @PostLoad

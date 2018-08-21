@@ -56,8 +56,8 @@ public class CaseEndpointIT {
   @Rule public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
   @Rule
-  public WireMockRule wireMockRule = new WireMockRule(
-      options().extensions(new ResponseTemplateTransformer(false)).port(18002));
+  public WireMockRule wireMockRule =
+      new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
 
   @Autowired private ResourceLoader resourceLoader;
 
