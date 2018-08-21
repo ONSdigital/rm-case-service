@@ -1,8 +1,9 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
 import net.sourceforge.cobertura.CoverageIgnore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,8 +19,8 @@ import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
  */
 @CoverageIgnore
 @Service
-@Slf4j
 public class CategoryServiceImpl implements CategoryService {
+  private static final Logger log = LoggerFactory.getLogger(CategoryServiceImpl.class);
 
   /** Spring Data Repository for CaseType entities. */
   @Autowired private CategoryRepository categoryRepo;

@@ -1,7 +1,8 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import java.util.UUID;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
@@ -15,9 +16,9 @@ import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
 
 /** The impl of the service which calls the action service via REST */
-@Slf4j
 @Service
 public class ActionSvcClientServiceImpl implements ActionSvcClientService {
+  private static final Logger log = LoggerFactory.getLogger(ActionSvcClientServiceImpl.class);
 
   @Autowired private AppConfig appConfig;
 
