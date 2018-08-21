@@ -37,6 +37,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.gov.ons.ctp.common.UnirestInitialiser;
 import uk.gov.ons.ctp.common.utility.Mapzer;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
+import uk.gov.ons.ctp.response.casesvc.endpoint.CaseIACEndpoint.CaseIACDTO;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
@@ -87,13 +88,13 @@ public class CaseIACEndpointIT {
     CaseNotification caseNotification = sendSampleUnit("BS123456", "B", UUID.randomUUID());
 
     // When
-    HttpResponse<String[]> iacs =
+    HttpResponse<CaseIACDTO[]> iacs =
         Unirest.get("http://localhost:{port}/cases/{caseId}/iac")
             .routeParam("port", Integer.toString(port))
             .routeParam("caseId", caseNotification.getCaseId())
             .basicAuth("admin", "secret")
             .header("Content-Type", "application/json")
-            .asObject(String[].class);
+            .asObject(CaseIACDTO[].class);
 
     assertThat(iacs.getBody(), arrayWithSize(1));
     assertNotNull(iacs.getBody()[0]);
