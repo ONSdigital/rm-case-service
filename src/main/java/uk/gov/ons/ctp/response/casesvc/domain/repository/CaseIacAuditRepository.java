@@ -5,22 +5,19 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseIacAudit;
 
-/**
- * JPA Data Repository for CaseIacAudit table.
- */
+/** JPA Data Repository for CaseIacAudit table. */
 @Repository
 @Transactional(readOnly = true)
 public interface CaseIacAuditRepository extends JpaRepository<CaseIacAudit, Integer> {
 
   /**
    * Find the latest case iac
+   *
    * @param caseFK
    * @return
    */
   CaseIacAudit findTop1ByCaseFKOrderByCreatedDateTimeDesc(Integer caseFK);
 
-  /**
-   * Find the CaseIacAudit by iac
-   */
+  /** Find the CaseIacAudit by iac */
   CaseIacAudit findByIac(String iac);
 }

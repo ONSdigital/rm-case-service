@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import java.util.UUID;
 import org.junit.Before;
@@ -17,16 +18,19 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.gov.ons.ctp.common.error.RestExceptionHandler;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseIacAudit;
+import uk.gov.ons.ctp.response.casesvc.endpoint.CaseIACEndpoint.CaseIACDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseIACService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 
 @RunWith(MockitoJUnitRunner.class)
+@Component
 public class CaseIACEndpointTest {
 
   private MockMvc mockMvc;
@@ -34,6 +38,8 @@ public class CaseIACEndpointTest {
   @Mock private CaseService caseService;
   @Mock private CaseIACService caseIACService;
   @InjectMocks private CaseIACEndpoint caseIACEndpoint;
+
+  private ObjectMapper mapper = new ObjectMapper();
 
   @Before
   public void setUp() {
@@ -68,8 +74,11 @@ public class CaseIACEndpointTest {
     // When
     ResultActions actual = mockMvc.perform(post("/cases/{caseId}/iac", caseId));
 
+    CaseIACDTO dto = new CaseIACDTO(expected);
+    String expectedJson = this.mapper.writeValueAsString(dto);
+
     // Then
-    actual.andExpect(status().isCreated()).andExpect(content().string(expected));
+    actual.andExpect(status().isCreated()).andExpect(content().string(expectedJson));
   }
 
   @Test

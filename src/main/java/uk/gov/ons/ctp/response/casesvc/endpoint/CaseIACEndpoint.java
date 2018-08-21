@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +36,7 @@ public final class CaseIACEndpoint implements CTPEndpoint {
   }
 
   @RequestMapping(method = RequestMethod.POST)
-  public ResponseEntity<String> generateIACCode(@PathVariable("caseId") final UUID caseId)
+  public ResponseEntity<CaseIACDTO> generateIACCode(@PathVariable("caseId") final UUID caseId)
       throws CTPException {
 
     Case actualCase = caseService.findCaseById(caseId);
@@ -44,13 +46,15 @@ public final class CaseIACEndpoint implements CTPEndpoint {
     }
 
     String iac = caseIACService.generateNewCaseIACCode(actualCase.getCasePK());
+    CaseIACDTO dto = new CaseIACDTO(iac);
 
     URI uri = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
-    return ResponseEntity.created(uri).body(iac);
+
+    return ResponseEntity.created(uri).body(dto);
   }
 
   @RequestMapping(method = RequestMethod.GET)
-  public ResponseEntity<List<String>> getIACCodes(@PathVariable("caseId") final UUID caseId)
+  public ResponseEntity<List<CaseIACDTO>> getIACCodes(@PathVariable("caseId") final UUID caseId)
       throws CTPException {
 
     Case actualCase = caseService.findCaseById(caseId);
@@ -59,9 +63,20 @@ public final class CaseIACEndpoint implements CTPEndpoint {
       return ResponseEntity.notFound().build();
     }
 
-    List<String> iacs =
-        actualCase.getIacAudits().stream().map(CaseIacAudit::getIac).collect(Collectors.toList());
+    List<CaseIACDTO> iacs =
+        actualCase
+            .getIacAudits()
+            .stream()
+            .map(CaseIacAudit::getIac)
+            .map(CaseIACDTO::new)
+            .collect(Collectors.toList());
 
     return ResponseEntity.ok(iacs);
+  }
+
+  @Data
+  @AllArgsConstructor
+  protected static class CaseIACDTO {
+    private String iac;
   }
 }

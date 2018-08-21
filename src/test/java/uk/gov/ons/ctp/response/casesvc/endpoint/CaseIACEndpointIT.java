@@ -23,7 +23,6 @@ import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import javax.xml.bind.JAXBContext;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -39,6 +38,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.gov.ons.ctp.common.UnirestInitialiser;
 import uk.gov.ons.ctp.common.utility.Mapzer;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
+import uk.gov.ons.ctp.response.casesvc.endpoint.CaseIACEndpoint.CaseIACDTO;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
@@ -55,8 +55,8 @@ import uk.gov.ons.tools.rabbit.SimpleMessageSender;
 public class CaseIACEndpointIT {
 
   @Rule
-  public WireMockRule wireMockRule = new WireMockRule(
-      options().extensions(new ResponseTemplateTransformer(false)).port(18002));
+  public WireMockRule wireMockRule =
+      new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
 
   @Autowired private ResourceLoader resourceLoader;
 
@@ -91,13 +91,13 @@ public class CaseIACEndpointIT {
     CaseNotification caseNotification = sendSampleUnit("BS123456", "B", UUID.randomUUID());
 
     // When
-    HttpResponse<String[]> iacs =
+    HttpResponse<CaseIACDTO[]> iacs =
         Unirest.get("http://localhost:{port}/cases/{caseId}/iac")
             .routeParam("port", Integer.toString(port))
             .routeParam("caseId", caseNotification.getCaseId())
             .basicAuth("admin", "secret")
             .header("Content-Type", "application/json")
-            .asObject(String[].class);
+            .asObject(CaseIACDTO[].class);
 
     assertThat(iacs.getBody(), arrayWithSize(1));
     assertNotNull(iacs.getBody()[0]);

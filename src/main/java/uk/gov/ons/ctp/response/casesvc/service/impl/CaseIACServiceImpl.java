@@ -59,8 +59,7 @@ public class CaseIACServiceImpl implements CaseIACService {
 
     if (caseIacAudit == null) {
       throw new CTPException(
-          CTPException.Fault.RESOURCE_NOT_FOUND,
-          String.format("Cannot find Case for Iac %s", iac));
+          CTPException.Fault.RESOURCE_NOT_FOUND, String.format("Cannot find Case for Iac %s", iac));
     }
 
     return caseIacAudit;
