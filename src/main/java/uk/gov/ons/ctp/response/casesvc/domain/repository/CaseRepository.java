@@ -45,33 +45,6 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
   List<Case> findByCaseGroupId(UUID caseGroupFK);
 
   /**
-   * Find cases assigned to the given casegroupid in a given state
-   *
-   * @param caseGroupFK the case group UUID
-   * @param state the case group state
-   * @return the cases in the group
-   */
-  List<Case> findByCaseGroupIdAndStateAndSampleUnitTypeOrderByCreatedDateTimeAsc(
-      UUID caseGroupFK, CaseState state, SampleUnitDTO.SampleUnitType sampleUnitType);
-
-  /**
-   * Find cases assigned to the given iac There should only be one - it is the job of the caller to
-   * complain if there is >1
-   *
-   * @param iac the iac
-   * @return the cases associated with the IAC (see above)
-   */
-  List<Case> findByIacAudits_iac(String iac);
-
-  /**
-   * Find a case by its external case reference
-   *
-   * @param caseRef the external ref
-   * @return the case
-   */
-  Case findByCaseRef(String caseRef);
-
-  /**
    * Find a case by its UUID
    *
    * @param id the UUID
