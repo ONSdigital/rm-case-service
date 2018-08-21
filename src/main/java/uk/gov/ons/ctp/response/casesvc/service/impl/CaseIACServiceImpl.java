@@ -6,16 +6,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseIacAudit;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseIacAuditRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
+import uk.gov.ons.ctp.response.casesvc.service.CaseIACService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 
 @Service
 @Slf4j
-public class CaseIACService {
+public class CaseIACServiceImpl implements CaseIACService {
 
   private final InternetAccessCodeSvcClientService iacClient;
   private final CaseIacAuditRepository caseIacAuditRepo;
@@ -23,7 +25,7 @@ public class CaseIACService {
   private final Clock clock;
 
   @Autowired
-  public CaseIACService(
+  public CaseIACServiceImpl(
       final InternetAccessCodeSvcClientService iacClient,
       final CaseIacAuditRepository caseIacAuditRepo,
       final CaseEventRepository caseEventRepo,
@@ -32,6 +34,36 @@ public class CaseIACService {
     this.caseIacAuditRepo = caseIacAuditRepo;
     this.caseEventRepo = caseEventRepo;
     this.clock = clock;
+  }
+
+  @Override
+  public String findCaseIacByCasePK(int caseFK) throws CTPException {
+    log.debug("Entering findCaseIacByCasePK");
+
+    CaseIacAudit caseIacAudit = caseIacAuditRepo.findTop1ByCaseFKOrderByCreatedDateTimeDesc(caseFK);
+
+    if (caseIacAudit == null) {
+      throw new CTPException(
+          CTPException.Fault.RESOURCE_NOT_FOUND,
+          String.format("Cannot find Iac for case %s", caseFK));
+    }
+
+    return caseIacAudit.getIac();
+  }
+
+  @Override
+  public CaseIacAudit findCaseByIac(String iac) throws CTPException {
+    log.debug("Entering findCaseByIac");
+
+    CaseIacAudit caseIacAudit = caseIacAuditRepo.findByIac(iac);
+
+    if (caseIacAudit == null) {
+      throw new CTPException(
+          CTPException.Fault.RESOURCE_NOT_FOUND,
+          String.format("Cannot find Case for Iac %s", iac));
+    }
+
+    return caseIacAudit;
   }
 
   @Transactional

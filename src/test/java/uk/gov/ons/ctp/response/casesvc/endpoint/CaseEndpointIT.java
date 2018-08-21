@@ -8,6 +8,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
@@ -54,7 +55,9 @@ public class CaseEndpointIT {
 
   @Rule public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
-  @Rule public WireMockRule wireMockRule = new WireMockRule(options().port(18002));
+  @Rule
+  public WireMockRule wireMockRule = new WireMockRule(
+      options().extensions(new ResponseTemplateTransformer(false)).port(18002));
 
   @Autowired private ResourceLoader resourceLoader;
 
@@ -320,7 +323,8 @@ public class CaseEndpointIT {
             .willReturn(
                 aResponse()
                     .withHeader("Content-Type", "application/json")
-                    .withBody("[\"grtt7x2nhygg\"]")));
+                    .withBody("[\"{{randomValue length=12 type='ALPHANUMERIC' lowercase=true}}\"]")
+                    .withTransformers("response-template")));
   }
 
   /**
