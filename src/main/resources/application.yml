@@ -65,8 +65,8 @@ spring:
       max-idle: 5
       min-idle: 3
   zipkin:
-    baseUrl: http://zipkin:9411
-    enabled: ${ZIPKIN_ENABLED}
+    baseUrl: http://localhost:9411
+    enabled: false
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
