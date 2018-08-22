@@ -19,3 +19,13 @@ databaseChangeLog:
             path: remove-account-created-category-event.sql
             relativeToChangelogFile: true
             splitStatements: false
+
+- changeSet:
+    id: 13-3
+    author: Gemma Irving
+    changes:
+    - sqlFile:
+        comment: Change no active enrolments category to action plan changed event type
+        path: update-no-active-enrolments-category-event.sql
+        relativeToChangelogFile: true
+        splitStatements: false

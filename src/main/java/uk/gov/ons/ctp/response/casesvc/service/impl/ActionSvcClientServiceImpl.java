@@ -50,6 +50,14 @@ public class ActionSvcClientServiceImpl implements ActionSvcClientService {
     restTemplate.exchange(uriComponents.toUri(), HttpMethod.POST, httpEntity, ActionDTO.class);
   }
 
+  /**
+   * Get actionplans from action service using action plan selectors
+   *
+   * @param collectionExerciseId Id of collection exercise to get action plans for
+   * @param activeEnrolments selector to determine if actionplan for active enrolments(email) or
+   *     not(letters)
+   * @return List of action plans matching selectors
+   */
   @Override
   public List<ActionPlanDTO> getActionPlans(UUID collectionExerciseId, boolean activeEnrolments) {
     log.debug(
