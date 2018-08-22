@@ -1,10 +1,11 @@
 package uk.gov.ons.ctp.response.casesvc.scheduled.distribution;
 
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
 import net.sourceforge.cobertura.CoverageIgnore;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +42,8 @@ import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientServic
  */
 @CoverageIgnore
 @Component
-@Slf4j
 public class CaseDistributor {
+  private static final Logger log = LoggerFactory.getLogger(CaseDistributor.class);
 
   private static final String CASE_DISTRIBUTOR_LIST_ID = "case";
 

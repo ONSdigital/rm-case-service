@@ -24,7 +24,7 @@
     <parent>
         <groupId>uk.gov.ons.ctp.product</groupId>
         <artifactId>rm-common-config</artifactId>
-        <version>10.49.12</version>
+        <version>10.49.13</version>
     </parent>
 
     <profiles>
@@ -213,6 +213,10 @@
             <artifactId>logstash-logback-encoder</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.godaddy</groupId>
+            <artifactId>logging</artifactId>
+        </dependency>
         <!-- Third party end -->
 
         <!-- Testing -->

@@ -1,8 +1,9 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import java.util.List;
 import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -22,8 +23,9 @@ import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
 /** The REST endpoint controller for Category */
 @RestController
 @RequestMapping(value = "/categories", produces = "application/json")
-@Slf4j
 public final class CategoryEndpoint implements CTPEndpoint {
+  private static final Logger log = LoggerFactory.getLogger(CategoryEndpoint.class);
+
   public static final String ERRORMSG_CATEGORYNOTFOUND = "Category not found for";
 
   @Autowired private CategoryService categoryService;
