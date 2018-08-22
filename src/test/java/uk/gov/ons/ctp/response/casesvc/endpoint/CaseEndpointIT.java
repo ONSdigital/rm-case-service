@@ -10,6 +10,8 @@ import static org.junit.Assert.assertNotNull;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import java.io.ByteArrayInputStream;
@@ -17,7 +19,6 @@ import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import javax.xml.bind.JAXBContext;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -45,11 +46,11 @@ import uk.gov.ons.tools.rabbit.SimpleMessageBase;
 import uk.gov.ons.tools.rabbit.SimpleMessageListener;
 import uk.gov.ons.tools.rabbit.SimpleMessageSender;
 
-@Slf4j
 @ContextConfiguration
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CaseEndpointIT {
+  private static final Logger log = LoggerFactory.getLogger(CaseEndpointIT.class);
 
   @ClassRule public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
 

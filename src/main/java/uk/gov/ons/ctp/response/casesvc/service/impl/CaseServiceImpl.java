@@ -1,12 +1,14 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -52,8 +54,8 @@ import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO.SampleUnitTyp
  * model.
  */
 @Service
-@Slf4j
 public class CaseServiceImpl implements CaseService {
+  private static final Logger log = LoggerFactory.getLogger(CaseServiceImpl.class);
 
   public static final String IAC_OVERUSE_MSG = "More than one case found to be using IAC %s";
   public static final String MISSING_NEW_CASE_MSG = "New Case definition missing for case %s";

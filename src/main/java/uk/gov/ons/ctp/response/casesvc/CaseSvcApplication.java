@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc;
 
 import java.time.Clock;
+import com.godaddy.logging.LoggingConfigs;
 import net.sourceforge.cobertura.CoverageIgnore;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -72,6 +73,8 @@ public class CaseSvcApplication {
    * @param args runtime command line args
    */
   public static void main(final String[] args) {
+    LoggingConfigs.setCurrent(LoggingConfigs.getCurrent().useJson());
+
     SpringApplication.run(CaseSvcApplication.class, args);
   }
 
