@@ -2,9 +2,10 @@ package uk.gov.ons.ctp.response.casesvc.service.impl;
 
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import java.util.Arrays;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
@@ -24,9 +25,10 @@ import uk.gov.ons.ctp.response.iac.representation.InternetAccessCodeDTO;
 import uk.gov.ons.ctp.response.iac.representation.UpdateInternetAccessCodeDTO;
 
 /** The impl of the service which calls the IAC service via REST */
-@Slf4j
 @Service
 public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCodeSvcClientService {
+  private static final Logger log =
+      LoggerFactory.getLogger(InternetAccessCodeSvcClientServiceImpl.class);
 
   private AppConfig appConfig;
   private RestTemplate restTemplate;

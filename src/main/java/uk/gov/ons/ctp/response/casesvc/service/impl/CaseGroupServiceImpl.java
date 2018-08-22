@@ -1,9 +1,10 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -25,8 +26,8 @@ import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExer
  * CaseGroup entity model.
  */
 @Service
-@Slf4j
 public class CaseGroupServiceImpl implements CaseGroupService {
+  private static final Logger log = LoggerFactory.getLogger(CaseGroupServiceImpl.class);
 
   /** Spring Data Repository for CaseGroup entities. */
   @Autowired private CaseGroupRepository caseGroupRepo;
