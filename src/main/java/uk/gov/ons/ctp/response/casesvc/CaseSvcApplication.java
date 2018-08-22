@@ -1,7 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc;
 
-import java.time.Clock;
 import com.godaddy.logging.LoggingConfigs;
+import java.time.Clock;
 import net.sourceforge.cobertura.CoverageIgnore;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
