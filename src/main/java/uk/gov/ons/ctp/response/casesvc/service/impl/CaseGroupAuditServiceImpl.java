@@ -1,7 +1,8 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import java.util.UUID;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
@@ -11,8 +12,8 @@ import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupStatusAuditRep
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupAuditService;
 
 @Service
-@Slf4j
 public class CaseGroupAuditServiceImpl implements CaseGroupAuditService {
+  private static final Logger log = LoggerFactory.getLogger(CaseGroupAuditServiceImpl.class);
 
   @Autowired private CaseGroupStatusAuditRepository caseGroupStatusAuditRepository;
 

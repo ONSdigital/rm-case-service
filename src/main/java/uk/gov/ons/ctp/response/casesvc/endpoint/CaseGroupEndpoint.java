@@ -1,11 +1,12 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -34,8 +35,8 @@ import uk.gov.ons.ctp.response.casesvc.utility.Constants;
 /** The REST endpoint controller for CaseSvc CaseGroups */
 @RestController
 @RequestMapping(value = "/casegroups", produces = "application/json")
-@Slf4j
 public final class CaseGroupEndpoint implements CTPEndpoint {
+  private static final Logger log = LoggerFactory.getLogger(CaseGroupEndpoint.class);
 
   private CaseGroupService caseGroupService;
   private CaseService caseService;
