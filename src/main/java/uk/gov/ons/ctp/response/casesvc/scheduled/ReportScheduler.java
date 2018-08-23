@@ -35,10 +35,9 @@ public class ReportScheduler {
   @PostConstruct
   public void init() {
     reportDistributedInstanceManager.incrementInstanceCount(DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT);
-    log.info(
-        "{} {} instance/s running",
-        reportDistributedInstanceManager.getInstanceCount(DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT),
-        DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT);
+    log.with("instance_count",
+        reportDistributedInstanceManager.getInstanceCount(DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT))
+        .info("Redis instance(s) running");
   }
 
   /** Clean up report scheduler on bean destruction */
@@ -46,10 +45,9 @@ public class ReportScheduler {
   public void cleanUp() {
     reportDistributedInstanceManager.decrementInstanceCount(DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT);
     reportDistributedLockManager.unlockInstanceLocks();
-    log.info(
-        "{} {} instance/s running",
-        reportDistributedInstanceManager.getInstanceCount(DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT),
-        DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT);
+    log.with("instance_count",
+        reportDistributedInstanceManager.getInstanceCount(DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT))
+        .info("Redis instance(s) running");
   }
 
   /** The method triggering report creation. */
@@ -70,14 +68,12 @@ public class ReportScheduler {
     try {
       reportDistributedLatchManager.countDown(DISTRIBUTED_OBJECT_KEY_REPORT_LATCH);
       if (!reportDistributedLatchManager.awaitCountDownLatch(DISTRIBUTED_OBJECT_KEY_REPORT_LATCH)) {
-        log.error(
-            "Report run error countdownlatch timed out, should be {} instances running",
-            reportDistributedInstanceManager.getInstanceCount(
-                DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT));
+        log.with("instance_count",
+            reportDistributedInstanceManager.getInstanceCount(DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT))
+            .error("Report run error countdownlatch timed out");
       }
     } catch (InterruptedException e) {
-      log.error("Report run error waiting for countdownlatch: {}", e.getMessage());
-      log.error("Stacktrace ", e);
+      log.error("Report run error waiting for countdownlatch", e);
     } finally {
       reportDistributedLockManager.unlock(DISTRIBUTED_OBJECT_KEY_REPORT);
       reportDistributedLatchManager.deleteCountDownLatch(DISTRIBUTED_OBJECT_KEY_REPORT_LATCH);

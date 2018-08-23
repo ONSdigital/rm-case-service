@@ -370,7 +370,7 @@ public class CaseEndpointIT {
             "Case.LifecycleEvents.binding");
 
     String message = queue.take();
-    log.info("message = " + message);
+    log.info("message = {}", message);
     assertNotNull("Timeout waiting for message to arrive in Case.LifecycleEvents", message);
 
     return message;

@@ -55,7 +55,7 @@ public class CollectionExerciseSvcClientServiceImpl implements CollectionExercis
 
     HttpEntity<?> httpEntity = restUtility.createHttpEntity(null);
 
-    log.debug("about to get to the CollectionExercise SVC with {}", collectionExerciseId);
+    log.with("collection_exercise_id").debug("about to get to the CollectionExercise SVC");
     ResponseEntity<String> responseEntity =
         restTemplate.exchange(uriComponents.toUri(), HttpMethod.GET, httpEntity, String.class);
 
@@ -65,7 +65,7 @@ public class CollectionExerciseSvcClientServiceImpl implements CollectionExercis
       try {
         result = objectMapper.readValue(responseBody, CollectionExerciseDTO.class);
       } catch (IOException e) {
-        log.error(String.format("cause = %s - message = %s", e.getCause(), e.getMessage()));
+        log.error("Could not read value", e);
       }
     }
     return result;
@@ -91,7 +91,7 @@ public class CollectionExerciseSvcClientServiceImpl implements CollectionExercis
             objectMapper.readValue(
                 responseBody, new TypeReference<List<CollectionExerciseDTO>>() {});
       } catch (IOException e) {
-        log.error(String.format("cause = %s - message = %s", e.getCause(), e.getMessage()));
+        log.error("Could not read value", e);
       }
     }
     return result;

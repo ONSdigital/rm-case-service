@@ -69,7 +69,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   @RequestMapping(value = "/{caseGroupId}", method = RequestMethod.GET)
   public CaseGroupDTO findCaseGroupById(@PathVariable("caseGroupId") final UUID caseGroupId)
       throws CTPException {
-    log.info("Entering findCaseGroupById with {}", caseGroupId);
+    log.with("case_groupId").info("Entering findCaseGroupById with {}", caseGroupId);
 
     CaseGroup caseGroupObj = caseGroupService.findCaseGroupById(caseGroupId);
     if (caseGroupObj == null) {
@@ -90,7 +90,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   @RequestMapping(value = "/partyid/{partyId}", method = RequestMethod.GET)
   public ResponseEntity<List<CaseGroupDTO>> findCaseGroupsByPartyId(
       @PathVariable("partyId") final UUID partyId) {
-    log.info("Retrieving case groups by party id, partyId: {}", partyId);
+    log.with("party_id", partyId).info("Retrieving case groups by party id");
     List<CaseGroup> caseGroupList = caseGroupService.findCaseGroupByPartyId(partyId);
 
     if (CollectionUtils.isEmpty(caseGroupList)) {
@@ -120,10 +120,8 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
       @PathVariable("collectionExerciseId") final UUID collectionExerciseId,
       @PathVariable("ruRef") final String ruRef)
       throws CTPException {
-    log.info(
-        "Retrieving casegroup transistions, collectionExerciseId: {}, ruRef: {}",
-        collectionExerciseId,
-        ruRef);
+    log.with("collection_exercise_id", collectionExerciseId).with("ru_ref", ruRef)
+        .info("Retrieving casegroup transistions");
 
     CaseGroup caseGroupObj =
         caseGroupService.findCaseGroupByCollectionExerciseIdAndRuRef(collectionExerciseId, ruRef);
@@ -156,11 +154,8 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
       @RequestBody CaseGroupEvent caseGroupEvent)
       throws CTPException {
     String event = caseGroupEvent.getEvent();
-    log.info(
-        "Updating case group status, collectionExerciseId: {}, ruRef: {}, caseGroupEvent: {}",
-        collectionExerciseId,
-        ruRef,
-        event);
+    log.with("collection_exercise_id", collectionExerciseId).with("ru_ref", ruRef)
+        .with("event", event).info("Updating case group status");
 
     if (!isValidEvent(event)) {
       throw new CTPException(

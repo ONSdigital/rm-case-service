@@ -113,11 +113,8 @@ public class CaseDistributor {
                   processCase(caze, codes.get(idx));
                   successes++;
                 } catch (Exception e) {
-                  log.error(
-                      "Exception msg {} thrown processing case with id {}. Processing postponed",
-                      e.getMessage(),
-                      caze.getId());
-                  log.error("Stacktrace ", e);
+                  log.with("case", caze)
+                      .error("Exception msg {} thrown processing case. Processing postponed", e);
                   failures++;
                 }
               }
@@ -127,20 +124,16 @@ public class CaseDistributor {
           distInfo.setCasesSucceeded(successes);
           distInfo.setCasesFailed(failures);
         } catch (Exception e) {
-          log.error("Failed to obtain IAC codes");
-          log.error("Stacktrace ", e);
+          log.error("Failed to obtain IAC codes", e);
         }
       }
     } catch (Exception e) {
-      log.error("Failed to process cases because {}", e.getMessage());
-      log.error("Stacktrace ", e);
+      log.error("Failed to process cases", e);
     } finally {
       try {
         caseDistributionListManager.deleteList(CASE_DISTRIBUTOR_LIST_ID, true);
       } catch (LockingException e) {
-        log.error(
-            "Failed to release caseDistributionListManager data - error msg is {}", e.getMessage());
-        log.error("Stacktrace ", e);
+        log.error("Failed to release caseDistributionListManager data}", e);
       }
     }
 
@@ -160,7 +153,7 @@ public class CaseDistributor {
 
     List<Integer> excludedCases =
         caseDistributionListManager.findList(CASE_DISTRIBUTOR_LIST_ID, false);
-    log.debug("retrieve cases excluding {}", excludedCases);
+    log.with("excluded_cases", excludedCases).debug("retrieve cases");
 
     // prepare and execute the query to find the oldest N cases that are in SAMPLED_INIT &
     // REPLACEMENT_INIT states and
@@ -178,9 +171,10 @@ public class CaseDistributor {
             pageable);
 
     if (!CollectionUtils.isEmpty(cases)) {
-      log.debug(
-          "RETRIEVED case ids {}",
-          cases.stream().map(caze -> caze.getId().toString()).collect(Collectors.joining(",")));
+      log.with("case_ids",
+          cases.stream()
+              .map(caze -> caze.getId().toString()).collect(Collectors.joining(",")))
+          .debug("RETRIEVED case ids");
       caseDistributionListManager.saveList(
           CASE_DISTRIBUTOR_LIST_ID,
           cases.stream().map(caze -> caze.getCasePK()).collect(Collectors.toList()),
@@ -204,8 +198,7 @@ public class CaseDistributor {
    * @throws CTPException when transitionCase does.
    */
   private void processCase(final Case caze, final String iac) throws CTPException {
-    UUID caseID = caze.getId();
-    log.info("Processing case, caseId: {}", caseID);
+    log.with("case_id", caze.getId()).debug("Processing case");
 
     CaseDTO.CaseEvent event = null;
     CaseState initialState = caze.getState();
@@ -218,7 +211,7 @@ public class CaseDistributor {
         event = CaseDTO.CaseEvent.REPLACED;
         break;
       default:
-        log.error("Unexpected state found {}", initialState);
+        log.with("initialState", initialState).error("Unexpected state found");
     }
 
     Case updatedCase = transitionCase(caze, event);
