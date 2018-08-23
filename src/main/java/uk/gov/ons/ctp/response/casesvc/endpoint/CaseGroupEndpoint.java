@@ -69,7 +69,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   @RequestMapping(value = "/{caseGroupId}", method = RequestMethod.GET)
   public CaseGroupDTO findCaseGroupById(@PathVariable("caseGroupId") final UUID caseGroupId)
       throws CTPException {
-    log.with("case_groupId").info("Entering findCaseGroupById with {}", caseGroupId);
+    log.with("case_group_id").debug("Entering findCaseGroupById");
 
     CaseGroup caseGroupObj = caseGroupService.findCaseGroupById(caseGroupId);
     if (caseGroupObj == null) {

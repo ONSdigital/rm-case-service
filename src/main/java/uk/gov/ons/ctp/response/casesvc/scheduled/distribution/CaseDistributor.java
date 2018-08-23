@@ -113,7 +113,7 @@ public class CaseDistributor {
                   successes++;
                 } catch (Exception e) {
                   log.with("case", caze)
-                      .error("Exception msg {} thrown processing case. Processing postponed", e);
+                      .error("Exception thrown processing case. Processing postponed", e);
                   failures++;
                 }
               }
@@ -132,7 +132,7 @@ public class CaseDistributor {
       try {
         caseDistributionListManager.deleteList(CASE_DISTRIBUTOR_LIST_ID, true);
       } catch (LockingException e) {
-        log.error("Failed to release caseDistributionListManager data}", e);
+        log.error("Failed to release caseDistributionListManager", e);
       }
     }
 
@@ -210,7 +210,7 @@ public class CaseDistributor {
         event = CaseDTO.CaseEvent.REPLACED;
         break;
       default:
-        log.with("initialState", initialState).error("Unexpected state found");
+        log.with("initial_state", initialState).error("Unexpected state found");
     }
 
     Case updatedCase = transitionCase(caze, event);

@@ -261,7 +261,7 @@ public final class CaseEndpoint implements CTPEndpoint {
       @PathVariable("casegroupId") final UUID casegroupId,
       @RequestParam(value = "iac", required = false) final boolean iacFlag)
       throws CTPException {
-    log.with("casegroup_id", casegroupId).info("Entering findCasesInCaseGroup");
+    log.with("case_group_id", casegroupId).info("Entering findCasesInCaseGroup");
 
     CaseGroup caseGroup = caseGroupService.findCaseGroupById(casegroupId);
     if (caseGroup == null) {
@@ -326,8 +326,8 @@ public final class CaseEndpoint implements CTPEndpoint {
       BindingResult bindingResult)
       throws CTPException, InvalidRequestException {
     log.with("case_id", caseId)
-        .with("case_event_creation_request", caseEventCreationRequestDTO)
-        .info("Creating case event");
+        .with("category", caseEventCreationRequestDTO.getCategory())
+        .debug("Creating case event");
     if (bindingResult.hasErrors()) {
       throw new InvalidRequestException("Binding errors for case event creation: ", bindingResult);
     }
