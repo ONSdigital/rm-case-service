@@ -10,8 +10,6 @@ import com.godaddy.logging.LoggerFactory;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import java.util.UUID;
-import java.util.concurrent.BlockingQueue;
-import javax.xml.bind.JAXBContext;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
