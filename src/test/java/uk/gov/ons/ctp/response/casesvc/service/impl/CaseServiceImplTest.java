@@ -11,7 +11,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.IAC_OVERUSE_MSG;
-import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.MISSING_NEW_CASE_MSG;
 import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.WRONG_OLD_SAMPLE_UNIT_TYPE_MSG;
 
 import java.sql.Timestamp;
@@ -55,6 +54,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
 import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupAuditService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
@@ -97,7 +97,7 @@ public class CaseServiceImplTest {
   private static final int CAT_UNSUCCESSFUL_RESPONSE_UPLOAD = 46;
   private static final int CAT_SUCCESSFUL_RESPONSE_UPLOAD = 47;
   private static final int CAT_OFFLINE_RESPONSE_PROCESSED = 48;
-  private static final int CAT_DISABLE_RESPONDENT_ENROLMENT = 49;
+  private static final int CAT_NO_ACTIVE_ENROLMENTS = 49;
   private static final int CAT_GENERATE_ENROLMENT_CODE = 50;
 
   /**
@@ -359,9 +359,6 @@ public class CaseServiceImplTest {
     assertEquals(1, caseSaved.getResponses().size());
     assertEquals(CaseState.INACTIONABLE, caseSaved.getState());
 
-    // IAC should be disabled for online responses
-    verify(internetAccessCodeSvcClientService, times(1)).disableIAC(any(String.class));
-
     // action service should be told of case state change
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
 
@@ -416,80 +413,6 @@ public class CaseServiceImplTest {
   }
 
   /**
-   * Bluesky test for creating a replacement household case
-   *
-   * @throws Exception exception thrown
-   */
-  @Test
-  public void testBlueSkyHouseholdIACRequested() throws Exception {
-    when(caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK))
-        .thenReturn(cases.get(ACTIONABLE_HOUSEHOLD_CASE_FK));
-    when(caseRepo.findOne(NEW_HOUSEHOLD_CASE_FK)).thenReturn(cases.get(NEW_HOUSEHOLD_CASE_FK));
-    when(caseRepo.saveAndFlush(any(Case.class)))
-        .thenReturn(cases.get(NEW_HOUSEHOLD_CASE_FK)); // the new case
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.HOUSEHOLD_REPLACEMENT_IAC_REQUESTED))
-        .thenReturn(categories.get(CAT_HOUSEHOLD_REPLACEMENT_IAC_REQUESTED));
-
-    CaseEvent caseEvent =
-        fabricateEvent(
-            CategoryDTO.CategoryName.HOUSEHOLD_REPLACEMENT_IAC_REQUESTED,
-            ACTIONABLE_HOUSEHOLD_CASE_FK);
-    Case newCase = caseRepo.findOne(NEW_HOUSEHOLD_CASE_FK);
-    caseService.createCaseEvent(caseEvent, newCase);
-
-    verify(caseRepo, times(1)).findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.HOUSEHOLD_REPLACEMENT_IAC_REQUESTED);
-    verify(caseRepo, times(2)).saveAndFlush(any(Case.class));
-    Case oldCase = caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
-    verify(internetAccessCodeSvcClientService, times(1)).disableIAC(oldCase.getIac());
-    verify(actionSvcClientService, times(0))
-        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
-
-    // no new action to be created
-    verify(actionSvcClientService, times(0))
-        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
-
-    // action service should be told of case state change
-    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
-
-    verify(caseEventRepo, times(1)).save(caseEvent);
-  }
-
-  /**
-   * Bluesky test for creating a IndividualReplacementIACRequested
-   *
-   * @throws Exception exception thrown
-   */
-  @Test
-  public void testBlueSkyIndividualReplacementIACRequested() throws Exception {
-    when(caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK))
-        .thenReturn(cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK));
-    when(caseRepo.findOne(NEW_H_INDIVIDUAL_CASE_FK))
-        .thenReturn(cases.get(NEW_H_INDIVIDUAL_CASE_FK));
-    when(caseRepo.saveAndFlush(any(Case.class)))
-        .thenReturn(cases.get(NEW_H_INDIVIDUAL_CASE_FK)); // the new case
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED))
-        .thenReturn(categories.get(CAT_H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED));
-
-    CaseEvent caseEvent =
-        fabricateEvent(
-            CategoryDTO.CategoryName.H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED,
-            ACTIONABLE_H_INDIVIDUAL_CASE_FK);
-    Case newCase = caseRepo.findOne(NEW_H_INDIVIDUAL_CASE_FK);
-    caseService.createCaseEvent(caseEvent, newCase);
-
-    verify(caseRepo, times(1)).findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED);
-    verify(caseRepo, times(2)).saveAndFlush(any(Case.class));
-    Case oldCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
-    verify(internetAccessCodeSvcClientService, times(1)).disableIAC(oldCase.getIac());
-    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0))
-        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
-    verify(caseEventRepo, times(1)).save(caseEvent);
-  }
-
-  /**
    * Bluesky test for creating a paper form request case
    *
    * @throws Exception exception thrown
@@ -512,106 +435,15 @@ public class CaseServiceImplTest {
 
     verify(caseRepo, times(1)).findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.HOUSEHOLD_PAPER_REQUESTED);
-    verify(caseRepo, times(2)).saveAndFlush(any(Case.class));
-    Case oldCase = caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
-    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(oldCase.getIac());
-    // action service should be told of case state change
-    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
-    // no new action to be created
-    verify(actionSvcClientService, times(0))
-        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
-    verify(caseEventRepo, times(1)).save(caseEvent);
-  }
-
-  /**
-   * Bluesky test for creating a replacement individual case
-   *
-   * @throws Exception exception thrown
-   */
-  @Test
-  public void testBlueSkyIndividualResponseRequested() throws Exception {
-    when(caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK))
-        .thenReturn(cases.get(ACTIONABLE_HOUSEHOLD_CASE_FK));
-    when(caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK))
-        .thenReturn(cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK));
-    when(caseRepo.saveAndFlush(any(Case.class)))
-        .thenReturn(cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK)); // the new case
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED))
-        .thenReturn(categories.get(CAT_H_INDIVIDUAL_RESPONSE_REQUESTED));
-
-    CaseEvent caseEvent =
-        fabricateEvent(
-            CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED, ACTIONABLE_HOUSEHOLD_CASE_FK);
-    Case newCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
-    caseService.createCaseEvent(caseEvent, newCase);
-
-    verify(caseRepo, times(1)).findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED);
     verify(caseRepo, times(1)).saveAndFlush(any(Case.class));
     Case oldCase = caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
     verify(internetAccessCodeSvcClientService, times(0)).disableIAC(oldCase.getIac());
     // action service should be told of case state change
-    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
+    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
     // no new action to be created
     verify(actionSvcClientService, times(0))
         .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
     verify(caseEventRepo, times(1)).save(caseEvent);
-  }
-
-  /**
-   * Bluesky test for creating an individual paper request event
-   *
-   * @throws Exception exception thrown
-   */
-  @Test
-  public void testBlueSkyIndividualPaperRequested() throws Exception {
-    when(caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK))
-        .thenReturn(cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK));
-    when(caseRepo.findOne(NEW_H_INDIVIDUAL_CASE_FK))
-        .thenReturn(cases.get(NEW_H_INDIVIDUAL_CASE_FK));
-    when(caseRepo.saveAndFlush(any(Case.class)))
-        .thenReturn(cases.get(NEW_H_INDIVIDUAL_CASE_FK)); // the new case
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_PAPER_REQUESTED))
-        .thenReturn(categories.get(CAT_H_INDIVIDUAL_PAPER_REQUESTED));
-
-    CaseEvent caseEvent =
-        fabricateEvent(
-            CategoryDTO.CategoryName.H_INDIVIDUAL_PAPER_REQUESTED, ACTIONABLE_H_INDIVIDUAL_CASE_FK);
-    Case newCase = caseRepo.findOne(NEW_H_INDIVIDUAL_CASE_FK);
-    caseService.createCaseEvent(caseEvent, newCase);
-
-    verify(caseRepo, times(1)).findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_PAPER_REQUESTED);
-    verify(caseRepo, times(2)).saveAndFlush(any(Case.class));
-    Case oldCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
-    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(oldCase.getIac());
-    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0))
-        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
-    verify(caseEventRepo, times(1)).save(caseEvent);
-  }
-
-  @Test
-  public void testIACDisabledAfterOnlineResponseAfterRefusal() throws Exception {
-    when(caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK))
-        .thenReturn(cases.get(ACTIONABLE_H_INDIVIDUAL_CASE_FK));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.REFUSAL))
-        .thenReturn(categories.get(CAT_REFUSAL));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE))
-        .thenReturn(categories.get(CAT_ONLINE_QUESTIONNAIRE_RESPONSE));
-
-    CaseEvent refusalCaseEvent =
-        fabricateEvent(CategoryDTO.CategoryName.REFUSAL, ACTIONABLE_H_INDIVIDUAL_CASE_FK);
-    caseService.createCaseEvent(refusalCaseEvent, null);
-
-    CaseEvent onlineResponseCaseEvent =
-        fabricateEvent(
-            CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE,
-            ACTIONABLE_H_INDIVIDUAL_CASE_FK);
-    caseService.createCaseEvent(onlineResponseCaseEvent, null);
-
-    Case oldCase = caseRepo.findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
-    verify(internetAccessCodeSvcClientService, times(1)).disableIAC(oldCase.getIac());
   }
 
   /**
@@ -680,44 +512,6 @@ public class CaseServiceImplTest {
 
     verify(caseRepo, times(2)).findOne(ACTIONABLE_H_INDIVIDUAL_CASE_FK);
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.HOUSEHOLD_PAPER_REQUESTED);
-    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0))
-        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
-    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
-    verify(caseEventRepo, times(0)).save(caseEvent);
-  }
-
-  /**
-   * Tries to create a individual request without providing the individual case. Should throw and
-   * not save anything
-   *
-   * @throws Exception if fabricateEvent does
-   */
-  @Test
-  public void testIndividualResponseRequestedAgainstIndividualCaseWithoutNewCase()
-      throws Exception {
-    when(caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK))
-        .thenReturn(cases.get(ACTIONABLE_HOUSEHOLD_CASE_FK));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED))
-        .thenReturn(categories.get(CAT_H_INDIVIDUAL_RESPONSE_REQUESTED));
-
-    CaseEvent caseEvent =
-        fabricateEvent(
-            CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED, ACTIONABLE_HOUSEHOLD_CASE_FK);
-
-    try {
-      caseService.createCaseEvent(caseEvent, null);
-      fail();
-    } catch (CTPException e) {
-      assertEquals(CTPException.Fault.VALIDATION_FAILED, e.getFault());
-      assertEquals(
-          String.format(MISSING_NEW_CASE_MSG, UUID_FOR_ACTIONABLE_HOUSEHOLD_CASE_FK),
-          e.getMessage());
-    }
-
-    verify(caseRepo).findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.H_INDIVIDUAL_RESPONSE_REQUESTED);
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
     verify(actionSvcClientService, times(0))
@@ -1120,60 +914,23 @@ public class CaseServiceImplTest {
    */
   @Test
   public void testEventRespondentEnrolledVersusWrongCaseType() throws Exception {
-    Case existingCase = cases.get(ACTIONABLE_BI_CASE_FK);
-    when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(existingCase);
+    Case existingCase = cases.get(ACTIONABLE_HOUSEHOLD_CASE_FK);
+    when(caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK)).thenReturn(existingCase);
     when(categoryRepo.findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED))
         .thenReturn(categories.get(CAT_RESPONDENT_ENROLED));
 
     CaseEvent caseEvent =
-        fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ENROLED, ACTIONABLE_BI_CASE_FK);
+        fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ENROLED, ACTIONABLE_HOUSEHOLD_CASE_FK);
 
     try {
       caseService.createCaseEvent(caseEvent, null);
       fail();
     } catch (CTPException e) {
       assertEquals(CTPException.Fault.VALIDATION_FAILED, e.getFault());
-      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, "BI", "B"), e.getMessage());
+      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, "H", "B"), e.getMessage());
     }
 
-    verify(caseRepo).findOne(ACTIONABLE_BI_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED);
-    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, times(0))
-        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
-    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
-    verify(caseEventRepo, times(0)).save(caseEvent);
-  }
-
-  /**
-   * We create a CaseEvent with category RESPONDENT_ENROLED versus a Case with the correct
-   * sampleUnitType (ie a B) BUT we do not provide a new Case.
-   *
-   * @throws Exception if fabricateEvent does
-   */
-  @Test
-  public void testEventRespondentEnrolledNewCaseMissing() throws Exception {
-    Case existingCase = cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(existingCase);
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED))
-        .thenReturn(categories.get(CAT_RESPONDENT_ENROLED));
-
-    CaseEvent caseEvent =
-        fabricateEvent(
-            CategoryDTO.CategoryName.RESPONDENT_ENROLED, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-
-    try {
-      caseService.createCaseEvent(caseEvent, null);
-      fail();
-    } catch (CTPException e) {
-      assertEquals(CTPException.Fault.VALIDATION_FAILED, e.getFault());
-      assertEquals(
-          String.format(MISSING_NEW_CASE_MSG, UUID_FOR_ACTIONABLE_BUSINESS_UNIT_CASE_FK),
-          e.getMessage());
-    }
-
-    verify(caseRepo).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(caseRepo).findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED);
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
@@ -1301,7 +1058,7 @@ public class CaseServiceImplTest {
     verify(caseEventRepo, times(1)).save(caseEvent);
     ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
     verify(caseRepo, times(1)).saveAndFlush(argument.capture());
-    verify(caseSvcStateTransitionManager, times(2))
+    verify(caseSvcStateTransitionManager, times(1))
         .transition(
             any(CaseState.class),
             any(
@@ -1327,31 +1084,40 @@ public class CaseServiceImplTest {
    * @throws Exception if fabricateEvent does
    */
   @Test
-  public void testEventSuccessfulDisableRespondentEnrolment() throws Exception {
-    when(caseRepo.findOne(ACTIONABLE_BI_CASE_FK)).thenReturn(cases.get(ACTIONABLE_BI_CASE_FK));
-    Category disableRespondentEnrolmentCategory = categories.get(CAT_DISABLE_RESPONDENT_ENROLMENT);
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.DISABLE_RESPONDENT_ENROLMENT))
-        .thenReturn(disableRespondentEnrolmentCategory);
+  public void testEventSuccessfulNoActiveEnrolmentCaseEvent() throws Exception {
+    when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
+        .thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
+    Category noActiveEnrolmentCategory = categories.get(CAT_NO_ACTIVE_ENROLMENTS);
+    when(categoryRepo.findOne(CategoryName.NO_ACTIVE_ENROLMENTS))
+        .thenReturn(noActiveEnrolmentCategory);
     when(caseRepo.findByCaseGroupId(null))
         .thenReturn(
             Arrays.asList(
-                cases.get(ACTIONABLE_BI_CASE_FK), cases.get(ANOTHER_ACTIONABLE_BI_CASE_FK)));
+                cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK),
+                cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK)));
     CaseGroup caseGroup = makeCaseGroup();
     when(caseGroupRepo.findById(null)).thenReturn(caseGroup);
+    when(internetAccessCodeSvcClientService.generateIACs(1))
+        .thenReturn(Collections.singletonList(IAC_FOR_TEST));
+    when(caseGroupService.findCaseGroupsForExecutedCollectionExercises(any()))
+        .thenReturn(Collections.singletonList(caseGroup));
+    List<Case> caseList = Collections.singletonList(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
+    when(caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(any())).thenReturn(caseList);
+    ActionPlanDTO actionPlan = new ActionPlanDTO();
+    actionPlan.setId(UUID.randomUUID());
+    when(actionSvcClientService.getActionPlans(any(UUID.class), anyBoolean()))
+        .thenReturn(Collections.singletonList(actionPlan));
 
     CaseEvent caseEvent =
-        fabricateEvent(
-            CategoryDTO.CategoryName.DISABLE_RESPONDENT_ENROLMENT, ACTIONABLE_BI_CASE_FK);
-    Case newCase = cases.get(ANOTHER_ACTIONABLE_BI_CASE_FK);
-    caseService.createCaseEvent(caseEvent, newCase);
+        fabricateEvent(CategoryName.NO_ACTIVE_ENROLMENTS, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    caseService.createCaseEvent(caseEvent, null);
 
-    verify(caseRepo, times(1)).findOne(ACTIONABLE_BI_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.DISABLE_RESPONDENT_ENROLMENT);
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findOne(CategoryName.NO_ACTIVE_ENROLMENTS);
     verify(caseEventRepo, times(1)).save(caseEvent);
     ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
-    verify(caseRepo, times(1)).saveAndFlush(argument.capture());
-    verify(internetAccessCodeSvcClientService, times(1)).disableIAC(any(String.class));
-    verify(caseRepo, times(1)).saveAndFlush(argument.capture());
+    verify(caseRepo, times(2)).saveAndFlush(argument.capture());
+    verify(caseRepo, times(2)).saveAndFlush(argument.capture());
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
   }
 

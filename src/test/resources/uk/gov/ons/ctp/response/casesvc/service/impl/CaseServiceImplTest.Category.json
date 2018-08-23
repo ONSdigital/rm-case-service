@@ -303,9 +303,9 @@
     "shortDescription": "Respondent Enroled",
     "role": null,
     "generatedActionType": null,
-    "newCaseSampleUnitType": "BI",
+    "newCaseSampleUnitType": null,
     "oldCaseSampleUnitTypes": "B",
-    "eventType": "DISABLED",
+    "eventType": "ACTIONPLAN_CHANGED",
     "recalcCollectionInstrument": false
   },
   {
@@ -541,14 +541,14 @@
   },
   {
     "group": null,
-    "categoryName": "DISABLE_RESPONDENT_ENROLMENT",
-    "longDescription": "Offline Response Processed",
-    "shortDescription": "Offline Response Processed",
+    "categoryName": "NO_ACTIVE_ENROLMENTS",
+    "longDescription": "All respondents disabled for RU and Survey",
+    "shortDescription": "All respondents disabled",
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
     "oldCaseSampleUnitTypes": "B,BI",
-    "eventType": "DISABLED"
+    "eventType": "ACTIONPLAN_CHANGED"
   },
   {
     "group": "general",

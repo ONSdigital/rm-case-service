@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -72,7 +71,7 @@ public class ActionSvcClientServiceImpl implements ActionSvcClientService {
         restUtility.createUriComponents(appConfig.getActionSvc().getActionPlansPath(), queryParams);
 
     ResponseEntity<List<ActionPlanDTO>> responseEntity;
-    HttpEntity<?> httpEntity = restUtility.createHttpEntity(null);
+    HttpEntity<?> httpEntity = restUtility.createHttpEntityWithAuthHeader();
     try {
       responseEntity =
           restTemplate.exchange(
@@ -81,9 +80,6 @@ public class ActionSvcClientServiceImpl implements ActionSvcClientService {
               httpEntity,
               new ParameterizedTypeReference<List<ActionPlanDTO>>() {});
     } catch (HttpClientErrorException e) {
-      if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-        return null;
-      }
       throw e;
     }
 
