@@ -120,7 +120,8 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
       @PathVariable("collectionExerciseId") final UUID collectionExerciseId,
       @PathVariable("ruRef") final String ruRef)
       throws CTPException {
-    log.with("collection_exercise_id", collectionExerciseId).with("ru_ref", ruRef)
+    log.with("collection_exercise_id", collectionExerciseId)
+        .with("ru_ref", ruRef)
         .info("Retrieving casegroup transistions");
 
     CaseGroup caseGroupObj =
@@ -154,8 +155,10 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
       @RequestBody CaseGroupEvent caseGroupEvent)
       throws CTPException {
     String event = caseGroupEvent.getEvent();
-    log.with("collection_exercise_id", collectionExerciseId).with("ru_ref", ruRef)
-        .with("event", event).info("Updating case group status");
+    log.with("collection_exercise_id", collectionExerciseId)
+        .with("ru_ref", ruRef)
+        .with("event", event)
+        .info("Updating case group status");
 
     if (!isValidEvent(event)) {
       throw new CTPException(

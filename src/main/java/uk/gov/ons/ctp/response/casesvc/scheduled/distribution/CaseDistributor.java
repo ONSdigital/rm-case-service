@@ -4,7 +4,6 @@ import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import net.sourceforge.cobertura.CoverageIgnore;
 import org.apache.commons.collections.CollectionUtils;
@@ -171,9 +170,9 @@ public class CaseDistributor {
             pageable);
 
     if (!CollectionUtils.isEmpty(cases)) {
-      log.with("case_ids",
-          cases.stream()
-              .map(caze -> caze.getId().toString()).collect(Collectors.joining(",")))
+      log.with(
+              "case_ids",
+              cases.stream().map(caze -> caze.getId().toString()).collect(Collectors.joining(",")))
           .debug("RETRIEVED case ids");
       caseDistributionListManager.saveList(
           CASE_DISTRIBUTOR_LIST_ID,

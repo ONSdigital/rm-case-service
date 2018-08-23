@@ -25,8 +25,7 @@ public class CaseGroupAuditServiceImpl implements CaseGroupAuditService {
     auditEntity.setStatus(caseGroup.getStatus());
     auditEntity.setPartyId(partyId);
     auditEntity.setCreatedDateTime(DateTimeUtil.nowUTC());
-    log.with("audit_entity", auditEntity)
-        .debug("Updating the caseGroupStatus");
+    log.with("audit_entity", auditEntity).debug("Updating the caseGroupStatus");
     caseGroupStatusAuditRepository.saveAndFlush(auditEntity);
   }
 }

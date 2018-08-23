@@ -62,7 +62,8 @@ public class CaseGroupServiceImpl implements CaseGroupService {
   public CaseGroup findCaseGroupByCollectionExerciseIdAndRuRef(
       final UUID collectionExerciseId, final String ruRef) {
     log.with("collection_exercise_id", collectionExerciseId)
-        .with("ruRef", ruRef).debug("Entering findCaseGroupByCollectionExerciseIdAndRuRef");
+        .with("ruRef", ruRef)
+        .debug("Entering findCaseGroupByCollectionExerciseIdAndRuRef");
     return caseGroupRepo.findCaseGroupByCollectionExerciseIdAndSampleUnitRef(
         collectionExerciseId, ruRef);
   }

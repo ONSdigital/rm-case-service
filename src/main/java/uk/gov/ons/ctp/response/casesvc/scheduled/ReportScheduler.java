@@ -35,8 +35,10 @@ public class ReportScheduler {
   @PostConstruct
   public void init() {
     reportDistributedInstanceManager.incrementInstanceCount(DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT);
-    log.with("instance_count",
-        reportDistributedInstanceManager.getInstanceCount(DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT))
+    log.with(
+            "instance_count",
+            reportDistributedInstanceManager.getInstanceCount(
+                DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT))
         .info("Redis instance(s) running");
   }
 
@@ -45,8 +47,10 @@ public class ReportScheduler {
   public void cleanUp() {
     reportDistributedInstanceManager.decrementInstanceCount(DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT);
     reportDistributedLockManager.unlockInstanceLocks();
-    log.with("instance_count",
-        reportDistributedInstanceManager.getInstanceCount(DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT))
+    log.with(
+            "instance_count",
+            reportDistributedInstanceManager.getInstanceCount(
+                DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT))
         .info("Redis instance(s) running");
   }
 
@@ -68,8 +72,10 @@ public class ReportScheduler {
     try {
       reportDistributedLatchManager.countDown(DISTRIBUTED_OBJECT_KEY_REPORT_LATCH);
       if (!reportDistributedLatchManager.awaitCountDownLatch(DISTRIBUTED_OBJECT_KEY_REPORT_LATCH)) {
-        log.with("instance_count",
-            reportDistributedInstanceManager.getInstanceCount(DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT))
+        log.with(
+                "instance_count",
+                reportDistributedInstanceManager.getInstanceCount(
+                    DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT))
             .error("Report run error countdownlatch timed out");
       }
     } catch (InterruptedException e) {
