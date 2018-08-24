@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.message.impl;
 
-import lombok.extern.slf4j.Slf4j;
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -10,8 +11,9 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 
 /** Receive a new case from the Collection Exercise service. */
 @MessageEndpoint
-@Slf4j
 public class CaseCreationReceiverImpl implements CaseCreationReceiver {
+  private static final Logger log = LoggerFactory.getLogger(CaseCreationReceiverImpl.class);
+
   @Autowired private CaseService caseService;
 
   @Override

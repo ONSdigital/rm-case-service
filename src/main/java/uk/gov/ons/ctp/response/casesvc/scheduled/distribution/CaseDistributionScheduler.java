@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.scheduled.distribution;
 
-import lombok.extern.slf4j.Slf4j;
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import net.sourceforge.cobertura.CoverageIgnore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.health.Health;
@@ -14,8 +15,8 @@ import org.springframework.stereotype.Component;
  */
 @CoverageIgnore
 @Component
-@Slf4j
 public class CaseDistributionScheduler implements HealthIndicator {
+  private static final Logger log = LoggerFactory.getLogger(CaseDistributionScheduler.class);
 
   @Autowired private CaseDistributor caseDistributorImpl;
 

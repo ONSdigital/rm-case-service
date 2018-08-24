@@ -1,11 +1,12 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,7 +40,6 @@ import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
-import uk.gov.ons.ctp.response.casesvc.service.CollectionExerciseSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.utility.Constants;
 import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
@@ -50,16 +50,14 @@ import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO.SampleUnitTyp
  * model.
  */
 @Service
-@Slf4j
 public class CaseServiceImpl implements CaseService {
+  private static final Logger log = LoggerFactory.getLogger(CaseServiceImpl.class);
 
   public static final String IAC_OVERUSE_MSG = "More than one case found to be using IAC %s";
-  public static final String MISSING_NEW_CASE_MSG = "New Case definition missing for case %s";
   public static final String WRONG_OLD_SAMPLE_UNIT_TYPE_MSG =
       "Old Case has sampleUnitType %s. It is expected to have sampleUnitType %s.";
 
   private static final String CASE_CREATED_EVENT_DESCRIPTION = "Case created when %s";
-  private static final String MISSING_EXISTING_CASE_MSG = "No existing Case found for caseFK %d";
 
   private static final int TRANSACTION_TIMEOUT = 30;
 
@@ -71,7 +69,6 @@ public class CaseServiceImpl implements CaseService {
 
   private ActionSvcClientService actionSvcClientService;
   private CaseGroupService caseGroupService;
-  private CollectionExerciseSvcClientService collectionExerciseSvcClientService;
   private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
 
   private CaseNotificationPublisher notificationPublisher;
@@ -87,7 +84,6 @@ public class CaseServiceImpl implements CaseService {
       final CategoryRepository categoryRepo,
       final ActionSvcClientService actionSvcClientService,
       final CaseGroupService caseGroupService,
-      final CollectionExerciseSvcClientService collectionExerciseSvcClientService,
       final InternetAccessCodeSvcClientService internetAccessCodeSvcClientService,
       final CaseNotificationPublisher notificationPublisher,
       final StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager) {
@@ -98,7 +94,6 @@ public class CaseServiceImpl implements CaseService {
     this.categoryRepo = categoryRepo;
     this.actionSvcClientService = actionSvcClientService;
     this.caseGroupService = caseGroupService;
-    this.collectionExerciseSvcClientService = collectionExerciseSvcClientService;
     this.internetAccessCodeSvcClientService = internetAccessCodeSvcClientService;
     this.notificationPublisher = notificationPublisher;
     this.caseSvcStateTransitionManager = caseSvcStateTransitionManager;
@@ -160,20 +155,18 @@ public class CaseServiceImpl implements CaseService {
   }
 
   @Override
-  public CaseEvent createCaseEvent(final CaseEvent caseEvent, final Case newCase)
+  public CaseEvent createCaseEvent(final CaseEvent caseEvent) throws CTPException {
+    return createCaseEvent(caseEvent, DateTimeUtil.nowUTC());
+  }
+
+  @Override
+  public CaseEvent createCaseEvent(final CaseEvent caseEvent, final Case targetCase)
       throws CTPException {
-    return createCaseEvent(caseEvent, newCase, DateTimeUtil.nowUTC());
+    return createCaseEvent(caseEvent, DateTimeUtil.nowUTC(), targetCase);
   }
 
   @Override
-  public CaseEvent createCaseEvent(
-      final CaseEvent caseEvent, final Case newCase, final Case targetCase) throws CTPException {
-    return createCaseEvent(caseEvent, newCase, DateTimeUtil.nowUTC(), targetCase);
-  }
-
-  @Override
-  public CaseEvent createCaseEvent(
-      final CaseEvent caseEvent, final Case newCase, final Timestamp timestamp)
+  public CaseEvent createCaseEvent(final CaseEvent caseEvent, final Timestamp timestamp)
       throws CTPException {
     log.info(
         "Creating case event, casePK={}, category={}, subCategory={}, createdBy={}",
@@ -187,7 +180,7 @@ public class CaseServiceImpl implements CaseService {
     if (targetCase == null) {
       return null;
     }
-    return createCaseEvent(caseEvent, newCase, timestamp, targetCase);
+    return createCaseEvent(caseEvent, timestamp, targetCase);
   }
 
   @Transactional(
@@ -196,10 +189,7 @@ public class CaseServiceImpl implements CaseService {
       timeout = TRANSACTION_TIMEOUT)
   @Override
   public CaseEvent createCaseEvent(
-      final CaseEvent caseEvent,
-      final Case newCase,
-      final Timestamp timestamp,
-      final Case targetCase)
+      final CaseEvent caseEvent, final Timestamp timestamp, final Case targetCase)
       throws CTPException {
     log.info(
         "Creating case event, casePK={}, category={}, subCategory={}, createdBy={}",
@@ -209,7 +199,7 @@ public class CaseServiceImpl implements CaseService {
         caseEvent.getCreatedBy());
 
     Category category = categoryRepo.findOne(caseEvent.getCategory());
-    validateCaseEventRequest(category, targetCase, newCase);
+    validateCaseEventRequest(category, targetCase);
 
     // save the case event to db
     caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
@@ -375,11 +365,9 @@ public class CaseServiceImpl implements CaseService {
    *
    * @param category the category details
    * @param oldCase the case the event is being created against
-   * @param newCase the details provided in the event request for the new case
    * @throws CTPException if the CaseEventRequest is invalid
    */
-  private void validateCaseEventRequest(Category category, Case oldCase, Case newCase)
-      throws CTPException {
+  private void validateCaseEventRequest(Category category, Case oldCase) throws CTPException {
     String oldCaseSampleUnitType = oldCase.getSampleUnitType().name();
     String expectedOldCaseSampleUnitTypes = category.getOldCaseSampleUnitTypes();
     if (!compareOldCaseSampleUnitType(oldCaseSampleUnitType, expectedOldCaseSampleUnitTypes)) {
@@ -495,6 +483,15 @@ public class CaseServiceImpl implements CaseService {
       throws CTPException {
     CaseDTO.CaseEvent transitionEvent = category.getEventType();
     if (transitionEvent != null) {
+      if ((transitionEvent == CaseDTO.CaseEvent.DISABLED
+              && !category
+                  .getCategoryName()
+                  .equals(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD))
+          || transitionEvent == CaseDTO.CaseEvent.ACTIONPLAN_CHANGED) {
+        if (targetCase.getIac() != null) {
+          internetAccessCodeSvcClientService.disableIAC(targetCase.getIac());
+        }
+      }
       CaseState oldState = targetCase.getState();
       CaseState newState = caseSvcStateTransitionManager.transition(oldState, transitionEvent);
 

@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +9,6 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -46,8 +47,8 @@ import uk.gov.ons.ctp.response.casesvc.utility.Constants;
 /** The REST endpoint controller for CaseSvc Cases */
 @RestController
 @RequestMapping(value = "/cases", produces = "application/json")
-@Slf4j
 public final class CaseEndpoint implements CTPEndpoint {
+  private static final Logger log = LoggerFactory.getLogger(CaseEndpoint.class);
 
   public static final String CATEGORY_ACCESS_CODE_AUTHENTICATION_ATTEMPT_NOT_FOUND =
       "Category ACCESS_CODE_AUTHENTICATION_ATTEMPT does not exist";
@@ -351,18 +352,7 @@ public final class CaseEndpoint implements CTPEndpoint {
           CTPException.Fault.VALIDATION_FAILED, String.format(EVENT_REQUIRES_NEW_CASE, caseId));
     }
 
-    // Create new case if required
-    // NOTE this isn't an ideal point to do this
-    // We will not be creating new cases from case events when BI cases are removed so will leave
-    Case newCase;
-    if (category.getNewCaseSampleUnitType() != null) {
-      newCase = new Case();
-      newCase.setPartyId(caseEventCreationRequestDTO.getPartyId());
-    } else {
-      newCase = null;
-    }
-
-    CaseEvent createdCaseEvent = caseService.createCaseEvent(caseEvent, newCase, targetCase);
+    CaseEvent createdCaseEvent = caseService.createCaseEvent(caseEvent, targetCase);
 
     CreatedCaseEventDTO mappedCaseEvent =
         mapperFacade.map(createdCaseEvent, CreatedCaseEventDTO.class);

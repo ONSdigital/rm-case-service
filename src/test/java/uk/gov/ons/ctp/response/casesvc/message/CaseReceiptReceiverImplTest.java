@@ -65,7 +65,6 @@ public class CaseReceiptReceiverImplTest {
     verify(caseService, times(1))
         .createCaseEvent(
             eq(buildCaseEvent(LINKED_CASE_PK, ONLINE_QUESTIONNAIRE_RESPONSE)),
-            eq(null),
             eq(new Timestamp(calendar.toGregorianCalendar().getTimeInMillis())));
   }
 
@@ -90,7 +89,6 @@ public class CaseReceiptReceiverImplTest {
     verify(caseService, times(1))
         .createCaseEvent(
             eq(buildCaseEvent(LINKED_CASE_PK, PAPER_QUESTIONNAIRE_RESPONSE)),
-            eq(null),
             eq(new Timestamp(calendar.toGregorianCalendar().getTimeInMillis())));
   }
 
@@ -115,7 +113,6 @@ public class CaseReceiptReceiverImplTest {
     verify(caseService, times(1))
         .createCaseEvent(
             eq(buildCaseEvent(LINKED_CASE_PK, OFFLINE_RESPONSE_PROCESSED)),
-            eq(null),
             eq(new Timestamp(calendar.toGregorianCalendar().getTimeInMillis())));
   }
 
@@ -136,7 +133,7 @@ public class CaseReceiptReceiverImplTest {
 
     caseReceiptReceiver.process(caseReceipt);
 
-    verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class), any(Case.class));
+    verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class));
   }
 
   /**
@@ -156,7 +153,7 @@ public class CaseReceiptReceiverImplTest {
 
     caseReceiptReceiver.process(caseReceipt);
 
-    verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class), any(Case.class));
+    verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class));
   }
 
   /**
@@ -176,7 +173,7 @@ public class CaseReceiptReceiverImplTest {
 
     caseReceiptReceiver.process(caseReceipt);
 
-    verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class), any(Case.class));
+    verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class));
   }
 
   /**

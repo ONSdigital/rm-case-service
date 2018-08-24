@@ -2,10 +2,11 @@ package uk.gov.ons.ctp.response.casesvc.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
-import lombok.extern.slf4j.Slf4j;
 import net.sourceforge.cobertura.CoverageIgnore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,10 +25,11 @@ import uk.gov.ons.ctp.response.casesvc.service.CollectionExerciseSvcClientServic
 import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
 
 /** The service to retrieve a CollectionExercise */
-@Slf4j
 @CoverageIgnore
 @Service
 public class CollectionExerciseSvcClientServiceImpl implements CollectionExerciseSvcClientService {
+  private static final Logger log =
+      LoggerFactory.getLogger(CollectionExerciseSvcClientServiceImpl.class);
 
   @Autowired private AppConfig appConfig;
 

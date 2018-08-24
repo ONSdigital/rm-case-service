@@ -9,8 +9,6 @@ import static org.hamcrest.core.Is.isA;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -513,56 +511,6 @@ public final class CaseEndpointUnitTest {
   }
 
   @Test
-  public void findCaseByIACWithoutEventsAndIAC() throws Exception {
-    when(caseService.findCaseByIac(IAC_CASE1)).thenReturn(caseResults.get(0));
-    when(caseGroupService.findCaseGroupByCaseGroupPK(any(Integer.class)))
-        .thenReturn(caseGroupResults.get(0));
-    when(caseService.findCaseEventsByCaseFK(any(Integer.class))).thenReturn(caseEventsResults);
-    Category newCategory = new Category();
-    newCategory.setShortDescription("desc");
-    when(categoryService.findCategory(CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT))
-        .thenReturn(newCategory);
-
-    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/iac/%s", IAC_CASE1)));
-
-    actions.andExpect(status().isOk());
-    actions.andExpect(handler().handlerType(CaseEndpoint.class));
-    actions.andExpect(handler().methodName("findCaseByIac"));
-    actions.andExpect(jsonPath("$.id", is(CASE1_ID.toString())));
-    actions.andExpect(jsonPath("$.caseRef", is(ONE)));
-    actions.andExpect(jsonPath("$.iac", is(nullValue())));
-    actions.andExpect(jsonPath("$.collectionInstrumentId", is(CASE_CI_ID)));
-    actions.andExpect(jsonPath("$.partyId", is(CASE_PARTY_ID)));
-    actions.andExpect(jsonPath("$.actionPlanId", is(CASE_ACTIONPLAN_ID_1)));
-    actions.andExpect(jsonPath("$.sampleUnitType", is(CASE_SAMPLE_UNIT_TYPE_B)));
-    actions.andExpect(jsonPath("$.state", is(CaseState.SAMPLED_INIT.name())));
-    actions.andExpect(jsonPath("$.createdBy", is(SYSTEM)));
-    actions.andExpect(jsonPath("$.createdDateTime", is(new DateMatcher(CASE_DATE_VALUE_1))));
-
-    actions.andExpect(jsonPath("$.responses", hasSize(1)));
-    actions.andExpect(
-        jsonPath("$.responses[*].inboundChannel", containsInAnyOrder(InboundChannel.PAPER.name())));
-    actions.andExpect(
-        jsonPath("$.responses[*].dateTime", contains(new DateMatcher(CASE_DATE_VALUE_1))));
-
-    actions.andExpect(jsonPath("$.caseGroup.id", is(CASE1_CASEGROUP_ID.toString())));
-    actions.andExpect(
-        jsonPath(
-            "$.caseGroup.collectionExerciseId",
-            is(CASE1_CASEGROUP_COLLECTION_EXERCISE_ID.toString())));
-    actions.andExpect(jsonPath("$.caseGroup.partyId", is(CASE1_CASEGROUP_PARTY_ID.toString())));
-    actions.andExpect(jsonPath("$.caseGroup.sampleUnitRef", is(CASE1_CASEGROUP_SAMPLE_UNIT_REF)));
-    actions.andExpect(jsonPath("$.caseGroup.sampleUnitType", is(CASE1_CASEGROUP_SAMPLE_UNIT_TYPE)));
-    actions.andExpect(
-        jsonPath("$.caseGroup.caseGroupStatus", is(CaseGroupStatus.NOTSTARTED.toString())));
-
-    actions.andExpect(jsonPath("$.caseEvents", is(nullValue())));
-
-    verify(caseService, times(1))
-        .createCaseEvent(any(CaseEvent.class), any(Case.class), any(Case.class));
-  }
-
-  @Test
   public void findCasesByCaseGroupIdNotFound() throws Exception {
     ResultActions actions =
         mockMvc.perform(
@@ -763,7 +711,7 @@ public final class CaseEndpointUnitTest {
   public void createCaseEventGoodJson() throws Exception {
     when(categoryService.findCategory(CategoryName.RESPONDENT_ENROLED))
         .thenReturn(categoryResults.get(3));
-    when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class), any(Case.class)))
+    when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class)))
         .thenReturn(caseEventsResults.get(3));
     when(caseService.findCaseById(CASE9_ID)).thenReturn(caseResults.get(8));
 
@@ -792,7 +740,7 @@ public final class CaseEndpointUnitTest {
   public void createCaseEventNoNewCase() throws Exception {
     when(categoryService.findCategory(CategoryName.GENERAL_ENQUIRY))
         .thenReturn(categoryResults.get(0));
-    when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class), any(Case.class)))
+    when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class)))
         .thenReturn(caseEventsResults.get(3));
     when(caseService.findCaseById(CASE9_ID)).thenReturn(caseResults.get(8));
 
@@ -917,7 +865,7 @@ public final class CaseEndpointUnitTest {
     when(categoryService.findCategory(CategoryName.RESPONDENT_ENROLED))
         .thenReturn(categoryResults.get(3));
     when(caseService.findCaseById(CASE9_ID)).thenReturn(caseResults.get(8));
-    when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class), any(Case.class)))
+    when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class)))
         .thenThrow(new CTPException(CTPException.Fault.VALIDATION_FAILED, OUR_EXCEPTION_MESSAGE));
 
     ResultActions actions =

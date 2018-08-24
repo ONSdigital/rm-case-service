@@ -65,53 +65,44 @@ public interface CaseService extends CTPService {
    * for the new case.
    *
    * @param caseEvent CaseEvent to be created.
-   * @param newCase optional case object containing partial details of the case to be created by
-   *     this event.
    * @return the created CaseEvent.
    * @throws CTPException when case state transition error
    */
-  CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase) throws CTPException;
+  CaseEvent createCaseEvent(CaseEvent caseEvent) throws CTPException;
 
   /**
    * Create a CaseEvent for the specific scenario of an incoming CaseReceipt (sent by the SDX
    * Gateway and containing the responseDateTime of the online/paper response).
    *
    * @param caseEvent CaseEvent to be created
-   * @param newCase optional case object containing partial details of the case to be created by
-   *     this event.
    * @param timestamp timestamp equals to the incoming CaseReceipt's responseDateTime.
    * @return the created CaseEvent.
    * @throws CTPException when case state transition error
    */
-  CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase, Timestamp timestamp)
-      throws CTPException;
+  CaseEvent createCaseEvent(CaseEvent caseEvent, Timestamp timestamp) throws CTPException;
 
   /**
    * Create a CaseEvent for the specific scenario of an incoming CaseReceipt (sent by the SDX
    * Gateway and containing the responseDateTime of the online/paper response).
    *
    * @param caseEvent CaseEvent to be created
-   * @param newCase optional case object containing partial details of the case to be created by
-   *     this event.
    * @param targetCase case to post caseEvent against
    * @return the created CaseEvent.
    * @throws CTPException when case state transition error
    */
-  CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase, Case targetCase) throws CTPException;
+  CaseEvent createCaseEvent(CaseEvent caseEvent, Case targetCase) throws CTPException;
 
   /**
    * Create a CaseEvent for the specific scenario of an incoming CaseReceipt (sent by the SDX
    * Gateway and containing the responseDateTime of the online/paper response).
    *
    * @param caseEvent CaseEvent to be created
-   * @param newCase optional case object containing partial details of the case to be created by
-   *     this event.
    * @param timestamp timestamp equals to the incoming CaseReceipt's responseDateTime.
    * @param targetCase case to post caseEvent against
    * @return the created CaseEvent.
    * @throws CTPException when case state transition error
    */
-  CaseEvent createCaseEvent(CaseEvent caseEvent, Case newCase, Timestamp timestamp, Case targetCase)
+  CaseEvent createCaseEvent(CaseEvent caseEvent, Timestamp timestamp, Case targetCase)
       throws CTPException;
 
   /**
@@ -148,7 +139,7 @@ public interface CaseService extends CTPService {
   /**
    * Get a case by the sample unit id it relates to
    *
-   * @param sample unit id
+   * @param sampleUnitId
    * @return the case
    */
   Case findCaseBySampleUnitId(UUID sampleUnitId);

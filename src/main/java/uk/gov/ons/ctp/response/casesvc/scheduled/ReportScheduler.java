@@ -1,8 +1,9 @@
 package uk.gov.ons.ctp.response.casesvc.scheduled;
 
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -15,8 +16,8 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseReportService;
  * The scheduler to trigger reports creation based on a cron expression defined in application.yml
  */
 @Component
-@Slf4j
 public class ReportScheduler {
+  private static final Logger log = LoggerFactory.getLogger(ReportScheduler.class);
 
   private static final String DISTRIBUTED_OBJECT_KEY_REPORT_LATCH = "reportlatch";
   private static final String DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT = "reportscheduler";

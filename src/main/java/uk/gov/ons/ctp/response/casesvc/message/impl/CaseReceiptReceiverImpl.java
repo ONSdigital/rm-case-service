@@ -6,9 +6,10 @@ import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.Categor
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.QUESTIONNAIRE_RESPONSE;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import java.sql.Timestamp;
 import java.util.UUID;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -24,9 +25,9 @@ import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 
 /** The reader of CaseReceipts from queue */
-@Slf4j
 @MessageEndpoint
 public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
+  private static final Logger log = LoggerFactory.getLogger(CaseReceiptReceiverImpl.class);
 
   private static final String EXISTING_CASE_NOT_FOUND = "No existing case found for caseId %s";
 
@@ -75,7 +76,7 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
       caseEvent.setCreatedBy(SYSTEM);
       caseEvent.setDescription(QUESTIONNAIRE_RESPONSE);
       log.debug("about to invoke the event creation...");
-      caseService.createCaseEvent(caseEvent, null, responseTimestamp);
+      caseService.createCaseEvent(caseEvent, responseTimestamp);
     }
   }
 }
