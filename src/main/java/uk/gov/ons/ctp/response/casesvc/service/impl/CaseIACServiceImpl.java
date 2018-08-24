@@ -1,8 +1,9 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import java.sql.Timestamp;
 import java.time.Clock;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,8 +17,9 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseIACService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 
 @Service
-@Slf4j
 public class CaseIACServiceImpl implements CaseIACService {
+
+  private static final Logger log = LoggerFactory.getLogger(CaseIACServiceImpl.class);
 
   private final InternetAccessCodeSvcClientService iacClient;
   private final CaseIacAuditRepository caseIacAuditRepo;

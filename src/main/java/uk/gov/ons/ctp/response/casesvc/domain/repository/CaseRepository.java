@@ -67,11 +67,6 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
    */
   Case findBySampleUnitId(@Param("sampleUnitId") UUID sampleUnitId);
 
-  /**
-   * Find a case by it's PK
-   *
-   * @param casePK
-   * @return
-   */
+  /** Find a case by it's PK */
   Case findByCasePK(int casePK);
 }

@@ -10,12 +10,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseIacAudit;
 @Transactional(readOnly = true)
 public interface CaseIacAuditRepository extends JpaRepository<CaseIacAudit, Integer> {
 
-  /**
-   * Find the latest case iac
-   *
-   * @param caseFK
-   * @return
-   */
+  /** Find the latest case iac */
   CaseIacAudit findTop1ByCaseFKOrderByCreatedDateTimeDesc(Integer caseFK);
 
   /** Find the CaseIacAudit by iac */
