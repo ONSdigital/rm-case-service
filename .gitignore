@@ -70,3 +70,6 @@ plantuml.jar
 
 # Database
 *.rdb
+
+.floo
+.flooignore
