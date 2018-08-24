@@ -18,6 +18,7 @@ import uk.gov.ons.ctp.common.distributed.DistributedListManager;
 import uk.gov.ons.ctp.common.distributed.LockingException;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
+import uk.gov.ons.ctp.response.casesvc.client.InternetAccessCodeSvcClient;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
@@ -27,7 +28,6 @@ import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
-import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 
 /**
  * This is the 'service' class that distributes cases to the action service. It has a number of
@@ -55,7 +55,7 @@ public class CaseDistributor {
   private AppConfig appConfig;
   private CaseRepository caseRepo;
   private CaseService caseService;
-  private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
+  private InternetAccessCodeSvcClient internetAccessCodeSvcClient;
   private DistributedListManager<Integer> caseDistributionListManager;
   private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
   private CaseNotificationPublisher notificationPublisher;
@@ -68,14 +68,14 @@ public class CaseDistributor {
       final DistributedListManager<Integer> caseDistributionListManager,
       final CaseRepository caseRepo,
       final CaseService caseService,
-      final InternetAccessCodeSvcClientService internetAccessCodeSvcClientService,
+      final InternetAccessCodeSvcClient internetAccessCodeSvcClient,
       final StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager,
       final CaseNotificationPublisher notificationPublisher,
       final EventPublisher eventPublisher) {
     this.appConfig = appConfig;
     this.caseRepo = caseRepo;
     this.caseService = caseService;
-    this.internetAccessCodeSvcClientService = internetAccessCodeSvcClientService;
+    this.internetAccessCodeSvcClient = internetAccessCodeSvcClient;
     this.caseDistributionListManager = caseDistributionListManager;
     this.caseSvcStateTransitionManager = caseSvcStateTransitionManager;
     this.notificationPublisher = notificationPublisher;
@@ -103,7 +103,7 @@ public class CaseDistributor {
         int nbRetrievedCases = cases.size();
 
         try {
-          List<String> codes = internetAccessCodeSvcClientService.generateIACs(nbRetrievedCases);
+          List<String> codes = internetAccessCodeSvcClient.generateIACs(nbRetrievedCases);
 
           if (!CollectionUtils.isEmpty(codes)) {
             if (nbRetrievedCases == codes.size()) {

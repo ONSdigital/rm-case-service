@@ -24,6 +24,7 @@ import uk.gov.ons.ctp.common.distributed.DistributedListManager;
 import uk.gov.ons.ctp.common.distributed.LockingException;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
+import uk.gov.ons.ctp.response.casesvc.client.InternetAccessCodeSvcClient;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.config.CaseDistribution;
 import uk.gov.ons.ctp.response.casesvc.config.InternetAccessCodeSvc;
@@ -35,7 +36,6 @@ import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
-import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 
 /** Test the case distributor */
 @RunWith(MockitoJUnitRunner.class)
@@ -57,7 +57,7 @@ public class CaseDistributorTest {
 
   @Mock private DistributedListManager<Integer> caseDistributionListManager;
 
-  @Mock private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
+  @Mock private InternetAccessCodeSvcClient internetAccessCodeSvcClient;
 
   @Mock private CaseRepository caseRepo;
 
@@ -109,7 +109,7 @@ public class CaseDistributorTest {
     assertEquals(0, info.getCasesFailed());
     assertEquals(0, info.getCasesSucceeded());
 
-    verify(internetAccessCodeSvcClientService, times(0)).generateIACs(any(Integer.class));
+    verify(internetAccessCodeSvcClient, times(0)).generateIACs(any(Integer.class));
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(caseService, times(0))
         .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));
@@ -135,7 +135,7 @@ public class CaseDistributorTest {
     assertEquals(0, info.getCasesFailed());
     assertEquals(0, info.getCasesSucceeded());
 
-    verify(internetAccessCodeSvcClientService, times(0)).generateIACs(any(Integer.class));
+    verify(internetAccessCodeSvcClient, times(0)).generateIACs(any(Integer.class));
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(caseService, times(0))
         .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));
@@ -155,14 +155,14 @@ public class CaseDistributorTest {
     when(caseRepo.findByStateInAndCasePKNotIn(
             any(List.class), any(List.class), any(Pageable.class)))
         .thenReturn(cases);
-    when(internetAccessCodeSvcClientService.generateIACs(any(Integer.class)))
+    when(internetAccessCodeSvcClient.generateIACs(any(Integer.class)))
         .thenThrow(new RuntimeException("IAC access failed"));
 
     CaseDistributionInfo info = caseDistributor.distribute();
     assertEquals(0, info.getCasesFailed());
     assertEquals(0, info.getCasesSucceeded());
 
-    verify(internetAccessCodeSvcClientService, times(1)).generateIACs(any(Integer.class));
+    verify(internetAccessCodeSvcClient, times(1)).generateIACs(any(Integer.class));
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(caseService, times(0))
         .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));
@@ -188,7 +188,7 @@ public class CaseDistributorTest {
     for (int i = 0; i < 5; i++) {
       iacs.add(IAC);
     }
-    when(internetAccessCodeSvcClientService.generateIACs(any(Integer.class))).thenReturn(iacs);
+    when(internetAccessCodeSvcClient.generateIACs(any(Integer.class))).thenReturn(iacs);
 
     when(caseSvcStateTransitionManager.transition(
             CaseState.SAMPLED_INIT, CaseDTO.CaseEvent.ACTIVATED))
@@ -206,7 +206,7 @@ public class CaseDistributorTest {
     assertEquals(0, info.getCasesFailed());
     assertEquals(5, info.getCasesSucceeded());
 
-    verify(internetAccessCodeSvcClientService, times(1)).generateIACs(any(Integer.class));
+    verify(internetAccessCodeSvcClient, times(1)).generateIACs(any(Integer.class));
     verify(caseRepo, times(5)).saveAndFlush(any(Case.class));
     verify(caseService, times(5)).saveCaseIacAudit(any());
     verify(caseService, times(5))
@@ -236,13 +236,13 @@ public class CaseDistributorTest {
     for (int i = 0; i < 4; i++) {
       iacs.add(IAC);
     }
-    when(internetAccessCodeSvcClientService.generateIACs(any(Integer.class))).thenReturn(iacs);
+    when(internetAccessCodeSvcClient.generateIACs(any(Integer.class))).thenReturn(iacs);
 
     CaseDistributionInfo info = caseDistributor.distribute();
     assertEquals(0, info.getCasesFailed());
     assertEquals(0, info.getCasesSucceeded());
 
-    verify(internetAccessCodeSvcClientService, times(1)).generateIACs(any(Integer.class));
+    verify(internetAccessCodeSvcClient, times(1)).generateIACs(any(Integer.class));
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(caseService, times(0))
         .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));
@@ -269,7 +269,7 @@ public class CaseDistributorTest {
     for (int i = 0; i < 5; i++) {
       iacs.add(IAC);
     }
-    when(internetAccessCodeSvcClientService.generateIACs(any(Integer.class))).thenReturn(iacs);
+    when(internetAccessCodeSvcClient.generateIACs(any(Integer.class))).thenReturn(iacs);
 
     when(caseSvcStateTransitionManager.transition(
             CaseState.SAMPLED_INIT, CaseDTO.CaseEvent.ACTIVATED))
@@ -285,7 +285,7 @@ public class CaseDistributorTest {
     assertEquals(5, info.getCasesFailed());
     assertEquals(0, info.getCasesSucceeded());
 
-    verify(internetAccessCodeSvcClientService, times(1)).generateIACs(any(Integer.class));
+    verify(internetAccessCodeSvcClient, times(1)).generateIACs(any(Integer.class));
     verify(caseRepo, times(5)).saveAndFlush(any(Case.class));
     verify(caseService, times(0))
         .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));

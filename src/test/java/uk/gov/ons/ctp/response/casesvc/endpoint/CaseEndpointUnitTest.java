@@ -45,6 +45,7 @@ import uk.gov.ons.ctp.common.error.RestExceptionHandler;
 import uk.gov.ons.ctp.common.jackson.CustomObjectMapper;
 import uk.gov.ons.ctp.common.matcher.DateMatcher;
 import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
+import uk.gov.ons.ctp.response.casesvc.client.InternetAccessCodeSvcClient;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
@@ -58,7 +59,6 @@ import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
-import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 
 /** Case Endpoint Unit tests */
 public final class CaseEndpointUnitTest {
@@ -158,7 +158,7 @@ public final class CaseEndpointUnitTest {
 
   @Mock private CaseGroupService caseGroupService;
 
-  @Mock private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
+  @Mock private InternetAccessCodeSvcClient internetAccessCodeSvcClient;
 
   @Mock private CaseRepository caseRepository;
 

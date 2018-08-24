@@ -26,7 +26,6 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
-import uk.gov.ons.ctp.response.casesvc.message.impl.CaseReceiptReceiverImpl;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 
@@ -40,7 +39,7 @@ public class CaseReceiptReceiverImplTest {
   private static final String LINKED_CASE_REF = "123";
   private static final String UNLINKED_CASE_REF = "456";
 
-  @InjectMocks private CaseReceiptReceiverImpl caseReceiptReceiver;
+  @InjectMocks private CaseReceiptReceiver caseReceiptReceiver;
 
   @Mock private CaseService caseService;
 

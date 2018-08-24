@@ -15,11 +15,12 @@ import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupAuditService;
+import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CaseGroupServiceImplTest {
 
-  @InjectMocks private CaseGroupServiceImpl caseGroupService;
+  @InjectMocks private CaseGroupService caseGroupService;
 
   @Mock private CaseGroupRepository caseGroupRepo;
 

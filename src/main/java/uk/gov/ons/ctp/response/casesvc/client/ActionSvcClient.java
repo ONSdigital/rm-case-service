@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.casesvc.service.impl;
+package uk.gov.ons.ctp.response.casesvc.client;
 
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
@@ -20,12 +20,11 @@ import uk.gov.ons.ctp.common.rest.RestUtility;
 import uk.gov.ons.ctp.response.action.representation.ActionDTO;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
-import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
 
 /** The impl of the service which calls the action service via REST */
 @Service
-public class ActionSvcClientServiceImpl implements ActionSvcClientService {
-  private static final Logger log = LoggerFactory.getLogger(ActionSvcClientServiceImpl.class);
+public class ActionSvcClient {
+  private static final Logger log = LoggerFactory.getLogger(ActionSvcClient.class);
 
   @Autowired private AppConfig appConfig;
 
@@ -35,7 +34,14 @@ public class ActionSvcClientServiceImpl implements ActionSvcClientService {
   @Autowired
   private RestUtility restUtility;
 
-  @Override
+  /**
+   * Make use of the ActionService to create and post a new Action for a given caseId according to
+   * Category actionType and CaseEvent createdBy values
+   *
+   * @param actionType action type
+   * @param caseId the UUID caseId
+   * @param createdBy who did this
+   */
   public void createAndPostAction(String actionType, UUID caseId, String createdBy) {
     ActionDTO actionDTO = new ActionDTO();
     actionDTO.setCaseId(caseId);
@@ -58,7 +64,6 @@ public class ActionSvcClientServiceImpl implements ActionSvcClientService {
    *     not(letters)
    * @return List of action plans matching selectors
    */
-  @Override
   public List<ActionPlanDTO> getActionPlans(UUID collectionExerciseId, boolean activeEnrolments) {
     log.debug(
         "Retrieving action plan for selectors, " + "collectionExerciseId: {}, activeEnrolment: {}",

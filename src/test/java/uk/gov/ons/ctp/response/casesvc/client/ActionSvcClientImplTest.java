@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.casesvc.service.impl;
+package uk.gov.ons.ctp.response.casesvc.client;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -29,7 +29,7 @@ import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 
 /** A test of the case frame service client service */
 @RunWith(MockitoJUnitRunner.class)
-public class ActionSvcClientServiceImplTest {
+public class ActionSvcClientImplTest {
 
   private static final String ACTION_PATH = "/actions";
   private static final String GENERAL_ESCALATION = "GeneralEscalation";
@@ -39,7 +39,7 @@ public class ActionSvcClientServiceImplTest {
   private static final UUID EXISTING_CASE_ID =
       UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd1");
 
-  @InjectMocks private ActionSvcClientServiceImpl actionSvcClientService;
+  @InjectMocks private ActionSvcClient actionSvcClient;
 
   @Mock private AppConfig appConfig;
 
@@ -77,7 +77,7 @@ public class ActionSvcClientServiceImplTest {
     HttpEntity httpEntity = new HttpEntity<>(actionDTO, null);
     when(restUtility.createHttpEntity(any(ActionDTO.class))).thenReturn(httpEntity);
 
-    actionSvcClientService.createAndPostAction(GENERAL_ESCALATION, EXISTING_CASE_ID, SYSTEM);
+    actionSvcClient.createAndPostAction(GENERAL_ESCALATION, EXISTING_CASE_ID, SYSTEM);
 
     verify(restUtility, times(1)).createUriComponents(ACTION_PATH, null);
     verify(restUtility, times(1)).createHttpEntity(eq(actionDTO));

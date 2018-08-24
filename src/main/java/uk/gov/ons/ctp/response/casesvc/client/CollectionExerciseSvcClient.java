@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.casesvc.service.impl;
+package uk.gov.ons.ctp.response.casesvc.client;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,15 +21,13 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import uk.gov.ons.ctp.common.rest.RestUtility;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
-import uk.gov.ons.ctp.response.casesvc.service.CollectionExerciseSvcClientService;
 import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
 
 /** The service to retrieve a CollectionExercise */
 @CoverageIgnore
 @Service
-public class CollectionExerciseSvcClientServiceImpl implements CollectionExerciseSvcClientService {
-  private static final Logger log =
-      LoggerFactory.getLogger(CollectionExerciseSvcClientServiceImpl.class);
+public class CollectionExerciseSvcClient {
+  private static final Logger log = LoggerFactory.getLogger(CollectionExerciseSvcClient.class);
 
   @Autowired private AppConfig appConfig;
 
@@ -41,11 +39,16 @@ public class CollectionExerciseSvcClientServiceImpl implements CollectionExercis
 
   @Autowired private ObjectMapper objectMapper;
 
+  /**
+   * Returns the CollectionExercise for a given UUID
+   *
+   * @param collectionExerciseId the UUID to search by
+   * @return the asscoaited CollectionExercise
+   */
   @Retryable(
       value = {RestClientException.class},
       maxAttemptsExpression = "#{${retries.maxAttempts}}",
       backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
-  @Override
   public CollectionExerciseDTO getCollectionExercise(final UUID collectionExerciseId) {
     UriComponents uriComponents =
         restUtility.createUriComponents(
@@ -71,11 +74,16 @@ public class CollectionExerciseSvcClientServiceImpl implements CollectionExercis
     return result;
   }
 
+  /**
+   * Returns all CollectionExercises for a given survey ID
+   *
+   * @param surveyId the survey ID to search by
+   * @return the list of Collection Exercises
+   */
   @Retryable(
       value = {RestClientException.class},
       maxAttemptsExpression = "#{${retries.maxAttempts}}",
       backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
-  @Override
   public List<CollectionExerciseDTO> getCollectionExercises(final String surveyId) {
     UriComponents uriComponents =
         restUtility.createUriComponents(
