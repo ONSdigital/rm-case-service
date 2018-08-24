@@ -72,7 +72,7 @@ public class CaseReceiptReceiverImpl implements CaseReceiptReceiver {
       CaseEvent caseEvent = new CaseEvent();
       caseEvent.setCaseFK(existingCase.getCasePK());
       caseEvent.setCategory(category);
-      log.with("case_event", caseEvent).info("New case event");
+      log.with("case_event", caseEvent).debug("New case event");
       caseEvent.setCreatedBy(SYSTEM);
       caseEvent.setDescription(QUESTIONNAIRE_RESPONSE);
       log.debug("about to invoke the event creation...");

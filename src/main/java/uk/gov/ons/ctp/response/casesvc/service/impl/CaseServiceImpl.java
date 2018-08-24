@@ -178,12 +178,7 @@ public class CaseServiceImpl implements CaseService {
   public CaseEvent createCaseEvent(
       final CaseEvent caseEvent, final Case newCase, final Timestamp timestamp)
       throws CTPException {
-    log.info(
-        "Creating case event, casePK={}, category={}, subCategory={}, createdBy={}",
-        caseEvent.getCaseFK(),
-        caseEvent.getCategory(),
-        caseEvent.getSubCategory(),
-        caseEvent.getCreatedBy());
+    log.with("case_event", caseEvent).debug("Creating case event");
 
     Case targetCase = caseRepo.findOne(caseEvent.getCaseFK());
     log.with("target_case", targetCase).debug("Found target case");

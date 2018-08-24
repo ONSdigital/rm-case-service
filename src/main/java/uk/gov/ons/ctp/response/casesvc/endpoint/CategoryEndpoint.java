@@ -44,7 +44,7 @@ public final class CategoryEndpoint implements CTPEndpoint {
   @RequestMapping(value = "/name/{categoryName}", method = RequestMethod.GET)
   public CategoryDTO findCategory(@PathVariable("categoryName") final String categoryName)
       throws CTPException {
-    log.with("category_name", categoryName).info("Entering findCategory");
+    log.with("category_name", categoryName).debug("Entering findCategory");
 
     Category category = null;
     Optional<CategoryDTO.CategoryName> catTypeEnum =
@@ -71,7 +71,7 @@ public final class CategoryEndpoint implements CTPEndpoint {
   public ResponseEntity<List<CategoryDTO>> findCategories(
       @RequestParam(value = "role", required = false) final String role,
       @RequestParam(value = "group", required = false) final String group) {
-    log.with("role", role).info("Entering findCategories");
+    log.with("role", role).debug("Entering findCategories");
     List<Category> categories = categoryService.findCategories(role, group);
     List<CategoryDTO> categoryDTOs = mapperFacade.mapAsList(categories, CategoryDTO.class);
     return CollectionUtils.isEmpty(categoryDTOs)
