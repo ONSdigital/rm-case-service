@@ -70,8 +70,6 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
   /**
    * Find a case by it's PK
    *
-   * @param casePK
-   * @return
    */
   Case findByCasePK(int casePK);
 }

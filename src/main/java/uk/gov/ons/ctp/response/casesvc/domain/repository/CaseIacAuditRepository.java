@@ -12,12 +12,11 @@ public interface CaseIacAuditRepository extends JpaRepository<CaseIacAudit, Inte
 
   /**
    * Find the latest case iac
-   *
-   * @param caseFK
-   * @return
    */
   CaseIacAudit findTop1ByCaseFKOrderByCreatedDateTimeDesc(Integer caseFK);
 
-  /** Find the CaseIacAudit by iac */
+  /**
+   * Find the CaseIacAudit by iac
+   */
   CaseIacAudit findByIac(String iac);
 }
