@@ -9,14 +9,16 @@ import com.mashape.unirest.http.Unirest;
 import java.util.UUID;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import uk.gov.ons.ctp.common.UnirestInitialiser;
+import uk.gov.ons.ctp.response.casesvc.CaseCreator;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
@@ -27,12 +29,14 @@ import uk.gov.ons.ctp.response.casesvc.representation.CreatedCaseEventDTO;
 @ContextConfiguration
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@RunWith(SpringJUnit4ClassRunner.class)
 public class CaseEndpointIT extends CaseITBase {
   private static final Logger log = LoggerFactory.getLogger(CaseEndpointIT.class);
 
   @ClassRule public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
 
-  @Rule public final SpringMethodRule springMethodRule = new SpringMethodRule();
+  @Autowired
+  private CaseCreator caseCreator;
 
   @BeforeClass
   public static void setUp() {
@@ -43,7 +47,7 @@ public class CaseEndpointIT extends CaseITBase {
   public void ensureSampleUnitIdReceived() throws Exception {
     UUID sampleUnitId = UUID.randomUUID();
 
-    CaseNotification caseNotification = sendSampleUnit("LMS0001", "H", sampleUnitId);
+    CaseNotification caseNotification = caseCreator.sendSampleUnit("LMS0001", "H", sampleUnitId);
 
     assertThat(caseNotification.getSampleUnitId()).isEqualTo(sampleUnitId.toString());
   }
@@ -52,7 +56,8 @@ public class CaseEndpointIT extends CaseITBase {
   public void testCreateSocialCaseEvents() throws Exception {
 
     // Given
-    CaseNotification caseNotification = sendSampleUnit("LMS0002", "H", UUID.randomUUID());
+    CaseNotification caseNotification =
+        caseCreator.sendSampleUnit("LMS0002", "H", UUID.randomUUID());
 
     String caseID = caseNotification.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
@@ -75,7 +80,7 @@ public class CaseEndpointIT extends CaseITBase {
   public void ensureCaseReturnedBySampleUnitId() throws Exception {
 
     UUID sampleUnitId = UUID.randomUUID();
-    CaseNotification caseNotif = sendSampleUnit("LMS0003", "H", sampleUnitId);
+    CaseNotification caseNotif = caseCreator.sendSampleUnit("LMS0003", "H", sampleUnitId);
 
     UUID caseId = UUID.fromString(caseNotif.getCaseId());
 
@@ -94,14 +99,13 @@ public class CaseEndpointIT extends CaseITBase {
   /**
    * Test Collection Instrument downloaded case event works with B cases, and case group status has
    * transitioned to InProgress.
-   *
-   * @throws Exception
    */
   @Test
   public void testCreateCollectionInstrumentDownloadedCaseEventWithBCaseSuccess() throws Exception {
 
     // Given
-    CaseNotification caseNotification = sendSampleUnit("BS12345", "B", UUID.randomUUID());
+    CaseNotification caseNotification =
+        caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID());
 
     String caseID = caseNotification.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
@@ -136,8 +140,6 @@ public class CaseEndpointIT extends CaseITBase {
   /**
    * Test Collection Instrument downloaded case event works with B cases, and case group status has
    * not transitioned to InProgress.
-   *
-   * @throws Exception
    */
   @Test
   public void testCreateCollectionInstrumentErrorCaseEventWithBCaseSuccess() throws Exception {
@@ -178,14 +180,13 @@ public class CaseEndpointIT extends CaseITBase {
   /**
    * Test Successful response upload case event works with B cases, and case group status has
    * transitioned to Complete.
-   *
-   * @throws Exception
    */
   @Test
   public void testCreateSuccessfulResponseUploadCaseEventWithBCaseSuccess() throws Exception {
 
     // Given
-    CaseNotification caseNotification = sendSampleUnit("BS12345", "B", UUID.randomUUID());
+    CaseNotification caseNotification =
+        caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID());
 
     String caseID = caseNotification.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
@@ -220,14 +221,13 @@ public class CaseEndpointIT extends CaseITBase {
   /**
    * Test Unsuccessful Response Upload case event works with B cases, and case group status has not
    * transitioned to Complete.
-   *
-   * @throws Exception
    */
   @Test
   public void testCreateUnsuccessfulResponseUploadCaseEventWithBCaseSuccess() throws Exception {
 
     // Given
-    CaseNotification caseNotification = sendSampleUnit("BS12345", "B", UUID.randomUUID());
+    CaseNotification caseNotification =
+        caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID());
 
     String caseID = caseNotification.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =

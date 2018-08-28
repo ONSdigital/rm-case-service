@@ -114,6 +114,12 @@
             <artifactId>spring-cloud-spring-service-connector</artifactId>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-sleuth-zipkin -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-sleuth-zipkin</artifactId>
+        </dependency>
+
         <!-- If you intend to deploy the app on Cloud Foundry, add the following -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -313,13 +319,13 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.18.1</version>
                 <executions>
-                <execution>
-                    <goals>
-                    <goal>integration-test</goal>
-                    <goal>verify</goal>
-                    </goals>
-                    <phase>integration-test</phase>
-                </execution>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                        <phase>integration-test</phase>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
