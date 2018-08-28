@@ -35,8 +35,7 @@ public class CaseEndpointIT extends CaseITBase {
 
   @ClassRule public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
 
-  @Autowired
-  private CaseCreator caseCreator;
+  @Autowired private CaseCreator caseCreator;
 
   @BeforeClass
   public static void setUp() {

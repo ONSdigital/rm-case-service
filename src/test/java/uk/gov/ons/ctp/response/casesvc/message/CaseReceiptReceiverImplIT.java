@@ -44,17 +44,13 @@ import uk.gov.ons.ctp.response.casesvc.representation.CreatedCaseEventDTO;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class CaseReceiptReceiverImplIT {
 
-  @LocalServerPort
-  private int port;
+  @LocalServerPort private int port;
 
-  @Autowired
-  private MessageChannel caseReceiptTransformed;
+  @Autowired private MessageChannel caseReceiptTransformed;
 
-  @Autowired
-  private CaseCreator caseCreator;
+  @Autowired private CaseCreator caseCreator;
 
-  @Rule
-  public WireMockRule wireMockRule = new WireMockRule(options().port(18002));
+  @Rule public WireMockRule wireMockRule = new WireMockRule(options().port(18002));
 
   @BeforeClass
   public static void setUp() {

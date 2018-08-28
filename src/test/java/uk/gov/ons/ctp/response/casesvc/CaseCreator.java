@@ -28,10 +28,8 @@ import uk.gov.ons.tools.rabbit.SimpleMessageSender;
 @Slf4j
 public class CaseCreator {
 
-  @Autowired
-  private AppConfig appConfig;
-  @Autowired
-  private ResourceLoader resourceLoader;
+  @Autowired private AppConfig appConfig;
+  @Autowired private ResourceLoader resourceLoader;
 
   /**
    * Sends a sample unit in a message so that casesvc creates a case, then waits for a message on
