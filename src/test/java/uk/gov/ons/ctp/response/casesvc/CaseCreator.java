@@ -1,13 +1,8 @@
 package uk.gov.ons.ctp.response.casesvc;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import javax.xml.bind.JAXBContext;
@@ -39,7 +34,6 @@ public class CaseCreator {
    */
   public CaseNotification sendSampleUnit(
       String sampleUnitRef, String sampleUnitType, UUID sampleUnitId) throws Exception {
-    createIACStub();
 
     SampleUnitParent sampleUnit = new SampleUnitParent();
     sampleUnit.setCollectionExerciseId(UUID.randomUUID().toString());
@@ -101,14 +95,5 @@ public class CaseCreator {
 
     return new SimpleMessageListener(
         config.getHost(), config.getPort(), config.getUsername(), config.getPassword());
-  }
-
-  private void createIACStub() throws IOException {
-    stubFor(
-        post(urlPathEqualTo("/iacs"))
-            .willReturn(
-                aResponse()
-                    .withHeader("Content-Type", "application/json")
-                    .withBody("[\"grtt7x2nhygg\"]")));
   }
 }

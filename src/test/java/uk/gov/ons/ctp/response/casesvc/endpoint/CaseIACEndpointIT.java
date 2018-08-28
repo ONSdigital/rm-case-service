@@ -7,13 +7,14 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import java.util.UUID;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,15 +35,19 @@ public class CaseIACEndpointIT extends CaseITBase {
 
   private static final Logger log = LoggerFactory.getLogger(CaseIACEndpointIT.class);
 
-  @Before
-  public void setUp() {
-    UnirestInitialiser.initialise(objectMapper);
+  @BeforeClass
+  public static void setUp() {
+    ObjectMapper value = new ObjectMapper();
+    UnirestInitialiser.initialise(value);
   }
 
   @Test
   public void shouldCreateNewIACCode() throws Exception {
+
     // Given
-    CaseNotification caseNotification = sendSampleUnit("BS12345", "B", UUID.randomUUID());
+    createIACStub();
+    CaseNotification caseNotification =
+        caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID());
     String notExpected = getCurrentIACCode(caseNotification.getCaseId());
 
     // When
@@ -55,8 +60,11 @@ public class CaseIACEndpointIT extends CaseITBase {
 
   @Test
   public void shouldGetIacCodes() throws Exception {
+
     // Given
-    CaseNotification caseNotification = sendSampleUnit("BS123456", "B", UUID.randomUUID());
+    createIACStub();
+    CaseNotification caseNotification =
+        caseCreator.sendSampleUnit("BS123456", "B", UUID.randomUUID());
 
     // When
     HttpResponse<CaseIACDTO[]> iacs =

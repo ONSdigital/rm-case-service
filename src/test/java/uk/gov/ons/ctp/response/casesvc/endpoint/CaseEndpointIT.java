@@ -2,23 +2,20 @@ package uk.gov.ons.ctp.response.casesvc.endpoint;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import java.util.UUID;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
 import uk.gov.ons.ctp.common.UnirestInitialiser;
-import uk.gov.ons.ctp.response.casesvc.CaseCreator;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
@@ -31,20 +28,20 @@ import uk.gov.ons.ctp.response.casesvc.representation.CreatedCaseEventDTO;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringJUnit4ClassRunner.class)
 public class CaseEndpointIT extends CaseITBase {
+
   private static final Logger log = LoggerFactory.getLogger(CaseEndpointIT.class);
-
-  @ClassRule public static final SpringClassRule SPRING_CLASS_RULE = new SpringClassRule();
-
-  @Autowired private CaseCreator caseCreator;
 
   @BeforeClass
   public static void setUp() {
-    UnirestInitialiser.initialise(objectMapper);
+    ObjectMapper value = new ObjectMapper();
+    UnirestInitialiser.initialise(value);
   }
 
   @Test
   public void ensureSampleUnitIdReceived() throws Exception {
     UUID sampleUnitId = UUID.randomUUID();
+
+    createIACStub();
 
     CaseNotification caseNotification = caseCreator.sendSampleUnit("LMS0001", "H", sampleUnitId);
 
@@ -55,6 +52,7 @@ public class CaseEndpointIT extends CaseITBase {
   public void testCreateSocialCaseEvents() throws Exception {
 
     // Given
+    createIACStub();
     CaseNotification caseNotification =
         caseCreator.sendSampleUnit("LMS0002", "H", UUID.randomUUID());
 
@@ -77,6 +75,8 @@ public class CaseEndpointIT extends CaseITBase {
 
   @Test
   public void ensureCaseReturnedBySampleUnitId() throws Exception {
+
+    createIACStub();
 
     UUID sampleUnitId = UUID.randomUUID();
     CaseNotification caseNotif = caseCreator.sendSampleUnit("LMS0003", "H", sampleUnitId);
@@ -103,6 +103,7 @@ public class CaseEndpointIT extends CaseITBase {
   public void testCreateCollectionInstrumentDownloadedCaseEventWithBCaseSuccess() throws Exception {
 
     // Given
+    createIACStub();
     CaseNotification caseNotification =
         caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID());
 
@@ -144,7 +145,9 @@ public class CaseEndpointIT extends CaseITBase {
   public void testCreateCollectionInstrumentErrorCaseEventWithBCaseSuccess() throws Exception {
 
     // Given
-    CaseNotification caseNotification = sendSampleUnit("BS12345", "B", UUID.randomUUID());
+    createIACStub();
+    CaseNotification caseNotification =
+        caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID());
 
     String caseID = caseNotification.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
@@ -184,6 +187,7 @@ public class CaseEndpointIT extends CaseITBase {
   public void testCreateSuccessfulResponseUploadCaseEventWithBCaseSuccess() throws Exception {
 
     // Given
+    createIACStub();
     CaseNotification caseNotification =
         caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID());
 
@@ -225,6 +229,7 @@ public class CaseEndpointIT extends CaseITBase {
   public void testCreateUnsuccessfulResponseUploadCaseEventWithBCaseSuccess() throws Exception {
 
     // Given
+    createIACStub();
     CaseNotification caseNotification =
         caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID());
 
