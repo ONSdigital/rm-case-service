@@ -679,30 +679,6 @@ public final class CaseEndpointUnitTest {
   }
 
   /**
-   * a test providing a non existing case ID
-   *
-   * @throws Exception when perform throws Exception
-   */
-  @Test
-  public void createCaseEventRequiresNewCase() throws Exception {
-    when(categoryService.findCategory(CategoryName.RESPONDENT_ENROLED))
-        .thenReturn(categoryResults.get(3));
-    when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class)))
-        .thenReturn(caseEventsResults.get(3));
-    when(caseService.findCaseById(CASE9_ID)).thenReturn(caseResults.get(8));
-    ResultActions actions =
-        mockMvc.perform(
-            postJson(String.format("/cases/%s/events", CASE9_ID), CASEEVENT_VALIDJSON_NO_PARTY));
-
-    actions.andExpect(status().isBadRequest());
-    actions.andExpect(handler().handlerType(CaseEndpoint.class));
-    actions.andExpect(handler().methodName("createCaseEvent"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())));
-    actions.andExpect(jsonPath("$.error.message", isA(String.class)));
-    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
-  }
-
-  /**
    * a test providing good json
    *
    * @throws Exception exception thrown

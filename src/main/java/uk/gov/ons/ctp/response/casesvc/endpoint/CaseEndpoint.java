@@ -344,14 +344,6 @@ public final class CaseEndpoint implements CTPEndpoint {
     }
     caseEvent.setCaseFK(targetCase.getCasePK());
 
-    Category category = categoryService.findCategory(caseEvent.getCategory());
-    // If category has a new sample unit type then a party id must be provided in the case event
-    if (category.getNewCaseSampleUnitType() != null
-        && caseEventCreationRequestDTO.getPartyId() == null) {
-      throw new CTPException(
-          CTPException.Fault.VALIDATION_FAILED, String.format(EVENT_REQUIRES_NEW_CASE, caseId));
-    }
-
     CaseEvent createdCaseEvent = caseService.createCaseEvent(caseEvent, targetCase);
 
     CreatedCaseEventDTO mappedCaseEvent =
