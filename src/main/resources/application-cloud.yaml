@@ -13,6 +13,7 @@ logging:
     uk.gov.ons.ctp: ERROR
     org.springframework: ERROR
   profile: CLOUD
+  useJson: true
 
 liquibase:
   user: ${cloud.services.postgresql.connection.username}
