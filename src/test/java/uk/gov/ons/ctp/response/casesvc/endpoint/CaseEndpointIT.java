@@ -1,21 +1,28 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import java.util.UUID;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.gov.ons.ctp.common.UnirestInitialiser;
+import uk.gov.ons.ctp.response.casesvc.CaseCreator;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
@@ -27,9 +34,19 @@ import uk.gov.ons.ctp.response.casesvc.representation.CreatedCaseEventDTO;
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringJUnit4ClassRunner.class)
-public class CaseEndpointIT extends CaseITBase {
+public class CaseEndpointIT {
 
   private static final Logger log = LoggerFactory.getLogger(CaseEndpointIT.class);
+
+  @Rule
+  public WireMockRule wireMockRule =
+      new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
+
+  @LocalServerPort
+  protected int port;
+
+  @Autowired
+  protected CaseCreator caseCreator;
 
   @BeforeClass
   public static void setUp() {
@@ -41,8 +58,6 @@ public class CaseEndpointIT extends CaseITBase {
   public void ensureSampleUnitIdReceived() throws Exception {
     UUID sampleUnitId = UUID.randomUUID();
 
-    createIACStub();
-
     CaseNotification caseNotification = caseCreator.sendSampleUnit("LMS0001", "H", sampleUnitId);
 
     assertThat(caseNotification.getSampleUnitId()).isEqualTo(sampleUnitId.toString());
@@ -52,7 +67,6 @@ public class CaseEndpointIT extends CaseITBase {
   public void testCreateSocialCaseEvents() throws Exception {
 
     // Given
-    createIACStub();
     CaseNotification caseNotification =
         caseCreator.sendSampleUnit("LMS0002", "H", UUID.randomUUID());
 
@@ -75,8 +89,6 @@ public class CaseEndpointIT extends CaseITBase {
 
   @Test
   public void ensureCaseReturnedBySampleUnitId() throws Exception {
-
-    createIACStub();
 
     UUID sampleUnitId = UUID.randomUUID();
     CaseNotification caseNotif = caseCreator.sendSampleUnit("LMS0003", "H", sampleUnitId);
@@ -103,7 +115,6 @@ public class CaseEndpointIT extends CaseITBase {
   public void testCreateCollectionInstrumentDownloadedCaseEventWithBCaseSuccess() throws Exception {
 
     // Given
-    createIACStub();
     CaseNotification caseNotification =
         caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID());
 
@@ -145,7 +156,6 @@ public class CaseEndpointIT extends CaseITBase {
   public void testCreateCollectionInstrumentErrorCaseEventWithBCaseSuccess() throws Exception {
 
     // Given
-    createIACStub();
     CaseNotification caseNotification =
         caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID());
 
@@ -187,7 +197,6 @@ public class CaseEndpointIT extends CaseITBase {
   public void testCreateSuccessfulResponseUploadCaseEventWithBCaseSuccess() throws Exception {
 
     // Given
-    createIACStub();
     CaseNotification caseNotification =
         caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID());
 
@@ -229,7 +238,6 @@ public class CaseEndpointIT extends CaseITBase {
   public void testCreateUnsuccessfulResponseUploadCaseEventWithBCaseSuccess() throws Exception {
 
     // Given
-    createIACStub();
     CaseNotification caseNotification =
         caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID());
 

@@ -1,17 +1,26 @@
 package uk.gov.ons.ctp.response.casesvc.message;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.put;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.junit.Assert.assertEquals;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import java.util.GregorianCalendar;
 import java.util.UUID;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -20,7 +29,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.gov.ons.ctp.common.UnirestInitialiser;
-import uk.gov.ons.ctp.response.casesvc.endpoint.CaseITBase;
+import uk.gov.ons.ctp.response.casesvc.CaseCreator;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
@@ -34,9 +43,19 @@ import uk.gov.ons.ctp.response.casesvc.representation.CreatedCaseEventDTO;
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringJUnit4ClassRunner.class)
-public class CaseReceiptReceiverImplIT extends CaseITBase {
+public class CaseReceiptReceiverImplIT {
+
+  @Rule
+  public WireMockRule wireMockRule =
+      new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
 
   @Autowired private MessageChannel caseReceiptTransformed;
+
+  @LocalServerPort
+  protected int port;
+
+  @Autowired
+  protected CaseCreator caseCreator;
 
   @BeforeClass
   public static void setUp() {
@@ -48,7 +67,6 @@ public class CaseReceiptReceiverImplIT extends CaseITBase {
   public void socialCaseShouldReceipt() throws Exception {
     // Given
     UUID sampleUnitId = UUID.randomUUID();
-    createIACStub();
     CaseNotification caseNotif = caseCreator.sendSampleUnit("LMS0003", "H", sampleUnitId);
     startCase(caseNotif.getCaseId());
     XMLGregorianCalendarImpl now = new XMLGregorianCalendarImpl(new GregorianCalendar());
@@ -83,5 +101,12 @@ public class CaseReceiptReceiverImplIT extends CaseITBase {
         .header("Content-Type", "application/json")
         .body(caseEvent)
         .asObject(CreatedCaseEventDTO.class);
+  }
+
+  private void disableIACStub() {
+    stubFor(
+        put(urlPathMatching("/iacs/(.*)"))
+            .willReturn(
+                aResponse().withHeader("Content-Type", "application/json").withStatus(200)));
   }
 }

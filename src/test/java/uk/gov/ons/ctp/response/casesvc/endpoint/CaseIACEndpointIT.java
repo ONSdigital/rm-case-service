@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.arrayWithSize;
 import static org.hamcrest.Matchers.equalTo;
@@ -8,6 +9,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
 import com.mashape.unirest.http.HttpResponse;
@@ -15,14 +18,18 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import java.util.UUID;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.gov.ons.ctp.common.UnirestInitialiser;
+import uk.gov.ons.ctp.response.casesvc.CaseCreator;
 import uk.gov.ons.ctp.response.casesvc.endpoint.CaseIACEndpoint.CaseIACDTO;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
@@ -31,9 +38,19 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringJUnit4ClassRunner.class)
-public class CaseIACEndpointIT extends CaseITBase {
+public class CaseIACEndpointIT {
 
   private static final Logger log = LoggerFactory.getLogger(CaseIACEndpointIT.class);
+
+  @Rule
+  public WireMockRule wireMockRule =
+      new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
+
+  @LocalServerPort
+  protected int port;
+
+  @Autowired
+  protected CaseCreator caseCreator;
 
   @BeforeClass
   public static void setUp() {
@@ -45,7 +62,6 @@ public class CaseIACEndpointIT extends CaseITBase {
   public void shouldCreateNewIACCode() throws Exception {
 
     // Given
-    createIACStub();
     CaseNotification caseNotification =
         caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID());
     String notExpected = getCurrentIACCode(caseNotification.getCaseId());
@@ -62,7 +78,6 @@ public class CaseIACEndpointIT extends CaseITBase {
   public void shouldGetIacCodes() throws Exception {
 
     // Given
-    createIACStub();
     CaseNotification caseNotification =
         caseCreator.sendSampleUnit("BS123456", "B", UUID.randomUUID());
 
