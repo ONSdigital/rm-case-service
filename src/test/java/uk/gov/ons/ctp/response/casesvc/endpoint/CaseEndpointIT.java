@@ -42,11 +42,9 @@ public class CaseEndpointIT {
   public WireMockRule wireMockRule =
       new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
 
-  @LocalServerPort
-  protected int port;
+  @LocalServerPort protected int port;
 
-  @Autowired
-  protected CaseCreator caseCreator;
+  @Autowired protected CaseCreator caseCreator;
 
   @BeforeClass
   public static void setUp() {

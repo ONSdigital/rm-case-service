@@ -51,11 +51,9 @@ public class CaseReceiptReceiverImplIT {
 
   @Autowired private MessageChannel caseReceiptTransformed;
 
-  @LocalServerPort
-  protected int port;
+  @LocalServerPort protected int port;
 
-  @Autowired
-  protected CaseCreator caseCreator;
+  @Autowired protected CaseCreator caseCreator;
 
   @BeforeClass
   public static void setUp() {
