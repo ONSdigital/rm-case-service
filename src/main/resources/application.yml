@@ -13,6 +13,7 @@ logging:
     uk.gov.ons.ctp: INFO
     org.springframework: ERROR
   profile: DEV
+  useJson: false
 
 liquibase:
   user: postgres
