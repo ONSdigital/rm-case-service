@@ -111,7 +111,7 @@ public class CaseServiceImpl implements CaseService {
   }
 
   @Override
-  public Case findCaseById(final UUID id) throws CTPException {
+  public Case findCaseById(final UUID id) {
     log.debug("Entering findCaseById");
 
     Case caze = caseRepo.findById(id);

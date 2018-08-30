@@ -39,15 +39,13 @@ public class CaseIACServiceImpl implements CaseIACService {
   }
 
   @Override
-  public String findCaseIacByCasePK(int caseFK) throws CTPException {
+  public String findCaseIacByCasePK(int caseFK) {
     log.debug("Entering findCaseIacByCasePK");
 
     CaseIacAudit caseIacAudit = caseIacAuditRepo.findTop1ByCaseFKOrderByCreatedDateTimeDesc(caseFK);
 
     if (caseIacAudit == null) {
-      throw new CTPException(
-          CTPException.Fault.RESOURCE_NOT_FOUND,
-          String.format("Cannot find Iac for case %s", caseFK));
+      return null;
     }
 
     return caseIacAudit.getIac();

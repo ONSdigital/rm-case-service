@@ -12,7 +12,7 @@ public interface CaseIACService extends CTPService {
 
   String generateNewCaseIACCode(final Integer casePk);
 
-  String findCaseIacByCasePK(int i) throws CTPException;
+  String findCaseIacByCasePK(int caseFK);
 
   CaseIacAudit findCaseByIac(String iac) throws CTPException;
 }
