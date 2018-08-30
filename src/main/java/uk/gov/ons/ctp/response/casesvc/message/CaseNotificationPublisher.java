@@ -25,7 +25,8 @@ public class CaseNotificationPublisher {
    * @param caseNotification the CaseNotification to put on the outbound channel
    */
   public void sendNotification(CaseNotification caseNotification) {
-    log.debug("Entering sendNotification with CaseNotification {}", caseNotification);
+    log.with("case_notification", caseNotification)
+        .debug("Entering sendNotification with CaseNotification");
     rabbitTemplate.convertAndSend(caseNotification);
   }
 }

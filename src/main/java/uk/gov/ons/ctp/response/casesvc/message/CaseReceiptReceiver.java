@@ -28,7 +28,7 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 public class CaseReceiptReceiver {
   private static final Logger log = LoggerFactory.getLogger(CaseReceiptReceiver.class);
 
-  private static final String EXISTING_CASE_NOT_FOUND = "No existing case found for caseId %s";
+  private static final String EXISTING_CASE_NOT_FOUND = "No existing case found";
 
   @Autowired private CaseService caseService;
 
@@ -41,14 +41,14 @@ public class CaseReceiptReceiver {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, value = "transactionManager")
   @ServiceActivator(inputChannel = "caseReceiptTransformed", adviceChain = "caseReceiptRetryAdvice")
   public void process(CaseReceipt caseReceipt) throws CTPException {
-    log.debug("entering process with caseReceipt {}", caseReceipt);
+    log.with("case_receipt", caseReceipt).debug("entering process with caseReceipt");
     UUID caseId = UUID.fromString(caseReceipt.getCaseId());
     InboundChannel inboundChannel = caseReceipt.getInboundChannel();
     Timestamp responseTimestamp =
         new Timestamp(caseReceipt.getResponseDateTime().toGregorianCalendar().getTimeInMillis());
 
     Case existingCase = caseService.findCaseById(caseId);
-    log.debug("existingCase is {}", existingCase);
+    log.with("existing_case", existingCase).debug("Found existing case");
 
     CategoryDTO.CategoryName category = null;
     switch (inboundChannel) {
@@ -66,12 +66,12 @@ public class CaseReceiptReceiver {
     }
 
     if (existingCase == null) {
-      log.error(String.format(EXISTING_CASE_NOT_FOUND, caseId));
+      log.with("case_id", caseId).error(EXISTING_CASE_NOT_FOUND);
     } else {
       CaseEvent caseEvent = new CaseEvent();
       caseEvent.setCaseFK(existingCase.getCasePK());
       caseEvent.setCategory(category);
-      log.info("" + caseEvent.getCategory());
+      log.with("case_event", caseEvent.getCategory()).info("New case event");
       caseEvent.setCreatedBy(SYSTEM);
       caseEvent.setDescription(QUESTIONNAIRE_RESPONSE);
       log.debug("about to invoke the event creation...");

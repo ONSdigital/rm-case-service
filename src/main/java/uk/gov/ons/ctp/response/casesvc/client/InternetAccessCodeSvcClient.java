@@ -54,7 +54,7 @@ public class InternetAccessCodeSvcClient {
       maxAttemptsExpression = "#{${retries.maxAttempts}}",
       backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
   public List<String> generateIACs(int count) {
-    log.debug("Generating iac codes, count: {}", count);
+    log.with("count", count).debug("Generating iac codes");
     UriComponents uriComponents =
         restUtility.createUriComponents(
             appConfig.getInternetAccessCodeSvc().getIacPostPath(), null);
@@ -65,7 +65,7 @@ public class InternetAccessCodeSvcClient {
 
     ResponseEntity<String[]> responseEntity =
         restTemplate.exchange(uriComponents.toUri(), HttpMethod.POST, httpEntity, String[].class);
-    log.debug("Successfully generated iac codes, count: {}", count);
+    log.with("count", count).debug("Successfully generated iac codes");
     return Arrays.asList(responseEntity.getBody());
   }
 

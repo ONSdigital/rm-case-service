@@ -31,7 +31,7 @@ public class CategoryService {
    * @return the Category or null if not found
    */
   public Category findCategory(CategoryDTO.CategoryName categoryName) {
-    log.debug("Entering findCategory with type {}", categoryName);
+    log.with("category_name", categoryName).debug("Entering findCategory");
     return categoryRepo.findOne(categoryName);
   }
 
@@ -43,7 +43,7 @@ public class CategoryService {
    * @return List<Category> List of categories
    */
   public List<Category> findCategories(String role, String group) {
-    log.debug("Entering findCategories with role {} and group", role, group);
+    log.with("role", role).with("group", group).debug("Entering findCategories");
     List<Category> categories = categoryRepo.findAll();
     return filterCategories(categories, group, role);
   }

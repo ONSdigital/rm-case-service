@@ -226,15 +226,10 @@ public class CaseService {
    */
   public CaseEvent createCaseEvent(final CaseEvent caseEvent, final Timestamp timestamp)
       throws CTPException {
-    log.info(
-        "Creating case event, casePK={}, category={}, subCategory={}, createdBy={}",
-        caseEvent.getCaseFK(),
-        caseEvent.getCategory(),
-        caseEvent.getSubCategory(),
-        caseEvent.getCreatedBy());
+    log.with("case_event", caseEvent).debug("Creating case event");
 
     Case targetCase = caseRepo.findOne(caseEvent.getCaseFK());
-    log.debug("targetCase is {}", targetCase);
+    log.with("target_case", targetCase).debug("Found target case");
     if (targetCase == null) {
       return null;
     }
@@ -258,12 +253,7 @@ public class CaseService {
   public CaseEvent createCaseEvent(
       final CaseEvent caseEvent, final Timestamp timestamp, final Case targetCase)
       throws CTPException {
-    log.info(
-        "Creating case event, casePK={}, category={}, subCategory={}, createdBy={}",
-        caseEvent.getCaseFK(),
-        caseEvent.getCategory(),
-        caseEvent.getSubCategory(),
-        caseEvent.getCreatedBy());
+    log.with("case_event", caseEvent).debug("Creating case event");
 
     Category category = categoryRepo.findOne(caseEvent.getCategory());
     validateCaseEventRequest(category, targetCase);
@@ -295,12 +285,7 @@ public class CaseService {
     }
 
     effectTargetCaseStateTransition(category, targetCase);
-    log.info(
-        "Successfully created case event, casePK={}, category={}, subCategory={}, createdBy={}",
-        caseEvent.getCaseFK(),
-        caseEvent.getCategory(),
-        caseEvent.getSubCategory(),
-        caseEvent.getCreatedBy());
+    log.with("case_event", caseEvent).debug("Successfully created case event");
     return createdCaseEvent;
   }
 
@@ -314,7 +299,7 @@ public class CaseService {
       readOnly = false,
       timeout = TRANSACTION_TIMEOUT)
   public void saveCaseIacAudit(final Case updatedCase) {
-    log.debug("Saving case iac audit, caseId: {}", updatedCase.getId());
+    log.with("case_id", updatedCase.getId()).debug("Saving case iac audit");
     CaseIacAudit caseIacAudit = new CaseIacAudit();
     caseIacAudit.setCaseFK(updatedCase.getCasePK());
     caseIacAudit.setIac(updatedCase.getIac());
@@ -331,13 +316,13 @@ public class CaseService {
   private void replaceIAC(final Case targetCase) {
     String iac = targetCase.getIac();
     if (iac == null || !internetAccessCodeSvcClient.isIacActive(iac)) {
-      log.debug("Replacing existing case IAC, caseId: {}", targetCase.getId());
+      log.with("case_id", targetCase.getId()).debug("Replacing existing case IAC");
       String newIac = internetAccessCodeSvcClient.generateIACs(1).get(0);
       targetCase.setIac(newIac);
       caseRepo.saveAndFlush(targetCase);
       saveCaseIacAudit(targetCase);
     } else {
-      log.debug("Existing IAC is still active, caseId: {}", targetCase.getId());
+      log.with("case_id", targetCase.getId()).debug("Existing IAC is still active");
     }
   }
 
@@ -370,10 +355,9 @@ public class CaseService {
           actionSvcClient.getActionPlans(caseGroup.getCollectionExerciseId(), enrolments);
 
       if (actionPlans == null || actionPlans.size() != 1) {
-        log.error(
-            "One action plan expected for collectionExerciseId={} with activeEnrolmentStatus={}",
-            caseGroup.getCollectionExerciseId(),
-            enrolments);
+        log.with("collection_exercise_id", caseGroup.getCollectionExerciseId())
+            .with("enrolments", enrolments)
+            .error("One action plan expected");
         throw new IllegalStateException(
             "Expected one action plan for collection exercise with enrolmentStatus");
       }
@@ -395,7 +379,7 @@ public class CaseService {
       timeout = TRANSACTION_TIMEOUT)
   public void createInitialCase(SampleUnitParent sampleUnitParent) {
     CaseGroup newCaseGroup = createNewCaseGroup(sampleUnitParent);
-    log.info("Created new casegroup, casegroupId: {}", newCaseGroup.getId());
+    log.with("case_group_id", newCaseGroup.getId()).debug("Created new casegroup");
 
     Category category = new Category();
     category.setShortDescription("Initial creation of case");
@@ -409,18 +393,16 @@ public class CaseService {
         Case childCase = createNewCase(sampleUnitChild, newCaseGroup);
         caseRepo.saveAndFlush(childCase);
         createCaseCreatedEvent(childCase, category);
-        log.info(
-            "New Case created, caseId: {}, sampleUnitType: {}",
-            childCase.getId().toString(),
-            childCase.getSampleUnitType().toString());
+        log.with("case_id", childCase.getId().toString())
+            .with("sample_unit_type", childCase.getSampleUnitType().toString())
+            .debug("New Case created");
       }
     }
     caseRepo.saveAndFlush(parentCase);
     createCaseCreatedEvent(parentCase, category);
-    log.info(
-        "New Case created, caseId: {}, sampleUnitType: {}",
-        parentCase.getId().toString(),
-        parentCase.getSampleUnitType().toString());
+    log.with("case_id", parentCase.getId().toString())
+        .with("sample_unit_type", parentCase.getSampleUnitType().toString())
+        .debug("New Case created");
   }
 
   /**
@@ -606,14 +588,14 @@ public class CaseService {
     newCaseGroup.setStatus(CaseGroupStatus.NOTSTARTED);
 
     caseGroupRepo.saveAndFlush(newCaseGroup);
-    log.debug("New CaseGroup created: {}", newCaseGroup.getId().toString());
+    log.with("case_group_id", newCaseGroup.getId().toString()).debug("New CaseGroup created");
     return newCaseGroup;
   }
 
   /**
    * Get a case by the sample unit id it relates to
    *
-   * @param sampleUnitId
+   * @param sampleUnitId:
    * @return the case
    */
   public Case findCaseBySampleUnitId(UUID sampleUnitId) {
