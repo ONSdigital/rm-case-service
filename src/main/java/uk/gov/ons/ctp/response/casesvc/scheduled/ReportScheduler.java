@@ -79,8 +79,7 @@ public class ReportScheduler {
             .error("Report run error countdownlatch timed out");
       }
     } catch (InterruptedException e) {
-      log.error("Report run error waiting for countdownlatch: {}", e.getMessage());
-      log.error("Stacktrace ", e);
+      log.error("Report run error waiting for countdownlatch", e);
     } finally {
       reportDistributedLockManager.unlock(DISTRIBUTED_OBJECT_KEY_REPORT);
       reportDistributedLatchManager.deleteCountDownLatch(DISTRIBUTED_OBJECT_KEY_REPORT_LATCH);

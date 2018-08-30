@@ -52,7 +52,7 @@ public class ActionSvcClient {
     UriComponents uriComponents =
         restUtility.createUriComponents(appConfig.getActionSvc().getActionsPath(), null);
 
-    log.debug("about to post to the Action SVC with {}", actionDTO);
+    log.with("case_id", caseId).debug("about to post to the Action SVC");
     restTemplate.exchange(uriComponents.toUri(), HttpMethod.POST, httpEntity, ActionDTO.class);
   }
 
@@ -65,10 +65,9 @@ public class ActionSvcClient {
    * @return List of action plans matching selectors
    */
   public List<ActionPlanDTO> getActionPlans(UUID collectionExerciseId, boolean activeEnrolments) {
-    log.debug(
-        "Retrieving action plan for selectors, " + "collectionExerciseId: {}, activeEnrolment: {}",
-        collectionExerciseId,
-        activeEnrolments);
+    log.with("collection_exercise_id", collectionExerciseId)
+        .with("active_enrolments", activeEnrolments)
+        .debug("Retrieving action plan for selectors");
 
     MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
     queryParams.add("collectionExerciseId", collectionExerciseId.toString());
@@ -89,11 +88,9 @@ public class ActionSvcClient {
       throw e;
     }
 
-    log.debug(
-        "Successfully retrieved action plan for selectors, "
-            + "collectionExerciseId: {}, activeEnrolment: {}",
-        collectionExerciseId,
-        activeEnrolments);
+    log.with("collection_exercise_id", collectionExerciseId)
+        .with("active_enrolments", activeEnrolments)
+        .debug("Successfully retrieved action plan for selectors");
     return responseEntity.getBody();
   }
 }

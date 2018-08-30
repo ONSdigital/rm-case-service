@@ -114,7 +114,6 @@ public class CaseDistributor {
                 } catch (Exception e) {
                   log.with("case", caze)
                       .error("Exception thrown processing case. Processing postponed", e);
-                  log.error("Stacktrace ", e);
                   failures++;
                 }
               }

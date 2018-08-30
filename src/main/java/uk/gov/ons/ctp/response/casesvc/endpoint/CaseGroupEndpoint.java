@@ -69,7 +69,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   @RequestMapping(value = "/{caseGroupId}", method = RequestMethod.GET)
   public CaseGroupDTO findCaseGroupById(@PathVariable("caseGroupId") final UUID caseGroupId)
       throws CTPException {
-    log.with("case_group_id", caseGroupId).info("Entering findCaseGroupById");
+    log.with("case_group_id").debug("Entering findCaseGroupById");
 
     CaseGroup caseGroupObj = caseGroupService.findCaseGroupById(caseGroupId);
     if (caseGroupObj == null) {
@@ -90,7 +90,8 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   @RequestMapping(value = "/partyid/{partyId}", method = RequestMethod.GET)
   public ResponseEntity<List<CaseGroupDTO>> findCaseGroupsByPartyId(
       @PathVariable("partyId") final UUID partyId) {
-    log.with("party_id", partyId).info("Retrieving case groups by party id");
+    log.with("party_id", partyId).debug("Retrieving case groups by party id");
+
     List<CaseGroup> caseGroupList = caseGroupService.findCaseGroupByPartyId(partyId);
 
     if (CollectionUtils.isEmpty(caseGroupList)) {
@@ -122,8 +123,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
       throws CTPException {
     log.with("collection_exercise_id", collectionExerciseId)
         .with("ru_ref", ruRef)
-        .info("Retrieving casegroup transistions");
-
+        .debug("Retrieving casegroup transistions");
     CaseGroup caseGroupObj =
         caseGroupService.findCaseGroupByCollectionExerciseIdAndRuRef(collectionExerciseId, ruRef);
     if (caseGroupObj == null) {
@@ -157,8 +157,8 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
     String event = caseGroupEvent.getEvent();
     log.with("collection_exercise_id", collectionExerciseId)
         .with("ru_ref", ruRef)
-        .with("case_group_event", caseGroupEvent)
-        .info("Updating case group status");
+        .with("event", event)
+        .debug("Updating case group status");
 
     if (!isValidEvent(event)) {
       throw new CTPException(
