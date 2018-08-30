@@ -42,28 +42,28 @@ public class CaseGroupServiceImpl implements CaseGroupService {
 
   @Override
   public CaseGroup findCaseGroupByCaseGroupPK(final Integer caseGroupPK) {
-    log.debug("Entering findCaseGroupByCaseGroupId with {}", caseGroupPK);
+    log.with("case_group_pk", caseGroupPK).debug("Entering findCaseGroupByCaseGroupId");
     return caseGroupRepo.findOne(caseGroupPK);
   }
 
   @Override
   public CaseGroup findCaseGroupById(final UUID id) {
-    log.debug("Entering findCaseGroupById with {}", id);
+    log.with("id", id).debug("Entering findCaseGroupById");
     return caseGroupRepo.findById(id);
   }
 
   @Override
   public List<CaseGroup> findCaseGroupByPartyId(final UUID id) {
-    log.debug("Entering findCaseGroupByPartyId with {}", id);
+    log.with("id", id).debug("Entering findCaseGroupByPartyId");
     return caseGroupRepo.findByPartyId(id);
   }
 
   @Override
   public CaseGroup findCaseGroupByCollectionExerciseIdAndRuRef(
       final UUID collectionExerciseId, final String ruRef) {
-    log.debug(
-        "Entering findCaseGroupByCollectionExerciseIdAndRuRef for "
-            + "collectionExerciseId {}, ruRef {}");
+    log.with("collection_exercise_id", collectionExerciseId)
+        .with("ru_ref", ruRef)
+        .debug("Entering findCaseGroupByCollectionExerciseIdAndRuRef");
     return caseGroupRepo.findCaseGroupByCollectionExerciseIdAndSampleUnitRef(
         collectionExerciseId, ruRef);
   }
