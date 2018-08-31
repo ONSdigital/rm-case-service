@@ -32,7 +32,7 @@ public class InternetAccessCodeSvcClient {
   private RestTemplate restTemplate;
   private RestUtility restUtility;
 
-  /** Constructor for InternetAccessCodeSvcClientServiceImpl */
+  /** Constructor for InternetAccessCodeSvcClient */
   @Autowired
   public InternetAccessCodeSvcClient(
       final AppConfig appConfig,

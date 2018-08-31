@@ -71,7 +71,7 @@ public class CaseService {
   private CaseNotificationPublisher notificationPublisher;
   private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
-  /** Constructor for CaseServiceImpl */
+  /** Constructor for CaseService */
   public CaseService(
       final CaseRepository caseRepo,
       final CaseEventRepository caseEventRepo,
