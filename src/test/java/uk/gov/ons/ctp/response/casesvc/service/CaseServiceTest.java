@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.casesvc.service.impl;
+package uk.gov.ons.ctp.response.casesvc.service;
 
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.fail;
@@ -70,7 +70,7 @@ import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
  * effective.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class CaseServiceImplTest {
+public class CaseServiceTest {
 
   private static final String IAC_SVC_PUT_PATH = "iacs/123";
   private static final String IAC_SVC_POST_PATH = "iacs/123";
@@ -96,7 +96,7 @@ public class CaseServiceImplTest {
 
   /**
    * Note that the Integer values below are linked to the order in which cases appear in the array
-   * defined at CaseServiceImplTest.Case.json = casePK
+   * defined at CaseServiceTest.Case.json = casePK
    */
   private static final Integer NON_EXISTING_PARENT_CASE_FK = 0;
 

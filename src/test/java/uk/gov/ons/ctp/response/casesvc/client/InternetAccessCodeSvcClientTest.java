@@ -34,9 +34,9 @@ import uk.gov.ons.ctp.response.iac.representation.CreateInternetAccessCodeDTO;
 import uk.gov.ons.ctp.response.iac.representation.InternetAccessCodeDTO;
 import uk.gov.ons.ctp.response.iac.representation.UpdateInternetAccessCodeDTO;
 
-/** Testing InternetAccessCodeSvcClientServiceImpl */
+/** Testing InternetAccessCodeSvcClientService */
 @RunWith(MockitoJUnitRunner.class)
-public class InternetAccessCodeSvcClientImplTest {
+public class InternetAccessCodeSvcClientTest {
 
   private static final String HTTP = "http";
   private static final String LOCALHOST = "localhost";

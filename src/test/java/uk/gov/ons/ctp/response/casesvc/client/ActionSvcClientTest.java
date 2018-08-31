@@ -29,7 +29,7 @@ import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 
 /** A test of the case frame service client service */
 @RunWith(MockitoJUnitRunner.class)
-public class ActionSvcClientImplTest {
+public class ActionSvcClientTest {
 
   private static final String ACTION_PATH = "/actions";
   private static final String GENERAL_ESCALATION = "GeneralEscalation";

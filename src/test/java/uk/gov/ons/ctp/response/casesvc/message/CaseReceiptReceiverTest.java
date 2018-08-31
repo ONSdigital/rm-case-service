@@ -29,9 +29,9 @@ import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 
-/** To unit test CaseReceiptReceiverImpl */
+/** To unit test CaseReceiptReceiver */
 @RunWith(MockitoJUnitRunner.class)
-public class CaseReceiptReceiverImplTest {
+public class CaseReceiptReceiverTest {
 
   private static final String LINKED_CASE_ID = "fa622b71-f158-4d51-82dd-c3417e31e32c";
   private static final String UNLINKED_CASE_ID = "fa622b71-f158-4d51-82dd-c3417e31e32d";

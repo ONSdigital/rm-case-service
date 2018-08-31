@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.casesvc.service.impl;
+package uk.gov.ons.ctp.response.casesvc.service;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -18,7 +18,7 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseGroupAuditService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CaseGroupServiceImplTest {
+public class CaseGroupServiceTest {
 
   @InjectMocks private CaseGroupService caseGroupService;
 
