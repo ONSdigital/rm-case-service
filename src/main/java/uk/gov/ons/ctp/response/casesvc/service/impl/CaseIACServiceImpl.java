@@ -77,7 +77,6 @@ public class CaseIACServiceImpl implements CaseIACService {
     CaseEvent caseEvent =
         CaseEvent.builder()
             .category(CategoryDTO.CategoryName.GENERATE_ENROLMENT_CODE)
-            .createdBy(null) // TODO
             .caseFK(casePk)
             .createdDateTime(Timestamp.from(clock.instant()))
             .build();
