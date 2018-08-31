@@ -46,9 +46,9 @@ public class CaseIACEndpointIT {
   public WireMockRule wireMockRule =
       new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
 
-  @LocalServerPort protected int port;
+  @LocalServerPort private int port;
 
-  @Autowired protected CaseCreator caseCreator;
+  @Autowired private CaseCreator caseCreator;
 
   @BeforeClass
   public static void setUp() {
