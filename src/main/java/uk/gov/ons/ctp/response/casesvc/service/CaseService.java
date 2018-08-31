@@ -39,7 +39,7 @@ public interface CaseService extends CTPService {
    * @param id Unique Case UUID
    * @return Case object or null
    */
-  Case findCaseById(UUID id) throws CTPException;
+  Case findCaseById(UUID id);
 
   /**
    * Find Case entity by IAC.

@@ -38,8 +38,7 @@ public final class CaseIACEndpoint implements CTPEndpoint {
   }
 
   @RequestMapping(method = RequestMethod.POST)
-  public ResponseEntity<CaseIACDTO> generateIACCode(@PathVariable("caseId") final UUID caseId)
-      throws CTPException {
+  public ResponseEntity<CaseIACDTO> generateIACCode(@PathVariable("caseId") final UUID caseId) {
     log.debug("Generating iac code for caseId {}", caseId);
 
     Case actualCase = caseService.findCaseById(caseId);
@@ -57,8 +56,7 @@ public final class CaseIACEndpoint implements CTPEndpoint {
   }
 
   @RequestMapping(method = RequestMethod.GET)
-  public ResponseEntity<List<CaseIACDTO>> getIACCodes(@PathVariable("caseId") final UUID caseId)
-      throws CTPException {
+  public ResponseEntity<List<CaseIACDTO>> getIACCodes(@PathVariable("caseId") final UUID caseId) {
     log.debug("Get all iac codes for caseId {}", caseId);
 
     Case actualCase = caseService.findCaseById(caseId);
@@ -80,7 +78,7 @@ public final class CaseIACEndpoint implements CTPEndpoint {
 
   @Data
   @AllArgsConstructor
-  protected static class CaseIACDTO {
+  static class CaseIACDTO {
     private String iac;
   }
 }
