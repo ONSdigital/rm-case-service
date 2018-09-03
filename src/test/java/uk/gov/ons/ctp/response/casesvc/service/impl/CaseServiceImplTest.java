@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -15,7 +16,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.ons.ctp.common.state.BasicStateTransitionManager.TRANSITION_ERROR_MSG;
 import static uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseEvent.ACCOUNT_CREATED;
-import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.IAC_OVERUSE_MSG;
 import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.MISSING_NEW_CASE_MSG;
 import static uk.gov.ons.ctp.response.casesvc.service.impl.CaseServiceImpl.WRONG_OLD_SAMPLE_UNIT_TYPE_MSG;
 
@@ -44,6 +44,7 @@ import uk.gov.ons.ctp.response.casesvc.config.InternetAccessCodeSvc;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseIacAudit;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
@@ -63,6 +64,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
 import uk.gov.ons.ctp.response.casesvc.service.ActionSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupAuditService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
+import uk.gov.ons.ctp.response.casesvc.service.CaseIACService;
 import uk.gov.ons.ctp.response.casesvc.service.CollectionExerciseSvcClientService;
 import uk.gov.ons.ctp.response.casesvc.service.InternetAccessCodeSvcClientService;
 import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
@@ -147,6 +149,7 @@ public class CaseServiceImplTest {
   @Mock private CaseGroupAuditService caseGroupAuditService;
   @Mock private CollectionExerciseSvcClientService collectionExerciseSvcClientService;
   @Mock private InternetAccessCodeSvcClientService internetAccessCodeSvcClientService;
+  @Mock private CaseIACService caseIacAuditService;
 
   @Mock private AppConfig appConfig;
   @Mock private CaseNotificationPublisher notificationPublisher;
@@ -184,21 +187,9 @@ public class CaseServiceImplTest {
    */
   @Test
   public void testFindCaseByIacNoCaseFound() throws CTPException {
+    when(caseIacAuditService.findCaseByIac(anyString())).thenReturn(new CaseIacAudit());
+
     assertNull(caseService.findCaseByIac(IAC_FOR_TEST));
-  }
-
-  /** To test findCaseByIac when more than one case is found for given IAC */
-  @Test
-  public void testFindCaseByIacMoreThanOneCaseFound() {
-    when(caseRepo.findByIac(IAC_FOR_TEST)).thenReturn(cases);
-
-    try {
-      caseService.findCaseByIac(IAC_FOR_TEST);
-      fail();
-    } catch (CTPException e) {
-      assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
-      assertEquals(String.format(IAC_OVERUSE_MSG, IAC_FOR_TEST), e.getMessage());
-    }
   }
 
   /**
@@ -208,9 +199,8 @@ public class CaseServiceImplTest {
    */
   @Test
   public void testFindCaseByIacOneCaseFound() throws CTPException {
-    List<Case> result = new ArrayList<>();
-    result.add(cases.get(0));
-    when(caseRepo.findByIac(IAC_FOR_TEST)).thenReturn(result);
+    when(caseIacAuditService.findCaseByIac(anyString())).thenReturn(new CaseIacAudit());
+    when(caseRepo.findByCasePK(anyInt())).thenReturn(cases.get(0));
 
     assertEquals(cases.get(0), caseService.findCaseByIac(IAC_FOR_TEST));
   }
@@ -1738,7 +1728,6 @@ public class CaseServiceImplTest {
 
     Case updatedBCase = mapperFacade.map(actionableBCase, Case.class);
     updatedBCase.setIac(IAC_FOR_TEST);
-    verify(caseRepo, times(1)).saveAndFlush(updatedBCase);
     verify(caseIacAuditRepo, times(1)).saveAndFlush(any());
   }
 

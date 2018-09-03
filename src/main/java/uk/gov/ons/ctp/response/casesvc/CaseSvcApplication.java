@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc;
 
 import com.godaddy.logging.LoggingConfigs;
+import java.time.Clock;
 import javax.annotation.PostConstruct;
 import net.sourceforge.cobertura.CoverageIgnore;
 import org.redisson.Redisson;
@@ -8,6 +9,7 @@ import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -50,7 +52,7 @@ import uk.gov.ons.ctp.response.casesvc.state.CaseSvcStateTransitionManagerFactor
 @EntityScan("uk.gov.ons.ctp.response")
 @EnableAsync
 @ImportResource("springintegration/main.xml")
-public class CaseSvcApplication {
+public class CaseSvcApplication implements CommandLineRunner {
 
   public static final String CASE_DISTRIBUTION_LIST = "casesvc.case.distribution";
   public static final String REPORT_EXECUTION_LOCK = "casesvc.report.execution";
@@ -78,6 +80,13 @@ public class CaseSvcApplication {
 
   @PostConstruct
   public void initJsonLogging() {
+    if (appConfig.getLogging().isUseJson()) {
+      LoggingConfigs.setCurrent(LoggingConfigs.getCurrent().useJson());
+    }
+  }
+
+  @Override
+  public void run(String... args) throws Exception {
     if (appConfig.getLogging().isUseJson()) {
       LoggingConfigs.setCurrent(LoggingConfigs.getCurrent().useJson());
     }
@@ -239,5 +248,10 @@ public class CaseSvcApplication {
         REPORT_EXECUTION_LOCK,
         redissonClient,
         appConfig.getDataGrid().getReportLockTimeToLiveSeconds());
+  }
+
+  @Bean
+  public Clock clock() {
+    return Clock.systemDefaultZone();
   }
 }

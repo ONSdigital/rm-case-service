@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.PostLoad;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -101,7 +102,10 @@ public class Case implements Serializable {
   @OneToMany(mappedBy = "caseFK", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   private List<Response> responses;
 
-  private String iac;
+  @OneToMany(mappedBy = "caseFK", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  private List<CaseIacAudit> iacAudits;
+
+  @Transient private String iac;
 
   /** Trims spaces from IAC after load */
   @PostLoad
