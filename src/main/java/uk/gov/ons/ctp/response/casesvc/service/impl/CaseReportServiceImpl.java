@@ -23,9 +23,9 @@ public class CaseReportServiceImpl implements CaseReportService {
     log.debug("Entering createReport...");
 
     boolean reportResult = caseReportRepository.chasingReportStoredProcedure();
-    log.debug("Just ran the chasing report and result is {}", reportResult);
+    log.with("report_result", reportResult).debug("Just ran the chasing report");
 
     reportResult = caseReportRepository.caseEventsReportStoredProcedure();
-    log.debug("Just ran the case events report and result is {}", reportResult);
+    log.with("report_result", reportResult).debug("Just ran the case events report");
   }
 }

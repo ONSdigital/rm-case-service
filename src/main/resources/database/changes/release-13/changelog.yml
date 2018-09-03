@@ -1,0 +1,10 @@
+databaseChangeLog:
+   - changeSet:
+      id: 13-1
+      author: David Mort
+      changes:
+        - sqlFile:
+            comment: Add H cases to the oldsampleunittype column for the OFFLINE_RESPONSE_PROCESSED category
+            path: add_H_cases_to_OFFLINE_RESPONSE_PROCESSED_category.sql
+            relativeToChangelogFile: true
+            splitStatements: false

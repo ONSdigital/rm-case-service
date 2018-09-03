@@ -178,15 +178,10 @@ public class CaseServiceImpl implements CaseService {
   public CaseEvent createCaseEvent(
       final CaseEvent caseEvent, final Case newCase, final Timestamp timestamp)
       throws CTPException {
-    log.info(
-        "Creating case event, casePK={}, category={}, subCategory={}, createdBy={}",
-        caseEvent.getCaseFK(),
-        caseEvent.getCategory(),
-        caseEvent.getSubCategory(),
-        caseEvent.getCreatedBy());
+    log.with("case_event", caseEvent).debug("Creating case event");
 
     Case targetCase = caseRepo.findOne(caseEvent.getCaseFK());
-    log.debug("targetCase is {}", targetCase);
+    log.with("target_case", targetCase).debug("Found target case");
     if (targetCase == null) {
       return null;
     }
@@ -204,12 +199,7 @@ public class CaseServiceImpl implements CaseService {
       final Timestamp timestamp,
       final Case targetCase)
       throws CTPException {
-    log.info(
-        "Creating case event, casePK={}, category={}, subCategory={}, createdBy={}",
-        caseEvent.getCaseFK(),
-        caseEvent.getCategory(),
-        caseEvent.getSubCategory(),
-        caseEvent.getCreatedBy());
+    log.with("case_event", caseEvent).debug("Creating case event");
 
     Category category = categoryRepo.findOne(caseEvent.getCategory());
     validateCaseEventRequest(category, targetCase, newCase);
@@ -217,7 +207,7 @@ public class CaseServiceImpl implements CaseService {
     // save the case event to db
     caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
     CaseEvent createdCaseEvent = caseEventRepo.save(caseEvent);
-    log.debug("createdCaseEvent is {}", createdCaseEvent);
+    log.with("created_case_event", createdCaseEvent).debug("Saved case event");
 
     // do we need to record a response?
     recordCaseResponse(category, targetCase, timestamp);
@@ -245,12 +235,7 @@ public class CaseServiceImpl implements CaseService {
         effectTargetCaseStateTransition(category, targetCase);
         break;
     }
-    log.info(
-        "Successfully created case event, casePK={}, category={}, subCategory={}, createdBy={}",
-        caseEvent.getCaseFK(),
-        caseEvent.getCategory(),
-        caseEvent.getSubCategory(),
-        caseEvent.getCreatedBy());
+    log.with("case_event", caseEvent).debug("Successfully created case event");
     return createdCaseEvent;
   }
 
@@ -265,7 +250,7 @@ public class CaseServiceImpl implements CaseService {
       timeout = TRANSACTION_TIMEOUT)
   @Override
   public void saveCaseIacAudit(final Case updatedCase) {
-    log.debug("Saving case iac audit, caseId: {}", updatedCase.getId());
+    log.with("case_id", updatedCase.getId()).debug("Saving case iac audit");
     CaseIacAudit caseIacAudit = new CaseIacAudit();
     caseIacAudit.setCaseFK(updatedCase.getCasePK());
     caseIacAudit.setIac(updatedCase.getIac());
@@ -282,13 +267,13 @@ public class CaseServiceImpl implements CaseService {
   private void replaceIAC(final Case targetCase) {
     String iac = targetCase.getIac();
     if (iac == null || !internetAccessCodeSvcClientService.isIacActive(iac)) {
-      log.debug("Replacing existing case IAC, caseId: {}", targetCase.getId());
+      log.with("case_id", targetCase.getId()).debug("Replacing existing case IAC");
       String newIac = internetAccessCodeSvcClientService.generateIACs(1).get(0);
       targetCase.setIac(newIac);
       caseRepo.saveAndFlush(targetCase);
       saveCaseIacAudit(targetCase);
     } else {
-      log.debug("Existing IAC is still active, caseId: {}", targetCase.getId());
+      log.with("case_id", targetCase.getId()).debug("Existing IAC is still active");
     }
   }
 
@@ -360,20 +345,17 @@ public class CaseServiceImpl implements CaseService {
                           && c.getPartyId().equals(newCase.getPartyId()))
               .collect(Collectors.toList());
       if (biCases.size() != 0) {
-        log.warn(
-            "Existing BI case found during enrolment for "
-                + "partyid: {} for casegroup: {} with caseid: {}",
-            newCase.getPartyId().toString(),
-            caseGroup.getId(),
-            biCases.get(0).getId());
+        log.with("party_id", newCase.getPartyId().toString())
+            .with("case_group_id", caseGroup.getId())
+            .with("case_id", biCases.get(0).getId())
+            .warn("Existing BI case found during enrolment");
       } else {
         Case c = new Case();
         c.setPartyId(newCase.getPartyId());
         createNewCase(category, caseEvent, cases.get(0), c);
-        log.info(
-            "BI case created during enrolment for partyid: {} for casegroup: {}",
-            newCase.getPartyId().toString(),
-            caseGroup.getId());
+        log.with("party_id", newCase.getPartyId().toString())
+            .with("case_group_id", caseGroup.getId())
+            .debug("BI case created during enrolment");
       }
 
       // Transition each of the B cases for the casegroup being enrolled for
@@ -395,7 +377,7 @@ public class CaseServiceImpl implements CaseService {
   @Override
   public void createInitialCase(SampleUnitParent sampleUnitParent) {
     CaseGroup newCaseGroup = createNewCaseGroup(sampleUnitParent);
-    log.info("Created new casegroup, casegroupId: {}", newCaseGroup.getId());
+    log.with("case_group_id", newCaseGroup.getId()).debug("Created new casegroup");
 
     Category category = new Category();
     category.setShortDescription("Initial creation of case");
@@ -409,18 +391,16 @@ public class CaseServiceImpl implements CaseService {
         Case childCase = createNewCase(sampleUnitChild, newCaseGroup);
         caseRepo.saveAndFlush(childCase);
         createCaseCreatedEvent(childCase, category);
-        log.info(
-            "New Case created, caseId: {}, sampleUnitType: {}",
-            childCase.getId().toString(),
-            childCase.getSampleUnitType().toString());
+        log.with("case_id", childCase.getId().toString())
+            .with("sample_unit_type", childCase.getSampleUnitType().toString())
+            .debug("New Case created");
       }
     }
     caseRepo.saveAndFlush(parentCase);
     createCaseCreatedEvent(parentCase, category);
-    log.info(
-        "New Case created, caseId: {}, sampleUnitType: {}",
-        parentCase.getId().toString(),
-        parentCase.getSampleUnitType().toString());
+    log.with("case_id", parentCase.getId().toString())
+        .with("sample_unit_type", parentCase.getSampleUnitType().toString())
+        .debug("New Case created");
   }
 
   /**
@@ -443,13 +423,15 @@ public class CaseServiceImpl implements CaseService {
               WRONG_OLD_SAMPLE_UNIT_TYPE_MSG,
               oldCaseSampleUnitType,
               expectedOldCaseSampleUnitTypes);
-      log.error(errorMsg);
+      log.with("old_case_sample_unit_type", oldCaseSampleUnitType)
+          .with("expected_old_case_sample_unit_types", expectedOldCaseSampleUnitTypes)
+          .error(errorMsg);
       throw new CTPException(CTPException.Fault.VALIDATION_FAILED, errorMsg);
     }
 
     if (category.getNewCaseSampleUnitType() != null && newCase == null) {
       String errorMsg = String.format(MISSING_NEW_CASE_MSG, oldCase.getId());
-      log.error(errorMsg);
+      log.with("old_case_id", oldCase.getId()).error(errorMsg);
       throw new CTPException(CTPException.Fault.VALIDATION_FAILED, errorMsg);
     }
 
@@ -724,7 +706,7 @@ public class CaseServiceImpl implements CaseService {
     newCaseGroup.setStatus(CaseGroupStatus.NOTSTARTED);
 
     caseGroupRepo.saveAndFlush(newCaseGroup);
-    log.debug("New CaseGroup created: {}", newCaseGroup.getId().toString());
+    log.with("case_group_id", newCaseGroup.getId().toString()).debug("New CaseGroup created");
     return newCaseGroup;
   }
 
