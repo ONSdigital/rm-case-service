@@ -142,7 +142,12 @@ public class CaseServiceImpl implements CaseService {
   @Override
   public List<Case> findCasesByPartyId(final UUID partyId) {
     log.debug("Entering findCasesByPartyId");
-    return caseRepo.findByPartyId(partyId);
+
+    List<Case> cazes = caseRepo.findByPartyId(partyId);
+
+    cazes.stream().forEach(c -> c.setIac(caseIacAuditService.findCaseIacByCasePK(c.getCasePK())));
+
+    return cazes;
   }
 
   @Override
