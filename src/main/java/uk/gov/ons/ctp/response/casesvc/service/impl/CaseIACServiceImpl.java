@@ -4,10 +4,13 @@ import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
 import java.sql.Timestamp;
 import java.time.Clock;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseIacAudit;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
@@ -91,5 +94,10 @@ public class CaseIACServiceImpl implements CaseIACService {
             .iac(iac)
             .build();
     caseIacAuditRepo.save(audit);
+  }
+
+  public void disableAllIACsForCase(Case caze) {
+    List<CaseIacAudit> caseIacAudits = caze.getIacAudits();
+    caseIacAudits.forEach(caseIacAudit -> iacClient.disableIAC(caseIacAudit.getIac()));
   }
 }
