@@ -609,7 +609,7 @@ public class CaseServiceImpl implements CaseService {
                   .getCategoryName()
                   .equals(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD))
           || transitionEvent == CaseDTO.CaseEvent.ACCOUNT_CREATED) {
-          caseIacAuditService.disableAllIACsForCase(targetCase);
+        caseIacAuditService.disableAllIACsForCase(targetCase);
       }
 
       CaseState oldState = targetCase.getState();
