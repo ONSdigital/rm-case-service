@@ -417,9 +417,11 @@ public class CaseServiceImplTest {
     Case caseSaved = argument.getValue();
     assertEquals(1, caseSaved.getResponses().size());
     assertEquals(CaseState.INACTIONABLE, caseSaved.getState());
+    when(caseSaved.getIacAudits())
+        .thenReturn(Collections.singletonList(createCaseIacAudit(IAC_FOR_TEST)));
 
     // IAC should be disabled for online responses
-    verify(internetAccessCodeSvcClientService, times(1)).disableIAC(any(String.class));
+    verify(internetAccessCodeSvcClientService, times(1)).disableIAC(IAC_FOR_TEST);
 
     // action service should be told of case state change
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
@@ -1789,6 +1791,11 @@ public class CaseServiceImplTest {
     caseEvent.setDescription(CASEEVENT_DESCRIPTION);
     caseEvent.setSubCategory(CASEEVENT_SUBCATEGORY);
     return caseEvent;
+  }
+
+  /** mock iac audit * */
+  private CaseIacAudit createCaseIacAudit(String IAC) {
+    return new CaseIacAudit(1, 1, IAC, new Timestamp(System.currentTimeMillis()));
   }
 
   /** mock loading data */
