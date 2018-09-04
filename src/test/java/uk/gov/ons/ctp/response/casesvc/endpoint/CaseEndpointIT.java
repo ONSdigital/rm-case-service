@@ -123,7 +123,7 @@ public class CaseEndpointIT {
     sampleUnit.setSampleUnitRef("LMS0004");
     sampleUnit.setCollectionInstrumentId(UUID.randomUUID().toString());
     sampleUnit.setPartyId(UUID.randomUUID().toString());
-    sampleUnit.setSampleUnitType("H");
+    sampleUnit.setSampleUnitType("Hello");
     Message<SampleUnitParent> caseMessage = new GenericMessage<>(sampleUnit);
 
     caseTransformed.send(caseMessage);
