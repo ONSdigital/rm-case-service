@@ -148,7 +148,7 @@ public interface CaseService extends CTPService {
   /**
    * Get a case by the sample unit id it relates to
    *
-   * @param sample unit id
+   * @param sampleUnitId unit id
    * @return the case
    */
   Case findCaseBySampleUnitId(UUID sampleUnitId);
