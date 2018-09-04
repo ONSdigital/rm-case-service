@@ -10,6 +10,7 @@ import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
+
 import java.util.UUID;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -18,12 +19,17 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.MessageHandlingException;
+import org.springframework.messaging.support.GenericMessage;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.gov.ons.ctp.common.UnirestInitialiser;
 import uk.gov.ons.ctp.response.casesvc.CaseCreator;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
+import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
@@ -45,6 +51,8 @@ public class CaseEndpointIT {
   @LocalServerPort private int port;
 
   @Autowired private CaseCreator caseCreator;
+
+  @Autowired private MessageChannel caseTransformed;
 
   @BeforeClass
   public static void setUp() {
@@ -103,6 +111,22 @@ public class CaseEndpointIT {
     UUID returnedCaseId = casesResponse.getBody()[0].getId();
 
     assertThat(returnedCaseId).isEqualTo(caseId);
+  }
+
+  @Test(expected = MessageHandlingException.class)
+  public void ensureFiniteRetriesOnFailedCaseNotification() throws Exception {
+    UUID sampleUnitId = UUID.randomUUID();
+    SampleUnitParent sampleUnit = new SampleUnitParent();
+    sampleUnit.setCollectionExerciseId(UUID.randomUUID().toString());
+    sampleUnit.setId(sampleUnitId.toString());
+    sampleUnit.setActionPlanId(UUID.randomUUID().toString());
+    sampleUnit.setSampleUnitRef("LMS0004");
+    sampleUnit.setCollectionInstrumentId(UUID.randomUUID().toString());
+    sampleUnit.setPartyId(UUID.randomUUID().toString());
+    sampleUnit.setSampleUnitType("H");
+    Message<SampleUnitParent> caseMessage = new GenericMessage<>(sampleUnit);
+
+    caseTransformed.send(caseMessage);
   }
 
   /**
