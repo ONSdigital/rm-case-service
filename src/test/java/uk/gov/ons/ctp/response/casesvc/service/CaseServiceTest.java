@@ -258,7 +258,7 @@ public class CaseServiceTest {
     verify(caseEventRepo, times(1)).save(caseEvent);
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
     verify(actionSvcClient, times(0))
-        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
+        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -296,7 +296,7 @@ public class CaseServiceTest {
 
     // no new action to be created
     verify(actionSvcClient, times(0))
-        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
+        .postAction(any(String.class), any(UUID.class), any(String.class));
 
     // event was saved
     verify(caseEventRepo, times(1)).save(caseEvent);
@@ -335,7 +335,7 @@ public class CaseServiceTest {
 
     // no new action to be created
     verify(actionSvcClient, times(0))
-        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
+        .postAction(any(String.class), any(UUID.class), any(String.class));
 
     // event was saved
     verify(caseEventRepo, times(1)).save(caseEvent);
@@ -377,7 +377,7 @@ public class CaseServiceTest {
 
     // no new action to be created
     verify(actionSvcClient, times(0))
-        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
+        .postAction(any(String.class), any(UUID.class), any(String.class));
 
     // event was saved
     verify(caseEventRepo, times(1)).save(caseEvent);
@@ -410,7 +410,7 @@ public class CaseServiceTest {
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
     verify(actionSvcClient, never())
-        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
+        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -440,7 +440,7 @@ public class CaseServiceTest {
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
     verify(actionSvcClient, never())
-        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
+        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -470,7 +470,7 @@ public class CaseServiceTest {
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
     verify(actionSvcClient, never())
-        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
+        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -500,7 +500,7 @@ public class CaseServiceTest {
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
     verify(actionSvcClient, never())
-        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
+        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   @Test
@@ -581,7 +581,7 @@ public class CaseServiceTest {
             targetCase.getPartyId());
     verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
     verify(actionSvcClient, never())
-        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
+        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -612,7 +612,7 @@ public class CaseServiceTest {
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
     verify(actionSvcClient, never())
-        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
+        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -643,7 +643,7 @@ public class CaseServiceTest {
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
     verify(actionSvcClient, never())
-        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
+        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -696,7 +696,7 @@ public class CaseServiceTest {
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
     // no new action to be created
     verify(actionSvcClient, times(0))
-        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
+        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -769,7 +769,7 @@ public class CaseServiceTest {
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
     verify(actionSvcClient, times(0))
-        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
+        .postAction(any(String.class), any(UUID.class), any(String.class));
     verify(internetAccessCodeSvcClient, times(0)).disableIAC(any(String.class));
     verify(caseEventRepo, times(0)).save(caseEvent);
   }
@@ -803,7 +803,7 @@ public class CaseServiceTest {
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
     verify(actionSvcClient, never())
-        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
+        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -835,7 +835,7 @@ public class CaseServiceTest {
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
     verify(actionSvcClient, never())
-        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
+        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -866,7 +866,7 @@ public class CaseServiceTest {
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
     verify(actionSvcClient, never())
-        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
+        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -913,7 +913,7 @@ public class CaseServiceTest {
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
     // no new action to be created
     verify(actionSvcClient, times(0))
-        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
+        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**

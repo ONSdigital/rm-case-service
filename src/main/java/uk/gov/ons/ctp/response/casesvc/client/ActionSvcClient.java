@@ -35,14 +35,14 @@ public class ActionSvcClient {
   private RestUtility restUtility;
 
   /**
-   * Make use of the ActionService to create and post a new Action for a given caseId according to
-   * Category actionType and CaseEvent createdBy values
+   * Make use of the ActionService to post a new Action for a given caseId according to Category
+   * actionType and CaseEvent createdBy values
    *
    * @param actionType action type
    * @param caseId the UUID caseId
    * @param createdBy who did this
    */
-  public void createAndPostAction(String actionType, UUID caseId, String createdBy) {
+  public void postAction(String actionType, UUID caseId, String createdBy) {
     ActionDTO actionDTO = new ActionDTO();
     actionDTO.setCaseId(caseId);
     actionDTO.setActionTypeName(actionType);

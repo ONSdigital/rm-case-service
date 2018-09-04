@@ -77,7 +77,7 @@ public class ActionSvcClientTest {
     HttpEntity httpEntity = new HttpEntity<>(actionDTO, null);
     when(restUtility.createHttpEntity(any(ActionDTO.class))).thenReturn(httpEntity);
 
-    actionSvcClient.createAndPostAction(GENERAL_ESCALATION, EXISTING_CASE_ID, SYSTEM);
+    actionSvcClient.postAction(GENERAL_ESCALATION, EXISTING_CASE_ID, SYSTEM);
 
     verify(restUtility, times(1)).createUriComponents(ACTION_PATH, null);
     verify(restUtility, times(1)).createHttpEntity(eq(actionDTO));
