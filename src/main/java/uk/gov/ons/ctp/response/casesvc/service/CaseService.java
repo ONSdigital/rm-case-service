@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,7 +66,7 @@ public class CaseService {
   private ActionSvcClient actionSvcClient;
   private CaseGroupService caseGroupService;
   private InternetAccessCodeSvcClient internetAccessCodeSvcClient;
-
+  private CaseIACService caseIacAuditService;
   private CaseNotificationPublisher notificationPublisher;
   private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
@@ -81,6 +80,7 @@ public class CaseService {
       final ActionSvcClient actionSvcClient,
       final CaseGroupService caseGroupService,
       final InternetAccessCodeSvcClient internetAccessCodeSvcClient,
+      final CaseIACService caseIacAuditService,
       final CaseNotificationPublisher notificationPublisher,
       final StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager) {
     this.caseRepo = caseRepo;
@@ -91,6 +91,7 @@ public class CaseService {
     this.actionSvcClient = actionSvcClient;
     this.caseGroupService = caseGroupService;
     this.internetAccessCodeSvcClient = internetAccessCodeSvcClient;
+    this.caseIacAuditService = caseIacAuditService;
     this.notificationPublisher = notificationPublisher;
     this.caseSvcStateTransitionManager = caseSvcStateTransitionManager;
   }
@@ -103,7 +104,12 @@ public class CaseService {
    */
   public Case findCaseById(final UUID id) {
     log.debug("Entering findCaseById");
-    return caseRepo.findById(id);
+    Case caze = caseRepo.findById(id);
+    String iac = caseIacAuditService.findCaseIacByCasePK(caze.getCasePK());
+
+    caze.setIac(iac);
+
+    return caze;
   }
 
   /**
@@ -116,16 +122,8 @@ public class CaseService {
   public Case findCaseByIac(final String iac) throws CTPException {
     log.debug("Entering findCaseByIac");
 
-    List<Case> cases = caseRepo.findByIac(iac);
-
-    Case caze = null;
-    if (!CollectionUtils.isEmpty(cases)) {
-      if (cases.size() != 1) {
-        throw new CTPException(
-            CTPException.Fault.SYSTEM_ERROR, String.format(IAC_OVERUSE_MSG, iac));
-      }
-      caze = cases.get(0);
-    }
+    CaseIacAudit caseIacAudit = caseIacAuditService.findCaseByIac(iac);
+    Case caze = caseRepo.findByCasePK(caseIacAudit.getCaseFK());
 
     return caze;
   }
@@ -149,7 +147,10 @@ public class CaseService {
    */
   public List<Case> findCasesByPartyId(final UUID partyId) {
     log.debug("Entering findCasesByPartyId");
-    return caseRepo.findByPartyId(partyId);
+    List<Case> cazes = caseRepo.findByPartyId(partyId);
+    cazes.stream().forEach(c -> c.setIac(caseIacAuditService.findCaseIacByCasePK(c.getCasePK())));
+
+    return cazes;
   }
 
   /**
@@ -273,10 +274,10 @@ public class CaseService {
         processActionPlanChange(targetCase, true);
         break;
       case GENERATE_ENROLMENT_CODE:
-        replaceIAC(targetCase);
+        generateAndStoreNewIAC(targetCase);
         break;
       case NO_ACTIVE_ENROLMENTS:
-        replaceIAC(targetCase);
+        generateAndStoreNewIAC(targetCase);
         processActionPlanChange(targetCase, false);
         break;
       default:
@@ -313,7 +314,7 @@ public class CaseService {
    *
    * @param targetCase Case to update
    */
-  private void replaceIAC(final Case targetCase) {
+  private void generateAndStoreNewIAC(final Case targetCase) {
     String iac = targetCase.getIac();
     if (iac == null || !internetAccessCodeSvcClient.isIacActive(iac)) {
       log.with("case_id", targetCase.getId()).debug("Replacing existing case IAC");
@@ -595,7 +596,10 @@ public class CaseService {
   /**
    * Get a case by the sample unit id it relates to
    *
-   * @param sampleUnitId:
+   * <p><<<<<<< HEAD
+   *
+   * @param sampleUnitId: =======
+   * @param sampleUnitId unit id >>>>>>> master
    * @return the case
    */
   public Case findCaseBySampleUnitId(UUID sampleUnitId) {

@@ -1,31 +1,31 @@
 databaseChangeLog:
 
-  - changeSet:
+   - changeSet:
       id: 14-1
-      author: Gemma Irving
+      author: Adrian Harrison
       changes:
-      - sqlFile:
-          comment: Change respondent enrolled category to action plan changed event type and remove newcasesampleunittype
-          path: update-enrolment-category-event-type.sql
-          relativeToChangelogFile: true
-          splitStatements: false
+        - sqlFile:
+            comment: Migrate case iac to caseiacaudit table
+            path: migrate_case_iac_to_caseiacaudit.sql
+            relativeToChangelogFile: true
+            splitStatements: false
 
-  - changeSet:
+   - changeSet:
       id: 14-2
-      author: Gemma Irving
+      author: Adrian Harrison
       changes:
       - sqlFile:
-          comment: Remove respondent account created category event
-          path: remove-account-created-category-event.sql
+          comment: Create indexes on caseiacaudit table
+          path: index_case_schema.sql
           relativeToChangelogFile: true
           splitStatements: false
 
-  - changeSet:
+   - changeSet:
       id: 14-3
-      author: Gemma Irving
+      author: Adrian Harrison
       changes:
       - sqlFile:
-          comment: Change no active enrolments category to action plan changed event type
-          path: update-no-active-enrolments-category-event.sql
-          relativeToChangelogFile: true
-          splitStatements: false
+              comment: Drop case iac column
+              path: drop_case_iac_column.sql
+              relativeToChangelogFile: true
+              splitStatements: false

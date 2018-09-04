@@ -7,7 +7,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import javax.xml.bind.JAXBContext;
@@ -39,6 +38,7 @@ public class CaseCreator {
    */
   public CaseNotification sendSampleUnit(
       String sampleUnitRef, String sampleUnitType, UUID sampleUnitId) throws Exception {
+
     createIACStub();
 
     SampleUnitParent sampleUnit = new SampleUnitParent();
@@ -103,12 +103,13 @@ public class CaseCreator {
         config.getHost(), config.getPort(), config.getUsername(), config.getPassword());
   }
 
-  private void createIACStub() throws IOException {
+  private void createIACStub() {
     stubFor(
         post(urlPathEqualTo("/iacs"))
             .willReturn(
                 aResponse()
                     .withHeader("Content-Type", "application/json")
-                    .withBody("[\"grtt7x2nhygg\"]")));
+                    .withBody("[\"{{randomValue length=12 type='ALPHANUMERIC' lowercase=true}}\"]")
+                    .withTransformers("response-template")));
   }
 }

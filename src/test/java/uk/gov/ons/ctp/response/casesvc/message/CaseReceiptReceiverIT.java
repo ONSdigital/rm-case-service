@@ -3,11 +3,12 @@ package uk.gov.ons.ctp.response.casesvc.message;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.junit.Assert.assertEquals;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
@@ -44,13 +45,15 @@ import uk.gov.ons.ctp.response.casesvc.representation.CreatedCaseEventDTO;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class CaseReceiptReceiverIT {
 
-  @LocalServerPort private int port;
+  @Rule
+  public WireMockRule wireMockRule =
+      new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
 
   @Autowired private MessageChannel caseReceiptTransformed;
 
-  @Autowired private CaseCreator caseCreator;
+  @LocalServerPort private int port;
 
-  @Rule public WireMockRule wireMockRule = new WireMockRule(options().port(18002));
+  @Autowired private CaseCreator caseCreator;
 
   @BeforeClass
   public static void setUp() {
@@ -68,7 +71,7 @@ public class CaseReceiptReceiverIT {
     CaseReceipt caseReceipt =
         new CaseReceipt("caseRef", caseNotif.getCaseId(), InboundChannel.OFFLINE, now);
     Message<CaseReceipt> message = new GenericMessage<>(caseReceipt);
-    stubDisableIAC();
+    disableIACStub();
 
     // When
     caseReceiptTransformed.send(message);
@@ -86,13 +89,6 @@ public class CaseReceiptReceiverIT {
     assertEquals("OFFLINE", caseDetailsDTO.getResponses().get(0).getInboundChannel());
   }
 
-  private void stubDisableIAC() {
-    stubFor(
-        put(urlPathEqualTo("/iacs/grtt7x2nhygg"))
-            .willReturn(
-                aResponse().withHeader("Content-Type", "application/json").withStatus(200)));
-  }
-
   private void startCase(String caseId) throws Exception {
     CaseEventCreationRequestDTO caseEvent = new CaseEventCreationRequestDTO();
     caseEvent.setCategory(CategoryDTO.CategoryName.EQ_LAUNCH);
@@ -103,5 +99,12 @@ public class CaseReceiptReceiverIT {
         .header("Content-Type", "application/json")
         .body(caseEvent)
         .asObject(CreatedCaseEventDTO.class);
+  }
+
+  private void disableIACStub() {
+    stubFor(
+        put(urlPathMatching("/iacs/(.*)"))
+            .willReturn(
+                aResponse().withHeader("Content-Type", "application/json").withStatus(200)));
   }
 }

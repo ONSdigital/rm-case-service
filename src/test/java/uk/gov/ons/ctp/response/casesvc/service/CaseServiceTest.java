@@ -5,12 +5,13 @@ import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.gov.ons.ctp.response.casesvc.service.CaseService.IAC_OVERUSE_MSG;
 import static uk.gov.ons.ctp.response.casesvc.service.CaseService.WRONG_OLD_SAMPLE_UNIT_TYPE_MSG;
 
 import java.sql.Timestamp;
@@ -42,6 +43,7 @@ import uk.gov.ons.ctp.response.casesvc.config.InternetAccessCodeSvc;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseIacAudit;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
@@ -121,6 +123,7 @@ public class CaseServiceTest {
   @Mock private CaseGroupAuditService caseGroupAuditService;
   @Mock private CollectionExerciseSvcClient collectionExerciseSvcClient;
   @Mock private InternetAccessCodeSvcClient internetAccessCodeSvcClient;
+  @Mock private CaseIACService caseIacAuditService;
 
   @Mock private AppConfig appConfig;
   @Mock private CaseNotificationPublisher notificationPublisher;
@@ -158,21 +161,9 @@ public class CaseServiceTest {
    */
   @Test
   public void testFindCaseByIacNoCaseFound() throws CTPException {
+    when(caseIacAuditService.findCaseByIac(anyString())).thenReturn(new CaseIacAudit());
+
     assertNull(caseService.findCaseByIac(IAC_FOR_TEST));
-  }
-
-  /** To test findCaseByIac when more than one case is found for given IAC */
-  @Test
-  public void testFindCaseByIacMoreThanOneCaseFound() {
-    when(caseRepo.findByIac(IAC_FOR_TEST)).thenReturn(cases);
-
-    try {
-      caseService.findCaseByIac(IAC_FOR_TEST);
-      fail();
-    } catch (CTPException e) {
-      assertEquals(CTPException.Fault.SYSTEM_ERROR, e.getFault());
-      assertEquals(String.format(IAC_OVERUSE_MSG, IAC_FOR_TEST), e.getMessage());
-    }
   }
 
   /**
@@ -182,9 +173,8 @@ public class CaseServiceTest {
    */
   @Test
   public void testFindCaseByIacOneCaseFound() throws CTPException {
-    List<Case> result = new ArrayList<>();
-    result.add(cases.get(0));
-    when(caseRepo.findByIac(IAC_FOR_TEST)).thenReturn(result);
+    when(caseIacAuditService.findCaseByIac(anyString())).thenReturn(new CaseIacAudit());
+    when(caseRepo.findByCasePK(anyInt())).thenReturn(cases.get(0));
 
     assertEquals(cases.get(0), caseService.findCaseByIac(IAC_FOR_TEST));
   }
@@ -1012,7 +1002,6 @@ public class CaseServiceTest {
 
     Case updatedBCase = mapperFacade.map(actionableBCase, Case.class);
     updatedBCase.setIac(IAC_FOR_TEST);
-    verify(caseRepo, times(1)).saveAndFlush(updatedBCase);
     verify(caseIacAuditRepo, times(1)).saveAndFlush(any());
   }
 
