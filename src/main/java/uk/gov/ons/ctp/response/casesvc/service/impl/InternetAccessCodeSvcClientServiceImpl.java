@@ -71,7 +71,7 @@ public class InternetAccessCodeSvcClientServiceImpl implements InternetAccessCod
       maxAttemptsExpression = "#{${retries.maxAttempts}}",
       backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
   @Override
-  public Boolean disableIAC(String iac) {
+  public boolean disableIAC(String iac) {
     log.debug("Disabling iac code");
     UriComponents uriComponents =
         restUtility.createUriComponents(
