@@ -596,10 +596,7 @@ public class CaseService {
   /**
    * Get a case by the sample unit id it relates to
    *
-   * <p><<<<<<< HEAD
-   *
-   * @param sampleUnitId: =======
-   * @param sampleUnitId unit id >>>>>>> master
+   * @param sampleUnitId: sample unit id
    * @return the case
    */
   public Case findCaseBySampleUnitId(UUID sampleUnitId) {

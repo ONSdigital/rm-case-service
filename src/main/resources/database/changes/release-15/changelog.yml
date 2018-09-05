@@ -1,7 +1,7 @@
 databaseChangeLog:
 
     - changeSet:
-        id: 14-1
+        id: 15-1
         author: Gemma Irving
         changes:
         - sqlFile:
@@ -11,17 +11,7 @@ databaseChangeLog:
             splitStatements: false
 
     - changeSet:
-        id: 14-2
-        author: Gemma Irving
-        changes:
-        - sqlFile:
-            comment: Remove respondent account created category event
-            path: remove-account-created-category-event.sql
-            relativeToChangelogFile: true
-            splitStatements: false
-
-    - changeSet:
-        id: 14-3
+        id: 15-2
         author: Gemma Irving
         changes:
         - sqlFile:
