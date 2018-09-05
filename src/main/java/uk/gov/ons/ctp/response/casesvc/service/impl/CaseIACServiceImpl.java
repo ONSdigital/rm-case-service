@@ -4,7 +4,6 @@ import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
 import java.sql.Timestamp;
 import java.time.Clock;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -96,7 +95,12 @@ public class CaseIACServiceImpl implements CaseIACService {
   }
 
   public void disableAllIACsForCase(Case caze) {
-    List<CaseIacAudit> caseIacAudits = caze.getIacAudits();
-    caseIacAudits.forEach(caseIacAudit -> iacClient.disableIAC(caseIacAudit.getIac()));
+    caze.getIacAudits()
+        .forEach(
+            caseIacAudit -> {
+              if (!iacClient.disableIAC(caseIacAudit.getIac())) {
+                log.with("caseId", caze.getId()).error("Failed to disable an IAC for case");
+              }
+            });
   }
 }
