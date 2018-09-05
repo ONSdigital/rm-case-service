@@ -42,8 +42,6 @@ import uk.gov.ons.ctp.response.casesvc.representation.CreatedCaseEventDTO;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class CaseEndpointIT {
 
-  private static final Logger log = LoggerFactory.getLogger(CaseEndpointIT.class);
-
   @Rule
   public WireMockRule wireMockRule =
       new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
@@ -51,8 +49,6 @@ public class CaseEndpointIT {
   @LocalServerPort private int port;
 
   @Autowired private CaseCreator caseCreator;
-
-  @Autowired private MessageChannel caseTransformed;
 
   @BeforeClass
   public static void setUp() {
@@ -111,22 +107,6 @@ public class CaseEndpointIT {
     UUID returnedCaseId = casesResponse.getBody()[0].getId();
 
     assertThat(returnedCaseId).isEqualTo(caseId);
-  }
-
-  @Test(expected = MessageHandlingException.class)
-  public void ensureFiniteRetriesOnFailedCaseNotification() throws Exception {
-    UUID sampleUnitId = UUID.randomUUID();
-    SampleUnitParent sampleUnit = new SampleUnitParent();
-    sampleUnit.setCollectionExerciseId(UUID.randomUUID().toString());
-    sampleUnit.setId(sampleUnitId.toString());
-    sampleUnit.setActionPlanId(UUID.randomUUID().toString());
-    sampleUnit.setSampleUnitRef("LMS0004");
-    sampleUnit.setCollectionInstrumentId(UUID.randomUUID().toString());
-    sampleUnit.setPartyId(UUID.randomUUID().toString());
-    sampleUnit.setSampleUnitType("Hello");
-    Message<SampleUnitParent> caseMessage = new GenericMessage<>(sampleUnit);
-
-    caseTransformed.send(caseMessage);
   }
 
   /**
