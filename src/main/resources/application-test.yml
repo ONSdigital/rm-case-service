@@ -44,13 +44,3 @@ internet-access-code-svc:
     port: 18002
     username: admin
     password: secret
-
-messaging:
-  backoffInitial: 0
-  backoffMultiplier: 1
-  backoffMax: 45000
-  consumingThreads: 1
-  pubMaxAttempts: 3
-  conMaxAttempts: 3
-  prefetchCount: 10
-  txSize: 1

@@ -40,18 +40,29 @@ public class CaseCreationReceiverImplIT {
 
   @Autowired private CaseCreator caseCreator;
 
+  @Autowired private MessageChannel caseTransformed;
+
   @Rule
   public WireMockRule wireMockRule =
       new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
 
   @MockBean private CaseService caseService;
 
-  @Test(expected = MessageTransformationException.class)
+  @Test(expected = MessageHandlingException.class)
   public void ensureFiniteRetriesOnFailedCaseNotification() throws Exception {
     doThrow(RuntimeException.class).when(caseService).createInitialCase(any());
 
-    CaseNotification caseNotification = caseCreator.sendSampleUnit("LMS0001", "H", UUID.randomUUID());
-    // Wait for message to be DQL'd
+    UUID sampleUnitId = UUID.randomUUID();
+    SampleUnitParent sampleUnit = new SampleUnitParent();
+    sampleUnit.setCollectionExerciseId(UUID.randomUUID().toString());
+    sampleUnit.setId(sampleUnitId.toString());
+    sampleUnit.setActionPlanId(UUID.randomUUID().toString());
+    sampleUnit.setSampleUnitRef("LMS0004");
+    sampleUnit.setCollectionInstrumentId(UUID.randomUUID().toString());
+    sampleUnit.setPartyId(UUID.randomUUID().toString());
+    sampleUnit.setSampleUnitType("H");
+    Message<SampleUnitParent> caseMessage = new GenericMessage<>(sampleUnit);
+    caseTransformed.send(caseMessage);
 
     verify(caseService, times(3)).createInitialCase(any());
   }
