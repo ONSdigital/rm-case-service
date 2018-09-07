@@ -83,6 +83,264 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CategoryName.PRIVACY_DATA_CONFIDENTIALITY_CONCERNS,
         CaseGroupStatus.REFUSAL);
 
+    // Transitions to refusal
+    // From not started
+    builder.put(
+        CaseGroupStatus.NOTSTARTED,
+        CategoryDTO.CategoryName.PRIVACY_DATA_CONFIDENTIALITY_CONCERNS,
+        CaseGroupStatus.REFUSAL);
+    builder.put(
+        CaseGroupStatus.NOTSTARTED,
+        CategoryDTO.CategoryName.LEGITIMACY_CONCERNS,
+        CaseGroupStatus.REFUSAL);
+    builder.put(
+        CaseGroupStatus.NOTSTARTED,
+        CategoryDTO.CategoryName.OTHER_OUTRIGHT_REFUSAL,
+        CaseGroupStatus.REFUSAL);
+
+    // Transitions to refusal
+    // From in progress
+    builder.put(
+        CaseGroupStatus.INPROGRESS,
+        CategoryDTO.CategoryName.PRIVACY_DATA_CONFIDENTIALITY_CONCERNS,
+        CaseGroupStatus.REFUSAL);
+    builder.put(
+        CaseGroupStatus.INPROGRESS,
+        CategoryDTO.CategoryName.LEGITIMACY_CONCERNS,
+        CaseGroupStatus.REFUSAL);
+    builder.put(
+        CaseGroupStatus.INPROGRESS,
+        CategoryDTO.CategoryName.OTHER_OUTRIGHT_REFUSAL,
+        CaseGroupStatus.REFUSAL);
+
+    // Transitions to refusal
+    // From complete
+    builder.put(
+        CaseGroupStatus.COMPLETE,
+        CategoryDTO.CategoryName.PRIVACY_DATA_CONFIDENTIALITY_CONCERNS,
+        CaseGroupStatus.REFUSAL);
+    builder.put(
+        CaseGroupStatus.COMPLETE,
+        CategoryDTO.CategoryName.LEGITIMACY_CONCERNS,
+        CaseGroupStatus.REFUSAL);
+    builder.put(
+        CaseGroupStatus.COMPLETE,
+        CategoryDTO.CategoryName.OTHER_OUTRIGHT_REFUSAL,
+        CaseGroupStatus.REFUSAL);
+
+    // Transitions to Other non-response
+    // From not started
+    builder.put(
+        CaseGroupStatus.NOTSTARTED,
+        CategoryDTO.CategoryName.ILL_AT_HOME,
+        CaseGroupStatus.OTHERNONRESPONSE);
+    builder.put(
+        CaseGroupStatus.NOTSTARTED,
+        CategoryDTO.CategoryName.IN_HOSPITAL,
+        CaseGroupStatus.OTHERNONRESPONSE);
+    builder.put(
+        CaseGroupStatus.NOTSTARTED,
+        CategoryDTO.CategoryName.PHYSICALLY_OR_MENTALLY_UNABLE,
+        CaseGroupStatus.OTHERNONRESPONSE);
+    builder.put(
+        CaseGroupStatus.NOTSTARTED,
+        CategoryDTO.CategoryName.LANGUAGE_DIFFICULTIES,
+        CaseGroupStatus.OTHERNONRESPONSE);
+    builder.put(
+        CaseGroupStatus.NOTSTARTED,
+        CategoryDTO.CategoryName.LACK_OF_COMPUTER_INTERNET_ACCESS,
+        CaseGroupStatus.OTHERNONRESPONSE);
+    builder.put(
+        CaseGroupStatus.NOTSTARTED,
+        CategoryDTO.CategoryName.TOO_BUSY,
+        CaseGroupStatus.OTHERNONRESPONSE);
+    builder.put(
+        CaseGroupStatus.NOTSTARTED,
+        CategoryDTO.CategoryName.OTHER_CIRCUMSTANTIAL_REFUSAL,
+        CaseGroupStatus.OTHERNONRESPONSE);
+    builder.put(
+        CaseGroupStatus.NOTSTARTED,
+        CategoryDTO.CategoryName.COMPLY_IN_DIFFERENT_COLLECTION_MODE,
+        CaseGroupStatus.OTHERNONRESPONSE);
+    builder.put(
+        CaseGroupStatus.NOTSTARTED,
+        CategoryDTO.CategoryName.REQUEST_TO_COMPLETE_IN_ALTERNATIVE_FORMAT,
+        CaseGroupStatus.OTHERNONRESPONSE);
+
+    // Transitions to Other non-response
+    // From in progress
+    builder.put(
+        CaseGroupStatus.INPROGRESS,
+        CategoryDTO.CategoryName.PARTIAL_INTERVIEW_REQUEST_DATA_DELETED,
+        CaseGroupStatus.OTHERNONRESPONSE);
+    builder.put(
+        CaseGroupStatus.INPROGRESS,
+        CategoryDTO.CategoryName.PARTIAL_INTERVIEW_REQUEST_DATA_DELETED_INCORRECT,
+        CaseGroupStatus.OTHERNONRESPONSE);
+    builder.put(
+        CaseGroupStatus.INPROGRESS,
+        CategoryDTO.CategoryName.ILL_AT_HOME,
+        CaseGroupStatus.OTHERNONRESPONSE);
+    builder.put(
+        CaseGroupStatus.INPROGRESS,
+        CategoryDTO.CategoryName.IN_HOSPITAL,
+        CaseGroupStatus.OTHERNONRESPONSE);
+    builder.put(
+        CaseGroupStatus.INPROGRESS,
+        CategoryDTO.CategoryName.PHYSICALLY_OR_MENTALLY_UNABLE,
+        CaseGroupStatus.OTHERNONRESPONSE);
+    builder.put(
+        CaseGroupStatus.INPROGRESS,
+        CategoryDTO.CategoryName.LANGUAGE_DIFFICULTIES,
+        CaseGroupStatus.OTHERNONRESPONSE);
+    builder.put(
+        CaseGroupStatus.INPROGRESS,
+        CategoryDTO.CategoryName.LACK_OF_COMPUTER_INTERNET_ACCESS,
+        CaseGroupStatus.OTHERNONRESPONSE);
+    builder.put(
+        CaseGroupStatus.INPROGRESS,
+        CategoryDTO.CategoryName.TOO_BUSY,
+        CaseGroupStatus.OTHERNONRESPONSE);
+    builder.put(
+        CaseGroupStatus.INPROGRESS,
+        CategoryDTO.CategoryName.OTHER_CIRCUMSTANTIAL_REFUSAL,
+        CaseGroupStatus.OTHERNONRESPONSE);
+    builder.put(
+        CaseGroupStatus.INPROGRESS,
+        CategoryDTO.CategoryName.COMPLY_IN_DIFFERENT_COLLECTION_MODE,
+        CaseGroupStatus.OTHERNONRESPONSE);
+    builder.put(
+        CaseGroupStatus.INPROGRESS,
+        CategoryDTO.CategoryName.REQUEST_TO_COMPLETE_IN_ALTERNATIVE_FORMAT,
+        CaseGroupStatus.OTHERNONRESPONSE);
+
+    // Transitions to Other non-response
+    // From complete
+    builder.put(
+        CaseGroupStatus.COMPLETE,
+        CategoryDTO.CategoryName.FULL_INTERVIEW_REQUEST_DATA_DELETED,
+        CaseGroupStatus.OTHERNONRESPONSE);
+    builder.put(
+        CaseGroupStatus.COMPLETE,
+        CategoryDTO.CategoryName.FULL_INTERVIEW_REQUEST_DATA_DELETED_INCORRECT,
+        CaseGroupStatus.OTHERNONRESPONSE);
+    builder.put(
+        CaseGroupStatus.COMPLETE,
+        CategoryDTO.CategoryName.OTHER_CIRCUMSTANTIAL_REFUSAL,
+        CaseGroupStatus.OTHERNONRESPONSE);
+    builder.put(
+        CaseGroupStatus.COMPLETE,
+        CategoryDTO.CategoryName.COMPLY_IN_DIFFERENT_COLLECTION_MODE,
+        CaseGroupStatus.OTHERNONRESPONSE);
+    builder.put(
+        CaseGroupStatus.COMPLETE,
+        CategoryDTO.CategoryName.REQUEST_TO_COMPLETE_IN_ALTERNATIVE_FORMAT,
+        CaseGroupStatus.OTHERNONRESPONSE);
+
+    // Transitions to unknown eligibility
+    // From not started
+    builder.put(
+        CaseGroupStatus.NOTSTARTED,
+        CategoryDTO.CategoryName.NO_TRACE_OF_ADDRESS,
+        CaseGroupStatus.UNKNOWNELIGIBILITY);
+    builder.put(
+        CaseGroupStatus.NOTSTARTED,
+        CategoryDTO.CategoryName.WRONG_ADDRESS,
+        CaseGroupStatus.UNKNOWNELIGIBILITY);
+
+    // Transitions to unknown eligibility
+    // From in progress
+    builder.put(
+        CaseGroupStatus.INPROGRESS,
+        CategoryDTO.CategoryName.WRONG_ADDRESS,
+        CaseGroupStatus.UNKNOWNELIGIBILITY);
+
+    // Transitions to unknown eligibility
+    // From complete
+    builder.put(
+        CaseGroupStatus.COMPLETE,
+        CategoryDTO.CategoryName.WRONG_ADDRESS,
+        CaseGroupStatus.UNKNOWNELIGIBILITY);
+
+    // Transitions to not eligible
+    // From not started
+    builder.put(
+        CaseGroupStatus.NOTSTARTED,
+        CategoryDTO.CategoryName.VACANT_OR_EMPTY,
+        CaseGroupStatus.NOTELIGIBLE);
+    builder.put(
+        CaseGroupStatus.NOTSTARTED,
+        CategoryDTO.CategoryName.NON_RESIDENTIAL_ADDRESS,
+        CaseGroupStatus.NOTELIGIBLE);
+    builder.put(
+        CaseGroupStatus.NOTSTARTED,
+        CategoryDTO.CategoryName.ADDRESS_OCCUPIED_NO_RESIDENT,
+        CaseGroupStatus.NOTELIGIBLE);
+    builder.put(
+        CaseGroupStatus.NOTSTARTED,
+        CategoryDTO.CategoryName.COMMUNAL_ESTABLISHMENT_INSTITUTION,
+        CaseGroupStatus.NOTELIGIBLE);
+    builder.put(
+        CaseGroupStatus.NOTSTARTED,
+        CategoryDTO.CategoryName.DWELLING_OF_FOREIGN_SERVICE_PERSONNEL_DIPLOMATS,
+        CaseGroupStatus.NOTELIGIBLE);
+    builder.put(
+        CaseGroupStatus.NOTSTARTED,
+        CategoryDTO.CategoryName.NO_PERSON_IN_ELIGIBLE_AGE_RANGE,
+        CaseGroupStatus.NOTELIGIBLE);
+    builder.put(
+        CaseGroupStatus.NOTSTARTED, CategoryDTO.CategoryName.DECEASED, CaseGroupStatus.NOTELIGIBLE);
+
+    // Transitions to not eligible
+    // From in progress
+    builder.put(
+        CaseGroupStatus.INPROGRESS,
+        CategoryDTO.CategoryName.NON_RESIDENTIAL_ADDRESS,
+        CaseGroupStatus.NOTELIGIBLE);
+    builder.put(
+        CaseGroupStatus.INPROGRESS,
+        CategoryDTO.CategoryName.ADDRESS_OCCUPIED_NO_RESIDENT,
+        CaseGroupStatus.NOTELIGIBLE);
+    builder.put(
+        CaseGroupStatus.INPROGRESS,
+        CategoryDTO.CategoryName.COMMUNAL_ESTABLISHMENT_INSTITUTION,
+        CaseGroupStatus.NOTELIGIBLE);
+    builder.put(
+        CaseGroupStatus.INPROGRESS,
+        CategoryDTO.CategoryName.DWELLING_OF_FOREIGN_SERVICE_PERSONNEL_DIPLOMATS,
+        CaseGroupStatus.NOTELIGIBLE);
+    builder.put(
+        CaseGroupStatus.INPROGRESS,
+        CategoryDTO.CategoryName.NO_PERSON_IN_ELIGIBLE_AGE_RANGE,
+        CaseGroupStatus.NOTELIGIBLE);
+    builder.put(
+        CaseGroupStatus.INPROGRESS, CategoryDTO.CategoryName.DECEASED, CaseGroupStatus.NOTELIGIBLE);
+
+    // Transitions to not eligible
+    // From in progress
+    builder.put(
+        CaseGroupStatus.COMPLETE,
+        CategoryDTO.CategoryName.NON_RESIDENTIAL_ADDRESS,
+        CaseGroupStatus.NOTELIGIBLE);
+    builder.put(
+        CaseGroupStatus.COMPLETE,
+        CategoryDTO.CategoryName.ADDRESS_OCCUPIED_NO_RESIDENT,
+        CaseGroupStatus.NOTELIGIBLE);
+    builder.put(
+        CaseGroupStatus.COMPLETE,
+        CategoryDTO.CategoryName.COMMUNAL_ESTABLISHMENT_INSTITUTION,
+        CaseGroupStatus.NOTELIGIBLE);
+    builder.put(
+        CaseGroupStatus.COMPLETE,
+        CategoryDTO.CategoryName.DWELLING_OF_FOREIGN_SERVICE_PERSONNEL_DIPLOMATS,
+        CaseGroupStatus.NOTELIGIBLE);
+    builder.put(
+        CaseGroupStatus.COMPLETE,
+        CategoryDTO.CategoryName.NO_PERSON_IN_ELIGIBLE_AGE_RANGE,
+        CaseGroupStatus.NOTELIGIBLE);
+    builder.put(
+        CaseGroupStatus.COMPLETE, CategoryDTO.CategoryName.DECEASED, CaseGroupStatus.NOTELIGIBLE);
+
     // From in progress on response processed by SDX to complete
     builder.put(
         CaseGroupStatus.INPROGRESS,
