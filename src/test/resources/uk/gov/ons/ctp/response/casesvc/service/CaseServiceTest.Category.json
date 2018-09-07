@@ -536,8 +536,8 @@
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "B,BI",
-    "eventType": null
+    "oldCaseSampleUnitTypes": "B,BI,H",
+    "eventType": "DISABLED"
   },
   {
     "group": null,

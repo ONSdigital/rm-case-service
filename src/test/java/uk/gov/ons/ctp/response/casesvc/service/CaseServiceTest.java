@@ -860,7 +860,7 @@ public class CaseServiceTest {
     verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED);
     verify(caseEventRepo, times(1)).save(caseEvent);
-    verify(caseRepo, never()).saveAndFlush(any(Case.class));
+    verify(caseRepo, times(1)).saveAndFlush(any(Case.class));
     verify(internetAccessCodeSvcClient, never()).disableIAC(any(String.class));
     verify(caseSvcStateTransitionManager, never())
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
