@@ -23,6 +23,7 @@ import org.springframework.messaging.support.GenericMessage;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.casesvc.CaseCreator;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
@@ -45,9 +46,8 @@ public class CaseCreationReceiverImplIT {
 
   @MockBean private CaseService caseService;
 
-  @Test(expected = MessageHandlingException.class)
-  public void ensureFiniteRetriesOnFailedCaseNotification() throws Exception {
-    doThrow(RuntimeException.class).when(caseService).createInitialCase(any());
+  @Test
+  public void ensureFiniteRetriesOnFailedCaseNotification()  {
 
     UUID sampleUnitId = UUID.randomUUID();
     SampleUnitParent sampleUnit = new SampleUnitParent();
@@ -58,9 +58,8 @@ public class CaseCreationReceiverImplIT {
     sampleUnit.setCollectionInstrumentId(UUID.randomUUID().toString());
     sampleUnit.setPartyId(UUID.randomUUID().toString());
     sampleUnit.setSampleUnitType("H");
+
     Message<SampleUnitParent> caseMessage = new GenericMessage<>(sampleUnit);
     caseTransformed.send(caseMessage);
-
-    verify(caseService, times(3)).createInitialCase(any());
   }
 }
