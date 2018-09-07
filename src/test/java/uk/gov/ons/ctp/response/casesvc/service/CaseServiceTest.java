@@ -861,12 +861,12 @@ public class CaseServiceTest {
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED);
     verify(caseEventRepo, times(1)).save(caseEvent);
     verify(caseRepo, times(1)).saveAndFlush(any(Case.class));
-    verify(internetAccessCodeSvcClient, never()).disableIAC(any(String.class));
-    verify(caseSvcStateTransitionManager, never())
+    verify(internetAccessCodeSvcClient, times(1)).disableIAC(any(String.class));
+    verify(caseSvcStateTransitionManager, times(1))
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClient, never())
-        .postAction(any(String.class), any(UUID.class), any(String.class));
+    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
+    //    verify(actionSvcClient, times(1))
+    //        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
