@@ -1521,50 +1521,19 @@ public class CaseServiceImplTest {
     caseService.createCaseEvent(caseEvent, null);
 
     verify(caseRepo, times(1)).findOne(ACTIONABLE_BI_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED);
+    verify(categoryRepo).findOne(CategoryName.OFFLINE_RESPONSE_PROCESSED);
     verify(caseEventRepo, times(1)).save(caseEvent);
-    verify(caseRepo, never()).saveAndFlush(any(Case.class));
-    verify(internetAccessCodeSvcClientService, never()).disableIAC(any(String.class));
-    verify(caseSvcStateTransitionManager, never())
-        .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClientService, never())
-        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
-  }
+    verify(caseSvcStateTransitionManager, times(2))
+        .transition(
+            any(CaseState.class),
+            any(
+                CaseDTO.CaseEvent
+                    .class)); // action service should be told of the old case state change for both
 
-  /**
-   * We create a CaseEvent with category OFFLINE_RESPONSE_PROCESSED versus a Case of wrong
-   * sampleUnitType (ie NOT a BI)
-   *
-   * @throws Exception if fabricateEvent does
-   */
-  @Test
-  public void testEventOfflineResponseProcessedVersusWrongCaseType() throws Exception {
-    Case existingCase = cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(existingCase);
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED))
-        .thenReturn(categories.get(CAT_OFFLINE_RESPONSE_PROCESSED));
-
-    CaseEvent caseEvent =
-        fabricateEvent(
-            CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-
-    try {
-      caseService.createCaseEvent(caseEvent, null);
-      fail();
-    } catch (CTPException e) {
-      assertEquals(CTPException.Fault.VALIDATION_FAILED, e.getFault());
-      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, "B", "BI"), e.getMessage());
-    }
-
-    verify(caseRepo).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED);
-    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
+    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
+    // no new action to be created
     verify(actionSvcClientService, times(0))
         .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
-    verify(internetAccessCodeSvcClientService, times(0)).disableIAC(any(String.class));
-    verify(caseEventRepo, times(0)).save(caseEvent);
   }
 
   /**
@@ -1729,6 +1698,35 @@ public class CaseServiceImplTest {
     Case updatedBCase = mapperFacade.map(actionableBCase, Case.class);
     updatedBCase.setIac(IAC_FOR_TEST);
     verify(caseIacAuditRepo, times(1)).saveAndFlush(any());
+  }
+
+  @Test
+  public void testOfflineResponseProcessedCaseEventWorksWithBCase() throws CTPException {
+    Case actionableBCase = cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(actionableBCase);
+    when(categoryRepo.findOne(CategoryName.OFFLINE_RESPONSE_PROCESSED))
+        .thenReturn(categories.get(CAT_OFFLINE_RESPONSE_PROCESSED));
+    when(internetAccessCodeSvcClientService.isIacActive(actionableBCase.getIac()))
+        .thenReturn(false);
+
+    CaseEvent caseEvent =
+        fabricateEvent(CategoryName.OFFLINE_RESPONSE_PROCESSED, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    caseService.createCaseEvent(caseEvent, null);
+
+    verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findOne(CategoryName.OFFLINE_RESPONSE_PROCESSED);
+    verify(caseEventRepo, times(1)).save(caseEvent);
+    verify(caseSvcStateTransitionManager, times(2))
+        .transition(
+            any(CaseState.class),
+            any(
+                CaseDTO.CaseEvent
+                    .class)); // action service should be told of the old case state change for both
+
+    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
+    // no new action to be created
+    verify(actionSvcClientService, times(0))
+        .createAndPostAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   @Test
