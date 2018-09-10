@@ -54,6 +54,8 @@
 
   <rabbit:queue durable="true" name="Case.ResponsesDLQ"/>
 
+  <rabbit:queue durable="true" name="Case.CaseDeliveryDLQ"/>
+
   <rabbit:queue durable="true" name="Case.InvalidCaseInstructions"/>
   <!-- End of Queues -->
 
@@ -69,6 +71,7 @@
   <rabbit:direct-exchange name="case-deadletter-exchange">
     <rabbit:bindings>
       <rabbit:binding key="Case.Responses.binding" queue="Case.ResponsesDLQ"/>
+      <rabbit:binding key="Case.Responses.binding" queue="Case.CaseDeliveryDLQ"/>
     </rabbit:bindings>
   </rabbit:direct-exchange>
 

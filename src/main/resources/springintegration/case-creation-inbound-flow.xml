@@ -75,8 +75,7 @@
             </bean>
         </property>
         <property name="retryStateGenerator"> <!-- Important to make it a Stateful Retry -->
-            <bean
-                    class="org.springframework.integration.handler.advice.SpelExpressionRetryStateGenerator">
+            <bean class="org.springframework.integration.handler.advice.SpelExpressionRetryStateGenerator">
                 <constructor-arg value="payload.collectionExerciseId + '|' + payload.id"/>
             </bean>
         </property>
@@ -92,10 +91,8 @@
             </bean>
         </property>
         <property name="retryPolicy">
-            <bean class="uk.gov.ons.ctp.common.retry.CTPRetryPolicy">
-                <constructor-arg type="int">
-                    <value>${messaging.conMaxAttempts}</value>
-                </constructor-arg>
+            <bean class="org.springframework.retry.policy.SimpleRetryPolicy">
+                <property name="maxAttempts" value="${messaging.conMaxAttempts}" />
             </bean>
         </property>
     </bean>

@@ -1,6 +1,8 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
+import static junit.framework.TestCase.assertNotNull;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
@@ -9,6 +11,10 @@ import static org.mockito.Mockito.verify;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import org.aopalliance.aop.Advice;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,17 +22,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.integration.channel.QueueChannel;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.MessageHandlingException;
 import org.springframework.messaging.support.GenericMessage;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.common.utility.Mapzer;
 import uk.gov.ons.ctp.response.casesvc.CaseCreator;
+import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
+import uk.gov.ons.tools.rabbit.SimpleMessageBase.ExchangeType;
+import uk.gov.ons.tools.rabbit.SimpleMessageListener;
+import uk.gov.ons.tools.rabbit.SimpleMessageSender;
 
 @ContextConfiguration
 @ActiveProfiles("test")
@@ -36,9 +47,10 @@ public class CaseCreationReceiverImplIT {
 
   @LocalServerPort private int port;
 
-  @Autowired private CaseCreator caseCreator;
+  @Autowired
+  AppConfig appConfig;
 
-  @Autowired private MessageChannel caseTransformed;
+  @Autowired private ResourceLoader resourceLoader;
 
   @Rule
   public WireMockRule wireMockRule =
@@ -47,7 +59,15 @@ public class CaseCreationReceiverImplIT {
   @MockBean private CaseService caseService;
 
   @Test
-  public void ensureFiniteRetriesOnFailedCaseNotification()  {
+  public void ensureFiniteRetriesOnFailedCaseNotification() throws Exception {
+    doThrow(new RuntimeException()).when(caseService).createInitialCase(any());
+
+    SimpleMessageSender simpleMessageSender = new SimpleMessageSender(
+        appConfig.getRabbitmq().getHost(), appConfig.getRabbitmq().getPort(),
+        appConfig.getRabbitmq().getUsername(), appConfig.getRabbitmq().getPassword());
+    SimpleMessageListener simpleMessageListener = new SimpleMessageListener(
+        appConfig.getRabbitmq().getHost(), appConfig.getRabbitmq().getPort(),
+        appConfig.getRabbitmq().getUsername(), appConfig.getRabbitmq().getPassword());
 
     UUID sampleUnitId = UUID.randomUUID();
     SampleUnitParent sampleUnit = new SampleUnitParent();
@@ -59,7 +79,19 @@ public class CaseCreationReceiverImplIT {
     sampleUnit.setPartyId(UUID.randomUUID().toString());
     sampleUnit.setSampleUnitType("H");
 
-    Message<SampleUnitParent> caseMessage = new GenericMessage<>(sampleUnit);
-    caseTransformed.send(caseMessage);
+    JAXBContext jaxbContext = JAXBContext.newInstance(SampleUnitParent.class);
+    String xml =
+        new Mapzer(resourceLoader)
+            .convertObjectToXml(
+                jaxbContext, sampleUnit, "casesvc/xsd/inbound/SampleUnitNotification.xsd");
+
+
+    simpleMessageSender.sendMessageToQueue("Case.CaseDelivery", xml);
+    String message = simpleMessageListener.listen(ExchangeType.Direct,
+        "case-deadletter-exchange", "Case.CaseDelivery.binding").poll(
+            30, TimeUnit.SECONDS);
+    assertEquals(xml, message);
+
+    verify(caseService, times(3)).createInitialCase(any());
   }
 }
