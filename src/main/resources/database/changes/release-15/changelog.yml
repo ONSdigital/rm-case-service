@@ -1,20 +1,10 @@
 databaseChangeLog:
-   - changeSet:
-      id: 15-1
-      author: Emilio Ward
-      changes:
-        - sqlFile:
-            comment: Alter categorypk and longdescription max length
-            path: alter_category_maximum_column_length.sql
-            relativeToChangelogFile: true
-            splitStatements: false
-
-   - changeSet:
-       id: 15-2
-       author: Emilio Ward
-       changes:
-       - sqlFile:
-           comment: Add new case event categories
-           path: add_new_case_categories.sql
-           relativeToChangelogFile: true
-           splitStatements: false
+- changeSet:
+    id: 15-1
+    author: Gemma Irving
+    changes:
+    - sqlFile:
+        comment: Add B case to old case sample unit types for offline response processed category
+        path: update_offline_response_category_to_handle_b_cases.sql
+        relativeToChangelogFile: true
+        splitStatements: false
