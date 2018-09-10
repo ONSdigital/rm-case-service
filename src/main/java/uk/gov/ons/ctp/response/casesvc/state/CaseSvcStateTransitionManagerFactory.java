@@ -11,7 +11,6 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
 
 /**
  * This is the state transition manager actory for the actionsvc. It intended that this will be
@@ -78,10 +77,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CaseGroupStatus.NOTSTARTED,
         CategoryDTO.CategoryName.NO_LONGER_REQUIRED,
         CaseGroupStatus.NOLONGERREQUIRED);
-    builder.put(
-        CaseGroupStatus.NOTSTARTED,
-        CategoryName.PRIVACY_DATA_CONFIDENTIALITY_CONCERNS,
-        CaseGroupStatus.REFUSAL);
 
     // Transitions to refusal
     // From not started
