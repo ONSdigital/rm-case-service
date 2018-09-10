@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.casesvc.endpoint;
+package uk.gov.ons.ctp.response.casesvc.message;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static junit.framework.TestCase.assertNotNull;
@@ -10,10 +10,12 @@ import static org.mockito.Mockito.verify;
 
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import java.io.ByteArrayInputStream;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.datatype.XMLGregorianCalendar;
 import org.aopalliance.aop.Advice;
 import org.junit.Rule;
 import org.junit.Test;
@@ -30,9 +32,12 @@ import org.springframework.messaging.support.GenericMessage;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.common.utility.Mapzer;
 import uk.gov.ons.ctp.response.casesvc.CaseCreator;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
+import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
+import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.tools.rabbit.SimpleMessageBase.ExchangeType;
@@ -43,7 +48,7 @@ import uk.gov.ons.tools.rabbit.SimpleMessageSender;
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringJUnit4ClassRunner.class)
-public class CaseCreationReceiverImplIT {
+public class RabbitSpringIntegrationDLQAndRetriesIT {
 
   @LocalServerPort private int port;
 
@@ -93,5 +98,44 @@ public class CaseCreationReceiverImplIT {
     assertEquals(xml, message);
 
     verify(caseService, times(3)).createInitialCase(any());
+  }
+
+  @Test
+  public void ensureFiniteRetriesOnFailedCaseReceipt() throws Exception {
+    doThrow(new RuntimeException()).when(caseService).findCaseById(any());
+
+    SimpleMessageSender simpleMessageSender = new SimpleMessageSender(
+        appConfig.getRabbitmq().getHost(), appConfig.getRabbitmq().getPort(),
+        appConfig.getRabbitmq().getUsername(), appConfig.getRabbitmq().getPassword());
+    SimpleMessageListener simpleMessageListener = new SimpleMessageListener(
+        appConfig.getRabbitmq().getHost(), appConfig.getRabbitmq().getPort(),
+        appConfig.getRabbitmq().getUsername(), appConfig.getRabbitmq().getPassword());
+
+    UUID caseId = UUID.randomUUID();
+    CaseReceipt caseReceipt = new CaseReceipt();
+    caseReceipt.setCaseId(caseId.toString());
+    caseReceipt.setInboundChannel(InboundChannel.PAPER);
+    caseReceipt.setResponseDateTime(DateTimeUtil.giveMeCalendarForNow());
+    caseReceipt.setCaseRef("NOODLE");
+
+    JAXBContext jaxbContext = JAXBContext.newInstance(CaseReceipt.class);
+    String xml =
+        new Mapzer(resourceLoader)
+            .convertObjectToXml(
+                jaxbContext, caseReceipt, "casesvc/xsd/inbound/caseReceipt.xsd");
+
+
+    simpleMessageSender.sendMessageToQueue("Case.Responses", xml);
+    String message = simpleMessageListener.listen(ExchangeType.Direct,
+        "case-deadletter-exchange", "Case.Responses.binding").poll(
+        30, TimeUnit.SECONDS);
+
+    CaseReceipt dlqCaseReceipt = (CaseReceipt) jaxbContext
+        .createUnmarshaller()
+        .unmarshal(new ByteArrayInputStream(message.getBytes()));
+
+    assertEquals(caseReceipt.getCaseId(), dlqCaseReceipt.getCaseId());
+
+    verify(caseService, times(3)).findCaseById(any());
   }
 }
