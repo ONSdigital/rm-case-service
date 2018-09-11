@@ -68,7 +68,7 @@
     <property name="retryStateGenerator"> <!-- Important to make it a Stateful Retry -->
       <bean
         class="org.springframework.integration.handler.advice.SpelExpressionRetryStateGenerator">
-        <constructor-arg value="headers.ID"/>
+        <constructor-arg value="payload.collectionExerciseId + '|' + payload.id"/>
       </bean>
     </property>
     <property name="retryTemplate" ref="retryTemplate"/>
@@ -82,10 +82,8 @@
       </bean>
     </property>
     <property name="retryPolicy">
-      <bean class="uk.gov.ons.ctp.common.retry.CTPRetryPolicy">
-        <constructor-arg type="int">
-          <value>${messaging.conMaxAttempts}</value>
-        </constructor-arg>
+      <bean class="org.springframework.retry.policy.SimpleRetryPolicy">
+          <property name="maxAttempts" value="${messaging.pubMaxAttempts}"/>
       </bean>
     </property>
   </bean>
@@ -97,12 +95,12 @@
   <int:channel id="caseDlqChannelXml"/>
   <int-xml:marshalling-transformer
     input-channel="caseDlqInterimChannel" marshaller="caseCreationMarshaller"
-    output-channel="caseDlqChannel" result-transformer="caseOutboundTransformer"/>
+    output-channel="caseDlqChannelXml" result-transformer="caseOutboundTransformer"/>
   <bean class="org.springframework.integration.xml.transformer.ResultToStringTransformer"
     id="caseOutboundTransformer"/>
 
   <int-amqp:outbound-channel-adapter
     channel="caseDlqChannelXml" exchange-name="case-deadletter-exchange" id="caseDlqAmqp"
-    routing-key="Case.Responses.binding"/>
+    routing-key="Case.CaseDelivery.binding"/>
   <!-- End of section to deal with retries and DLQ after max attempts -->
 </beans>

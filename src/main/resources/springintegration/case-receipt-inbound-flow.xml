@@ -78,13 +78,11 @@
         <property name="maxInterval" value="${messaging.backoffMax}"/>
       </bean>
     </property>
-    <property name="retryPolicy">
-      <bean class="uk.gov.ons.ctp.common.retry.CTPRetryPolicy">
-        <constructor-arg type="int">
-          <value>${messaging.conMaxAttempts}</value>
-        </constructor-arg>
-      </bean>
-    </property>
+      <property name="retryPolicy">
+          <bean class="org.springframework.retry.policy.SimpleRetryPolicy">
+              <property name="maxAttempts" value="${messaging.pubMaxAttempts}"/>
+          </bean>
+      </property>
   </bean>
 
   <int:channel id="caseReceiptDlqInterimChannel"/>

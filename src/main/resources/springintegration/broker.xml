@@ -12,20 +12,20 @@
   <rabbit:admin connection-factory="connectionFactory" id="amqpAdmin"/>
 
   <!-- Retry policy for a failed publish -->
-  <bean class="org.springframework.retry.support.RetryTemplate" id="retryTemplate">
-    <property name="backOffPolicy">
-      <bean class="org.springframework.retry.backoff.ExponentialBackOffPolicy">
-        <property name="initialInterval" value="1000"/>
-        <property name="multiplier" value="3"/>
-        <property name="maxInterval" value="30000"/>
-      </bean>
-    </property>
-    <property name="retryPolicy">
-      <bean class="org.springframework.retry.policy.SimpleRetryPolicy">
-        <property name="maxAttempts" value="${messaging.pubMaxAttempts}"/>
-      </bean>
-    </property>
-  </bean>
+  <!--<bean class="org.springframework.retry.support.RetryTemplate" id="retryTemplate">-->
+    <!--<property name="backOffPolicy">-->
+      <!--<bean class="org.springframework.retry.backoff.ExponentialBackOffPolicy">-->
+        <!--<property name="initialInterval" value="1000"/>-->
+        <!--<property name="multiplier" value="3"/>-->
+        <!--<property name="maxInterval" value="30000"/>-->
+      <!--</bean>-->
+    <!--</property>-->
+    <!--<property name="retryPolicy">-->
+      <!--<bean class="org.springframework.retry.policy.SimpleRetryPolicy">-->
+        <!--<property name="maxAttempts" value="${messaging.pubMaxAttempts}"/>-->
+      <!--</bean>-->
+    <!--</property>-->
+  <!--</bean>-->
 
   <!-- Start of Queues -->
   <rabbit:queue durable="true" name="Case.LifecycleEvents">
@@ -54,6 +54,8 @@
 
   <rabbit:queue durable="true" name="Case.ResponsesDLQ"/>
 
+    <rabbit:queue durable="true" name="Case.CaseDeliveryDLQ"/>
+
   <rabbit:queue durable="true" name="Case.InvalidCaseInstructions"/>
   <!-- End of Queues -->
 
@@ -69,6 +71,7 @@
   <rabbit:direct-exchange name="case-deadletter-exchange">
     <rabbit:bindings>
       <rabbit:binding key="Case.Responses.binding" queue="Case.ResponsesDLQ"/>
+        <rabbit:binding key="Case.CaseDelivery.binding" queue="Case.CaseDeliveryDLQ"/>
     </rabbit:bindings>
   </rabbit:direct-exchange>
 
@@ -87,8 +90,7 @@
 
   <rabbit:direct-exchange name="collection-invalid-exchange">
     <rabbit:bindings>
-      <rabbit:binding key="Case.CaseDelivery.binding"
-        queue="Case.InvalidCaseInstructions"/>
+      <rabbit:binding key="Case.CaseDelivery.binding" queue="Case.InvalidCaseInstructions"/>
     </rabbit:bindings>
   </rabbit:direct-exchange>
 

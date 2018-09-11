@@ -11,12 +11,14 @@ import static org.mockito.Mockito.verify;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.ByteArrayInputStream;
+import java.sql.Time;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.XMLGregorianCalendar;
 import org.aopalliance.aop.Advice;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,16 +65,23 @@ public class RabbitSpringIntegrationDLQAndRetriesIT {
 
   @MockBean private CaseService caseService;
 
+  private SimpleMessageListener listener;
+  private SimpleMessageSender sender;
+
+  @Before
+  public void setup() {
+    sender = new SimpleMessageSender(
+            appConfig.getRabbitmq().getHost(), appConfig.getRabbitmq().getPort(),
+            appConfig.getRabbitmq().getUsername(), appConfig.getRabbitmq().getPassword());
+
+    listener = new SimpleMessageListener(
+            appConfig.getRabbitmq().getHost(), appConfig.getRabbitmq().getPort(),
+            appConfig.getRabbitmq().getUsername(), appConfig.getRabbitmq().getPassword());
+  }
+
   @Test
   public void ensureFiniteRetriesOnFailedCaseNotification() throws Exception {
     doThrow(new RuntimeException()).when(caseService).createInitialCase(any());
-
-    SimpleMessageSender simpleMessageSender = new SimpleMessageSender(
-        appConfig.getRabbitmq().getHost(), appConfig.getRabbitmq().getPort(),
-        appConfig.getRabbitmq().getUsername(), appConfig.getRabbitmq().getPassword());
-    SimpleMessageListener simpleMessageListener = new SimpleMessageListener(
-        appConfig.getRabbitmq().getHost(), appConfig.getRabbitmq().getPort(),
-        appConfig.getRabbitmq().getUsername(), appConfig.getRabbitmq().getPassword());
 
     UUID sampleUnitId = UUID.randomUUID();
     SampleUnitParent sampleUnit = new SampleUnitParent();
@@ -81,7 +90,6 @@ public class RabbitSpringIntegrationDLQAndRetriesIT {
     sampleUnit.setActionPlanId(UUID.randomUUID().toString());
     sampleUnit.setSampleUnitRef("LMS0004");
     sampleUnit.setCollectionInstrumentId(UUID.randomUUID().toString());
-    sampleUnit.setPartyId(UUID.randomUUID().toString());
     sampleUnit.setSampleUnitType("H");
 
     JAXBContext jaxbContext = JAXBContext.newInstance(SampleUnitParent.class);
@@ -91,11 +99,15 @@ public class RabbitSpringIntegrationDLQAndRetriesIT {
                 jaxbContext, sampleUnit, "casesvc/xsd/inbound/SampleUnitNotification.xsd");
 
 
-    simpleMessageSender.sendMessageToQueue("Case.CaseDelivery", xml);
-    String message = simpleMessageListener.listen(ExchangeType.Direct,
-        "case-deadletter-exchange", "Case.CaseDelivery.binding").poll(
-            30, TimeUnit.SECONDS);
-//    assertEquals(xml, message);
+    sender.sendMessageToQueue("Case.CaseDelivery", xml);
+    String message = listener.listen(ExchangeType.Direct,
+        "case-deadletter-exchange", "Case.CaseDelivery.binding").take();
+
+    SampleUnitParent received = (SampleUnitParent) jaxbContext
+            .createUnmarshaller()
+            .unmarshal(new ByteArrayInputStream(message.getBytes()));
+
+    assertEquals(received.getId(), sampleUnit.getId());
 
     verify(caseService, times(3)).createInitialCase(any());
   }
@@ -103,13 +115,6 @@ public class RabbitSpringIntegrationDLQAndRetriesIT {
   @Test
   public void ensureFiniteRetriesOnFailedCaseReceipt() throws Exception {
     doThrow(new RuntimeException()).when(caseService).findCaseById(any());
-
-    SimpleMessageSender simpleMessageSender = new SimpleMessageSender(
-        appConfig.getRabbitmq().getHost(), appConfig.getRabbitmq().getPort(),
-        appConfig.getRabbitmq().getUsername(), appConfig.getRabbitmq().getPassword());
-    SimpleMessageListener simpleMessageListener = new SimpleMessageListener(
-        appConfig.getRabbitmq().getHost(), appConfig.getRabbitmq().getPort(),
-        appConfig.getRabbitmq().getUsername(), appConfig.getRabbitmq().getPassword());
 
     UUID caseId = UUID.randomUUID();
     CaseReceipt caseReceipt = new CaseReceipt();
@@ -125,8 +130,8 @@ public class RabbitSpringIntegrationDLQAndRetriesIT {
                 jaxbContext, caseReceipt, "casesvc/xsd/inbound/caseReceipt.xsd");
 
 
-    simpleMessageSender.sendMessageToQueue("Case.Responses", xml);
-    String message = simpleMessageListener.listen(ExchangeType.Direct,
+    sender.sendMessageToQueue("Case.Responses", xml);
+    String message = listener.listen(ExchangeType.Direct,
         "case-deadletter-exchange", "Case.Responses.binding").poll(
         30, TimeUnit.SECONDS);
 
