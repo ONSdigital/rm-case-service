@@ -97,7 +97,7 @@
   <int:channel id="caseDlqChannelXml"/>
   <int-xml:marshalling-transformer
     input-channel="caseDlqInterimChannel" marshaller="caseCreationMarshaller"
-    output-channel="caseDlqChannel" result-transformer="caseOutboundTransformer"/>
+    output-channel="caseDlqChannelXml" result-transformer="caseOutboundTransformer"/>
   <bean class="org.springframework.integration.xml.transformer.ResultToStringTransformer"
     id="caseOutboundTransformer"/>
 
