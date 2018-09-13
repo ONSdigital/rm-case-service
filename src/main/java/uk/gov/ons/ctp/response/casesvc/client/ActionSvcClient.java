@@ -72,8 +72,8 @@ public class ActionSvcClient {
     MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
     queryParams.add("collectionExerciseId", collectionExerciseId.toString());
     queryParams.add("activeEnrolment", Boolean.toString(activeEnrolments));
-    UriComponents uriComponents =
-        restUtility.createUriComponents(appConfig.getActionSvc().getActionPlansPath(), queryParams);
+    String actionPlansPath = appConfig.getActionSvc().getActionPlansPath();
+    UriComponents uriComponents = restUtility.createUriComponents(actionPlansPath, queryParams);
 
     ResponseEntity<List<ActionPlanDTO>> responseEntity;
     HttpEntity<?> httpEntity = restUtility.createHttpEntityWithAuthHeader();

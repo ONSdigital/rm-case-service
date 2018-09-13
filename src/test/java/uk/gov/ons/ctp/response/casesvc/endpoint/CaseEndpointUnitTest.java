@@ -494,6 +494,17 @@ public final class CaseEndpointUnitTest {
   }
 
   @Test
+  public void findCaseByIAC() throws Exception {
+    when(caseService.findCaseByIac(IAC_CASE1)).thenReturn(caseResults.get(0));
+    when(categoryService.findCategory(CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT))
+        .thenReturn(categoryResults.get(4));
+
+    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/iac/%s", IAC_CASE1)));
+
+    actions.andExpect(status().is2xxSuccessful());
+  }
+
+  @Test
   public void findCaseByIACButCategoryNotDefined() throws Exception {
     when(caseService.findCaseByIac(IAC_CASE1)).thenReturn(caseResults.get(0));
     when(categoryService.findCategory(CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT))

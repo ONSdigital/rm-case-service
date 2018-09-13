@@ -1,15 +1,14 @@
 package uk.gov.ons.ctp.response.casesvc.client;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
-import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import net.sourceforge.cobertura.CoverageIgnore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -58,20 +57,12 @@ public class CollectionExerciseSvcClient {
 
     HttpEntity<?> httpEntity = restUtility.createHttpEntity(null);
 
-    log.with("collection_exercise_id").debug("about to get to the CollectionExercise SVC");
-    ResponseEntity<String> responseEntity =
-        restTemplate.exchange(uriComponents.toUri(), HttpMethod.GET, httpEntity, String.class);
+    log.with("collection_exercise_id").debug("Retrieving collection exercise");
+    ResponseEntity<CollectionExerciseDTO> responseEntity =
+        restTemplate.exchange(
+            uriComponents.toUri(), HttpMethod.GET, httpEntity, CollectionExerciseDTO.class);
 
-    CollectionExerciseDTO result = null;
-    if (responseEntity != null && responseEntity.getStatusCode().is2xxSuccessful()) {
-      String responseBody = responseEntity.getBody();
-      try {
-        result = objectMapper.readValue(responseBody, CollectionExerciseDTO.class);
-      } catch (IOException e) {
-        log.error("Could not read value", e);
-      }
-    }
-    return result;
+    return responseEntity.getBody();
   }
 
   /**
@@ -89,19 +80,12 @@ public class CollectionExerciseSvcClient {
         restUtility.createUriComponents(
             appConfig.getCollectionExerciseSvc().getCollectionExerciseSurveyPath(), null, surveyId);
     HttpEntity<?> httpEntity = restUtility.createHttpEntity(null);
-    ResponseEntity<String> responseEntity =
-        restTemplate.exchange(uriComponents.toUri(), HttpMethod.GET, httpEntity, String.class);
-    List<CollectionExerciseDTO> result = null;
-    if (responseEntity != null && responseEntity.getStatusCode().is2xxSuccessful()) {
-      String responseBody = responseEntity.getBody();
-      try {
-        result =
-            objectMapper.readValue(
-                responseBody, new TypeReference<List<CollectionExerciseDTO>>() {});
-      } catch (IOException e) {
-        log.error("Could not read value", e);
-      }
-    }
-    return result;
+    ResponseEntity<List<CollectionExerciseDTO>> responseEntity =
+        restTemplate.exchange(
+            uriComponents.toUri(),
+            HttpMethod.GET,
+            httpEntity,
+            new ParameterizedTypeReference<List<CollectionExerciseDTO>>() {});
+    return responseEntity.getBody();
   }
 }

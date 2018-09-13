@@ -1,6 +1,6 @@
 applications:
 - name: casesvc
-  instances: 1
+  instances: 4
   timeout: 180
   host: casesvc
   memory: 1024M
@@ -10,12 +10,13 @@ applications:
     - rm-redis
     - rm-rabbitmq
   env:
-    internetAccessCodeSvc_connectionConfig_host: iacsvc.apps.devtest.onsclofo.uk
+    internetAccessCodeSvc_connectionConfig_host: iacsvc-perf.apps.prunes.cf2.onsclofo.uk
     internetAccessCodeSvc_connectionConfig_port: "80"
     internetAccessCodeSvc_connectionConfig_scheme: http
-    collectionExerciseSvc_connectionConfig_host: collectionexercisesvc.apps.devtest.onsclofo.uk
+    collectionExerciseSvc_connectionConfig_host: collectionexercisesvc-perf.apps.prunes.cf2.onsclofo.uk
     collectionExerciseSvc_connectionConfig_port: "80"
     collectionExerciseSvc_connectionConfig_scheme: http
-    actionSvc_connectionConfig_host: actionsvc.apps.devtest.onsclofo.uk
+    actionSvc_connectionConfig_host: actionsvc-perf.apps.prunes.cf2.onsclofo.uk
     actionSvc_connectionConfig_port: "80"
     actionSvc_connectionConfig_scheme: http
+    REPLACE_PORT: "80"

@@ -43,5 +43,16 @@
     "oldCaseSampleUnitTypes": "B",
     "eventType": "DEACTIVATED",
     "recalcCollectionInstrument": "false"
+  },
+  {
+    "group": null,
+    "categoryName": "ACCESS_CODE_AUTHENTICATION_ATTEMPT",
+    "longDescription": "Access Code authentication attempted",
+    "shortDescription": "Access Code authentication attempted",
+    "role": null,
+    "generatedActionType": null,
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "B",
+    "eventType": null
   }
 ]
