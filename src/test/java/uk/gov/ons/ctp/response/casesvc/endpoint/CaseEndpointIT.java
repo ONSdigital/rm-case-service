@@ -6,8 +6,6 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import com.godaddy.logging.Logger;
-import com.godaddy.logging.LoggerFactory;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import java.util.UUID;
@@ -35,8 +33,6 @@ import uk.gov.ons.ctp.response.casesvc.representation.CreatedCaseEventDTO;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringJUnit4ClassRunner.class)
 public class CaseEndpointIT {
-
-  private static final Logger log = LoggerFactory.getLogger(CaseEndpointIT.class);
 
   @Rule
   public WireMockRule wireMockRule =
