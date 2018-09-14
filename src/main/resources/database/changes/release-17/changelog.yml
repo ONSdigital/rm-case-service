@@ -1,0 +1,10 @@
+databaseChangeLog:
+- changeSet:
+    id: 17-1
+    author: Adam Hawtin
+    changes:
+    - sqlFile:
+        comment: A REOPENED case event category for social H type cases
+        path: add_reopened_case_event_category.sql
+        relativeToChangelogFile: true
+        splitStatements: false
