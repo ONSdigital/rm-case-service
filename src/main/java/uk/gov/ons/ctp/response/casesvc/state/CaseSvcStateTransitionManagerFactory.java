@@ -123,20 +123,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CategoryDTO.CategoryName.OTHER_OUTRIGHT_REFUSAL,
         CaseGroupStatus.REFUSAL);
 
-    // Transitions to refusal
-    // From reopened
-    builder.put(
-        CaseGroupStatus.REOPENED,
-        CategoryDTO.CategoryName.PRIVACY_DATA_CONFIDENTIALITY_CONCERNS,
-        CaseGroupStatus.REFUSAL);
-    builder.put(
-        CaseGroupStatus.REOPENED,
-        CategoryDTO.CategoryName.LEGITIMACY_CONCERNS,
-        CaseGroupStatus.REFUSAL);
-    builder.put(
-        CaseGroupStatus.REOPENED,
-        CategoryDTO.CategoryName.OTHER_OUTRIGHT_REFUSAL,
-        CaseGroupStatus.REFUSAL);
 
     // Transitions to Other non-response
     // From not started
@@ -271,61 +257,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CategoryDTO.CategoryName.REQUEST_TO_COMPLETE_IN_ALTERNATIVE_FORMAT,
         CaseGroupStatus.OTHERNONRESPONSE);
 
-    // Transitions to Other non-response
-    // From reopened
-    builder.put(
-        CaseGroupStatus.REOPENED,
-        CategoryDTO.CategoryName.PARTIAL_INTERVIEW_REQUEST_DATA_DELETED,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.REOPENED,
-        CategoryDTO.CategoryName.PARTIAL_INTERVIEW_REQUEST_DATA_DELETED_INCORRECT,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.REOPENED,
-        CategoryDTO.CategoryName.FULL_INTERVIEW_REQUEST_DATA_DELETED,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.REOPENED,
-        CategoryDTO.CategoryName.FULL_INTERVIEW_REQUEST_DATA_DELETED_INCORRECT,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.REOPENED,
-        CategoryDTO.CategoryName.ILL_AT_HOME,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.REOPENED,
-        CategoryDTO.CategoryName.IN_HOSPITAL,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.REOPENED,
-        CategoryDTO.CategoryName.PHYSICALLY_OR_MENTALLY_UNABLE,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.REOPENED,
-        CategoryDTO.CategoryName.LANGUAGE_DIFFICULTIES,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.REOPENED,
-        CategoryDTO.CategoryName.LACK_OF_COMPUTER_INTERNET_ACCESS,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.REOPENED,
-        CategoryDTO.CategoryName.TOO_BUSY,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.REOPENED,
-        CategoryDTO.CategoryName.OTHER_CIRCUMSTANTIAL_REFUSAL,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.REOPENED,
-        CategoryDTO.CategoryName.COMPLY_IN_DIFFERENT_COLLECTION_MODE,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.REOPENED,
-        CategoryDTO.CategoryName.REQUEST_TO_COMPLETE_IN_ALTERNATIVE_FORMAT,
-        CaseGroupStatus.OTHERNONRESPONSE);
-
     // Transitions to unknown eligibility
     // From not started
     builder.put(
@@ -356,17 +287,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CaseGroupStatus.UNKNOWNELIGIBILITY);
     builder.put(
         CaseGroupStatus.COMPLETE,
-        CategoryDTO.CategoryName.WRONG_ADDRESS,
-        CaseGroupStatus.UNKNOWNELIGIBILITY);
-
-    // Transitions to unknown eligibility
-    // From reopened
-    builder.put(
-        CaseGroupStatus.REOPENED,
-        CategoryDTO.CategoryName.NO_TRACE_OF_ADDRESS,
-        CaseGroupStatus.UNKNOWNELIGIBILITY);
-    builder.put(
-        CaseGroupStatus.REOPENED,
         CategoryDTO.CategoryName.WRONG_ADDRESS,
         CaseGroupStatus.UNKNOWNELIGIBILITY);
 
@@ -457,49 +377,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
     builder.put(
         CaseGroupStatus.COMPLETE, CategoryDTO.CategoryName.DECEASED, CaseGroupStatus.NOTELIGIBLE);
 
-    // Transitions to not eligible
-    // From reopened
-    builder.put(
-        CaseGroupStatus.REOPENED,
-        CategoryDTO.CategoryName.VACANT_OR_EMPTY,
-        CaseGroupStatus.NOTELIGIBLE);
-    builder.put(
-        CaseGroupStatus.REOPENED,
-        CategoryDTO.CategoryName.NON_RESIDENTIAL_ADDRESS,
-        CaseGroupStatus.NOTELIGIBLE);
-    builder.put(
-        CaseGroupStatus.REOPENED,
-        CategoryDTO.CategoryName.ADDRESS_OCCUPIED_NO_RESIDENT,
-        CaseGroupStatus.NOTELIGIBLE);
-    builder.put(
-        CaseGroupStatus.REOPENED,
-        CategoryDTO.CategoryName.COMMUNAL_ESTABLISHMENT_INSTITUTION,
-        CaseGroupStatus.NOTELIGIBLE);
-    builder.put(
-        CaseGroupStatus.REOPENED,
-        CategoryDTO.CategoryName.DWELLING_OF_FOREIGN_SERVICE_PERSONNEL_DIPLOMATS,
-        CaseGroupStatus.NOTELIGIBLE);
-    builder.put(
-        CaseGroupStatus.REOPENED,
-        CategoryDTO.CategoryName.NO_PERSON_IN_ELIGIBLE_AGE_RANGE,
-        CaseGroupStatus.NOTELIGIBLE);
-    builder.put(
-        CaseGroupStatus.REOPENED, CategoryDTO.CategoryName.DECEASED, CaseGroupStatus.NOTELIGIBLE);
-
-    // Transitions from social outcomes to reopened
-    builder.put(
-        CaseGroupStatus.REFUSAL, CategoryDTO.CategoryName.REOPENED, CaseGroupStatus.REOPENED);
-    builder.put(
-        CaseGroupStatus.NOTELIGIBLE, CategoryDTO.CategoryName.REOPENED, CaseGroupStatus.REOPENED);
-    builder.put(
-        CaseGroupStatus.OTHERNONRESPONSE,
-        CategoryDTO.CategoryName.REOPENED,
-        CaseGroupStatus.REOPENED);
-    builder.put(
-        CaseGroupStatus.UNKNOWNELIGIBILITY,
-        CategoryDTO.CategoryName.REOPENED,
-        CaseGroupStatus.REOPENED);
-
     // Transitions from social outcomes to in progress
     builder.put(
         CaseGroupStatus.REFUSAL, CategoryDTO.CategoryName.EQ_LAUNCH, CaseGroupStatus.INPROGRESS);
@@ -515,8 +392,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CaseGroupStatus.UNKNOWNELIGIBILITY,
         CategoryDTO.CategoryName.EQ_LAUNCH,
         CaseGroupStatus.INPROGRESS);
-    builder.put(
-        CaseGroupStatus.REOPENED, CategoryDTO.CategoryName.EQ_LAUNCH, CaseGroupStatus.INPROGRESS);
 
     // Transitions from social outcomes to complete
     builder.put(
@@ -535,10 +410,7 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CaseGroupStatus.UNKNOWNELIGIBILITY,
         CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED,
         CaseGroupStatus.COMPLETE);
-    builder.put(
-        CaseGroupStatus.REOPENED,
-        CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED,
-        CaseGroupStatus.COMPLETE);
+
 
     // From in progress on response processed by SDX to complete
     builder.put(
