@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.common.error.CTPException;
+import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseIacAudit;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
@@ -91,5 +92,15 @@ public class CaseIACServiceImpl implements CaseIACService {
             .iac(iac)
             .build();
     caseIacAuditRepo.save(audit);
+  }
+
+  public void disableAllIACsForCase(Case caze) {
+    caze.getIacAudits()
+        .forEach(
+            caseIacAudit -> {
+              if (!iacClient.disableIAC(caseIacAudit.getIac())) {
+                log.with("caseId", caze.getId()).error("Failed to disable an IAC for case");
+              }
+            });
   }
 }
