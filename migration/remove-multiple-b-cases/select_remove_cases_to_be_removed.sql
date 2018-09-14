@@ -1,4 +1,4 @@
-delete from casesvc.response
+select * from casesvc.response
 where casefk in (
   select id from (
     select c.casepk as id, row_number() over (partition by c.casegroupfk order by c.createddatetime desc) as rnum
@@ -6,7 +6,7 @@ where casefk in (
   where sampleunittype='B') as innercase
 where rnum > 1);
 
-delete from casesvc.caseevent
+select * from casesvc.caseevent
 where casefk in (
   select id from (
     select c.casepk as id, row_number() over (partition by c.casegroupfk order by c.createddatetime desc) as rnum
@@ -14,7 +14,7 @@ where casefk in (
   where sampleunittype='B') as innercase
 where rnum > 1);
 
-delete from casesvc.case
+select * from casesvc.case
 where id in (
 select id from (
     select c.id as id, row_number() over (partition by c.casegroupfk order by c.createddatetime desc) as rnum
