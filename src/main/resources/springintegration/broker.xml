@@ -11,22 +11,6 @@
 
   <rabbit:admin connection-factory="connectionFactory" id="amqpAdmin"/>
 
-  <!-- Retry policy for a failed publish -->
-  <bean class="org.springframework.retry.support.RetryTemplate" id="retryTemplate">
-    <property name="backOffPolicy">
-      <bean class="org.springframework.retry.backoff.ExponentialBackOffPolicy">
-        <property name="initialInterval" value="1000"/>
-        <property name="multiplier" value="3"/>
-        <property name="maxInterval" value="30000"/>
-      </bean>
-    </property>
-    <property name="retryPolicy">
-      <bean class="org.springframework.retry.policy.SimpleRetryPolicy">
-        <property name="maxAttempts" value="${messaging.pubMaxAttempts}"/>
-      </bean>
-    </property>
-  </bean>
-
   <!-- Start of Queues -->
   <rabbit:queue durable="true" name="Case.LifecycleEvents">
     <rabbit:queue-arguments value-type="java.lang.String">
