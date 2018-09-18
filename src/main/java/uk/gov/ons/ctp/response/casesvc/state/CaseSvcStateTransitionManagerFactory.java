@@ -123,7 +123,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CategoryDTO.CategoryName.OTHER_OUTRIGHT_REFUSAL,
         CaseGroupStatus.REFUSAL);
 
-
     // Transitions to Other non-response
     // From not started
     builder.put(
@@ -410,7 +409,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CaseGroupStatus.UNKNOWNELIGIBILITY,
         CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED,
         CaseGroupStatus.COMPLETE);
-
 
     // From in progress on response processed by SDX to complete
     builder.put(
