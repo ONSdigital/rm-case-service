@@ -1,15 +1,5 @@
 package uk.gov.ons.ctp.response.casesvc;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
-import static org.junit.Assert.assertNotNull;
-
-import java.io.ByteArrayInputStream;
-import java.util.UUID;
-import java.util.concurrent.BlockingQueue;
-import javax.xml.bind.JAXBContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
@@ -22,6 +12,14 @@ import uk.gov.ons.tools.rabbit.Rabbitmq;
 import uk.gov.ons.tools.rabbit.SimpleMessageBase;
 import uk.gov.ons.tools.rabbit.SimpleMessageListener;
 import uk.gov.ons.tools.rabbit.SimpleMessageSender;
+
+import javax.xml.bind.JAXBContext;
+import java.io.ByteArrayInputStream;
+import java.util.UUID;
+import java.util.concurrent.BlockingQueue;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.junit.Assert.assertNotNull;
 
 @Component
 @Slf4j
@@ -103,7 +101,7 @@ public class CaseCreator {
         config.getHost(), config.getPort(), config.getUsername(), config.getPassword());
   }
 
-  private void createIACStub() {
+  public void createIACStub() {
     stubFor(
         post(urlPathEqualTo("/iacs"))
             .willReturn(
@@ -111,5 +109,14 @@ public class CaseCreator {
                     .withHeader("Content-Type", "application/json")
                     .withBody("[\"{{randomValue length=12 type='ALPHANUMERIC' lowercase=true}}\"]")
                     .withTransformers("response-template")));
+  }
+
+  public void disableIACStub() {
+    stubFor(
+        put(urlPathMatching("/iacs/[a-z0-9]*$"))
+        .willReturn(
+            aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withStatus(200)));
   }
 }
