@@ -30,9 +30,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.gov.ons.ctp.common.UnirestInitialiser;
 import uk.gov.ons.ctp.response.casesvc.CaseCreator;
-import uk.gov.ons.ctp.response.casesvc.endpoint.CaseIACEndpoint.CaseIACDTO;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseIACDTO;
 
 @ContextConfiguration
 @ActiveProfiles("test")

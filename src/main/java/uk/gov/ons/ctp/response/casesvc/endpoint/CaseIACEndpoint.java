@@ -6,8 +6,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseIacAudit;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseIACDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseIACService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 
@@ -73,11 +72,5 @@ public final class CaseIACEndpoint implements CTPEndpoint {
             .collect(Collectors.toList());
 
     return ResponseEntity.ok(iacs);
-  }
-
-  @Data
-  @AllArgsConstructor
-  static class CaseIACDTO {
-    private String iac;
   }
 }
