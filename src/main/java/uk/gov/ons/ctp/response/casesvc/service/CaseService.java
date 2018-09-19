@@ -36,6 +36,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
 import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.utility.Constants;
 import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
@@ -327,7 +328,8 @@ public class CaseService {
     }
   }
 
-  private void transitionCaseGroupStatus(final Case targetCase, final CaseEvent caseEvent) {
+  private void transitionCaseGroupStatus(final Case targetCase, final CaseEvent caseEvent)
+      throws CTPException {
     CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
     try {
       caseGroupService.transitionCaseGroupStatus(
@@ -374,10 +376,7 @@ public class CaseService {
     }
   }
 
-  @Transactional(
-      propagation = Propagation.REQUIRED,
-      readOnly = false,
-      timeout = TRANSACTION_TIMEOUT)
+  @Transactional
   public void createInitialCase(SampleUnitParent sampleUnitParent) {
     CaseGroup newCaseGroup = createNewCaseGroup(sampleUnitParent);
     log.with("case_group_id", newCaseGroup.getId()).debug("Created new casegroup");
@@ -386,7 +385,8 @@ public class CaseService {
     category.setShortDescription("Initial creation of case");
 
     Case parentCase = createNewCase(sampleUnitParent, newCaseGroup);
-    if (sampleUnitParent.getSampleUnitChildren() != null) {
+    if (sampleUnitParent.getSampleUnitChildren() != null
+        && !sampleUnitParent.getSampleUnitChildren().getSampleUnitchildren().isEmpty()) {
       parentCase.setState(CaseState.INACTIONABLE);
 
       for (SampleUnit sampleUnitChild :
@@ -492,19 +492,14 @@ public class CaseService {
    */
   private void recordCaseResponse(Category category, Case targetCase, Timestamp timestamp) {
     InboundChannel channel = null;
-    switch (category.getCategoryName()) {
-      case OFFLINE_RESPONSE_PROCESSED:
-        channel = InboundChannel.OFFLINE;
-        break;
-      case ONLINE_QUESTIONNAIRE_RESPONSE:
-        channel = InboundChannel.ONLINE;
-        break;
-      case PAPER_QUESTIONNAIRE_RESPONSE:
-        channel = InboundChannel.PAPER;
-        break;
-      default:
-        break;
+    if (category.getCategoryName() == CategoryName.OFFLINE_RESPONSE_PROCESSED) {
+      channel = InboundChannel.OFFLINE;
+    } else if (category.getCategoryName() == CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE) {
+      channel = InboundChannel.ONLINE;
+    } else if (category.getCategoryName() == CategoryName.PAPER_QUESTIONNAIRE_RESPONSE) {
+      channel = InboundChannel.PAPER;
     }
+
     if (channel != null) {
       Response response =
           Response.builder()
