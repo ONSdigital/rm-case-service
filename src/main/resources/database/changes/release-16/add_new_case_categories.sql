@@ -6,7 +6,7 @@ VALUES ('PRIVACY_DATA_CONFIDENTIALITY_CONCERNS', '411', 'Privacy/Data Security/C
  ('IN_HOSPITAL', '521', 'Away/In hospital throughout field period', 'DEACTIVATED', NULL, NULL, NULL, 'H', NULL, NULL),
  ('PHYSICALLY_OR_MENTALLY_UNABLE', '531', 'Physically or mentally unable/incompetent', 'DEACTIVATED', NULL, NULL, NULL, 'H', NULL, NULL),
  ('LANGUAGE_DIFFICULTIES', '541', 'Language difficulties', 'DEACTIVATED', NULL, NULL, NULL, 'H', NULL, NULL),
- ('FULL_INTERVIEW_REQUEST_DATA_DELETED', '561', 'Full interview achieved but respondent requested data be deleted', 'DISABLED', NULL, NULL, NULL, 'H', NULL, NULL),
+ ('FULL_INTERVIEW_REQUEST_DATA_DELETED', '561', 'Full interview achieved but respondent requested data be deleted', 'DEACTIVATED', NULL, NULL, NULL, 'H', NULL, NULL),
  ('PARTIAL_INTERVIEW_REQUEST_DATA_DELETED', '562', 'Partial interview achieved but respondent requested data be deleted', 'DISABLED', NULL, NULL, NULL, 'H', NULL, NULL),
  ('FULL_INTERVIEW_REQUEST_DATA_DELETED_INCORRECT', '563', 'Full interview achieved but respondent requested data be deleted as it is incorrect', 'DEACTIVATED', NULL, NULL, NULL, 'H', NULL, NULL),
  ('PARTIAL_INTERVIEW_REQUEST_DATA_DELETED_INCORRECT', '564', 'Partial interview achieved but respondent requested data be deleted as it is incorrect', 'DEACTIVATED', NULL, NULL, NULL, 'H', NULL, NULL),
