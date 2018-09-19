@@ -1,9 +1,5 @@
 package uk.gov.ons.ctp.response.casesvc;
 
-import com.godaddy.logging.Logger;
-import com.godaddy.logging.LoggerFactory;
-import org.springframework.stereotype.Component;
-
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.put;
@@ -11,6 +7,9 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 @Component
 public class IACServiceStub {
@@ -33,8 +32,6 @@ public class IACServiceStub {
     stubFor(
         put(urlPathMatching("/iacs/[a-z0-9]*$"))
             .willReturn(
-                aResponse()
-                    .withHeader("Content-Type", "application/json")
-                    .withStatus(200)));
+                aResponse().withHeader("Content-Type", "application/json").withStatus(200)));
   }
 }

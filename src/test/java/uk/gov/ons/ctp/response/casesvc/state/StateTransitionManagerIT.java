@@ -1,10 +1,19 @@
 package uk.gov.ons.ctp.response.casesvc.state;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.exactly;
+import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
+import static org.assertj.core.api.Java6Assertions.assertThat;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
+import java.util.UUID;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -24,17 +33,6 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseIACDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
-
-import java.util.UUID;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.exactly;
-import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
-import static org.assertj.core.api.Java6Assertions.assertThat;
-
 
 @ContextConfiguration
 @ActiveProfiles("test")
@@ -61,16 +59,26 @@ public class StateTransitionManagerIT {
   public void ensureSocialRefusalOutcomeMakesCaseInactionable() throws Exception {
     // Given
     String sampleUnitRef = "TEST1";
-    CaseNotification caseNotification = caseCreator.sendSampleUnit(sampleUnitRef, "H", UUID.randomUUID());
+    CaseNotification caseNotification =
+        caseCreator.sendSampleUnit(sampleUnitRef, "H", UUID.randomUUID());
     String collectionExerciseId = caseNotification.getExerciseId();
     String caseID = caseNotification.getCaseId();
 
     // When
     HttpResponse caseGroupTransitionResponse =
-        Unirest.put("http://localhost:" + port + "/casegroups/transitions/" + collectionExerciseId + "/" + sampleUnitRef)
+        Unirest.put(
+                "http://localhost:"
+                    + port
+                    + "/casegroups/transitions/"
+                    + collectionExerciseId
+                    + "/"
+                    + sampleUnitRef)
             .basicAuth("admin", "secret")
             .header("Content-Type", "application/json")
-            .body(String.format("{\"event\":\"%s\"}", CategoryDTO.CategoryName.PRIVACY_DATA_CONFIDENTIALITY_CONCERNS))
+            .body(
+                String.format(
+                    "{\"event\":\"%s\"}",
+                    CategoryDTO.CategoryName.PRIVACY_DATA_CONFIDENTIALITY_CONCERNS))
             .asJson();
     assertThat(caseGroupTransitionResponse.getStatus()).isEqualTo(200);
 
@@ -82,7 +90,8 @@ public class StateTransitionManagerIT {
             .asObject(CaseDetailsDTO.class);
     assertThat(caseResponse.getStatus()).isEqualTo(200);
 
-    assertThat(caseResponse.getBody().getCaseGroup().getCaseGroupStatus()).isEqualTo(CaseGroupStatus.REFUSAL);
+    assertThat(caseResponse.getBody().getCaseGroup().getCaseGroupStatus())
+        .isEqualTo(CaseGroupStatus.REFUSAL);
     assertThat(caseResponse.getBody().getState()).isEqualTo(CaseState.INACTIONABLE);
   }
 
@@ -90,13 +99,20 @@ public class StateTransitionManagerIT {
   public void ensureSocialOtherNonResponseOutcomeMakesCaseInactionable() throws Exception {
     // Given
     String sampleUnitRef = "TEST2";
-    CaseNotification caseNotification = caseCreator.sendSampleUnit(sampleUnitRef, "H", UUID.randomUUID());
+    CaseNotification caseNotification =
+        caseCreator.sendSampleUnit(sampleUnitRef, "H", UUID.randomUUID());
     String collectionExerciseId = caseNotification.getExerciseId();
     String caseID = caseNotification.getCaseId();
 
     // When
     HttpResponse caseGroupTransitionResponse =
-        Unirest.put("http://localhost:" + port + "/casegroups/transitions/" + collectionExerciseId + "/" + sampleUnitRef)
+        Unirest.put(
+                "http://localhost:"
+                    + port
+                    + "/casegroups/transitions/"
+                    + collectionExerciseId
+                    + "/"
+                    + sampleUnitRef)
             .basicAuth("admin", "secret")
             .header("Content-Type", "application/json")
             .body(String.format("{\"event\":\"%s\"}", CategoryDTO.CategoryName.ILL_AT_HOME))
@@ -111,7 +127,8 @@ public class StateTransitionManagerIT {
             .asObject(CaseDetailsDTO.class);
     assertThat(caseResponse.getStatus()).isEqualTo(200);
 
-    assertThat(caseResponse.getBody().getCaseGroup().getCaseGroupStatus()).isEqualTo(CaseGroupStatus.OTHERNONRESPONSE);
+    assertThat(caseResponse.getBody().getCaseGroup().getCaseGroupStatus())
+        .isEqualTo(CaseGroupStatus.OTHERNONRESPONSE);
     assertThat(caseResponse.getBody().getState()).isEqualTo(CaseState.INACTIONABLE);
   }
 
@@ -119,13 +136,20 @@ public class StateTransitionManagerIT {
   public void ensureSocialUnknownEligibilityOutcomeMakesCaseInactionable() throws Exception {
     // Given
     String sampleUnitRef = "TEST3";
-    CaseNotification caseNotification = caseCreator.sendSampleUnit(sampleUnitRef, "H", UUID.randomUUID());
+    CaseNotification caseNotification =
+        caseCreator.sendSampleUnit(sampleUnitRef, "H", UUID.randomUUID());
     String collectionExerciseId = caseNotification.getExerciseId();
     String caseID = caseNotification.getCaseId();
 
     // When
     HttpResponse caseGroupTransitionResponse =
-        Unirest.put("http://localhost:" + port + "/casegroups/transitions/" + collectionExerciseId + "/" + sampleUnitRef)
+        Unirest.put(
+                "http://localhost:"
+                    + port
+                    + "/casegroups/transitions/"
+                    + collectionExerciseId
+                    + "/"
+                    + sampleUnitRef)
             .basicAuth("admin", "secret")
             .header("Content-Type", "application/json")
             .body(String.format("{\"event\":\"%s\"}", CategoryDTO.CategoryName.NO_TRACE_OF_ADDRESS))
@@ -140,7 +164,8 @@ public class StateTransitionManagerIT {
             .asObject(CaseDetailsDTO.class);
     assertThat(caseResponse.getStatus()).isEqualTo(200);
 
-    assertThat(caseResponse.getBody().getCaseGroup().getCaseGroupStatus()).isEqualTo(CaseGroupStatus.UNKNOWNELIGIBILITY);
+    assertThat(caseResponse.getBody().getCaseGroup().getCaseGroupStatus())
+        .isEqualTo(CaseGroupStatus.UNKNOWNELIGIBILITY);
     assertThat(caseResponse.getBody().getState()).isEqualTo(CaseState.INACTIONABLE);
   }
 
@@ -148,13 +173,20 @@ public class StateTransitionManagerIT {
   public void ensureSocialNotEligibleOutcomeMakesCaseInactionable() throws Exception {
     // Given
     String sampleUnitRef = "TEST4";
-    CaseNotification caseNotification = caseCreator.sendSampleUnit(sampleUnitRef, "H", UUID.randomUUID());
+    CaseNotification caseNotification =
+        caseCreator.sendSampleUnit(sampleUnitRef, "H", UUID.randomUUID());
     String collectionExerciseId = caseNotification.getExerciseId();
     String caseID = caseNotification.getCaseId();
 
     // When
     HttpResponse caseGroupTransitionResponse =
-        Unirest.put("http://localhost:" + port + "/casegroups/transitions/" + collectionExerciseId + "/" + sampleUnitRef)
+        Unirest.put(
+                "http://localhost:"
+                    + port
+                    + "/casegroups/transitions/"
+                    + collectionExerciseId
+                    + "/"
+                    + sampleUnitRef)
             .basicAuth("admin", "secret")
             .header("Content-Type", "application/json")
             .body(String.format("{\"event\":\"%s\"}", CategoryDTO.CategoryName.VACANT_OR_EMPTY))
@@ -169,7 +201,8 @@ public class StateTransitionManagerIT {
             .asObject(CaseDetailsDTO.class);
     assertThat(caseResponse.getStatus()).isEqualTo(200);
 
-    assertThat(caseResponse.getBody().getCaseGroup().getCaseGroupStatus()).isEqualTo(CaseGroupStatus.NOTELIGIBLE);
+    assertThat(caseResponse.getBody().getCaseGroup().getCaseGroupStatus())
+        .isEqualTo(CaseGroupStatus.NOTELIGIBLE);
     assertThat(caseResponse.getBody().getState()).isEqualTo(CaseState.INACTIONABLE);
   }
 
@@ -180,7 +213,8 @@ public class StateTransitionManagerIT {
     iacServiceStub.disableIACStub();
 
     String sampleUnitRef = "TEST";
-    CaseNotification caseNotification = caseCreator.sendSampleUnit(sampleUnitRef, "H", UUID.randomUUID());
+    CaseNotification caseNotification =
+        caseCreator.sendSampleUnit(sampleUnitRef, "H", UUID.randomUUID());
 
     String collectionExerciseId = caseNotification.getExerciseId();
     String caseID = caseNotification.getCaseId();
@@ -203,7 +237,13 @@ public class StateTransitionManagerIT {
     // When
     // Make case 'INPROGRESS' to allow the state transition we're testing
     HttpResponse caseGroupTransitionEQlaunchResponse =
-        Unirest.put("http://localhost:" + port + "/casegroups/transitions/" + collectionExerciseId + "/" + sampleUnitRef)
+        Unirest.put(
+                "http://localhost:"
+                    + port
+                    + "/casegroups/transitions/"
+                    + collectionExerciseId
+                    + "/"
+                    + sampleUnitRef)
             .basicAuth("admin", "secret")
             .header("Content-Type", "application/json")
             .body(String.format("{\"event\":\"%s\"}", CategoryDTO.CategoryName.EQ_LAUNCH))
@@ -211,10 +251,19 @@ public class StateTransitionManagerIT {
     assertThat(caseGroupTransitionEQlaunchResponse.getStatus()).isEqualTo(200);
 
     HttpResponse caseGroupTransitionResponse =
-        Unirest.put("http://localhost:" + port + "/casegroups/transitions/" + collectionExerciseId + "/" + sampleUnitRef)
+        Unirest.put(
+                "http://localhost:"
+                    + port
+                    + "/casegroups/transitions/"
+                    + collectionExerciseId
+                    + "/"
+                    + sampleUnitRef)
             .basicAuth("admin", "secret")
             .header("Content-Type", "application/json")
-            .body(String.format("{\"event\":\"%s\"}", CategoryDTO.CategoryName.PARTIAL_INTERVIEW_REQUEST_DATA_DELETED))
+            .body(
+                String.format(
+                    "{\"event\":\"%s\"}",
+                    CategoryDTO.CategoryName.PARTIAL_INTERVIEW_REQUEST_DATA_DELETED))
             .asJson();
     assertThat(caseGroupTransitionResponse.getStatus()).isEqualTo(200);
 
@@ -226,10 +275,15 @@ public class StateTransitionManagerIT {
             .asObject(CaseDetailsDTO.class);
     assertThat(caseResponse.getStatus()).isEqualTo(200);
 
-    assertThat(caseResponse.getBody().getCaseGroup().getCaseGroupStatus()).isEqualTo(CaseGroupStatus.OTHERNONRESPONSE);
+    assertThat(caseResponse.getBody().getCaseGroup().getCaseGroupStatus())
+        .isEqualTo(CaseGroupStatus.OTHERNONRESPONSE);
     assertThat(caseResponse.getBody().getState()).isEqualTo(CaseState.INACTIONABLE);
     verify(exactly(2), putRequestedFor(urlPathMatching("/iacs/[a-z0-9]*$")));
-    verify(exactly(1), putRequestedFor(urlPathEqualTo(String.format("/iacs/%s", caseIACs.getBody()[0].getIac()))));
-    verify(exactly(1), putRequestedFor(urlPathEqualTo(String.format("/iacs/%s", caseIACs.getBody()[1].getIac()))));
+    verify(
+        exactly(1),
+        putRequestedFor(urlPathEqualTo(String.format("/iacs/%s", caseIACs.getBody()[0].getIac()))));
+    verify(
+        exactly(1),
+        putRequestedFor(urlPathEqualTo(String.format("/iacs/%s", caseIACs.getBody()[1].getIac()))));
   }
 }

@@ -1,7 +1,13 @@
 package uk.gov.ons.ctp.response.casesvc;
 
+import static org.junit.Assert.assertNotNull;
+
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
+import java.io.ByteArrayInputStream;
+import java.util.UUID;
+import java.util.concurrent.BlockingQueue;
+import javax.xml.bind.JAXBContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
@@ -13,13 +19,6 @@ import uk.gov.ons.tools.rabbit.Rabbitmq;
 import uk.gov.ons.tools.rabbit.SimpleMessageBase;
 import uk.gov.ons.tools.rabbit.SimpleMessageListener;
 import uk.gov.ons.tools.rabbit.SimpleMessageSender;
-
-import javax.xml.bind.JAXBContext;
-import java.io.ByteArrayInputStream;
-import java.util.UUID;
-import java.util.concurrent.BlockingQueue;
-
-import static org.junit.Assert.assertNotNull;
 
 @Component
 public class CaseCreator {
