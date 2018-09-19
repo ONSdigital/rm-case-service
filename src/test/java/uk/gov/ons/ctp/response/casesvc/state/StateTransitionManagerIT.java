@@ -227,6 +227,7 @@ public class StateTransitionManagerIT {
             .asObject(CaseIACDTO.class);
     assertThat(createdUACresponse.getStatus()).isEqualTo(201);
 
+    // Retrieve both IACs for our case
     HttpResponse<CaseIACDTO[]> caseIACs =
         Unirest.get("http://localhost:" + port + "/cases/" + caseID + "/iac")
             .basicAuth("admin", "secret")
@@ -250,6 +251,7 @@ public class StateTransitionManagerIT {
             .asJson();
     assertThat(caseGroupTransitionEQlaunchResponse.getStatus()).isEqualTo(200);
 
+    // Make the transition to something that will disable the IACs for the case
     HttpResponse caseGroupTransitionResponse =
         Unirest.put(
                 "http://localhost:"

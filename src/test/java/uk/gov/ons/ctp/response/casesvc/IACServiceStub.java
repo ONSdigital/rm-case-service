@@ -30,7 +30,7 @@ public class IACServiceStub {
   public void disableIACStub() {
     log.info("Stubbing IAC Service PUT /iacs/{iac} endpoint");
     stubFor(
-        put(urlPathMatching("/iacs/[a-z0-9]*$"))
+        put(urlPathMatching("/iacs/[a-z0-9]{12}$"))
             .willReturn(
                 aResponse().withHeader("Content-Type", "application/json").withStatus(200)));
   }
