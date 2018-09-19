@@ -18,7 +18,7 @@ public interface InternetAccessCodeSvcClientService {
    *
    * @param iac the one to disable
    */
-  void disableIAC(String iac);
+  boolean disableIAC(String iac);
 
   /**
    * To determine if a given iac is active
