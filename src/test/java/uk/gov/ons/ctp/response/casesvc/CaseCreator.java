@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc;
 
-import lombok.extern.slf4j.Slf4j;
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
@@ -18,15 +19,16 @@ import java.io.ByteArrayInputStream;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.Assert.assertNotNull;
 
 @Component
-@Slf4j
 public class CaseCreator {
+
+  private static final Logger log = LoggerFactory.getLogger(CaseCreator.class);
 
   @Autowired private AppConfig appConfig;
   @Autowired private ResourceLoader resourceLoader;
+  @Autowired private IACServiceStub iacServiceStub;
 
   /**
    * Sends a sample unit in a message so that casesvc creates a case, then waits for a message on
@@ -37,7 +39,7 @@ public class CaseCreator {
   public CaseNotification sendSampleUnit(
       String sampleUnitRef, String sampleUnitType, UUID sampleUnitId) throws Exception {
 
-    createIACStub();
+    iacServiceStub.createIACStub();
 
     SampleUnitParent sampleUnit = new SampleUnitParent();
     sampleUnit.setCollectionExerciseId(UUID.randomUUID().toString());
@@ -99,24 +101,5 @@ public class CaseCreator {
 
     return new SimpleMessageListener(
         config.getHost(), config.getPort(), config.getUsername(), config.getPassword());
-  }
-
-  public void createIACStub() {
-    stubFor(
-        post(urlPathEqualTo("/iacs"))
-            .willReturn(
-                aResponse()
-                    .withHeader("Content-Type", "application/json")
-                    .withBody("[\"{{randomValue length=12 type='ALPHANUMERIC' lowercase=true}}\"]")
-                    .withTransformers("response-template")));
-  }
-
-  public void disableIACStub() {
-    stubFor(
-        put(urlPathMatching("/iacs/[a-z0-9]*$"))
-        .willReturn(
-            aResponse()
-            .withHeader("Content-Type", "application/json")
-            .withStatus(200)));
   }
 }

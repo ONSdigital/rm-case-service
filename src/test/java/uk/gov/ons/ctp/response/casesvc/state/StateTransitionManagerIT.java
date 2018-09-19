@@ -18,14 +18,16 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.gov.ons.ctp.common.UnirestInitialiser;
 import uk.gov.ons.ctp.response.casesvc.CaseCreator;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseIacAudit;
+import uk.gov.ons.ctp.response.casesvc.IACServiceStub;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
-import uk.gov.ons.ctp.response.casesvc.representation.*;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseIACDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
+import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.impl.InternetAccessCodeSvcClientServiceImpl;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -47,6 +49,7 @@ public class StateTransitionManagerIT {
 
   @Autowired private CaseCreator caseCreator;
   @Autowired private CaseRepository caseRepository;
+  @Autowired private IACServiceStub iacServiceStub;
 
   @Mock private InternetAccessCodeSvcClientServiceImpl iacClient;
 
@@ -89,8 +92,8 @@ public class StateTransitionManagerIT {
   @Test
   public void ensureSocialPartialInterviewRequestDeletionOutcomeDisablesUACs() throws Exception {
     // Given
-    caseCreator.createIACStub();
-    caseCreator.disableIACStub();
+    iacServiceStub.createIACStub();
+    iacServiceStub.disableIACStub();
 
     String sampleUnitRef = "TEST2";
     CaseNotification caseNotification = caseCreator.sendSampleUnit(sampleUnitRef, "H", UUID.randomUUID());
