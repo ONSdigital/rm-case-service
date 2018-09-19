@@ -9,7 +9,6 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,18 +18,20 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.gov.ons.ctp.common.UnirestInitialiser;
 import uk.gov.ons.ctp.response.casesvc.CaseCreator;
 import uk.gov.ons.ctp.response.casesvc.IACServiceStub;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseIACDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
-import uk.gov.ons.ctp.response.casesvc.service.impl.InternetAccessCodeSvcClientServiceImpl;
 
 import java.util.UUID;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.exactly;
+import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
@@ -48,10 +49,7 @@ public class StateTransitionManagerIT {
   @LocalServerPort private int port;
 
   @Autowired private CaseCreator caseCreator;
-  @Autowired private CaseRepository caseRepository;
   @Autowired private IACServiceStub iacServiceStub;
-
-  @Mock private InternetAccessCodeSvcClientServiceImpl iacClient;
 
   @BeforeClass
   public static void setUp() {
@@ -74,7 +72,6 @@ public class StateTransitionManagerIT {
             .header("Content-Type", "application/json")
             .body(String.format("{\"event\":\"%s\"}", CategoryDTO.CategoryName.PRIVACY_DATA_CONFIDENTIALITY_CONCERNS))
             .asJson();
-
     assertThat(caseGroupTransitionResponse.getStatus()).isEqualTo(200);
 
     // Then
@@ -83,9 +80,96 @@ public class StateTransitionManagerIT {
             .basicAuth("admin", "secret")
             .header("Content-Type", "application/json")
             .asObject(CaseDetailsDTO.class);
-
     assertThat(caseResponse.getStatus()).isEqualTo(200);
+
     assertThat(caseResponse.getBody().getCaseGroup().getCaseGroupStatus()).isEqualTo(CaseGroupStatus.REFUSAL);
+    assertThat(caseResponse.getBody().getState()).isEqualTo(CaseState.INACTIONABLE);
+  }
+
+  @Test
+  public void ensureSocialOtherNonResponseOutcomeMakesCaseInactionable() throws Exception {
+    // Given
+    String sampleUnitRef = "TEST2";
+    CaseNotification caseNotification = caseCreator.sendSampleUnit(sampleUnitRef, "H", UUID.randomUUID());
+    String collectionExerciseId = caseNotification.getExerciseId();
+    String caseID = caseNotification.getCaseId();
+
+    // When
+    HttpResponse caseGroupTransitionResponse =
+        Unirest.put("http://localhost:" + port + "/casegroups/transitions/" + collectionExerciseId + "/" + sampleUnitRef)
+            .basicAuth("admin", "secret")
+            .header("Content-Type", "application/json")
+            .body(String.format("{\"event\":\"%s\"}", CategoryDTO.CategoryName.ILL_AT_HOME))
+            .asJson();
+    assertThat(caseGroupTransitionResponse.getStatus()).isEqualTo(200);
+
+    // Then
+    HttpResponse<CaseDetailsDTO> caseResponse =
+        Unirest.get("http://localhost:" + port + "/cases/" + caseID)
+            .basicAuth("admin", "secret")
+            .header("Content-Type", "application/json")
+            .asObject(CaseDetailsDTO.class);
+    assertThat(caseResponse.getStatus()).isEqualTo(200);
+
+    assertThat(caseResponse.getBody().getCaseGroup().getCaseGroupStatus()).isEqualTo(CaseGroupStatus.OTHERNONRESPONSE);
+    assertThat(caseResponse.getBody().getState()).isEqualTo(CaseState.INACTIONABLE);
+  }
+
+  @Test
+  public void ensureSocialUnknownEligibilityOutcomeMakesCaseInactionable() throws Exception {
+    // Given
+    String sampleUnitRef = "TEST3";
+    CaseNotification caseNotification = caseCreator.sendSampleUnit(sampleUnitRef, "H", UUID.randomUUID());
+    String collectionExerciseId = caseNotification.getExerciseId();
+    String caseID = caseNotification.getCaseId();
+
+    // When
+    HttpResponse caseGroupTransitionResponse =
+        Unirest.put("http://localhost:" + port + "/casegroups/transitions/" + collectionExerciseId + "/" + sampleUnitRef)
+            .basicAuth("admin", "secret")
+            .header("Content-Type", "application/json")
+            .body(String.format("{\"event\":\"%s\"}", CategoryDTO.CategoryName.NO_TRACE_OF_ADDRESS))
+            .asJson();
+    assertThat(caseGroupTransitionResponse.getStatus()).isEqualTo(200);
+
+    // Then
+    HttpResponse<CaseDetailsDTO> caseResponse =
+        Unirest.get("http://localhost:" + port + "/cases/" + caseID)
+            .basicAuth("admin", "secret")
+            .header("Content-Type", "application/json")
+            .asObject(CaseDetailsDTO.class);
+    assertThat(caseResponse.getStatus()).isEqualTo(200);
+
+    assertThat(caseResponse.getBody().getCaseGroup().getCaseGroupStatus()).isEqualTo(CaseGroupStatus.UNKNOWNELIGIBILITY);
+    assertThat(caseResponse.getBody().getState()).isEqualTo(CaseState.INACTIONABLE);
+  }
+
+  @Test
+  public void ensureSocialNotEligibleOutcomeMakesCaseInactionable() throws Exception {
+    // Given
+    String sampleUnitRef = "TEST4";
+    CaseNotification caseNotification = caseCreator.sendSampleUnit(sampleUnitRef, "H", UUID.randomUUID());
+    String collectionExerciseId = caseNotification.getExerciseId();
+    String caseID = caseNotification.getCaseId();
+
+    // When
+    HttpResponse caseGroupTransitionResponse =
+        Unirest.put("http://localhost:" + port + "/casegroups/transitions/" + collectionExerciseId + "/" + sampleUnitRef)
+            .basicAuth("admin", "secret")
+            .header("Content-Type", "application/json")
+            .body(String.format("{\"event\":\"%s\"}", CategoryDTO.CategoryName.VACANT_OR_EMPTY))
+            .asJson();
+    assertThat(caseGroupTransitionResponse.getStatus()).isEqualTo(200);
+
+    // Then
+    HttpResponse<CaseDetailsDTO> caseResponse =
+        Unirest.get("http://localhost:" + port + "/cases/" + caseID)
+            .basicAuth("admin", "secret")
+            .header("Content-Type", "application/json")
+            .asObject(CaseDetailsDTO.class);
+    assertThat(caseResponse.getStatus()).isEqualTo(200);
+
+    assertThat(caseResponse.getBody().getCaseGroup().getCaseGroupStatus()).isEqualTo(CaseGroupStatus.NOTELIGIBLE);
     assertThat(caseResponse.getBody().getState()).isEqualTo(CaseState.INACTIONABLE);
   }
 
@@ -95,13 +179,13 @@ public class StateTransitionManagerIT {
     iacServiceStub.createIACStub();
     iacServiceStub.disableIACStub();
 
-    String sampleUnitRef = "TEST2";
+    String sampleUnitRef = "TEST";
     CaseNotification caseNotification = caseCreator.sendSampleUnit(sampleUnitRef, "H", UUID.randomUUID());
 
     String collectionExerciseId = caseNotification.getExerciseId();
     String caseID = caseNotification.getCaseId();
 
-    // Create an additional UAC for the case
+    // Create an additional UAC for the case to check it's disabled later
     HttpResponse<CaseIACDTO> createdUACresponse =
         Unirest.post("http://localhost:" + port + "/cases/" + caseID + "/iac")
             .basicAuth("admin", "secret")
