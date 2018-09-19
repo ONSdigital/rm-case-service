@@ -78,7 +78,7 @@ public class InternetAccessCodeSvcClient {
       value = {RestClientException.class},
       maxAttemptsExpression = "#{${retries.maxAttempts}}",
       backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
-  public void disableIAC(String iac) {
+  public boolean disableIAC(String iac) {
     log.debug("Disabling iac code");
     UriComponents uriComponents =
         restUtility.createUriComponents(
@@ -86,9 +86,17 @@ public class InternetAccessCodeSvcClient {
     HttpEntity<UpdateInternetAccessCodeDTO> httpEntity =
         restUtility.createHttpEntity(new UpdateInternetAccessCodeDTO(SYSTEM));
 
-    restTemplate.exchange(
-        uriComponents.toUri(), HttpMethod.PUT, httpEntity, InternetAccessCodeDTO.class);
+    ResponseEntity responseEntity =
+        restTemplate.exchange(
+            uriComponents.toUri(), HttpMethod.PUT, httpEntity, InternetAccessCodeDTO.class);
+
+    if (!responseEntity.getStatusCode().is2xxSuccessful()) {
+      log.with("httpStatusCode", responseEntity.getStatusCodeValue())
+          .error("Failed to disable IAC");
+      return false;
+    }
     log.debug("Successfully disabled iac code");
+    return true;
   }
 
   /**

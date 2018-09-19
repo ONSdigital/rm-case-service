@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.service;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -27,6 +28,8 @@ public class CaseGroupServiceTest {
       caseGroupStatusTransitionManager;
 
   @Mock private CaseGroupAuditService caseGroupAuditService;
+
+  private static final UUID CASEGROUP_ID = UUID.fromString("3fc633af-d740-4a7b-8756-f747a02da73b");
 
   @Test
   public void givenCaseGroupStatusWhenCaseGroupStatusTransitionedThenTransitionIsSaved()
@@ -79,4 +82,29 @@ public class CaseGroupServiceTest {
     // Then
     verify(caseGroupAuditService).updateAuditTable(caseGroup, caseGroup.getPartyId());
   }
+
+  @Test
+  public void testCaseGroupFindById() {
+    // Given
+    CaseGroup caseGroup =
+        CaseGroup.builder()
+            .id(CASEGROUP_ID)
+            .collectionExerciseId(UUID.randomUUID())
+            .partyId(UUID.randomUUID())
+            .sampleUnitRef("12345")
+            .sampleUnitType("B")
+            .status(CaseGroupStatus.NOTSTARTED)
+            .build();
+    given(caseGroupRepo.findById(CASEGROUP_ID)).willReturn(caseGroup);
+
+    //When
+    CaseGroup response = caseGroupService.findCaseGroupById(CASEGROUP_ID);
+
+    //Then
+    verify(caseGroupRepo).findById(CASEGROUP_ID);
+    assertEquals(response.getId(), CASEGROUP_ID);
+    assertEquals(response.getCollectionExerciseId(), caseGroup.getCollectionExerciseId());
+  }
+
+
 }

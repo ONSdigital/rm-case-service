@@ -531,9 +531,7 @@ public class CaseService {
                   .getCategoryName()
                   .equals(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD))
           || transitionEvent == CaseDTO.CaseEvent.ACTIONPLAN_CHANGED) {
-        if (targetCase.getIac() != null) {
-          internetAccessCodeSvcClient.disableIAC(targetCase.getIac());
-        }
+        caseIacAuditService.disableAllIACsForCase(targetCase);
       }
       CaseState oldState = targetCase.getState();
       CaseState newState = caseSvcStateTransitionManager.transition(oldState, transitionEvent);
