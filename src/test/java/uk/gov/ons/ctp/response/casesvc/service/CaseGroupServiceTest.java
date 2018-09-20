@@ -97,14 +97,12 @@ public class CaseGroupServiceTest {
             .build();
     given(caseGroupRepo.findById(CASEGROUP_ID)).willReturn(caseGroup);
 
-    //When
+    // When
     CaseGroup response = caseGroupService.findCaseGroupById(CASEGROUP_ID);
 
-    //Then
+    // Then
     verify(caseGroupRepo).findById(CASEGROUP_ID);
     assertEquals(response.getId(), CASEGROUP_ID);
     assertEquals(response.getCollectionExerciseId(), caseGroup.getCollectionExerciseId());
   }
-
-
 }
