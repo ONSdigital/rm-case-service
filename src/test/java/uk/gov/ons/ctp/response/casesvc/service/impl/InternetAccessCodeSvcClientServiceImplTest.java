@@ -201,9 +201,4 @@ public class InternetAccessCodeSvcClientServiceImplTest {
     verify(restTemplate, times(1))
         .exchange(uriComponents.toUri(), HttpMethod.GET, null, InternetAccessCodeDTO.class);
   }
-
-  @Test
-  public void failingTestTest() {
-    assertTrue(2 == 1);
-  }
 }
