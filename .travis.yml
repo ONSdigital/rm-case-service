@@ -10,7 +10,7 @@ before_install:
 - cp .maven.settings.xml $HOME/.m2/settings.xml
 - mvn fmt:check
 
-script: travis_wait mvn cobertura:cobertura-integration-test
+script: travis_wait mvn verify cobertura:cobertura-integration-test
 
 after_success:
 - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
