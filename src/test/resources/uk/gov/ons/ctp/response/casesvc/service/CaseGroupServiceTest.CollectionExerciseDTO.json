@@ -1,0 +1,62 @@
+[
+  {
+    "id": "9239f037-7031-40ca-9bef-416a4ff3537b",
+    "surveyId": "cb8accda-6118-4d3b-85a3-149e28960c54",
+    "name": null,
+    "actualExecutionDateTime": "2018-09-20T09:47:26.666Z",
+    "scheduledExecutionDateTime": "2018-01-16T00:00:00.000Z",
+    "scheduledStartDateTime": "2018-01-16T00:00:00.000Z",
+    "actualPublishDateTime": null,
+    "periodStartDateTime": "2018-01-16T00:00:00.000Z",
+    "periodEndDateTime": "2020-02-28T00:00:00.000Z",
+    "scheduledReturnDateTime": "2018-02-09T00:00:00.000Z",
+    "scheduledEndDateTime": "2020-02-28T00:00:00.000Z",
+    "executedBy": null,
+    "state": "LIVE",
+    "caseTypes": [
+      {
+        "actionPlanId": "1cbea564-b989-4458-9db2-8a4db65fb82e",
+        "sampleUnitType": "B"
+      },
+      {
+        "actionPlanId": "50849aa2-439b-4849-9603-7e237662f52c",
+        "sampleUnitType": "BI"
+      }
+    ],
+    "exerciseRef": "201801",
+    "userDescription": "January 2018",
+    "created": "2018-09-20T09:46:49.727Z",
+    "updated": "2018-09-20T09:47:27.453Z",
+    "deleted": null
+  },
+  {
+    "id": "68490084-1d6a-448c-908a-fedc84b94435",
+    "surveyId": "cb8accda-6118-4d3b-85a3-149e28960c54",
+    "name": null,
+    "actualExecutionDateTime": "2018-09-20T09:58:19.280Z",
+    "scheduledExecutionDateTime": "2018-11-16T00:00:00.000Z",
+    "scheduledStartDateTime": "2018-11-16T00:00:00.000Z",
+    "actualPublishDateTime": "2018-09-20T09:58:21.362Z",
+    "periodStartDateTime": "2018-11-16T00:00:00.000Z",
+    "periodEndDateTime": "2020-12-31T00:00:00.000Z",
+    "scheduledReturnDateTime": "2018-12-10T00:00:00.000Z",
+    "scheduledEndDateTime": "2020-12-31T00:00:00.000Z",
+    "executedBy": null,
+    "state": "READY_FOR_LIVE",
+    "caseTypes": [
+      {
+        "actionPlanId": "fad7d46f-b53b-4690-a44b-8c61d815fdd3",
+        "sampleUnitType": "B"
+      },
+      {
+        "actionPlanId": "7f4f870c-b738-48dd-a355-2fa685d5ff5c",
+        "sampleUnitType": "BI"
+      }
+    ],
+    "exerciseRef": "201811",
+    "userDescription": "November 2018",
+    "created": "2018-09-20T09:46:49.994Z",
+    "updated": "2018-09-20T09:58:20.637Z",
+    "deleted": null
+  }
+]

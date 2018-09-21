@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
@@ -18,6 +19,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.casesvc.client.InternetAccessCodeSvcClient;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
@@ -143,6 +145,56 @@ public class CaseIACServiceTest {
 
     // Then
     verify(iacClient, times(0)).disableIAC(any(String.class));
+  }
+
+  @Test
+  public void testFindCaseIacByCasePKSuccess() {
+    // Given
+    given(caseIacAuditRepository.findTop1ByCaseFKOrderByCreatedDateTimeDesc(any()))
+        .willReturn(new CaseIacAudit());
+
+    // When
+    caseIACService.findCaseIacByCasePK(1);
+
+    // Then
+    verify(caseIacAuditRepository).findTop1ByCaseFKOrderByCreatedDateTimeDesc(1);
+  }
+
+  @Test
+  public void testFindCaseIacByCasePKNoIacFoundReturnNull() {
+    // Given
+    given(caseIacAuditRepository.findTop1ByCaseFKOrderByCreatedDateTimeDesc(any()))
+        .willReturn(null);
+
+    // When
+    String response = caseIACService.findCaseIacByCasePK(1);
+
+    // Then
+    assertNull(response);
+  }
+
+  @Test
+  public void testFindCaseByIacSuccess() throws CTPException {
+    // Given
+    given(caseIacAuditRepository.findByIac(any())).willReturn(new CaseIacAudit());
+
+    // When
+    caseIACService.findCaseByIac("33333333");
+
+    // Then
+    verify(caseIacAuditRepository).findByIac("33333333");
+  }
+
+  @Test(expected = CTPException.class)
+  public void testFindCaseByIacThrowsCtpExceptionWhenNoCaseFound() throws CTPException {
+    // Given
+    given(caseIacAuditRepository.findByIac(any())).willReturn(null);
+
+    // When
+    caseIACService.findCaseByIac("33333333");
+
+    // Then CTPException is thrown
+
   }
 
   /** mock iac audit * */
