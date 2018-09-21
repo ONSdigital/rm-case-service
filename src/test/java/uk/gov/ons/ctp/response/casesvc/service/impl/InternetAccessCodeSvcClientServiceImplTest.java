@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.service.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -121,6 +122,9 @@ public class InternetAccessCodeSvcClientServiceImplTest {
     HttpEntity httpEntity = new HttpEntity<>(updateInternetAccessCodeDTO, null);
     when(restUtility.createHttpEntity(any(UpdateInternetAccessCodeDTO.class)))
         .thenReturn(httpEntity);
+    when(restTemplate.exchange(
+            uriComponents.toUri(), HttpMethod.PUT, httpEntity, InternetAccessCodeDTO.class))
+        .thenReturn(new ResponseEntity<>(HttpStatus.OK));
 
     iacSvcClientService.disableIAC(IAC);
 
@@ -132,6 +136,40 @@ public class InternetAccessCodeSvcClientServiceImplTest {
             eq(HttpMethod.PUT),
             eq(httpEntity),
             eq(InternetAccessCodeDTO.class));
+  }
+
+  @Test
+  public void testFailedToDisableIAC() {
+
+    // Given
+    InternetAccessCodeSvc iacSvcConfig = new InternetAccessCodeSvc();
+    iacSvcConfig.setIacPutPath(IAC_PUT_PATH);
+    when(appConfig.getInternetAccessCodeSvc()).thenReturn(iacSvcConfig);
+
+    UriComponents uriComponents =
+        UriComponentsBuilder.newInstance()
+            .scheme(HTTP)
+            .host(LOCALHOST)
+            .port(80)
+            .path(IAC_PUT_PATH)
+            .build();
+    when(restUtility.createUriComponents(any(String.class), eq(null), eq(IAC)))
+        .thenReturn(uriComponents);
+
+    UpdateInternetAccessCodeDTO updateInternetAccessCodeDTO =
+        new UpdateInternetAccessCodeDTO("SYSTEM");
+    HttpEntity httpEntity = new HttpEntity<>(updateInternetAccessCodeDTO, null);
+    when(restUtility.createHttpEntity(any(UpdateInternetAccessCodeDTO.class)))
+        .thenReturn(httpEntity);
+    when(restTemplate.exchange(
+            uriComponents.toUri(), HttpMethod.PUT, httpEntity, InternetAccessCodeDTO.class))
+        .thenReturn(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+
+    // When
+    Boolean isDisableIACSuccessful = iacSvcClientService.disableIAC(IAC);
+
+    // Then
+    assertFalse(isDisableIACSuccessful);
   }
 
   @Test
