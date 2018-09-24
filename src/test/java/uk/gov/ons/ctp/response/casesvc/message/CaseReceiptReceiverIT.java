@@ -1,9 +1,5 @@
 package uk.gov.ons.ctp.response.casesvc.message;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.put;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.junit.Assert.assertEquals;
 
@@ -30,6 +26,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.gov.ons.ctp.common.UnirestInitialiser;
 import uk.gov.ons.ctp.response.casesvc.CaseCreator;
+import uk.gov.ons.ctp.response.casesvc.IACServiceStub;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
@@ -54,6 +51,7 @@ public class CaseReceiptReceiverIT {
   @LocalServerPort private int port;
 
   @Autowired private CaseCreator caseCreator;
+  @Autowired private IACServiceStub iacServiceStub;
 
   @BeforeClass
   public static void setUp() {
@@ -71,7 +69,7 @@ public class CaseReceiptReceiverIT {
     CaseReceipt caseReceipt =
         new CaseReceipt("caseRef", caseNotif.getCaseId(), InboundChannel.OFFLINE, now);
     Message<CaseReceipt> message = new GenericMessage<>(caseReceipt);
-    disableIACStub();
+    iacServiceStub.disableIACStub();
 
     // When
     caseReceiptTransformed.send(message);
@@ -99,12 +97,5 @@ public class CaseReceiptReceiverIT {
         .header("Content-Type", "application/json")
         .body(caseEvent)
         .asObject(CreatedCaseEventDTO.class);
-  }
-
-  private void disableIACStub() {
-    stubFor(
-        put(urlPathMatching("/iacs/(.*)"))
-            .willReturn(
-                aResponse().withHeader("Content-Type", "application/json").withStatus(200)));
   }
 }

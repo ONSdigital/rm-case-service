@@ -1,0 +1,21 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 17-1
+      author: Gemma Irving
+      changes:
+      - sqlFile:
+          comment: Change respondent enrolled category to action plan changed event type and remove newcasesampleunittype
+          path: update-enrolment-category-event-type.sql
+          relativeToChangelogFile: true
+          splitStatements: false
+
+  - changeSet:
+      id: 17-2
+      author: Gemma Irving
+      changes:
+      - sqlFile:
+          comment: Change no active enrolments category to action plan changed event type
+          path: update-no-active-enrolments-category-event.sql
+          relativeToChangelogFile: true
+          splitStatements: false
