@@ -168,10 +168,10 @@ public class CaseService {
   /**
    * Not sure this is the best place for this method, but .. several parts of case svc need to build
    * a CaseNotification for a Case and need the services of the ActionPlanMappingService to get the
-   * actionPlanId This method just creates a CaseNotification ======= Not sure this is the best
-   * place for this method, but .. several parts of case svc need to build a CaseNotification for a
-   * Case and need the services of the ActionPlanMappingService to get the actionPlanId This method
-   * just creates a CaseNotification >>>>>>> master
+   * actionPlanId This method just creates a CaseNotification Not sure this is the best place for
+   * this method, but .. several parts of case svc need to build a CaseNotification for a Case and
+   * need the services of the ActionPlanMappingService to get the actionPlanId This method just
+   * creates a CaseNotification
    *
    * @param caze The Case
    * @param transitionEvent the event to inform the recipient of

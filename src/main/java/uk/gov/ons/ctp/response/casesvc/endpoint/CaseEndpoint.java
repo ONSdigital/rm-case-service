@@ -348,7 +348,6 @@ public final class CaseEndpoint implements CTPEndpoint {
     CreatedCaseEventDTO mappedCaseEvent =
         mapperFacade.map(createdCaseEvent, CreatedCaseEventDTO.class);
     mappedCaseEvent.setCaseId(caseId);
-    mappedCaseEvent.setPartyId(caseEventCreationRequestDTO.getPartyId());
 
     String newResourceUrl =
         ServletUriComponentsBuilder.fromCurrentRequest()

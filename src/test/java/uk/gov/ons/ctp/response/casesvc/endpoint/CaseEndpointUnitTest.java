@@ -142,13 +142,9 @@ public final class CaseEndpointUnitTest {
   private static final String CASEEVENT_INVALIDJSON =
       "{\"description\":\"a\",\"category\":\"BAD_CAT\",\"createdBy\":\"u\"}";
   private static final String CASEEVENT_VALIDJSON =
-      "{\"description\":\"sometest\",\"category\":\"RESPONDENT_ENROLED\",\"partyId\":"
-          + "\"3b136c4b-7a14-4904-9e01-13364dd7b971\",\"createdBy\":\"unittest\"}";
-  private static final String CASEEVENT_VALIDJSON_NO_NEW_CASE =
-      "{\"description\":\"sometest\",\"category\":\"GENERAL_ENQUIRY\",\"partyId\":"
-          + "\"3b136c4b-7a14-4904-9e01-13364dd7b971\",\"createdBy\":\"unittest\"}";
-  private static final String CASEEVENT_VALIDJSON_NO_PARTY =
       "{\"description\":\"sometest\",\"category\":\"RESPONDENT_ENROLED\",\"createdBy\":\"unittest\"}";
+  private static final String CASEEVENT_VALIDJSON_NO_NEW_CASE =
+      "{\"description\":\"sometest\",\"category\":\"GENERAL_ENQUIRY\",\"createdBy\":\"unittest\"}";
 
   @InjectMocks private CaseEndpoint caseEndpoint;
 
@@ -714,7 +710,6 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.createdBy", is(CASE9_CREATEDBY)));
     actions.andExpect(jsonPath("$.createdDateTime", is(new DateMatcher(CASE_DATE_VALUE_1))));
     actions.andExpect(jsonPath("$.category", is(CASE9_CATEGORY)));
-    actions.andExpect(jsonPath("$.partyId", is(CASE9_PARTYID.toString())));
     actions.andExpect(jsonPath("$.subCategory").doesNotExist());
   }
 
@@ -744,7 +739,6 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.createdBy", is(CASE9_CREATEDBY)));
     actions.andExpect(jsonPath("$.createdDateTime", is(new DateMatcher(CASE_DATE_VALUE_1))));
     actions.andExpect(jsonPath("$.category", is(CASE9_CATEGORY)));
-    actions.andExpect(jsonPath("$.partyId", is(CASE9_PARTYID.toString())));
     actions.andExpect(jsonPath("$.subCategory").doesNotExist());
   }
 
