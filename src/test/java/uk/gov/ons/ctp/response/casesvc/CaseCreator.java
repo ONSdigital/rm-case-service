@@ -1,16 +1,13 @@
 package uk.gov.ons.ctp.response.casesvc;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.junit.Assert.assertNotNull;
 
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import java.io.ByteArrayInputStream;
 import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import javax.xml.bind.JAXBContext;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
@@ -24,11 +21,13 @@ import uk.gov.ons.tools.rabbit.SimpleMessageListener;
 import uk.gov.ons.tools.rabbit.SimpleMessageSender;
 
 @Component
-@Slf4j
 public class CaseCreator {
+
+  private static final Logger log = LoggerFactory.getLogger(CaseCreator.class);
 
   @Autowired private AppConfig appConfig;
   @Autowired private ResourceLoader resourceLoader;
+  @Autowired private IACServiceStub iacServiceStub;
 
   /**
    * Sends a sample unit in a message so that casesvc creates a case, then waits for a message on
@@ -39,7 +38,7 @@ public class CaseCreator {
   public CaseNotification sendSampleUnit(
       String sampleUnitRef, String sampleUnitType, UUID sampleUnitId) throws Exception {
 
-    createIACStub();
+    iacServiceStub.createIACStub();
 
     SampleUnitParent sampleUnit = new SampleUnitParent();
     sampleUnit.setCollectionExerciseId(UUID.randomUUID().toString());
@@ -101,15 +100,5 @@ public class CaseCreator {
 
     return new SimpleMessageListener(
         config.getHost(), config.getPort(), config.getUsername(), config.getPassword());
-  }
-
-  private void createIACStub() {
-    stubFor(
-        post(urlPathEqualTo("/iacs"))
-            .willReturn(
-                aResponse()
-                    .withHeader("Content-Type", "application/json")
-                    .withBody("[\"{{randomValue length=12 type='ALPHANUMERIC' lowercase=true}}\"]")
-                    .withTransformers("response-template")));
   }
 }
