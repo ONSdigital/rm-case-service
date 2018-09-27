@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import uk.gov.ons.ctp.common.rest.RestUtility;
@@ -77,16 +76,12 @@ public class ActionSvcClient {
 
     ResponseEntity<List<ActionPlanDTO>> responseEntity;
     HttpEntity<?> httpEntity = restUtility.createHttpEntityWithAuthHeader();
-    try {
-      responseEntity =
-          restTemplate.exchange(
-              uriComponents.toString(),
-              HttpMethod.GET,
-              httpEntity,
-              new ParameterizedTypeReference<List<ActionPlanDTO>>() {});
-    } catch (HttpClientErrorException e) {
-      throw e;
-    }
+    responseEntity =
+        restTemplate.exchange(
+            uriComponents.toString(),
+            HttpMethod.GET,
+            httpEntity,
+            new ParameterizedTypeReference<List<ActionPlanDTO>>() {});
 
     log.with("collection_exercise_id", collectionExerciseId)
         .with("active_enrolments", activeEnrolments)
