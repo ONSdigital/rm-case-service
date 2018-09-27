@@ -38,12 +38,12 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
     // From replacement init on replaced to actionable
     builder.put(CaseState.REPLACEMENT_INIT, CaseEvent.REPLACED, CaseState.ACTIONABLE);
 
-    // From actionable on account created, deactivated, disabled to actionable, inactionable
+    // From actionable on actionplan changed, deactivated, disabled to actionable, inactionable
     builder.put(CaseState.ACTIONABLE, CaseEvent.ACTIONPLAN_CHANGED, CaseState.ACTIONABLE);
     builder.put(CaseState.ACTIONABLE, CaseEvent.DEACTIVATED, CaseState.INACTIONABLE);
     builder.put(CaseState.ACTIONABLE, CaseEvent.DISABLED, CaseState.INACTIONABLE);
 
-    // From inactionable on account created, deactivated, disabled to inactionable
+    // From inactionable on actionplan changed, deactivated, disabled to inactionable
     builder.put(CaseState.INACTIONABLE, CaseEvent.ACTIVATED, CaseState.ACTIONABLE);
     builder.put(CaseState.INACTIONABLE, CaseEvent.ACTIONPLAN_CHANGED, CaseState.INACTIONABLE);
     builder.put(CaseState.INACTIONABLE, CaseEvent.DEACTIVATED, CaseState.INACTIONABLE);
