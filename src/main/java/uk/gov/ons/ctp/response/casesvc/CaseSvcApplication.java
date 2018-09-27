@@ -74,6 +74,7 @@ public class CaseSvcApplication {
    * @param args runtime command line args
    */
   public static void main(final String[] args) {
+
     SpringApplication.run(CaseSvcApplication.class, args);
   }
 

@@ -67,7 +67,7 @@ public class CaseEndpointIT {
     String caseID = caseNotification.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
         new CaseEventCreationRequestDTO(
-            "TestEvent", CategoryName.ACTION_CREATED, "SYSTEM", "SOCIALNOT", null);
+            "TestEvent", CategoryName.ACTION_CREATED, "SYSTEM", "SOCIALNOT");
 
     // When
     HttpResponse<CreatedCaseEventDTO> createdCaseResponse =
@@ -115,11 +115,7 @@ public class CaseEndpointIT {
     String caseID = caseNotification.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
         new CaseEventCreationRequestDTO(
-            "TestEvent",
-            CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED,
-            "SYSTEM",
-            "DUMMY",
-            UUID.randomUUID());
+            "TestEvent", CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED, "SYSTEM", "DUMMY");
 
     // When
     HttpResponse<CreatedCaseEventDTO> createdCaseResponse =
@@ -156,11 +152,7 @@ public class CaseEndpointIT {
     String caseID = caseNotification.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
         new CaseEventCreationRequestDTO(
-            "TestEvent",
-            CategoryName.COLLECTION_INSTRUMENT_ERROR,
-            "SYSTEM",
-            "DUMMY",
-            UUID.randomUUID());
+            "TestEvent", CategoryName.COLLECTION_INSTRUMENT_ERROR, "SYSTEM", "DUMMY");
 
     // When
     HttpResponse<CreatedCaseEventDTO> createdCaseResponse =
@@ -197,11 +189,7 @@ public class CaseEndpointIT {
     String caseID = caseNotification.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
         new CaseEventCreationRequestDTO(
-            "TestEvent",
-            CategoryName.SUCCESSFUL_RESPONSE_UPLOAD,
-            "SYSTEM",
-            "DUMMY",
-            UUID.randomUUID());
+            "TestEvent", CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, "SYSTEM", "DUMMY");
 
     // When
     HttpResponse<CreatedCaseEventDTO> createdCaseResponse =
@@ -238,11 +226,7 @@ public class CaseEndpointIT {
     String caseID = caseNotification.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
         new CaseEventCreationRequestDTO(
-            "TestEvent",
-            CategoryName.UNSUCCESSFUL_RESPONSE_UPLOAD,
-            "SYSTEM",
-            "DUMMY",
-            UUID.randomUUID());
+            "TestEvent", CategoryName.UNSUCCESSFUL_RESPONSE_UPLOAD, "SYSTEM", "DUMMY");
 
     // When
     HttpResponse<CreatedCaseEventDTO> createdCaseResponse =

@@ -91,6 +91,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   public ResponseEntity<List<CaseGroupDTO>> findCaseGroupsByPartyId(
       @PathVariable("partyId") final UUID partyId) {
     log.with("party_id", partyId).debug("Retrieving case groups by party id");
+
     List<CaseGroup> caseGroupList = caseGroupService.findCaseGroupByPartyId(partyId);
 
     if (CollectionUtils.isEmpty(caseGroupList)) {
@@ -123,7 +124,6 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
     log.with("collection_exercise_id", collectionExerciseId)
         .with("ru_ref", ruRef)
         .debug("Retrieving casegroup transistions");
-
     CaseGroup caseGroupObj =
         caseGroupService.findCaseGroupByCollectionExerciseIdAndRuRef(collectionExerciseId, ruRef);
     if (caseGroupObj == null) {

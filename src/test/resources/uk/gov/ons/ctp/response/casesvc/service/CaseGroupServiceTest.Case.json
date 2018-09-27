@@ -1,0 +1,17 @@
+[
+    {
+        "state": "ACTIONABLE",
+        "caseGroupFK": 1,
+        "id": "41bb6cd1-1d19-4d80-93a3-90584b9b73b5",
+        "actionPlanId": "50849aa2-439b-4849-9603-7e237662f52c",
+        "collectionInstrumentId": "498b807b-f097-468b-b3ec-5fb5db3b153c",
+        "partyId": "6ee91f33-2e44-49a3-b95b-25d9ab840fd9",
+        "sampleUnitId": "c8594f8e-5b52-449e-95f6-d2c76351f0bb",
+        "iac": null,
+        "caseRef": "1000000000000001",
+        "createdBy": "SYSTEM",
+        "sampleUnitType": "B",
+        "createdDateTime": "2018-09-20T09:47:28.154Z",
+        "responses": []
+    }
+]

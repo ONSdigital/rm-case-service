@@ -343,31 +343,11 @@ public final class CaseEndpoint implements CTPEndpoint {
     }
     caseEvent.setCaseFK(targetCase.getCasePK());
 
-    Category category = categoryService.findCategory(caseEvent.getCategory());
-    // If category has a new sample unit type then a party id must be provided in the case event
-    if (category.getNewCaseSampleUnitType() != null
-        && caseEventCreationRequestDTO.getPartyId() == null) {
-      throw new CTPException(
-          CTPException.Fault.VALIDATION_FAILED, String.format(EVENT_REQUIRES_NEW_CASE, caseId));
-    }
-
-    // Create new case if required
-    // NOTE this isn't an ideal point to do this
-    // We will not be creating new cases from case events when BI cases are removed so will leave
-    Case newCase;
-    if (category.getNewCaseSampleUnitType() != null) {
-      newCase = new Case();
-      newCase.setPartyId(caseEventCreationRequestDTO.getPartyId());
-    } else {
-      newCase = null;
-    }
-
-    CaseEvent createdCaseEvent = caseService.createCaseEvent(caseEvent, newCase, targetCase);
+    CaseEvent createdCaseEvent = caseService.createCaseEvent(caseEvent, targetCase);
 
     CreatedCaseEventDTO mappedCaseEvent =
         mapperFacade.map(createdCaseEvent, CreatedCaseEventDTO.class);
     mappedCaseEvent.setCaseId(caseId);
-    mappedCaseEvent.setPartyId(caseEventCreationRequestDTO.getPartyId());
 
     String newResourceUrl =
         ServletUriComponentsBuilder.fromCurrentRequest()

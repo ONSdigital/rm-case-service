@@ -303,9 +303,9 @@
     "shortDescription": "Respondent Enroled",
     "role": null,
     "generatedActionType": null,
-    "newCaseSampleUnitType": "BI",
+    "newCaseSampleUnitType": null,
     "oldCaseSampleUnitTypes": "B",
-    "eventType": "DISABLED",
+    "eventType": "ACTIONPLAN_CHANGED",
     "recalcCollectionInstrument": false
   },
   {
@@ -486,17 +486,6 @@
   },
   {
     "group": null,
-    "categoryName": "RESPONDENT_ACCOUNT_CREATED",
-    "longDescription": "Account created for respondent",
-    "shortDescription": "Account created for respondent",
-    "role": null,
-    "generatedActionType": null,
-    "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "B",
-    "eventType": "ACCOUNT_CREATED"
-  },
-  {
-    "group": null,
     "categoryName": "ACCESS_CODE_AUTHENTICATION_ATTEMPT",
     "longDescription": "Access Code authentication attempted",
     "shortDescription": "Access Code authentication attempted",
@@ -514,7 +503,7 @@
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "BI",
+    "oldCaseSampleUnitTypes": "B,BI",
     "eventType": null
   },
   {
@@ -525,7 +514,7 @@
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "BI",
+    "oldCaseSampleUnitTypes": "B,BI",
     "eventType": null
   },
   {
@@ -536,7 +525,7 @@
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "BI",
+    "oldCaseSampleUnitTypes": "B,BI",
     "eventType": "DISABLED"
   },
   {
@@ -552,14 +541,14 @@
   },
   {
     "group": null,
-    "categoryName": "DISABLE_RESPONDENT_ENROLMENT",
-    "longDescription": "Offline Response Processed",
-    "shortDescription": "Offline Response Processed",
+    "categoryName": "NO_ACTIVE_ENROLMENTS",
+    "longDescription": "All respondents disabled for RU and Survey",
+    "shortDescription": "All respondents disabled",
     "role": null,
     "generatedActionType": null,
     "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "BI",
-    "eventType": "DISABLED"
+    "oldCaseSampleUnitTypes": "B,BI",
+    "eventType": "ACTIONPLAN_CHANGED"
   },
   {
     "group": "general",

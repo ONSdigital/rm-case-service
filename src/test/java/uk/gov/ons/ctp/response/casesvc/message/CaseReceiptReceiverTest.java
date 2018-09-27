@@ -26,13 +26,12 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
-import uk.gov.ons.ctp.response.casesvc.message.impl.CaseReceiptReceiverImpl;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 
-/** To unit test CaseReceiptReceiverImpl */
+/** To unit test CaseReceiptReceiver */
 @RunWith(MockitoJUnitRunner.class)
-public class CaseReceiptReceiverImplTest {
+public class CaseReceiptReceiverTest {
 
   private static final String LINKED_CASE_ID = "fa622b71-f158-4d51-82dd-c3417e31e32c";
   private static final String UNLINKED_CASE_ID = "fa622b71-f158-4d51-82dd-c3417e31e32d";
@@ -40,7 +39,7 @@ public class CaseReceiptReceiverImplTest {
   private static final String LINKED_CASE_REF = "123";
   private static final String UNLINKED_CASE_REF = "456";
 
-  @InjectMocks private CaseReceiptReceiverImpl caseReceiptReceiver;
+  @InjectMocks private CaseReceiptReceiver caseReceiptReceiver;
 
   @Mock private CaseService caseService;
 
@@ -65,7 +64,6 @@ public class CaseReceiptReceiverImplTest {
     verify(caseService, times(1))
         .createCaseEvent(
             eq(buildCaseEvent(LINKED_CASE_PK, ONLINE_QUESTIONNAIRE_RESPONSE)),
-            eq(null),
             eq(new Timestamp(calendar.toGregorianCalendar().getTimeInMillis())));
   }
 
@@ -90,7 +88,6 @@ public class CaseReceiptReceiverImplTest {
     verify(caseService, times(1))
         .createCaseEvent(
             eq(buildCaseEvent(LINKED_CASE_PK, PAPER_QUESTIONNAIRE_RESPONSE)),
-            eq(null),
             eq(new Timestamp(calendar.toGregorianCalendar().getTimeInMillis())));
   }
 
@@ -115,7 +112,6 @@ public class CaseReceiptReceiverImplTest {
     verify(caseService, times(1))
         .createCaseEvent(
             eq(buildCaseEvent(LINKED_CASE_PK, OFFLINE_RESPONSE_PROCESSED)),
-            eq(null),
             eq(new Timestamp(calendar.toGregorianCalendar().getTimeInMillis())));
   }
 
@@ -136,7 +132,7 @@ public class CaseReceiptReceiverImplTest {
 
     caseReceiptReceiver.process(caseReceipt);
 
-    verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class), any(Case.class));
+    verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class));
   }
 
   /**
@@ -156,7 +152,7 @@ public class CaseReceiptReceiverImplTest {
 
     caseReceiptReceiver.process(caseReceipt);
 
-    verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class), any(Case.class));
+    verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class));
   }
 
   /**
@@ -176,7 +172,7 @@ public class CaseReceiptReceiverImplTest {
 
     caseReceiptReceiver.process(caseReceipt);
 
-    verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class), any(Case.class));
+    verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class));
   }
 
   /**

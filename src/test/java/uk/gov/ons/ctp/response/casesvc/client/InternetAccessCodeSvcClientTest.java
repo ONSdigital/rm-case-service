@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.casesvc.service.impl;
+package uk.gov.ons.ctp.response.casesvc.client;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -35,9 +35,9 @@ import uk.gov.ons.ctp.response.iac.representation.CreateInternetAccessCodeDTO;
 import uk.gov.ons.ctp.response.iac.representation.InternetAccessCodeDTO;
 import uk.gov.ons.ctp.response.iac.representation.UpdateInternetAccessCodeDTO;
 
-/** Testing InternetAccessCodeSvcClientServiceImpl */
+/** Testing InternetAccessCodeSvcClientService */
 @RunWith(MockitoJUnitRunner.class)
-public class InternetAccessCodeSvcClientServiceImplTest {
+public class InternetAccessCodeSvcClientTest {
 
   private static final String HTTP = "http";
   private static final String LOCALHOST = "localhost";
@@ -50,7 +50,7 @@ public class InternetAccessCodeSvcClientServiceImplTest {
   @Mock private RestTemplate restTemplate;
   @Mock private RestUtility restUtility;
 
-  @InjectMocks private InternetAccessCodeSvcClientServiceImpl iacSvcClientService;
+  @InjectMocks private InternetAccessCodeSvcClient internetAccessCodeSvcClient;
 
   /** Set up Mockito for tests */
   @Before
@@ -88,7 +88,7 @@ public class InternetAccessCodeSvcClientServiceImplTest {
             any(URI.class), any(HttpMethod.class), any(HttpEntity.class), any(Class.class)))
         .thenReturn(responseEntity);
 
-    List<String> codes = iacSvcClientService.generateIACs(count);
+    List<String> codes = internetAccessCodeSvcClient.generateIACs(count);
     assertTrue(codes != null);
     assertEquals(3, codes.size());
     assertTrue(codes.containsAll(Arrays.asList(new String[] {"1", "2", "3"})));
@@ -126,7 +126,7 @@ public class InternetAccessCodeSvcClientServiceImplTest {
             uriComponents.toUri(), HttpMethod.PUT, httpEntity, InternetAccessCodeDTO.class))
         .thenReturn(new ResponseEntity<>(HttpStatus.OK));
 
-    iacSvcClientService.disableIAC(IAC);
+    internetAccessCodeSvcClient.disableIAC(IAC);
 
     verify(restUtility, times(1)).createUriComponents(IAC_PUT_PATH, null, IAC);
     verify(restUtility, times(1)).createHttpEntity(eq(updateInternetAccessCodeDTO));
@@ -166,7 +166,7 @@ public class InternetAccessCodeSvcClientServiceImplTest {
         .thenReturn(new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
 
     // When
-    Boolean isDisableIACSuccessful = iacSvcClientService.disableIAC(IAC);
+    Boolean isDisableIACSuccessful = internetAccessCodeSvcClient.disableIAC(IAC);
 
     // Then
     assertFalse(isDisableIACSuccessful);
@@ -195,7 +195,7 @@ public class InternetAccessCodeSvcClientServiceImplTest {
             uriComponents.toUri(), HttpMethod.GET, null, InternetAccessCodeDTO.class))
         .thenReturn(responseEntity);
 
-    Boolean isActive = iacSvcClientService.isIacActive(IAC);
+    Boolean isActive = internetAccessCodeSvcClient.isIacActive(IAC);
 
     assertEquals(isActive, true);
     verify(restTemplate, times(1))

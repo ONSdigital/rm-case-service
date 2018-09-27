@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.casesvc.service.impl;
+package uk.gov.ons.ctp.response.casesvc.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
@@ -30,7 +30,7 @@ import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
 @RunWith(MockitoJUnitRunner.class)
 public class CaseCreationServiceTest {
 
-  @InjectMocks private CaseServiceImpl caseService;
+  @InjectMocks private CaseService caseService;
 
   @Mock private CaseRepository caseRepo;
   @Mock private CaseGroupRepository caseGroupRepo;

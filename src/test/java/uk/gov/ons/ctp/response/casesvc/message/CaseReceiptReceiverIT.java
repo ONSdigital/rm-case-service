@@ -40,7 +40,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CreatedCaseEventDTO;
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringJUnit4ClassRunner.class)
-public class CaseReceiptReceiverImplIT {
+public class CaseReceiptReceiverIT {
 
   @Rule
   public WireMockRule wireMockRule =

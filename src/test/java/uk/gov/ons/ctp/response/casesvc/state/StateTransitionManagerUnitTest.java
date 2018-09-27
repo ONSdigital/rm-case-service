@@ -79,19 +79,6 @@ public class StateTransitionManagerUnitTest {
   }
 
   @Test
-  public void givenCaseStateActionableWhenAccountCreatedThenActionable() throws CTPException {
-    // Given
-    CaseState actionable = CaseState.ACTIONABLE;
-
-    // When
-    CaseState destinationState =
-        caseStateMachine.transition(actionable, CaseDTO.CaseEvent.ACCOUNT_CREATED);
-
-    // Then
-    assertEquals(destinationState, CaseState.ACTIONABLE);
-  }
-
-  @Test
   public void givenCaseStateInactionableWhenDisabledThenInactionable() throws CTPException {
     // Given
     CaseState inactionable = CaseState.INACTIONABLE;
