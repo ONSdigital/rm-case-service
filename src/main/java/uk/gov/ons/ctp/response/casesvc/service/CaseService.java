@@ -350,27 +350,31 @@ public class CaseService {
 
     for (CaseGroup caseGroup : caseGroups) {
 
-      // fetch all B and BI cases associated to the case group being processed
-      List<Case> cases =
-          caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(caseGroup.getCaseGroupPK());
+      if (caseGroup.getStatus() == CaseGroupStatus.NOTSTARTED
+          || caseGroup.getStatus() == CaseGroupStatus.INPROGRESS) {
 
-      List<ActionPlanDTO> actionPlans =
-          actionSvcClient.getActionPlans(caseGroup.getCollectionExerciseId(), enrolments);
+        // fetch all B and BI cases associated to the case group being processed
+        List<Case> cases =
+            caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(caseGroup.getCaseGroupPK());
 
-      if (actionPlans == null || actionPlans.size() != 1) {
-        log.with("collection_exercise_id", caseGroup.getCollectionExerciseId())
-            .with("enrolments", enrolments)
-            .error("One action plan expected");
-        throw new IllegalStateException(
-            "Expected one action plan for collection exercise with enrolmentStatus");
-      }
+        List<ActionPlanDTO> actionPlans =
+            actionSvcClient.getActionPlans(caseGroup.getCollectionExerciseId(), enrolments);
 
-      for (Case caze : cases) {
-        if (caze.getSampleUnitType() == SampleUnitType.B) {
-          caze.setActionPlanId(actionPlans.get(0).getId());
-          caseRepo.saveAndFlush(caze);
-          notificationPublisher.sendNotification(
-              prepareCaseNotification(caze, CaseDTO.CaseEvent.ACTIONPLAN_CHANGED));
+        if (actionPlans == null || actionPlans.size() != 1) {
+          log.with("collection_exercise_id", caseGroup.getCollectionExerciseId())
+              .with("enrolments", enrolments)
+              .error("One action plan expected");
+          throw new IllegalStateException(
+              "Expected one action plan for collection exercise with enrolmentStatus");
+        }
+
+        for (Case caze : cases) {
+          if (caze.getSampleUnitType() == SampleUnitType.B) {
+            caze.setActionPlanId(actionPlans.get(0).getId());
+            caseRepo.saveAndFlush(caze);
+            notificationPublisher.sendNotification(
+                prepareCaseNotification(caze, CaseDTO.CaseEvent.ACTIONPLAN_CHANGED));
+          }
         }
       }
     }
