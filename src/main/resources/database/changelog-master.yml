@@ -87,5 +87,5 @@ databaseChangeLog:
       file: database/changes/release-16/changelog.yml
 
   - include:
-      file: database/changes/release-16/changelog.yml
+      file: database/changes/release-17/changelog.yml
 
