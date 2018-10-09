@@ -19,6 +19,8 @@ public interface CaseGroupRepository extends JpaRepository<CaseGroup, Integer> {
    */
   CaseGroup findById(UUID id);
 
+  List<CaseGroup> findBySurveyId(UUID surveyId);
+
   /**
    * To find CaseGroup by party UUID
    *

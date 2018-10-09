@@ -1,0 +1,1 @@
+COPY casesvc.case_temp(collectionexerciseid, surveyid) FROM STDIN WITH CSV;

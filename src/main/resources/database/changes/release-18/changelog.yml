@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+- changeSet:
+    id: 18-1
+    author: Ryan Grundy
+    changes:
+    - sqlFile:
+        comment: Adding surveyid to casegroup table
+        path: update-enrolment-category-event-type.sql
+        relativeToChangelogFile: true
+        splitStatements: false

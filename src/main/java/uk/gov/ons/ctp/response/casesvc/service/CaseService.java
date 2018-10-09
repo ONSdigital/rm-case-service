@@ -15,6 +15,7 @@ import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 import uk.gov.ons.ctp.response.casesvc.client.ActionSvcClient;
+import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.InternetAccessCodeSvcClient;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
@@ -39,6 +40,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
 import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.utility.Constants;
+import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
 import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO.SampleUnitType;
 
@@ -65,6 +67,7 @@ public class CaseService {
   private CategoryRepository categoryRepo;
 
   private ActionSvcClient actionSvcClient;
+  private CollectionExerciseSvcClient collectionExerciseSvcClient;
   private CaseGroupService caseGroupService;
   private InternetAccessCodeSvcClient internetAccessCodeSvcClient;
   private CaseIACService caseIacAuditService;
@@ -79,6 +82,7 @@ public class CaseService {
       final CaseIacAuditRepository caseIacAuditRepo,
       final CategoryRepository categoryRepo,
       final ActionSvcClient actionSvcClient,
+      final CollectionExerciseSvcClient collectionExerciseSvcClient,
       final CaseGroupService caseGroupService,
       final InternetAccessCodeSvcClient internetAccessCodeSvcClient,
       final CaseIACService caseIacAuditService,
@@ -90,6 +94,7 @@ public class CaseService {
     this.caseIacAuditRepo = caseIacAuditRepo;
     this.categoryRepo = categoryRepo;
     this.actionSvcClient = actionSvcClient;
+    this.collectionExerciseSvcClient = collectionExerciseSvcClient;
     this.caseGroupService = caseGroupService;
     this.internetAccessCodeSvcClient = internetAccessCodeSvcClient;
     this.caseIacAuditService = caseIacAuditService;
@@ -584,6 +589,12 @@ public class CaseService {
     newCaseGroup.setSampleUnitRef(caseGroupData.getSampleUnitRef());
     newCaseGroup.setSampleUnitType(caseGroupData.getSampleUnitType());
     newCaseGroup.setStatus(CaseGroupStatus.NOTSTARTED);
+
+    CollectionExerciseDTO collectionExercise =
+        collectionExerciseSvcClient.getCollectionExercise(
+            UUID.fromString(caseGroupData.getCollectionExerciseId()));
+
+    newCaseGroup.setSurveyId(UUID.fromString(collectionExercise.getSurveyId()));
 
     caseGroupRepo.saveAndFlush(newCaseGroup);
     log.with("case_group_id", newCaseGroup.getId().toString()).debug("New CaseGroup created");

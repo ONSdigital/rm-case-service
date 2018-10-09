@@ -55,6 +55,9 @@ public class CaseGroup implements Serializable {
   @Column(name = "sampleunittype")
   private String sampleUnitType;
 
+  @Column(name = "surveyid")
+  private UUID surveyId;
+
   @Enumerated(EnumType.STRING)
   @Column(name = "status")
   private CaseGroupStatus status;

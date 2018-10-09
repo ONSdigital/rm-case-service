@@ -1,0 +1,1 @@
+\copy(select id, survey_uuid from collectionexercise.collectionexercise where statefk = "LIVE" or statefk ="READY_FOR_LIVE") TO STDOUT WITH CSV;
