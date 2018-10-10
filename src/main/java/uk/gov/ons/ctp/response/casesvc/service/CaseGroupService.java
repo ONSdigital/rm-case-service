@@ -70,6 +70,7 @@ public class CaseGroupService {
     log.with("id", id).debug("Entering findCaseGroupByPartyId");
     return caseGroupRepo.findByPartyId(id);
   }
+
   /**
    * Find CaseGroups by survey Id.
    *

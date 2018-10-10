@@ -11,4 +11,5 @@ public class CollectionExerciseSvc {
   private RestUtilityConfig connectionConfig;
   private String collectionExercisePath;
   private String collectionExerciseSurveyPath;
+  private String collectionExercisesPath;
 }

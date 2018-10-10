@@ -60,7 +60,7 @@ public class StateTransitionManagerIT {
     // Given
     String sampleUnitRef = "TEST1";
     CaseNotification caseNotification =
-        caseCreator.sendSampleUnit(sampleUnitRef, "H", UUID.randomUUID());
+        caseCreator.sendSampleUnit(sampleUnitRef, "H", UUID.randomUUID(), UUID.randomUUID());
     String collectionExerciseId = caseNotification.getExerciseId();
     String caseID = caseNotification.getCaseId();
 
@@ -100,7 +100,7 @@ public class StateTransitionManagerIT {
     // Given
     String sampleUnitRef = "TEST2";
     CaseNotification caseNotification =
-        caseCreator.sendSampleUnit(sampleUnitRef, "H", UUID.randomUUID());
+        caseCreator.sendSampleUnit(sampleUnitRef, "H", UUID.randomUUID(), UUID.randomUUID());
     String collectionExerciseId = caseNotification.getExerciseId();
     String caseID = caseNotification.getCaseId();
 
@@ -137,7 +137,7 @@ public class StateTransitionManagerIT {
     // Given
     String sampleUnitRef = "TEST3";
     CaseNotification caseNotification =
-        caseCreator.sendSampleUnit(sampleUnitRef, "H", UUID.randomUUID());
+        caseCreator.sendSampleUnit(sampleUnitRef, "H", UUID.randomUUID(), UUID.randomUUID());
     String collectionExerciseId = caseNotification.getExerciseId();
     String caseID = caseNotification.getCaseId();
 
@@ -174,7 +174,7 @@ public class StateTransitionManagerIT {
     // Given
     String sampleUnitRef = "TEST4";
     CaseNotification caseNotification =
-        caseCreator.sendSampleUnit(sampleUnitRef, "H", UUID.randomUUID());
+        caseCreator.sendSampleUnit(sampleUnitRef, "H", UUID.randomUUID(), UUID.randomUUID());
     String collectionExerciseId = caseNotification.getExerciseId();
     String caseID = caseNotification.getCaseId();
 
@@ -214,7 +214,7 @@ public class StateTransitionManagerIT {
 
     String sampleUnitRef = "TEST";
     CaseNotification caseNotification =
-        caseCreator.sendSampleUnit(sampleUnitRef, "H", UUID.randomUUID());
+        caseCreator.sendSampleUnit(sampleUnitRef, "H", UUID.randomUUID(), UUID.randomUUID());
 
     String collectionExerciseId = caseNotification.getExerciseId();
     String caseID = caseNotification.getCaseId();

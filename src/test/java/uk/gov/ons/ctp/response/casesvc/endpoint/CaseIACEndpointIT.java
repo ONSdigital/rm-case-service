@@ -61,7 +61,7 @@ public class CaseIACEndpointIT {
 
     // Given
     CaseNotification caseNotification =
-        caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID());
+        caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID(), UUID.randomUUID());
     String notExpected = getCurrentIACCode(caseNotification.getCaseId());
 
     // When
@@ -77,7 +77,7 @@ public class CaseIACEndpointIT {
 
     // Given
     CaseNotification caseNotification =
-        caseCreator.sendSampleUnit("BS123456", "B", UUID.randomUUID());
+        caseCreator.sendSampleUnit("BS123456", "B", UUID.randomUUID(), UUID.randomUUID());
 
     // When
     HttpResponse<CaseIACDTO[]> iacs =

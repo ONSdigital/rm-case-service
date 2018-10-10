@@ -153,13 +153,14 @@ public final class CaseEndpoint implements CTPEndpoint {
       return ResponseEntity.ok(resultList);
     }
   }
+
   /**
    * The GET endpoint to find cases by the surveyid UUID
    *
    * @param surveyId to find by
    * @return the cases found
    */
-  @RequestMapping(value = "/{surveyId}", method = RequestMethod.GET)
+  @RequestMapping(value = "/surveyid/{surveyId}", method = RequestMethod.GET)
   public ResponseEntity<List<CaseDetailsDTO>> findCasesBySurveyId(
       @PathVariable("surveyId") final UUID surveyId) {
     log.with("survey_id", surveyId).debug("Retrieving cases by survey");
