@@ -8,8 +8,6 @@ import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemp
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
-
-import java.util.List;
 import java.util.UUID;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -24,7 +22,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.gov.ons.ctp.common.UnirestInitialiser;
 import uk.gov.ons.ctp.response.casesvc.CaseCreator;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
-import uk.gov.ons.ctp.response.casesvc.config.CollectionExerciseSvc;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
@@ -59,12 +56,13 @@ public class CaseEndpointIT {
     UUID sampleUnitId = UUID.randomUUID();
     UUID surveyId = UUID.fromString("cb8accda-6118-4d3b-85a3-149e28960c54");
 
-    collectionExerciseSvcClient.createCollectionExercise(surveyId,
-            "120934", "January 2018");
+    collectionExerciseSvcClient.createCollectionExercise(surveyId, "120934", "January 2018");
 
-    CollectionExerciseDTO collex = collectionExerciseSvcClient.getCollectionExercises(surveyId.toString()).get(0);
+    CollectionExerciseDTO collex =
+        collectionExerciseSvcClient.getCollectionExercises(surveyId.toString()).get(0);
 
-    CaseNotification caseNotification = caseCreator.sendSampleUnit("LMS0001", "H", sampleUnitId, collex.getId() );
+    CaseNotification caseNotification =
+        caseCreator.sendSampleUnit("LMS0001", "H", sampleUnitId, collex.getId());
 
     assertThat(caseNotification.getSampleUnitId()).isEqualTo(sampleUnitId.toString());
   }
@@ -97,7 +95,8 @@ public class CaseEndpointIT {
   public void ensureCaseReturnedBySampleUnitId() throws Exception {
 
     UUID sampleUnitId = UUID.randomUUID();
-    CaseNotification caseNotif = caseCreator.sendSampleUnit("LMS0003", "H", sampleUnitId, UUID.randomUUID());
+    CaseNotification caseNotif =
+        caseCreator.sendSampleUnit("LMS0003", "H", sampleUnitId, UUID.randomUUID());
 
     UUID caseId = UUID.fromString(caseNotif.getCaseId());
 

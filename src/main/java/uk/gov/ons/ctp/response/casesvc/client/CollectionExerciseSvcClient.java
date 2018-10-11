@@ -89,20 +89,17 @@ public class CollectionExerciseSvcClient {
     return responseEntity.getBody();
   }
 
-  public void createCollectionExercise(final UUID surveyId, final String exerciseRef, final String userDescription){
-
-    UriComponents uriComponents =
-            restUtility.createUriComponents(
-                    appConfig.getCollectionExerciseSvc().getCollectionExercisesPath(), null);
+  public void createCollectionExercise(
+      final UUID surveyId, final String exerciseRef, final String userDescription) {
     CollectionExerciseDTO collex = new CollectionExerciseDTO();
+    final UriComponents uriComponents =
+        restUtility.createUriComponents(
+            appConfig.getCollectionExerciseSvc().getCollectionExercisesPath(), null);
     collex.setSurveyId(surveyId.toString());
     collex.setExerciseRef(exerciseRef);
     collex.setUserDescription(userDescription);
     HttpEntity<?> httpEntity = restUtility.createHttpEntity(collex);
-
-    restTemplate.exchange(uriComponents.toUri(), HttpMethod.POST, httpEntity, CollectionExerciseDTO.class);
-
-
+    restTemplate.exchange(
+        uriComponents.toUri(), HttpMethod.POST, httpEntity, CollectionExerciseDTO.class);
   }
-
 }

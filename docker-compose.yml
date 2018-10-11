@@ -4,12 +4,12 @@ services:
   container_name: postgres-case-it
   image: sdcplatform/ras-rm-docker-postgres
   ports:
-   - "15432:5432"
+    - "15432:5432"
  redis:
   container_name: redis-case-it
   image: redis:3.2.9
   ports:
-   - "17379:6379"
+    - "17379:6379"
  rabbitmq:
   container_name: rabbitmq-case-it
   image: rabbitmq:3.6.10-management
@@ -48,36 +48,36 @@ services:
   container_name: survey-case-it
   image: sdcplatform/surveysvc
   external_links:
-    - postgres
+    - postgres-case-it
   environment:
-  - DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable
-  - security_user_name=admin
-  - security_user_password=secret
+    - DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres?sslmode=disable
+    - security_user_name=admin
+    - security_user_password=secret
   ports:
     - "38080:8080"
 
  action:
+  container_name: action-case-it
   image: sdcplatform/actionsvc
   external_links:
-    - postgres
-    - rabbitmq
-    - redis
+    - postgres-case-it
+    - rabbitmq-case-it
+    - redis-case-it
   environment:
-  - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres?sslmode=disable
-  - SPRING_DATASOURCE_USERNAME=postgres
-  - SPRING_DATASOURCE_PASSWORD=postgres
-  - LIQUIBASE_URL=jdbc:postgresql://postgres:5432/postgres
-  - LIQUIBASE_USER=postgres
-  - LIQUIBASE_PASSWORD=postgres
-  - REDISSON_CONFIG_ADDRESS=redis:6379
-  - DATA_GRID_ADDRESS=redis:6379
-  - RABBITMQ_HOST=rabbitmq
-  - RABBITMQ_PORT=5672
-  - SURVEY_SVC_CONNECTION_CONFIG_HOST=survey
-  - SURVEY_SVC_CONNECTION_CONFIG_PORT=8080
-  - COLLECTION_EXERCISE_SVC_CONNECTION_CONFIG_HOST=collectionexercise
-  - COLLECTION_EXERCISE_SVC_CONNECTION_CONFIG_PORT=8145
+    - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres?sslmode=disable
+    - SPRING_DATASOURCE_USERNAME=postgres
+    - SPRING_DATASOURCE_PASSWORD=postgres
+    - LIQUIBASE_URL=jdbc:postgresql://postgres:5432/postgres
+    - LIQUIBASE_USER=postgres
+    - LIQUIBASE_PASSWORD=postgres
+    - REDISSON_CONFIG_ADDRESS=redis:6379
+    - DATA_GRID_ADDRESS=redis:6379
+    - RABBITMQ_HOST=rabbitmq
+    - RABBITMQ_PORT=5672
+    - SURVEY_SVC_CONNECTION_CONFIG_HOST=survey
+    - SURVEY_SVC_CONNECTION_CONFIG_PORT=8080
+    - COLLECTION_EXERCISE_SVC_CONNECTION_CONFIG_HOST=collectionexercise
+    - COLLECTION_EXERCISE_SVC_CONNECTION_CONFIG_PORT=8145
   ports:
     - "38151:8151"
-
 

@@ -63,7 +63,8 @@ public class CaseReceiptReceiverIT {
   public void socialCaseShouldReceipt() throws Exception {
     // Given
     UUID sampleUnitId = UUID.randomUUID();
-    CaseNotification caseNotif = caseCreator.sendSampleUnit("LMS0003", "H", sampleUnitId, UUID.randomUUID());
+    CaseNotification caseNotif =
+        caseCreator.sendSampleUnit("LMS0003", "H", sampleUnitId, UUID.randomUUID());
     startCase(caseNotif.getCaseId());
     XMLGregorianCalendarImpl now = new XMLGregorianCalendarImpl(new GregorianCalendar());
     CaseReceipt caseReceipt =

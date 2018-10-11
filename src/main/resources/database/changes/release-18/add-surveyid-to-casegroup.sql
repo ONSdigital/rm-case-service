@@ -1,2 +1,2 @@
 alter table casesvc."casegroup"
-add column survey_uuid uuid;
+add column surveyid uuid;

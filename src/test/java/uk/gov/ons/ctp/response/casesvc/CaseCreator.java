@@ -37,7 +37,8 @@ public class CaseCreator {
    * @return a new CaseNotification
    */
   public CaseNotification sendSampleUnit(
-      String sampleUnitRef, String sampleUnitType, UUID sampleUnitId, UUID collectionExerciseId) throws Exception {
+      String sampleUnitRef, String sampleUnitType, UUID sampleUnitId, UUID collectionExerciseId)
+      throws Exception {
 
     iacServiceStub.createIACStub();
     collectionExerciseStub.getCollectionExerciseStub();
