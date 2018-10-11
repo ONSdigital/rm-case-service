@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+- changeSet:
+    id: 18-1
+    author: Gemma Irving
+    changes:
+    - sqlFile:
+        comment: Change respondent enrolled event type to null
+        path: remove-disabled-on-respondent-enroled-category.sql
+        relativeToChangelogFile: true
+        splitStatements: false

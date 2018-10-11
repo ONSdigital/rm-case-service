@@ -1,0 +1,1 @@
+UPDATE casesvc.category SET eventtype = null WHERE categorypk = 'RESPONDENT_ENROLED';
