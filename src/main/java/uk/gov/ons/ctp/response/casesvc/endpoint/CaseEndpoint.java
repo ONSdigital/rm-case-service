@@ -155,7 +155,7 @@ public final class CaseEndpoint implements CTPEndpoint {
   }
 
   /**
-   * The GET endpoint to find cases by the surveyid UUID
+   * The GET endpoint to find cases by the surveyid UUID.
    *
    * @param surveyId to find by
    * @return the cases found
@@ -165,7 +165,7 @@ public final class CaseEndpoint implements CTPEndpoint {
       @PathVariable("surveyId") final UUID surveyId) {
     log.with("survey_id", surveyId).debug("Retrieving cases by survey");
     List<CaseGroup> caseGroupsList = caseGroupService.findCaseGroupBySurveyId(surveyId);
-    List<Case> cases = new ArrayList<Case>();
+    List<Case> cases = new ArrayList<>();
 
     for (CaseGroup caseGroup : caseGroupsList) {
       cases.addAll(caseService.findCasesByCaseGroupFK(caseGroup.getCaseGroupPK()));

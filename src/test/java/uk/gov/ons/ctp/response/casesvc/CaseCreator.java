@@ -28,7 +28,6 @@ public class CaseCreator {
   @Autowired private AppConfig appConfig;
   @Autowired private ResourceLoader resourceLoader;
   @Autowired private IACServiceStub iacServiceStub;
-  @Autowired private CollectionExerciseStub collectionExerciseStub;
 
   /**
    * Sends a sample unit in a message so that casesvc creates a case, then waits for a message on
@@ -41,7 +40,6 @@ public class CaseCreator {
       throws Exception {
 
     iacServiceStub.createIACStub();
-    collectionExerciseStub.getCollectionExerciseStub();
 
     SampleUnitParent sampleUnit = new SampleUnitParent();
     sampleUnit.setCollectionExerciseId(collectionExerciseId.toString());

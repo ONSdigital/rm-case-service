@@ -54,6 +54,6 @@ collection-exercise-svc:
   connection-config:
     scheme: http
     host: localhost
-    port: 38145
+    port: 8145
     username: admin
     password: secret
