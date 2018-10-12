@@ -653,7 +653,11 @@ public final class CaseEndpointUnitTest {
     when(caseService.findCaseEventsByCaseFKAndCategory(any(), any())).thenReturn(new ArrayList<>());
 
     ResultActions actions =
-        mockMvc.perform(getJson(String.format("/cases/%s/events?category=SUCCESSFUL_RESPONSE_UPLOAD", EXISTING_CASE_ID_NO_EVENTS)));
+        mockMvc.perform(
+            getJson(
+                String.format(
+                    "/cases/%s/events?category=SUCCESSFUL_RESPONSE_UPLOAD",
+                    EXISTING_CASE_ID_NO_EVENTS)));
 
     actions.andExpect(status().isNoContent());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
@@ -665,7 +669,10 @@ public final class CaseEndpointUnitTest {
     when(caseService.findCaseById(CASE1_ID)).thenReturn(caseResults.get(0));
     when(caseService.findCaseEventsByCaseFKAndCategory(any(), any())).thenReturn(caseEventsResults);
 
-    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/%s/events?category=SUCCESSFUL_RESPONSE_UPLOAD", CASE1_ID)));
+    ResultActions actions =
+        mockMvc.perform(
+            getJson(
+                String.format("/cases/%s/events?category=SUCCESSFUL_RESPONSE_UPLOAD", CASE1_ID)));
 
     actions.andExpect(status().isOk());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));

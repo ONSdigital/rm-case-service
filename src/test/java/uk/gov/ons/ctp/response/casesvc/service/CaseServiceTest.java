@@ -139,8 +139,7 @@ public class CaseServiceTest {
 
   @InjectMocks private CaseService caseService;
 
-  @Captor
-  ArgumentCaptor<Set<CategoryName>> argumentCaptor;
+  @Captor ArgumentCaptor<Set<CategoryName>> argumentCaptor;
 
   private List<Case> cases;
   private List<Category> categories;
@@ -1081,21 +1080,22 @@ public class CaseServiceTest {
   }
 
   @Test
-  public void testFindByCaseFKAndCategoryCanMapStringsToEnumValues() {
+  public void testFindByCaseFKAndCategoryCanMapStringsToEnumValues() throws CTPException {
     // Given
 
     // When
     caseService.findCaseEventsByCaseFKAndCategory(123, Collections.singletonList("EQ_LAUNCH"));
 
     // Then
-    verify(caseEventRepo).findByCaseFKAndCategoryInOrderByCreatedDateTimeDesc(eq(123),
-        argumentCaptor.capture());
+    verify(caseEventRepo)
+        .findByCaseFKAndCategoryInOrderByCreatedDateTimeDesc(eq(123), argumentCaptor.capture());
     assertTrue(argumentCaptor.getValue().contains(EQ_LAUNCH));
     assertThat(argumentCaptor.getValue().size()).isEqualTo(1);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testFindByCaseFKAndCategoryBlowsUpWhenStringDoesNotMapToEnumValue() {
+  @Test(expected = CTPException.class)
+  public void testFindByCaseFKAndCategoryBlowsUpWhenStringDoesNotMapToEnumValue()
+      throws CTPException {
     // Given
 
     // When
