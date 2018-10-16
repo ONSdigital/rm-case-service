@@ -269,6 +269,12 @@ An `HTTP 404 Not Found` status code is returned if the case with the specified u
 ## List Case Events for Case
 * `GET /cases/{caseId}/events` will return a list of case events for the case with given case ID.
 
+&mdash;an optional `category` string query parameter can be used to specify that the JSON response include matching events with the case for said case id. For example:
+
+* `GET /cases/{caseId}/events?category=OFFLINE_RESPONSE_PROCESSED`
+
+If this query parameter is omitted all events for said case ID will be returned.
+
 ### Example JSON Response
 ```json
 [

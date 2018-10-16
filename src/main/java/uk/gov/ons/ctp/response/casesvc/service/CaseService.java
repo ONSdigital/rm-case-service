@@ -6,7 +6,9 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -105,9 +107,13 @@ public class CaseService {
   public Case findCaseById(final UUID id) {
     log.debug("Entering findCaseById");
     Case caze = caseRepo.findById(id);
-    String iac = caseIacAuditService.findCaseIacByCasePK(caze.getCasePK());
 
-    caze.setIac(iac);
+    if (caze != null) {
+      String iac = caseIacAuditService.findCaseIacByCasePK(caze.getCasePK());
+      caze.setIac(iac);
+    } else {
+      log.with("case_id", id.toString()).warn("Could not find case");
+    }
 
     return caze;
   }
@@ -596,5 +602,17 @@ public class CaseService {
    */
   public Case findCaseBySampleUnitId(UUID sampleUnitId) {
     return caseRepo.findBySampleUnitId(sampleUnitId);
+  }
+
+  public List<CaseEvent> findCaseEventsByCaseFKAndCategory(Integer casePK, List<String> categories)
+      throws CTPException {
+    try {
+      Set<CategoryName> categoryNames =
+          categories.stream().map(CategoryDTO.CategoryName::fromValue).collect(Collectors.toSet());
+      return caseEventRepo.findByCaseFKAndCategoryInOrderByCreatedDateTimeDesc(
+          casePK, categoryNames);
+    } catch (IllegalArgumentException exc) {
+      throw new CTPException(CTPException.Fault.BAD_REQUEST, exc.getMessage());
+    }
   }
 }

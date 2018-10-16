@@ -647,6 +647,66 @@ public final class CaseEndpointUnitTest {
                 new DateMatcher(CASE_DATE_VALUE_1))));
   }
 
+  @Test
+  public void findCaseEventsByCaseIdAndCategoryFoundButNoEvents() throws Exception {
+    when(caseService.findCaseById(EXISTING_CASE_ID_NO_EVENTS)).thenReturn(caseResults.get(0));
+    when(caseService.findCaseEventsByCaseFKAndCategory(any(), any())).thenReturn(new ArrayList<>());
+
+    ResultActions actions =
+        mockMvc.perform(
+            getJson(
+                String.format(
+                    "/cases/%s/events?category=SUCCESSFUL_RESPONSE_UPLOAD",
+                    EXISTING_CASE_ID_NO_EVENTS)));
+
+    actions.andExpect(status().isNoContent());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("findCaseEventsByCaseId"));
+  }
+
+  @Test
+  public void findCaseEventsByCaseIdAndCategoryFound() throws Exception {
+    when(caseService.findCaseById(CASE1_ID)).thenReturn(caseResults.get(0));
+    when(caseService.findCaseEventsByCaseFKAndCategory(any(), any())).thenReturn(caseEventsResults);
+
+    ResultActions actions =
+        mockMvc.perform(
+            getJson(
+                String.format("/cases/%s/events?category=SUCCESSFUL_RESPONSE_UPLOAD", CASE1_ID)));
+
+    actions.andExpect(status().isOk());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("findCaseEventsByCaseId"));
+    actions.andExpect(jsonPath("$", hasSize(4)));
+    actions.andExpect(jsonPath("$[0].*", hasSize(5)));
+    actions.andExpect(
+        jsonPath(
+            "$[*].description",
+            containsInAnyOrder(
+                CASE1_DESCRIPTION, CASE2_DESCRIPTION, CASE3_DESCRIPTION, CASE9_DESCRIPTION)));
+    actions.andExpect(
+        jsonPath(
+            "$[*].category",
+            containsInAnyOrder(CASE1_CATEGORY, CASE2_CATEGORY, CASE3_CATEGORY, CASE9_CATEGORY)));
+    actions.andExpect(
+        jsonPath(
+            "$[*].subCategory",
+            containsInAnyOrder(CASE1_SUBCATEGORY, CASE2_SUBCATEGORY, CASE3_SUBCATEGORY, null)));
+    actions.andExpect(
+        jsonPath(
+            "$[*].createdBy",
+            containsInAnyOrder(
+                CASE1_CREATEDBY, CASE2_CREATEDBY, CASE3_CREATEDBY, CASE9_CREATEDBY)));
+    actions.andExpect(
+        jsonPath(
+            "$[*].createdDateTime",
+            contains(
+                new DateMatcher(CASE_DATE_VALUE_1),
+                new DateMatcher(CASE_DATE_VALUE_2),
+                new DateMatcher(CASE_DATE_VALUE_3),
+                new DateMatcher(CASE_DATE_VALUE_1))));
+  }
+
   /**
    * a test providing bad json
    *
