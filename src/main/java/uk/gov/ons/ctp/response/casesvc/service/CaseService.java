@@ -50,7 +50,6 @@ import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO.SampleUnitTyp
 public class CaseService {
   private static final Logger log = LoggerFactory.getLogger(CaseService.class);
 
-  public static final String IAC_OVERUSE_MSG = "More than one case found to be using IAC %s";
   public static final String WRONG_OLD_SAMPLE_UNIT_TYPE_MSG =
       "Old Case has sampleUnitType %s. It is expected to have sampleUnitType %s.";
 
@@ -328,8 +327,7 @@ public class CaseService {
     }
   }
 
-  private void transitionCaseGroupStatus(final Case targetCase, final CaseEvent caseEvent)
-      throws CTPException {
+  private void transitionCaseGroupStatus(final Case targetCase, final CaseEvent caseEvent) {
     CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
     try {
       caseGroupService.transitionCaseGroupStatus(
