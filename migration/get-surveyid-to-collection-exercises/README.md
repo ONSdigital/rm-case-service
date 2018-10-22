@@ -14,7 +14,7 @@ Creating temporary table
 
 importing temporary table
 
-``psql "{CASE_POSTGRES_URI}" -c "COPY casesvc.case_temp(collectionexerciseid, survey_uuid) FROM STDIN WITH CSV;"< temp_cases.csv``
+``psql "{CASE_POSTGRES_URI}" -c "COPY casesvc.case_temp(collectionexerciseid, survey_uuid) FROM STDIN WITH CSV;"< temp_collex.csv``
 
 Adding survey id to the case groups table
 

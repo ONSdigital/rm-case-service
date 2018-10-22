@@ -89,8 +89,19 @@ public class CollectionExerciseSvcClient {
     return responseEntity.getBody();
   }
 
+  /**
+   * Creates a CollectionExercise
+   *
+   * @param surveyId the survey ID for the collection exercise
+   * @param exerciseRef the Exercise ref for the collection exercise
+   * @param userDescription the user description for the collection exercise
+   */
   public void createCollectionExercise(
       final UUID surveyId, final String exerciseRef, final String userDescription) {
+    log.with("survey_id", surveyId)
+        .with("exercise_ref", exerciseRef)
+        .with("user_description", userDescription)
+        .debug("Creating a collection exercise");
     CollectionExerciseDTO collex = new CollectionExerciseDTO();
     final UriComponents uriComponents =
         restUtility.createUriComponents(

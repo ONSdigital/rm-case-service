@@ -76,7 +76,7 @@ public class CaseIACEndpointIT {
     CollectionExerciseDTO collex =
         collectionExerciseSvcClient.getCollectionExercises(surveyId.toString()).get(0);
 
-    this.collectionExerciseId = collex.getId();
+    collectionExerciseId = collex.getId();
   }
 
   @Test

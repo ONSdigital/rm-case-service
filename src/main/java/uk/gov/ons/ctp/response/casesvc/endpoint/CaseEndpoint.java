@@ -171,7 +171,10 @@ public final class CaseEndpoint implements CTPEndpoint {
       cases.addAll(caseService.findCasesByCaseGroupFK(caseGroup.getCaseGroupPK()));
     }
     List<CaseDetailsDTO> caseDetailsDTOList =
-        cases.stream().map(c -> buildDetailedCaseDTO(c, false, false)).collect(Collectors.toList());
+        cases
+            .stream()
+            .map(caseDetail -> buildDetailedCaseDTO(caseDetail, false, false))
+            .collect(Collectors.toList());
 
     return ResponseEntity.ok(caseDetailsDTOList);
   }
