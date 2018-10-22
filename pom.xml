@@ -217,6 +217,12 @@
             <groupId>com.godaddy</groupId>
             <artifactId>logging</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.dkanejs.maven.plugins</groupId>
+            <artifactId>docker-compose-maven-plugin</artifactId>
+            <version>2.0.1</version>
+        </dependency>
         <!-- Third party end -->
 
         <!-- Testing -->
@@ -247,6 +253,63 @@
         <defaultGoal>clean install</defaultGoal>
 
         <plugins>
+            <plugin>
+                <groupId>com.dkanejs.maven.plugins</groupId>
+                <artifactId>docker-compose-maven-plugin</artifactId>
+                <version>1.0.3</version>
+                <executions>
+                    <execution>
+                        <id>pre-stop</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>down</goal>
+                        </goals>
+                        <configuration>
+                            <composeFile>${project.basedir}/docker-compose.yml</composeFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>up</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>up</goal>
+                        </goals>
+                        <configuration>
+                            <composeFile>${project.basedir}/docker-compose.yml</composeFile>
+                            <detachedMode>true</detachedMode>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>down</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>down</goal>
+                        </goals>
+                        <configuration>
+                            <composeFile>${project.basedir}/docker-compose.yml</composeFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>wait</id>
+                        <phase>integration-test</phase>
+                        <configuration>
+                            <target>
+                                <sleep seconds="80"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -328,64 +391,64 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>io.fabric8</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <version>0.23.0</version>
-                <executions>
-                    <execution>
-                        <id>pre-stop</id>
-                        <goals>
-                            <goal>stop</goal>
-                        </goals>
-                        <phase>pre-integration-test</phase>
-                        <configuration>
-                            <images>
-                                <image>
-                                    <external>
-                                        <type>compose</type>
-                                        <basedir>${project.basedir}</basedir>
-                                    </external>
-                                </image>
-                            </images>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>start</id>
-                        <goals>
-                            <goal>start</goal>
-                        </goals>
-                        <configuration>
-                            <showLogs>false</showLogs>
-                            <images>
-                                <image>
-                                    <external>
-                                        <type>compose</type>
-                                        <basedir>${project.basedir}</basedir>
-                                    </external>
-                                </image>
-                            </images>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>stop</id>
-                        <goals>
-                            <goal>stop</goal>
-                        </goals>
-                        <configuration>
-                            <images>
-                                <image>
-                                    <external>
-                                        <type>compose</type>
-                                        <basedir>${project.basedir}</basedir>
-                                    </external>
-                                </image>
-                            </images>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
+            <!--<plugin>-->
+                <!--<groupId>io.fabric8</groupId>-->
+                <!--<artifactId>docker-maven-plugin</artifactId>-->
+                <!--<version>0.23.0</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>pre-stop</id>-->
+                        <!--<goals>-->
+                            <!--<goal>stop</goal>-->
+                        <!--</goals>-->
+                        <!--<phase>pre-integration-test</phase>-->
+                        <!--<configuration>-->
+                            <!--<images>-->
+                                <!--<image>-->
+                                    <!--<external>-->
+                                        <!--<type>compose</type>-->
+                                        <!--<basedir>${project.basedir}</basedir>-->
+                                    <!--</external>-->
+                                <!--</image>-->
+                            <!--</images>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                    <!--<execution>-->
+                        <!--<id>start</id>-->
+                        <!--<goals>-->
+                            <!--<goal>start</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<showLogs>false</showLogs>-->
+                            <!--<images>-->
+                                <!--<image>-->
+                                    <!--<external>-->
+                                        <!--<type>compose</type>-->
+                                        <!--<basedir>${project.basedir}</basedir>-->
+                                    <!--</external>-->
+                                <!--</image>-->
+                            <!--</images>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                    <!--<execution>-->
+                        <!--<id>stop</id>-->
+                        <!--<goals>-->
+                            <!--<goal>stop</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<images>-->
+                                <!--<image>-->
+                                    <!--<external>-->
+                                        <!--<type>compose</type>-->
+                                        <!--<basedir>${project.basedir}</basedir>-->
+                                    <!--</external>-->
+                                <!--</image>-->
+                            <!--</images>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
+           </plugins>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
