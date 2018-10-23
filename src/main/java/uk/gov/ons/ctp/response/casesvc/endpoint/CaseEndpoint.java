@@ -309,15 +309,18 @@ public final class CaseEndpoint implements CTPEndpoint {
   }
 
   /**
-   * the GET endpoint to find case events by case id
+   * the GET endpoint to find case events, with optional timestamps by case id
    *
    * @param caseId to find by
-   * @return the case events found
+   * @param category type to collect case event timestamp
+   * @return the case events found, with optional timestamps (category required for this)
    * @throws CTPException something went wrong
    */
   @RequestMapping(value = "/{caseId}/events", method = RequestMethod.GET)
   public ResponseEntity<List<CaseEventDTO>> findCaseEventsByCaseId(
-      @PathVariable("caseId") final UUID caseId) throws CTPException {
+      @PathVariable("caseId") final UUID caseId,
+      @RequestParam(value = "category", required = false) final List<String> categories)
+      throws CTPException {
     log.with("case_id", caseId).debug("Entering findCaseEventsByCaseId");
     Case caze = caseService.findCaseById(caseId);
     if (caze == null) {
@@ -326,8 +329,17 @@ public final class CaseEndpoint implements CTPEndpoint {
           String.format(CASE_ID, ERRORMSG_CASENOTFOUND, caseId.toString()));
     }
 
-    List<CaseEvent> caseEvents = caseService.findCaseEventsByCaseFK(caze.getCasePK());
-    List<CaseEventDTO> caseEventDTOs = mapperFacade.mapAsList(caseEvents, CaseEventDTO.class);
+    List<CaseEventDTO> caseEventDTOs;
+
+    if (categories == null || categories.isEmpty()) {
+      List<CaseEvent> caseEvents = caseService.findCaseEventsByCaseFK(caze.getCasePK());
+      caseEventDTOs = mapperFacade.mapAsList(caseEvents, CaseEventDTO.class);
+    } else {
+      List<CaseEvent> caseEvents =
+          caseService.findCaseEventsByCaseFKAndCategory(caze.getCasePK(), categories);
+      caseEventDTOs = mapperFacade.mapAsList(caseEvents, CaseEventDTO.class);
+    }
+
     return CollectionUtils.isEmpty(caseEventDTOs)
         ? ResponseEntity.noContent().build()
         : ResponseEntity.ok(caseEventDTOs);

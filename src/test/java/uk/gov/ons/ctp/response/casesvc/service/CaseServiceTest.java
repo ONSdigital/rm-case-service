@@ -2,17 +2,21 @@ package uk.gov.ons.ctp.response.casesvc.service;
 
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.fail;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.EQ_LAUNCH;
 import static uk.gov.ons.ctp.response.casesvc.service.CaseService.WRONG_OLD_SAMPLE_UNIT_TYPE_MSG;
 
 import java.sql.Timestamp;
@@ -20,12 +24,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import ma.glasnost.orika.MapperFacade;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -132,6 +138,8 @@ public class CaseServiceTest {
   @Spy private MapperFacade mapperFacade = new CaseSvcBeanMapper();
 
   @InjectMocks private CaseService caseService;
+
+  @Captor ArgumentCaptor<Set<CategoryName>> argumentCaptor;
 
   private List<Case> cases;
   private List<Category> categories;
@@ -1074,6 +1082,31 @@ public class CaseServiceTest {
 
     // Then IllegalStateException is thrown
 
+  }
+
+  @Test
+  public void testFindByCaseFKAndCategoryCanMapStringsToEnumValues() throws CTPException {
+    // Given
+
+    // When
+    caseService.findCaseEventsByCaseFKAndCategory(123, Collections.singletonList("EQ_LAUNCH"));
+
+    // Then
+    verify(caseEventRepo)
+        .findByCaseFKAndCategoryInOrderByCreatedDateTimeDesc(eq(123), argumentCaptor.capture());
+    assertTrue(argumentCaptor.getValue().contains(EQ_LAUNCH));
+    assertThat(argumentCaptor.getValue().size()).isEqualTo(1);
+  }
+
+  @Test(expected = CTPException.class)
+  public void testFindByCaseFKAndCategoryBlowsUpWhenStringDoesNotMapToEnumValue()
+      throws CTPException {
+    // Given
+
+    // When
+    caseService.findCaseEventsByCaseFKAndCategory(123, Collections.singletonList("BANANA"));
+
+    // Then
   }
 
   /**

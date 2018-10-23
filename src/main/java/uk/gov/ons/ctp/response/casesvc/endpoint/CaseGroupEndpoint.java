@@ -13,24 +13,19 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
-import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
-import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
-import uk.gov.ons.ctp.response.casesvc.utility.Constants;
 
 /** The REST endpoint controller for CaseSvc CaseGroups */
 @RestController
@@ -136,58 +131,6 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
     CaseGroupStatus caseGroupStatus = caseGroupObj.getStatus();
 
     return caseGroupStatusTransitionManager.getAvailableTransitions(caseGroupStatus);
-  }
-
-  /**
-   * the PUT endpoint to change Case Group status from a given Case Group event
-   *
-   * @param collectionExerciseId UUID to find by
-   * @param ruRef String to find by
-   * @param caseGroupEvent Name of event
-   * @return 200 if all is ok, 400 for bad request
-   * @throws CTPException something went wrong
-   */
-  @RequestMapping(value = "/transitions/{collectionExerciseId}/{ruRef}", method = RequestMethod.PUT)
-  public ResponseEntity<?> changeCaseGroupStatus(
-      @PathVariable("collectionExerciseId") final UUID collectionExerciseId,
-      @PathVariable("ruRef") final String ruRef,
-      @RequestBody CaseGroupEvent caseGroupEvent)
-      throws CTPException {
-    String event = caseGroupEvent.getEvent();
-    log.with("collection_exercise_id", collectionExerciseId)
-        .with("ru_ref", ruRef)
-        .with("event", event)
-        .debug("Updating case group status");
-
-    if (!isValidEvent(event)) {
-      throw new CTPException(
-          CTPException.Fault.BAD_REQUEST, String.format("Invalid event %s", event));
-    }
-    CategoryName eventCategory = CategoryName.valueOf(event);
-
-    CaseGroup caseGroupObj =
-        caseGroupService.findCaseGroupByCollectionExerciseIdAndRuRef(collectionExerciseId, ruRef);
-    if (caseGroupObj == null) {
-      throw new CTPException(
-          CTPException.Fault.RESOURCE_NOT_FOUND,
-          String.format(
-              "CaseGroup not found for collectionExerciseId %s, ruRef %s",
-              collectionExerciseId, ruRef));
-    }
-    List<Case> cases = caseService.findCasesByCaseGroupFK(caseGroupObj.getCaseGroupPK());
-    Category category = categoryService.findCategory(eventCategory);
-    for (Case c : cases) {
-      CaseEvent caseEvent =
-          CaseEvent.builder()
-              .caseFK(c.getCasePK())
-              .category(eventCategory)
-              .description(category.getShortDescription())
-              .createdBy(Constants.USER)
-              .build();
-      caseService.createCaseEvent(caseEvent, c);
-    }
-
-    return ResponseEntity.ok().build();
   }
 
   private boolean isValidEvent(String event) {

@@ -1,24 +1,16 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.ons.ctp.common.MvcHelper.getJson;
-import static uk.gov.ons.ctp.common.MvcHelper.putJson;
 import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import ma.glasnost.orika.MapperFacade;
 import org.junit.Before;
@@ -37,17 +29,13 @@ import uk.gov.ons.ctp.common.error.RestExceptionHandler;
 import uk.gov.ons.ctp.common.jackson.CustomObjectMapper;
 import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
-import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
-import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
 import uk.gov.ons.ctp.response.casesvc.state.CaseSvcStateTransitionManagerFactory;
-import uk.gov.ons.ctp.response.casesvc.utility.Constants;
 
 /** A test of the CaseGroup endpoint */
 public final class CaseGroupEndpointUnitTest {
@@ -179,174 +167,6 @@ public final class CaseGroupEndpointUnitTest {
     actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.SYSTEM_ERROR.name())));
     actions.andExpect(jsonPath("$.error.message", is(OUR_EXCEPTION_MESSAGE)));
     actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
-  }
-
-  /**
-   * Test available case group transitions are found by collection exercise Id and RU ref
-   *
-   * @throws Exception exception thrown
-   */
-  @Test
-  public void
-      givenCollexIdAndRuRefWhenRequestForCaseGroupTransitionsThenAvailableCaseGroupTransitionsReturned()
-          throws Exception {
-    // Given
-    CaseGroup result =
-        CaseGroup.builder()
-            .id(CASE_GROUP_UUID)
-            .collectionExerciseId(CASE_GROUP_CE_ID)
-            .partyId(CASE_GROUP_PARTY_ID)
-            .sampleUnitRef(CASE_GROUP_SU_REF)
-            .sampleUnitType(CASE_GROUP_SU_TYPE)
-            .status(CaseGroupStatus.NOTSTARTED)
-            .build();
-
-    when(caseGroupService.findCaseGroupByCollectionExerciseIdAndRuRef(
-            CASE_GROUP_CE_ID, CASE_GROUP_SU_REF))
-        .thenReturn(result);
-
-    // When
-    ResultActions actions =
-        mockMvc.perform(
-            getJson(
-                String.format(
-                    "/casegroups/transitions/%s/%s", CASE_GROUP_CE_ID, CASE_GROUP_SU_REF)));
-
-    // Then
-    actions.andExpect(status().isOk());
-
-    String availableTransitionsString = actions.andReturn().getResponse().getContentAsString();
-    Map<CategoryDTO.CategoryName, CaseGroupStatus> availableTransitions =
-        new ObjectMapper()
-            .readValue(
-                availableTransitionsString,
-                new TypeReference<Map<CategoryDTO.CategoryName, CaseGroupStatus>>() {});
-    assertThat(
-        availableTransitions,
-        hasEntry(
-            CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED, CaseGroupStatus.INPROGRESS));
-    assertThat(
-        availableTransitions,
-        hasEntry(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, CaseGroupStatus.COMPLETE));
-    assertThat(
-        availableTransitions,
-        hasEntry(CategoryDTO.CategoryName.COMPLETED_BY_PHONE, CaseGroupStatus.COMPLETEDBYPHONE));
-  }
-
-  /**
-   * Test available case group transitions not found
-   *
-   * @throws Exception exception thrown
-   */
-  @Test
-  public void givenInvalidCollexIdAndRuRefWhenRequestForCaseGroupTransitionsThenCaseGroupNotFound()
-      throws Exception {
-    // Given
-    String nonExistentCollexId = UUID.randomUUID().toString();
-    String nonExistentRuRef = "11111111111";
-
-    // When
-    ResultActions actions =
-        mockMvc.perform(
-            getJson(
-                String.format(
-                    "/casegroups/transitions/%s/%s", nonExistentCollexId, nonExistentRuRef)));
-
-    // Then
-    actions.andExpect(status().isNotFound());
-  }
-
-  /**
-   * Test case group status transition is successful
-   *
-   * @throws Exception exception thrown
-   */
-  @Test
-  public void givenCollexIdRuRefAndCaseEventWhenChangeCaseGroupStatusThenSuccess()
-      throws Exception {
-    // Given
-    CaseGroup caseGroupResult =
-        CaseGroup.builder()
-            .id(CASE_GROUP_UUID)
-            .collectionExerciseId(CASE_GROUP_CE_ID)
-            .partyId(CASE_GROUP_PARTY_ID)
-            .sampleUnitRef(CASE_GROUP_SU_REF)
-            .sampleUnitType(CASE_GROUP_SU_TYPE)
-            .status(CaseGroupStatus.NOTSTARTED)
-            .build();
-    when(caseGroupService.findCaseGroupByCollectionExerciseIdAndRuRef(
-            CASE_GROUP_CE_ID, CASE_GROUP_SU_REF))
-        .thenReturn(caseGroupResult);
-    Case aCase = Case.builder().build();
-    when(caseService.findCasesByCaseGroupFK(caseGroupResult.getCaseGroupPK()))
-        .thenReturn(Collections.singletonList(aCase));
-    when(categoryService.findCategory(CategoryDTO.CategoryName.COMPLETED_BY_PHONE))
-        .thenReturn(Category.builder().build());
-
-    CaseGroupEvent caseGroupEvent = new CaseGroupEvent();
-    caseGroupEvent.setEvent("COMPLETED_BY_PHONE");
-
-    // When
-    ResultActions actions =
-        mockMvc.perform(
-            putJson(
-                String.format("/casegroups/transitions/%s/%s", CASE_GROUP_CE_ID, CASE_GROUP_SU_REF),
-                new ObjectMapper().writeValueAsString(caseGroupEvent)));
-
-    // Then
-    actions.andExpect(status().isOk());
-    CaseEvent caseEvent =
-        CaseEvent.builder()
-            .createdBy(Constants.USER)
-            .category(CategoryDTO.CategoryName.COMPLETED_BY_PHONE)
-            .build();
-    verify(caseService).createCaseEvent(caseEvent, aCase);
-  }
-
-  @Test
-  public void givenInvalidEventWhenUpdateStateThenBadRequest() throws Exception {
-    // Given
-    CategoryDTO.CategoryName categoryName = CategoryDTO.CategoryName.COMPLETED_BY_PHONE;
-    CaseGroupEvent caseGroupEvent = new CaseGroupEvent();
-    caseGroupEvent.setEvent("INVALID_EVENT");
-
-    // When
-    ResultActions actions =
-        mockMvc.perform(
-            putJson(
-                String.format("/casegroups/transitions/%s/%s", CASE_GROUP_CE_ID, CASE_GROUP_SU_REF),
-                new ObjectMapper().writeValueAsString(caseGroupEvent)));
-
-    // Then
-    actions.andExpect(status().isBadRequest());
-  }
-
-  /**
-   * Test case group status transition not found
-   *
-   * @throws Exception exception thrown
-   */
-  @Test
-  public void
-      givenInvalidCollexIdPartyIdAndRuRefWhenPutCaseGroupTransitionThenCaseGroupTransitionNotFound()
-          throws Exception {
-    // Given
-    String nonExistentCollexId = UUID.randomUUID().toString();
-    String nonExistentPartyId = UUID.randomUUID().toString();
-    String nonExistentRuRef = "11111111111";
-    CategoryDTO.CategoryName categoryName = CategoryDTO.CategoryName.COMPLETED_BY_PHONE;
-
-    // When
-    ResultActions actions =
-        mockMvc.perform(
-            putJson(
-                String.format(
-                    "/casegroups/transitions/%s/%s/%s/%s",
-                    nonExistentCollexId, nonExistentPartyId, nonExistentRuRef, categoryName),
-                ""));
-
-    // Then
-    actions.andExpect(status().isNotFound());
   }
 
   @Test

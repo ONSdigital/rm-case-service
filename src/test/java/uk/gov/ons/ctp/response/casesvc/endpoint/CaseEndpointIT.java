@@ -27,6 +27,7 @@ import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
 import uk.gov.ons.ctp.response.casesvc.representation.CreatedCaseEventDTO;
@@ -273,5 +274,137 @@ public class CaseEndpointIT {
     assertThat(createdCaseResponse.getStatus()).isEqualTo(201);
     assertThat(affectedCase.getCaseGroup().getCaseGroupStatus())
         .isNotEqualTo(CaseGroupStatus.COMPLETE);
+  }
+
+  @Test
+  public void testGetCaseEventsWithCategory() throws Exception {
+
+    // Given
+    CaseNotification caseNotification =
+        caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID());
+
+    String caseID = caseNotification.getCaseId();
+    CaseEventCreationRequestDTO caseEventCreationRequestDTO =
+        new CaseEventCreationRequestDTO(
+            "TestEvent", CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, "SYSTEM", "DUMMY");
+
+    HttpResponse<CreatedCaseEventDTO> createdCaseResponse =
+        Unirest.post("http://localhost:" + port + "/cases/" + caseID + "/events")
+            .basicAuth("admin", "secret")
+            .header("Content-Type", "application/json")
+            .body(caseEventCreationRequestDTO)
+            .asObject(CreatedCaseEventDTO.class);
+
+    // When
+    HttpResponse<CaseEventDTO[]> returnedCaseEventsResponse =
+        Unirest.get(
+                "http://localhost:"
+                    + port
+                    + "/cases/"
+                    + caseID
+                    + "/events?category=SUCCESSFUL_"
+                    + "RESPONSE_UPLOAD")
+            .basicAuth("admin", "secret")
+            .asObject(CaseEventDTO[].class);
+
+    CaseEventDTO[] returnedCaseEvents = returnedCaseEventsResponse.getBody();
+
+    // Then
+    assertThat(returnedCaseEventsResponse.getStatus()).isEqualTo(200);
+    assertThat(returnedCaseEvents.length).isEqualTo(1);
+    assertThat(returnedCaseEvents[0].getCategory())
+        .isEqualTo(CategoryName.SUCCESSFUL_RESPONSE_UPLOAD);
+    assertThat(returnedCaseEvents[0].getCreatedDateTime()).isNotNull();
+  }
+
+  @Test
+  public void testGetCaseEventsWithCategoryMissingCaseShouldFail() throws Exception {
+
+    // Given
+
+    // When
+    HttpResponse returnedCaseEventsResponse =
+        Unirest.get(
+                "http://localhost:"
+                    + port
+                    + "/cases/"
+                    + UUID.randomUUID()
+                    + "/events?category=SUCCESSFUL_"
+                    + "RESPONSE_UPLOAD")
+            .basicAuth("admin", "secret")
+            .asString();
+
+    // Then
+    assertThat(returnedCaseEventsResponse.getStatus()).isEqualTo(404);
+  }
+
+  @Test
+  public void testGetCaseEventsWithNonExistentCategory() throws Exception {
+
+    // Given
+    CaseNotification caseNotification =
+        caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID());
+
+    String caseID = caseNotification.getCaseId();
+    CaseEventCreationRequestDTO caseEventCreationRequestDTO =
+        new CaseEventCreationRequestDTO(
+            "TestEvent", CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, "SYSTEM", "DUMMY");
+
+    HttpResponse<CreatedCaseEventDTO> createdCaseResponse =
+        Unirest.post("http://localhost:" + port + "/cases/" + caseID + "/events")
+            .basicAuth("admin", "secret")
+            .header("Content-Type", "application/json")
+            .body(caseEventCreationRequestDTO)
+            .asObject(CreatedCaseEventDTO.class);
+
+    // When
+    HttpResponse returnedCaseEventsResponse =
+        Unirest.get(
+                "http://localhost:"
+                    + port
+                    + "/cases/"
+                    + caseID
+                    + "/events?category="
+                    + "FAKE_CATEGORY_NAME")
+            .basicAuth("admin", "secret")
+            .asString();
+
+    // Then
+    assertThat(returnedCaseEventsResponse.getStatus()).isEqualTo(400);
+  }
+
+  @Test
+  public void testGetNoCaseEventsWithCategory() throws Exception {
+
+    // Given
+    CaseNotification caseNotification =
+        caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID());
+
+    String caseID = caseNotification.getCaseId();
+    CaseEventCreationRequestDTO caseEventCreationRequestDTO =
+        new CaseEventCreationRequestDTO(
+            "TestEvent", CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, "SYSTEM", "DUMMY");
+
+    HttpResponse<CreatedCaseEventDTO> createdCaseResponse =
+        Unirest.post("http://localhost:" + port + "/cases/" + caseID + "/events")
+            .basicAuth("admin", "secret")
+            .header("Content-Type", "application/json")
+            .body(caseEventCreationRequestDTO)
+            .asObject(CreatedCaseEventDTO.class);
+
+    // When
+    HttpResponse returnedCaseEventsResponse =
+        Unirest.get(
+                "http://localhost:"
+                    + port
+                    + "/cases/"
+                    + caseID
+                    + "/events?category="
+                    + "OFFLINE_RESPONSE_PROCESSED")
+            .basicAuth("admin", "secret")
+            .asString();
+
+    // Then
+    assertThat(returnedCaseEventsResponse.getStatus()).isEqualTo(204);
   }
 }
