@@ -281,7 +281,7 @@ public class CaseEndpointIT {
 
     // Given
     CaseNotification caseNotification =
-        caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID());
+        caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
 
     String caseID = caseNotification.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
@@ -343,7 +343,7 @@ public class CaseEndpointIT {
 
     // Given
     CaseNotification caseNotification =
-        caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID());
+        caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
 
     String caseID = caseNotification.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
@@ -378,7 +378,7 @@ public class CaseEndpointIT {
 
     // Given
     CaseNotification caseNotification =
-        caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID());
+        caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
 
     String caseID = caseNotification.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
