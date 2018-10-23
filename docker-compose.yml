@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 services:
   postgres-database:
     container_name: postgres-case-it
@@ -44,6 +44,10 @@ services:
     - ACTION_SVC_CONNECTION_CONFIG_PORT=8151
     ports:
     - "38145:8145"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8145/info"]
+      interval: 30s
+      timeout: 10s
 
   survey:
     container_name: survey-case-it
@@ -56,6 +60,7 @@ services:
     - security_user_password=secret
     ports:
     - "38080:8080"
+
 
   action:
     container_name: action-case-it
@@ -81,4 +86,15 @@ services:
     - COLLECTION_EXERCISE_SVC_CONNECTION_CONFIG_PORT=8145
     ports:
     - "38151:8151"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8151/info"]
+      interval: 30s
+      timeout: 10s
 
+  start_dependencies:
+    image: dadarek/wait-for-dependencies
+    depends_on:
+      collectionexercise:
+        condition: service_healthy
+      action:
+        condition: service_healthy
