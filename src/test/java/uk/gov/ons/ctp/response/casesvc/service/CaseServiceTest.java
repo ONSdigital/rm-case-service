@@ -1015,7 +1015,7 @@ public class CaseServiceTest {
   }
 
   @Test
-  public void testCreateInitialCaseWithSampleUnitChildren() {
+  public void testCreateInitialCaseWithSampleUnitChildren() throws Exception {
     SampleUnitParent sampleUnitParent = new SampleUnitParent();
     SampleUnit sampleUnit = new SampleUnit();
     SampleUnitChildren sampleUnitChildren =
@@ -1035,6 +1035,11 @@ public class CaseServiceTest {
     sampleUnitParent.setSampleUnitRef("str1234");
     sampleUnitParent.setSampleUnitType("B");
     sampleUnitParent.setId(UUID.randomUUID().toString());
+
+    List<CollectionExerciseDTO> collectionExercises =
+        FixtureHelper.loadClassFixtures(CollectionExerciseDTO[].class);
+    when(collectionExerciseSvcClient.getCollectionExercise(any()))
+        .thenReturn(collectionExercises.get(0));
 
     caseService.createInitialCase(sampleUnitParent);
 

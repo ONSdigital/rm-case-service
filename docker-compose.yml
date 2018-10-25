@@ -1,22 +1,102 @@
-version: '2'
+version: '2.1'
 services:
- postgres:
-  container_name: postgres-case-it
-  image: sdcplatform/ras-rm-docker-postgres
-  ports:
-   - "15432:5432"
- redis:
-  container_name: redis-case-it
-  image: redis:3.2.9
-  ports:
-   - "17379:6379"
- rabbitmq:
-  container_name: rabbitmq-case-it
-  image: rabbitmq:3.6.10-management
-  ports:
+  postgres-database:
+    container_name: postgres-case-it
+    image: sdcplatform/ras-rm-docker-postgres
+    ports:
+    - "15432:5432"
+  redis:
+    container_name: redis-case-it
+    image: redis:3.2.9
+    ports:
+    - "17379:6379"
+  rabbitmq:
+    container_name: rabbitmq-case-it
+    image: rabbitmq:3.6.10-management
+    ports:
     - "34369:4369"
     - "55672:25672"
     - "35671:5671"
     - "35672:5672"
     - "46671:15671"
     - "46672:15672"
+  collectionexercise:
+    container_name: collex-case-it
+    external_links:
+    - postgres-case-it
+    - redis-case-it
+    - rabbitmq-case-it
+    image: sdcplatform/collectionexercisesvc
+    environment:
+    - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-case-it:5432/postgres?sslmode=disable
+    - SPRING_DATASOURCE_USERNAME=postgres
+    - SPRING_DATASOURCE_PASSWORD=postgres
+    - LIQUIBASE_URL=jdbc:postgresql://postgres-case-it:5432/postgres
+    - LIQUIBASE_USER=postgres
+    - LIQUIBASE_PASSWORD=postgres
+    - REDISSON_CONFIG_ADDRESS=redis-case-it:6379
+    - DATA_GRID_ADDRESS=redis-case-it:6379
+    - RABBITMQ_HOST=rabbitmq-case-it
+    - RABBITMQ_PORT=5672
+    - SURVEY_SVC_CONNECTION_CONFIG_HOST=survey-case-it
+    - SURVEY_SVC_CONNECTION_CONFIG_PORT=8080
+    - ACTION_SVC_CONNECTION_CONFIG_HOST=action-case-it
+    - ACTION_SVC_CONNECTION_CONFIG_PORT=8151
+    ports:
+    - "38145:8145"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8145/info"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  survey:
+    container_name: survey-case-it
+    image: sdcplatform/surveysvc
+    external_links:
+    - postgres-case-it
+    environment:
+    - DATABASE_URL=postgres://postgres:postgres@postgres-case-it:5432/postgres?sslmode=disable
+    - security_user_name=admin
+    - security_user_password=secret
+    ports:
+    - "38080:8080"
+
+
+  action:
+    container_name: action-case-it
+    image: sdcplatform/actionsvc
+    external_links:
+    - postgres-case-it
+    - rabbitmq-case-it
+    - redis-case-it
+    environment:
+    - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-case-it:5432/postgres?sslmode=disable
+    - SPRING_DATASOURCE_USERNAME=postgres
+    - SPRING_DATASOURCE_PASSWORD=postgres
+    - LIQUIBASE_URL=jdbc:postgresql://postgres-case-it:5432/postgres
+    - LIQUIBASE_USER=postgres
+    - LIQUIBASE_PASSWORD=postgres
+    - REDISSON_CONFIG_ADDRESS=redis-case-it:6379
+    - DATA_GRID_ADDRESS=redis-case-it:6379
+    - RABBITMQ_HOST=rabbitmq-case-it
+    - RABBITMQ_PORT=5672
+    - SURVEY_SVC_CONNECTION_CONFIG_HOST=survey-case-it
+    - SURVEY_SVC_CONNECTION_CONFIG_PORT=8080
+    - COLLECTION_EXERCISE_SVC_CONNECTION_CONFIG_HOST=collex-case-it
+    - COLLECTION_EXERCISE_SVC_CONNECTION_CONFIG_PORT=8145
+    ports:
+    - "38151:8151"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8151/info"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  start_dependencies:
+    image: dadarek/wait-for-dependencies
+    depends_on:
+      collectionexercise:
+        condition: service_healthy
+      action:
+        condition: service_healthy

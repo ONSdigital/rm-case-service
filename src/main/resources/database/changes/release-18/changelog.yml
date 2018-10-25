@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+    - changeSet:
+        id: 18-1
+        author: Ryan Grundy
+        changes:
+        - sqlFile:
+            comment: Adding surveyid to casegroup table
+            path: add-surveyid-to-casegroup.sql
+            relativeToChangelogFile: true
+            splitStatements: false

@@ -65,7 +65,6 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   public CaseGroupDTO findCaseGroupById(@PathVariable("caseGroupId") final UUID caseGroupId)
       throws CTPException {
     log.with("case_group_id").debug("Entering findCaseGroupById");
-
     CaseGroup caseGroupObj = caseGroupService.findCaseGroupById(caseGroupId);
     if (caseGroupObj == null) {
       throw new CTPException(

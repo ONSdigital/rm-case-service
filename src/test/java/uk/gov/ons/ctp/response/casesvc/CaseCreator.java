@@ -36,12 +36,13 @@ public class CaseCreator {
    * @return a new CaseNotification
    */
   public CaseNotification sendSampleUnit(
-      String sampleUnitRef, String sampleUnitType, UUID sampleUnitId) throws Exception {
+      String sampleUnitRef, String sampleUnitType, UUID sampleUnitId, UUID collectionExerciseId)
+      throws Exception {
 
     iacServiceStub.createIACStub();
 
     SampleUnitParent sampleUnit = new SampleUnitParent();
-    sampleUnit.setCollectionExerciseId(UUID.randomUUID().toString());
+    sampleUnit.setCollectionExerciseId(collectionExerciseId.toString());
     sampleUnit.setId(sampleUnitId.toString());
     sampleUnit.setActionPlanId(UUID.randomUUID().toString());
     sampleUnit.setSampleUnitRef(sampleUnitRef);

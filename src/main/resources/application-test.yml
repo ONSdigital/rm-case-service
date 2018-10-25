@@ -7,7 +7,9 @@ spring:
 
 survey-svc:
   connection-config:
-    port: 18002
+    username: admin
+    password: secret
+    retry-attempts: 5
 
 action-svc:
   connection-config:
@@ -42,5 +44,11 @@ internet-access-code-svc:
     scheme: http
     host: localhost
     port: 18002
+    username: admin
+    password: secret
+
+collection-exercise-svc:
+  connection-config:
+    port: 38145
     username: admin
     password: secret

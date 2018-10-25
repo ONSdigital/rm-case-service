@@ -1,8 +1,10 @@
 package uk.gov.ons.ctp.response.casesvc.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +16,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import uk.gov.ons.ctp.common.FixtureHelper;
+import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
@@ -24,6 +28,7 @@ import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnit
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
+import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
 
 /** Test Case created by Sample */
@@ -35,13 +40,14 @@ public class CaseCreationServiceTest {
   @Mock private CaseRepository caseRepo;
   @Mock private CaseGroupRepository caseGroupRepo;
   @Mock private CaseEventRepository caseEventRepo;
+  @Mock private CollectionExerciseSvcClient collectionExerciseSvcClient;
 
   /**
    * Create a Case and a Casegroup from the message that would be on the Case Delivery Queue. No
    * child party.
    */
   @Test
-  public void testCreateCaseAndCaseGroupWithoutChildFromMessage() {
+  public void testCreateCaseAndCaseGroupWithoutChildFromMessage() throws Exception {
 
     SampleUnitParent sampleUnitParent = new SampleUnitParent();
 
@@ -54,6 +60,10 @@ public class CaseCreationServiceTest {
     sampleUnitParent.setSampleUnitRef("str1234");
     sampleUnitParent.setSampleUnitType("B");
     sampleUnitParent.setId(UUID.randomUUID().toString());
+    List<CollectionExerciseDTO> collectionExercises =
+        FixtureHelper.loadClassFixtures(CollectionExerciseDTO[].class);
+    when(collectionExerciseSvcClient.getCollectionExercise(any()))
+        .thenReturn(collectionExercises.get(0));
 
     caseService.createInitialCase(sampleUnitParent);
 
@@ -95,7 +105,7 @@ public class CaseCreationServiceTest {
    * party present.
    */
   @Test
-  public void testCreateCaseAndCaseGroupWithChildFromMessage() {
+  public void testCreateCaseAndCaseGroupWithChildFromMessage() throws Exception {
 
     SampleUnit sampleUnitChild = new SampleUnit();
     // Base sample unit data for child
@@ -119,6 +129,11 @@ public class CaseCreationServiceTest {
     sampleUnitParent.setSampleUnitRef("str1234");
     sampleUnitParent.setSampleUnitType("B");
     sampleUnitParent.setId(UUID.randomUUID().toString());
+
+    List<CollectionExerciseDTO> collectionExercises =
+        FixtureHelper.loadClassFixtures(CollectionExerciseDTO[].class);
+    when(collectionExerciseSvcClient.getCollectionExercise(any()))
+        .thenReturn(collectionExercises.get(0));
 
     caseService.createInitialCase(sampleUnitParent);
 

@@ -154,6 +154,31 @@ public final class CaseEndpoint implements CTPEndpoint {
     }
   }
 
+  /**
+   * The GET endpoint to find cases by the surveyid UUID.
+   *
+   * @param surveyId to find by
+   * @return the cases found
+   */
+  @RequestMapping(value = "/surveyid/{surveyId}", method = RequestMethod.GET)
+  public ResponseEntity<List<CaseDetailsDTO>> findCasesBySurveyId(
+      @PathVariable("surveyId") final UUID surveyId) {
+    log.with("survey_id", surveyId).debug("Retrieving cases by survey");
+    List<CaseGroup> caseGroupsList = caseGroupService.findCaseGroupBySurveyId(surveyId);
+    List<Case> cases = new ArrayList<>();
+
+    for (CaseGroup caseGroup : caseGroupsList) {
+      cases.addAll(caseService.findCasesByCaseGroupFK(caseGroup.getCaseGroupPK()));
+    }
+    List<CaseDetailsDTO> caseDetailsDTOList =
+        cases
+            .stream()
+            .map(caseDetail -> buildDetailedCaseDTO(caseDetail, false, false))
+            .collect(Collectors.toList());
+
+    return ResponseEntity.ok(caseDetailsDTOList);
+  }
+
   @RequestMapping(method = RequestMethod.GET)
   public ResponseEntity<List<CaseDetailsDTO>> findCases(
       @RequestParam(required = false) String sampleUnitId,

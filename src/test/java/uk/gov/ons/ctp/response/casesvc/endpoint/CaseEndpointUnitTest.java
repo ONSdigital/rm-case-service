@@ -71,6 +71,8 @@ public final class CaseEndpointUnitTest {
       UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfe111");
   private static final UUID CASE_ID_UNCHECKED_EXCEPTION_CASE =
       UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3999");
+  private static final UUID EXISTING_SURVEY_ID =
+      UUID.fromString("cb8accda-6118-4d3b-85a3-149e28960c54");
   private static final UUID CASE1_ID = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd1");
   private static final UUID CASE2_ID = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd2");
   private static final UUID CASE3_ID = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd3");
@@ -471,6 +473,35 @@ public final class CaseEndpointUnitTest {
                 CASE1_CASEGROUP_ID.toString(),
                 CASE1_CASEGROUP_ID.toString(),
                 CASE1_CASEGROUP_ID.toString())));
+  }
+
+  @Test
+  public void findCaseBySurveyId() throws Exception {
+    when(caseGroupService.findCaseGroupBySurveyId(EXISTING_SURVEY_ID)).thenReturn(caseGroupResults);
+    when(caseGroupService.findCaseGroupByCaseGroupPK(any(Integer.class)))
+        .thenReturn(caseGroupResults.get(0));
+    when(caseService.findCasesByCaseGroupFK(any(Integer.class))).thenReturn(caseResults);
+
+    ResultActions actions =
+        mockMvc.perform(getJson(String.format("/cases/surveyid/%s", EXISTING_SURVEY_ID)));
+
+    actions.andExpect(status().is2xxSuccessful());
+    actions.andExpect(handler().handlerType(CaseEndpoint.class));
+    actions.andExpect(handler().methodName("findCasesBySurveyId"));
+
+    actions.andExpect(
+        jsonPath(
+            "$[*].id",
+            containsInAnyOrder(
+                CASE1_ID.toString(),
+                CASE2_ID.toString(),
+                CASE3_ID.toString(),
+                CASE4_ID.toString(),
+                CASE5_ID.toString(),
+                CASE6_ID.toString(),
+                CASE7_ID.toString(),
+                CASE8_ID.toString(),
+                CASE9_ID.toString())));
   }
 
   @Test

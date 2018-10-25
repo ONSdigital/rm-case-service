@@ -43,6 +43,7 @@ public class CaseGroupServiceTest {
 
   private static final UUID CASEGROUP_ID = UUID.fromString("3fc633af-d740-4a7b-8756-f747a02da73b");
   private static final UUID PARTY_ID = UUID.fromString("b2263303-a6b7-4562-aedf-eb97de4bc563");
+  private static final UUID SURVEY_ID = UUID.fromString("cb8accda-6118-4d3b-85a3-149e28960c54");
 
   @Test
   public void givenCaseGroupStatusWhenCaseGroupStatusTransitionedThenTransitionIsSaved()
@@ -139,6 +140,26 @@ public class CaseGroupServiceTest {
 
     // Then
     verify(caseGroupRepo).findByPartyId(PARTY_ID);
+  }
+
+  @Test
+  public void testCaseGroupFindBySurveyId() {
+    CaseGroup caseGroup =
+        CaseGroup.builder()
+            .id(UUID.randomUUID())
+            .collectionExerciseId(UUID.randomUUID())
+            .partyId(PARTY_ID)
+            .sampleUnitRef("12345")
+            .sampleUnitType("B")
+            .surveyId(SURVEY_ID)
+            .status(CaseGroupStatus.NOTSTARTED)
+            .build();
+    List<CaseGroup> caseGroupList = Collections.singletonList(caseGroup);
+    given(caseGroupRepo.findBySurveyId(SURVEY_ID)).willReturn(caseGroupList);
+
+    caseGroupService.findCaseGroupBySurveyId(SURVEY_ID);
+
+    verify(caseGroupRepo).findBySurveyId(SURVEY_ID);
   }
 
   @Test

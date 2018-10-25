@@ -1,0 +1,1 @@
+create table casesvc.case_temp(collectionexerciseid uuid, surveyid uuid)

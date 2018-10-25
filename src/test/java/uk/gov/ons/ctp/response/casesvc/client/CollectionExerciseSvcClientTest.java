@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -19,6 +20,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -29,6 +31,12 @@ import uk.gov.ons.ctp.response.casesvc.config.CollectionExerciseSvc;
 import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
 
 public class CollectionExerciseSvcClientTest {
+
+  private static final String CREATE_COLLEX_PATH = "/collectionexercises";
+  private static final UUID EXISTING_SURVEY_ID =
+      UUID.fromString("cb8accda-6118-4d3b-85a3-149e28960c54");
+  private static final String EXERCISE_REF = "201808";
+  private static final String USER_DESCRIPTION = "August 2018";
 
   @InjectMocks private CollectionExerciseSvcClient collectionExerciseSvcClient;
 
@@ -135,5 +143,40 @@ public class CollectionExerciseSvcClientTest {
         responseCollectionExercises.get(0).getSurveyId(), collectionExercise.getSurveyId());
     assertEquals(
         responseCollectionExercises.get(1).getSurveyId(), collectionExercise.getSurveyId());
+  }
+
+  @Test
+  public void testCreateCollectionExercise() {
+    CollectionExerciseSvc collectionExerciseSvcConfig = new CollectionExerciseSvc();
+    collectionExerciseSvcConfig.setCollectionExercisePath(CREATE_COLLEX_PATH);
+    when(appConfig.getCollectionExerciseSvc()).thenReturn(collectionExerciseSvcConfig);
+
+    UriComponents uriComponents =
+        UriComponentsBuilder.newInstance()
+            .path(collectionExerciseSvcConfig.getCollectionExercisesPath())
+            .queryParams(null)
+            .build();
+    when(restUtility.createUriComponents(any(String.class), any(MultiValueMap.class)))
+        .thenReturn(uriComponents);
+
+    CollectionExerciseDTO collex = new CollectionExerciseDTO();
+    collex.setSurveyId(EXISTING_SURVEY_ID.toString());
+    collex.setExerciseRef(EXERCISE_REF);
+    collex.setUserDescription(USER_DESCRIPTION);
+    HttpEntity httpEntity = new HttpEntity<>(collex, null);
+    when(restUtility.createHttpEntity(any(CollectionExerciseDTO.class))).thenReturn(httpEntity);
+
+    collectionExerciseSvcClient.createCollectionExercise(
+        EXISTING_SURVEY_ID, EXERCISE_REF, USER_DESCRIPTION);
+
+    verify(restUtility, times(1))
+        .createUriComponents(collectionExerciseSvcConfig.getCollectionExercisesPath(), null);
+    verify(restUtility, times(1)).createHttpEntity(eq(collex));
+    verify(restTemplate, times(1))
+        .exchange(
+            eq(uriComponents.toUri()),
+            eq(HttpMethod.POST),
+            eq(httpEntity),
+            eq(CollectionExerciseDTO.class));
   }
 }
