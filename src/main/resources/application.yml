@@ -70,7 +70,7 @@ spring:
     enabled: false
 
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database-platform: org.hibernate.dialect.PostgreSQL94Dialect
     show-sql: false
     properties:
       hibernate:
