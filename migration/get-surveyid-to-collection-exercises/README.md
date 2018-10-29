@@ -14,7 +14,7 @@ Creating temporary table
 
 importing temporary table
 
-`psql "{CASE_POSTGRES_URI}" -f 3_import-temp-table.sql < temp_collex.csv`
+`psql "{CASE_POSTGRES_URI}" -f 3_import-temp-table.sql`
 
 Adding survey id to the case groups table
 
