@@ -24,6 +24,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.gov.ons.ctp.common.UnirestInitialiser;
 import uk.gov.ons.ctp.response.casesvc.CaseCreator;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
@@ -49,6 +51,8 @@ public class CaseEndpointIT {
 
   @Autowired private CaseCreator caseCreator;
   @Autowired private CollectionExerciseSvcClient collectionExerciseSvcClient;
+  @Autowired private CaseRepository caseRepository;
+  @Autowired private CaseEventRepository caseEventRepository;
 
   @BeforeClass
   public static void setUp() {
@@ -58,6 +62,9 @@ public class CaseEndpointIT {
 
   @Before
   public void testSetup() {
+    caseEventRepository.deleteAll();
+    caseRepository.deleteAll();
+
     Random rnd = new Random();
 
     int randNumber = 10000 + rnd.nextInt(900000);
