@@ -1,13 +1,17 @@
 package uk.gov.ons.ctp.response.casesvc.message;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.junit.Assert.assertEquals;
 
+import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.ByteArrayInputStream;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import javax.xml.bind.JAXBContext;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +40,10 @@ import uk.gov.ons.tools.rabbit.SimpleMessageSender;
 public class RabbitSpringIntegrationDLQAndRetriesIT {
 
   @LocalServerPort private int port;
+
+  @ClassRule
+  public static WireMockRule wireMockRule =
+      new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
 
   @Autowired AppConfig appConfig;
 

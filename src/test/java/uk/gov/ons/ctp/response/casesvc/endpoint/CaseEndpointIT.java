@@ -10,10 +10,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import java.util.Random;
 import java.util.UUID;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.LocalServerPort;
@@ -43,8 +40,8 @@ public class CaseEndpointIT {
 
   private UUID collectionExerciseId;
 
-  @Rule
-  public WireMockRule wireMockRule =
+  @ClassRule
+  public static WireMockRule wireMockRule =
       new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
 
   @LocalServerPort private int port;
@@ -55,9 +52,10 @@ public class CaseEndpointIT {
   @Autowired private CaseEventRepository caseEventRepository;
 
   @BeforeClass
-  public static void setUp() {
+  public static void setUp() throws InterruptedException {
     ObjectMapper value = new ObjectMapper();
     UnirestInitialiser.initialise(value);
+    Thread.sleep(2000);
   }
 
   @Before
