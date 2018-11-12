@@ -36,6 +36,10 @@
 
             <repositories>
                 <repository>
+                    <id>jcenter-repo</id>
+                    <url>http://artifactory-sdc.onsdigital.uk/artifactory/jcenter-cache/</url>
+                </repository>
+                <repository>
                     <id>release-repo</id>
                     <name>libs-release</name>
                     <url>http://artifactory-sdc.onsdigital.uk/artifactory/libs-release-local</url>
