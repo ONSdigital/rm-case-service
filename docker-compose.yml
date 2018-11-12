@@ -48,7 +48,7 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:8145/info"]
       interval: 30s
       timeout: 10s
-      retries: 5
+      retries: 10
 
   survey:
     container_name: survey-case-it
@@ -91,7 +91,7 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:8151/info"]
       interval: 30s
       timeout: 10s
-      retries: 5
+      retries: 10
 
   start_dependencies:
     image: dadarek/wait-for-dependencies
