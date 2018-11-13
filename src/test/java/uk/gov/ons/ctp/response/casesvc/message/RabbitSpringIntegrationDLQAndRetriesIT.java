@@ -1,19 +1,24 @@
 package uk.gov.ons.ctp.response.casesvc.message;
 
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.junit.Assert.assertEquals;
 
+import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.ByteArrayInputStream;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import javax.xml.bind.JAXBContext;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -33,9 +38,14 @@ import uk.gov.ons.tools.rabbit.SimpleMessageSender;
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringJUnit4ClassRunner.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class RabbitSpringIntegrationDLQAndRetriesIT {
 
   @LocalServerPort private int port;
+
+  @ClassRule
+  public static WireMockRule wireMockRule =
+      new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
 
   @Autowired AppConfig appConfig;
 

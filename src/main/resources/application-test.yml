@@ -25,6 +25,10 @@ rabbitmq:
 data-grid:
   address: localhost:17379
 
+case-distribution:
+  retrieval-max: 50
+  delay-milli-seconds: 500
+
 schedules:
   validation-schedule-delay-milli-seconds: 1000
   distribution-schedule-delay-milli-seconds: 1000
