@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.HashMap;
+
 import ma.glasnost.orika.MapperFacade;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,6 +75,7 @@ public final class CaseEndpointUnitTest {
       UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3999");
   private static final UUID EXISTING_SURVEY_ID =
       UUID.fromString("cb8accda-6118-4d3b-85a3-149e28960c54");
+  private static final String CASE_EVENT_PARTY_UUID = "3b136c4b-7a14-4904-9e01-13364dd7b972";
   private static final UUID CASE1_ID = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd1");
   private static final UUID CASE2_ID = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd2");
   private static final UUID CASE3_ID = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd3");
@@ -649,7 +652,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCaseEventsByCaseId"));
     actions.andExpect(jsonPath("$", hasSize(4)));
-    actions.andExpect(jsonPath("$[0].*", hasSize(5)));
+    actions.andExpect(jsonPath("$[0].*", hasSize(6)));
     actions.andExpect(
         jsonPath(
             "$[*].description",
@@ -709,7 +712,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCaseEventsByCaseId"));
     actions.andExpect(jsonPath("$", hasSize(4)));
-    actions.andExpect(jsonPath("$[0].*", hasSize(5)));
+    actions.andExpect(jsonPath("$[0].*", hasSize(6)));
     actions.andExpect(
         jsonPath(
             "$[*].description",
@@ -736,6 +739,8 @@ public final class CaseEndpointUnitTest {
                 new DateMatcher(CASE_DATE_VALUE_2),
                 new DateMatcher(CASE_DATE_VALUE_3),
                 new DateMatcher(CASE_DATE_VALUE_1))));
+    actions.andExpect(jsonPath("$[0].metadata", isA(HashMap.class)));
+    actions.andExpect(jsonPath("$[0].metadata.partyId").value(CASE_EVENT_PARTY_UUID));
   }
 
   /**
@@ -748,7 +753,6 @@ public final class CaseEndpointUnitTest {
     ResultActions actions =
         mockMvc.perform(
             postJson(String.format("/cases/%s/events", CASE9_ID), CASEEVENT_INVALIDJSON));
-
     actions.andExpect(status().isBadRequest());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("createCaseEvent"));
@@ -795,7 +799,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(status().isCreated());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("createCaseEvent"));
-    actions.andExpect(jsonPath("$.*", hasSize(7)));
+    actions.andExpect(jsonPath("$.*", hasSize(8)));
     actions.andExpect(jsonPath("$.caseId", is(CASE9_ID.toString())));
     actions.andExpect(jsonPath("$.description", is(CASE9_DESCRIPTION)));
     actions.andExpect(jsonPath("$.createdBy", is(CASE9_CREATEDBY)));
@@ -824,7 +828,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(status().isCreated());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("createCaseEvent"));
-    actions.andExpect(jsonPath("$.*", hasSize(7)));
+    actions.andExpect(jsonPath("$.*", hasSize(8)));
     actions.andExpect(jsonPath("$.caseId", is(CASE9_ID.toString())));
     actions.andExpect(jsonPath("$.description", is(CASE9_DESCRIPTION)));
     actions.andExpect(jsonPath("$.createdBy", is(CASE9_CREATEDBY)));

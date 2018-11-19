@@ -1,7 +1,9 @@
 package uk.gov.ons.ctp.response.casesvc.domain.model;
 
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -17,6 +19,9 @@ import lombok.NoArgsConstructor;
 import net.sourceforge.cobertura.CoverageIgnore;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 
 /** Domain model object. */
@@ -26,6 +31,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@TypeDefs({@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)})
 @Table(name = "caseevent", schema = "casesvc")
 public class CaseEvent implements Serializable {
 
@@ -60,4 +66,8 @@ public class CaseEvent implements Serializable {
 
   @Column(name = "subcategory")
   private String subCategory;
+
+  @Column(name = "metadata")
+  @Type(type = "jsonb")
+  private HashMap<String, String> metadata;
 }

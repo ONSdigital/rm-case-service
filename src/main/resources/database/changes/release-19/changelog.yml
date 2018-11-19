@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+- changeSet:
+    id: 19-1
+    author: Ryan Grundy
+    changes:
+    - sqlFile:
+        comment: Adding metadata to case events table
+        path: add-metadata-to-caseevents.sql
+        relativeToChangelogFile: true
+        splitStatements: false

@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.HashMap;
 import ma.glasnost.orika.MapperFacade;
 import org.junit.Before;
 import org.junit.Test;
@@ -198,6 +199,8 @@ public class CaseServiceTest {
     when(categoryRepo.findOne(CategoryDTO.CategoryName.ADDRESS_DETAILS_INCORRECT))
         .thenReturn(categories.get(CAT_ADDRESS_DETAILS_INCORRECT));
     Timestamp currentTime = DateTimeUtil.nowUTC();
+    HashMap<String, String> metadata = new HashMap<>();
+    metadata.put("partyId", UUID.randomUUID().toString());
     CaseEvent caseEvent =
         new CaseEvent(
             1,
@@ -206,7 +209,8 @@ public class CaseServiceTest {
             CASEEVENT_CREATEDBY,
             currentTime,
             CategoryDTO.CategoryName.ADDRESS_DETAILS_INCORRECT,
-            CASEEVENT_SUBCATEGORY);
+            CASEEVENT_SUBCATEGORY,
+            metadata);
     when(caseEventRepo.save(any(CaseEvent.class))).thenReturn(caseEvent);
 
     CaseEvent result = caseService.createCaseEvent(caseEvent, null, cases.get(0));
@@ -227,6 +231,8 @@ public class CaseServiceTest {
         .thenReturn(categories.get(CAT_ADDRESS_DETAILS_INCORRECT));
 
     Timestamp currentTime = DateTimeUtil.nowUTC();
+    HashMap<String, String> metadata = new HashMap<>();
+    metadata.put("partyId", UUID.randomUUID().toString());
     CaseEvent caseEvent =
         new CaseEvent(
             1,
@@ -235,7 +241,8 @@ public class CaseServiceTest {
             CASEEVENT_CREATEDBY,
             currentTime,
             CategoryDTO.CategoryName.ADDRESS_DETAILS_INCORRECT,
-            CASEEVENT_SUBCATEGORY);
+            CASEEVENT_SUBCATEGORY,
+            metadata);
     CaseEvent result = caseService.createCaseEvent(caseEvent);
 
     verify(caseRepo).findOne(NON_EXISTING_PARENT_CASE_FK);
