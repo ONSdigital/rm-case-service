@@ -22,10 +22,9 @@ import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-import java.util.HashMap;
-
 import ma.glasnost.orika.MapperFacade;
 import org.junit.Before;
 import org.junit.Test;
@@ -147,7 +146,8 @@ public final class CaseEndpointUnitTest {
   private static final String CASEEVENT_INVALIDJSON =
       "{\"description\":\"a\",\"category\":\"BAD_CAT\",\"createdBy\":\"u\"}";
   private static final String CASEEVENT_VALIDJSON =
-      "{\"description\":\"sometest\",\"category\":\"RESPONDENT_ENROLED\",\"createdBy\":\"unittest\"}";
+      "{\"description\":\"sometest\",\"category\":\"RESPONDENT_ENROLED\",\"createdBy\":\"unittest\", " +
+              "\"metadata\":{\"partyid\":\"3b136c4b-7a14-4904-9e01-13364dd7b972\"}}";
   private static final String CASEEVENT_VALIDJSON_NO_NEW_CASE =
       "{\"description\":\"sometest\",\"category\":\"GENERAL_ENQUIRY\",\"createdBy\":\"unittest\"}";
 
@@ -679,6 +679,8 @@ public final class CaseEndpointUnitTest {
                 new DateMatcher(CASE_DATE_VALUE_2),
                 new DateMatcher(CASE_DATE_VALUE_3),
                 new DateMatcher(CASE_DATE_VALUE_1))));
+    actions.andExpect(jsonPath("$[0].metadata", isA(HashMap.class)));
+    actions.andExpect(jsonPath("$[0].metadata.partyId").value(CASE_EVENT_PARTY_UUID));
   }
 
   @Test
@@ -806,6 +808,9 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.createdDateTime", is(new DateMatcher(CASE_DATE_VALUE_1))));
     actions.andExpect(jsonPath("$.category", is(CASE9_CATEGORY)));
     actions.andExpect(jsonPath("$.subCategory").doesNotExist());
+    actions.andExpect(jsonPath("$.metadata").exists());
+    actions.andExpect(jsonPath("$.metadata.partyId", is(CASE_EVENT_PARTY_UUID)));
+
   }
 
   /**
