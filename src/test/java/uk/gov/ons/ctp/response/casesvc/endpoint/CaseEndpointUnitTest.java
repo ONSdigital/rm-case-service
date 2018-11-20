@@ -146,8 +146,8 @@ public final class CaseEndpointUnitTest {
   private static final String CASEEVENT_INVALIDJSON =
       "{\"description\":\"a\",\"category\":\"BAD_CAT\",\"createdBy\":\"u\"}";
   private static final String CASEEVENT_VALIDJSON =
-      "{\"description\":\"sometest\",\"category\":\"RESPONDENT_ENROLED\",\"createdBy\":\"unittest\", " +
-              "\"metadata\":{\"partyid\":\"3b136c4b-7a14-4904-9e01-13364dd7b972\"}}";
+      "{\"description\":\"sometest\",\"category\":\"RESPONDENT_ENROLED\",\"createdBy\":\"unittest\", "
+          + "\"metadata\":{\"partyid\":\"3b136c4b-7a14-4904-9e01-13364dd7b972\"}}";
   private static final String CASEEVENT_VALIDJSON_NO_NEW_CASE =
       "{\"description\":\"sometest\",\"category\":\"GENERAL_ENQUIRY\",\"createdBy\":\"unittest\"}";
 
@@ -810,7 +810,6 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.subCategory").doesNotExist());
     actions.andExpect(jsonPath("$.metadata").exists());
     actions.andExpect(jsonPath("$.metadata.partyId", is(CASE_EVENT_PARTY_UUID)));
-
   }
 
   /**
