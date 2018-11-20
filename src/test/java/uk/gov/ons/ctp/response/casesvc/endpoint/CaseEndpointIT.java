@@ -81,7 +81,7 @@ public class CaseEndpointIT {
 
     collectionExerciseId = collex.getId();
     metadata = new HashMap<String, String>();
-    metadata.put("partyid", UUID.randomUUID().toString());
+    metadata.put("partyId", UUID.randomUUID().toString());
   }
 
   @Test

@@ -147,7 +147,7 @@ public final class CaseEndpointUnitTest {
       "{\"description\":\"a\",\"category\":\"BAD_CAT\",\"createdBy\":\"u\"}";
   private static final String CASEEVENT_VALIDJSON =
       "{\"description\":\"sometest\",\"category\":\"RESPONDENT_ENROLED\",\"createdBy\":\"unittest\", "
-          + "\"metadata\":{\"partyid\":\"3b136c4b-7a14-4904-9e01-13364dd7b972\"}}";
+          + "\"metadata\":{\"partyId\":\"3b136c4b-7a14-4904-9e01-13364dd7b972\"}}";
   private static final String CASEEVENT_VALIDJSON_NO_NEW_CASE =
       "{\"description\":\"sometest\",\"category\":\"GENERAL_ENQUIRY\",\"createdBy\":\"unittest\"}";
 
