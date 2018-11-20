@@ -42,7 +42,7 @@ import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExer
 public class CaseEndpointIT {
 
   private UUID collectionExerciseId;
-  private static HashMap<String, String> metadata;
+  private HashMap<String, String> metadata;
 
   @ClassRule
   public static WireMockRule wireMockRule =
