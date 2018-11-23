@@ -158,7 +158,7 @@
         <dependency>
             <groupId>uk.gov.ons.ctp.product</groupId>
             <artifactId>casesvc-api</artifactId>
-            <version>10.49.30</version>
+            <version>10.49.32</version>
         </dependency>
 
         <dependency>
