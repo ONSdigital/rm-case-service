@@ -9,6 +9,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import org.junit.*;
@@ -42,7 +43,7 @@ import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExer
 public class CaseEndpointIT {
 
   private UUID collectionExerciseId;
-  private HashMap<String, String> metadata;
+  private Map<String, String> metadata;
 
   @ClassRule
   public static WireMockRule wireMockRule =

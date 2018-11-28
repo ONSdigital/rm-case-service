@@ -3,7 +3,7 @@ package uk.gov.ons.ctp.response.casesvc.domain.model;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.HashMap;
+import java.util.Map;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -69,5 +69,5 @@ public class CaseEvent implements Serializable {
 
   @Column(name = "metadata")
   @Type(type = "jsonb")
-  private HashMap<String, String> metadata;
+  private Map<String, String> metadata;
 }
