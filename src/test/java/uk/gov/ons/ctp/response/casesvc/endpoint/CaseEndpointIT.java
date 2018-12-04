@@ -81,7 +81,7 @@ public class CaseEndpointIT {
         collectionExerciseSvcClient.getCollectionExercises(surveyId.toString()).get(0);
 
     collectionExerciseId = collex.getId();
-    metadata = new HashMap<String, String>();
+    metadata = new HashMap<>();
     metadata.put("partyId", UUID.randomUUID().toString());
   }
 

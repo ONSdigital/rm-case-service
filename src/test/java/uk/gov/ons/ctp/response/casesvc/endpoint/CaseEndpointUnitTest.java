@@ -9,6 +9,7 @@ import static org.hamcrest.core.Is.isA;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import ma.glasnost.orika.MapperFacade;
 import org.junit.Before;
@@ -35,10 +37,13 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.springframework.data.domain.Example;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import uk.gov.ons.ctp.common.FixtureHelper;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.error.InvalidRequestException;
@@ -808,8 +813,39 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.createdDateTime", is(new DateMatcher(CASE_DATE_VALUE_1))));
     actions.andExpect(jsonPath("$.category", is(CASE9_CATEGORY)));
     actions.andExpect(jsonPath("$.subCategory").doesNotExist());
-    actions.andExpect(jsonPath("$.metadata").exists());
-    actions.andExpect(jsonPath("$.metadata.partyId", is(CASE_EVENT_PARTY_UUID)));
+  }
+
+  /**
+   * Checks case event and checks that it's created with
+   * metadata and partyId
+   *
+   * @throws Exception exception thrown
+   */
+  @Test
+  public void createCaseEventWithMetadata() throws Exception {
+    // Given
+    when(categoryService.findCategory(CategoryName.RESPONDENT_ENROLED))
+        .thenReturn(categoryResults.get(3));
+    when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class)))
+        .thenReturn(caseEventsResults.get(3));
+    when(caseService.findCaseById(CASE9_ID)).thenReturn(caseResults.get(8));
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
+    // When
+    BindingResult bindingResult = mock(BindingResult.class);
+    CaseEventCreationRequestDTO caseEventDTO = new CaseEventCreationRequestDTO();
+    Map<String, String> metadata = new HashMap<>();
+    metadata.put("partyId", CASE_EVENT_PARTY_UUID);
+    caseEventDTO.setMetadata(metadata);
+    caseEventDTO.setCreatedBy("Test");
+    caseEndpoint.createCaseEvent(CASE9_ID, caseEventDTO, bindingResult);
+
+    // Then
+    ArgumentCaptor<CaseEvent> caseEventArgumentCaptor = ArgumentCaptor.forClass(CaseEvent.class);
+    verify(caseService).createCaseEvent(caseEventArgumentCaptor.capture(), any(Case.class));
+    assertEquals(
+        CASE_EVENT_PARTY_UUID, caseEventArgumentCaptor.getValue().getMetadata().get("partyId"));
   }
 
   /**

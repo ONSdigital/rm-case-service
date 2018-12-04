@@ -9,6 +9,8 @@ import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
 import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.annotation.MessageEndpoint;
@@ -69,6 +71,12 @@ public class CaseReceiptReceiver {
       log.with("case_id", caseId).error(EXISTING_CASE_NOT_FOUND);
     } else {
       CaseEvent caseEvent = new CaseEvent();
+      UUID partyId = existingCase.getPartyId();
+      if (partyId != null) {
+        Map<String, String> metadata = new HashMap<>();
+        metadata.put("partyId", partyId.toString());
+        caseEvent.setMetadata(metadata);
+      }
       caseEvent.setCaseFK(existingCase.getCasePK());
       caseEvent.setCategory(category);
       log.with("case_event", caseEvent.getCategory()).info("New case event");
