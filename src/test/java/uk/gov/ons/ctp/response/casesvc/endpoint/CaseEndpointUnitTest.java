@@ -816,8 +816,7 @@ public final class CaseEndpointUnitTest {
   }
 
   /**
-   * Checks case event and checks that it's created with
-   * metadata and partyId
+   * Checks case event and checks that it's created with metadata and partyId
    *
    * @throws Exception exception thrown
    */
