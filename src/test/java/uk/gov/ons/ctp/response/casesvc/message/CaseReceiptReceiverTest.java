@@ -63,7 +63,8 @@ public class CaseReceiptReceiverTest {
 
     XMLGregorianCalendar calendar = DateTimeUtil.giveMeCalendarForNow();
     caseReceiptReceiver.process(
-        buildCaseReceipt(LINKED_CASE_ID, LINKED_CASE_REF, InboundChannel.ONLINE, calendar, LINKED_PARTY_ID));
+        buildCaseReceipt(
+            LINKED_CASE_ID, LINKED_CASE_REF, InboundChannel.ONLINE, calendar, LINKED_PARTY_ID));
     Map<String, String> metadata = new HashMap<>();
     metadata.put("partyId", LINKED_PARTY_ID);
     verify(caseService, times(1))
@@ -89,7 +90,8 @@ public class CaseReceiptReceiverTest {
 
     XMLGregorianCalendar calendar = DateTimeUtil.giveMeCalendarForNow();
     caseReceiptReceiver.process(
-            buildCaseReceipt(LINKED_CASE_ID, LINKED_CASE_REF, InboundChannel.PAPER, calendar, LINKED_PARTY_ID));
+        buildCaseReceipt(
+            LINKED_CASE_ID, LINKED_CASE_REF, InboundChannel.PAPER, calendar, LINKED_PARTY_ID));
     Map<String, String> metadata = new HashMap<>();
     metadata.put("partyId", LINKED_PARTY_ID);
 
@@ -139,7 +141,8 @@ public class CaseReceiptReceiverTest {
 
     XMLGregorianCalendar calendar = DateTimeUtil.giveMeCalendarForNow();
     CaseReceipt caseReceipt =
-        buildCaseReceipt(UNLINKED_CASE_ID, UNLINKED_CASE_REF, InboundChannel.ONLINE, calendar, LINKED_PARTY_ID);
+        buildCaseReceipt(
+            UNLINKED_CASE_ID, UNLINKED_CASE_REF, InboundChannel.ONLINE, calendar, LINKED_PARTY_ID);
 
     caseReceiptReceiver.process(caseReceipt);
 
@@ -159,7 +162,8 @@ public class CaseReceiptReceiverTest {
 
     XMLGregorianCalendar calendar = DateTimeUtil.giveMeCalendarForNow();
     CaseReceipt caseReceipt =
-        buildCaseReceipt(UNLINKED_CASE_ID, UNLINKED_CASE_REF, InboundChannel.PAPER, calendar, LINKED_PARTY_ID);
+        buildCaseReceipt(
+            UNLINKED_CASE_ID, UNLINKED_CASE_REF, InboundChannel.PAPER, calendar, LINKED_PARTY_ID);
 
     caseReceiptReceiver.process(caseReceipt);
 
@@ -217,7 +221,8 @@ public class CaseReceiptReceiverTest {
    * @param categoryName the name of the category
    * @return the CaseEvent
    */
-  private CaseEvent buildCaseEvent(int casePK, CategoryDTO.CategoryName categoryName, Map<String,String> metadata) {
+  private CaseEvent buildCaseEvent(
+      int casePK, CategoryDTO.CategoryName categoryName, Map<String, String> metadata) {
     CaseEvent caseEvent = new CaseEvent();
     caseEvent.setCaseFK(casePK);
     caseEvent.setCategory(categoryName);
