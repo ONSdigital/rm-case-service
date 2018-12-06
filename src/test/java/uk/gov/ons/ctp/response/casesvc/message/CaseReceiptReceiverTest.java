@@ -11,6 +11,8 @@ import static uk.gov.ons.ctp.response.casesvc.utility.Constants.QUESTIONNAIRE_RE
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -38,6 +40,7 @@ public class CaseReceiptReceiverTest {
   private static final Integer LINKED_CASE_PK = 1;
   private static final String LINKED_CASE_REF = "123";
   private static final String UNLINKED_CASE_REF = "456";
+  private static final String LINKED_PARTY_ID = "fa622b71-f158-4d51-82dd-c3417e31e32e";
 
   @InjectMocks private CaseReceiptReceiver caseReceiptReceiver;
 
@@ -54,16 +57,19 @@ public class CaseReceiptReceiverTest {
       throws CTPException, DatatypeConfigurationException {
     Case existingCase = new Case();
     existingCase.setCasePK(LINKED_CASE_PK);
+    existingCase.setPartyId(UUID.fromString(LINKED_PARTY_ID));
     Mockito.when(caseService.findCaseById(UUID.fromString(LINKED_CASE_ID)))
         .thenReturn(existingCase);
 
     XMLGregorianCalendar calendar = DateTimeUtil.giveMeCalendarForNow();
     caseReceiptReceiver.process(
-        buildCaseReceipt(LINKED_CASE_ID, LINKED_CASE_REF, InboundChannel.ONLINE, calendar));
-
+        buildCaseReceipt(
+            LINKED_CASE_ID, LINKED_CASE_REF, InboundChannel.ONLINE, calendar, LINKED_PARTY_ID));
+    Map<String, String> metadata = new HashMap<>();
+    metadata.put("partyId", LINKED_PARTY_ID);
     verify(caseService, times(1))
         .createCaseEvent(
-            eq(buildCaseEvent(LINKED_CASE_PK, ONLINE_QUESTIONNAIRE_RESPONSE)),
+            eq(buildCaseEvent(LINKED_CASE_PK, ONLINE_QUESTIONNAIRE_RESPONSE, metadata)),
             eq(new Timestamp(calendar.toGregorianCalendar().getTimeInMillis())));
   }
 
@@ -78,16 +84,20 @@ public class CaseReceiptReceiverTest {
       throws CTPException, DatatypeConfigurationException {
     Case existingCase = new Case();
     existingCase.setCasePK(LINKED_CASE_PK);
+    existingCase.setPartyId(UUID.fromString(LINKED_PARTY_ID));
     Mockito.when(caseService.findCaseById(UUID.fromString(LINKED_CASE_ID)))
         .thenReturn(existingCase);
 
     XMLGregorianCalendar calendar = DateTimeUtil.giveMeCalendarForNow();
     caseReceiptReceiver.process(
-        buildCaseReceipt(LINKED_CASE_ID, LINKED_CASE_REF, InboundChannel.PAPER, calendar));
+        buildCaseReceipt(
+            LINKED_CASE_ID, LINKED_CASE_REF, InboundChannel.PAPER, calendar, LINKED_PARTY_ID));
+    Map<String, String> metadata = new HashMap<>();
+    metadata.put("partyId", LINKED_PARTY_ID);
 
     verify(caseService, times(1))
         .createCaseEvent(
-            eq(buildCaseEvent(LINKED_CASE_PK, PAPER_QUESTIONNAIRE_RESPONSE)),
+            eq(buildCaseEvent(LINKED_CASE_PK, PAPER_QUESTIONNAIRE_RESPONSE, metadata)),
             eq(new Timestamp(calendar.toGregorianCalendar().getTimeInMillis())));
   }
 
@@ -102,16 +112,19 @@ public class CaseReceiptReceiverTest {
       throws CTPException, DatatypeConfigurationException {
     Case existingCase = new Case();
     existingCase.setCasePK(LINKED_CASE_PK);
+    existingCase.setPartyId(UUID.fromString(LINKED_PARTY_ID));
     Mockito.when(caseService.findCaseById(UUID.fromString(LINKED_CASE_ID)))
         .thenReturn(existingCase);
 
     XMLGregorianCalendar calendar = DateTimeUtil.giveMeCalendarForNow();
     caseReceiptReceiver.process(
-        buildCaseReceipt(LINKED_CASE_ID, null, InboundChannel.OFFLINE, calendar));
+        buildCaseReceipt(LINKED_CASE_ID, null, InboundChannel.OFFLINE, calendar, LINKED_PARTY_ID));
 
+    Map<String, String> metadata = new HashMap<>();
+    metadata.put("partyId", LINKED_PARTY_ID);
     verify(caseService, times(1))
         .createCaseEvent(
-            eq(buildCaseEvent(LINKED_CASE_PK, OFFLINE_RESPONSE_PROCESSED)),
+            eq(buildCaseEvent(LINKED_CASE_PK, OFFLINE_RESPONSE_PROCESSED, metadata)),
             eq(new Timestamp(calendar.toGregorianCalendar().getTimeInMillis())));
   }
 
@@ -128,7 +141,8 @@ public class CaseReceiptReceiverTest {
 
     XMLGregorianCalendar calendar = DateTimeUtil.giveMeCalendarForNow();
     CaseReceipt caseReceipt =
-        buildCaseReceipt(UNLINKED_CASE_ID, UNLINKED_CASE_REF, InboundChannel.ONLINE, calendar);
+        buildCaseReceipt(
+            UNLINKED_CASE_ID, UNLINKED_CASE_REF, InboundChannel.ONLINE, calendar, LINKED_PARTY_ID);
 
     caseReceiptReceiver.process(caseReceipt);
 
@@ -148,7 +162,8 @@ public class CaseReceiptReceiverTest {
 
     XMLGregorianCalendar calendar = DateTimeUtil.giveMeCalendarForNow();
     CaseReceipt caseReceipt =
-        buildCaseReceipt(UNLINKED_CASE_ID, UNLINKED_CASE_REF, InboundChannel.PAPER, calendar);
+        buildCaseReceipt(
+            UNLINKED_CASE_ID, UNLINKED_CASE_REF, InboundChannel.PAPER, calendar, LINKED_PARTY_ID);
 
     caseReceiptReceiver.process(caseReceipt);
 
@@ -168,7 +183,7 @@ public class CaseReceiptReceiverTest {
 
     XMLGregorianCalendar calendar = DateTimeUtil.giveMeCalendarForNow();
     CaseReceipt caseReceipt =
-        buildCaseReceipt(UNLINKED_CASE_ID, null, InboundChannel.PAPER, calendar);
+        buildCaseReceipt(UNLINKED_CASE_ID, null, InboundChannel.PAPER, calendar, LINKED_PARTY_ID);
 
     caseReceiptReceiver.process(caseReceipt);
 
@@ -187,13 +202,15 @@ public class CaseReceiptReceiverTest {
       String caseId,
       String caseRef,
       InboundChannel inboundChannel,
-      XMLGregorianCalendar xmlGregorianCalendar)
+      XMLGregorianCalendar xmlGregorianCalendar,
+      String partyId)
       throws DatatypeConfigurationException {
     CaseReceipt caseReceipt = new CaseReceipt();
     caseReceipt.setCaseId(caseId);
     caseReceipt.setCaseRef(caseRef);
     caseReceipt.setInboundChannel(inboundChannel);
     caseReceipt.setResponseDateTime(xmlGregorianCalendar);
+    caseReceipt.setPartyId(partyId);
     return caseReceipt;
   }
 
@@ -204,12 +221,14 @@ public class CaseReceiptReceiverTest {
    * @param categoryName the name of the category
    * @return the CaseEvent
    */
-  private CaseEvent buildCaseEvent(int casePK, CategoryDTO.CategoryName categoryName) {
+  private CaseEvent buildCaseEvent(
+      int casePK, CategoryDTO.CategoryName categoryName, Map<String, String> metadata) {
     CaseEvent caseEvent = new CaseEvent();
     caseEvent.setCaseFK(casePK);
     caseEvent.setCategory(categoryName);
     caseEvent.setCreatedBy(SYSTEM);
     caseEvent.setDescription(QUESTIONNAIRE_RESPONSE);
+    caseEvent.setMetadata(metadata);
     return caseEvent;
   }
 }

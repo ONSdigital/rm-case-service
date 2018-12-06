@@ -9,6 +9,7 @@ import static org.hamcrest.core.Is.isA;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -22,7 +23,9 @@ import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import ma.glasnost.orika.MapperFacade;
 import org.junit.Before;
@@ -34,10 +37,13 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.springframework.data.domain.Example;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import uk.gov.ons.ctp.common.FixtureHelper;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.common.error.InvalidRequestException;
@@ -73,6 +79,7 @@ public final class CaseEndpointUnitTest {
       UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3999");
   private static final UUID EXISTING_SURVEY_ID =
       UUID.fromString("cb8accda-6118-4d3b-85a3-149e28960c54");
+  private static final String CASE_EVENT_PARTY_UUID = "3b136c4b-7a14-4904-9e01-13364dd7b972";
   private static final UUID CASE1_ID = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd1");
   private static final UUID CASE2_ID = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd2");
   private static final UUID CASE3_ID = UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3fd3");
@@ -144,7 +151,8 @@ public final class CaseEndpointUnitTest {
   private static final String CASEEVENT_INVALIDJSON =
       "{\"description\":\"a\",\"category\":\"BAD_CAT\",\"createdBy\":\"u\"}";
   private static final String CASEEVENT_VALIDJSON =
-      "{\"description\":\"sometest\",\"category\":\"RESPONDENT_ENROLED\",\"createdBy\":\"unittest\"}";
+      "{\"description\":\"sometest\",\"category\":\"RESPONDENT_ENROLED\",\"createdBy\":\"unittest\", "
+          + "\"metadata\":{\"partyId\":\"3b136c4b-7a14-4904-9e01-13364dd7b972\"}}";
   private static final String CASEEVENT_VALIDJSON_NO_NEW_CASE =
       "{\"description\":\"sometest\",\"category\":\"GENERAL_ENQUIRY\",\"createdBy\":\"unittest\"}";
 
@@ -649,7 +657,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCaseEventsByCaseId"));
     actions.andExpect(jsonPath("$", hasSize(4)));
-    actions.andExpect(jsonPath("$[0].*", hasSize(5)));
+    actions.andExpect(jsonPath("$[0].*", hasSize(6)));
     actions.andExpect(
         jsonPath(
             "$[*].description",
@@ -676,6 +684,8 @@ public final class CaseEndpointUnitTest {
                 new DateMatcher(CASE_DATE_VALUE_2),
                 new DateMatcher(CASE_DATE_VALUE_3),
                 new DateMatcher(CASE_DATE_VALUE_1))));
+    actions.andExpect(jsonPath("$[0].metadata", isA(HashMap.class)));
+    actions.andExpect(jsonPath("$[0].metadata.partyId").value(CASE_EVENT_PARTY_UUID));
   }
 
   @Test
@@ -709,7 +719,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCaseEventsByCaseId"));
     actions.andExpect(jsonPath("$", hasSize(4)));
-    actions.andExpect(jsonPath("$[0].*", hasSize(5)));
+    actions.andExpect(jsonPath("$[0].*", hasSize(6)));
     actions.andExpect(
         jsonPath(
             "$[*].description",
@@ -736,6 +746,8 @@ public final class CaseEndpointUnitTest {
                 new DateMatcher(CASE_DATE_VALUE_2),
                 new DateMatcher(CASE_DATE_VALUE_3),
                 new DateMatcher(CASE_DATE_VALUE_1))));
+    actions.andExpect(jsonPath("$[0].metadata", isA(HashMap.class)));
+    actions.andExpect(jsonPath("$[0].metadata.partyId").value(CASE_EVENT_PARTY_UUID));
   }
 
   /**
@@ -748,7 +760,6 @@ public final class CaseEndpointUnitTest {
     ResultActions actions =
         mockMvc.perform(
             postJson(String.format("/cases/%s/events", CASE9_ID), CASEEVENT_INVALIDJSON));
-
     actions.andExpect(status().isBadRequest());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("createCaseEvent"));
@@ -795,13 +806,45 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(status().isCreated());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("createCaseEvent"));
-    actions.andExpect(jsonPath("$.*", hasSize(7)));
+    actions.andExpect(jsonPath("$.*", hasSize(8)));
     actions.andExpect(jsonPath("$.caseId", is(CASE9_ID.toString())));
     actions.andExpect(jsonPath("$.description", is(CASE9_DESCRIPTION)));
     actions.andExpect(jsonPath("$.createdBy", is(CASE9_CREATEDBY)));
     actions.andExpect(jsonPath("$.createdDateTime", is(new DateMatcher(CASE_DATE_VALUE_1))));
     actions.andExpect(jsonPath("$.category", is(CASE9_CATEGORY)));
     actions.andExpect(jsonPath("$.subCategory").doesNotExist());
+  }
+
+  /**
+   * Checks case event and checks that it's created with metadata and partyId
+   *
+   * @throws Exception exception thrown
+   */
+  @Test
+  public void createCaseEventWithMetadata() throws Exception {
+    // Given
+    when(categoryService.findCategory(CategoryName.RESPONDENT_ENROLED))
+        .thenReturn(categoryResults.get(3));
+    when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class)))
+        .thenReturn(caseEventsResults.get(3));
+    when(caseService.findCaseById(CASE9_ID)).thenReturn(caseResults.get(8));
+    MockHttpServletRequest request = new MockHttpServletRequest();
+    RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
+    // When
+    BindingResult bindingResult = mock(BindingResult.class);
+    CaseEventCreationRequestDTO caseEventDTO = new CaseEventCreationRequestDTO();
+    Map<String, String> metadata = new HashMap<>();
+    metadata.put("partyId", CASE_EVENT_PARTY_UUID);
+    caseEventDTO.setMetadata(metadata);
+    caseEventDTO.setCreatedBy("Test");
+    caseEndpoint.createCaseEvent(CASE9_ID, caseEventDTO, bindingResult);
+
+    // Then
+    ArgumentCaptor<CaseEvent> caseEventArgumentCaptor = ArgumentCaptor.forClass(CaseEvent.class);
+    verify(caseService).createCaseEvent(caseEventArgumentCaptor.capture(), any(Case.class));
+    assertEquals(
+        CASE_EVENT_PARTY_UUID, caseEventArgumentCaptor.getValue().getMetadata().get("partyId"));
   }
 
   /**
@@ -824,7 +867,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(status().isCreated());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("createCaseEvent"));
-    actions.andExpect(jsonPath("$.*", hasSize(7)));
+    actions.andExpect(jsonPath("$.*", hasSize(8)));
     actions.andExpect(jsonPath("$.caseId", is(CASE9_ID.toString())));
     actions.andExpect(jsonPath("$.description", is(CASE9_DESCRIPTION)));
     actions.andExpect(jsonPath("$.createdBy", is(CASE9_CREATEDBY)));
