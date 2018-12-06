@@ -92,12 +92,7 @@ public class CaseReceiptReceiverIT {
     startCase(caseNotif.getCaseId());
     XMLGregorianCalendarImpl now = new XMLGregorianCalendarImpl(new GregorianCalendar());
     CaseReceipt caseReceipt =
-        new CaseReceipt(
-            "caseRef",
-            caseNotif.getCaseId(),
-            InboundChannel.OFFLINE,
-            now,
-            UUID.randomUUID().toString());
+        new CaseReceipt("caseRef", caseNotif.getCaseId(), InboundChannel.OFFLINE, now, "partyId");
     Message<CaseReceipt> message = new GenericMessage<>(caseReceipt);
     iacServiceStub.disableIACStub();
 
