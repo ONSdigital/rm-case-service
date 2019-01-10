@@ -71,10 +71,10 @@ public class CaseReceiptReceiver {
       log.with("case_id", caseId).error(EXISTING_CASE_NOT_FOUND);
     } else {
       CaseEvent caseEvent = new CaseEvent();
-      UUID partyId = existingCase.getPartyId();
+      String partyId = caseReceipt.getPartyId();
       if (partyId != null) {
         Map<String, String> metadata = new HashMap<>();
-        metadata.put("partyId", partyId.toString());
+        metadata.put("partyId", partyId);
         caseEvent.setMetadata(metadata);
       }
       caseEvent.setCaseFK(existingCase.getCasePK());
