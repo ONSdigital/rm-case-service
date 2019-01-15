@@ -72,7 +72,7 @@ public class CaseReceiptReceiver {
     } else {
       CaseEvent caseEvent = new CaseEvent();
       String partyId = caseReceipt.getPartyId();
-      if (partyId != null) {
+      if (partyId != null && !partyId.isEmpty()) {
         Map<String, String> metadata = new HashMap<>();
         metadata.put("partyId", partyId);
         caseEvent.setMetadata(metadata);
