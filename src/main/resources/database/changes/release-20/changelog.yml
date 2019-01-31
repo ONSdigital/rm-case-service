@@ -1,11 +1,11 @@
 databaseChangeLog:
 
 - changeSet:
-    id: 19-1
-    author: Ryan Grundy
+    id: 20-1
+    author: Nick Grant
     changes:
     - sqlFile:
-        comment: Adding metadata to case events table
+        comment: Add index on partyid in case table
         path: add-index-to-partyid-on-case.sql
         relativeToChangelogFile: true
         splitStatements: false
