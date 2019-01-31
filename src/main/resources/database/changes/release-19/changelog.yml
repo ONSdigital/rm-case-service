@@ -6,6 +6,6 @@ databaseChangeLog:
     changes:
     - sqlFile:
         comment: Adding metadata to case events table
-        path: add-index-to-partyid-on-case.sql
+        path:  add-metadata-to-caseevents.sql
         relativeToChangelogFile: true
         splitStatements: false
