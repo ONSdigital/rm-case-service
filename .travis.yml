@@ -9,8 +9,6 @@ jdk: openjdk8
 before_install:
 - echo $TRAVIS_BRANCH;
 - echo $TRAVIS_PULL_REQUEST;
-- cp .maven.settings.xml $HOME/.m2/settings.xml
-- mvn fmt:check
 - if ([ "$TRAVIS_BRANCH" == "rm-census" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]) || ([ "$TRAVIS_BRANCH" == "automate-census-docker-build" ]); then
   echo "RUNNING IN HERE";
   docker login -u "${DOCKER_GCP_USERNAME}" -p "anything" "${DOCKER_GCP_REGISTRY}";
