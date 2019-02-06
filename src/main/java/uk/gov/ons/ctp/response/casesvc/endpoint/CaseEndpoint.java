@@ -139,7 +139,7 @@ public final class CaseEndpoint implements CTPEndpoint {
   public ResponseEntity<List<CaseDetailsDTO>> findCasesByPartyId(
       @PathVariable("partyId") final UUID partyId,
       @RequestParam(value = "caseevents", required = false) final boolean caseevents,
-      @RequestParam(value = "iac", required = false, defaultValue = "true") final boolean iac) {
+      @RequestParam(value = "iac", required = false) final boolean iac) {
     log.with("party_id", partyId).debug("Retrieving cases by party");
     List<Case> casesList = caseService.findCasesByPartyId(partyId, iac);
 

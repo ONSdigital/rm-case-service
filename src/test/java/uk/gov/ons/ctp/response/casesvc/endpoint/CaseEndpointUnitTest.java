@@ -360,7 +360,7 @@ public final class CaseEndpointUnitTest {
 
   @Test
   public void findCasesByPartyIdFoundWithoutCaseEventsAndIac() throws Exception {
-    when(caseService.findCasesByPartyId(EXISTING_PARTY_UUID, true)).thenReturn(caseResults);
+    when(caseService.findCasesByPartyId(EXISTING_PARTY_UUID, false)).thenReturn(caseResults);
     when(caseGroupService.findCaseGroupByCaseGroupPK(any(Integer.class)))
         .thenReturn(caseGroupResults.get(0));
     when(caseService.findCaseEventsByCaseFK(any(Integer.class))).thenReturn(caseEventsResults);
