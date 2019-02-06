@@ -13,7 +13,7 @@ before_install:
 script: travis_wait mvn verify cobertura:cobertura-integration-test
 
 after_success:
-- if ([ "$TRAVIS_BRANCH" == "rm-census" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]) || ([ "$TRAVIS_BRANCH" == "automate-census-docker-build" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]); then
+- if ([ "$TRAVIS_BRANCH" == "rm-census" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]) || ([ "$TRAVIS_BRANCH" == "automate-census-docker-build" ]); then
   docker login -u "${DOCKER_GCP_USERNAME}" -p "${DOCKER_GCP_PASSWORD}" "${DOCKER_GCP_REGISTRY}";
   docker tag casesvc "${DOCKER_GCP_LOCATION}"/casesvc;
   docker push "${DOCKER_GCP_LOCATION}"/casesvc;
