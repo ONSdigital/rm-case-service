@@ -156,10 +156,13 @@ public class CaseService {
    * @param partyId the partyId
    * @return the cases for the partyId
    */
-  public List<Case> findCasesByPartyId(final UUID partyId) {
+  public List<Case> findCasesByPartyId(final UUID partyId, boolean iac) {
     log.debug("Entering findCasesByPartyId");
     List<Case> cazes = caseRepo.findByPartyId(partyId);
-    cazes.stream().forEach(c -> c.setIac(caseIacAuditService.findCaseIacByCasePK(c.getCasePK())));
+
+    if (iac) {
+      cazes.stream().forEach(c -> c.setIac(caseIacAuditService.findCaseIacByCasePK(c.getCasePK())));
+    }
 
     return cazes;
   }

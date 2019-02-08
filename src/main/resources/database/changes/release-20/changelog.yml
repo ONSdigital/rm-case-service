@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+- changeSet:
+    id: 20-1
+    author: Nick Grant
+    changes:
+    - sqlFile:
+        comment: Add index on partyid in case table
+        path: add-index-to-partyid-on-case.sql
+        relativeToChangelogFile: true
+        splitStatements: false
