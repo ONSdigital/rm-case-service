@@ -8,6 +8,7 @@ import java.util.UUID;
 import net.sourceforge.cobertura.CoverageIgnore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -44,11 +45,13 @@ public class CollectionExerciseSvcClient {
    * @param collectionExerciseId the UUID to search by
    * @return the asscoaited CollectionExercise
    */
+  @Cacheable("collectionexercises")
   @Retryable(
       value = {RestClientException.class},
       maxAttemptsExpression = "#{${retries.maxAttempts}}",
       backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
   public CollectionExerciseDTO getCollectionExercise(final UUID collectionExerciseId) {
+    log.warn("Method Executed");
     UriComponents uriComponents =
         restUtility.createUriComponents(
             appConfig.getCollectionExerciseSvc().getCollectionExercisePath(),
