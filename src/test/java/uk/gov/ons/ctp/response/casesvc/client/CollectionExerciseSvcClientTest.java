@@ -56,45 +56,6 @@ public class CollectionExerciseSvcClientTest {
 
     MockitoAnnotations.initMocks(this);
   }
-
-  @Test
-  public void testGetCollectionExerciseCaching() {
-    CollectionExerciseSvc collectionExerciseSvcConfig = new CollectionExerciseSvc();
-    collectionExerciseSvcConfig.setCollectionExercisePath("test:path");
-    when(appConfig.getCollectionExerciseSvc()).thenReturn(collectionExerciseSvcConfig);
-
-    UriComponents uriComponents =
-        UriComponentsBuilder.newInstance()
-            .path(
-                collectionExerciseSvcConfig.getCollectionExercisePath()
-                    + "/"
-                    + collectionExercise.getId())
-            .queryParams(null)
-            .build();
-    when(restUtility.createUriComponents(
-            appConfig.getCollectionExerciseSvc().getCollectionExercisePath(),
-            null,
-            collectionExercise.getId()))
-        .thenReturn(uriComponents);
-    HttpEntity httpEntity = new HttpEntity(null, null);
-    when(restUtility.createHttpEntity(null)).thenReturn(httpEntity);
-    ResponseEntity<CollectionExerciseDTO> responseEntity =
-        new ResponseEntity(collectionExercise, HttpStatus.OK);
-    when(restTemplate.exchange(
-            any(URI.class), eq(HttpMethod.GET), eq(httpEntity), eq(CollectionExerciseDTO.class)))
-        .thenReturn(responseEntity);
-
-    CollectionExerciseDTO collex =
-        collectionExerciseSvcClient.getCollectionExercise(collectionExercise.getId());
-    System.out.println(collex);
-    CollectionExerciseDTO collex2 =
-        collectionExerciseSvcClient.getCollectionExercise(collectionExercise.getId());
-    System.out.println(collex2);
-    CollectionExerciseDTO collex3 =
-        collectionExerciseSvcClient.getCollectionExercise(collectionExercise.getId());
-    System.out.println(collex3);
-  }
-
   @Test
   public void testGetCollectionExercise() {
     // Given

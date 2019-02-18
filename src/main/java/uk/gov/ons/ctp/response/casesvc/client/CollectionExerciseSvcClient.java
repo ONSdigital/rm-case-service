@@ -51,7 +51,6 @@ public class CollectionExerciseSvcClient {
       maxAttemptsExpression = "#{${retries.maxAttempts}}",
       backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
   public CollectionExerciseDTO getCollectionExercise(final UUID collectionExerciseId) {
-    log.warn("Method Executed");
     UriComponents uriComponents =
         restUtility.createUriComponents(
             appConfig.getCollectionExerciseSvc().getCollectionExercisePath(),
