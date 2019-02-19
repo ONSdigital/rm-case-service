@@ -56,6 +56,7 @@ public class CollectionExerciseSvcClientTest {
 
     MockitoAnnotations.initMocks(this);
   }
+
   @Test
   public void testGetCollectionExercise() {
     // Given
