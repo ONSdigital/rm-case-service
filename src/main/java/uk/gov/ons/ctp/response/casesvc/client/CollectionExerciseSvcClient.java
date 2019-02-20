@@ -20,6 +20,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import uk.gov.ons.ctp.common.rest.RestUtility;
+import uk.gov.ons.ctp.response.casesvc.CaseSvcApplication;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
 
@@ -45,7 +46,7 @@ public class CollectionExerciseSvcClient {
    * @param collectionExerciseId the UUID to search by
    * @return the asscoaited CollectionExercise
    */
-  @Cacheable("collectionexercises")
+  @Cacheable(CaseSvcApplication.COLLEX_CACHE_NAME)
   @Retryable(
       value = {RestClientException.class},
       maxAttemptsExpression = "#{${retries.maxAttempts}}",

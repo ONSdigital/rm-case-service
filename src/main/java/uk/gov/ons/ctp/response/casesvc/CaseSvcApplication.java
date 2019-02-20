@@ -256,7 +256,7 @@ public class CaseSvcApplication {
     return Clock.systemDefaultZone();
   }
 
-  private static final String COLLEX_CACHE_NAME = "collectionexercises";
+  public static final String COLLEX_CACHE_NAME = "collectionexercises";
 
   @Bean
   public CacheManager cacheManager() {
@@ -267,5 +267,9 @@ public class CaseSvcApplication {
       allEntries = true,
       cacheNames = {COLLEX_CACHE_NAME})
   @Scheduled(fixedDelay = 60000)
-  public void cacheEvict() {}
+  public void cacheEvict() {
+    /* This is getting rid of the cached entries in case anything's been changed. We imagine that
+     * the maximum of 1 minute delay to seeing changes reflected in the case service will not
+     * cause any issues*/
+  }
 }
