@@ -6,7 +6,7 @@ RUN apt-get update
 RUN apt-get -yq clean
 
 RUN groupadd --gid 999 casesvc && \
-    useradd --system --uid 999 --gid casesvc casesvc
+    useradd --create-home --system --uid 999 --gid casesvc casesvc
 USER casesvc
 
 COPY target/$JAR_FILE /opt/casesvc.jar
