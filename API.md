@@ -92,32 +92,34 @@ An `HTTP 204 No Content` status code is returned if there are no case groups fou
 ```json
 [
    {
-        {"COLLECTION_INSTRUMENT_DOWNLOADED":"INPROGRESS",
-        "EQ_LAUNCH":"INPROGRESS",
-        "SUCCESSFUL_RESPONSE_UPLOAD":"COMPLETE",
-        "COMPLETED_BY_PHONE":"COMPLETEDBYPHONE",
-        "NO_LONGER_REQUIRED":"NOLONGERREQUIRED",
-        "PRIVACY_DATA_CONFIDENTIALITY_CONCERNS":"REFUSAL",
-        "LEGITIMACY_CONCERNS":"REFUSAL",
-        "OTHER_OUTRIGHT_REFUSAL":"REFUSAL",
-        "ILL_AT_HOME":"OTHERNONRESPONSE",
-        "IN_HOSPITAL":"OTHERNONRESPONSE",
-        "PHYSICALLY_OR_MENTALLY_UNABLE":"OTHERNONRESPONSE",
-        "LANGUAGE_DIFFICULTIES":"OTHERNONRESPONSE",
-        "LACK_OF_COMPUTER_INTERNET_ACCESS":"OTHERNONRESPONSE",
-        "TOO_BUSY":"OTHERNONRESPONSE",
-        "OTHER_CIRCUMSTANTIAL_REFUSAL":"OTHERNONRESPONSE",
-        "COMPLY_IN_DIFFERENT_COLLECTION_MODE":"OTHERNONRESPONSE",
-        "REQUEST_TO_COMPLETE_IN_ALTERNATIVE_FORMAT":"OTHERNONRESPONSE",
-        "NO_TRACE_OF_ADDRESS":"UNKNOWNELIGIBILITY",
-        "WRONG_ADDRESS":"UNKNOWNELIGIBILITY",
-        "VACANT_OR_EMPTY":"NOTELIGIBLE",
-        "NON_RESIDENTIAL_ADDRESS":"NOTELIGIBLE",
-        "ADDRESS_OCCUPIED_NO_RESIDENT":"NOTELIGIBLE",
-        "COMMUNAL_ESTABLISHMENT_INSTITUTION":"NOTELIGIBLE",
-        "DWELLING_OF_FOREIGN_SERVICE_PERSONNEL_DIPLOMATS":"NOTELIGIBLE",
-        "NO_PERSON_IN_ELIGIBLE_AGE_RANGE":"NOTELIGIBLE",
-        "DECEASED":"NOTELIGIBLE"}
+        {
+            "COLLECTION_INSTRUMENT_DOWNLOADED":"INPROGRESS",
+            "EQ_LAUNCH":"INPROGRESS",
+            "SUCCESSFUL_RESPONSE_UPLOAD":"COMPLETE",
+            "COMPLETED_BY_PHONE":"COMPLETEDBYPHONE",
+            "NO_LONGER_REQUIRED":"NOLONGERREQUIRED",
+            "PRIVACY_DATA_CONFIDENTIALITY_CONCERNS":"REFUSAL",
+            "LEGITIMACY_CONCERNS":"REFUSAL",
+            "OTHER_OUTRIGHT_REFUSAL":"REFUSAL",
+            "ILL_AT_HOME":"OTHERNONRESPONSE",
+            "IN_HOSPITAL":"OTHERNONRESPONSE",
+            "PHYSICALLY_OR_MENTALLY_UNABLE":"OTHERNONRESPONSE",
+            "LANGUAGE_DIFFICULTIES":"OTHERNONRESPONSE",
+            "LACK_OF_COMPUTER_INTERNET_ACCESS":"OTHERNONRESPONSE",
+            "TOO_BUSY":"OTHERNONRESPONSE",
+            "OTHER_CIRCUMSTANTIAL_REFUSAL":"OTHERNONRESPONSE",
+            "COMPLY_IN_DIFFERENT_COLLECTION_MODE":"OTHERNONRESPONSE",
+            "REQUEST_TO_COMPLETE_IN_ALTERNATIVE_FORMAT":"OTHERNONRESPONSE",
+            "NO_TRACE_OF_ADDRESS":"UNKNOWNELIGIBILITY",
+            "WRONG_ADDRESS":"UNKNOWNELIGIBILITY",
+            "VACANT_OR_EMPTY":"NOTELIGIBLE",
+            "NON_RESIDENTIAL_ADDRESS":"NOTELIGIBLE",
+            "ADDRESS_OCCUPIED_NO_RESIDENT":"NOTELIGIBLE",
+            "COMMUNAL_ESTABLISHMENT_INSTITUTION":"NOTELIGIBLE",
+            "DWELLING_OF_FOREIGN_SERVICE_PERSONNEL_DIPLOMATS":"NOTELIGIBLE",
+            "NO_PERSON_IN_ELIGIBLE_AGE_RANGE":"NOTELIGIBLE",
+            "DECEASED":"NOTELIGIBLE"
+        }
    }
 ]
 ```
@@ -217,15 +219,16 @@ An `HTTP 404 Not Found` status code is returned if the case with the specified I
     "createdBy":"SYSTEM",
     "sampleUnitType":"B",
     "createdDateTime":"2019-05-23T14:50:49.997Z",
-    "caseGroup":{
-    "collectionExerciseId":"aae2efaa-7070-4a7b-ac3d-3d932669528a",
-    "id":"c9ad1cee-d4ca-4b73-8551-2c5cc10afea5",
-    "partyId":"08b70ee4-2219-48c7-a8e5-efcb02490627",
-    "sampleUnitRef":"49900000001",
-    "sampleUnitType":"B",
-    "caseGroupStatus":"NOTSTARTED",
-    "surveyId":
-    "cb8accda-6118-4d3b-85a3-149e28960c54"
+    "caseGroup":
+    {
+        "collectionExerciseId":"aae2efaa-7070-4a7b-ac3d-3d932669528a",
+        "id":"c9ad1cee-d4ca-4b73-8551-2c5cc10afea5",
+        "partyId":"08b70ee4-2219-48c7-a8e5-efcb02490627",
+        "sampleUnitRef":"49900000001",
+        "sampleUnitType":"B",
+        "caseGroupStatus":"NOTSTARTED",
+        "surveyId":
+        "cb8accda-6118-4d3b-85a3-149e28960c54"
     },
     "responses":[],
     "caseEvents":null
@@ -463,7 +466,9 @@ An `HTTP 404 Not Found` status code is returned if the category with the specifi
 ### Example JSON Response
 ```json
 [
-    {"iac":"wkbgygjrzbvw"}
+    {
+        "iac":"wkbgygjrzbvw"
+    }
 ]
 
 An `HTTP 404 Not Found` status code is returned if the case with the specified ID could not be found.
