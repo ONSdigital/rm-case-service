@@ -209,29 +209,29 @@ An `HTTP 404 Not Found` status code is returned if the case with the specified I
 {
   [
     {
-    "state":"ACTIONABLE",
-    "id":"15654d71-678b-481c-ac4a-8865699315de",
-    "actionPlanId":"ac146769-b1ee-4097-b478-7f2954311517",
-    "collectionInstrumentId":"08a27195-bccf-472c-bf3e-ccd7dc550274",
-    "partyId":"08b70ee4-2219-48c7-a8e5-efcb02490627",
-    "sampleUnitId":"cf8bf16f-6e14-47d2-b3d5-da0cb5466844",
-    "iac":null,"caseRef":"1000000000000001",
-    "createdBy":"SYSTEM",
-    "sampleUnitType":"B",
-    "createdDateTime":"2019-05-23T14:50:49.997Z",
-    "caseGroup":
-    {
-        "collectionExerciseId":"aae2efaa-7070-4a7b-ac3d-3d932669528a",
-        "id":"c9ad1cee-d4ca-4b73-8551-2c5cc10afea5",
+        "state":"ACTIONABLE",
+        "id":"15654d71-678b-481c-ac4a-8865699315de",
+        "actionPlanId":"ac146769-b1ee-4097-b478-7f2954311517",
+        "collectionInstrumentId":"08a27195-bccf-472c-bf3e-ccd7dc550274",
         "partyId":"08b70ee4-2219-48c7-a8e5-efcb02490627",
-        "sampleUnitRef":"49900000001",
+        "sampleUnitId":"cf8bf16f-6e14-47d2-b3d5-da0cb5466844",
+        "iac":null,"caseRef":"1000000000000001",
+        "createdBy":"SYSTEM",
         "sampleUnitType":"B",
-        "caseGroupStatus":"NOTSTARTED",
-        "surveyId":
-        "cb8accda-6118-4d3b-85a3-149e28960c54"
-    },
-    "responses":[],
-    "caseEvents":null
+        "createdDateTime":"2019-05-23T14:50:49.997Z",
+        "caseGroup":
+        {
+            "collectionExerciseId":"aae2efaa-7070-4a7b-ac3d-3d932669528a",
+            "id":"c9ad1cee-d4ca-4b73-8551-2c5cc10afea5",
+            "partyId":"08b70ee4-2219-48c7-a8e5-efcb02490627",
+            "sampleUnitRef":"49900000001",
+            "sampleUnitType":"B",
+            "caseGroupStatus":"NOTSTARTED",
+            "surveyId":
+            "cb8accda-6118-4d3b-85a3-149e28960c54"
+        },
+        "responses":[],
+        "caseEvents":null
     }
   ]
 }
