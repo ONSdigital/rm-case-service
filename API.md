@@ -85,6 +85,45 @@ An `HTTP 404 Not Found` status code is returned if the case group with the speci
 
 An `HTTP 204 No Content` status code is returned if there are no case groups found with the specified party ID.
 
+## Find Case Group Transition by Collection Exercise and Sample Unit Reference
+* `GET /casegroups/transitions/{collectionExerciseId}/{ruRef}` will return a list of case group transitions with the given collection exercise ID and sample unit reference.
+
+### Example JSON Response
+```json
+[
+   {
+        {
+            "COLLECTION_INSTRUMENT_DOWNLOADED":"INPROGRESS",
+            "EQ_LAUNCH":"INPROGRESS",
+            "SUCCESSFUL_RESPONSE_UPLOAD":"COMPLETE",
+            "COMPLETED_BY_PHONE":"COMPLETEDBYPHONE",
+            "NO_LONGER_REQUIRED":"NOLONGERREQUIRED",
+            "PRIVACY_DATA_CONFIDENTIALITY_CONCERNS":"REFUSAL",
+            "LEGITIMACY_CONCERNS":"REFUSAL",
+            "OTHER_OUTRIGHT_REFUSAL":"REFUSAL",
+            "ILL_AT_HOME":"OTHERNONRESPONSE",
+            "IN_HOSPITAL":"OTHERNONRESPONSE",
+            "PHYSICALLY_OR_MENTALLY_UNABLE":"OTHERNONRESPONSE",
+            "LANGUAGE_DIFFICULTIES":"OTHERNONRESPONSE",
+            "LACK_OF_COMPUTER_INTERNET_ACCESS":"OTHERNONRESPONSE",
+            "TOO_BUSY":"OTHERNONRESPONSE",
+            "OTHER_CIRCUMSTANTIAL_REFUSAL":"OTHERNONRESPONSE",
+            "COMPLY_IN_DIFFERENT_COLLECTION_MODE":"OTHERNONRESPONSE",
+            "REQUEST_TO_COMPLETE_IN_ALTERNATIVE_FORMAT":"OTHERNONRESPONSE",
+            "NO_TRACE_OF_ADDRESS":"UNKNOWNELIGIBILITY",
+            "WRONG_ADDRESS":"UNKNOWNELIGIBILITY",
+            "VACANT_OR_EMPTY":"NOTELIGIBLE",
+            "NON_RESIDENTIAL_ADDRESS":"NOTELIGIBLE",
+            "ADDRESS_OCCUPIED_NO_RESIDENT":"NOTELIGIBLE",
+            "COMMUNAL_ESTABLISHMENT_INSTITUTION":"NOTELIGIBLE",
+            "DWELLING_OF_FOREIGN_SERVICE_PERSONNEL_DIPLOMATS":"NOTELIGIBLE",
+            "NO_PERSON_IN_ELIGIBLE_AGE_RANGE":"NOTELIGIBLE",
+            "DECEASED":"NOTELIGIBLE"
+        }
+   }
+]
+```
+
 ## List Cases for Case Group
 * `GET /cases/casegroupid/{casegroupId}` will return a list of cases for the case group with the given case group ID.
 
@@ -162,6 +201,44 @@ An `HTTP 404 Not Found` status code is returned if the case group with the speci
 
 An `HTTP 404 Not Found` status code is returned if the case with the specified ID could not be found.
 
+## Find Cases by Sample Unit Id
+* `GET /cases/sampleunitids` will return the details of the case with the given sample unit ID.
+
+### Example JSON Response
+```json
+{
+  [
+    {
+        "state":"ACTIONABLE",
+        "id":"15654d71-678b-481c-ac4a-8865699315de",
+        "actionPlanId":"ac146769-b1ee-4097-b478-7f2954311517",
+        "collectionInstrumentId":"08a27195-bccf-472c-bf3e-ccd7dc550274",
+        "partyId":"08b70ee4-2219-48c7-a8e5-efcb02490627",
+        "sampleUnitId":"cf8bf16f-6e14-47d2-b3d5-da0cb5466844",
+        "iac":null,"caseRef":"1000000000000001",
+        "createdBy":"SYSTEM",
+        "sampleUnitType":"B",
+        "createdDateTime":"2019-05-23T14:50:49.997Z",
+        "caseGroup":
+        {
+            "collectionExerciseId":"aae2efaa-7070-4a7b-ac3d-3d932669528a",
+            "id":"c9ad1cee-d4ca-4b73-8551-2c5cc10afea5",
+            "partyId":"08b70ee4-2219-48c7-a8e5-efcb02490627",
+            "sampleUnitRef":"49900000001",
+            "sampleUnitType":"B",
+            "caseGroupStatus":"NOTSTARTED",
+            "surveyId":
+            "cb8accda-6118-4d3b-85a3-149e28960c54"
+        },
+        "responses":[],
+        "caseEvents":null
+    }
+  ]
+}
+```
+
+An `HTTP 404 Not Found` status code is returned if the sample unit with the specified ID could not be found.
+
 ## List Cases for Party
 * `GET /cases/partyid/{partyId}` will return a list of cases with the given party ID.
 
@@ -214,6 +291,17 @@ An `HTTP 404 Not Found` status code is returned if the case with the specified I
 ```
 
 An `HTTP 204 No Content` status code is returned if there are no cases found with the specified party ID.
+
+## Find Cases by Survey ID
+* `GET /cases/surveyid/{surveyId}` will return a list of cases with the given survey ID.
+
+### Example JSON Response
+```json
+[
+]
+```
+
+NOTE: For some reason, even when a valid survey ID is entered, the endpoint just returns a blank json message. Since no error message is generated, it can be assumed that the endpoint works, but is most likely redundant.
 
 ## Get Case by Unique Access Code
 * `GET /cases/iac/{iac}` will return the details of the case with the unique access code provided.
@@ -371,3 +459,16 @@ An `HTTP 204 No Content` status code is returned if there are no available categ
 ```
 
 An `HTTP 404 Not Found` status code is returned if the category with the specified name could not be found.
+
+## Get IAC by Case ID
+* `GET /cases/{caseId}/iac` will return the IAC corresponding to the specified case ID.
+
+### Example JSON Response
+```json
+[
+    {
+        "iac":"wkbgygjrzbvw"
+    }
+]
+
+An `HTTP 404 Not Found` status code is returned if the case with the specified ID could not be found.
