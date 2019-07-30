@@ -425,7 +425,7 @@ public class CaseService {
   /**
    * Upfront fail fast validation - if this event is going to require a new case to be created,
    * let's check the request is valid before we do something we cannot rollback ie IAC disable, or
-   * Action creation. This logs the error for info purposes and intentionally doesn't throw an 
+   * Action creation. This logs the error for info purposes and intentionally doesn't throw an
    * exception.
    *
    * @param category the category details
