@@ -757,40 +757,6 @@ public class CaseServiceTest {
   }
 
   /**
-   * We create a CaseEvent with category RESPONDENT_ENROLED versus a Case of wrong sampleUnitType
-   * (ie NOT a B)
-   *
-   * @throws Exception if fabricateEvent does
-   */
-  @Test
-  public void testEventRespondentEnrolledVersusWrongCaseType() throws Exception {
-    Case existingCase = cases.get(ACTIONABLE_HOUSEHOLD_CASE_FK);
-    when(caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK)).thenReturn(existingCase);
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED))
-        .thenReturn(categories.get(CAT_RESPONDENT_ENROLED));
-
-    CaseEvent caseEvent =
-        fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ENROLED, ACTIONABLE_HOUSEHOLD_CASE_FK);
-
-    try {
-      caseService.createCaseEvent(caseEvent);
-      fail();
-    } catch (CTPException e) {
-      assertEquals(CTPException.Fault.VALIDATION_FAILED, e.getFault());
-      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, "H", "B"), e.getMessage());
-    }
-
-    verify(caseRepo).findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED);
-    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClient, times(0))
-        .postAction(any(String.class), any(UUID.class), any(String.class));
-    verify(caseIacAuditService, times(0)).disableAllIACsForCase(any(Case.class));
-    verify(caseEventRepo, times(0)).save(caseEvent);
-  }
-
-  /**
    * We create a CaseEvent with category COLLECTION_INSTRUMENT_DOWNLOADED on an ACTIONABLE BRES case
    * (the one created for a respondent BI, accountant replying on behalf of Tesco for instance)
    *
