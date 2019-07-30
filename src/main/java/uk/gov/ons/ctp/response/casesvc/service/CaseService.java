@@ -425,13 +425,13 @@ public class CaseService {
   /**
    * Upfront fail fast validation - if this event is going to require a new case to be created,
    * let's check the request is valid before we do something we cannot rollback ie IAC disable, or
-   * Action creation.
+   * Action creation. This logs the error for info purposes and intentionally doesn't throw an 
+   * exception.
    *
    * @param category the category details
    * @param oldCase the case the event is being created against
-   * @throws CTPException if the CaseEventRequest is invalid
    */
-  private void validateCaseEventRequest(Category category, Case oldCase) throws CTPException {
+  private void validateCaseEventRequest(Category category, Case oldCase) {
     String oldCaseSampleUnitType = oldCase.getSampleUnitType().name();
     String expectedOldCaseSampleUnitTypes = category.getOldCaseSampleUnitTypes();
     if (!compareOldCaseSampleUnitType(oldCaseSampleUnitType, expectedOldCaseSampleUnitTypes)) {
@@ -441,7 +441,6 @@ public class CaseService {
               oldCaseSampleUnitType,
               expectedOldCaseSampleUnitTypes);
       log.error(errorMsg);
-      throw new CTPException(CTPException.Fault.VALIDATION_FAILED, errorMsg);
     }
   }
 
