@@ -1,7 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.service;
 
 import static junit.framework.TestCase.assertNull;
-import static junit.framework.TestCase.fail;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -17,7 +16,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.EQ_LAUNCH;
-import static uk.gov.ons.ctp.response.casesvc.service.CaseService.WRONG_OLD_SAMPLE_UNIT_TYPE_MSG;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -754,40 +752,6 @@ public class CaseServiceTest {
     c.setCaseGroupId(UUID.randomUUID());
     c.setCaseGroupFK(ENROLMENT_CASE_INDIVIDUAL_FK);
     return c;
-  }
-
-  /**
-   * We create a CaseEvent with category RESPONDENT_ENROLED versus a Case of wrong sampleUnitType
-   * (ie NOT a B)
-   *
-   * @throws Exception if fabricateEvent does
-   */
-  @Test
-  public void testEventRespondentEnrolledVersusWrongCaseType() throws Exception {
-    Case existingCase = cases.get(ACTIONABLE_HOUSEHOLD_CASE_FK);
-    when(caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK)).thenReturn(existingCase);
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED))
-        .thenReturn(categories.get(CAT_RESPONDENT_ENROLED));
-
-    CaseEvent caseEvent =
-        fabricateEvent(CategoryDTO.CategoryName.RESPONDENT_ENROLED, ACTIONABLE_HOUSEHOLD_CASE_FK);
-
-    try {
-      caseService.createCaseEvent(caseEvent);
-      fail();
-    } catch (CTPException e) {
-      assertEquals(CTPException.Fault.VALIDATION_FAILED, e.getFault());
-      assertEquals(String.format(WRONG_OLD_SAMPLE_UNIT_TYPE_MSG, "H", "B"), e.getMessage());
-    }
-
-    verify(caseRepo).findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED);
-    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClient, times(0))
-        .postAction(any(String.class), any(UUID.class), any(String.class));
-    verify(caseIacAuditService, times(0)).disableAllIACsForCase(any(Case.class));
-    verify(caseEventRepo, times(0)).save(caseEvent);
   }
 
   /**
