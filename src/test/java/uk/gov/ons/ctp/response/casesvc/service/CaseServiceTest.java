@@ -936,8 +936,7 @@ public class CaseServiceTest {
     verify(categoryRepo).findOne(CategoryName.NO_ACTIVE_ENROLMENTS);
     verify(caseEventRepo, times(1)).save(caseEvent);
     ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
-    verify(caseRepo, times(2)).saveAndFlush(argument.capture());
-    verify(caseRepo, times(2)).saveAndFlush(argument.capture());
+    verify(caseRepo, times(1)).saveAndFlush(argument.capture());
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
   }
 

@@ -291,7 +291,6 @@ public class CaseService {
         generateAndStoreNewIAC(targetCase);
         break;
       case NO_ACTIVE_ENROLMENTS:
-        generateAndStoreNewIAC(targetCase);
         processActionPlanChange(targetCase, false);
         break;
       default:
