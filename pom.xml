@@ -3,7 +3,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>casesvc</artifactId>
-    <version>10.49.32-SNAPSHOT</version>
+    <version>10.49.32</version>
     <packaging>jar</packaging>
 
     <name>CTP : CaseService</name>
@@ -18,7 +18,7 @@
         <connection>scm:git:https://github.com/ONSdigital/rm-case-service</connection>
         <developerConnection>scm:git:https://github.com/ONSdigital/rm-case-service</developerConnection>
         <url>https://github.com/ONSdigital/rm-case-service</url>
-        <tag>HEAD</tag>
+        <tag>casesvc-10.49.32</tag>
     </scm>
 
     <parent>
