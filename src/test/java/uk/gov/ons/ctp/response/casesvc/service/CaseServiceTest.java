@@ -714,6 +714,60 @@ public class CaseServiceTest {
   }
 
   /**
+   * Tests that with multiple survey ids then the limit per survey matches maxCasesPerSurvey and
+   * that the later cases in the list are rejected This suffices because SpringBoot implements the
+   * findByDateTime desc , so we only need validate the later ones are removed
+   *
+   * @throws Exception
+   */
+  @Test
+  public void testLimitCasesPerSurveyRemovesCasesFromEndOfList() throws Exception {
+
+    int maxCasesPerSurvey = 2;
+
+    // Arrange: Create a List<Case> of 6 entries corresponding to two groups
+
+    UUID groupUUIDOne = UUID.randomUUID();
+    UUID groupUUIDTwo = UUID.randomUUID();
+
+    Case case_one = makeCase(groupUUIDOne);
+    Case case_two = makeCase(groupUUIDOne);
+    Case case_three = makeCase(groupUUIDOne);
+    Case case_four = makeCase(groupUUIDTwo);
+    Case case_five = makeCase(groupUUIDTwo);
+    Case case_six = makeCase(groupUUIDTwo);
+
+    List<Case> caseList = new ArrayList<>();
+
+    caseList.add(case_one);
+    caseList.add(case_two);
+    caseList.add(case_three);
+    caseList.add(case_four);
+    caseList.add(case_five);
+    caseList.add(case_six);
+
+    CaseGroup caseGroupOne = makeCaseGroupWithSurveyId(UUID.randomUUID());
+    CaseGroup caseGroupTwo = makeCaseGroupWithSurveyId(UUID.randomUUID());
+
+    when(caseGroupRepo.findById(groupUUIDOne)).thenReturn(caseGroupOne);
+    when(caseGroupRepo.findById(groupUUIDTwo)).thenReturn(caseGroupTwo);
+
+    // Act: limit those to 2 cases per survey id
+
+    List<Case> results = caseService.limitCasesPerSurvey(caseList, maxCasesPerSurvey);
+
+    // Assert: First the right count
+    assertEquals(results.size(), 4);
+
+    // Assert: Secondly that the Cases at the start of the list are present
+    assertEquals(results.get(0).getId(), case_one.getId());
+    assertEquals(results.get(1).getId(), case_two.getId());
+
+    assertEquals(results.get(2).getId(), case_four.getId());
+    assertEquals(results.get(3).getId(), case_five.getId());
+  }
+
+  /**
    * Make a test collection exercise
    *
    * @return a new test collection exercise
@@ -738,18 +792,24 @@ public class CaseServiceTest {
     return cg;
   }
 
+  private CaseGroup makeCaseGroupWithSurveyId(UUID surveyId) {
+    CaseGroup cg = makeCaseGroup();
+    cg.setSurveyId(surveyId);
+    return cg;
+  }
+
   /**
    * Make a test case
    *
    * @return a new test case
    */
-  private Case makeCase() {
+  private Case makeCase(UUID groupId) {
     Case c = new Case();
     c.setId(UUID.randomUUID());
     c.setSampleUnitType(SampleUnitDTO.SampleUnitType.B);
     c.setState(CaseState.ACTIONABLE);
     c.setActionPlanId(UUID.randomUUID());
-    c.setCaseGroupId(UUID.randomUUID());
+    c.setCaseGroupId(groupId);
     c.setCaseGroupFK(ENROLMENT_CASE_INDIVIDUAL_FK);
     return c;
   }

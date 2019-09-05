@@ -3,7 +3,9 @@ package uk.gov.ons.ctp.response.casesvc.service;
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -157,7 +159,7 @@ public class CaseService {
    * @return the cases for the partyId
    */
   public List<Case> findCasesByPartyId(final UUID partyId, boolean iac) {
-    log.debug("Entering findCasesByPartyId");
+    log.info("Entering findCasesByPartyId");
     List<Case> cazes = caseRepo.findByPartyId(partyId);
 
     if (iac) {
@@ -165,6 +167,86 @@ public class CaseService {
     }
 
     return cazes;
+  }
+
+  /**
+   * Find the paginated cases for a partyId ordered by create date descending.
+   *
+   * @param partyId the partyId
+   * @param maxCasesPerSurvey the maximum number of cases per survey to return
+   * @return the cases for the partyId
+   */
+  public List<Case> findCasesByPartyIdLimitedPerSurvey(
+      final UUID partyId, boolean iac, int maxCasesPerSurvey) {
+    log.info("Entering findCasesByPartyIdLimitedPerSurvey");
+
+    List<Case> cazes =
+        limitCasesPerSurvey(
+            caseRepo.findByPartyIdOrderByCreatedDateTimeDesc(partyId), maxCasesPerSurvey);
+
+    if (iac) {
+      cazes.stream().forEach(c -> c.setIac(caseIacAuditService.findCaseIacByCasePK(c.getCasePK())));
+    }
+
+    return cazes;
+  }
+
+  /**
+   * Return only the first n instances of case per survey The query to this in the JPA is too
+   * complex and uses SQL constructs that JPQL does not support like Row Number and Over. Hence in
+   * code
+   *
+   * @param raw, the list of cases to be potentially limited
+   * @param maxCasesPerSurvey the maximum number of cases per survey to return
+   * @return the cases for the partyId
+   */
+  public List<Case> limitCasesPerSurvey(List<Case> raw, int maxCasesPerSurvey) {
+
+    log.with("maxCasesPerSurvey", maxCasesPerSurvey).info("Entering limitCasesPerSurvey");
+
+    List<Case> limitedResults = new ArrayList();
+    HashMap<UUID, Integer> surveyCounts = new HashMap<>();
+
+    raw.stream()
+        .forEach(
+            c -> tryAddCaseToLimitedResults(c, limitedResults, surveyCounts, maxCasesPerSurvey));
+
+    return limitedResults;
+  }
+
+  /**
+   * Adds a case to a result set if the number per survey is less than maximum
+   *
+   * @param current , the current Case to consider adding
+   * @param limitedResults The limited number of results
+   * @param surveyCounts A hashmap of survey ids and counts , used to keep a running count
+   * @param maxCasesPerSurvey the maximum number of cases per survey to return
+   * @return void , adds results to passed in limited as it goes
+   */
+  private void tryAddCaseToLimitedResults(
+      Case current,
+      List<Case> limitedResults,
+      HashMap<UUID, Integer> surveyCounts,
+      int maxCasesPerSurvey) {
+
+    CaseGroup currentGroup = caseGroupRepo.findById(current.getCaseGroupId());
+    UUID currentSurveyId = currentGroup.getSurveyId();
+
+    log.with("currentSurveyId", currentSurveyId).info("Entering tryAddCaseToLimitedResults");
+
+    if (!surveyCounts.containsKey(currentSurveyId)) {
+      surveyCounts.put(currentSurveyId, 0);
+    }
+    int currentCount = surveyCounts.get(currentSurveyId);
+
+    if (currentCount < maxCasesPerSurvey) {
+      surveyCounts.replace(currentSurveyId, ++currentCount);
+      limitedResults.add(current);
+    } else {
+      log.with("surveyId", currentSurveyId.toString())
+          .with("count", currentCount)
+          .info("Survey rejected");
+    }
   }
 
   /**
