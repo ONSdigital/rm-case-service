@@ -159,7 +159,7 @@ public class CaseService {
    * @return the cases for the partyId
    */
   public List<Case> findCasesByPartyId(final UUID partyId, boolean iac) {
-    log.info("Entering findCasesByPartyId");
+    log.debug("Entering findCasesByPartyId");
     List<Case> cazes = caseRepo.findByPartyId(partyId);
 
     if (iac) {
@@ -178,7 +178,7 @@ public class CaseService {
    */
   public List<Case> findCasesByPartyIdLimitedPerSurvey(
       final UUID partyId, boolean iac, int maxCasesPerSurvey) {
-    log.info("Entering findCasesByPartyIdLimitedPerSurvey");
+    log.with("partyId", partyId).debug("Entering findCasesByPartyIdLimitedPerSurvey");
 
     List<Case> cazes =
         limitCasesPerSurvey(
@@ -192,7 +192,7 @@ public class CaseService {
   }
 
   /**
-   * Return only the first n instances of case per survey The query to this in the JPA is too
+   * Return only the first n instances of case per survey The query to do this in the JPA is too
    * complex and uses SQL constructs that JPQL does not support like Row Number and Over. Hence in
    * code
    *
@@ -200,54 +200,46 @@ public class CaseService {
    * @param maxCasesPerSurvey the maximum number of cases per survey to return
    * @return the cases for the partyId
    */
-  public List<Case> limitCasesPerSurvey(List<Case> raw, int maxCasesPerSurvey) {
+  private List<Case> limitCasesPerSurvey(List<Case> raw, int maxCasesPerSurvey) {
 
-    log.with("maxCasesPerSurvey", maxCasesPerSurvey).info("Entering limitCasesPerSurvey");
+    log.with("maxCasesPerSurvey", maxCasesPerSurvey).debug("Entering limitCasesPerSurvey");
 
     List<Case> limitedResults = new ArrayList();
     HashMap<UUID, Integer> surveyCounts = new HashMap<>();
+    HashMap<UUID, CaseGroup> caseGroups = new HashMap<>();
+    CaseGroup currentGroup = new CaseGroup();
+    UUID caseGroupId;
+    UUID currentSurveyId;
+    int currentCount;
 
-    raw.stream()
-        .forEach(
-            c -> tryAddCaseToLimitedResults(c, limitedResults, surveyCounts, maxCasesPerSurvey));
+    for(Case current: raw) {
 
+      // Get CaseGroup, only get new ones from DB
+      caseGroupId = current.getCaseGroupId();
+      if(!caseGroups.containsKey(caseGroupId)) {
+         caseGroups.put(caseGroupId, caseGroupRepo.findById(current.getCaseGroupId()));
+      }
+
+      currentGroup = caseGroups.get(caseGroupId);
+
+      currentSurveyId = currentGroup.getSurveyId();
+
+      if (!surveyCounts.containsKey(currentSurveyId)) {
+        surveyCounts.put(currentSurveyId, 0);
+      }
+
+      currentCount = surveyCounts.get(currentSurveyId);
+
+      if (currentCount < maxCasesPerSurvey) {
+        surveyCounts.replace(currentSurveyId, ++currentCount);
+        limitedResults.add(current);
+      }
+    }
     return limitedResults;
   }
 
-  /**
-   * Adds a case to a result set if the number per survey is less than maximum
-   *
-   * @param current , the current Case to consider adding
-   * @param limitedResults The limited number of results
-   * @param surveyCounts A hashmap of survey ids and counts , used to keep a running count
-   * @param maxCasesPerSurvey the maximum number of cases per survey to return
-   * @return void , adds results to passed in limited as it goes
-   */
-  private void tryAddCaseToLimitedResults(
-      Case current,
-      List<Case> limitedResults,
-      HashMap<UUID, Integer> surveyCounts,
-      int maxCasesPerSurvey) {
 
-    CaseGroup currentGroup = caseGroupRepo.findById(current.getCaseGroupId());
-    UUID currentSurveyId = currentGroup.getSurveyId();
 
-    log.with("currentSurveyId", currentSurveyId).info("Entering tryAddCaseToLimitedResults");
-
-    if (!surveyCounts.containsKey(currentSurveyId)) {
-      surveyCounts.put(currentSurveyId, 0);
-    }
-    int currentCount = surveyCounts.get(currentSurveyId);
-
-    if (currentCount < maxCasesPerSurvey) {
-      surveyCounts.replace(currentSurveyId, ++currentCount);
-      limitedResults.add(current);
-    } else {
-      log.with("surveyId", currentSurveyId.toString())
-          .with("count", currentCount)
-          .info("Survey rejected");
-    }
-  }
 
   /**
    * Find CaseEvent entities associated with a Case.

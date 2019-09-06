@@ -712,7 +712,6 @@ public class CaseServiceTest {
     verify(actionSvcClient, times(0))
         .postAction(any(String.class), any(UUID.class), any(String.class));
   }
-
   /**
    * Tests that with multiple survey ids then the limit per survey matches maxCasesPerSurvey and
    * that the later cases in the list are rejected This suffices because SpringBoot implements the
@@ -721,21 +720,23 @@ public class CaseServiceTest {
    * @throws Exception
    */
   @Test
-  public void testLimitCasesPerSurveyRemovesCasesFromEndOfList() throws Exception {
+  public void testFindCasesByPartyIdLimitedPerSurveyLimitsCases() throws Exception {
 
     int maxCasesPerSurvey = 2;
 
     // Arrange: Create a List<Case> of 6 entries corresponding to two groups
+    UUID partyId = UUID.randomUUID();
 
     UUID groupUUIDOne = UUID.randomUUID();
     UUID groupUUIDTwo = UUID.randomUUID();
 
-    Case case_one = makeCase(groupUUIDOne);
-    Case case_two = makeCase(groupUUIDOne);
-    Case case_three = makeCase(groupUUIDOne);
-    Case case_four = makeCase(groupUUIDTwo);
-    Case case_five = makeCase(groupUUIDTwo);
-    Case case_six = makeCase(groupUUIDTwo);
+    Case case_one = makeCaseWithPartyId(groupUUIDOne, partyId);
+    Case case_two = makeCaseWithPartyId(groupUUIDOne, partyId);
+    Case case_three = makeCaseWithPartyId(groupUUIDOne, partyId);
+    Case case_four = makeCaseWithPartyId(groupUUIDTwo, partyId);
+    Case case_five = makeCaseWithPartyId(groupUUIDTwo, partyId);
+    Case case_six = makeCaseWithPartyId(groupUUIDTwo, partyId);
+
 
     List<Case> caseList = new ArrayList<>();
 
@@ -751,10 +752,12 @@ public class CaseServiceTest {
 
     when(caseGroupRepo.findById(groupUUIDOne)).thenReturn(caseGroupOne);
     when(caseGroupRepo.findById(groupUUIDTwo)).thenReturn(caseGroupTwo);
+    when(caseRepo.findByPartyIdOrderByCreatedDateTimeDesc(partyId)).thenReturn(caseList);
 
     // Act: limit those to 2 cases per survey id
 
-    List<Case> results = caseService.limitCasesPerSurvey(caseList, maxCasesPerSurvey);
+    List<Case> results = caseService.findCasesByPartyIdLimitedPerSurvey(partyId,
+            false, maxCasesPerSurvey);
 
     // Assert: First the right count
     assertEquals(results.size(), 4);
@@ -813,6 +816,13 @@ public class CaseServiceTest {
     c.setCaseGroupFK(ENROLMENT_CASE_INDIVIDUAL_FK);
     return c;
   }
+
+  private Case makeCaseWithPartyId(UUID groupId, UUID partyId) {
+    Case c = makeCase(groupId);
+    c.setPartyId(partyId);
+    return c;
+  }
+
 
   /**
    * We create a CaseEvent with category COLLECTION_INSTRUMENT_DOWNLOADED on an ACTIONABLE BRES case

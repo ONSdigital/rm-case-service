@@ -23,12 +23,12 @@ For the endpoints that return the details of a case:
 
 &mdash;an optional `iac` boolean query parameter can be used to specify that the JSON response include the unique access code associated with the case. For example:
 
-* `GET /cases/partyid/{partyId}?iac=true?max_cases_per_survey=<n>`
+* `GET /cases/partyid/{partyId}?iac=true?max_cases_per_survey={n}`
 
-If the iac query parameter is omitted the unique access code **will not** be returned with the case details. The JSON examples provided for the three endpoints mentioned above include the code for illustration purposes.
+* iac : If the iac query parameter is omitted the unique access code **will not** be returned with the case details. The JSON examples provided for the three endpoints mentioned above include the code for illustration purposes.
 
-The max_cases_per_survey is an optional parameter. If not present then all cases for that party will be returned
-If present as an integer then only the most recent <n> cases per survey will 
+* max_case_per_survey : The max_cases_per_survey is an optional parameter. If not present then all cases for that party will be returned
+If present as an integer then only the most recent {n} cases per survey will 
 be returned. 
 
 ## Service Information
