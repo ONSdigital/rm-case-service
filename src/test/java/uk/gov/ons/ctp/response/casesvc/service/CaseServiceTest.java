@@ -737,7 +737,6 @@ public class CaseServiceTest {
     Case case_five = makeCaseWithPartyId(groupUUIDTwo, partyId);
     Case case_six = makeCaseWithPartyId(groupUUIDTwo, partyId);
 
-
     List<Case> caseList = new ArrayList<>();
 
     caseList.add(case_one);
@@ -756,8 +755,8 @@ public class CaseServiceTest {
 
     // Act: limit those to 2 cases per survey id
 
-    List<Case> results = caseService.findCasesByPartyIdLimitedPerSurvey(partyId,
-            false, maxCasesPerSurvey);
+    List<Case> results =
+        caseService.findCasesByPartyIdLimitedPerSurvey(partyId, false, maxCasesPerSurvey);
 
     // Assert: First the right count
     assertEquals(results.size(), 4);
@@ -822,7 +821,6 @@ public class CaseServiceTest {
     c.setPartyId(partyId);
     return c;
   }
-
 
   /**
    * We create a CaseEvent with category COLLECTION_INSTRUMENT_DOWNLOADED on an ACTIONABLE BRES case

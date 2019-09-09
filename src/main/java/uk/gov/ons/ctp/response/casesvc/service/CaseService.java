@@ -196,11 +196,11 @@ public class CaseService {
    * complex and uses SQL constructs that JPQL does not support like Row Number and Over. Hence in
    * code
    *
-   * @param raw, the list of cases to be potentially limited
+   * @param unrefinedCaseList, the list of cases to be potentially limited
    * @param maxCasesPerSurvey the maximum number of cases per survey to return
    * @return the cases for the partyId
    */
-  private List<Case> limitCasesPerSurvey(List<Case> raw, int maxCasesPerSurvey) {
+  private List<Case> limitCasesPerSurvey(List<Case> unrefinedCaseList, int maxCasesPerSurvey) {
 
     log.with("maxCasesPerSurvey", maxCasesPerSurvey).debug("Entering limitCasesPerSurvey");
 
@@ -212,12 +212,12 @@ public class CaseService {
     UUID currentSurveyId;
     int currentCount;
 
-    for(Case current: raw) {
+    for (Case current : unrefinedCaseList) {
 
       // Get CaseGroup, only get new ones from DB
       caseGroupId = current.getCaseGroupId();
-      if(!caseGroups.containsKey(caseGroupId)) {
-         caseGroups.put(caseGroupId, caseGroupRepo.findById(current.getCaseGroupId()));
+      if (!caseGroups.containsKey(caseGroupId)) {
+        caseGroups.put(caseGroupId, caseGroupRepo.findById(current.getCaseGroupId()));
       }
 
       currentGroup = caseGroups.get(caseGroupId);
@@ -237,9 +237,6 @@ public class CaseService {
     }
     return limitedResults;
   }
-
-
-
 
   /**
    * Find CaseEvent entities associated with a Case.
