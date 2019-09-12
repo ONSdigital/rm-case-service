@@ -112,7 +112,6 @@ public class CaseService {
    * @return Case object or null
    */
   public Case findCaseById(final UUID id) {
-    log.debug("Entering findCaseById");
     Case caze = caseRepo.findById(id);
 
     if (caze != null) {
@@ -133,8 +132,6 @@ public class CaseService {
    * @throws CTPException if more than one case found for a given IAC
    */
   public Case findCaseByIac(final String iac) throws CTPException {
-    log.debug("Entering findCaseByIac");
-
     CaseIacAudit caseIacAudit = caseIacAuditService.findCaseByIac(iac);
     Case caze = caseRepo.findByCasePK(caseIacAudit.getCaseFK());
 
@@ -148,7 +145,6 @@ public class CaseService {
    * @return the cases in the group.
    */
   public List<Case> findCasesByCaseGroupFK(final Integer caseGroupFK) {
-    log.debug("Entering findCasesByCaseGroupFK");
     return caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(caseGroupFK);
   }
 
@@ -159,14 +155,13 @@ public class CaseService {
    * @return the cases for the partyId
    */
   public List<Case> findCasesByPartyId(final UUID partyId, boolean iac) {
-    log.debug("Entering findCasesByPartyId");
-    List<Case> cazes = caseRepo.findByPartyId(partyId);
+    List<Case> cases = caseRepo.findByPartyId(partyId);
 
     if (iac) {
-      cazes.stream().forEach(c -> c.setIac(caseIacAuditService.findCaseIacByCasePK(c.getCasePK())));
+      cases.stream().forEach(c -> c.setIac(caseIacAuditService.findCaseIacByCasePK(c.getCasePK())));
     }
 
-    return cazes;
+    return cases;
   }
 
   /**
@@ -178,17 +173,16 @@ public class CaseService {
    */
   public List<Case> findCasesByPartyIdLimitedPerSurvey(
       final UUID partyId, boolean iac, int maxCasesPerSurvey) {
-    log.with("partyId", partyId).debug("Entering findCasesByPartyIdLimitedPerSurvey");
 
-    List<Case> cazes =
+    List<Case> cases =
         limitCasesPerSurvey(
             caseRepo.findByPartyIdOrderByCreatedDateTimeDesc(partyId), maxCasesPerSurvey);
 
     if (iac) {
-      cazes.stream().forEach(c -> c.setIac(caseIacAuditService.findCaseIacByCasePK(c.getCasePK())));
+      cases.stream().forEach(c -> c.setIac(caseIacAuditService.findCaseIacByCasePK(c.getCasePK())));
     }
 
-    return cazes;
+    return cases;
   }
 
   /**
@@ -201,8 +195,6 @@ public class CaseService {
    * @return the cases for the partyId
    */
   private List<Case> limitCasesPerSurvey(List<Case> unrefinedCaseList, int maxCasesPerSurvey) {
-
-    log.with("maxCasesPerSurvey", maxCasesPerSurvey).debug("Entering limitCasesPerSurvey");
 
     List<Case> limitedResults = new ArrayList();
     HashMap<UUID, Integer> surveyCounts = new HashMap<>();
@@ -245,7 +237,6 @@ public class CaseService {
    * @return List of CaseEvent entities or empty List.
    */
   public List<CaseEvent> findCaseEventsByCaseFK(final Integer caseFK) {
-    log.debug("Entering findCaseEventsByCaseFK");
     return caseEventRepo.findByCaseFKOrderByCreatedDateTimeDesc(caseFK);
   }
 
