@@ -3,7 +3,9 @@ package uk.gov.ons.ctp.response.casesvc.service;
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -110,7 +112,6 @@ public class CaseService {
    * @return Case object or null
    */
   public Case findCaseById(final UUID id) {
-    log.debug("Entering findCaseById");
     Case caze = caseRepo.findById(id);
 
     if (caze != null) {
@@ -131,8 +132,6 @@ public class CaseService {
    * @throws CTPException if more than one case found for a given IAC
    */
   public Case findCaseByIac(final String iac) throws CTPException {
-    log.debug("Entering findCaseByIac");
-
     CaseIacAudit caseIacAudit = caseIacAuditService.findCaseByIac(iac);
     Case caze = caseRepo.findByCasePK(caseIacAudit.getCaseFK());
 
@@ -146,7 +145,6 @@ public class CaseService {
    * @return the cases in the group.
    */
   public List<Case> findCasesByCaseGroupFK(final Integer caseGroupFK) {
-    log.debug("Entering findCasesByCaseGroupFK");
     return caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(caseGroupFK);
   }
 
@@ -157,14 +155,79 @@ public class CaseService {
    * @return the cases for the partyId
    */
   public List<Case> findCasesByPartyId(final UUID partyId, boolean iac) {
-    log.debug("Entering findCasesByPartyId");
-    List<Case> cazes = caseRepo.findByPartyId(partyId);
+    List<Case> cases = caseRepo.findByPartyId(partyId);
 
     if (iac) {
-      cazes.stream().forEach(c -> c.setIac(caseIacAuditService.findCaseIacByCasePK(c.getCasePK())));
+      cases.stream().forEach(c -> c.setIac(caseIacAuditService.findCaseIacByCasePK(c.getCasePK())));
     }
 
-    return cazes;
+    return cases;
+  }
+
+  /**
+   * Find the paginated cases for a partyId ordered by create date descending.
+   *
+   * @param partyId the partyId
+   * @param maxCasesPerSurvey the maximum number of cases per survey to return
+   * @return the cases for the partyId
+   */
+  public List<Case> findCasesByPartyIdLimitedPerSurvey(
+      final UUID partyId, boolean iac, int maxCasesPerSurvey) {
+
+    List<Case> cases =
+        limitCasesPerSurvey(
+            caseRepo.findByPartyIdOrderByCreatedDateTimeDesc(partyId), maxCasesPerSurvey);
+
+    if (iac) {
+      cases.stream().forEach(c -> c.setIac(caseIacAuditService.findCaseIacByCasePK(c.getCasePK())));
+    }
+
+    return cases;
+  }
+
+  /**
+   * Return only the first n instances of case per survey The query to do this in the JPA is too
+   * complex and uses SQL constructs that JPQL does not support like Row Number and Over. Hence in
+   * code
+   *
+   * @param unrefinedCaseList, the list of cases to be potentially limited
+   * @param maxCasesPerSurvey the maximum number of cases per survey to return
+   * @return the cases for the partyId
+   */
+  private List<Case> limitCasesPerSurvey(List<Case> unrefinedCaseList, int maxCasesPerSurvey) {
+
+    List<Case> limitedResults = new ArrayList();
+    HashMap<UUID, Integer> surveyCounts = new HashMap<>();
+    HashMap<UUID, CaseGroup> caseGroups = new HashMap<>();
+    CaseGroup currentGroup = new CaseGroup();
+    UUID caseGroupId;
+    UUID currentSurveyId;
+    int currentCount;
+
+    for (Case current : unrefinedCaseList) {
+
+      // Get CaseGroup, only get new ones from DB
+      caseGroupId = current.getCaseGroupId();
+      if (!caseGroups.containsKey(caseGroupId)) {
+        caseGroups.put(caseGroupId, caseGroupRepo.findById(current.getCaseGroupId()));
+      }
+
+      currentGroup = caseGroups.get(caseGroupId);
+
+      currentSurveyId = currentGroup.getSurveyId();
+
+      if (!surveyCounts.containsKey(currentSurveyId)) {
+        surveyCounts.put(currentSurveyId, 0);
+      }
+
+      currentCount = surveyCounts.get(currentSurveyId);
+
+      if (currentCount < maxCasesPerSurvey) {
+        surveyCounts.replace(currentSurveyId, ++currentCount);
+        limitedResults.add(current);
+      }
+    }
+    return limitedResults;
   }
 
   /**
@@ -174,7 +237,6 @@ public class CaseService {
    * @return List of CaseEvent entities or empty List.
    */
   public List<CaseEvent> findCaseEventsByCaseFK(final Integer caseFK) {
-    log.debug("Entering findCaseEventsByCaseFK");
     return caseEventRepo.findByCaseFKOrderByCreatedDateTimeDesc(caseFK);
   }
 

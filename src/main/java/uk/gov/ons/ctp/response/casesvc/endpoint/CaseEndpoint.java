@@ -132,16 +132,27 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @param partyId to find by
    * @param caseevents flag used to return or not CaseEvents
    * @param iac flag used to return or not the iac
+   * @param max_cases_per_survey the maximum number of cases to return per survey
    * @return the cases found
    */
-  @Deprecated // See findCases(sampleUnitId, partyId)
   @RequestMapping(value = "/partyid/{partyId}", method = RequestMethod.GET)
   public ResponseEntity<List<CaseDetailsDTO>> findCasesByPartyId(
       @PathVariable("partyId") final UUID partyId,
       @RequestParam(value = "caseevents", required = false) final boolean caseevents,
-      @RequestParam(value = "iac", required = false) final boolean iac) {
-    log.with("party_id", partyId).debug("Retrieving cases by party");
-    List<Case> casesList = caseService.findCasesByPartyId(partyId, iac);
+      @RequestParam(value = "iac", required = false) final boolean iac,
+      @RequestParam(value = "max_cases_per_survey", required = false)
+          final Integer maxCasesPerSurvey) {
+
+    List<Case> casesList;
+    if (maxCasesPerSurvey != null) {
+      log.with("party_id", partyId)
+          .with("max_cases_per_survey", maxCasesPerSurvey)
+          .info("Retrieving cases by party");
+      casesList = caseService.findCasesByPartyIdLimitedPerSurvey(partyId, iac, maxCasesPerSurvey);
+
+    } else {
+      casesList = caseService.findCasesByPartyId(partyId, iac);
+    }
 
     if (CollectionUtils.isEmpty(casesList)) {
       return ResponseEntity.noContent().build();

@@ -60,6 +60,14 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
   List<Case> findByPartyId(UUID partyId);
 
   /**
+   * Find cases assigned to a given partyId ordered by creation date desc
+   *
+   * @param partyId the partyId
+   * @return the cases associated with the partyId
+   */
+  List<Case> findByPartyIdOrderByCreatedDateTimeDesc(UUID partyId);
+
+  /**
    * Find case by its sample unit id
    *
    * @param sampleUnitId
