@@ -2,9 +2,9 @@ deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: casesvc
+  name: {{ .Chart.Name }}
   labels:
-    run: casesvc
+    run: {{ .Chart.Name }}
     helm.release: RELEASE-NAME
 spec:
   replicas: 1
@@ -15,19 +15,19 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app: casesvc
-      env: dev
+      app: {{ .Chart.Name }}
+      env: "{{ .Values.env }}"
       version: "v1.2"
   template:
     metadata:
       labels:
-        app: casesvc
-        env: dev
+        app: {{ .Chart.Name }}
+        env: "{{ .Values.env }}"
         version: "v1.2"
     spec:
       containers:
-        - name: casesvc
-          image: "eu.gcr.io/rm-ras-sandbox/casesvc:migration-sandbox"
+        - name: {{ .Chart.Name }}
+          image: "eu.gcr.io/ons-rasrmbs-management/{{ .Values.image.repositoryName }}:{{ .Values.image.tag }}"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http-server

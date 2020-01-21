@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: casesvc
+  name: {{ .Chart.Name }}
   labels:
-    run: casesvc
+    run: {{ .Chart.Name }}
     helm.release: RELEASE-NAME
 spec:
   type: ClusterIP
@@ -11,4 +11,4 @@ spec:
   - port: 8083
     protocol: TCP
   selector:
-    app: casesvc
+    app: {{ .Chart.Name }}
