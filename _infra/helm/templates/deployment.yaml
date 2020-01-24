@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: "eu.gcr.io/ons-rasrmbs-management/{{ .Values.image.repositoryName }}:{{ .Values.image.tag }}"
+          image: "eu.gcr.io/ons-rasrmbs-management/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http-server
