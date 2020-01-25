@@ -7,4 +7,3 @@ USER casesvc
 COPY casesvc /opt/casesvc.jar
 
 ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -jar /opt/casesvc.jar" ]
-
