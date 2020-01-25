@@ -1,4 +1,3 @@
-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -22,7 +21,7 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: "eu.gcr.io/ons-rasrmbs-management/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "eu.gcr.io/ons-rasrmbs-management/{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http-server
