@@ -6,8 +6,8 @@ spec:
   replicas: 1
   strategy:
     rollingUpdate:
-      maxSurge:
-      maxUnavailable:
+      maxSurge: 1
+      maxUnavailable: 1
     type: RollingUpdate
   selector:
     matchLabels:
@@ -104,17 +104,17 @@ spec:
           - name: DATA_GRID_ADDRESS
             value: "$(REDIS_MASTER_SERVICE_HOST):$(REDIS_MASTER_SERVICE_PORT)"
           - name: ACTION_SVC_CONNECTION_CONFIG_HOST
-            value: "$(ACTIONSVC_SERVICE_HOST)"
+            value: "$(ACTION_SERVICE_HOST)"
           - name: ACTION_SVC_CONNECTION_CONFIG_PORT
-            value: "$(ACTIONSVC_SERVICE_PORT)"
+            value: "$(ACTION_SERVICE_PORT)"
           - name: INTERNET_ACCESS_CODE_SVC_CONNECTION_CONFIG_HOST
-            value: "$(IACSVC_SERVICE_HOST)"
+            value: "$(IAC_SERVICE_HOST)"
           - name: INTERNET_ACCESS_CODE_SVC_CONNECTION_CONFIG_PORT
-            value: "$(IACSVC_SERVICE_PORT)"
+            value: "$(IAC_SERVICE_PORT)"
           - name: COLLECTION_EXERCISE_SVC_CONNECTION_CONFIG_HOST
-            value: "$(COLLECTIONEXERCISESVC_SERVICE_HOST)"
+            value: "$(COLLECTION_EXERCISE_SERVICE_HOST)"
           - name: COLLECTION_EXERCISE_SVC_CONNECTION_CONFIG_PORT
-            value: "$(COLLECTIONEXERCISESVC_SERVICE_PORT)"
+            value: "$(COLLECTION_EXERCISE_SERVICE_PORT)"
           - name: CASE_DISTRIBUTION_DELAY_MILLI_SECONDS
             value: "30000"
           - name: LIQUIBASE_USER
@@ -130,9 +130,4 @@ spec:
           - name: SPRING_ZIPKIN_BASEURL
             value: "http://$(ZIPKIN_SERVICE_HOST):$(ZIPKIN_SERVICE_PORT)/"
           resources:
-            limits:
-              cpu: 1000m
-              memory: 2056Mi
-            requests:
-              cpu: 500m
-              memory: 1028Mi
+            {{ toYaml .Values.resources | nindent 12 }}

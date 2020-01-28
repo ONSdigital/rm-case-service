@@ -1,7 +1,6 @@
 replicaCount: 1
 
-env: "dev"
-version: "v1.2"
+env: "minikube"
 
 image:
   repository: case
