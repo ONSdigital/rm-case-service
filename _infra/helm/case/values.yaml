@@ -33,3 +33,6 @@ resources:
 
 managedRabbitMQ:
   enabled: false
+
+report:
+  cron: "0 * * * * *"
