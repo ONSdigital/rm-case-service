@@ -215,6 +215,14 @@ spec:
             value: "$(DB_USERNAME)"
           - name: SPRING_DATASOURCE_PASSWORD
             value: "$(DB_PASSWORD)"
+          - name: SPRING_DATASOURCE_TOMCAT_INITIAL_SIZE
+            value: "{{ .Values.tomcat.initialSize }}"
+          - name: SPRING_DATASOURCE_TOMCAT_MAX_ACTIVE
+            value: "{{ .Values.tomcat.maxActive }}"
+          - name: SPRING_DATASOURCE_TOMCAT_MAX_IDLE
+            value: "{{ .Values.tomcat.maxIdle }}"
+          - name: SPRING_DATASOURCE_TOMCAT_MIN_IDLE
+            value: "{{ .Values.tomcat.minIdle }}"
           - name: REPORT_SETTINGS_CRON_EXPRESSION
             value: "{{ .Values.report.cron }}"
           {{- if .Values.zipkin.enabled }}
