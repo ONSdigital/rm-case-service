@@ -182,25 +182,49 @@ spec:
           - name: DATA_GRID_ADDRESS
             value: "$(REDIS_HOST):$(REDIS_PORT)"
           - name: ACTION_SVC_CONNECTION_CONFIG_HOST
+            {{- if .Values.dns.enabled }}
+            value: "action.{{ .Values.namespace }}.svc.cluster.local"
+            {{- else }}
             value: "$(ACTION_SERVICE_HOST)"
+            {{- end }}
           - name: ACTION_SVC_CONNECTION_CONFIG_PORT
+            {{- if .Values.dns.enabled }}
+            value: "{{ .Values.dns.wellKnownPort }}"
+            {{- else }}
             value: "$(ACTION_SERVICE_PORT)"
+            {{- end }}
           - name: ACTION_SVC_CONNECTION_CONFIG_USERNAME
             value: "$(SECURITY_USER_NAME)"
           - name: ACTION_SVC_CONNECTION_CONFIG_PASSWORD
             value: "$(SECURITY_USER_PASSWORD)"
           - name: INTERNET_ACCESS_CODE_SVC_CONNECTION_CONFIG_HOST
+            {{- if .Values.dns.enabled }}
+            value: "iac.{{ .Values.namespace }}.svc.cluster.local"
+            {{- else }}
             value: "$(IAC_SERVICE_HOST)"
+            {{- end }}
           - name: INTERNET_ACCESS_CODE_SVC_CONNECTION_CONFIG_PORT
+            {{- if .Values.dns.enabled }}
+            value: "{{ .Values.dns.wellKnownPort }}"
+            {{- else }}
             value: "$(IAC_SERVICE_PORT)"
+            {{- end }}
           - name: INTERNET_ACCESS_CODE_SVC_CONNECTION_CONFIG_USERNAME
             value: "$(SECURITY_USER_NAME)"
           - name: INTERNET_ACCESS_CODE_SVC_CONNECTION_CONFIG_PASSWORD
             value: "$(SECURITY_USER_PASSWORD)"
           - name: COLLECTION_EXERCISE_SVC_CONNECTION_CONFIG_HOST
+            {{- if .Values.dns.enabled }}
+            value: "collection-exercise.{{ .Values.namespace }}.svc.cluster.local"
+            {{- else }}
             value: "$(COLLECTION_EXERCISE_SERVICE_HOST)"
+            {{- end }}
           - name: COLLECTION_EXERCISE_SVC_CONNECTION_CONFIG_PORT
+            {{- if .Values.dns.enabled }}
+            value: "{{ .Values.dns.wellKnownPort }}"
+            {{- else }}
             value: "$(COLLECTION_EXERCISE_SERVICE_PORT)"
+            {{- end }}
           - name: COLLECTION_EXERCISE_SVC_CONNECTION_CONFIG_USERNAME
             value: "$(SECURITY_USER_NAME)"
           - name: COLLECTION_EXERCISE_SVC_CONNECTION_CONFIG_PASSWORD
