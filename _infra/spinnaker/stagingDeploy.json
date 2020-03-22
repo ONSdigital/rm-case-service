@@ -1,16 +1,16 @@
 {
   "schema": "v2",
   "application": "case",
-  "name": "case",
+  "name": "deploy staging",
   "template": {
     "artifactAccount": "front50ArtifactCredentials",
-    "reference": "spinnaker://rasrmApplicationTemplate",
+    "reference": "spinnaker://individualDeploymentTemplate",
     "type": "front50/pipelineTemplate"
   },
   "variables": {
-    "name": "case",
-    "defaultHelmChart": "case-0.1.0.tgz",
-    "helmChartMatcher": "case-.*\\.tgz"
+    "namespace": "staging",
+    "environment": "dev",
+    "service": "case"
   },
   "exclude": [],
   "triggers": [],
