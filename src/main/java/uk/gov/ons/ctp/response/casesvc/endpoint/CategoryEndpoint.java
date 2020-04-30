@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.ons.ctp.common.endpoint.CTPEndpoint;
-import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
+import uk.gov.ons.ctp.response.lib.common.endpoint.CTPEndpoint;
+import uk.gov.ons.ctp.response.lib.common.error.CTPException;
 
 /** The REST endpoint controller for Category */
 @RestController

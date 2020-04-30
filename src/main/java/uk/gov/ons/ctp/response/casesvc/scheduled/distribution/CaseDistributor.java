@@ -13,10 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Component;
-import uk.gov.ons.ctp.common.distributed.DistributedListManager;
-import uk.gov.ons.ctp.common.distributed.LockingException;
-import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.casesvc.client.InternetAccessCodeSvcClient;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
@@ -27,6 +23,10 @@ import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
+import uk.gov.ons.ctp.response.lib.common.distributed.DistributedListManager;
+import uk.gov.ons.ctp.response.lib.common.distributed.LockingException;
+import uk.gov.ons.ctp.response.lib.common.error.CTPException;
+import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManager;
 
 /**
  * This is the 'service' class that distributes cases to the action service. It has a number of

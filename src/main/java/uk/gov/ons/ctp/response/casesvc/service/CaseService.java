@@ -14,10 +14,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.common.state.StateTransitionManager;
-import uk.gov.ons.ctp.common.time.DateTimeUtil;
-import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 import uk.gov.ons.ctp.response.casesvc.client.ActionSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.InternetAccessCodeSvcClient;
@@ -44,9 +40,13 @@ import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
 import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.utility.Constants;
-import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
-import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO;
-import uk.gov.ons.ctp.response.sample.representation.SampleUnitDTO.SampleUnitType;
+import uk.gov.ons.ctp.response.lib.action.ActionPlanDTO;
+import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
+import uk.gov.ons.ctp.response.lib.common.error.CTPException;
+import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManager;
+import uk.gov.ons.ctp.response.lib.common.time.DateTimeUtil;
+import uk.gov.ons.ctp.response.lib.sample.SampleUnitDTO;
+import uk.gov.ons.ctp.response.lib.sample.SampleUnitDTO.SampleUnitType;
 
 /**
  * A CaseService implementation which encapsulates all business logic operating on the Case entity
@@ -131,7 +131,8 @@ public class CaseService {
    * @return Case object or null.
    * @throws CTPException if more than one case found for a given IAC
    */
-  public Case findCaseByIac(final String iac) throws CTPException {
+  public Case findCaseByIac(final String iac)
+      throws uk.gov.ons.ctp.response.lib.common.error.CTPException {
     CaseIacAudit caseIacAudit = caseIacAuditService.findCaseByIac(iac);
     Case caze = caseRepo.findByCasePK(caseIacAudit.getCaseFK());
 
@@ -274,7 +275,8 @@ public class CaseService {
    * @return the created CaseEvent.
    * @throws CTPException when case state transition error
    */
-  public CaseEvent createCaseEvent(final CaseEvent caseEvent) throws CTPException {
+  public CaseEvent createCaseEvent(final CaseEvent caseEvent)
+      throws uk.gov.ons.ctp.response.lib.common.error.CTPException {
     return createCaseEvent(caseEvent, DateTimeUtil.nowUTC());
   }
 
@@ -407,7 +409,7 @@ public class CaseService {
     try {
       caseGroupService.transitionCaseGroupStatus(
           caseGroup, caseEvent.getCategory(), targetCase.getPartyId());
-    } catch (CTPException e) {
+    } catch (uk.gov.ons.ctp.response.lib.common.error.CTPException e) {
       // The transition manager throws an exception if the event doesn't cause a transition, however
       // there are lots of
       // events which do not cause CaseGroupStatus transitions, (this is valid behaviour).
@@ -416,7 +418,7 @@ public class CaseService {
   }
 
   private void processActionPlanChange(final Case targetCase, final boolean enrolments)
-      throws CTPException {
+      throws uk.gov.ons.ctp.response.lib.common.error.CTPException {
 
     List<CaseGroup> caseGroups =
         caseGroupService.findCaseGroupsForExecutedCollectionExercises(targetCase);

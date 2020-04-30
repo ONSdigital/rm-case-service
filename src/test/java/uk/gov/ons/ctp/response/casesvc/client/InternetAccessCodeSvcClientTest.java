@@ -28,12 +28,12 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
-import uk.gov.ons.ctp.common.rest.RestUtility;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.config.InternetAccessCodeSvc;
 import uk.gov.ons.ctp.response.iac.representation.CreateInternetAccessCodeDTO;
 import uk.gov.ons.ctp.response.iac.representation.InternetAccessCodeDTO;
 import uk.gov.ons.ctp.response.iac.representation.UpdateInternetAccessCodeDTO;
+import uk.gov.ons.ctp.response.lib.common.rest.RestUtility;
 
 /** Testing InternetAccessCodeSvcClientService */
 @RunWith(MockitoJUnitRunner.class)

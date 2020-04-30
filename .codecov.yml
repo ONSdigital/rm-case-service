@@ -8,4 +8,9 @@ coverage:
 
 ignore:
 - "src/tests/"
+- "src/main/java/uk/gov/ons/ctp/response/lib/"
+- "src/main/java/uk/gov/ons/ctp/response/casesvc/definition/"
+- "src/main/java/uk/gov/ons/ctp/response/casesvc/message/feedback/"
+- "src/main/java/uk/gov/ons/ctp/response/casesvc/message/notification/"
+- "src/main/java/uk/gov/ons/ctp/response/casesvc/message/sampleunitnotification/"
 - "migration/"

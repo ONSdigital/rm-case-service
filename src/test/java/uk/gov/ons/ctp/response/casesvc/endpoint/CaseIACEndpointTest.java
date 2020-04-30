@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static uk.gov.ons.ctp.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
+import static uk.gov.ons.ctp.response.lib.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
@@ -22,12 +22,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import uk.gov.ons.ctp.common.error.RestExceptionHandler;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseIacAudit;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseIACDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseIACService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
+import uk.gov.ons.ctp.response.lib.common.error.RestExceptionHandler;
 
 @RunWith(MockitoJUnitRunner.class)
 @Component

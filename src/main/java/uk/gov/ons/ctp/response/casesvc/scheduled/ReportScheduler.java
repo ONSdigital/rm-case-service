@@ -7,10 +7,10 @@ import javax.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import uk.gov.ons.ctp.common.distributed.DistributedInstanceManager;
-import uk.gov.ons.ctp.common.distributed.DistributedLatchManager;
-import uk.gov.ons.ctp.common.distributed.DistributedLockManager;
 import uk.gov.ons.ctp.response.casesvc.service.CaseReportService;
+import uk.gov.ons.ctp.response.lib.common.distributed.DistributedInstanceManager;
+import uk.gov.ons.ctp.response.lib.common.distributed.DistributedLatchManager;
+import uk.gov.ons.ctp.response.lib.common.distributed.DistributedLockManager;
 
 /**
  * The scheduler to trigger reports creation based on a cron expression defined in application.yml

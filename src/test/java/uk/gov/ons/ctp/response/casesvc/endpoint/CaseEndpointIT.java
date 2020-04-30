@@ -21,7 +21,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import uk.gov.ons.ctp.common.UnirestInitialiser;
 import uk.gov.ons.ctp.response.casesvc.CaseCreator;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
@@ -33,7 +32,8 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
 import uk.gov.ons.ctp.response.casesvc.representation.CreatedCaseEventDTO;
-import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
+import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
+import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
 
 @ContextConfiguration
 @ActiveProfiles("test")

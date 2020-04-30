@@ -22,17 +22,17 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import uk.gov.ons.ctp.common.time.DateTimeUtil;
-import uk.gov.ons.ctp.common.utility.Mapzer;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
-import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
-import uk.gov.ons.tools.rabbit.SimpleMessageBase.ExchangeType;
-import uk.gov.ons.tools.rabbit.SimpleMessageListener;
-import uk.gov.ons.tools.rabbit.SimpleMessageSender;
+import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
+import uk.gov.ons.ctp.response.lib.common.time.DateTimeUtil;
+import uk.gov.ons.ctp.response.lib.common.utility.Mapzer;
+import uk.gov.ons.ctp.response.lib.rabbit.SimpleMessageBase.ExchangeType;
+import uk.gov.ons.ctp.response.lib.rabbit.SimpleMessageListener;
+import uk.gov.ons.ctp.response.lib.rabbit.SimpleMessageSender;
 
 @ContextConfiguration
 @ActiveProfiles("test")

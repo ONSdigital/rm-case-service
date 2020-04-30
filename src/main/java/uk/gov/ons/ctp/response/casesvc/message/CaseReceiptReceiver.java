@@ -17,13 +17,13 @@ import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
+import uk.gov.ons.ctp.response.lib.common.error.CTPException;
 
 /** The reader of CaseReceipts from queue */
 @MessageEndpoint

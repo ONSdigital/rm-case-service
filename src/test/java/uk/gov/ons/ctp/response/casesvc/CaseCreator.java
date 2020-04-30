@@ -11,14 +11,14 @@ import javax.xml.bind.JAXBContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
-import uk.gov.ons.ctp.common.utility.Mapzer;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
-import uk.gov.ons.tools.rabbit.Rabbitmq;
-import uk.gov.ons.tools.rabbit.SimpleMessageBase;
-import uk.gov.ons.tools.rabbit.SimpleMessageListener;
-import uk.gov.ons.tools.rabbit.SimpleMessageSender;
+import uk.gov.ons.ctp.response.lib.common.utility.Mapzer;
+import uk.gov.ons.ctp.response.lib.rabbit.Rabbitmq;
+import uk.gov.ons.ctp.response.lib.rabbit.SimpleMessageBase;
+import uk.gov.ons.ctp.response.lib.rabbit.SimpleMessageListener;
+import uk.gov.ons.ctp.response.lib.rabbit.SimpleMessageSender;
 
 @Component
 public class CaseCreator {

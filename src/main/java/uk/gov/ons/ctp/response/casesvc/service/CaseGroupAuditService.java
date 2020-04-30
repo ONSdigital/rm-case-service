@@ -5,10 +5,10 @@ import com.godaddy.logging.LoggerFactory;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroupStatusAudit;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupStatusAuditRepository;
+import uk.gov.ons.ctp.response.lib.common.time.DateTimeUtil;
 
 @Service
 public class CaseGroupAuditService {

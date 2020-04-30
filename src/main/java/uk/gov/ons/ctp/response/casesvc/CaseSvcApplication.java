@@ -27,25 +27,25 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
-import uk.gov.ons.ctp.common.distributed.DistributedInstanceManager;
-import uk.gov.ons.ctp.common.distributed.DistributedInstanceManagerRedissonImpl;
-import uk.gov.ons.ctp.common.distributed.DistributedLatchManager;
-import uk.gov.ons.ctp.common.distributed.DistributedLatchManagerRedissonImpl;
-import uk.gov.ons.ctp.common.distributed.DistributedListManager;
-import uk.gov.ons.ctp.common.distributed.DistributedListManagerRedissonImpl;
-import uk.gov.ons.ctp.common.distributed.DistributedLockManager;
-import uk.gov.ons.ctp.common.distributed.DistributedLockManagerRedissonImpl;
-import uk.gov.ons.ctp.common.error.RestExceptionHandler;
-import uk.gov.ons.ctp.common.jackson.CustomObjectMapper;
-import uk.gov.ons.ctp.common.rest.RestUtility;
-import uk.gov.ons.ctp.common.state.StateTransitionManager;
-import uk.gov.ons.ctp.common.state.StateTransitionManagerFactory;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.state.CaseSvcStateTransitionManagerFactory;
+import uk.gov.ons.ctp.response.lib.common.distributed.DistributedInstanceManager;
+import uk.gov.ons.ctp.response.lib.common.distributed.DistributedInstanceManagerRedissonImpl;
+import uk.gov.ons.ctp.response.lib.common.distributed.DistributedLatchManager;
+import uk.gov.ons.ctp.response.lib.common.distributed.DistributedLatchManagerRedissonImpl;
+import uk.gov.ons.ctp.response.lib.common.distributed.DistributedListManager;
+import uk.gov.ons.ctp.response.lib.common.distributed.DistributedListManagerRedissonImpl;
+import uk.gov.ons.ctp.response.lib.common.distributed.DistributedLockManager;
+import uk.gov.ons.ctp.response.lib.common.distributed.DistributedLockManagerRedissonImpl;
+import uk.gov.ons.ctp.response.lib.common.error.RestExceptionHandler;
+import uk.gov.ons.ctp.response.lib.common.jackson.CustomObjectMapper;
+import uk.gov.ons.ctp.response.lib.common.rest.RestUtility;
+import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManager;
+import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManagerFactory;
 
 /** The 'main' entry point for the CaseSvc SpringBoot Application. */
 @CoverageIgnore

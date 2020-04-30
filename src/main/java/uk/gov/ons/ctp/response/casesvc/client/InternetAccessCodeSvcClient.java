@@ -17,11 +17,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
-import uk.gov.ons.ctp.common.rest.RestUtility;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.iac.representation.CreateInternetAccessCodeDTO;
 import uk.gov.ons.ctp.response.iac.representation.InternetAccessCodeDTO;
 import uk.gov.ons.ctp.response.iac.representation.UpdateInternetAccessCodeDTO;
+import uk.gov.ons.ctp.response.lib.common.rest.RestUtility;
 
 /** The impl of the service which calls the IAC service via REST */
 @Service

@@ -31,11 +31,11 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
-import uk.gov.ons.ctp.common.rest.RestUtility;
-import uk.gov.ons.ctp.response.action.representation.ActionDTO;
-import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 import uk.gov.ons.ctp.response.casesvc.config.ActionSvc;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
+import uk.gov.ons.ctp.response.lib.action.ActionDTO;
+import uk.gov.ons.ctp.response.lib.action.ActionPlanDTO;
+import uk.gov.ons.ctp.response.lib.common.rest.RestUtility;
 
 /** A test of the case frame service client service */
 @RunWith(MockitoJUnitRunner.class)

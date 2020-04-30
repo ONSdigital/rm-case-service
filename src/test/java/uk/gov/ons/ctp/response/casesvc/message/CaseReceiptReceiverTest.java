@@ -22,14 +22,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
+import uk.gov.ons.ctp.response.lib.common.error.CTPException;
+import uk.gov.ons.ctp.response.lib.common.time.DateTimeUtil;
 
 /** To unit test CaseReceiptReceiver */
 @RunWith(MockitoJUnitRunner.class)

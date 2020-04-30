@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<jxb:bindings version="1.0" xmlns:jxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" jxb:extensionBindingPrefixes="xjc" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <!-- Global bindings as per what its says on the tin, all schemas -->
+    <jxb:globalBindings>
+      <xjc:simple />
+    </jxb:globalBindings>
+    <!-- Can customise individual schemas with nested bindings e.g.    
+    <jaxb:bindings schemaLocation="SampleUnitNotification.xsd">
+        <jaxb:schemaBindings>
+            <jaxb:package name="uk.gov.ons..." />
+        </jaxb:schemaBindings>
+    </jaxb:bindings> -->
+</jxb:bindings>

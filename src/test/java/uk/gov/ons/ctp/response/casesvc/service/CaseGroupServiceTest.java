@@ -15,16 +15,16 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import uk.gov.ons.ctp.common.FixtureHelper;
-import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.ctp.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
-import uk.gov.ons.ctp.response.collection.exercise.representation.CollectionExerciseDTO;
+import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
+import uk.gov.ons.ctp.response.lib.common.FixtureHelper;
+import uk.gov.ons.ctp.response.lib.common.error.CTPException;
+import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManager;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CaseGroupServiceTest {

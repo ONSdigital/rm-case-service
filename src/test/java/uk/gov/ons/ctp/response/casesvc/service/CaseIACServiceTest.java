@@ -19,7 +19,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.ctp.response.casesvc.client.InternetAccessCodeSvcClient;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
@@ -27,6 +26,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseIacAudit;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseIacAuditRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
+import uk.gov.ons.ctp.response.lib.common.error.CTPException;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CaseIACServiceTest {
