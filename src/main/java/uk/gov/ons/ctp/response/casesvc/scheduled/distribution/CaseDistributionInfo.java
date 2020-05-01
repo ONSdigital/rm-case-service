@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import net.sourceforge.cobertura.CoverageIgnore;
-import uk.gov.ons.ctp.common.health.ScheduledHealthInfo;
+import uk.gov.ons.ctp.response.lib.common.health.ScheduledHealthInfo;
 
 /** info regarding the last case distribution to handlers */
 @CoverageIgnore

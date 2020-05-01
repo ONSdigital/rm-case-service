@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns="http://ons.gov.uk/ctp/response/casesvc/message/sampleunitnotification"
+           targetNamespace="http://ons.gov.uk/ctp/response/casesvc/message/sampleunitnotification">
+
+    <!-- The root element for an sample unit notification message  -->
+    <xs:element name="sampleUnitParent" type="SampleUnitParent"/>
+
+    <xs:complexType name="SampleUnitParent">
+        <xs:complexContent>
+            <xs:extension base="SampleUnit">
+                <xs:sequence>
+                    <xs:element name="collectionExerciseId" type="xs:string" minOccurs="1" maxOccurs="1"/>
+                    <xs:element name="sampleUnitChildren" type="SampleUnitChildren" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <!-- the outer element containing children -->
+    <xs:complexType name="SampleUnitChildren">
+        <xs:sequence>
+            <xs:element name="sampleUnitChild" type="SampleUnit"
+                        minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="SampleUnit">
+        <xs:sequence>
+            <xs:element name="id" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="sampleUnitRef" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="sampleUnitType" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="partyId" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="collectionInstrumentId" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="actionPlanId" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

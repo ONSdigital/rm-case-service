@@ -5,7 +5,7 @@ import net.sourceforge.cobertura.CoverageIgnore;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.annotation.EnableRetry;
-import uk.gov.ons.tools.rabbit.Rabbitmq;
+import uk.gov.ons.ctp.response.lib.rabbit.Rabbitmq;
 
 /** Application Config bean */
 @CoverageIgnore

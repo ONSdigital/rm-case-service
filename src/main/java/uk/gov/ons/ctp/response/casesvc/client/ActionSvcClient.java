@@ -15,10 +15,10 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
-import uk.gov.ons.ctp.common.rest.RestUtility;
-import uk.gov.ons.ctp.response.action.representation.ActionDTO;
-import uk.gov.ons.ctp.response.action.representation.ActionPlanDTO;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
+import uk.gov.ons.ctp.response.lib.action.ActionDTO;
+import uk.gov.ons.ctp.response.lib.action.ActionPlanDTO;
+import uk.gov.ons.ctp.response.lib.common.rest.RestUtility;
 
 /** The impl of the service which calls the action service via REST */
 @Service

@@ -79,7 +79,7 @@
       </bean>
     </property>
     <property name="retryPolicy">
-      <bean class="uk.gov.ons.ctp.common.retry.CTPRetryPolicy">
+      <bean class="uk.gov.ons.ctp.response.lib.common.retry.CTPRetryPolicy">
         <constructor-arg type="int">
           <value>${messaging.conMaxAttempts}</value>
         </constructor-arg>

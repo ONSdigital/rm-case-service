@@ -1,0 +1,29 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns="http://ons.gov.uk/ctp/response/casesvc/message/notification"
+           targetNamespace="http://ons.gov.uk/ctp/response/casesvc/message/notification">
+
+    <xs:element name="caseNotification" type="CaseNotification"/>
+
+    <xs:complexType name="CaseNotification">
+        <xs:all>
+            <xs:element name="sampleUnitId" type="xs:string" minOccurs="0"/>
+            <xs:element name="caseId" type="xs:string" minOccurs="1"/>
+            <xs:element name="actionPlanId" type="xs:string" minOccurs="1"/>
+            <xs:element name="exerciseId" type="xs:string" minOccurs="1"/>
+            <xs:element name="partyId" type="xs:string" minOccurs="0"/>
+            <xs:element name="sampleUnitType" type="xs:string" minOccurs="0"/>
+            <xs:element name="notificationType" type="NotificationType" minOccurs="1"/>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:simpleType name="NotificationType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ACTIVATED"/>
+            <xs:enumeration value="REPLACED"/>
+            <xs:enumeration value="DEACTIVATED"/>
+            <xs:enumeration value="DISABLED"/>
+            <xs:enumeration value="ACTIONPLAN_CHANGED"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+</xs:schema>
