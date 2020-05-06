@@ -253,11 +253,5 @@ spec:
             value: "{{ .Values.tomcat.minIdle }}"
           - name: REPORT_SETTINGS_CRON_EXPRESSION
             value: "{{ .Values.report.cron }}"
-          {{- if .Values.zipkin.enabled }}
-          - name: SPRING_ZIPKIN_ENABLED
-            value: {{ .Values.zipkin.enabled }}
-          - name: SPRING_ZIPKIN_BASEURL
-            value: "http://$(ZIPKIN_SERVICE_HOST):$(ZIPKIN_SERVICE_PORT)/"
-          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
