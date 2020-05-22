@@ -31,7 +31,7 @@ jobs:
       with:
         java-version: 1.8
     - name: Run Tests
-      run: make package
+      run: make verify
     
     - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
       with:

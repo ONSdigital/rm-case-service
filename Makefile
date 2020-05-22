@@ -16,6 +16,6 @@ ifndef DOT
 	$(error "The dot command is not available - please install graphviz (brew install graphviz)")
 endif
 
-package:
+verify:
 	mvn clean verify
 	cp target/casesvc-unversioned.jar ./casesvc.jar
