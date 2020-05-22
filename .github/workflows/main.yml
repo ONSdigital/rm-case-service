@@ -16,6 +16,7 @@ env:
   IMAGE: case
   REGISTRY_HOSTNAME: eu.gcr.io
   HOST: ${{ secrets.GOOGLE_PROJECT_ID }}
+  HELM_PATH: _infra/helm/case
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -43,14 +44,12 @@ jobs:
       # Build the Docker image
     - name: Build
       run: |
-        export TAG=`echo $GITHUB_REF | awk -F/ '{print $NF}'`
-        docker build -t "$REGISTRY_HOSTNAME"/"$HOST"/"$IMAGE":$TAG -f _infra/docker/Dockerfile .
+        docker build -t "$REGISTRY_HOSTNAME"/"$HOST"/"$IMAGE":$GITHUB_SHA -f _infra/docker/Dockerfile .
     - name: Publish
       run: |
-        export TAG=`echo $GITHUB_REF | awk -F/ '{print $NF}'`
-        docker push "$REGISTRY_HOSTNAME"/"$HOST"/"$IMAGE":$TAG
+        docker push "$REGISTRY_HOSTNAME"/"$HOST"/"$IMAGE":$GITHUB_SHA
     - run: |
-        helm package _infra/helm/action
+        helm package $HELM_PATH
     # - uses: 8398a7/action-slack@v3
     #   with:
     #     status: ${{ job.status }}
