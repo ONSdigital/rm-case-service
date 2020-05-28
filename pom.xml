@@ -255,6 +255,7 @@
 
     <build>
         <defaultGoal>clean install</defaultGoal>
+        <finalName>case</finalName>
 
         <plugins>
             <plugin>
