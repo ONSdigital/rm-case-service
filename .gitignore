@@ -74,3 +74,6 @@ plantuml.jar
 # Floobits
 .floo
 .flooignore
+
+*.jar
+.vscode/
