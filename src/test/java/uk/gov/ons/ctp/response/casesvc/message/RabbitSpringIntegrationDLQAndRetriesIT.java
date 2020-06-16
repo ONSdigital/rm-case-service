@@ -122,9 +122,9 @@ public class RabbitSpringIntegrationDLQAndRetriesIT {
     caseReceipt.setResponseDateTime(DateTimeUtil.giveMeCalendarForNow());
     caseReceipt.setCaseRef("TESTCASEREF");
 
-    ObjectMapper obj = new ObjectMapper();   
-    // get Oraganisation object as a json string 
-    String json = obj.writeValueAsString(caseReceipt); 
+    ObjectMapper obj = new ObjectMapper();
+    // get Oraganisation object as a json string
+    String json = obj.writeValueAsString(caseReceipt);
 
     sender.sendMessageToQueue("Case.Responses", json);
     String message =
@@ -132,7 +132,8 @@ public class RabbitSpringIntegrationDLQAndRetriesIT {
             .listen(ExchangeType.Direct, "case-deadletter-exchange", "Case.Responses.binding")
             .poll(30, TimeUnit.SECONDS);
 
-    CaseReceipt dlqCaseReceipt = obj.readValue(new ByteArrayInputStream(message.getBytes()), CaseReceipt.class);
+    CaseReceipt dlqCaseReceipt =
+        obj.readValue(new ByteArrayInputStream(message.getBytes()), CaseReceipt.class);
 
     assertEquals(caseReceipt.getCaseId(), dlqCaseReceipt.getCaseId());
   }
