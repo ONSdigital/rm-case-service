@@ -3,6 +3,7 @@ package uk.gov.ons.ctp.response.casesvc.message;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.junit.Assert.assertEquals;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.ByteArrayInputStream;
@@ -121,22 +122,17 @@ public class RabbitSpringIntegrationDLQAndRetriesIT {
     caseReceipt.setResponseDateTime(DateTimeUtil.giveMeCalendarForNow());
     caseReceipt.setCaseRef("TESTCASEREF");
 
-    JAXBContext jaxbContext = JAXBContext.newInstance(CaseReceipt.class);
-    String xml =
-        new Mapzer(resourceLoader)
-            .convertObjectToXml(jaxbContext, caseReceipt, "casesvc/xsd/inbound/caseReceipt.xsd");
+    ObjectMapper obj = new ObjectMapper();   
+    // get Oraganisation object as a json string 
+    String json = obj.writeValueAsString(caseReceipt); 
 
-    sender.sendMessageToQueue("Case.Responses", xml);
+    sender.sendMessageToQueue("Case.Responses", json);
     String message =
         listener
             .listen(ExchangeType.Direct, "case-deadletter-exchange", "Case.Responses.binding")
             .poll(30, TimeUnit.SECONDS);
 
-    CaseReceipt dlqCaseReceipt =
-        (CaseReceipt)
-            jaxbContext
-                .createUnmarshaller()
-                .unmarshal(new ByteArrayInputStream(message.getBytes()));
+    CaseReceipt dlqCaseReceipt = obj.readValue(new ByteArrayInputStream(message.getBytes()), CaseReceipt.class);
 
     assertEquals(caseReceipt.getCaseId(), dlqCaseReceipt.getCaseId());
   }

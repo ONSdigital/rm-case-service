@@ -37,11 +37,6 @@
   <int-amqp:outbound-channel-adapter channel="caseReceiptInvalidXml"
     exchange-name="case-invalid-exchange"
     id="invalidCaseReceiptOutboundAmqp" routing-key="Case.Responses.binding"/>
-  <!-- Option to be used in Debug/Test: throw-exception-on-rejection="true" -->
-  <int-xml:validating-filter discard-channel="caseReceiptInvalidXml" id="caseReceiptValidator"
-    input-channel="caseReceiptXml"
-    output-channel="caseReceiptXmlValid"
-    schema-location="classpath:casesvc/xsd/inbound/caseReceipt.xsd"/>
 
   <!-- The now validated xml is transformed into the jaxb generated object model -->
   <int:channel datatype="uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt"
