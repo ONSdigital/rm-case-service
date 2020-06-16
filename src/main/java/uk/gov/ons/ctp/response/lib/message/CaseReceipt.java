@@ -1,7 +1,6 @@
 package uk.gov.ons.ctp.response.lib.message;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
