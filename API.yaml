@@ -1,0 +1,1177 @@
+openapi: 3.0.1
+info:
+  title: Case Service API
+  description: API for casesvc
+  version: 10.49.36-SNAPSHOT
+servers:
+  - url: //localhost:8171/
+tags:
+  - name: case-group-endpoint
+    description: Case Group Endpoint
+  - name: case-endpoint
+    description: Case Endpoint
+  - name: case-iac-endpoint
+    description: Case IAC Endpoint
+  - name: category-endpoint
+    description: Category Endpoint
+paths:
+  /health:
+    get:
+      summary: Returns health information about the service.
+      description: Returns whether the service is up or not. An in-built Spring endpoint.
+      security: []
+      tags:
+        - info
+      responses:
+        '200':
+          description: A JSON indicating whether the service is up or not.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: UP
+        '404':
+          description: The service is incorrectly configured.
+    /info:
+      get:
+        summary: Returns basic information about the service.
+        description: Returns service information. An in-built Spring endpoint.
+        security: []
+        tags:
+          - info
+        responses:
+          '200':
+            description: A JSON of basic information about the service.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: casesvc
+                    version:
+                      type: string
+                      example: "10.42.0"
+                    origin:
+                      type: string
+                      example: "git@github.com:ONSdigital/rm-case-service.git"
+                    commit:
+                      type: string
+                      example: "06752afbf05f27c923ddf42d3cd2ec9eeafd3362"
+                    branch:
+                      type: string
+                      example: master
+                    built:
+                      type: string
+                      format: date-time
+                      example: "2020-06-15T08:38:34Z"
+          '404':
+            description: The service is incorrectly configured.
+  /casegroups/partyid/{partyId}:
+    get:
+      tags:
+        - case-group-endpoint
+      summary: findCaseGroupsByPartyId
+      operationId: findCaseGroupsByPartyIdUsingGET
+      description: returns a list of case groups with the given party ID
+      parameters:
+        - name: partyId
+          in: path
+          description: the uuid of the party
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CaseGroupDTO'
+        204:
+          description: No Content if there is no associated casegroup
+          content: {}
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+
+  /casegroups/transitions/{collectionExerciseId}/{ruRef}:
+    get:
+      tags:
+        - case-group-endpoint
+      summary: findTransitionsByCollectionExerciseIdAndRuRef
+      operationId: findTransitionsByCollectionExerciseIdAndRuRefUsingGET
+      description:  will return a list of case group transitions with the given collection exercise ID and sample unit reference.
+      parameters:
+        - name: collectionExerciseId
+          in: path
+          description: the collection exercise id
+          required: true
+          schema:
+            type: string
+        - name: ruRef
+          in: path
+          description: ruRef
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: An array list of the next available case group status based on the status of the current case group.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        404:
+          description: Not Found
+          content: {}
+  /casegroups/{caseGroupId}:
+    get:
+      tags:
+        - case-group-endpoint
+      summary: findCaseGroupById
+      operationId: findCaseGroupByIdUsingGET
+      description: find the case group by an id
+      parameters:
+        - name: caseGroupId
+          in: path
+          description: caseGroupId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseGroupDTO'
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        404:
+          description: Not Found
+          content: {}
+  /cases:
+    get:
+      tags:
+        - case-endpoint
+      summary: find and return all cases in the database
+      operationId: findCasesUsingGET
+      parameters:
+        - name: sampleUnitId
+          in: query
+          description: sampleUnitId (this is an optional query parameter)
+          schema:
+            type: string
+        - name: partyId (this is an optional query parameter)
+          in: query
+          description: partyId
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CaseDetailsDTO'
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        404:
+          description: Not Found
+          content: {}
+  /cases/casegroupid/{casegroupId}:
+    get:
+      tags:
+        - case-endpoint
+      summary: findCasesInCaseGroup
+      description: find cases for a given case group
+      operationId: findCasesInCaseGroupUsingGET
+      parameters:
+        - name: casegroupId
+          in: path
+          description: casegroupId
+          required: true
+          schema:
+            type: string
+        - name: iac
+          in: query
+          description: optional flag to indicate whether to return the IAC code with the case
+          schema:
+            type: boolean
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CaseDetailsDTO'
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        404:
+          description: Not Found
+          content: {}
+  /cases/iac/{iac}:
+    get:
+      tags:
+        - case-endpoint
+      summary: findCaseByIac
+      description: return as case found by iac code
+      operationId: findCaseByIacUsingGET
+      parameters:
+        - name: iac
+          in: path
+          description: iac
+          required: true
+          schema:
+            type: string
+        - name: caseevents
+          in: query
+          description: caseevents
+          schema:
+            type: boolean
+        - name: iac
+          in: query
+          description: iac
+          schema:
+            type: boolean
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseDetailsDTO'
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        404:
+          description: Not Found
+          content: {}
+  /cases/partyid/{partyId}:
+    get:
+      tags:
+        - case-endpoint
+      summary: findCasesByPartyId
+      operationId: findCasesByPartyIdUsingGET
+      parameters:
+        - name: partyId
+          in: path
+          description: partyId
+          required: true
+          schema:
+            type: string
+        - name: caseevents
+          in: query
+          description: caseevents
+          schema:
+            type: boolean
+        - name: iac
+          in: query
+          description: iac
+          schema:
+            type: boolean
+        - name: max_cases_per_survey
+          in: query
+          description: the maximum number of cases to return per survey. Note this filtering happens in the application
+          and not at the db level.
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CaseDetailsDTO'
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        404:
+          description: Not Found
+          content: {}
+  /cases/sampleunitids:
+    get:
+      tags:
+        - case-endpoint
+      summary: findCasesBySampleUnitIds
+      operationId: findCasesBySampleUnitIdsUsingGET
+      description: find all cases by sample unit id. This also retrieves case events and iac if the relevant parameters
+      are passed to it.
+      parameters:
+        - name: sampleUnitId
+          in: query
+          description: sampleUnitId
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: caseevents
+          in: query
+          description: optional flag to indicate if case events should also be return
+          schema:
+            type: boolean
+        - name: iac
+          in: query
+          description: optional flag to indicate if the iac code should be returned.
+          schema:
+            type: boolean
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CaseDetailsDTO'
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        404:
+          description: Not Found
+          content: {}
+  /cases/surveyid/{surveyId}:
+    get:
+      tags:
+        - case-endpoint
+      summary: findCasesBySurveyId
+      operationId: findCasesBySurveyIdUsingGET
+      description: retrieve all case groups for a survey and from that all cases related to that case group.
+      parameters:
+        - name: surveyId
+          in: path
+          description: the uuid of the survey
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CaseDetailsDTO'
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        404:
+          description: Not Found
+          content: {}
+  /cases/{caseId}:
+    get:
+      tags:
+        - case-endpoint
+      summary: findCaseById
+      operationId: findCaseByIdUsingGET
+      description: find a case and it's case events by an id.
+      parameters:
+        - name: caseId
+          in: path
+          description: the case event
+          required: true
+          schema:
+            type: string
+        - name: caseevents
+          in: query
+          description: optional flag to return case events if required.
+          schema:
+            type: boolean
+        - name: iac
+          in: query
+          description: iac
+          schema:
+            type: boolean
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseDetailsDTO'
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        404:
+          description: Not Found
+          content: {}
+  /cases/{caseId}/events:
+    get:
+      tags:
+        - case-endpoint
+      summary: findCaseEventsByCaseId
+      operationId: findCaseEventsByCaseIdUsingGET
+      description: return cases and case events based on the case id
+      parameters:
+        - name: caseId
+          in: path
+          description: caseId
+          required: true
+          schema:
+            type: string
+        - name: category
+          in: query
+          description: category
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CaseEventDTO'
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        404:
+          description: Not Found
+          content: {}
+    post:
+      tags:
+        - case-endpoint
+      summary: createCaseEvent
+      operationId: createCaseEventUsingPOST
+      description: creates a case event
+      parameters:
+        - name: caseId
+          in: path
+          description: caseId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: caseEventCreationRequestDTO
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaseEventCreationRequestDTO'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedCaseEventDTO'
+        201:
+          description: Created
+          content: {}
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        404:
+          description: Not Found
+          content: {}
+      x-codegen-request-body-name: caseEventCreationRequestDTO
+  /cases/{caseId}/iac:
+    get:
+      tags:
+        - case-iac-endpoint
+      summary: getIACCodes
+      operationId: getIACCodesUsingGET
+      description: returns the iac codes for a case. This queries the
+      parameters:
+        - name: caseId
+          in: path
+          description: caseId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CaseIACDTO'
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        404:
+          description: Not Found
+          content: {}
+    post:
+      tags:
+        - case-iac-endpoint
+      summary: generateIACCode
+      operationId: generateIACCodeUsingPOST
+      description: generates a new IAC code by calling the IAC service and then creating an audit event.
+      parameters:
+        - name: caseId
+          in: path
+          description: caseId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CaseIACDTO'
+        201:
+          description: Created
+          content: {}
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        404:
+          description: Not Found
+          content: {}
+  /categories:
+    get:
+      tags:
+        - category-endpoint
+      summary: findCategories
+      operationId: findCategoriesUsingGET
+      description: returns the complete list of categories. These can be optionally filtered by role or group. Though
+      the filtering is performed by the application and not the database.
+      parameters:
+        - name: role
+          in: query
+          description: role
+          schema:
+            type: string
+        - name: group
+          in: query
+          description: group
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CategoryDTO'
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        404:
+          description: Not Found
+          content: {}
+  /categories/name/{categoryName}:
+    get:
+      tags:
+        - category-endpoint
+      summary: findCategory
+      operationId: findCategoryUsingGET
+      description: return a category by specific name
+      parameters:
+        - name: categoryName
+          in: path
+          description: categoryName
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryDTO'
+        401:
+          description: Unauthorized
+          content: {}
+        403:
+          description: Forbidden
+          content: {}
+        404:
+          description: Not Found
+          content: {}
+components:
+  schemas:
+    CaseDetailsDTO:
+      type: object
+      properties:
+        actionPlanId:
+          type: string
+        caseEvents:
+          type: array
+          items:
+            $ref: '#/components/schemas/CaseEventDTO'
+        caseGroup:
+          $ref: '#/components/schemas/CaseGroupDTO'
+        caseRef:
+          type: string
+        collectionInstrumentId:
+          type: string
+        createdBy:
+          type: string
+        createdDateTime:
+          type: string
+          format: date-time
+        iac:
+          type: string
+        id:
+          type: string
+        partyId:
+          type: string
+        responses:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResponseDTO'
+        sampleUnitId:
+          type: string
+        sampleUnitType:
+          type: string
+        state:
+          type: string
+          enum:
+            - ACTIONABLE
+            - INACTIONABLE
+            - REPLACEMENT_INIT
+            - SAMPLED_INIT
+    CaseEventCreationRequestDTO:
+      required:
+        - category
+        - createdBy
+        - description
+      type: object
+      properties:
+        category:
+          type: string
+          enum:
+            - ACTION_CANCELLATION_COMPLETED
+            - ACTION_CANCELLATION_CREATED
+            - ACTION_COMPLETED
+            - ACTION_COMPLETED_DEACTIVATED
+            - ACTION_CREATED
+            - ACTION_UPDATED
+            - ADDRESS_DETAILS_INCORRECT
+            - CASE_CREATED
+            - CLASSIFICATION_INCORRECT
+            - DEACTIVATED
+            - GENERAL_COMPLAINT
+            - GENERAL_COMPLAINT_ESCALATED
+            - GENERAL_ENQUIRY
+            - GENERAL_ENQUIRY_ESCALATED
+            - GENERATE_ENROLMENT_CODE
+            - ACCESS_CODE_AUTHENTICATION_ATTEMPT
+            - INCORRECT_ESCALATION
+            - MISCELLANEOUS
+            - FIELD_EMERGENCY_ESCALATED
+            - CLOSE_ESCALATION
+            - PENDING
+            - FIELD_COMPLAINT_ESCALATED
+            - TECHNICAL_QUERY
+            - ACCESSIBILITY_MATERIALS
+            - PAPER_QUESTIONNAIRE_RESPONSE
+            - ONLINE_QUESTIONNAIRE_RESPONSE
+            - REFUSAL
+            - UNDELIVERABLE
+            - HOUSEHOLD_REPLACEMENT_IAC_REQUESTED
+            - HOUSEHOLD_PAPER_REQUESTED
+            - H_INDIVIDUAL_RESPONSE_REQUESTED
+            - H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED
+            - H_INDIVIDUAL_PAPER_REQUESTED
+            - RESPONDENT_ENROLED
+            - DISABLE_RESPONDENT_ENROLMENT
+            - TRANSLATION_POLISH
+            - TRANSLATION_CANTONESE
+            - TRANSLATION_SOMALI
+            - TRANSLATION_MANDARIN
+            - TRANSLATION_BENGALI
+            - TRANSLATION_PUNJABI_SHAHMUKI
+            - TRANSLATION_PUNJABI_GURMUKHI
+            - TRANSLATION_LITHUANIAN
+            - TRANSLATION_GUJARATI
+            - TRANSLATION_TURKISH
+            - TRANSLATION_ARABIC
+            - TRANSLATION_URDU
+            - TRANSLATION_PORTUGUESE
+            - TRANSLATION_SPANISH
+            - RESPONDENT_ACCOUNT_CREATED
+            - COLLECTION_INSTRUMENT_DOWNLOADED
+            - EQ_LAUNCH
+            - UNSUCCESSFUL_RESPONSE_UPLOAD
+            - SUCCESSFUL_RESPONSE_UPLOAD
+            - OFFLINE_RESPONSE_PROCESSED
+            - SECURE_MESSAGE_SENT
+            - VERIFICATION_CODE_SENT
+            - COLLECTION_INSTRUMENT_ERROR
+            - COMPLETED_BY_PHONE
+            - RESPONDENT_EMAIL_AMENDED
+            - REPLACED
+            - NO_LONGER_REQUIRED
+            - NO_ACTIVE_ENROLMENTS
+            - PRIVACY_DATA_CONFIDENTIALITY_CONCERNS
+            - LEGITIMACY_CONCERNS
+            - OTHER_OUTRIGHT_REFUSAL
+            - ILL_AT_HOME
+            - IN_HOSPITAL
+            - PHYSICALLY_OR_MENTALLY_UNABLE
+            - LANGUAGE_DIFFICULTIES
+            - FULL_INTERVIEW_REQUEST_DATA_DELETED
+            - PARTIAL_INTERVIEW_REQUEST_DATA_DELETED
+            - FULL_INTERVIEW_REQUEST_DATA_DELETED_INCORRECT
+            - PARTIAL_INTERVIEW_REQUEST_DATA_DELETED_INCORRECT
+            - LACK_OF_COMPUTER_INTERNET_ACCESS
+            - TOO_BUSY
+            - OTHER_CIRCUMSTANTIAL_REFUSAL
+            - COMPLY_IN_DIFFERENT_COLLECTION_MODE
+            - REQUEST_TO_COMPLETE_IN_ALTERNATIVE_FORMAT
+            - NO_TRACE_OF_ADDRESS
+            - WRONG_ADDRESS
+            - VACANT_OR_EMPTY
+            - NON_RESIDENTIAL_ADDRESS
+            - ADDRESS_OCCUPIED_NO_RESIDENT
+            - COMMUNAL_ESTABLISHMENT_INSTITUTION
+            - DWELLING_OF_FOREIGN_SERVICE_PERSONNEL_DIPLOMATS
+            - NO_PERSON_IN_ELIGIBLE_AGE_RANGE
+            - DECEASED
+        createdBy:
+          type: string
+        description:
+          type: string
+        subCategory:
+          type: string
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+    CaseEventDTO:
+      type: object
+      properties:
+        category:
+          type: string
+          enum:
+            - ACTION_CANCELLATION_COMPLETED
+            - ACTION_CANCELLATION_CREATED
+            - ACTION_COMPLETED
+            - ACTION_COMPLETED_DEACTIVATED
+            - ACTION_CREATED
+            - ACTION_UPDATED
+            - ADDRESS_DETAILS_INCORRECT
+            - CASE_CREATED
+            - CLASSIFICATION_INCORRECT
+            - DEACTIVATED
+            - GENERAL_COMPLAINT
+            - GENERAL_COMPLAINT_ESCALATED
+            - GENERAL_ENQUIRY
+            - GENERAL_ENQUIRY_ESCALATED
+            - GENERATE_ENROLMENT_CODE
+            - ACCESS_CODE_AUTHENTICATION_ATTEMPT
+            - INCORRECT_ESCALATION
+            - MISCELLANEOUS
+            - FIELD_EMERGENCY_ESCALATED
+            - CLOSE_ESCALATION
+            - PENDING
+            - FIELD_COMPLAINT_ESCALATED
+            - TECHNICAL_QUERY
+            - ACCESSIBILITY_MATERIALS
+            - PAPER_QUESTIONNAIRE_RESPONSE
+            - ONLINE_QUESTIONNAIRE_RESPONSE
+            - REFUSAL
+            - UNDELIVERABLE
+            - HOUSEHOLD_REPLACEMENT_IAC_REQUESTED
+            - HOUSEHOLD_PAPER_REQUESTED
+            - H_INDIVIDUAL_RESPONSE_REQUESTED
+            - H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED
+            - H_INDIVIDUAL_PAPER_REQUESTED
+            - RESPONDENT_ENROLED
+            - DISABLE_RESPONDENT_ENROLMENT
+            - TRANSLATION_POLISH
+            - TRANSLATION_CANTONESE
+            - TRANSLATION_SOMALI
+            - TRANSLATION_MANDARIN
+            - TRANSLATION_BENGALI
+            - TRANSLATION_PUNJABI_SHAHMUKI
+            - TRANSLATION_PUNJABI_GURMUKHI
+            - TRANSLATION_LITHUANIAN
+            - TRANSLATION_GUJARATI
+            - TRANSLATION_TURKISH
+            - TRANSLATION_ARABIC
+            - TRANSLATION_URDU
+            - TRANSLATION_PORTUGUESE
+            - TRANSLATION_SPANISH
+            - RESPONDENT_ACCOUNT_CREATED
+            - COLLECTION_INSTRUMENT_DOWNLOADED
+            - EQ_LAUNCH
+            - UNSUCCESSFUL_RESPONSE_UPLOAD
+            - SUCCESSFUL_RESPONSE_UPLOAD
+            - OFFLINE_RESPONSE_PROCESSED
+            - SECURE_MESSAGE_SENT
+            - VERIFICATION_CODE_SENT
+            - COLLECTION_INSTRUMENT_ERROR
+            - COMPLETED_BY_PHONE
+            - RESPONDENT_EMAIL_AMENDED
+            - REPLACED
+            - NO_LONGER_REQUIRED
+            - NO_ACTIVE_ENROLMENTS
+            - PRIVACY_DATA_CONFIDENTIALITY_CONCERNS
+            - LEGITIMACY_CONCERNS
+            - OTHER_OUTRIGHT_REFUSAL
+            - ILL_AT_HOME
+            - IN_HOSPITAL
+            - PHYSICALLY_OR_MENTALLY_UNABLE
+            - LANGUAGE_DIFFICULTIES
+            - FULL_INTERVIEW_REQUEST_DATA_DELETED
+            - PARTIAL_INTERVIEW_REQUEST_DATA_DELETED
+            - FULL_INTERVIEW_REQUEST_DATA_DELETED_INCORRECT
+            - PARTIAL_INTERVIEW_REQUEST_DATA_DELETED_INCORRECT
+            - LACK_OF_COMPUTER_INTERNET_ACCESS
+            - TOO_BUSY
+            - OTHER_CIRCUMSTANTIAL_REFUSAL
+            - COMPLY_IN_DIFFERENT_COLLECTION_MODE
+            - REQUEST_TO_COMPLETE_IN_ALTERNATIVE_FORMAT
+            - NO_TRACE_OF_ADDRESS
+            - WRONG_ADDRESS
+            - VACANT_OR_EMPTY
+            - NON_RESIDENTIAL_ADDRESS
+            - ADDRESS_OCCUPIED_NO_RESIDENT
+            - COMMUNAL_ESTABLISHMENT_INSTITUTION
+            - DWELLING_OF_FOREIGN_SERVICE_PERSONNEL_DIPLOMATS
+            - NO_PERSON_IN_ELIGIBLE_AGE_RANGE
+            - DECEASED
+        createdBy:
+          type: string
+        createdDateTime:
+          type: string
+          format: date-time
+        description:
+          type: string
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+        subCategory:
+          type: string
+    CaseGroupDTO:
+      type: object
+      properties:
+        caseGroupStatus:
+          type: string
+          enum:
+            - NOTSTARTED
+            - INPROGRESS
+            - COMPLETE
+            - COMPLETEDBYPHONE
+            - REOPENED
+            - NOLONGERREQUIRED
+            - REFUSAL
+            - OTHERNONRESPONSE
+            - UNKNOWNELIGIBILITY
+            - NOTELIGIBLE
+        collectionExerciseId:
+          type: string
+        id:
+          type: string
+        partyId:
+          type: string
+        sampleUnitRef:
+          type: string
+        sampleUnitType:
+          type: string
+        surveyId:
+          type: string
+    CaseIACDTO:
+      type: object
+      properties:
+        iac:
+          type: string
+    CategoryDTO:
+      type: object
+      properties:
+        group:
+          type: string
+        longDescription:
+          type: string
+        name:
+          type: string
+          enum:
+            - ACTION_CANCELLATION_COMPLETED
+            - ACTION_CANCELLATION_CREATED
+            - ACTION_COMPLETED
+            - ACTION_COMPLETED_DEACTIVATED
+            - ACTION_CREATED
+            - ACTION_UPDATED
+            - ADDRESS_DETAILS_INCORRECT
+            - CASE_CREATED
+            - CLASSIFICATION_INCORRECT
+            - DEACTIVATED
+            - GENERAL_COMPLAINT
+            - GENERAL_COMPLAINT_ESCALATED
+            - GENERAL_ENQUIRY
+            - GENERAL_ENQUIRY_ESCALATED
+            - GENERATE_ENROLMENT_CODE
+            - ACCESS_CODE_AUTHENTICATION_ATTEMPT
+            - INCORRECT_ESCALATION
+            - MISCELLANEOUS
+            - FIELD_EMERGENCY_ESCALATED
+            - CLOSE_ESCALATION
+            - PENDING
+            - FIELD_COMPLAINT_ESCALATED
+            - TECHNICAL_QUERY
+            - ACCESSIBILITY_MATERIALS
+            - PAPER_QUESTIONNAIRE_RESPONSE
+            - ONLINE_QUESTIONNAIRE_RESPONSE
+            - REFUSAL
+            - UNDELIVERABLE
+            - HOUSEHOLD_REPLACEMENT_IAC_REQUESTED
+            - HOUSEHOLD_PAPER_REQUESTED
+            - H_INDIVIDUAL_RESPONSE_REQUESTED
+            - H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED
+            - H_INDIVIDUAL_PAPER_REQUESTED
+            - RESPONDENT_ENROLED
+            - DISABLE_RESPONDENT_ENROLMENT
+            - TRANSLATION_POLISH
+            - TRANSLATION_CANTONESE
+            - TRANSLATION_SOMALI
+            - TRANSLATION_MANDARIN
+            - TRANSLATION_BENGALI
+            - TRANSLATION_PUNJABI_SHAHMUKI
+            - TRANSLATION_PUNJABI_GURMUKHI
+            - TRANSLATION_LITHUANIAN
+            - TRANSLATION_GUJARATI
+            - TRANSLATION_TURKISH
+            - TRANSLATION_ARABIC
+            - TRANSLATION_URDU
+            - TRANSLATION_PORTUGUESE
+            - TRANSLATION_SPANISH
+            - RESPONDENT_ACCOUNT_CREATED
+            - COLLECTION_INSTRUMENT_DOWNLOADED
+            - EQ_LAUNCH
+            - UNSUCCESSFUL_RESPONSE_UPLOAD
+            - SUCCESSFUL_RESPONSE_UPLOAD
+            - OFFLINE_RESPONSE_PROCESSED
+            - SECURE_MESSAGE_SENT
+            - VERIFICATION_CODE_SENT
+            - COLLECTION_INSTRUMENT_ERROR
+            - COMPLETED_BY_PHONE
+            - RESPONDENT_EMAIL_AMENDED
+            - REPLACED
+            - NO_LONGER_REQUIRED
+            - NO_ACTIVE_ENROLMENTS
+            - PRIVACY_DATA_CONFIDENTIALITY_CONCERNS
+            - LEGITIMACY_CONCERNS
+            - OTHER_OUTRIGHT_REFUSAL
+            - ILL_AT_HOME
+            - IN_HOSPITAL
+            - PHYSICALLY_OR_MENTALLY_UNABLE
+            - LANGUAGE_DIFFICULTIES
+            - FULL_INTERVIEW_REQUEST_DATA_DELETED
+            - PARTIAL_INTERVIEW_REQUEST_DATA_DELETED
+            - FULL_INTERVIEW_REQUEST_DATA_DELETED_INCORRECT
+            - PARTIAL_INTERVIEW_REQUEST_DATA_DELETED_INCORRECT
+            - LACK_OF_COMPUTER_INTERNET_ACCESS
+            - TOO_BUSY
+            - OTHER_CIRCUMSTANTIAL_REFUSAL
+            - COMPLY_IN_DIFFERENT_COLLECTION_MODE
+            - REQUEST_TO_COMPLETE_IN_ALTERNATIVE_FORMAT
+            - NO_TRACE_OF_ADDRESS
+            - WRONG_ADDRESS
+            - VACANT_OR_EMPTY
+            - NON_RESIDENTIAL_ADDRESS
+            - ADDRESS_OCCUPIED_NO_RESIDENT
+            - COMMUNAL_ESTABLISHMENT_INSTITUTION
+            - DWELLING_OF_FOREIGN_SERVICE_PERSONNEL_DIPLOMATS
+            - NO_PERSON_IN_ELIGIBLE_AGE_RANGE
+            - DECEASED
+        role:
+          type: string
+        shortDescription:
+          type: string
+    CreatedCaseEventDTO:
+      type: object
+      properties:
+        caseId:
+          type: string
+        category:
+          type: string
+          enum:
+            - ACTION_CANCELLATION_COMPLETED
+            - ACTION_CANCELLATION_CREATED
+            - ACTION_COMPLETED
+            - ACTION_COMPLETED_DEACTIVATED
+            - ACTION_CREATED
+            - ACTION_UPDATED
+            - ADDRESS_DETAILS_INCORRECT
+            - CASE_CREATED
+            - CLASSIFICATION_INCORRECT
+            - DEACTIVATED
+            - GENERAL_COMPLAINT
+            - GENERAL_COMPLAINT_ESCALATED
+            - GENERAL_ENQUIRY
+            - GENERAL_ENQUIRY_ESCALATED
+            - GENERATE_ENROLMENT_CODE
+            - ACCESS_CODE_AUTHENTICATION_ATTEMPT
+            - INCORRECT_ESCALATION
+            - MISCELLANEOUS
+            - FIELD_EMERGENCY_ESCALATED
+            - CLOSE_ESCALATION
+            - PENDING
+            - FIELD_COMPLAINT_ESCALATED
+            - TECHNICAL_QUERY
+            - ACCESSIBILITY_MATERIALS
+            - PAPER_QUESTIONNAIRE_RESPONSE
+            - ONLINE_QUESTIONNAIRE_RESPONSE
+            - REFUSAL
+            - UNDELIVERABLE
+            - HOUSEHOLD_REPLACEMENT_IAC_REQUESTED
+            - HOUSEHOLD_PAPER_REQUESTED
+            - H_INDIVIDUAL_RESPONSE_REQUESTED
+            - H_INDIVIDUAL_REPLACEMENT_IAC_REQUESTED
+            - H_INDIVIDUAL_PAPER_REQUESTED
+            - RESPONDENT_ENROLED
+            - DISABLE_RESPONDENT_ENROLMENT
+            - TRANSLATION_POLISH
+            - TRANSLATION_CANTONESE
+            - TRANSLATION_SOMALI
+            - TRANSLATION_MANDARIN
+            - TRANSLATION_BENGALI
+            - TRANSLATION_PUNJABI_SHAHMUKI
+            - TRANSLATION_PUNJABI_GURMUKHI
+            - TRANSLATION_LITHUANIAN
+            - TRANSLATION_GUJARATI
+            - TRANSLATION_TURKISH
+            - TRANSLATION_ARABIC
+            - TRANSLATION_URDU
+            - TRANSLATION_PORTUGUESE
+            - TRANSLATION_SPANISH
+            - RESPONDENT_ACCOUNT_CREATED
+            - COLLECTION_INSTRUMENT_DOWNLOADED
+            - EQ_LAUNCH
+            - UNSUCCESSFUL_RESPONSE_UPLOAD
+            - SUCCESSFUL_RESPONSE_UPLOAD
+            - OFFLINE_RESPONSE_PROCESSED
+            - SECURE_MESSAGE_SENT
+            - VERIFICATION_CODE_SENT
+            - COLLECTION_INSTRUMENT_ERROR
+            - COMPLETED_BY_PHONE
+            - RESPONDENT_EMAIL_AMENDED
+            - REPLACED
+            - NO_LONGER_REQUIRED
+            - NO_ACTIVE_ENROLMENTS
+            - PRIVACY_DATA_CONFIDENTIALITY_CONCERNS
+            - LEGITIMACY_CONCERNS
+            - OTHER_OUTRIGHT_REFUSAL
+            - ILL_AT_HOME
+            - IN_HOSPITAL
+            - PHYSICALLY_OR_MENTALLY_UNABLE
+            - LANGUAGE_DIFFICULTIES
+            - FULL_INTERVIEW_REQUEST_DATA_DELETED
+            - PARTIAL_INTERVIEW_REQUEST_DATA_DELETED
+            - FULL_INTERVIEW_REQUEST_DATA_DELETED_INCORRECT
+            - PARTIAL_INTERVIEW_REQUEST_DATA_DELETED_INCORRECT
+            - LACK_OF_COMPUTER_INTERNET_ACCESS
+            - TOO_BUSY
+            - OTHER_CIRCUMSTANTIAL_REFUSAL
+            - COMPLY_IN_DIFFERENT_COLLECTION_MODE
+            - REQUEST_TO_COMPLETE_IN_ALTERNATIVE_FORMAT
+            - NO_TRACE_OF_ADDRESS
+            - WRONG_ADDRESS
+            - VACANT_OR_EMPTY
+            - NON_RESIDENTIAL_ADDRESS
+            - ADDRESS_OCCUPIED_NO_RESIDENT
+            - COMMUNAL_ESTABLISHMENT_INSTITUTION
+            - DWELLING_OF_FOREIGN_SERVICE_PERSONNEL_DIPLOMATS
+            - NO_PERSON_IN_ELIGIBLE_AGE_RANGE
+            - DECEASED
+        createdBy:
+          type: string
+        createdDateTime:
+          type: string
+          format: date-time
+        description:
+          type: string
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+        partyId:
+          type: string
+        subCategory:
+          type: string
+    ResponseDTO:
+      type: object
+      properties:
+        dateTime:
+          type: string
+          format: date-time
+        inboundChannel:
+          type: string
