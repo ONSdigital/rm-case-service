@@ -2,6 +2,7 @@ openapi: 3.0.1
 info:
   title: Case Service API
   description: API for casesvc
+  version: 1.0
 servers:
   - url: //localhost:8171/
 tags:
@@ -599,8 +600,7 @@ paths:
         - category-endpoint
       summary: findCategories
       operationId: findCategoriesUsingGET
-      description: returns the complete list of categories. These can be optionally filtered by role or group. Though
-      the filtering is performed by the application and not the database.
+      description: returns the complete list of categories. These can be optionally filtered by role or group. Though the filtering is performed by the application and not the database.
       parameters:
         - name: role
           in: query
