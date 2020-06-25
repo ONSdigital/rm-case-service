@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   title: Case Service API
   description: API for casesvc
-  version: 1.0
+  version: "1.0"
 servers:
   - url: //localhost:8171/
 tags:
