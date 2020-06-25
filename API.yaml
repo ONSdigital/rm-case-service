@@ -2,7 +2,6 @@ openapi: 3.0.1
 info:
   title: Case Service API
   description: API for casesvc
-  version: 10.49.36-SNAPSHOT
 servers:
   - url: //localhost:8171/
 tags:
@@ -35,42 +34,42 @@ paths:
                     example: UP
         '404':
           description: The service is incorrectly configured.
-    /info:
-      get:
-        summary: Returns basic information about the service.
-        description: Returns service information. An in-built Spring endpoint.
-        security: []
-        tags:
-          - info
-        responses:
-          '200':
-            description: A JSON of basic information about the service.
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                      example: casesvc
-                    version:
-                      type: string
-                      example: "10.42.0"
-                    origin:
-                      type: string
-                      example: "git@github.com:ONSdigital/rm-case-service.git"
-                    commit:
-                      type: string
-                      example: "06752afbf05f27c923ddf42d3cd2ec9eeafd3362"
-                    branch:
-                      type: string
-                      example: master
-                    built:
-                      type: string
-                      format: date-time
-                      example: "2020-06-15T08:38:34Z"
-          '404':
-            description: The service is incorrectly configured.
+  /info:
+    get:
+      summary: Returns basic information about the service.
+      description: Returns service information. An in-built Spring endpoint.
+      security: []
+      tags:
+        - info
+      responses:
+        '200':
+          description: A JSON of basic information about the service.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: casesvc
+                  version:
+                    type: string
+                    example: "10.42.0"
+                  origin:
+                    type: string
+                    example: "git@github.com:ONSdigital/rm-case-service.git"
+                  commit:
+                    type: string
+                    example: "06752afbf05f27c923ddf42d3cd2ec9eeafd3362"
+                  branch:
+                    type: string
+                    example: master
+                  built:
+                    type: string
+                    format: date-time
+                    example: "2020-06-15T08:38:34Z"
+        '404':
+          description: The service is incorrectly configured.
   /casegroups/partyid/{partyId}:
     get:
       tags:
@@ -103,7 +102,6 @@ paths:
         403:
           description: Forbidden
           content: {}
-
   /casegroups/transitions/{collectionExerciseId}/{ruRef}:
     get:
       tags:
@@ -290,6 +288,7 @@ paths:
         - case-endpoint
       summary: findCasesByPartyId
       operationId: findCasesByPartyIdUsingGET
+      description: find cases that have the requested party id
       parameters:
         - name: partyId
           in: path
@@ -309,8 +308,7 @@ paths:
             type: boolean
         - name: max_cases_per_survey
           in: query
-          description: the maximum number of cases to return per survey. Note this filtering happens in the application
-          and not at the db level.
+          description: The maximum number of cases to return per survey. Note this filtering happens in the application and not at the db level.
           schema:
             type: integer
             format: int32
@@ -338,8 +336,7 @@ paths:
         - case-endpoint
       summary: findCasesBySampleUnitIds
       operationId: findCasesBySampleUnitIdsUsingGET
-      description: find all cases by sample unit id. This also retrieves case events and iac if the relevant parameters
-      are passed to it.
+      description: find all cases by sample unit id. This also retrieves case events and iac if the relevant parameters are passed to it.
       parameters:
         - name: sampleUnitId
           in: query
