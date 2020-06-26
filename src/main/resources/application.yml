@@ -140,7 +140,7 @@ messaging:
 
 report-settings:
   cron-expression: "0 * * * * *"
-  cron-enabled: false
+  cron-enabled: true
 
 swagger-settings:
   swagger-ui-active: true
