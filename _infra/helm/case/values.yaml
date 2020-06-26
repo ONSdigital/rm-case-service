@@ -35,6 +35,7 @@ managedRabbitMQ:
 
 report:
   cron: "0 * * * * *"
+  enabled: false
 
 tomcat:
   initialSize: 5
