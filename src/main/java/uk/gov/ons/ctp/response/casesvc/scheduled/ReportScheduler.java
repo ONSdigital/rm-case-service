@@ -6,8 +6,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.ctp.response.casesvc.service.CaseReportService;
@@ -68,8 +66,8 @@ public class ReportScheduler {
       log.debug("Entering createReport...");
 
       reportDistributedLatchManager.setCountDownLatch(
-              DISTRIBUTED_OBJECT_KEY_REPORT_LATCH,
-              reportDistributedInstanceManager.getInstanceCount(DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT));
+          DISTRIBUTED_OBJECT_KEY_REPORT_LATCH,
+          reportDistributedInstanceManager.getInstanceCount(DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT));
 
       if (!reportDistributedLockManager.isLocked(DISTRIBUTED_OBJECT_KEY_REPORT)) {
         if (reportDistributedLockManager.lock(DISTRIBUTED_OBJECT_KEY_REPORT)) {
@@ -79,12 +77,13 @@ public class ReportScheduler {
 
       try {
         reportDistributedLatchManager.countDown(DISTRIBUTED_OBJECT_KEY_REPORT_LATCH);
-        if (!reportDistributedLatchManager.awaitCountDownLatch(DISTRIBUTED_OBJECT_KEY_REPORT_LATCH)) {
+        if (!reportDistributedLatchManager.awaitCountDownLatch(
+            DISTRIBUTED_OBJECT_KEY_REPORT_LATCH)) {
           log.with(
                   "instance_count",
                   reportDistributedInstanceManager.getInstanceCount(
-                          DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT))
-                  .error("Report run error countdownlatch timed out");
+                      DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT))
+              .error("Report run error countdownlatch timed out");
         }
       } catch (InterruptedException e) {
         log.error("Report run error waiting for countdownlatch", e);
