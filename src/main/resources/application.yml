@@ -19,7 +19,7 @@ liquibase:
   user: postgres
   password: postgres
   default-schema: casesvc
-  url: jdbc:postgresql://localhost:6432/postgres
+  url: jdbc:postgresql://localhost:5432/postgres
   changeLog: classpath:/database/changelog-master.yml
 
 security:
@@ -55,7 +55,7 @@ spring:
   application:
     name: ONS CaseService
   datasource:
-    url: jdbc:postgresql://localhost:6432/postgres
+    url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password: postgres
     driverClassName: org.postgresql.Driver
@@ -75,7 +75,7 @@ spring:
         default_schema: casesvc
 
 data-grid:
-  address: localhost:7379
+  address: localhost:6379
   list-time-to-live-seconds: 60
   list-time-to-wait-seconds: 60
   report-lock-time-to-live-seconds: 300
@@ -125,7 +125,7 @@ rabbitmq:
   username: guest
   password: guest
   host: localhost
-  port: 6672
+  port: 5672
   virtualhost: /
 
 messaging:
@@ -140,6 +140,7 @@ messaging:
 
 report-settings:
   cron-expression: "0 * * * * *"
+  cron-enabled: false
 
 swagger-settings:
   swagger-ui-active: true
