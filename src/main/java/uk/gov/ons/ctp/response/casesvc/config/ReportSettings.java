@@ -7,5 +7,6 @@ import net.sourceforge.cobertura.CoverageIgnore;
 @CoverageIgnore
 @Data
 public class ReportSettings {
+  private boolean cronEnabled;
   private String cronExpression;
 }

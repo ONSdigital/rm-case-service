@@ -5,6 +5,7 @@ import com.godaddy.logging.LoggerFactory;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.ctp.response.casesvc.service.CaseReportService;
@@ -23,6 +24,9 @@ public class ReportScheduler {
   private static final String DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT = "reportscheduler";
   private static final String DISTRIBUTED_OBJECT_KEY_REPORT = "report";
 
+  @Value("#{appConfig.reportSettings.cronEnabled}")
+  private boolean reportEnabled;
+
   @Autowired private CaseReportService caseReportService;
 
   @Autowired private DistributedLockManager reportDistributedLockManager;
@@ -34,6 +38,7 @@ public class ReportScheduler {
   /** Initialise report scheduler */
   @PostConstruct
   public void init() {
+    log.debug("Report Schedule enabled: " + reportEnabled);
     reportDistributedInstanceManager.incrementInstanceCount(DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT);
     log.with(
             "instance_count",
@@ -57,32 +62,35 @@ public class ReportScheduler {
   /** The method triggering report creation. */
   @Scheduled(cron = "#{appConfig.reportSettings.cronExpression}")
   public void createReport() {
-    log.debug("Entering createReport...");
+    if (reportEnabled) {
+      log.debug("Entering createReport...");
 
-    reportDistributedLatchManager.setCountDownLatch(
-        DISTRIBUTED_OBJECT_KEY_REPORT_LATCH,
-        reportDistributedInstanceManager.getInstanceCount(DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT));
+      reportDistributedLatchManager.setCountDownLatch(
+          DISTRIBUTED_OBJECT_KEY_REPORT_LATCH,
+          reportDistributedInstanceManager.getInstanceCount(DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT));
 
-    if (!reportDistributedLockManager.isLocked(DISTRIBUTED_OBJECT_KEY_REPORT)) {
-      if (reportDistributedLockManager.lock(DISTRIBUTED_OBJECT_KEY_REPORT)) {
-        caseReportService.createReport();
+      if (!reportDistributedLockManager.isLocked(DISTRIBUTED_OBJECT_KEY_REPORT)) {
+        if (reportDistributedLockManager.lock(DISTRIBUTED_OBJECT_KEY_REPORT)) {
+          caseReportService.createReport();
+        }
       }
-    }
 
-    try {
-      reportDistributedLatchManager.countDown(DISTRIBUTED_OBJECT_KEY_REPORT_LATCH);
-      if (!reportDistributedLatchManager.awaitCountDownLatch(DISTRIBUTED_OBJECT_KEY_REPORT_LATCH)) {
-        log.with(
-                "instance_count",
-                reportDistributedInstanceManager.getInstanceCount(
-                    DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT))
-            .error("Report run error countdownlatch timed out");
+      try {
+        reportDistributedLatchManager.countDown(DISTRIBUTED_OBJECT_KEY_REPORT_LATCH);
+        if (!reportDistributedLatchManager.awaitCountDownLatch(
+            DISTRIBUTED_OBJECT_KEY_REPORT_LATCH)) {
+          log.with(
+                  "instance_count",
+                  reportDistributedInstanceManager.getInstanceCount(
+                      DISTRIBUTED_OBJECT_KEY_INSTANCE_COUNT))
+              .error("Report run error countdownlatch timed out");
+        }
+      } catch (InterruptedException e) {
+        log.error("Report run error waiting for countdownlatch", e);
+      } finally {
+        reportDistributedLockManager.unlock(DISTRIBUTED_OBJECT_KEY_REPORT);
+        reportDistributedLatchManager.deleteCountDownLatch(DISTRIBUTED_OBJECT_KEY_REPORT_LATCH);
       }
-    } catch (InterruptedException e) {
-      log.error("Report run error waiting for countdownlatch", e);
-    } finally {
-      reportDistributedLockManager.unlock(DISTRIBUTED_OBJECT_KEY_REPORT);
-      reportDistributedLatchManager.deleteCountDownLatch(DISTRIBUTED_OBJECT_KEY_REPORT_LATCH);
     }
   }
 }
