@@ -253,5 +253,7 @@ spec:
             value: "{{ .Values.tomcat.minIdle }}"
           - name: REPORT_SETTINGS_CRON_EXPRESSION
             value: "{{ .Values.report.cron }}"
+          - name: REPORT_SETTINGS_CRON_ENABLED
+            value: "{{ .Values.report.enabled }}"
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
