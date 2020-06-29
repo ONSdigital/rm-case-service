@@ -104,7 +104,7 @@ There are two ways of running this service
 To use the code styler please goto this url (https://github.com/google/google-java-format) and follow the Intellij instructions or Eclipse depending on what you use
 
 ## API
-Open API spec can be found [here](API.yaml)
+Open API spec can be found~~~~ [here](API.yaml)
 
 ## To test
 See curlTests.txt under /test/resources
