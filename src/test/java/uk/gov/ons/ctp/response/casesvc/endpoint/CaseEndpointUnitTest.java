@@ -22,7 +22,6 @@ import static uk.gov.ons.ctp.response.lib.common.MvcHelper.postJson;
 import static uk.gov.ons.ctp.response.lib.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +34,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
-import org.springframework.data.domain.Example;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.MockMvc;
