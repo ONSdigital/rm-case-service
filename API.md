@@ -448,22 +448,6 @@ An `HTTP 201 Created` status code is returned if the case event creation was a s
 
 An `HTTP 204 No Content` status code is returned if there are no available categories.
 
-## Get Category
-* `GET /categories/name/{categoryName}` will return the details of the category with the name provided.
-
-### Example JSON Response
-```json
-{
-  "name": "CASE_CREATED",
-  "shortDescription": "Case Created",
-  "longDescription": "Case Created",
-  "role": null,
-  "group": null
-}
-```
-
-An `HTTP 404 Not Found` status code is returned if the category with the specified name could not be found.
-
 ## Get IAC by Case ID
 * `GET /cases/{caseId}/iac` will return the IAC corresponding to the specified case ID.
 

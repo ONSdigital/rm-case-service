@@ -37,7 +37,6 @@ import uk.gov.ons.ctp.response.lib.common.jackson.CustomObjectMapper;
 /** A test of the category endpoint */
 public final class CategoryEndpointUnitTest {
 
-  private static final String CATEGORY_UNKNOWN = "Felix The Cat";
   private static final String CATEGORY1_NAME = "ACCESSIBILITY_MATERIALS";
   private static final String CATEGORY2_NAME = "ACTION_CANCELLATION_COMPLETED";
   private static final String CATEGORY3_NAME = "ACTION_CANCELLATION_CREATED";
@@ -128,49 +127,5 @@ public final class CategoryEndpointUnitTest {
     actions.andExpect(jsonPath("$[0].longDescription", is(CATEGORY1_LONG_DESC)));
     actions.andExpect(jsonPath("$[0].shortDescription", is(CATEGORY1_SHORT_DESC)));
     actions.andExpect(jsonPath("$[0].role", is(CATEGORY1_ROLE)));
-  }
-
-  /**
-   * Get category which does not exist.
-   *
-   * @throws Exception if getJson fails
-   */
-  @Test
-  public void findACategoryNotFound() throws Exception {
-    ResultActions actions =
-        mockMvc.perform(getJson(String.format("/categories/name/%s", CATEGORY_UNKNOWN)));
-
-    actions.andExpect(status().isNotFound());
-    actions.andExpect(handler().handlerType(CategoryEndpoint.class));
-    actions.andExpect(handler().methodName("findCategory"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
-    actions.andExpect(
-        jsonPath(
-            "$.error.message",
-            is(String.format("%s categoryName %s", ERRORMSG_CATEGORYNOTFOUND, CATEGORY_UNKNOWN))));
-    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
-  }
-
-  /**
-   * Get category which does exist.
-   *
-   * @throws Exception if getJson fails
-   */
-  @Test
-  public void findACategoryFound() throws Exception {
-    when(categoryService.findCategory(any())).thenReturn(categoryResults.get(0));
-
-    ResultActions actions =
-        mockMvc.perform(getJson(String.format("/categories/name/%s", CATEGORY1_NAME)));
-
-    actions.andExpect(status().isOk());
-    actions.andExpect(handler().handlerType(CategoryEndpoint.class));
-    actions.andExpect(handler().methodName("findCategory"));
-    actions.andExpect(jsonPath("$.*", Matchers.hasSize(5)));
-    actions.andExpect(jsonPath("$.group", is(CATEGORY1_GROUP)));
-    actions.andExpect(jsonPath("$.name", is(CATEGORY1_NAME)));
-    actions.andExpect(jsonPath("$.longDescription", is(CATEGORY1_LONG_DESC)));
-    actions.andExpect(jsonPath("$.shortDescription", is(CATEGORY1_SHORT_DESC)));
-    actions.andExpect(jsonPath("$.role", is(CATEGORY1_ROLE)));
   }
 }

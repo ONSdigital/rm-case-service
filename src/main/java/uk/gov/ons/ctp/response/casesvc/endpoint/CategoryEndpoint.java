@@ -35,32 +35,6 @@ public final class CategoryEndpoint implements CTPEndpoint {
   private MapperFacade mapperFacade;
 
   /**
-   * the GET endpoint to retrieve the category with categoryType
-   *
-   * @param categoryName the categoryName
-   * @return the list of categories
-   * @throws CTPException if category does not exist
-   */
-  @RequestMapping(value = "/name/{categoryName}", method = RequestMethod.GET)
-  public CategoryDTO findCategory(@PathVariable("categoryName") final String categoryName)
-      throws CTPException {
-    log.with("category_name", categoryName).debug("Entering findCategory");
-
-    Category category = null;
-    Optional<CategoryDTO.CategoryName> catTypeEnum =
-        CategoryDTO.CategoryName.fromString(categoryName);
-    if (catTypeEnum.isPresent()) {
-      category = categoryService.findCategory(catTypeEnum.get());
-    }
-    if (category == null) {
-      throw new CTPException(
-          CTPException.Fault.RESOURCE_NOT_FOUND,
-          String.format("%s categoryName %s", ERRORMSG_CATEGORYNOTFOUND, categoryName));
-    }
-    return mapperFacade.map(category, CategoryDTO.class);
-  }
-
-  /**
    * the GET endpoint to retrieve all categories
    *
    * @param role the role (example: collect-csos, collect-admins)
