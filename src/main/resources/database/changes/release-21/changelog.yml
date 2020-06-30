@@ -1,11 +1,21 @@
 databaseChangeLog:
 
-- changeSet:
-    id: 21-1
-    author: Warren Bailey
-    changes:
-    - sqlFile:
-        comment: drop the report abd message log table
-        path: drop-reporting-tables.sql
-        relativeToChangelogFile: true
-        splitStatements: false
+  - changeSet:
+      id: 21-1
+      author: Warren Bailey
+      changes:
+        - sqlFile:
+            comment: drop the stored procedures
+            path: drop-function.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+
+  - changeSet:
+      id: 21-2
+      author: Warren Bailey
+      changes:
+        - sqlFile:
+            comment: drop the report abd message log table
+            path: drop-reporting-tables.sql
+            relativeToChangelogFile: true
+            splitStatements: false

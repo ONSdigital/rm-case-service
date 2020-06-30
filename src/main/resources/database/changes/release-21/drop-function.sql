@@ -1,0 +1,3 @@
+DROP FUNCTION casesvc.generate_case_events_report;
+DROP FUNCTION casesvc.logmessage;
+DROP FUNCTION casesvc.generate_response_chasing_report;
