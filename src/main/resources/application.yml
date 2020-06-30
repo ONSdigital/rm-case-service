@@ -138,10 +138,6 @@ messaging:
   prefetchCount: 10
   txSize: 1
 
-report-settings:
-  cron-expression: "0 * * * * *"
-  cron-enabled: true
-
 swagger-settings:
   swagger-ui-active: true
   group-name: caseservice-api
