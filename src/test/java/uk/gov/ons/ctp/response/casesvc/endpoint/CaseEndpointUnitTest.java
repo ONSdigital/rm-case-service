@@ -22,7 +22,6 @@ import static uk.gov.ons.ctp.response.lib.common.MvcHelper.postJson;
 import static uk.gov.ons.ctp.response.lib.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +34,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
-import org.springframework.data.domain.Example;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.MockMvc;
@@ -874,100 +872,6 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.createdDateTime", is(new DateMatcher(CASE_DATE_VALUE_1))));
     actions.andExpect(jsonPath("$.category", is(CASE9_CATEGORY)));
     actions.andExpect(jsonPath("$.subCategory").doesNotExist());
-  }
-
-  @Test
-  public void getCasesByPartyId() throws Exception {
-    // Given
-    UUID partyId = UUID.randomUUID();
-    ArgumentCaptor<Example> captor = ArgumentCaptor.forClass(Example.class);
-    when(caseRepository.findAll(captor.capture()))
-        .thenReturn(Collections.singletonList(Case.builder().partyId(partyId).build()));
-
-    // When
-    ResultActions actions = mockMvc.perform(getJson("/cases").param("partyId", partyId.toString()));
-
-    // Then
-    actions.andExpect(status().isOk()).andExpect(jsonPath("$[0].partyId", is(partyId.toString())));
-    Example<Case> captured = captor.getValue();
-    assertEquals(captured.getProbe().getPartyId(), partyId);
-  }
-
-  @Test
-  public void getCasesBySampleUnitId() throws Exception {
-    // Given
-    UUID sampleUnitId = UUID.randomUUID();
-    ArgumentCaptor<Example> captor = ArgumentCaptor.forClass(Example.class);
-    when(caseRepository.findAll(captor.capture()))
-        .thenReturn(Collections.singletonList(Case.builder().sampleUnitId(sampleUnitId).build()));
-
-    // When
-    ResultActions actions =
-        mockMvc.perform(getJson("/cases").param("sampleUnitId", sampleUnitId.toString()));
-
-    // Then
-    actions
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$[0].sampleUnitId", is(sampleUnitId.toString())));
-    Example<Case> captured = captor.getValue();
-    assertEquals(captured.getProbe().getSampleUnitId(), sampleUnitId);
-  }
-
-  @Test
-  public void getCasesNoParams() throws Exception {
-    // Given
-    UUID sampleUnitId = UUID.randomUUID();
-    ArgumentCaptor<Example> captor = ArgumentCaptor.forClass(Example.class);
-    when(caseRepository.findAll())
-        .thenReturn(Collections.singletonList(Case.builder().sampleUnitId(sampleUnitId).build()));
-
-    // When
-    ResultActions actions = mockMvc.perform(getJson("/cases"));
-
-    // Then
-    actions
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$[0].sampleUnitId", is(sampleUnitId.toString())));
-  }
-
-  @Test
-  public void getCasesAllParams() throws Exception {
-    // Given
-    UUID sampleUnitId = UUID.randomUUID();
-    UUID partyId = UUID.randomUUID();
-    ArgumentCaptor<Example> captor = ArgumentCaptor.forClass(Example.class);
-    when(caseRepository.findAll())
-        .thenReturn(
-            Collections.singletonList(
-                Case.builder().sampleUnitId(sampleUnitId).partyId(partyId).build()));
-
-    // When
-    ResultActions actions = mockMvc.perform(getJson("/cases"));
-
-    // Then
-    actions
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$[0].partyId", is(partyId.toString())))
-        .andExpect(jsonPath("$[0].sampleUnitId", is(sampleUnitId.toString())));
-  }
-
-  @Test
-  public void getCasesAndCaseGroups() throws Exception {
-    // Given
-    int caseGroupFK = 1;
-    UUID partyId = UUID.randomUUID();
-    when(caseRepository.findAll())
-        .thenReturn(Collections.singletonList(Case.builder().caseGroupFK(caseGroupFK).build()));
-    when(caseGroupService.findCaseGroupByCaseGroupPK(caseGroupFK))
-        .thenReturn(CaseGroup.builder().partyId(partyId).build());
-
-    // When
-    ResultActions actions = mockMvc.perform(getJson("/cases"));
-
-    // Then
-    actions
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$[0].caseGroup.partyId", is(partyId.toString())));
   }
 
   /**

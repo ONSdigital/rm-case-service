@@ -12,8 +12,6 @@ import javax.validation.Valid;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
@@ -188,49 +186,6 @@ public final class CaseEndpoint implements CTPEndpoint {
             .collect(Collectors.toList());
 
     return ResponseEntity.ok(caseDetailsDTOList);
-  }
-
-  @RequestMapping(method = RequestMethod.GET)
-  public ResponseEntity<List<CaseDetailsDTO>> findCases(
-      @RequestParam(required = false) String sampleUnitId,
-      @RequestParam(required = false) String partyId) {
-    log.with("sample_unit_id", sampleUnitId).with("party_id", partyId).debug("Finding cases");
-    Example<Case> exampleCase = buildExampleCase(sampleUnitId, partyId);
-    List<Case> cases = getCases(exampleCase);
-    List<CaseDetailsDTO> caseResponses =
-        cases
-            .stream()
-            .map(
-                c -> {
-                  CaseDetailsDTO caseDetails = mapperFacade.map(c, CaseDetailsDTO.class);
-                  CaseGroup parentCaseGroup =
-                      caseGroupService.findCaseGroupByCaseGroupPK(c.getCaseGroupFK());
-                  caseDetails.setCaseGroup(mapperFacade.map(parentCaseGroup, CaseGroupDTO.class));
-                  return caseDetails;
-                })
-            .collect(Collectors.toList());
-
-    return ResponseEntity.ok(caseResponses);
-  }
-
-  private List<Case> getCases(Example<Case> exampleCase) {
-    boolean emptyRequest = exampleCase.getProbe().equals(new Case());
-    if (emptyRequest) {
-      return caseRepository.findAll();
-    } else {
-      return caseRepository.findAll(exampleCase);
-    }
-  }
-
-  private Example<Case> buildExampleCase(String sampleUnitId, String partyId) {
-    Case.CaseBuilder caseBuilder = Case.builder();
-    if (sampleUnitId != null) {
-      caseBuilder.sampleUnitId(UUID.fromString(sampleUnitId));
-    }
-    if (partyId != null) {
-      caseBuilder.partyId(UUID.fromString(partyId));
-    }
-    return Example.of(caseBuilder.build(), ExampleMatcher.matchingAny());
   }
 
   /**
