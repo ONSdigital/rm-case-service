@@ -190,17 +190,6 @@ public final class CaseEndpoint implements CTPEndpoint {
     return ResponseEntity.ok(caseDetailsDTOList);
   }
 
-  private Example<Case> buildExampleCase(String sampleUnitId, String partyId) {
-    Case.CaseBuilder caseBuilder = Case.builder();
-    if (sampleUnitId != null) {
-      caseBuilder.sampleUnitId(UUID.fromString(sampleUnitId));
-    }
-    if (partyId != null) {
-      caseBuilder.partyId(UUID.fromString(partyId));
-    }
-    return Example.of(caseBuilder.build(), ExampleMatcher.matchingAny());
-  }
-
   /**
    * the GET endpoint to find a Case by IAC
    *
