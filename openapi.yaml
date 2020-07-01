@@ -595,36 +595,6 @@ paths:
         404:
           description: Not Found
           content: {}
-  /categories/name/{categoryName}:
-    get:
-      tags:
-        - category-endpoint
-      summary: findCategory
-      operationId: findCategoryUsingGET
-      description: return a category by specific name
-      parameters:
-        - name: categoryName
-          in: path
-          description: categoryName
-          required: true
-          schema:
-            type: string
-      responses:
-        200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CategoryDTO'
-        401:
-          description: Unauthorized
-          content: {}
-        403:
-          description: Forbidden
-          content: {}
-        404:
-          description: Not Found
-          content: {}
 components:
   schemas:
     CaseDetailsDTO:
