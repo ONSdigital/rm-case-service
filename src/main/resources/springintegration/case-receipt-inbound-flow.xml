@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:int="http://www.springframework.org/schema/integration"
   xmlns:int-amqp="http://www.springframework.org/schema/integration/amqp"
-  xmlns:int-xml="http://www.springframework.org/schema/integration/xml"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://www.springframework.org/schema/beans"
   xsi:schemaLocation="http://www.springframework.org/schema/beans
@@ -21,29 +20,37 @@
     <property name="channelTransacted" value="true"/>
   </bean>
 
-  <!-- Xml msg is taken off the queue Case.Responses and put on the channel caseReceiptXml -->
+  <!-- msg is taken off the queue Case.Responses and put on the channel caseReceiptXml -->
   <int:channel id="caseReceiptXml"/>
   <bean class="org.springframework.amqp.support.converter.SimpleMessageConverter"
     id="simpleMessageConverter"/>
-  <bean id="jsonMessageConverter"
-    class="org.springframework.amqp.support.converter.Jackson2JsonMessageConverter">
-  </bean>
   <int-amqp:inbound-channel-adapter channel="caseReceiptXml"
     id="caseReceiptInboundAmqp"
-    listener-container="caseReceiptMessageListenerContainer" message-converter="jsonMessageConverter"/>
+    listener-container="caseReceiptMessageListenerContainer" message-converter="simpleMessageConverter"/>
 
-  <!-- Xml validated against the inbound schema -->
+  <!-- Validated against nothing at the moment! -->
   <int:channel id="caseReceiptInvalidXml"/>
   <int-amqp:outbound-channel-adapter channel="caseReceiptInvalidXml"
     exchange-name="case-invalid-exchange"
     id="invalidCaseReceiptOutboundAmqp" routing-key="Case.Responses.binding"/>
 
-  <!-- The now validated xml is transformed into the jaxb generated object model -->
+  <int:filter
+          id="caseReceiptValidator"
+          discard-channel="caseReceiptInvalidXml"
+          input-channel="caseReceiptXml"
+          output-channel="caseReceiptXmlValid"
+          ref="myFilter">
+  </int:filter>
+
+  <bean id="myFilter" class="uk.gov.ons.ctp.response.casesvc.message.MessageFilter"></bean>
+
+  <!-- The now validated json is transformed into the object model -->
   <int:channel datatype="uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt"
     id="caseReceiptTransformed"/>
-  <int-xml:unmarshalling-transformer
-    input-channel="caseReceiptXmlValid" output-channel="caseReceiptTransformed"
-    unmarshaller="caseReceiptMarshaller"/>
+  <int:json-to-object-transformer
+          input-channel="caseReceiptXmlValid" output-channel="caseReceiptTransformed"
+          type="uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt">
+  </int:json-to-object-transformer>
   <bean class="org.springframework.oxm.jaxb.Jaxb2Marshaller" id="caseReceiptMarshaller">
     <property name="contextPath" value="uk.gov.ons.ctp.response.casesvc.message.feedback"/>
   </bean>
@@ -91,10 +98,11 @@
     output-channel="caseReceiptDlqInterimChannel"/>
 
   <int:channel id="caseReceiptDlqChannelXml"/>
-  <int-xml:marshalling-transformer
-    input-channel="caseReceiptDlqInterimChannel" marshaller="caseReceiptMarshaller"
-    output-channel="caseReceiptDlqChannelXml"
-    result-transformer="caseReceiptOutboundTransformer"/>
+  <int:object-to-json-transformer
+          input-channel="caseReceiptDlqInterimChannel"
+          output-channel="caseReceiptDlqChannelXml"
+  />
+
   <bean class="org.springframework.integration.xml.transformer.ResultToStringTransformer"
     id="caseReceiptOutboundTransformer"/>
 
