@@ -39,10 +39,10 @@
           discard-channel="caseReceiptInvalidXml"
           input-channel="caseReceiptXml"
           output-channel="caseReceiptXmlValid"
-          ref="myFilter">
+          ref="receiptFilter">
   </int:filter>
 
-  <bean id="myFilter" class="uk.gov.ons.ctp.response.casesvc.message.MessageFilter"></bean>
+  <bean id="receiptFilter" class="uk.gov.ons.ctp.response.casesvc.message.ReceiptFilter"></bean>
 
   <!-- The now validated json is transformed into the object model -->
   <int:channel datatype="uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt"
