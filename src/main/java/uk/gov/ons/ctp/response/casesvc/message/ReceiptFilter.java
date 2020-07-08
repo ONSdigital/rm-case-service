@@ -10,6 +10,16 @@ import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
 
 import java.io.IOException;
 
+/**
+ * This class is for filtering the incoming receipts
+ * based on whether they pass validation.
+ *
+ * The validation at this stage is based purely
+ * around whether the json can be parsed and
+ * unmarshalled to an instance of CaseRecipt.
+ *
+ * The resulting instance is discarded.
+ */
 public class ReceiptFilter implements MessageSelector {
 
     private static final Logger log = LoggerFactory.getLogger(ReceiptFilter.class);
