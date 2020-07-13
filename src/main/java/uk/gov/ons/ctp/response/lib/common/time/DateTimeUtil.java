@@ -14,7 +14,7 @@ import net.sourceforge.cobertura.CoverageIgnore;
 
 /** Centralized DateTime handling for CTP */
 @CoverageIgnore
-public class DateTimeUtil {
+public class DateTimeUtil implements TimeHelper{
 
   public static final String DATE_FORMAT_IN_JSON = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 
@@ -28,6 +28,15 @@ public class DateTimeUtil {
    * @return The current time in UTC
    */
   public static Timestamp nowUTC() {
+    return new Timestamp(System.currentTimeMillis());
+  }
+
+  /**
+   * Non static method to retrieve the current time as a Timestamp.
+   *
+   * @return The current time in UTC
+   */
+  public Timestamp getNowUTC() {
     return new Timestamp(System.currentTimeMillis());
   }
 
