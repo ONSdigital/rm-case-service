@@ -28,7 +28,7 @@ public class ReceiptFilter implements MessageSelector {
     public boolean accept(Message<?> message) {
         ObjectMapper obj = new ObjectMapper();
         try{
-            obj.readValue(message.getPayload().toString(), CaseReceipt.class);
+            obj.readValue((byte[])message.getPayload(), CaseReceipt.class);
         }
         catch (JsonParseException jpe){
             log.error("Failed to parse receipt", jpe);
