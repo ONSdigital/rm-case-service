@@ -124,7 +124,7 @@ public class RabbitSpringIntegrationDLQAndRetriesIT {
     // get Oraganisation object as a json string
     String json = obj.writeValueAsString(caseReceipt);
 
-    sender.sendMessageToQueue("Case.Responses", json);
+    sender.sendMessageToQueue("Case.Responses", json.getBytes());
     String message =
         listener
             .listen(ExchangeType.Direct, "case-deadletter-exchange", "Case.Responses.binding")

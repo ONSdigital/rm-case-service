@@ -14,7 +14,7 @@ import net.sourceforge.cobertura.CoverageIgnore;
 
 /** Centralized DateTime handling for CTP */
 @CoverageIgnore
-public class DateTimeUtil implements TimeHelper{
+public class DateTimeUtil {
 
   public static final String DATE_FORMAT_IN_JSON = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 

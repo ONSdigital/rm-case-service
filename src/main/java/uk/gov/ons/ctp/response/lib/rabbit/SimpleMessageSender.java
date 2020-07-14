@@ -51,4 +51,10 @@ public class SimpleMessageSender extends SimpleMessageBase {
 
     rabbitTemplate.convertAndSend(queueName, message);
   }
+
+  public void sendMessageToQueue(String queueName, byte[] message) {
+    RabbitTemplate rabbitTemplate = getRabbitTemplate();
+
+    rabbitTemplate.convertAndSend(queueName, message);
+  }
 }

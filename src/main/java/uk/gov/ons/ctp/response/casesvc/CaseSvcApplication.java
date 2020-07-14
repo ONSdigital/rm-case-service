@@ -47,7 +47,6 @@ import uk.gov.ons.ctp.response.lib.common.rest.RestUtility;
 import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManagerFactory;
 import uk.gov.ons.ctp.response.lib.common.time.DateTimeUtil;
-import uk.gov.ons.ctp.response.lib.common.time.TimeHelper;
 
 /** The 'main' entry point for the CaseSvc SpringBoot Application. */
 @CoverageIgnore
@@ -276,7 +275,7 @@ public class CaseSvcApplication {
   }
 
   @Bean
-  public TimeHelper timeHelper(){
+  public DateTimeUtil dateTimeUtil(){
     return new DateTimeUtil();
   }
 }

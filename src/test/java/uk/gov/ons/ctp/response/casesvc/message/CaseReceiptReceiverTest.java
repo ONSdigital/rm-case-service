@@ -30,7 +30,7 @@ import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.lib.common.error.CTPException;
-import uk.gov.ons.ctp.response.lib.common.time.TimeHelper;
+import uk.gov.ons.ctp.response.lib.common.time.DateTimeUtil;
 
 /** To unit test CaseReceiptReceiver */
 @RunWith(MockitoJUnitRunner.class)
@@ -42,18 +42,18 @@ public class CaseReceiptReceiverTest {
   private static final String LINKED_CASE_REF = "123";
   private static final String UNLINKED_CASE_REF = "456";
   private static final String LINKED_PARTY_ID = "fa622b71-f158-4d51-82dd-c3417e31e32e";
-  private static final long TIME_IN_MILLISECONDS = 1594646202887L;
+  private static final long CURRENT_TIME_IN_MILLISECONDS = 1594646202887L;
 
   @InjectMocks private CaseReceiptReceiver caseReceiptReceiver;
 
   @Mock private CaseService caseService;
 
-  @Mock(name = "timeHelper") private TimeHelper timeHelper;
+  @Mock(name = "dateTimeUtil") private DateTimeUtil dateTimeUtil;
 
   @Before
   public void setup(){
-    Mockito.when(timeHelper.getNowUTC())
-            .thenReturn(new Timestamp(TIME_IN_MILLISECONDS));
+    Mockito.when(dateTimeUtil.getNowUTC())
+            .thenReturn(new Timestamp(CURRENT_TIME_IN_MILLISECONDS));
   }
 
   /**
@@ -79,7 +79,7 @@ public class CaseReceiptReceiverTest {
     verify(caseService, times(1))
         .createCaseEvent(
             eq(buildCaseEvent(LINKED_CASE_PK, ONLINE_QUESTIONNAIRE_RESPONSE, metadata)),
-            eq(new Timestamp(TIME_IN_MILLISECONDS)));
+            eq(new Timestamp(CURRENT_TIME_IN_MILLISECONDS)));
   }
 
   /**
@@ -106,7 +106,7 @@ public class CaseReceiptReceiverTest {
     verify(caseService, times(1))
         .createCaseEvent(
             eq(buildCaseEvent(LINKED_CASE_PK, PAPER_QUESTIONNAIRE_RESPONSE, metadata)),
-            eq(new Timestamp(TIME_IN_MILLISECONDS)));
+            eq(new Timestamp(CURRENT_TIME_IN_MILLISECONDS)));
   }
 
   /**
@@ -132,7 +132,7 @@ public class CaseReceiptReceiverTest {
     verify(caseService, times(1))
         .createCaseEvent(
             eq(buildCaseEvent(LINKED_CASE_PK, OFFLINE_RESPONSE_PROCESSED, metadata)),
-            eq(new Timestamp(TIME_IN_MILLISECONDS)));
+            eq(new Timestamp(CURRENT_TIME_IN_MILLISECONDS)));
   }
 
   /**
