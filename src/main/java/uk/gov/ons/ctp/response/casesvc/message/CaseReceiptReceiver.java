@@ -24,6 +24,7 @@ import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.lib.common.error.CTPException;
+import uk.gov.ons.ctp.response.lib.common.time.DateTimeUtil;
 
 /** The reader of CaseReceipts from queue */
 @MessageEndpoint
@@ -33,6 +34,8 @@ public class CaseReceiptReceiver {
   private static final String EXISTING_CASE_NOT_FOUND = "No existing case found";
 
   @Autowired private CaseService caseService;
+
+  @Autowired private DateTimeUtil dateTimeUtil;
 
   /**
    * To process CaseReceipts read from queue
@@ -46,8 +49,7 @@ public class CaseReceiptReceiver {
     log.with("case_receipt", caseReceipt).debug("entering process with caseReceipt");
     UUID caseId = UUID.fromString(caseReceipt.getCaseId());
     InboundChannel inboundChannel = caseReceipt.getInboundChannel();
-    Timestamp responseTimestamp =
-        new Timestamp(caseReceipt.getResponseDateTime().toGregorianCalendar().getTimeInMillis());
+    Timestamp responseTimestamp = dateTimeUtil.getNowUTC();
 
     Case existingCase = caseService.findCaseById(caseId);
     log.with("existing_case", existingCase).debug("Found existing case");

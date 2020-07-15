@@ -46,6 +46,7 @@ import uk.gov.ons.ctp.response.lib.common.jackson.CustomObjectMapper;
 import uk.gov.ons.ctp.response.lib.common.rest.RestUtility;
 import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManagerFactory;
+import uk.gov.ons.ctp.response.lib.common.time.DateTimeUtil;
 
 /** The 'main' entry point for the CaseSvc SpringBoot Application. */
 @CoverageIgnore
@@ -271,5 +272,10 @@ public class CaseSvcApplication {
     /* This is getting rid of the cached entries in case anything's been changed. We imagine that
      * the maximum of 1 minute delay to seeing changes reflected in the case service will not
      * cause any issues*/
+  }
+
+  @Bean
+  public DateTimeUtil dateTimeUtil(){
+    return new DateTimeUtil();
   }
 }

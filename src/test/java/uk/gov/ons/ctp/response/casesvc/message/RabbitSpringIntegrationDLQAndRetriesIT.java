@@ -29,7 +29,6 @@ import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
-import uk.gov.ons.ctp.response.lib.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.lib.common.utility.Mapzer;
 import uk.gov.ons.ctp.response.lib.rabbit.SimpleMessageBase.ExchangeType;
 import uk.gov.ons.ctp.response.lib.rabbit.SimpleMessageListener;
@@ -119,14 +118,13 @@ public class RabbitSpringIntegrationDLQAndRetriesIT {
     CaseReceipt caseReceipt = new CaseReceipt();
     caseReceipt.setCaseId(caseId);
     caseReceipt.setInboundChannel(InboundChannel.PAPER);
-    caseReceipt.setResponseDateTime(DateTimeUtil.giveMeCalendarForNow());
     caseReceipt.setCaseRef("TESTCASEREF");
 
     ObjectMapper obj = new ObjectMapper();
     // get Oraganisation object as a json string
     String json = obj.writeValueAsString(caseReceipt);
 
-    sender.sendMessageToQueue("Case.Responses", json);
+    sender.sendMessageToQueue("Case.Responses", json.getBytes());
     String message =
         listener
             .listen(ExchangeType.Direct, "case-deadletter-exchange", "Case.Responses.binding")

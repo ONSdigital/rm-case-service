@@ -8,13 +8,12 @@ import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemp
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
-import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
-import java.util.GregorianCalendar;
 import java.util.Random;
 import java.util.UUID;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.messaging.Message;
@@ -90,9 +89,8 @@ public class CaseReceiptReceiverIT {
     CaseNotification caseNotif =
         caseCreator.sendSampleUnit("LMS0003", "H", sampleUnitId, collectionExerciseId);
     startCase(caseNotif.getCaseId());
-    XMLGregorianCalendarImpl now = new XMLGregorianCalendarImpl(new GregorianCalendar());
     CaseReceipt caseReceipt =
-        new CaseReceipt("caseRef", caseNotif.getCaseId(), InboundChannel.OFFLINE, now, "partyId");
+        new CaseReceipt("caseRef", caseNotif.getCaseId(), InboundChannel.OFFLINE, "partyId");
     Message<CaseReceipt> message = new GenericMessage<>(caseReceipt);
     iacServiceStub.disableIACStub();
 

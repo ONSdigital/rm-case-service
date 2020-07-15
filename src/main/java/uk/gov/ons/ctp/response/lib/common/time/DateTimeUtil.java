@@ -32,6 +32,15 @@ public class DateTimeUtil {
   }
 
   /**
+   * Non static method to retrieve the current time as a Timestamp.
+   *
+   * @return The current time in UTC
+   */
+  public Timestamp getNowUTC() {
+    return new Timestamp(System.currentTimeMillis());
+  }
+
+  /**
    * To get a XMLGregorianCalendar for now
    *
    * @return a XMLGregorianCalendar for now
