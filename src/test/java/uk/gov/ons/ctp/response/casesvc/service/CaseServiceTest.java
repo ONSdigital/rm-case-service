@@ -194,7 +194,7 @@ public class CaseServiceTest {
    */
   @Test
   public void testCreateCaseEventWithTargetCase() throws CTPException {
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.CASE_CREATED))
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.ADDRESS_DETAILS_INCORRECT))
         .thenReturn(categories.get(CAT_ADDRESS_DETAILS_INCORRECT));
     Timestamp currentTime = DateTimeUtil.nowUTC();
     HashMap<String, String> metadata = new HashMap<>();
@@ -206,7 +206,7 @@ public class CaseServiceTest {
             CASEEVENT_DESCRIPTION,
             CASEEVENT_CREATEDBY,
             currentTime,
-            CategoryDTO.CategoryName.CASE_CREATED,
+            CategoryDTO.CategoryName.ADDRESS_DETAILS_INCORRECT,
             CASEEVENT_SUBCATEGORY,
             metadata);
     when(caseEventRepo.save(any(CaseEvent.class))).thenReturn(caseEvent);
@@ -225,7 +225,7 @@ public class CaseServiceTest {
   @Test
   public void testCreateCaseEventAgainstNonExistentCase() throws CTPException {
     when(caseRepo.findOne(NON_EXISTING_PARENT_CASE_FK)).thenReturn(null);
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.COMPLETED_BY_PHONE))
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.ADDRESS_DETAILS_INCORRECT))
         .thenReturn(categories.get(CAT_ADDRESS_DETAILS_INCORRECT));
 
     Timestamp currentTime = DateTimeUtil.nowUTC();
@@ -238,7 +238,7 @@ public class CaseServiceTest {
             CASEEVENT_DESCRIPTION,
             CASEEVENT_CREATEDBY,
             currentTime,
-            CategoryDTO.CategoryName.COMPLETED_BY_PHONE,
+            CategoryDTO.CategoryName.ADDRESS_DETAILS_INCORRECT,
             CASEEVENT_SUBCATEGORY,
             metadata);
     CaseEvent result = caseService.createCaseEvent(caseEvent);
@@ -256,15 +256,15 @@ public class CaseServiceTest {
   public void testCreateNonActionableEventAgainstInactionableCase() throws Exception {
     when(caseRepo.findOne(INACTIONABLE_HOUSEHOLD_CASE_FK))
         .thenReturn(cases.get(INACTIONABLE_HOUSEHOLD_CASE_FK));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.NO_LONGER_REQUIRED))
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.GENERAL_COMPLAINT))
         .thenReturn(categories.get(CAT_GENERAL_COMPLAINT));
 
     CaseEvent caseEvent =
-        fabricateEvent(CategoryDTO.CategoryName.NO_LONGER_REQUIRED, INACTIONABLE_HOUSEHOLD_CASE_FK);
+        fabricateEvent(CategoryDTO.CategoryName.GENERAL_COMPLAINT, INACTIONABLE_HOUSEHOLD_CASE_FK);
     caseService.createCaseEvent(caseEvent);
 
     verify(caseRepo).findOne(INACTIONABLE_HOUSEHOLD_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.NO_LONGER_REQUIRED);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.GENERAL_COMPLAINT);
     // there was no change to case - no state transition
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(caseIacAuditService, times(0)).disableAllIACsForCase(any(Case.class));
@@ -284,16 +284,16 @@ public class CaseServiceTest {
   public void testCreatePaperResponseEventAgainstActionableCase() throws Exception {
     when(caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK))
         .thenReturn(cases.get(ACTIONABLE_HOUSEHOLD_CASE_FK));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.LACK_OF_COMPUTER_INTERNET_ACCESS))
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE))
         .thenReturn(categories.get(CAT_PAPER_QUESTIONNAIRE_RESPONSE));
 
     CaseEvent caseEvent =
         fabricateEvent(
-            CategoryDTO.CategoryName.LACK_OF_COMPUTER_INTERNET_ACCESS, ACTIONABLE_HOUSEHOLD_CASE_FK);
+            CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE, ACTIONABLE_HOUSEHOLD_CASE_FK);
     caseService.createCaseEvent(caseEvent);
 
     verify(caseRepo).findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.LACK_OF_COMPUTER_INTERNET_ACCESS);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE);
 
     // there was a change to case - state transition and response saved
     ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
@@ -326,16 +326,16 @@ public class CaseServiceTest {
   public void testCreateOnlineResponseEventAgainstActionableCase() throws Exception {
     when(caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK))
         .thenReturn(cases.get(ACTIONABLE_HOUSEHOLD_CASE_FK));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.NON_RESIDENTIAL_ADDRESS))
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE))
         .thenReturn(categories.get(CAT_ONLINE_QUESTIONNAIRE_RESPONSE));
 
     CaseEvent caseEvent =
         fabricateEvent(
-            CategoryDTO.CategoryName.NON_RESIDENTIAL_ADDRESS, ACTIONABLE_HOUSEHOLD_CASE_FK);
+            CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE, ACTIONABLE_HOUSEHOLD_CASE_FK);
     caseService.createCaseEvent(caseEvent);
 
     verify(caseRepo).findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.NON_RESIDENTIAL_ADDRESS);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE);
 
     // there was a change to case - state transition and response saved
     ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
@@ -365,16 +365,16 @@ public class CaseServiceTest {
   public void testCreateResponseEventAgainstInActionableCase() throws Exception {
     when(caseRepo.findOne(INACTIONABLE_HOUSEHOLD_CASE_FK))
         .thenReturn(cases.get(INACTIONABLE_HOUSEHOLD_CASE_FK));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.NO_TRACE_OF_ADDRESS))
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE))
         .thenReturn(categories.get(CAT_PAPER_QUESTIONNAIRE_RESPONSE));
 
     CaseEvent caseEvent =
         fabricateEvent(
-            CategoryDTO.CategoryName.NO_TRACE_OF_ADDRESS, INACTIONABLE_HOUSEHOLD_CASE_FK);
+            CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE, INACTIONABLE_HOUSEHOLD_CASE_FK);
     caseService.createCaseEvent(caseEvent);
 
     verify(caseRepo).findOne(INACTIONABLE_HOUSEHOLD_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.NO_TRACE_OF_ADDRESS);
+    verify(categoryRepo).findOne(CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE);
 
     // there was a change to case - state transition and response saved
     ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
@@ -548,12 +548,12 @@ public class CaseServiceTest {
         .thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
     when(caseGroupRepo.findOne(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK).getCaseGroupFK()))
         .thenReturn(caseGroups.get(1));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.SECURE_MESSAGE_SENT))
+    when(categoryRepo.findOne(CategoryDTO.CategoryName.GENERAL_COMPLAINT))
         .thenReturn(categories.get(CAT_GENERAL_COMPLAINT));
 
     CaseEvent caseEvent1 =
         fabricateEvent(
-            CategoryDTO.CategoryName.SECURE_MESSAGE_SENT, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+            CategoryDTO.CategoryName.GENERAL_COMPLAINT, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
 
     caseService.createCaseEvent(caseEvent1);
 
