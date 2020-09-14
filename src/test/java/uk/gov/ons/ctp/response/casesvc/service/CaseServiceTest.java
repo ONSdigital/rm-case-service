@@ -87,17 +87,17 @@ public class CaseServiceTest {
   private static final int CAT_ACTION_UPDATED = 5;
   private static final int CAT_ADDRESS_DETAILS_INCORRECT = 6;
   private static final int CAT_CASE_CREATED = 7;
-  private static final int CAT_GENERAL_COMPLAINT = 12;
-  private static final int CAT_ONLINE_QUESTIONNAIRE_RESPONSE = 23;
-  private static final int CAT_PAPER_QUESTIONNAIRE_RESPONSE = 24;
-  private static final int CAT_RESPONDENT_ENROLED = 27;
-  private static final int CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT = 44;
-  private static final int CAT_COLLECTION_INSTRUMENT_DOWNLOADED = 45;
-  private static final int CAT_UNSUCCESSFUL_RESPONSE_UPLOAD = 46;
-  private static final int CAT_SUCCESSFUL_RESPONSE_UPLOAD = 47;
-  private static final int CAT_OFFLINE_RESPONSE_PROCESSED = 48;
-  private static final int CAT_NO_ACTIVE_ENROLMENTS = 49;
-  private static final int CAT_GENERATE_ENROLMENT_CODE = 50;
+  private static final int CAT_GENERAL_COMPLAINT = 11;
+  private static final int CAT_ONLINE_QUESTIONNAIRE_RESPONSE = 22;
+  private static final int CAT_PAPER_QUESTIONNAIRE_RESPONSE = 23;
+  private static final int CAT_RESPONDENT_ENROLED = 26;
+  private static final int CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT = 43;
+  private static final int CAT_COLLECTION_INSTRUMENT_DOWNLOADED = 44;
+  private static final int CAT_UNSUCCESSFUL_RESPONSE_UPLOAD = 45;
+  private static final int CAT_SUCCESSFUL_RESPONSE_UPLOAD = 46;
+  private static final int CAT_OFFLINE_RESPONSE_PROCESSED = 47;
+  private static final int CAT_NO_ACTIVE_ENROLMENTS = 48;
+  private static final int CAT_GENERATE_ENROLMENT_CODE = 49;
 
   /**
    * Note that the Integer values below are linked to the order in which cases appear in the array
