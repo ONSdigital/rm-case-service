@@ -100,17 +100,6 @@
   },
   {
     "group": "general",
-    "categoryName": "CLOSE_ESCALATION",
-    "longDescription": "Close Escalation",
-    "shortDescription": "Close Escalation",
-    "role": "collect-field-escalate, collect-general-escalate, collect-admins",
-    "generatedActionType": null,
-    "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "H,HI,B,BI",
-    "eventType": null
-  },
-  {
-    "group": "general",
     "categoryName": "FIELD_COMPLAINT_ESCALATED",
     "longDescription": "Field Complaint Escalated",
     "shortDescription": "Field Complaint Escalated",
