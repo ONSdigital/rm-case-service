@@ -100,9 +100,9 @@
   },
   {
     "group": "general",
-    "categoryName": "GENERAL_COMPLAINT_ESCALATED",
-    "longDescription": "General Complaint - Escalated",
-    "shortDescription": "General Complaint - Escalated",
+    "categoryName": "IN_HOSPITAL",
+    "longDescription": "In hospital",
+    "shortDescription": "In hospital",
     "role": "collect-general-escalate, collect-csos, collect-admins",
     "generatedActionType": "GC_ESCALATION",
     "newCaseSampleUnitType": null,
