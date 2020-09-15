@@ -80,24 +80,24 @@ public class CaseServiceTest {
   private static final String IAC_SVC_PUT_PATH = "iacs/123";
   private static final String IAC_SVC_POST_PATH = "iacs/123";
 
-  private static final int CAT_ACTION_CANCELLATION_COMPLETED = 1;
-  private static final int CAT_ACTION_CANCELLATION_CREATED = 2;
-  private static final int CAT_ACTION_COMPLETED = 3;
-  private static final int CAT_ACTION_CREATED = 4;
-  private static final int CAT_ACTION_UPDATED = 5;
-  private static final int CAT_ADDRESS_DETAILS_INCORRECT = 6;
-  private static final int CAT_CASE_CREATED = 7;
-  private static final int CAT_GENERAL_COMPLAINT = 11;
-  private static final int CAT_ONLINE_QUESTIONNAIRE_RESPONSE = 22;
-  private static final int CAT_PAPER_QUESTIONNAIRE_RESPONSE = 23;
-  private static final int CAT_RESPONDENT_ENROLED = 26;
-  private static final int CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT = 43;
-  private static final int CAT_COLLECTION_INSTRUMENT_DOWNLOADED = 44;
-  private static final int CAT_UNSUCCESSFUL_RESPONSE_UPLOAD = 45;
-  private static final int CAT_SUCCESSFUL_RESPONSE_UPLOAD = 46;
-  private static final int CAT_OFFLINE_RESPONSE_PROCESSED = 47;
-  private static final int CAT_NO_ACTIVE_ENROLMENTS = 48;
-  private static final int CAT_GENERATE_ENROLMENT_CODE = 49;
+  private static final int CAT_ACTION_CANCELLATION_COMPLETED = 0;
+  private static final int CAT_ACTION_CANCELLATION_CREATED = 1;
+  private static final int CAT_ACTION_COMPLETED = 2;
+  private static final int CAT_ACTION_CREATED = 3;
+  private static final int CAT_ACTION_UPDATED = 4;
+  private static final int CAT_ADDRESS_DETAILS_INCORRECT = 5;
+  private static final int CAT_CASE_CREATED = 6;
+  private static final int CAT_GENERAL_COMPLAINT = 8;
+  private static final int CAT_ONLINE_QUESTIONNAIRE_RESPONSE = 19;
+  private static final int CAT_PAPER_QUESTIONNAIRE_RESPONSE = 20;
+  private static final int CAT_RESPONDENT_ENROLED = 23;
+  private static final int CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT = 40;
+  private static final int CAT_COLLECTION_INSTRUMENT_DOWNLOADED = 41;
+  private static final int CAT_UNSUCCESSFUL_RESPONSE_UPLOAD = 42;
+  private static final int CAT_SUCCESSFUL_RESPONSE_UPLOAD = 43;
+  private static final int CAT_OFFLINE_RESPONSE_PROCESSED = 44;
+  private static final int CAT_NO_ACTIVE_ENROLMENTS = 45;
+  private static final int CAT_GENERATE_ENROLMENT_CODE = 46;
 
   /**
    * Note that the Integer values below are linked to the order in which cases appear in the array

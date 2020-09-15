@@ -1,16 +1,5 @@
 [
   {
-    "group": "general",
-    "categoryName": "ACCESSIBILITY_MATERIALS",
-    "longDescription": "Accessibility Materials",
-    "shortDescription": "Accessibility Materials",
-    "role": "collect-csos, collect-admins",
-    "generatedActionType": null,
-    "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "H,HI",
-    "eventType": null
-  },
-  {
     "group": null,
     "categoryName": "ACTION_CANCELLATION_COMPLETED",
     "longDescription": "Action Cancellation Completed",
@@ -94,28 +83,6 @@
     "shortDescription": "Classification Incorrect",
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
-    "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "H,HI,B,BI",
-    "eventType": null
-  },
-  {
-    "group": "general",
-    "categoryName": "FIELD_COMPLAINT_ESCALATED",
-    "longDescription": "Field Complaint Escalated",
-    "shortDescription": "Field Complaint Escalated",
-    "role": "collect-field-escalate, collect-csos, collect-admins",
-    "generatedActionType": "FC_ESCALATION",
-    "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "H,HI,B,BI",
-    "eventType": null
-  },
-  {
-    "group": "general",
-    "categoryName": "FIELD_EMERGENCY_ESCALATED",
-    "longDescription": "Field Emergency Escalated",
-    "shortDescription": "Field Emergency Escalated",
-    "role": "collect-field-escalate, collect-csos, collect-admins",
-    "generatedActionType": "FC_ESCALATION",
     "newCaseSampleUnitType": null,
     "oldCaseSampleUnitTypes": "H,HI,B,BI",
     "eventType": null
