@@ -111,17 +111,6 @@
   },
   {
     "group": "general",
-    "categoryName": "GENERAL_ENQUIRY",
-    "longDescription": "General Enquiry",
-    "shortDescription": "General Enquiry",
-    "role": "collect-csos, collect-admins",
-    "generatedActionType": null,
-    "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "H,HI,B,BI",
-    "eventType": null
-  },
-  {
-    "group": "general",
     "categoryName": "GENERAL_ENQUIRY_ESCALATED",
     "longDescription": "General Enquiry - Escalated",
     "shortDescription": "General Enquiry - Escalated",
