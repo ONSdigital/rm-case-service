@@ -89,9 +89,9 @@
   },
   {
     "group": "general",
-    "categoryName": "GENERAL_COMPLAINT",
-    "longDescription": "General Complaint",
-    "shortDescription": "General Complaint",
+    "categoryName": "LACK_OF_COMPUTER_INTERNET_ACCESS",
+    "longDescription": "Lack of computer internet access",
+    "shortDescription": "Lack of computer internet access",
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
     "newCaseSampleUnitType": null,

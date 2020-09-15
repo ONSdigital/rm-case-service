@@ -87,7 +87,7 @@ public class CaseServiceTest {
   private static final int CAT_ACTION_UPDATED = 4;
   private static final int CAT_ADDRESS_DETAILS_INCORRECT = 5;
   private static final int CAT_CASE_CREATED = 6;
-  private static final int CAT_GENERAL_COMPLAINT = 8;
+  private static final int CAT_LACK_OF_COMPUTER_INTERNET_ACCESS = 8;
   private static final int CAT_ONLINE_QUESTIONNAIRE_RESPONSE = 19;
   private static final int CAT_PAPER_QUESTIONNAIRE_RESPONSE = 20;
   private static final int CAT_RESPONDENT_ENROLED = 23;
@@ -257,7 +257,7 @@ public class CaseServiceTest {
     when(caseRepo.findOne(INACTIONABLE_HOUSEHOLD_CASE_FK))
         .thenReturn(cases.get(INACTIONABLE_HOUSEHOLD_CASE_FK));
     when(categoryRepo.findOne(CategoryDTO.CategoryName.NO_LONGER_REQUIRED))
-        .thenReturn(categories.get(CAT_GENERAL_COMPLAINT));
+        .thenReturn(categories.get(CAT_LACK_OF_COMPUTER_INTERNET_ACCESS));
 
     CaseEvent caseEvent =
         fabricateEvent(CategoryDTO.CategoryName.NO_LONGER_REQUIRED, INACTIONABLE_HOUSEHOLD_CASE_FK);
@@ -549,7 +549,7 @@ public class CaseServiceTest {
     when(caseGroupRepo.findOne(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK).getCaseGroupFK()))
         .thenReturn(caseGroups.get(1));
     when(categoryRepo.findOne(CategoryDTO.CategoryName.SECURE_MESSAGE_SENT))
-        .thenReturn(categories.get(CAT_GENERAL_COMPLAINT));
+        .thenReturn(categories.get(CAT_LACK_OF_COMPUTER_INTERNET_ACCESS));
 
     CaseEvent caseEvent1 =
         fabricateEvent(
