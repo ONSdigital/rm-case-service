@@ -1,5 +1,16 @@
 [
   {
+    "group": "general",
+    "categoryName": "ACTION_UPDATED",
+    "longDescription": "Action Updated Blah",
+    "shortDescription": "Action Updated",
+    "role": "collect-csos, collect-admins",
+    "generatedActionType": null,
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": null,
+    "eventType": null
+  },
+  {
     "group": null,
     "categoryName": "ACTION_CANCELLATION_COMPLETED",
     "longDescription": "Action Cancellation Completed Blah",
