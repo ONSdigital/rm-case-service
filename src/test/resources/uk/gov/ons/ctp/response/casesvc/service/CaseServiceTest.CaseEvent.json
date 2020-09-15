@@ -12,7 +12,7 @@
     "createdDateTime": 1460736159699,
     "caseEventPK": 2,
     "caseFK": 2,
-    "category": "CLASSIFICATION_INCORRECT",
+    "category": "ADDRESS_OCCUPIED_NO_RESIDENT",
     "subCategory": "subcat",
     "createdBy": "me",
     "description": "desc"
@@ -30,7 +30,7 @@
     "createdDateTime": 1460736159699,
     "caseEventPK": 4,
     "caseFK": 2,
-    "category": "UNDELIVERABLE",
+    "category": "LEGITIMACY_CONCERNS",
     "subCategory": "subcat",
     "createdBy": "me",
     "description": "desc"

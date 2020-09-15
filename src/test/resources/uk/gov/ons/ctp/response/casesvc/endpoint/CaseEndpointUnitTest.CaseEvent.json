@@ -13,7 +13,7 @@
     "createdDateTime": 1460736159799,
     "caseEventPK": 2,
     "caseFK": 2,
-    "category": "CLASSIFICATION_INCORRECT",
+    "category": "ADDRESS_OCCUPIED_NO_RESIDENT",
     "subCategory": "subcat 2",
     "createdBy": "me 2",
     "description": "desc 2",

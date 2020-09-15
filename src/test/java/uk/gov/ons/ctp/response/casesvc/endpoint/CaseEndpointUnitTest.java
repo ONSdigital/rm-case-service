@@ -114,7 +114,7 @@ public final class CaseEndpointUnitTest {
   private static final String CASE3_CREATEDBY = "me 3";
   private static final String CASE9_CREATEDBY = "unittest";
   private static final String CASE1_CATEGORY = "ONLINE_QUESTIONNAIRE_RESPONSE";
-  private static final String CASE2_CATEGORY = "CLASSIFICATION_INCORRECT";
+  private static final String CASE2_CATEGORY = "ADDRESS_OCCUPIED_NO_RESIDENT";
   private static final String CASE3_CATEGORY = "REFUSAL";
   private static final String CASE9_CATEGORY = "RESPONDENT_ENROLED";
   private static final String CASE1_SUBCATEGORY = "subcat 1";

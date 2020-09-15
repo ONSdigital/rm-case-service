@@ -85,7 +85,7 @@ public class CaseServiceTest {
   private static final int CAT_ACTION_COMPLETED = 2;
   private static final int CAT_ACTION_CREATED = 3;
   private static final int CAT_ACTION_UPDATED = 4;
-  private static final int CAT_ADDRESS_DETAILS_INCORRECT = 5;
+  private static final int CAT_PHYSICALLY_OR_MENTALLY_UNABLE = 5;
   private static final int CAT_CASE_CREATED = 6;
   private static final int CAT_LACK_OF_COMPUTER_INTERNET_ACCESS = 8;
   private static final int CAT_ONLINE_QUESTIONNAIRE_RESPONSE = 18;
@@ -195,7 +195,7 @@ public class CaseServiceTest {
   @Test
   public void testCreateCaseEventWithTargetCase() throws CTPException {
     when(categoryRepo.findOne(CategoryDTO.CategoryName.CASE_CREATED))
-        .thenReturn(categories.get(CAT_ADDRESS_DETAILS_INCORRECT));
+        .thenReturn(categories.get(CAT_PHYSICALLY_OR_MENTALLY_UNABLE));
     Timestamp currentTime = DateTimeUtil.nowUTC();
     HashMap<String, String> metadata = new HashMap<>();
     metadata.put("partyId", UUID.randomUUID().toString());
@@ -226,7 +226,7 @@ public class CaseServiceTest {
   public void testCreateCaseEventAgainstNonExistentCase() throws CTPException {
     when(caseRepo.findOne(NON_EXISTING_PARENT_CASE_FK)).thenReturn(null);
     when(categoryRepo.findOne(CategoryDTO.CategoryName.COMPLETED_BY_PHONE))
-        .thenReturn(categories.get(CAT_ADDRESS_DETAILS_INCORRECT));
+        .thenReturn(categories.get(CAT_PHYSICALLY_OR_MENTALLY_UNABLE));
 
     Timestamp currentTime = DateTimeUtil.nowUTC();
     HashMap<String, String> metadata = new HashMap<>();
