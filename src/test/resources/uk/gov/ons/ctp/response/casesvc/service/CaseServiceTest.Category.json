@@ -111,9 +111,9 @@
   },
   {
     "group": "general",
-    "categoryName": "GENERAL_ENQUIRY_ESCALATED",
-    "longDescription": "General Enquiry - Escalated",
-    "shortDescription": "General Enquiry - Escalated",
+    "categoryName": "TOO_BUSY",
+    "longDescription": "Too Busy",
+    "shortDescription": "Too Busy",
     "role": "collect-general-escalate, collect-csos, collect-admins",
     "generatedActionType": "GE_ESCALATION",
     "newCaseSampleUnitType": null,
