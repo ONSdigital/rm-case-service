@@ -91,13 +91,13 @@ public class CaseServiceTest {
   private static final int CAT_ONLINE_QUESTIONNAIRE_RESPONSE = 18;
   private static final int CAT_PAPER_QUESTIONNAIRE_RESPONSE = 19;
   private static final int CAT_RESPONDENT_ENROLED = 22;
-  private static final int CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT = 39;
-  private static final int CAT_COLLECTION_INSTRUMENT_DOWNLOADED = 40;
-  private static final int CAT_UNSUCCESSFUL_RESPONSE_UPLOAD = 41;
-  private static final int CAT_SUCCESSFUL_RESPONSE_UPLOAD = 42;
-  private static final int CAT_OFFLINE_RESPONSE_PROCESSED = 43;
-  private static final int CAT_NO_ACTIVE_ENROLMENTS = 44;
-  private static final int CAT_GENERATE_ENROLMENT_CODE = 45;
+  private static final int CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT = 25;
+  private static final int CAT_COLLECTION_INSTRUMENT_DOWNLOADED = 26;
+  private static final int CAT_UNSUCCESSFUL_RESPONSE_UPLOAD = 27;
+  private static final int CAT_SUCCESSFUL_RESPONSE_UPLOAD = 28;
+  private static final int CAT_OFFLINE_RESPONSE_PROCESSED = 29;
+  private static final int CAT_NO_ACTIVE_ENROLMENTS = 30;
+  private static final int CAT_GENERATE_ENROLMENT_CODE = 31;
 
   /**
    * Note that the Integer values below are linked to the order in which cases appear in the array
