@@ -21,7 +21,7 @@
     "createdDateTime": 1460736159699,
     "caseEventPK": 3,
     "caseFK": 2,
-    "category": "REFUSAL",
+    "category": "TOO_BUSY",
     "subCategory": "subcat",
     "createdBy": "me",
     "description": "desc"
