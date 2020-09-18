@@ -114,8 +114,8 @@ public final class CaseEndpointUnitTest {
   private static final String CASE3_CREATEDBY = "me 3";
   private static final String CASE9_CREATEDBY = "unittest";
   private static final String CASE1_CATEGORY = "ONLINE_QUESTIONNAIRE_RESPONSE";
-  private static final String CASE2_CATEGORY = "CLASSIFICATION_INCORRECT";
-  private static final String CASE3_CATEGORY = "REFUSAL";
+  private static final String CASE2_CATEGORY = "ADDRESS_OCCUPIED_NO_RESIDENT";
+  private static final String CASE3_CATEGORY = "TOO_BUSY";
   private static final String CASE9_CATEGORY = "RESPONDENT_ENROLED";
   private static final String CASE1_SUBCATEGORY = "subcat 1";
   private static final String CASE2_SUBCATEGORY = "subcat 2";
@@ -152,7 +152,7 @@ public final class CaseEndpointUnitTest {
       "{\"description\":\"sometest\",\"category\":\"RESPONDENT_ENROLED\",\"createdBy\":\"unittest\", "
           + "\"metadata\":{\"partyId\":\"3b136c4b-7a14-4904-9e01-13364dd7b972\"}}";
   private static final String CASEEVENT_VALIDJSON_NO_NEW_CASE =
-      "{\"description\":\"sometest\",\"category\":\"GENERAL_ENQUIRY\",\"createdBy\":\"unittest\"}";
+      "{\"description\":\"sometest\",\"category\":\"EQ_LAUNCH\",\"createdBy\":\"unittest\"}";
 
   @InjectMocks private CaseEndpoint caseEndpoint;
 
@@ -852,7 +852,7 @@ public final class CaseEndpointUnitTest {
    */
   @Test
   public void createCaseEventNoNewCase() throws Exception {
-    when(categoryService.findCategory(CategoryName.GENERAL_ENQUIRY))
+    when(categoryService.findCategory(CategoryName.EQ_LAUNCH))
         .thenReturn(categoryResults.get(0));
     when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class)))
         .thenReturn(caseEventsResults.get(3));

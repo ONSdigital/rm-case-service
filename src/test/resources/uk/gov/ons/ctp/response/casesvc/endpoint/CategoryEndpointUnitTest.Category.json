@@ -1,9 +1,9 @@
 [
   {
     "group": "general",
-    "categoryName": "ACCESSIBILITY_MATERIALS",
-    "longDescription": "Accessibility Materials Blah",
-    "shortDescription": "Accessibility Materials",
+    "categoryName": "ACTION_UPDATED",
+    "longDescription": "Action Updated Blah",
+    "shortDescription": "Action Updated",
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
     "newCaseSampleUnitType": null,

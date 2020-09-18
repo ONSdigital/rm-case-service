@@ -1,9 +1,9 @@
 [
   {
     "group": "general",
-    "categoryName": "GENERAL_ENQUIRY",
-    "longDescription": "Accessibility Materials Blah",
-    "shortDescription": "Accessibility Materials",
+    "categoryName": "ACTION_COMPLETED",
+    "longDescription": "Action Completed Blah",
+    "shortDescription": "Action Completed",
     "role": "collect-csos, collect-admins",
     "generatedActionType": null,
     "newCaseSampleUnitType": null,

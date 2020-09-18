@@ -33,13 +33,13 @@ import uk.gov.ons.ctp.response.lib.common.jackson.CustomObjectMapper;
 /** A test of the category endpoint */
 public final class CategoryEndpointUnitTest {
 
-  private static final String CATEGORY1_NAME = "ACCESSIBILITY_MATERIALS";
+  private static final String CATEGORY1_NAME = "ACTION_UPDATED";
   private static final String CATEGORY2_NAME = "ACTION_CANCELLATION_COMPLETED";
   private static final String CATEGORY3_NAME = "ACTION_CANCELLATION_CREATED";
-  private static final String CATEGORY1_SHORT_DESC = "Accessibility Materials";
+  private static final String CATEGORY1_SHORT_DESC = "Action Updated";
   private static final String CATEGORY2_SHORT_DESC = "Action Cancellation Completed";
   private static final String CATEGORY3_SHORT_DESC = "Action Cancellation Created";
-  private static final String CATEGORY1_LONG_DESC = "Accessibility Materials Blah";
+  private static final String CATEGORY1_LONG_DESC = "Action Updated Blah";
   private static final String CATEGORY2_LONG_DESC = "Action Cancellation Completed Blah";
   private static final String CATEGORY3_LONG_DESC = "Action Cancellation Created Blah";
   private static final String CATEGORY1_ROLE = "collect-csos, collect-admins";

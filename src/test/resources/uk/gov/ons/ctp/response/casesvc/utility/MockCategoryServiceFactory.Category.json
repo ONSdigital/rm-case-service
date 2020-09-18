@@ -1,8 +1,8 @@
 [
   {
-    "categoryType": "GENERAL_ENQUIRY",
-    "longDescription": "General Enquiry Blah",
-    "shortDescription": "General Enquiry",
+    "categoryType": "OFFLINE_RESPONSE_PROCESSED",
+    "longDescription": "Offline Response Processed Blah",
+    "shortDescription": "Offline Response Processed",
     "role": "collect-admins",
     "group": "general",
     "eventType": "DISABLED",
@@ -20,9 +20,9 @@
     "manual": "false"
   },
   {
-    "categoryType": "GENERAL_ENQUIRY_ESCALATED",
-    "longDescription": "General Enquiry Escalated Blah",
-    "shortDescription": "General Enquiry Escalated",
+    "categoryType": "COMPLETED_BY_PHONE",
+    "longDescription": "Completed By Phone Blah",
+    "shortDescription": "Completed By Phone",
     "role": "collect-csos",
     "group": "general",
     "eventType": "DISABLED",
