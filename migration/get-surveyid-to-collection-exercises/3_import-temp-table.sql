@@ -1,1 +1,0 @@
-\COPY casesvc.case_temp(collectionexerciseid, surveyid) FROM 'temp_collex.csv' DELIMITER ',' CSV;
