@@ -602,6 +602,8 @@ components:
       properties:
         actionPlanId:
           type: string
+        active_enrolment:
+          type: boolean
         caseEvents:
           type: array
           items:
