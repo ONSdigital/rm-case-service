@@ -50,7 +50,6 @@ CREATE TABLE "case" (
     collectionInstrumentId uuid,
     state character varying(20),
     actionPlanId uuid,
-    active_enrolment boolean,
     createdDateTime timestamp with time zone,
     createdBy character varying(50),
     iac character varying(20),

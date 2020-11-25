@@ -48,7 +48,6 @@ CREATE TABLE "case" (
     collectioninstrumentid character varying(128),
     state character varying(20),
     actionplanid integer,
-    active_enrolment boolean,
     createddatetime timestamp with time zone,
     createdby character varying(50),
     iac character varying(20),
