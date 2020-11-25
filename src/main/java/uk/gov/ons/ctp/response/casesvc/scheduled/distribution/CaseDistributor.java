@@ -5,7 +5,6 @@ import com.godaddy.logging.LoggerFactory;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import net.sourceforge.cobertura.CoverageIgnore;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -39,7 +38,6 @@ import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManager;
  * ACTIVE. It takes each case and constructs a notification message to send to the action service -
  * when it has x notifications it publishes them.
  */
-@CoverageIgnore
 @Component
 public class CaseDistributor {
   private static final Logger log = LoggerFactory.getLogger(CaseDistributor.class);

@@ -5,7 +5,6 @@ import com.godaddy.logging.LoggerFactory;
 import com.google.common.base.Joiner;
 import java.util.Collections;
 import java.util.List;
-import net.sourceforge.cobertura.CoverageIgnore;
 import org.springframework.retry.RetryContext;
 import org.springframework.retry.RetryPolicy;
 import org.springframework.retry.context.RetryContextSupport;
@@ -21,7 +20,6 @@ import org.springframework.util.ClassUtils;
  * <p>This RetryPolicy is used in our Spring Integration flows when picking up a message off a
  * queue.
  */
-@CoverageIgnore
 public class CTPRetryPolicy implements RetryPolicy {
 
   private static final Logger log =
