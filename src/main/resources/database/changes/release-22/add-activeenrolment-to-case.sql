@@ -1,2 +1,2 @@
 alter table casesvc."case"
-add column active_enrolment boolean;
+add column activeEnrolment boolean;
