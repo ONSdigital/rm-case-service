@@ -5,7 +5,7 @@ databaseChangeLog:
     author: Jon Fox
     changes:
     - sqlFile:
-        comment: Add active_enrolment column to case table
+        comment: Add active-enrolment column to case table
         path: add-activeenrolment-to-case.sql
         relativeToChangelogFile: true
         splitStatements: false
