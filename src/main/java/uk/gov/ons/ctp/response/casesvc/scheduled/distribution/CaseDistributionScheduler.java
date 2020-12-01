@@ -2,7 +2,6 @@ package uk.gov.ons.ctp.response.casesvc.scheduled.distribution;
 
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
-import net.sourceforge.cobertura.CoverageIgnore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Component;
  * This bean will have the caseDistributor injected into it by spring on constructions. It will then
  * schedule the running of the distributor using details from the AppConfig
  */
-@CoverageIgnore
 @Component
 public class CaseDistributionScheduler implements HealthIndicator {
   private static final Logger log = LoggerFactory.getLogger(CaseDistributionScheduler.class);

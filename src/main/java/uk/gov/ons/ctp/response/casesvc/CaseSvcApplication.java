@@ -3,7 +3,6 @@ package uk.gov.ons.ctp.response.casesvc;
 import com.godaddy.logging.LoggingConfigs;
 import java.time.Clock;
 import javax.annotation.PostConstruct;
-import net.sourceforge.cobertura.CoverageIgnore;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -49,7 +48,6 @@ import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManagerFactory;
 import uk.gov.ons.ctp.response.lib.common.time.DateTimeUtil;
 
 /** The 'main' entry point for the CaseSvc SpringBoot Application. */
-@CoverageIgnore
 @SpringBootApplication
 @EnableTransactionManagement
 @IntegrationComponentScan

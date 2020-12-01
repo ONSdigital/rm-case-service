@@ -1,7 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.config;
 
 import javax.sql.DataSource;
-import net.sourceforge.cobertura.CoverageIgnore;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.Cloud;
 import org.springframework.cloud.CloudFactory;
@@ -10,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 /** DataSource bean. Required to override the CloudFoundry defaults - no practical use in code */
-@CoverageIgnore
 @Configuration
 @Profile("cloud")
 public class DataSourceConfiguration {
