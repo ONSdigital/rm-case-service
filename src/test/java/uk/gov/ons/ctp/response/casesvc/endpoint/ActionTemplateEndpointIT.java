@@ -7,21 +7,17 @@ import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
-import org.junit.Before;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
-import uk.gov.ons.ctp.response.casesvc.domain.model.ActionTemplate;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.ActionTemplateRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.ActionTemplateDTO;
 import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
 
@@ -36,10 +32,6 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 public class ActionTemplateEndpointIT {
     private static final Logger log = LoggerFactory.getLogger(ActionTemplateEndpointIT.class);
 
-    @Autowired
-    private ActionTemplateRepository actionTemplateRepo;
-    @Autowired private ObjectMapper mapper;
-    @Autowired private AppConfig appConfig;
     @ClassRule
     public static WireMockRule wireMockRule =
             new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
@@ -53,11 +45,6 @@ public class ActionTemplateEndpointIT {
         Thread.sleep(2000);
     }
 
-    @Before
-    public void testSetup() {
-        actionTemplateRepo.deleteAll();
-    }
-
     @Test
     public void testCreateActionTemplateSuccess() throws Exception {
 
@@ -69,14 +56,38 @@ public class ActionTemplateEndpointIT {
                 );
 
         // When
-        HttpResponse response =
+        HttpResponse<ActionTemplateDTO> response =
                 Unirest.post("http://localhost:" + port + "/cases/action-template/")
                         .basicAuth("admin", "secret")
                         .header("Content-Type", "application/json")
                         .body(request)
-                        .asObject(ActionTemplate.class);
+                        .asObject(ActionTemplateDTO.class);
 
         // Then
         assertThat(response.getStatus()).isEqualTo(201);
+        Assert.assertEquals(request.getDescription(),response.getBody().getDescription());
+        Assert.assertEquals(request.getName(),response.getBody().getName());
+    }
+
+    @Test
+    public void testCreateActionTemplateValidationFail() throws Exception {
+
+        // Given
+        ActionTemplateDTO request = new ActionTemplateDTO("BSNL",
+                "something",
+                null, ActionTemplateDTO.Handler.LETTER,
+                null
+        );
+
+        // When
+        HttpResponse<ActionTemplateDTO> response =
+                Unirest.post("http://localhost:" + port + "/cases/action-template/")
+                        .basicAuth("admin", "secret")
+                        .header("Content-Type", "application/json")
+                        .body(request)
+                        .asObject(ActionTemplateDTO.class);
+
+        // Then
+        assertThat(response.getStatus()).isEqualTo(400);
     }
 }

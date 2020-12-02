@@ -16,18 +16,28 @@ public class ActionTemplateService {
         this.actionTemplateRepository = actionTemplateRepository;
     }
 
-    public ActionTemplate mapEventTagToTemplate(final String tag, final boolean activeEnrolment) {
+    /**
+     * Maps event tag and active enrolment to an action template
+     * @param tag Event tag provided as a part of the endpoint
+     * @param isActiveEnrolment derived active enrolment from the case
+     * @return ActionTemplate action template which will contain the template name
+     */
+    public ActionTemplate mapEventTagToTemplate(final String tag, final boolean isActiveEnrolment) {
         String eventTag = TemplateMapper.valueOf(tag).getEventTagMapping();
-        Handler handler = getHandler(activeEnrolment);
+        Handler handler = isActiveEnrolment ? Handler.EMAIL : Handler.LETTER;
         ActionTemplate template= actionTemplateRepository.findByTagAndHandler(eventTag, handler);
         if (template == null) {
-            log.with("tag", tag).with("active enrolment", activeEnrolment).
+            log.with("tag", tag).with("active enrolment", isActiveEnrolment).
                     warn("Could not map evnet tag to template");
         }
-
+        log.with("tag", tag).with("active enrolment", isActiveEnrolment).
+                debug("Template Found");
         return template;
     }
 
+    /**
+     *  Event Tag to ActionTemplate mapper
+     */
     private enum TemplateMapper {
         mps("mps"),
         go_live("go_live"),
@@ -50,8 +60,4 @@ public class ActionTemplateService {
 
         private String mappedTag;
     }
-    private Handler getHandler(boolean isActiveEnrolment) {
-        return isActiveEnrolment ? Handler.EMAIL : Handler.LETTER;
-    }
-
 }

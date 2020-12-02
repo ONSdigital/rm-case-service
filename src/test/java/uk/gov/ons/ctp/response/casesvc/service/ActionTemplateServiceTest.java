@@ -8,15 +8,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.ons.ctp.response.casesvc.domain.model.ActionTemplate;
-import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
-import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.ActionTemplateRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.ActionTemplateDTO;
-import uk.gov.ons.ctp.response.lib.common.FixtureHelper;
-
-import static junit.framework.Assert.assertNotSame;
 import static junit.framework.TestCase.*;
+import static org.junit.Assert.assertNotEquals;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ActionTemplateServiceTest {
@@ -65,7 +60,7 @@ public class ActionTemplateServiceTest {
     public void testMapEventTagToTemplateReturnsDifferentResult() {
         ActionTemplate actualActionTemplate = actionTemplateService.mapEventTagToTemplate("nudge_email_0",
                 true);
-        assertNotSame(mockMpsActionTemplate, actualActionTemplate);
+        assertNotEquals(mockMpsActionTemplate, actualActionTemplate);
         assertNull(actualActionTemplate);
     }
 
