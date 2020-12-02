@@ -4,7 +4,6 @@ import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
 import java.util.List;
 import java.util.stream.Collectors;
-import net.sourceforge.cobertura.CoverageIgnore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -16,7 +15,6 @@ import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
  * A CategoryService implementation which encapsulates all business logic operating on the Category
  * entity model.
  */
-@CoverageIgnore
 @Service
 public class CategoryService {
   private static final Logger log = LoggerFactory.getLogger(CategoryService.class);

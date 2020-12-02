@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import net.sourceforge.cobertura.CoverageIgnore;
 
 /**
  * The CTP business exception.
@@ -16,7 +15,6 @@ import net.sourceforge.cobertura.CoverageIgnore;
  * not be displayed to end users through the UI, but may be of use to developers and support staff
  * using postman or reading logs.
  */
-@CoverageIgnore
 @JsonSerialize(
     using = uk.gov.ons.ctp.response.lib.common.error.CTPException.OurExceptionSerializer.class)
 public class CTPException extends Exception {

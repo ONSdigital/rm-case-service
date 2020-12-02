@@ -14,13 +14,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.sourceforge.cobertura.CoverageIgnore;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 
 /** Domain model object. */
-@CoverageIgnore
 @Entity
 @Data
 @Builder

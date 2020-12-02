@@ -5,7 +5,6 @@ import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
 import java.util.List;
 import java.util.UUID;
-import net.sourceforge.cobertura.CoverageIgnore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.Cacheable;
@@ -25,7 +24,6 @@ import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.common.rest.RestUtility;
 
 /** The service to retrieve a CollectionExercise */
-@CoverageIgnore
 @Service
 public class CollectionExerciseSvcClient {
   private static final Logger log = LoggerFactory.getLogger(CollectionExerciseSvcClient.class);

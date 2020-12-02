@@ -10,10 +10,8 @@ import java.util.GregorianCalendar;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import net.sourceforge.cobertura.CoverageIgnore;
 
 /** Centralized DateTime handling for CTP */
-@CoverageIgnore
 public class DateTimeUtil {
 
   public static final String DATE_FORMAT_IN_JSON = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";

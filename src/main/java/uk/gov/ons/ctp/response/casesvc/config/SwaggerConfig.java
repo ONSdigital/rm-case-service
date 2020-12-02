@@ -1,6 +1,5 @@
 package uk.gov.ons.ctp.response.casesvc.config;
 
-import net.sourceforge.cobertura.CoverageIgnore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -16,7 +15,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint;
 
 /** Created by stevee on 23/06/2017. */
-@CoverageIgnore
 @Configuration
 @EnableSwagger2
 @ComponentScan(basePackageClasses = {CaseEndpoint.class})
