@@ -20,6 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
+import uk.gov.ons.ctp.response.casesvc.domain.model.ActionTemplate;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.ActionTemplateRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.ActionTemplateDTO;
 import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
@@ -73,7 +74,7 @@ public class ActionTemplateEndpointIT {
                         .basicAuth("admin", "secret")
                         .header("Content-Type", "application/json")
                         .body(request)
-                        .asObject(ActionTemplateDTO.class);
+                        .asObject(ActionTemplate.class);
 
         // Then
         assertThat(response.getStatus()).isEqualTo(201);
