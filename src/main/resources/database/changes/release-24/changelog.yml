@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 24-1
+      author: Amit Sinha
+      changes:
+        - sqlFile:
+            comment: Change activeenrolment column to active_enrolment
+            path: change-active-enrolment-column-name.sql
+            relativeToChangelogFile: true
+            splitStatements: false
