@@ -11,12 +11,15 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.response.casesvc.client.ActionSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.InternetAccessCodeSvcClient;
+import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
@@ -77,20 +80,21 @@ public class CaseService {
   private CaseNotificationPublisher notificationPublisher;
   private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
+
   /** Constructor for CaseService */
   public CaseService(
-      final CaseRepository caseRepo,
-      final CaseEventRepository caseEventRepo,
-      final CaseGroupRepository caseGroupRepo,
-      final CaseIacAuditRepository caseIacAuditRepo,
-      final CategoryRepository categoryRepo,
-      final ActionSvcClient actionSvcClient,
-      final CollectionExerciseSvcClient collectionExerciseSvcClient,
-      final CaseGroupService caseGroupService,
-      final InternetAccessCodeSvcClient internetAccessCodeSvcClient,
-      final CaseIACService caseIacAuditService,
-      final CaseNotificationPublisher notificationPublisher,
-      final StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager) {
+          final CaseRepository caseRepo,
+          final CaseEventRepository caseEventRepo,
+          final CaseGroupRepository caseGroupRepo,
+          final CaseIacAuditRepository caseIacAuditRepo,
+          final CategoryRepository categoryRepo,
+          final ActionSvcClient actionSvcClient,
+          final CollectionExerciseSvcClient collectionExerciseSvcClient,
+          final CaseGroupService caseGroupService,
+          final InternetAccessCodeSvcClient internetAccessCodeSvcClient,
+          final CaseIACService caseIacAuditService,
+          final CaseNotificationPublisher notificationPublisher,
+          final StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager) {
     this.caseRepo = caseRepo;
     this.caseEventRepo = caseEventRepo;
     this.caseGroupRepo = caseGroupRepo;
@@ -255,10 +259,13 @@ public class CaseService {
    */
   public CaseNotification prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent) {
     CaseGroup caseGroup = caseGroupRepo.findOne(caze.getCaseGroupFK());
+    // This to be taken out when actionsvc is depricated
+    String actionPlanId = caze.getActionPlanId() != null ? caze.getActionPlanId().toString() : null;
     return new CaseNotification(
         Objects.toString(caze.getSampleUnitId(), null),
         caze.getId().toString(),
-        caze.getActionPlanId().toString(),
+        actionPlanId,
+        caze.isActiveEnrolment(),
         caseGroup.getCollectionExerciseId().toString(),
         Objects.toString(caze.getPartyId(), null),
         caze.getSampleUnitType().toString(),
@@ -349,13 +356,13 @@ public class CaseService {
 
     switch (caseEvent.getCategory()) {
       case RESPONDENT_ENROLED:
-        processActionPlanChange(targetCase, true);
+        processActiveEnrolmentChange(targetCase, true);
         break;
       case GENERATE_ENROLMENT_CODE:
         generateAndStoreNewIAC(targetCase);
         break;
       case NO_ACTIVE_ENROLMENTS:
-        processActionPlanChange(targetCase, false);
+        processActiveEnrolmentChange(targetCase, false);
         break;
       default:
         // Do nothing
@@ -417,7 +424,7 @@ public class CaseService {
     }
   }
 
-  private void processActionPlanChange(final Case targetCase, final boolean enrolments)
+  private void processActiveEnrolmentChange(final Case targetCase, final boolean enrolments)
       throws uk.gov.ons.ctp.response.lib.common.error.CTPException {
 
     List<CaseGroup> caseGroups =
@@ -432,23 +439,34 @@ public class CaseService {
         List<Case> cases =
             caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(caseGroup.getCaseGroupPK());
 
-        List<ActionPlanDTO> actionPlans =
-            actionSvcClient.getActionPlans(caseGroup.getCollectionExerciseId(), enrolments);
+        // This section needs to be taken out once activeEnrolment is active
+        if (!actionSvcClient.isDeprecated()) {
+          List<ActionPlanDTO> actionPlans =
+                  actionSvcClient.getActionPlans(caseGroup.getCollectionExerciseId(), enrolments);
 
-        if (actionPlans == null || actionPlans.size() != 1) {
-          log.with("collection_exercise_id", caseGroup.getCollectionExerciseId())
-              .with("enrolments", enrolments)
-              .error("One action plan expected");
-          throw new IllegalStateException(
-              "Expected one action plan for collection exercise with enrolmentStatus");
-        }
-
-        for (Case caze : cases) {
-          if (caze.getSampleUnitType() == SampleUnitType.B) {
-            caze.setActionPlanId(actionPlans.get(0).getId());
-            caseRepo.saveAndFlush(caze);
-            notificationPublisher.sendNotification(
-                prepareCaseNotification(caze, CaseDTO.CaseEvent.ACTIONPLAN_CHANGED));
+          if (actionPlans == null || actionPlans.size() != 1) {
+            log.with("collection_exercise_id", caseGroup.getCollectionExerciseId())
+                    .with("enrolments", enrolments)
+                    .error("One action plan expected");
+            throw new IllegalStateException(
+                    "Expected one action plan for collection exercise with enrolmentStatus");
+          }
+          for (Case caze : cases) {
+            if (caze.getSampleUnitType() == SampleUnitType.B) {
+              caze.setActionPlanId(actionPlans.get(0).getId());
+              caseRepo.saveAndFlush(caze);
+              notificationPublisher.sendNotification(
+                      prepareCaseNotification(caze, CaseDTO.CaseEvent.ACTIONPLAN_CHANGED));
+            }
+          }
+        }else {
+          for (Case caze : cases) {
+            if (caze.getSampleUnitType() == SampleUnitType.B) {
+              caze.setActiveEnrolment(enrolments);
+              caseRepo.saveAndFlush(caze);
+              notificationPublisher.sendNotification(
+                      prepareCaseNotification(caze, CaseDTO.CaseEvent.ACTIONPLAN_CHANGED));
+            }
           }
         }
       }
@@ -482,7 +500,8 @@ public class CaseService {
     createCaseCreatedEvent(parentCase, category);
     log.with("case_id", parentCase.getId().toString())
         .with("sample_unit_type", parentCase.getSampleUnitType().toString())
-        .debug("New Case created");
+            .with("actionPlanId",parentCase.getActionPlanId())
+        .info("New Case created");
   }
 
   /**
@@ -550,7 +569,11 @@ public class CaseService {
     }
 
     newCase.setCollectionInstrumentId(UUID.fromString(caseData.getCollectionInstrumentId()));
-    newCase.setActionPlanId(UUID.fromString(caseData.getActionPlanId()));
+    if (!actionSvcClient.isDeprecated()) {
+      newCase.setActionPlanId(UUID.fromString(caseData.getActionPlanId()));
+    } else {
+      newCase.setActiveEnrolment(caseData.isActiveEnrolment());
+    }
 
     // HardCoded values
     newCase.setState(CaseState.SAMPLED_INIT);

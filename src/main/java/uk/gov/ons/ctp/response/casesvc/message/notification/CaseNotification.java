@@ -41,9 +41,10 @@ public class CaseNotification {
 
   @XmlElement(required = true)
   protected String caseId;
-
-  @XmlElement(required = true)
+  @XmlElement(nillable = true)
   protected String actionPlanId;
+
+  protected boolean activeEnrolment;
 
   @XmlElement(required = true)
   protected String exerciseId;
@@ -65,6 +66,7 @@ public class CaseNotification {
       final String sampleUnitId,
       final String caseId,
       final String actionPlanId,
+      final boolean activeEnrolment,
       final String exerciseId,
       final String partyId,
       final String sampleUnitType,
@@ -76,6 +78,7 @@ public class CaseNotification {
     this.partyId = partyId;
     this.sampleUnitType = sampleUnitType;
     this.notificationType = notificationType;
+    this.activeEnrolment = activeEnrolment;
   }
 
   /**
@@ -130,6 +133,14 @@ public class CaseNotification {
    */
   public void setActionPlanId(String value) {
     this.actionPlanId = value;
+  }
+
+  public boolean isActiveEnrolment() {
+    return activeEnrolment;
+  }
+
+  public void setActiveEnrolment(boolean activeEnrolment) {
+    this.activeEnrolment = activeEnrolment;
   }
 
   /**
@@ -214,6 +225,7 @@ public class CaseNotification {
     _other.sampleUnitId = this.sampleUnitId;
     _other.caseId = this.caseId;
     _other.actionPlanId = this.actionPlanId;
+    _other.activeEnrolment = this.activeEnrolment;
     _other.exerciseId = this.exerciseId;
     _other.partyId = this.partyId;
     _other.sampleUnitType = this.sampleUnitType;
@@ -269,6 +281,13 @@ public class CaseNotification {
         ? (actionPlanIdPropertyTree != null)
         : ((actionPlanIdPropertyTree == null) || (!actionPlanIdPropertyTree.isLeaf())))) {
       _other.actionPlanId = this.actionPlanId;
+    }
+    final PropertyTree activeEnrolmentPropertyTree =
+            ((_propertyTree == null) ? null : _propertyTree.get("activeEnrolment"));
+    if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
+            ? (activeEnrolmentPropertyTree != null)
+            : ((activeEnrolmentPropertyTree == null) || (!activeEnrolmentPropertyTree.isLeaf())))) {
+      _other.activeEnrolment = this.activeEnrolment;
     }
     final PropertyTree exerciseIdPropertyTree =
         ((_propertyTree == null) ? null : _propertyTree.get("exerciseId"));
@@ -340,6 +359,7 @@ public class CaseNotification {
     private String sampleUnitId;
     private String caseId;
     private String actionPlanId;
+    private boolean activeEnrolment;
     private String exerciseId;
     private String partyId;
     private String sampleUnitType;
@@ -353,6 +373,7 @@ public class CaseNotification {
           this.sampleUnitId = _other.sampleUnitId;
           this.caseId = _other.caseId;
           this.actionPlanId = _other.actionPlanId;
+          this.activeEnrolment = _other.activeEnrolment;
           this.exerciseId = _other.exerciseId;
           this.partyId = _other.partyId;
           this.sampleUnitType = _other.sampleUnitType;
@@ -395,6 +416,13 @@ public class CaseNotification {
               ? (actionPlanIdPropertyTree != null)
               : ((actionPlanIdPropertyTree == null) || (!actionPlanIdPropertyTree.isLeaf())))) {
             this.actionPlanId = _other.actionPlanId;
+          }
+          final PropertyTree activeEnrolmentPropertyTree =
+                  ((_propertyTree == null) ? null : _propertyTree.get("activeEnrolment"));
+          if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
+                  ? (activeEnrolmentPropertyTree != null)
+                  : ((activeEnrolmentPropertyTree == null) || (!activeEnrolmentPropertyTree.isLeaf())))) {
+            this.activeEnrolment = _other.activeEnrolment;
           }
           final PropertyTree exerciseIdPropertyTree =
               ((_propertyTree == null) ? null : _propertyTree.get("exerciseId"));
@@ -441,6 +469,7 @@ public class CaseNotification {
       _product.sampleUnitId = this.sampleUnitId;
       _product.caseId = this.caseId;
       _product.actionPlanId = this.actionPlanId;
+      _product.activeEnrolment = this.activeEnrolment;
       _product.exerciseId = this.exerciseId;
       _product.partyId = this.partyId;
       _product.sampleUnitType = this.sampleUnitType;
@@ -475,6 +504,11 @@ public class CaseNotification {
      */
     public CaseNotification.Builder<_B> withActionPlanId(final String actionPlanId) {
       this.actionPlanId = actionPlanId;
+      return this;
+    }
+
+    public CaseNotification.Builder<_B> withActiveEnrolment(final boolean activeEnrolment) {
+      this.activeEnrolment = activeEnrolment;
       return this;
     }
 
@@ -550,6 +584,8 @@ public class CaseNotification {
     private com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>
         actionPlanId = null;
     private com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>
+            activeEnrolment = null;
+    private com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>
         exerciseId = null;
     private com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>> partyId =
         null;
@@ -574,6 +610,9 @@ public class CaseNotification {
       }
       if (this.actionPlanId != null) {
         products.put("actionPlanId", this.actionPlanId.init());
+      }
+      if (this.activeEnrolment != null) {
+        products.put("activeEnrolment", this.activeEnrolment.init());
       }
       if (this.exerciseId != null) {
         products.put("exerciseId", this.exerciseId.init());
@@ -614,6 +653,15 @@ public class CaseNotification {
               new com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>(
                   this._root, this, "actionPlanId")
           : this.actionPlanId);
+    }
+
+    public com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>
+    actionEnrolment() {
+      return ((this.activeEnrolment == null)
+              ? this.activeEnrolment =
+              new com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>(
+                      this._root, this, "activeEnrolment")
+              : this.activeEnrolment);
     }
 
     public com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>

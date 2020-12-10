@@ -92,6 +92,7 @@ internet-access-code-svc:
     password: secret
 
 action-svc:
+  deprecated: true
   actions-path: /actions
   action-plans-path: /actionplans
   connection-config:

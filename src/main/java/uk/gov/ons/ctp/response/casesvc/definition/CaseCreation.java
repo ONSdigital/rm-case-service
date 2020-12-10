@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.*;
  *         &lt;element name="sampleUnitRef" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *         &lt;element name="sampleUnitType" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *         &lt;element name="actionPlanId" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="activeEnrolment" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -38,7 +39,8 @@ import javax.xml.bind.annotation.*;
       "collectionInstrumentId",
       "sampleUnitRef",
       "sampleUnitType",
-      "actionPlanId"
+      "actionPlanId",
+      "activeEnrolment"
     })
 @XmlRootElement(name = "caseCreation")
 public class CaseCreation {
@@ -57,9 +59,9 @@ public class CaseCreation {
 
   @XmlElement(required = true)
   protected String sampleUnitType;
-
-  @XmlElement(required = true)
+  @XmlElement(nillable = true)
   protected String actionPlanId;
+  protected boolean activeEnrolment;
 
   /** Default no-arg constructor */
   public CaseCreation() {
@@ -73,13 +75,15 @@ public class CaseCreation {
       final String collectionInstrumentId,
       final String sampleUnitRef,
       final String sampleUnitType,
-      final String actionPlanId) {
+      final String actionPlanId,
+      final boolean activeEnrolment) {
     this.partyId = partyId;
     this.collectionExerciseId = collectionExerciseId;
     this.collectionInstrumentId = collectionInstrumentId;
     this.sampleUnitRef = sampleUnitRef;
     this.sampleUnitType = sampleUnitType;
     this.actionPlanId = actionPlanId;
+    this.activeEnrolment = activeEnrolment;
   }
 
   /**
@@ -187,7 +191,17 @@ public class CaseCreation {
    * @param value allowed object is {@link String }
    */
   public void setActionPlanId(String value) {
-    this.actionPlanId = value;
+    if(actionPlanId != null) {
+      this.actionPlanId = value;
+    }
+  }
+
+  public boolean isActiveEnrolment() {
+    return activeEnrolment;
+  }
+
+  public void setActiveEnrolment(boolean activeEnrolment) {
+    this.activeEnrolment = activeEnrolment;
   }
 
   /**
@@ -203,6 +217,7 @@ public class CaseCreation {
     _other.sampleUnitRef = this.sampleUnitRef;
     _other.sampleUnitType = this.sampleUnitType;
     _other.actionPlanId = this.actionPlanId;
+    _other.activeEnrolment = this.activeEnrolment;
   }
 
   public <_B> Builder<_B> newCopyBuilder(final _B _parentBuilder) {
@@ -277,6 +292,13 @@ public class CaseCreation {
         : ((actionPlanIdPropertyTree == null) || (!actionPlanIdPropertyTree.isLeaf())))) {
       _other.actionPlanId = this.actionPlanId;
     }
+    final PropertyTree activeEnrolmentPropertyTree =
+            ((_propertyTree == null) ? null : _propertyTree.get("activeEnrolment"));
+    if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
+            ? (activeEnrolmentPropertyTree != null)
+            : ((activeEnrolmentPropertyTree == null) || (!activeEnrolmentPropertyTree.isLeaf())))) {
+      _other.activeEnrolment = this.activeEnrolment;
+    }
   }
 
   public <_B> Builder<_B> newCopyBuilder(
@@ -320,6 +342,7 @@ public class CaseCreation {
     private String sampleUnitRef;
     private String sampleUnitType;
     private String actionPlanId;
+    private boolean activeEnrolment;
 
     public Builder(final _B _parentBuilder, final CaseCreation _other, final boolean _copy) {
       this._parentBuilder = _parentBuilder;
@@ -332,6 +355,7 @@ public class CaseCreation {
           this.sampleUnitRef = _other.sampleUnitRef;
           this.sampleUnitType = _other.sampleUnitType;
           this.actionPlanId = _other.actionPlanId;
+          this.activeEnrolment = _other.activeEnrolment;
         } else {
           _storedValue = _other;
         }
@@ -394,6 +418,13 @@ public class CaseCreation {
               : ((actionPlanIdPropertyTree == null) || (!actionPlanIdPropertyTree.isLeaf())))) {
             this.actionPlanId = _other.actionPlanId;
           }
+          final PropertyTree activeEnrolmentPropertyTree =
+                  ((_propertyTree == null) ? null : _propertyTree.get("activeEnrolment"));
+          if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
+                  ? (activeEnrolmentPropertyTree != null)
+                  : ((activeEnrolmentPropertyTree == null) || (!activeEnrolmentPropertyTree.isLeaf())))) {
+            this.activeEnrolment = _other.activeEnrolment;
+          }
         } else {
           _storedValue = _other;
         }
@@ -413,6 +444,7 @@ public class CaseCreation {
       _product.sampleUnitRef = this.sampleUnitRef;
       _product.sampleUnitType = this.sampleUnitType;
       _product.actionPlanId = this.actionPlanId;
+      _product.activeEnrolment = this.activeEnrolment;
       return _product;
     }
 
@@ -476,6 +508,11 @@ public class CaseCreation {
       return this;
     }
 
+    public Builder<_B> withActiveEnrolment(final boolean activeEnrolment) {
+      this.activeEnrolment = activeEnrolment;
+      return this;
+    }
+
     @Override
     public CaseCreation build() {
       if (_storedValue == null) {
@@ -508,6 +545,7 @@ public class CaseCreation {
     private com.kscs.util.jaxb.Selector<TRoot, Selector<TRoot, TParent>> sampleUnitRef = null;
     private com.kscs.util.jaxb.Selector<TRoot, Selector<TRoot, TParent>> sampleUnitType = null;
     private com.kscs.util.jaxb.Selector<TRoot, Selector<TRoot, TParent>> actionPlanId = null;
+    private com.kscs.util.jaxb.Selector<TRoot, Selector<TRoot, TParent>> activeEnrolment = null;
 
     public Selector(final TRoot root, final TParent parent, final String propertyName) {
       super(root, parent, propertyName);
@@ -534,6 +572,9 @@ public class CaseCreation {
       }
       if (this.actionPlanId != null) {
         products.put("actionPlanId", this.actionPlanId.init());
+      }
+      if (this.activeEnrolment != null) {
+        products.put("activeEnrolment", this.activeEnrolment.init());
       }
       return products;
     }
@@ -584,6 +625,14 @@ public class CaseCreation {
               new com.kscs.util.jaxb.Selector<TRoot, Selector<TRoot, TParent>>(
                   this._root, this, "actionPlanId")
           : this.actionPlanId);
+    }
+
+    public com.kscs.util.jaxb.Selector<TRoot, Selector<TRoot, TParent>> activeEnrolment() {
+      return ((this.activeEnrolment == null)
+              ? this.activeEnrolment =
+              new com.kscs.util.jaxb.Selector<TRoot, Selector<TRoot, TParent>>(
+                      this._root, this, "activeEnrolment")
+              : this.activeEnrolment);
     }
   }
 }

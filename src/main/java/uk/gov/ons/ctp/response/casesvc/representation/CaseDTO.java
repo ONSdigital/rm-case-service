@@ -41,4 +41,6 @@ public class CaseDTO {
   private Date createdDateTime;
 
   private ResponseDTO[] responses;
+
+  private boolean activeEnrolment;
 }
