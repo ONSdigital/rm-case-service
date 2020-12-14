@@ -459,7 +459,7 @@ public class CaseService {
                       prepareCaseNotification(caze, CaseDTO.CaseEvent.ACTIONPLAN_CHANGED));
             }
           }
-        }else {
+        } else {
           for (Case caze : cases) {
             if (caze.getSampleUnitType() == SampleUnitType.B) {
               caze.setActiveEnrolment(enrolments);
