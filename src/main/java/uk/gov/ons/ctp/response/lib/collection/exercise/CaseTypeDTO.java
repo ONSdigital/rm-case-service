@@ -15,4 +15,6 @@ public class CaseTypeDTO {
   private String sampleUnitTypeFK;
 
   private UUID actionPlanId;
+
+  private boolean activeEnrolment;
 }

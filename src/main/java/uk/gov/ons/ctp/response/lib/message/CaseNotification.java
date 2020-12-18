@@ -47,8 +47,7 @@ public class CaseNotification {
 
   @XmlElement(required = true)
   protected String caseId;
-
-  @XmlElement(required = true)
+  @XmlElement(nillable = true)
   protected String actionPlanId;
 
   @XmlElement(required = true)

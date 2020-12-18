@@ -8,7 +8,8 @@
         <xs:all>
             <xs:element name="sampleUnitId" type="xs:string" minOccurs="0"/>
             <xs:element name="caseId" type="xs:string" minOccurs="1"/>
-            <xs:element name="actionPlanId" type="xs:string" minOccurs="1"/>
+            <xs:element name="actionPlanId" type="xs:string" minOccurs="0" default="N"/>
+            <xs:element name="activeEnrolment" type="xs:boolean" minOccurs="0" default="N"/>
             <xs:element name="exerciseId" type="xs:string" minOccurs="1"/>
             <xs:element name="partyId" type="xs:string" minOccurs="0"/>
             <xs:element name="sampleUnitType" type="xs:string" minOccurs="0"/>

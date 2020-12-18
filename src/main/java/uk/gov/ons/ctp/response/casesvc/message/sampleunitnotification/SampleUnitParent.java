@@ -51,8 +51,9 @@ public class SampleUnitParent extends SampleUnit {
       final String collectionInstrumentId,
       final String actionPlanId,
       final String collectionExerciseId,
-      final SampleUnitChildren sampleUnitChildren) {
-    super(id, sampleUnitRef, sampleUnitType, partyId, collectionInstrumentId, actionPlanId);
+      final SampleUnitChildren sampleUnitChildren,
+      final boolean activeEnrolment) {
+    super(id, sampleUnitRef, sampleUnitType, partyId, collectionInstrumentId, actionPlanId, activeEnrolment);
     this.collectionExerciseId = collectionExerciseId;
     this.sampleUnitChildren = sampleUnitChildren;
   }
@@ -369,6 +370,12 @@ public class SampleUnitParent extends SampleUnit {
     @Override
     public Builder<_B> withActionPlanId(final String actionPlanId) {
       super.withActionPlanId(actionPlanId);
+      return this;
+    }
+
+    @Override
+    public Builder<_B> withActiveEnrolment(final boolean activeEnrolment) {
+      super.withActiveEnrolment(activeEnrolment);
       return this;
     }
 

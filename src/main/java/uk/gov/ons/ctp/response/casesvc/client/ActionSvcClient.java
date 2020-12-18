@@ -88,4 +88,8 @@ public class ActionSvcClient {
         .debug("Successfully retrieved action plan for selectors");
     return responseEntity.getBody();
   }
+
+  public boolean isDeprecated() {
+    return this.appConfig.getActionSvc().isDeprecated();
+  }
 }

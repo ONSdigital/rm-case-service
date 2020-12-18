@@ -38,7 +38,8 @@ import javax.xml.bind.annotation.*;
       "sampleUnitType",
       "partyId",
       "collectionInstrumentId",
-      "actionPlanId"
+      "actionPlanId",
+      "activeEnrolment"
     })
 @XmlSeeAlso({SampleUnitParent.class})
 public class SampleUnit {
@@ -55,9 +56,10 @@ public class SampleUnit {
 
   @XmlElement(required = true)
   protected String collectionInstrumentId;
-
-  @XmlElement(required = true)
+  @XmlElement(nillable=true)
   protected String actionPlanId;
+
+  protected boolean activeEnrolment;
 
   /** Default no-arg constructor */
   public SampleUnit() {
@@ -71,13 +73,15 @@ public class SampleUnit {
       final String sampleUnitType,
       final String partyId,
       final String collectionInstrumentId,
-      final String actionPlanId) {
+      final String actionPlanId,
+      final boolean activeEnrolment) {
     this.id = id;
     this.sampleUnitRef = sampleUnitRef;
     this.sampleUnitType = sampleUnitType;
     this.partyId = partyId;
     this.collectionInstrumentId = collectionInstrumentId;
     this.actionPlanId = actionPlanId;
+    this.activeEnrolment = activeEnrolment;
   }
 
   /**
@@ -185,10 +189,20 @@ public class SampleUnit {
    * @param value allowed object is {@link String }
    */
   public void setActionPlanId(String value) {
-    this.actionPlanId = value;
+    if(value != null) {
+      this.actionPlanId = value;
+    }
   }
 
-  /**
+    public boolean isActiveEnrolment() {
+        return activeEnrolment;
+    }
+
+    public void setActiveEnrolment(boolean activeEnrolment) {
+        this.activeEnrolment = activeEnrolment;
+    }
+
+    /**
    * Copies all state of this object to a builder. This method is used by the {@link #copyOf} method
    * and should not be called directly by client code.
    *
@@ -201,6 +215,7 @@ public class SampleUnit {
     _other.partyId = this.partyId;
     _other.collectionInstrumentId = this.collectionInstrumentId;
     _other.actionPlanId = this.actionPlanId;
+    _other.activeEnrolment = this.activeEnrolment;
   }
 
   public <_B> Builder<_B> newCopyBuilder(final _B _parentBuilder) {
@@ -273,6 +288,13 @@ public class SampleUnit {
         : ((actionPlanIdPropertyTree == null) || (!actionPlanIdPropertyTree.isLeaf())))) {
       _other.actionPlanId = this.actionPlanId;
     }
+      final PropertyTree activeEnrolmentPropertyTree =
+              ((_propertyTree == null) ? null : _propertyTree.get("activeEnrolment"));
+      if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
+              ? (activeEnrolmentPropertyTree != null)
+              : ((activeEnrolmentPropertyTree == null) || (!activeEnrolmentPropertyTree.isLeaf())))) {
+          _other.activeEnrolment = this.activeEnrolment;
+      }
   }
 
   public <_B> Builder<_B> newCopyBuilder(
@@ -315,6 +337,7 @@ public class SampleUnit {
     private String partyId;
     private String collectionInstrumentId;
     private String actionPlanId;
+    private boolean activeEnrolment;
 
     public Builder(final _B _parentBuilder, final SampleUnit _other, final boolean _copy) {
       this._parentBuilder = _parentBuilder;
@@ -327,6 +350,7 @@ public class SampleUnit {
           this.partyId = _other.partyId;
           this.collectionInstrumentId = _other.collectionInstrumentId;
           this.actionPlanId = _other.actionPlanId;
+          this.activeEnrolment = _other.activeEnrolment;
         } else {
           _storedValue = _other;
         }
@@ -388,6 +412,13 @@ public class SampleUnit {
               : ((actionPlanIdPropertyTree == null) || (!actionPlanIdPropertyTree.isLeaf())))) {
             this.actionPlanId = _other.actionPlanId;
           }
+            final PropertyTree activeEnrolmentPropertyTree =
+                    ((_propertyTree == null) ? null : _propertyTree.get("activeEnrolment"));
+            if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
+                    ? (activeEnrolmentPropertyTree != null)
+                    : ((activeEnrolmentPropertyTree == null) || (!activeEnrolmentPropertyTree.isLeaf())))) {
+                this.activeEnrolment = _other.activeEnrolment;
+            }
         } else {
           _storedValue = _other;
         }
@@ -407,6 +438,7 @@ public class SampleUnit {
       _product.partyId = this.partyId;
       _product.collectionInstrumentId = this.collectionInstrumentId;
       _product.actionPlanId = this.actionPlanId;
+      _product.activeEnrolment = this.activeEnrolment;
       return _product;
     }
 
@@ -470,6 +502,11 @@ public class SampleUnit {
       return this;
     }
 
+      public Builder<_B> withActiveEnrolment(final boolean activeEnrolment) {
+          this.activeEnrolment = activeEnrolment;
+          return this;
+      }
+
     @Override
     public SampleUnit build() {
       if (_storedValue == null) {
@@ -501,6 +538,7 @@ public class SampleUnit {
     private com.kscs.util.jaxb.Selector<TRoot, Selector<TRoot, TParent>> collectionInstrumentId =
         null;
     private com.kscs.util.jaxb.Selector<TRoot, Selector<TRoot, TParent>> actionPlanId = null;
+      private com.kscs.util.jaxb.Selector<TRoot, Selector<TRoot, TParent>> activeEnrolment = null;
 
     public Selector(final TRoot root, final TParent parent, final String propertyName) {
       super(root, parent, propertyName);
@@ -528,6 +566,9 @@ public class SampleUnit {
       if (this.actionPlanId != null) {
         products.put("actionPlanId", this.actionPlanId.init());
       }
+        if (this.activeEnrolment != null) {
+            products.put("activeEnrolment", this.activeEnrolment.init());
+        }
       return products;
     }
 
@@ -578,5 +619,13 @@ public class SampleUnit {
                   this._root, this, "actionPlanId")
           : this.actionPlanId);
     }
+
+      public com.kscs.util.jaxb.Selector<TRoot, Selector<TRoot, TParent>> activeEnrolment() {
+          return ((this.activeEnrolment == null)
+                  ? this.activeEnrolment =
+                  new com.kscs.util.jaxb.Selector<TRoot, Selector<TRoot, TParent>>(
+                          this._root, this, "activeEnrolment")
+                  : this.activeEnrolment);
+      }
   }
 }
