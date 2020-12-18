@@ -259,6 +259,7 @@ public class CaseService {
    */
   public CaseNotification prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent) {
     CaseGroup caseGroup = caseGroupRepo.findOne(caze.getCaseGroupFK());
+    String iac = caseIacAuditService.findCaseIacByCasePK(caseGroup.getCaseGroupPK());
     // This to be taken out when actionsvc is depricated
     String actionPlanId = caze.getActionPlanId() != null ? caze.getActionPlanId().toString() : null;
     return new CaseNotification(
@@ -269,7 +270,10 @@ public class CaseService {
         caseGroup.getCollectionExerciseId().toString(),
         Objects.toString(caze.getPartyId(), null),
         caze.getSampleUnitType().toString(),
-        NotificationType.valueOf(transitionEvent.name()));
+        NotificationType.valueOf(transitionEvent.name()),
+        caseGroup.getSampleUnitRef(),
+        caseGroup.getStatus().toString(),
+        iac);
   }
 
   /**
@@ -431,7 +435,9 @@ public class CaseService {
         caseGroupService.findCaseGroupsForExecutedCollectionExercises(targetCase);
 
     for (CaseGroup caseGroup : caseGroups) {
-
+      String sampleUnitRef = caseGroup.getSampleUnitRef();
+      CaseGroupStatus status = caseGroup.getStatus();
+      String iac = caseIacAuditService.findCaseIacByCasePK(caseGroup.getCaseGroupPK());
       if (caseGroup.getStatus() == CaseGroupStatus.NOTSTARTED
           || caseGroup.getStatus() == CaseGroupStatus.INPROGRESS) {
 
