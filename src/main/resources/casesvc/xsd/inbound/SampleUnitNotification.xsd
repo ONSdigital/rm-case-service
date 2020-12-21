@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
            xmlns="http://ons.gov.uk/ctp/response/casesvc/message/sampleunitnotification"
            targetNamespace="http://ons.gov.uk/ctp/response/casesvc/message/sampleunitnotification">
@@ -32,8 +32,8 @@
             <xs:element name="sampleUnitType" type="xs:string" minOccurs="1" maxOccurs="1"/>
             <xs:element name="partyId" type="xs:string" minOccurs="0" maxOccurs="1"/>
             <xs:element name="collectionInstrumentId" type="xs:string" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="actionPlanId" type="xs:string" minOccurs="0" maxOccurs="1" default="N" nillable="true"/>
             <xs:element name="activeEnrolment" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="actionPlanId" type="xs:string" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 
