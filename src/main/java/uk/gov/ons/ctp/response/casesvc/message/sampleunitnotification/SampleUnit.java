@@ -38,8 +38,8 @@ import javax.xml.bind.annotation.*;
       "sampleUnitType",
       "partyId",
       "collectionInstrumentId",
-      "actionPlanId",
-      "activeEnrolment"
+      "activeEnrolment",
+      "actionPlanId"
     })
 @XmlSeeAlso({SampleUnitParent.class})
 public class SampleUnit {
@@ -56,10 +56,10 @@ public class SampleUnit {
 
   @XmlElement(required = true)
   protected String collectionInstrumentId;
-  @XmlElement(nillable=true)
-  protected String actionPlanId;
 
   protected boolean activeEnrolment;
+
+  protected String actionPlanId;
 
   /** Default no-arg constructor */
   public SampleUnit() {
@@ -73,8 +73,9 @@ public class SampleUnit {
       final String sampleUnitType,
       final String partyId,
       final String collectionInstrumentId,
-      final String actionPlanId,
-      final boolean activeEnrolment) {
+      final boolean activeEnrolment,
+      final String actionPlanId
+      ) {
     this.id = id;
     this.sampleUnitRef = sampleUnitRef;
     this.sampleUnitType = sampleUnitType;
@@ -214,8 +215,8 @@ public class SampleUnit {
     _other.sampleUnitType = this.sampleUnitType;
     _other.partyId = this.partyId;
     _other.collectionInstrumentId = this.collectionInstrumentId;
-    _other.actionPlanId = this.actionPlanId;
     _other.activeEnrolment = this.activeEnrolment;
+    _other.actionPlanId = this.actionPlanId;
   }
 
   public <_B> Builder<_B> newCopyBuilder(final _B _parentBuilder) {
@@ -281,6 +282,13 @@ public class SampleUnit {
             || (!collectionInstrumentIdPropertyTree.isLeaf())))) {
       _other.collectionInstrumentId = this.collectionInstrumentId;
     }
+    final PropertyTree activeEnrolmentPropertyTree =
+            ((_propertyTree == null) ? null : _propertyTree.get("activeEnrolment"));
+    if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
+            ? (activeEnrolmentPropertyTree != null)
+            : ((activeEnrolmentPropertyTree == null) || (!activeEnrolmentPropertyTree.isLeaf())))) {
+      _other.activeEnrolment = this.activeEnrolment;
+    }
     final PropertyTree actionPlanIdPropertyTree =
         ((_propertyTree == null) ? null : _propertyTree.get("actionPlanId"));
     if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
@@ -288,13 +296,6 @@ public class SampleUnit {
         : ((actionPlanIdPropertyTree == null) || (!actionPlanIdPropertyTree.isLeaf())))) {
       _other.actionPlanId = this.actionPlanId;
     }
-      final PropertyTree activeEnrolmentPropertyTree =
-              ((_propertyTree == null) ? null : _propertyTree.get("activeEnrolment"));
-      if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-              ? (activeEnrolmentPropertyTree != null)
-              : ((activeEnrolmentPropertyTree == null) || (!activeEnrolmentPropertyTree.isLeaf())))) {
-          _other.activeEnrolment = this.activeEnrolment;
-      }
   }
 
   public <_B> Builder<_B> newCopyBuilder(
@@ -336,8 +337,8 @@ public class SampleUnit {
     private String sampleUnitType;
     private String partyId;
     private String collectionInstrumentId;
-    private String actionPlanId;
     private boolean activeEnrolment;
+    private String actionPlanId;
 
     public Builder(final _B _parentBuilder, final SampleUnit _other, final boolean _copy) {
       this._parentBuilder = _parentBuilder;
@@ -405,6 +406,13 @@ public class SampleUnit {
                   || (!collectionInstrumentIdPropertyTree.isLeaf())))) {
             this.collectionInstrumentId = _other.collectionInstrumentId;
           }
+          final PropertyTree activeEnrolmentPropertyTree =
+                  ((_propertyTree == null) ? null : _propertyTree.get("activeEnrolment"));
+          if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
+                  ? (activeEnrolmentPropertyTree != null)
+                  : ((activeEnrolmentPropertyTree == null) || (!activeEnrolmentPropertyTree.isLeaf())))) {
+            this.activeEnrolment = _other.activeEnrolment;
+          }
           final PropertyTree actionPlanIdPropertyTree =
               ((_propertyTree == null) ? null : _propertyTree.get("actionPlanId"));
           if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
@@ -412,13 +420,6 @@ public class SampleUnit {
               : ((actionPlanIdPropertyTree == null) || (!actionPlanIdPropertyTree.isLeaf())))) {
             this.actionPlanId = _other.actionPlanId;
           }
-            final PropertyTree activeEnrolmentPropertyTree =
-                    ((_propertyTree == null) ? null : _propertyTree.get("activeEnrolment"));
-            if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-                    ? (activeEnrolmentPropertyTree != null)
-                    : ((activeEnrolmentPropertyTree == null) || (!activeEnrolmentPropertyTree.isLeaf())))) {
-                this.activeEnrolment = _other.activeEnrolment;
-            }
         } else {
           _storedValue = _other;
         }
@@ -437,8 +438,8 @@ public class SampleUnit {
       _product.sampleUnitType = this.sampleUnitType;
       _product.partyId = this.partyId;
       _product.collectionInstrumentId = this.collectionInstrumentId;
-      _product.actionPlanId = this.actionPlanId;
       _product.activeEnrolment = this.activeEnrolment;
+      _product.actionPlanId = this.actionPlanId;
       return _product;
     }
 
@@ -537,8 +538,9 @@ public class SampleUnit {
     private com.kscs.util.jaxb.Selector<TRoot, Selector<TRoot, TParent>> partyId = null;
     private com.kscs.util.jaxb.Selector<TRoot, Selector<TRoot, TParent>> collectionInstrumentId =
         null;
+    private com.kscs.util.jaxb.Selector<TRoot, Selector<TRoot, TParent>> activeEnrolment = null;
     private com.kscs.util.jaxb.Selector<TRoot, Selector<TRoot, TParent>> actionPlanId = null;
-      private com.kscs.util.jaxb.Selector<TRoot, Selector<TRoot, TParent>> activeEnrolment = null;
+
 
     public Selector(final TRoot root, final TParent parent, final String propertyName) {
       super(root, parent, propertyName);
@@ -612,6 +614,14 @@ public class SampleUnit {
           : this.collectionInstrumentId);
     }
 
+    public com.kscs.util.jaxb.Selector<TRoot, Selector<TRoot, TParent>> activeEnrolment() {
+      return ((this.activeEnrolment == null)
+              ? this.activeEnrolment =
+              new com.kscs.util.jaxb.Selector<TRoot, Selector<TRoot, TParent>>(
+                      this._root, this, "activeEnrolment")
+              : this.activeEnrolment);
+    }
+
     public com.kscs.util.jaxb.Selector<TRoot, Selector<TRoot, TParent>> actionPlanId() {
       return ((this.actionPlanId == null)
           ? this.actionPlanId =
@@ -619,13 +629,5 @@ public class SampleUnit {
                   this._root, this, "actionPlanId")
           : this.actionPlanId);
     }
-
-      public com.kscs.util.jaxb.Selector<TRoot, Selector<TRoot, TParent>> activeEnrolment() {
-          return ((this.activeEnrolment == null)
-                  ? this.activeEnrolment =
-                  new com.kscs.util.jaxb.Selector<TRoot, Selector<TRoot, TParent>>(
-                          this._root, this, "activeEnrolment")
-                  : this.activeEnrolment);
-      }
   }
 }

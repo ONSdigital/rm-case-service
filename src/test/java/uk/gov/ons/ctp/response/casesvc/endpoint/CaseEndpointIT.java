@@ -90,7 +90,7 @@ public class CaseEndpointIT {
     UUID sampleUnitId = UUID.randomUUID();
 
     CaseNotification caseNotification =
-        caseCreator.sendSampleUnit("LMS0001", "H", sampleUnitId, collectionExerciseId);
+        caseCreator.sendSampleUnit("49900000008", "B", sampleUnitId, collectionExerciseId);
 
     assertThat(caseNotification.getSampleUnitId()).isEqualTo(sampleUnitId.toString());
   }

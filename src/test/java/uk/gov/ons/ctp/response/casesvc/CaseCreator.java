@@ -47,7 +47,7 @@ public class CaseCreator {
     if (!appConfig.getActionSvc().isDeprecated()){
       sampleUnit.setActionPlanId(UUID.randomUUID().toString());
     } else {
-      sampleUnit.setActiveEnrolment(true);
+      sampleUnit.setActiveEnrolment(false);
     }
     sampleUnit.setSampleUnitRef(sampleUnitRef);
     sampleUnit.setCollectionInstrumentId(UUID.randomUUID().toString());

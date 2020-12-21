@@ -506,7 +506,6 @@ public class CaseService {
     createCaseCreatedEvent(parentCase, category);
     log.with("case_id", parentCase.getId().toString())
         .with("sample_unit_type", parentCase.getSampleUnitType().toString())
-            .with("actionPlanId",parentCase.getActionPlanId())
         .info("New Case created");
   }
 

@@ -60,7 +60,6 @@ public class CaseCreation {
   @XmlElement(required = true)
   protected String sampleUnitType;
 
-  @XmlElement(nillable = true)
   protected String actionPlanId;
 
   protected boolean activeEnrolment;

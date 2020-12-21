@@ -44,7 +44,6 @@ public class CaseNotification {
   @XmlElement(required = true)
   protected String caseId;
 
-  @XmlElement(nillable = true)
   protected String actionPlanId;
 
   protected boolean activeEnrolment;
@@ -53,6 +52,7 @@ public class CaseNotification {
   protected String exerciseId;
 
   protected String partyId;
+
   protected String sampleUnitType;
 
   @XmlElement(required = true)

@@ -45,8 +45,8 @@ import javax.xml.bind.annotation.XmlType;
       "sampleUnitType",
       "partyId",
       "collectionInstrumentId",
-      "actionPlanId",
-      "activeEnrolment"
+      "activeEnrolment",
+      "actionPlanId"
     })
 @XmlSeeAlso({SampleUnitParent.class})
 public class SampleUnit {
@@ -64,10 +64,11 @@ public class SampleUnit {
   @XmlElement(required = true)
   protected String collectionInstrumentId;
 
-  @XmlElement(nillable = true)
+  protected boolean activeEnrolment;
+
   protected String actionPlanId;
 
-  protected boolean activeEnrolment;
+
 
   /**
    * Gets the value of the id property.
