@@ -60,7 +60,7 @@ public class CaseService {
   private static final Logger log = LoggerFactory.getLogger(CaseService.class);
 
   public static final String WRONG_OLD_SAMPLE_UNIT_TYPE_MSG =
-      "Old Case has sampleUnitType %s. It is expected to have sampleUnitType %s.";
+          "Old Case has sampleUnitType %s. It is expected to have sampleUnitType %s.";
 
   private static final String CASE_CREATED_EVENT_DESCRIPTION = "Case created when %s";
 
@@ -136,7 +136,7 @@ public class CaseService {
    * @throws CTPException if more than one case found for a given IAC
    */
   public Case findCaseByIac(final String iac)
-      throws uk.gov.ons.ctp.response.lib.common.error.CTPException {
+          throws uk.gov.ons.ctp.response.lib.common.error.CTPException {
     CaseIacAudit caseIacAudit = caseIacAuditService.findCaseByIac(iac);
     Case caze = caseRepo.findByCasePK(caseIacAudit.getCaseFK());
 
@@ -177,11 +177,11 @@ public class CaseService {
    * @return the cases for the partyId
    */
   public List<Case> findCasesByPartyIdLimitedPerSurvey(
-      final UUID partyId, boolean iac, int maxCasesPerSurvey) {
+          final UUID partyId, boolean iac, int maxCasesPerSurvey) {
 
     List<Case> cases =
-        limitCasesPerSurvey(
-            caseRepo.findByPartyIdOrderByCreatedDateTimeDesc(partyId), maxCasesPerSurvey);
+            limitCasesPerSurvey(
+                    caseRepo.findByPartyIdOrderByCreatedDateTimeDesc(partyId), maxCasesPerSurvey);
 
     if (iac) {
       cases.stream().forEach(c -> c.setIac(caseIacAuditService.findCaseIacByCasePK(c.getCasePK())));
@@ -259,17 +259,21 @@ public class CaseService {
    */
   public CaseNotification prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent) {
     CaseGroup caseGroup = caseGroupRepo.findOne(caze.getCaseGroupFK());
+    String iac = caseIacAuditService.findCaseIacByCasePK(caseGroup.getCaseGroupPK());
     // This to be taken out when actionsvc is depricated
     String actionPlanId = caze.getActionPlanId() != null ? caze.getActionPlanId().toString() : null;
     return new CaseNotification(
-        Objects.toString(caze.getSampleUnitId(), null),
-        caze.getId().toString(),
-        actionPlanId,
-        caze.isActiveEnrolment(),
-        caseGroup.getCollectionExerciseId().toString(),
-        Objects.toString(caze.getPartyId(), null),
-        caze.getSampleUnitType().toString(),
-        NotificationType.valueOf(transitionEvent.name()));
+            Objects.toString(caze.getSampleUnitId(), null),
+            caze.getId().toString(),
+            actionPlanId,
+            caze.isActiveEnrolment(),
+            caseGroup.getCollectionExerciseId().toString(),
+            Objects.toString(caze.getPartyId(), null),
+            caze.getSampleUnitType().toString(),
+            NotificationType.valueOf(transitionEvent.name()),
+            caseGroup.getSampleUnitRef(),
+            caseGroup.getStatus().toString(),
+            iac);
   }
 
   /**
@@ -283,7 +287,7 @@ public class CaseService {
    * @throws CTPException when case state transition error
    */
   public CaseEvent createCaseEvent(final CaseEvent caseEvent)
-      throws uk.gov.ons.ctp.response.lib.common.error.CTPException {
+          throws uk.gov.ons.ctp.response.lib.common.error.CTPException {
     return createCaseEvent(caseEvent, DateTimeUtil.nowUTC());
   }
 
@@ -297,7 +301,7 @@ public class CaseService {
    * @throws CTPException when case state transition error
    */
   public CaseEvent createCaseEvent(final CaseEvent caseEvent, final Case targetCase)
-      throws CTPException {
+          throws CTPException {
     return createCaseEvent(caseEvent, DateTimeUtil.nowUTC(), targetCase);
   }
 
@@ -311,7 +315,7 @@ public class CaseService {
    * @throws CTPException when case state transition error
    */
   public CaseEvent createCaseEvent(final CaseEvent caseEvent, final Timestamp timestamp)
-      throws CTPException {
+          throws CTPException {
     log.with("case_event", caseEvent).debug("Creating case event");
 
     Case targetCase = caseRepo.findOne(caseEvent.getCaseFK());
@@ -333,12 +337,12 @@ public class CaseService {
    * @throws CTPException when case state transition error
    */
   @Transactional(
-      propagation = Propagation.REQUIRED,
-      readOnly = false,
-      timeout = TRANSACTION_TIMEOUT)
+          propagation = Propagation.REQUIRED,
+          readOnly = false,
+          timeout = TRANSACTION_TIMEOUT)
   public CaseEvent createCaseEvent(
-      final CaseEvent caseEvent, final Timestamp timestamp, final Case targetCase)
-      throws CTPException {
+          final CaseEvent caseEvent, final Timestamp timestamp, final Case targetCase)
+          throws CTPException {
     log.with("case_event", caseEvent).debug("Creating case event");
 
     Category category = categoryRepo.findOne(caseEvent.getCategory());
@@ -380,9 +384,9 @@ public class CaseService {
    * @param updatedCase Case to create audit table row for
    */
   @Transactional(
-      propagation = Propagation.REQUIRED,
-      readOnly = false,
-      timeout = TRANSACTION_TIMEOUT)
+          propagation = Propagation.REQUIRED,
+          readOnly = false,
+          timeout = TRANSACTION_TIMEOUT)
   public void saveCaseIacAudit(final Case updatedCase) {
     log.with("case_id", updatedCase.getId()).debug("Saving case iac audit");
     CaseIacAudit caseIacAudit = new CaseIacAudit();
@@ -415,7 +419,7 @@ public class CaseService {
     CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
     try {
       caseGroupService.transitionCaseGroupStatus(
-          caseGroup, caseEvent.getCategory(), targetCase.getPartyId());
+              caseGroup, caseEvent.getCategory(), targetCase.getPartyId());
     } catch (uk.gov.ons.ctp.response.lib.common.error.CTPException e) {
       // The transition manager throws an exception if the event doesn't cause a transition, however
       // there are lots of
@@ -425,19 +429,21 @@ public class CaseService {
   }
 
   private void processActiveEnrolmentChange(final Case targetCase, final boolean enrolments)
-      throws uk.gov.ons.ctp.response.lib.common.error.CTPException {
+          throws uk.gov.ons.ctp.response.lib.common.error.CTPException {
 
     List<CaseGroup> caseGroups =
-        caseGroupService.findCaseGroupsForExecutedCollectionExercises(targetCase);
+            caseGroupService.findCaseGroupsForExecutedCollectionExercises(targetCase);
 
     for (CaseGroup caseGroup : caseGroups) {
-
+      String sampleUnitRef = caseGroup.getSampleUnitRef();
+      CaseGroupStatus status = caseGroup.getStatus();
+      String iac = caseIacAuditService.findCaseIacByCasePK(caseGroup.getCaseGroupPK());
       if (caseGroup.getStatus() == CaseGroupStatus.NOTSTARTED
-          || caseGroup.getStatus() == CaseGroupStatus.INPROGRESS) {
+              || caseGroup.getStatus() == CaseGroupStatus.INPROGRESS) {
 
         // fetch all B and BI cases associated to the case group being processed
         List<Case> cases =
-            caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(caseGroup.getCaseGroupPK());
+                caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(caseGroup.getCaseGroupPK());
 
         // This section needs to be taken out once activeEnrolment is active
         if (!actionSvcClient.isDeprecated()) {
@@ -483,25 +489,24 @@ public class CaseService {
 
     Case parentCase = createNewCase(sampleUnitParent, newCaseGroup);
     if (sampleUnitParent.getSampleUnitChildren() != null
-        && !sampleUnitParent.getSampleUnitChildren().getSampleUnitchildren().isEmpty()) {
+            && !sampleUnitParent.getSampleUnitChildren().getSampleUnitchildren().isEmpty()) {
       parentCase.setState(CaseState.INACTIONABLE);
 
       for (SampleUnit sampleUnitChild :
-          sampleUnitParent.getSampleUnitChildren().getSampleUnitchildren()) {
+              sampleUnitParent.getSampleUnitChildren().getSampleUnitchildren()) {
         Case childCase = createNewCase(sampleUnitChild, newCaseGroup);
         caseRepo.saveAndFlush(childCase);
         createCaseCreatedEvent(childCase, category);
         log.with("case_id", childCase.getId().toString())
-            .with("sample_unit_type", childCase.getSampleUnitType().toString())
-            .debug("New Case created");
+                .with("sample_unit_type", childCase.getSampleUnitType().toString())
+                .debug("New Case created");
       }
     }
     caseRepo.saveAndFlush(parentCase);
     createCaseCreatedEvent(parentCase, category);
     log.with("case_id", parentCase.getId().toString())
-        .with("sample_unit_type", parentCase.getSampleUnitType().toString())
-            .with("actionPlanId",parentCase.getActionPlanId())
-        .info("New Case created");
+            .with("sample_unit_type", parentCase.getSampleUnitType().toString())
+            .info("New Case created");
   }
 
   /**
@@ -518,10 +523,10 @@ public class CaseService {
     String expectedOldCaseSampleUnitTypes = category.getOldCaseSampleUnitTypes();
     if (!compareOldCaseSampleUnitType(oldCaseSampleUnitType, expectedOldCaseSampleUnitTypes)) {
       String errorMsg =
-          String.format(
-              WRONG_OLD_SAMPLE_UNIT_TYPE_MSG,
-              oldCaseSampleUnitType,
-              expectedOldCaseSampleUnitTypes);
+              String.format(
+                      WRONG_OLD_SAMPLE_UNIT_TYPE_MSG,
+                      oldCaseSampleUnitType,
+                      expectedOldCaseSampleUnitTypes);
       log.error(errorMsg);
     }
   }
@@ -534,7 +539,7 @@ public class CaseService {
    * @return true if the expected types contain the old case sample unit type
    */
   private boolean compareOldCaseSampleUnitType(
-      String oldCaseSampleUnitType, String expectedOldCaseSampleUnitTypes) {
+          String oldCaseSampleUnitType, String expectedOldCaseSampleUnitTypes) {
     boolean result = false;
     if (expectedOldCaseSampleUnitTypes != null) {
       List<String> expectedTypes = Arrays.asList(expectedOldCaseSampleUnitTypes.split("\\s*,\\s*"));
@@ -603,11 +608,11 @@ public class CaseService {
 
     if (channel != null) {
       Response response =
-          Response.builder()
-              .inboundChannel(channel)
-              .caseFK(targetCase.getCasePK())
-              .dateTime(timestamp)
-              .build();
+              Response.builder()
+                      .inboundChannel(channel)
+                      .caseFK(targetCase.getCasePK())
+                      .dateTime(timestamp)
+                      .build();
       targetCase.getResponses().add(response);
       caseRepo.save(targetCase);
     }
@@ -624,14 +629,14 @@ public class CaseService {
    * @throws CTPException when case state transition error
    */
   private void effectTargetCaseStateTransition(Category category, Case targetCase)
-      throws CTPException {
+          throws CTPException {
     CaseDTO.CaseEvent transitionEvent = category.getEventType();
     if (transitionEvent != null) {
       if ((transitionEvent == CaseDTO.CaseEvent.DISABLED
               && !category
-                  .getCategoryName()
-                  .equals(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD))
-          || transitionEvent == CaseDTO.CaseEvent.ACTIONPLAN_CHANGED) {
+              .getCategoryName()
+              .equals(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD))
+              || transitionEvent == CaseDTO.CaseEvent.ACTIONPLAN_CHANGED) {
         caseIacAuditService.disableAllIACsForCase(targetCase);
       }
       CaseState oldState = targetCase.getState();
@@ -641,7 +646,7 @@ public class CaseService {
         targetCase.setState(newState);
         caseRepo.saveAndFlush(targetCase);
         notificationPublisher.sendNotification(
-            prepareCaseNotification(targetCase, transitionEvent));
+                prepareCaseNotification(targetCase, transitionEvent));
       }
     }
   }
@@ -659,7 +664,7 @@ public class CaseService {
     newCaseCaseEvent.setCreatedBy(Constants.SYSTEM);
     newCaseCaseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
     newCaseCaseEvent.setDescription(
-        String.format(CASE_CREATED_EVENT_DESCRIPTION, caseEventCategory.getShortDescription()));
+            String.format(CASE_CREATED_EVENT_DESCRIPTION, caseEventCategory.getShortDescription()));
 
     caseEventRepo.saveAndFlush(newCaseCaseEvent);
   }
@@ -683,8 +688,8 @@ public class CaseService {
     newCaseGroup.setStatus(CaseGroupStatus.NOTSTARTED);
 
     CollectionExerciseDTO collectionExercise =
-        collectionExerciseSvcClient.getCollectionExercise(
-            UUID.fromString(caseGroupData.getCollectionExerciseId()));
+            collectionExerciseSvcClient.getCollectionExercise(
+                    UUID.fromString(caseGroupData.getCollectionExerciseId()));
 
     newCaseGroup.setSurveyId(UUID.fromString(collectionExercise.getSurveyId()));
 
@@ -704,12 +709,12 @@ public class CaseService {
   }
 
   public List<CaseEvent> findCaseEventsByCaseFKAndCategory(Integer casePK, List<String> categories)
-      throws CTPException {
+          throws CTPException {
     try {
       Set<CategoryName> categoryNames =
-          categories.stream().map(CategoryDTO.CategoryName::fromValue).collect(Collectors.toSet());
+              categories.stream().map(CategoryDTO.CategoryName::fromValue).collect(Collectors.toSet());
       return caseEventRepo.findByCaseFKAndCategoryInOrderByCreatedDateTimeDesc(
-          casePK, categoryNames);
+              casePK, categoryNames);
     } catch (IllegalArgumentException exc) {
       throw new CTPException(CTPException.Fault.BAD_REQUEST, exc.getMessage());
     }

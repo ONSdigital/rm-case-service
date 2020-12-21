@@ -39,22 +39,30 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(
-    name = "CaseNotification",
-    propOrder = {})
+        name = "CaseNotification",
+        propOrder = {})
 public class CaseNotification {
 
   protected String sampleUnitId;
 
   @XmlElement(required = true)
   protected String caseId;
-  @XmlElement(nillable = true)
+
   protected String actionPlanId;
+
+  protected boolean activeEnrolment;
 
   @XmlElement(required = true)
   protected String exerciseId;
 
   protected String partyId;
   protected String sampleUnitType;
+
+  protected String sampleUnitRef;
+
+  protected String status;
+
+  protected String iac;
 
   @XmlElement(required = true)
   @XmlSchemaType(name = "string")
@@ -184,5 +192,37 @@ public class CaseNotification {
    */
   public void setNotificationType(NotificationType value) {
     this.notificationType = value;
+  }
+
+  public boolean isActiveEnrolment() {
+    return activeEnrolment;
+  }
+
+  public void setActiveEnrolment(boolean activeEnrolment) {
+    this.activeEnrolment = activeEnrolment;
+  }
+
+  public String getSampleUnitRef() {
+    return sampleUnitRef;
+  }
+
+  public void setSampleUnitRef(String sampleUnitRef) {
+    this.sampleUnitRef = sampleUnitRef;
+  }
+
+  public String getStatus() {
+    return status;
+  }
+
+  public void setStatus(String status) {
+    this.status = status;
+  }
+
+  public String getIac() {
+    return iac;
+  }
+
+  public void setIac(String iac) {
+    this.iac = iac;
   }
 }

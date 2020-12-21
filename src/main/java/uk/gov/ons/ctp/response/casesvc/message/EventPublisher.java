@@ -16,7 +16,7 @@ public class EventPublisher {
   private RabbitTemplate rabbitTemplate;
 
   public void publishEvent(String event) {
-    log.with("event", event).debug("Publish Event");
+    log.with("event", event).info("Publish Event");
     rabbitTemplate.convertAndSend(event);
   }
 }
