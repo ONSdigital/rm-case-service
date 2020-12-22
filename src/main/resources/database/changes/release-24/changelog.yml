@@ -6,6 +6,6 @@ databaseChangeLog:
       changes:
         - sqlFile:
             comment: Change activeenrolment column to active_enrolment
-            path: add-active-enrolment-constraint.sql
+            path: change-active-enrolment-column-name.sql
             relativeToChangelogFile: true
             splitStatements: false
