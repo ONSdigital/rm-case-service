@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 25-1
+      author: Amit Sinha
+      changes:
+        - sqlFile:
+            comment: Drop active enrolment and add constraint.
+            path: add-active-enrolment-constraint.sql
+            relativeToChangelogFile: true
+            splitStatements: false
