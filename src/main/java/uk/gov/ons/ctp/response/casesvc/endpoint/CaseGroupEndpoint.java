@@ -75,6 +75,15 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
     return mapperFacade.map(caseGroupObj, CaseGroupDTO.class);
   }
 
+  @RequestMapping(value = "/cases/{collectionExerciseId}", method = RequestMethod.GET)
+  public ResponseEntity findNumberOfCases(
+          @PathVariable("collectionExerciseId") final UUID collectionExerciseId)
+          throws CTPException {
+    log.with("collectionExerciseId", collectionExerciseId).debug("Finding number of cases against collectionExercise");
+    Long numberOfCases = caseGroupService.getNumberOfCasesAgainstCollectionExerciseId(collectionExerciseId);
+    return ResponseEntity.ok(numberOfCases);
+  }
+
   /**
    * the GET endpoint to find CaseGroups by partyid UUID
    *
