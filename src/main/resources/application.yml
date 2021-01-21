@@ -19,7 +19,7 @@ liquibase:
   user: postgres
   password: postgres
   default-schema: casesvc
-  url: jdbc:postgresql://localhost:5432/postgres
+  url: jdbc:postgresql://localhost:5432/ras
   changeLog: classpath:/database/changelog-master.yml
 
 security:
@@ -55,7 +55,7 @@ spring:
   application:
     name: ONS CaseService
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/ras
     username: postgres
     password: postgres
     driverClassName: org.postgresql.Driver
