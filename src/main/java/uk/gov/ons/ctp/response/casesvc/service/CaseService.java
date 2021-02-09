@@ -259,7 +259,7 @@ public class CaseService {
    */
   public CaseNotification prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent) {
     CaseGroup caseGroup = caseGroupRepo.findOne(caze.getCaseGroupFK());
-    String iac = caseIacAuditService.findCaseIacByCasePK(caseGroup.getCaseGroupPK());
+    String iac = caseIacAuditService.findCaseIacByCasePK(caze.getCasePK());
     // This to be taken out when actionsvc is depricated
     String actionPlanId = caze.getActionPlanId() != null ? caze.getActionPlanId().toString() : null;
     return new CaseNotification(
