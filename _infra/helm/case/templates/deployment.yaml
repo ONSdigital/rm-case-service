@@ -255,5 +255,11 @@ spec:
             value: "{{ .Values.tomcat.minIdle }}"
           - name: ACTION_SVC_DEPRECATED
             value: "{{ .Values.deprecateAction }}"
+          - name: CASE_DISTRIBUTION_RETRIEVAL_MAX
+            value: "{{ .Values.caseDistribution.retrievalMax }}"
+          - name: CASE_DISTRIBUTION_DELAY_MILLI_SECONDS
+            value: "{{ .Values.caseDistribution.delayMilliSeconds }}"
+          - name: MESSAGING_CONSUMING_THREADS
+            value: "{{ .Values.messaging.consumingThreads }}"
           resources:
             {{- toYaml .Values.resources.application | nindent 12 }}
