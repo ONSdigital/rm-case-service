@@ -4,11 +4,13 @@ name: Build
 # events but only for the master branch
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
     paths-ignore: 
       - _infra/spinnaker/**
   pull_request:
-    branches: [ master ]
+    branches:
+      - master
     paths-ignore: 
       - _infra/spinnaker/**
 env:
@@ -46,9 +48,8 @@ jobs:
       - name: Run Tests
         run: |
           mvn clean verify
-      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      - uses: google-github-actions/setup-gcloud@master
         with:
-          version: '270.0.0'
           service_account_key: ${{ secrets.GCR_KEY }}
         # Configure docker to use the gcloud command-line tool as a credential helper
       - run: |
