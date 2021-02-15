@@ -72,4 +72,4 @@ caseDistribution:
   delayMilliSeconds: 500
 
 messaging:
-  consumingThreads: 100
+  consumingThreads: 10
