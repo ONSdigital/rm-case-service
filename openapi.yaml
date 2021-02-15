@@ -64,7 +64,7 @@ paths:
                     example: "06752afbf05f27c923ddf42d3cd2ec9eeafd3362"
                   branch:
                     type: string
-                    example: master
+                    example: main
                   built:
                     type: string
                     format: date-time
