@@ -90,17 +90,6 @@ internet-access-code-svc:
     port: 8121
     username: admin
     password: secret
-
-action-svc:
-  deprecated: false
-  actions-path: /actions
-  action-plans-path: /actionplans
-  connection-config:
-    scheme: http
-    host: localhost
-    port: 8151
-    username: admin
-    password: secret
     
 collection-exercise-svc:
   collection-exercise-path: /collectionexercises/{exerciseId}

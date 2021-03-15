@@ -40,8 +40,6 @@ services:
     - RABBITMQ_PORT=5672
     - SURVEY_SVC_CONNECTION_CONFIG_HOST=survey-case-it
     - SURVEY_SVC_CONNECTION_CONFIG_PORT=8080
-    - ACTION_SVC_CONNECTION_CONFIG_HOST=action-case-it
-    - ACTION_SVC_CONNECTION_CONFIG_PORT=8151
     ports:
     - "38145:8145"
     healthcheck:
@@ -61,37 +59,6 @@ services:
     - security_user_password=secret
     ports:
     - "38080:8080"
-
-
-  action:
-    container_name: action-case-it
-    image: sdcplatform/actionsvc
-    external_links:
-    - postgres-case-it
-    - rabbitmq-case-it
-    - redis-case-it
-    environment:
-    - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-case-it:5432/postgres?sslmode=disable
-    - SPRING_DATASOURCE_USERNAME=postgres
-    - SPRING_DATASOURCE_PASSWORD=postgres
-    - LIQUIBASE_URL=jdbc:postgresql://postgres-case-it:5432/postgres
-    - LIQUIBASE_USER=postgres
-    - LIQUIBASE_PASSWORD=postgres
-    - REDISSON_CONFIG_ADDRESS=redis-case-it:6379
-    - DATA_GRID_ADDRESS=redis-case-it:6379
-    - RABBITMQ_HOST=rabbitmq-case-it
-    - RABBITMQ_PORT=5672
-    - SURVEY_SVC_CONNECTION_CONFIG_HOST=survey-case-it
-    - SURVEY_SVC_CONNECTION_CONFIG_PORT=8080
-    - COLLECTION_EXERCISE_SVC_CONNECTION_CONFIG_HOST=collex-case-it
-    - COLLECTION_EXERCISE_SVC_CONNECTION_CONFIG_PORT=8145
-    ports:
-    - "38151:8151"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8151/info"]
-      interval: 30s
-      timeout: 10s
-      retries: 10
 
   start_dependencies:
     image: dadarek/wait-for-dependencies

@@ -12,14 +12,11 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import uk.gov.ons.ctp.response.casesvc.client.ActionSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.InternetAccessCodeSvcClient;
-import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
@@ -43,13 +40,11 @@ import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
 import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.utility.Constants;
-import uk.gov.ons.ctp.response.lib.action.ActionPlanDTO;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.common.error.CTPException;
 import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.lib.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.lib.sample.SampleUnitDTO;
-import uk.gov.ons.ctp.response.lib.sample.SampleUnitDTO.SampleUnitType;
 
 /**
  * A CaseService implementation which encapsulates all business logic operating on the Case entity
@@ -72,7 +67,6 @@ public class CaseService {
   private CaseIacAuditRepository caseIacAuditRepo;
   private CategoryRepository categoryRepo;
 
-  private ActionSvcClient actionSvcClient;
   private CollectionExerciseSvcClient collectionExerciseSvcClient;
   private CaseGroupService caseGroupService;
   private InternetAccessCodeSvcClient internetAccessCodeSvcClient;
@@ -88,7 +82,6 @@ public class CaseService {
           final CaseGroupRepository caseGroupRepo,
           final CaseIacAuditRepository caseIacAuditRepo,
           final CategoryRepository categoryRepo,
-          final ActionSvcClient actionSvcClient,
           final CollectionExerciseSvcClient collectionExerciseSvcClient,
           final CaseGroupService caseGroupService,
           final InternetAccessCodeSvcClient internetAccessCodeSvcClient,
@@ -100,7 +93,6 @@ public class CaseService {
     this.caseGroupRepo = caseGroupRepo;
     this.caseIacAuditRepo = caseIacAuditRepo;
     this.categoryRepo = categoryRepo;
-    this.actionSvcClient = actionSvcClient;
     this.collectionExerciseSvcClient = collectionExerciseSvcClient;
     this.caseGroupService = caseGroupService;
     this.internetAccessCodeSvcClient = internetAccessCodeSvcClient;
@@ -243,37 +235,6 @@ public class CaseService {
    */
   public List<CaseEvent> findCaseEventsByCaseFK(final Integer caseFK) {
     return caseEventRepo.findByCaseFKOrderByCreatedDateTimeDesc(caseFK);
-  }
-
-  /**
-   * Not sure this is the best place for this method, but .. several parts of case svc need to build
-   * a CaseNotification for a Case and need the services of the ActionPlanMappingService to get the
-   * actionPlanId This method just creates a CaseNotification Not sure this is the best place for
-   * this method, but .. several parts of case svc need to build a CaseNotification for a Case and
-   * need the services of the ActionPlanMappingService to get the actionPlanId This method just
-   * creates a CaseNotification
-   *
-   * @param caze The Case
-   * @param transitionEvent the event to inform the recipient of
-   * @return the newly created notification object
-   */
-  public CaseNotification prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent) {
-    CaseGroup caseGroup = caseGroupRepo.findOne(caze.getCaseGroupFK());
-    String iac = caseIacAuditService.findCaseIacByCasePK(caze.getCasePK());
-    // This to be taken out when actionsvc is depricated
-    String actionPlanId = caze.getActionPlanId() != null ? caze.getActionPlanId().toString() : null;
-    return new CaseNotification(
-            Objects.toString(caze.getSampleUnitId(), null),
-            caze.getId().toString(),
-            actionPlanId,
-            caze.isActiveEnrolment(),
-            caseGroup.getCollectionExerciseId().toString(),
-            Objects.toString(caze.getPartyId(), null),
-            caze.getSampleUnitType().toString(),
-            NotificationType.valueOf(transitionEvent.name()),
-            caseGroup.getSampleUnitRef(),
-            caseGroup.getStatus().toString(),
-            iac);
   }
 
   /**
@@ -433,50 +394,6 @@ public class CaseService {
 
     List<CaseGroup> caseGroups =
             caseGroupService.findCaseGroupsForExecutedCollectionExercises(targetCase);
-
-    for (CaseGroup caseGroup : caseGroups) {
-      String sampleUnitRef = caseGroup.getSampleUnitRef();
-      CaseGroupStatus status = caseGroup.getStatus();
-      String iac = caseIacAuditService.findCaseIacByCasePK(caseGroup.getCaseGroupPK());
-      if (caseGroup.getStatus() == CaseGroupStatus.NOTSTARTED
-              || caseGroup.getStatus() == CaseGroupStatus.INPROGRESS) {
-
-        // fetch all B and BI cases associated to the case group being processed
-        List<Case> cases =
-                caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(caseGroup.getCaseGroupPK());
-
-        // This section needs to be taken out once activeEnrolment is active
-        if (!actionSvcClient.isDeprecated()) {
-          List<ActionPlanDTO> actionPlans =
-                  actionSvcClient.getActionPlans(caseGroup.getCollectionExerciseId(), enrolments);
-
-          if (actionPlans == null || actionPlans.size() != 1) {
-            log.with("collection_exercise_id", caseGroup.getCollectionExerciseId())
-                    .with("enrolments", enrolments)
-                    .error("One action plan expected");
-            throw new IllegalStateException(
-                    "Expected one action plan for collection exercise with enrolmentStatus");
-          }
-          for (Case caze : cases) {
-            if (caze.getSampleUnitType() == SampleUnitType.B) {
-              caze.setActionPlanId(actionPlans.get(0).getId());
-              caseRepo.saveAndFlush(caze);
-              notificationPublisher.sendNotification(
-                      prepareCaseNotification(caze, CaseDTO.CaseEvent.ACTIONPLAN_CHANGED));
-            }
-          }
-        } else {
-          for (Case caze : cases) {
-            if (caze.getSampleUnitType() == SampleUnitType.B) {
-              caze.setActiveEnrolment(enrolments);
-              caseRepo.saveAndFlush(caze);
-              notificationPublisher.sendNotification(
-                      prepareCaseNotification(caze, CaseDTO.CaseEvent.ACTIONPLAN_CHANGED));
-            }
-          }
-        }
-      }
-    }
   }
 
   @Transactional
@@ -574,11 +491,6 @@ public class CaseService {
     }
 
     newCase.setCollectionInstrumentId(UUID.fromString(caseData.getCollectionInstrumentId()));
-    if (!actionSvcClient.isDeprecated()) {
-      newCase.setActionPlanId(UUID.fromString(caseData.getActionPlanId()));
-    } else {
-      newCase.setActiveEnrolment(caseData.isActiveEnrolment());
-    }
 
     // HardCoded values
     newCase.setState(CaseState.SAMPLED_INIT);
@@ -645,8 +557,6 @@ public class CaseService {
       if (!oldState.equals(newState)) {
         targetCase.setState(newState);
         caseRepo.saveAndFlush(targetCase);
-        notificationPublisher.sendNotification(
-                prepareCaseNotification(targetCase, transitionEvent));
       }
     }
   }

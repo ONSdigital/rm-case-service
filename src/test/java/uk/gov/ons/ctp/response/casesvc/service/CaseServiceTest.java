@@ -4,9 +4,7 @@ import static junit.framework.TestCase.assertNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -36,7 +34,6 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
-import uk.gov.ons.ctp.response.casesvc.client.ActionSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.InternetAccessCodeSvcClient;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
@@ -61,7 +58,6 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
-import uk.gov.ons.ctp.response.lib.action.ActionPlanDTO;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.common.FixtureHelper;
 import uk.gov.ons.ctp.response.lib.common.error.CTPException;
@@ -90,13 +86,11 @@ public class CaseServiceTest {
   private static final int CAT_LACK_OF_COMPUTER_INTERNET_ACCESS = 8;
   private static final int CAT_ONLINE_QUESTIONNAIRE_RESPONSE = 18;
   private static final int CAT_PAPER_QUESTIONNAIRE_RESPONSE = 19;
-  private static final int CAT_RESPONDENT_ENROLED = 22;
   private static final int CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT = 25;
   private static final int CAT_COLLECTION_INSTRUMENT_DOWNLOADED = 26;
   private static final int CAT_UNSUCCESSFUL_RESPONSE_UPLOAD = 27;
   private static final int CAT_SUCCESSFUL_RESPONSE_UPLOAD = 28;
   private static final int CAT_OFFLINE_RESPONSE_PROCESSED = 29;
-  private static final int CAT_NO_ACTIVE_ENROLMENTS = 30;
   private static final int CAT_GENERATE_ENROLMENT_CODE = 31;
 
   /**
@@ -124,9 +118,7 @@ public class CaseServiceTest {
   @Mock private CaseIacAuditRepository caseIacAuditRepo;
   @Mock private CategoryRepository categoryRepo;
 
-  @Mock private ActionSvcClient actionSvcClient;
   @Mock private CaseGroupService caseGroupService;
-  @Mock private CaseGroupAuditService caseGroupAuditService;
   @Mock private CollectionExerciseSvcClient collectionExerciseSvcClient;
   @Mock private InternetAccessCodeSvcClient internetAccessCodeSvcClient;
   @Mock private CaseIACService caseIacAuditService;
@@ -271,8 +263,6 @@ public class CaseServiceTest {
     // event was saved
     verify(caseEventRepo, times(1)).save(caseEvent);
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClient, times(0))
-        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -308,10 +298,6 @@ public class CaseServiceTest {
     // action service should be told of case state change
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
 
-    // no new action to be created
-    verify(actionSvcClient, times(0))
-        .postAction(any(String.class), any(UUID.class), any(String.class));
-
     // event was saved
     verify(caseEventRepo, times(1)).save(caseEvent);
   }
@@ -346,10 +332,6 @@ public class CaseServiceTest {
 
     // action service should be told of case state change
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
-
-    // no new action to be created
-    verify(actionSvcClient, times(0))
-        .postAction(any(String.class), any(UUID.class), any(String.class));
 
     // event was saved
     verify(caseEventRepo, times(1)).save(caseEvent);
@@ -389,10 +371,6 @@ public class CaseServiceTest {
     // action service should NOT be told of case state change
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
 
-    // no new action to be created
-    verify(actionSvcClient, times(0))
-        .postAction(any(String.class), any(UUID.class), any(String.class));
-
     // event was saved
     verify(caseEventRepo, times(1)).save(caseEvent);
   }
@@ -423,8 +401,6 @@ public class CaseServiceTest {
     verify(caseSvcStateTransitionManager, never())
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClient, never())
-        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -453,8 +429,6 @@ public class CaseServiceTest {
     verify(caseSvcStateTransitionManager, never())
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClient, never())
-        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -483,8 +457,6 @@ public class CaseServiceTest {
     verify(caseSvcStateTransitionManager, never())
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClient, never())
-        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -513,8 +485,6 @@ public class CaseServiceTest {
     verify(caseSvcStateTransitionManager, never())
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClient, never())
-        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   @Test
@@ -594,8 +564,6 @@ public class CaseServiceTest {
             CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED,
             targetCase.getPartyId());
     verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClient, never())
-        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -625,8 +593,6 @@ public class CaseServiceTest {
     verify(caseSvcStateTransitionManager, never())
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClient, never())
-        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -656,62 +622,8 @@ public class CaseServiceTest {
     verify(caseSvcStateTransitionManager, never())
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClient, never())
-        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
-  /**
-   * We create a CaseEvent with category RESPONDENT_ENROLED on an ACTIONABLE BRES case (the one
-   * created for a business unit B, Tesco for instance)
-   *
-   * @throws Exception if fabricateEvent does
-   */
-  @Test
-  public void testEventRespondentEnrolled() throws Exception {
-    // Given
-    when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
-        .thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
-    Category respondentEnrolledCategory = categories.get(CAT_RESPONDENT_ENROLED);
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED))
-        .thenReturn(respondentEnrolledCategory);
-    when(caseGroupRepo.findOne(CASEGROUP_PK)).thenReturn(caseGroups.get(CASEGROUP_PK));
-    List<CaseGroup> caseGroupList = Collections.singletonList(caseGroups.get(CASEGROUP_PK));
-    when(caseGroupService.findCaseGroupsForExecutedCollectionExercises(any()))
-        .thenReturn(caseGroupList);
-    List<Case> caseList = Collections.singletonList(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
-    when(caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(any())).thenReturn(caseList);
-    List<CollectionExerciseDTO> listCollex = Collections.singletonList(makeCollectionExercise());
-    when(collectionExerciseSvcClient.getCollectionExercises(null)).thenReturn(listCollex);
-    when(caseRepo.saveAndFlush(any(Case.class)))
-        .thenReturn(cases.get(ENROLMENT_CASE_INDIVIDUAL_FK));
-    ActionPlanDTO actionPlan = new ActionPlanDTO();
-    actionPlan.setId(UUID.randomUUID());
-    when(actionSvcClient.getActionPlans(any(UUID.class), anyBoolean()))
-        .thenReturn(Collections.singletonList(actionPlan));
-
-    // When
-    CaseEvent caseEvent =
-        fabricateEvent(
-            CategoryDTO.CategoryName.RESPONDENT_ENROLED, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    caseService.createCaseEvent(caseEvent, cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
-
-    // Then
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED);
-    verify(caseEventRepo, times(1)).save(caseEvent);
-    ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
-    verify(caseRepo, times(1)).saveAndFlush(argument.capture());
-
-    verify(caseSvcStateTransitionManager, times(1))
-        .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
-    Case caze = argument.getValue();
-    assertEquals(CaseState.ACTIONABLE, caze.getState());
-    assertEquals(actionPlan.getId(), caze.getActionPlanId());
-
-    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
-    // no new action to be created
-    verify(actionSvcClient, times(0))
-        .postAction(any(String.class), any(UUID.class), any(String.class));
-  }
   /**
    * Tests that with multiple survey ids then the limit per survey matches maxCasesPerSurvey and
    * that the later cases in the list are rejected This suffices because SpringBoot implements the
@@ -850,8 +762,6 @@ public class CaseServiceTest {
     verify(caseSvcStateTransitionManager, never())
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClient, never())
-        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -882,8 +792,6 @@ public class CaseServiceTest {
     verify(caseSvcStateTransitionManager, never())
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
-    verify(actionSvcClient, never())
-        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -913,8 +821,6 @@ public class CaseServiceTest {
     verify(caseSvcStateTransitionManager, times(1))
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
-    //    verify(actionSvcClient, times(1))
-    //        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -958,53 +864,6 @@ public class CaseServiceTest {
     Case oldCase = argument.getAllValues().get(0);
     assertEquals(CaseState.INACTIONABLE, oldCase.getState());
 
-    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
-    // no new action to be created
-    verify(actionSvcClient, times(0))
-        .postAction(any(String.class), any(UUID.class), any(String.class));
-  }
-
-  /**
-   * A SUCCESSFUL_RESPONSE_UPLOAD event transitions an actionable BI case to INACTIONABLE, and all
-   * associated BI cases in the case group. The action service is notified of the transition of all
-   * BI Cases to stop them receiving communications.
-   *
-   * @throws Exception if fabricateEvent does
-   */
-  @Test
-  public void testEventSuccessfulNoActiveEnrolmentCaseEvent() throws Exception {
-    when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
-        .thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
-    Category noActiveEnrolmentCategory = categories.get(CAT_NO_ACTIVE_ENROLMENTS);
-    when(categoryRepo.findOne(CategoryName.NO_ACTIVE_ENROLMENTS))
-        .thenReturn(noActiveEnrolmentCategory);
-    when(caseRepo.findByCaseGroupId(null))
-        .thenReturn(
-            Arrays.asList(
-                cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK),
-                cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK)));
-    CaseGroup caseGroup = makeCaseGroup();
-    when(caseGroupRepo.findById(null)).thenReturn(caseGroup);
-    when(internetAccessCodeSvcClient.generateIACs(1))
-        .thenReturn(Collections.singletonList(IAC_FOR_TEST));
-    when(caseGroupService.findCaseGroupsForExecutedCollectionExercises(any()))
-        .thenReturn(Collections.singletonList(caseGroup));
-    List<Case> caseList = Collections.singletonList(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
-    when(caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(any())).thenReturn(caseList);
-    ActionPlanDTO actionPlan = new ActionPlanDTO();
-    actionPlan.setId(UUID.randomUUID());
-    when(actionSvcClient.getActionPlans(any(UUID.class), anyBoolean()))
-        .thenReturn(Collections.singletonList(actionPlan));
-
-    CaseEvent caseEvent =
-        fabricateEvent(CategoryName.NO_ACTIVE_ENROLMENTS, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    caseService.createCaseEvent(caseEvent);
-
-    verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    verify(categoryRepo).findOne(CategoryName.NO_ACTIVE_ENROLMENTS);
-    verify(caseEventRepo, times(1)).save(caseEvent);
-    ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
-    verify(caseRepo, times(1)).saveAndFlush(argument.capture());
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
   }
 
@@ -1087,39 +946,6 @@ public class CaseServiceTest {
     List<CaseGroup> capturedCaseGroup = caseGroup.getAllValues();
 
     verify(caseRepo, times(2)).saveAndFlush(any());
-  }
-
-  @Test(expected = IllegalStateException.class)
-  public void testRespondentEnrolledCaseEventWithNoActionPlansThrowsException()
-      throws CTPException {
-    // Given
-    given(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
-        .willReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
-    Category respondentEnrolledCategory = categories.get(CAT_RESPONDENT_ENROLED);
-    given(categoryRepo.findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED))
-        .willReturn(respondentEnrolledCategory);
-    given(caseGroupRepo.findOne(CASEGROUP_PK)).willReturn(caseGroups.get(CASEGROUP_PK));
-    List<CaseGroup> caseGroupList = Collections.singletonList(caseGroups.get(CASEGROUP_PK));
-    given(caseGroupService.findCaseGroupsForExecutedCollectionExercises(any()))
-        .willReturn(caseGroupList);
-    List<Case> caseList = Collections.singletonList(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
-    given(caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(any())).willReturn(caseList);
-    List<CollectionExerciseDTO> listCollex = Collections.singletonList(makeCollectionExercise());
-    given(collectionExerciseSvcClient.getCollectionExercises(null)).willReturn(listCollex);
-    given(caseRepo.saveAndFlush(any(Case.class)))
-        .willReturn(cases.get(ENROLMENT_CASE_INDIVIDUAL_FK));
-    ActionPlanDTO actionPlan = new ActionPlanDTO();
-    actionPlan.setId(UUID.randomUUID());
-    given(actionSvcClient.getActionPlans(any(UUID.class), anyBoolean())).willReturn(null);
-
-    // When
-    CaseEvent caseEvent =
-        fabricateEvent(
-            CategoryDTO.CategoryName.RESPONDENT_ENROLED, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    caseService.createCaseEvent(caseEvent, cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
-
-    // Then IllegalStateException is thrown
-
   }
 
   @Test

@@ -168,17 +168,6 @@ public class CaseSvcApplication {
   }
 
   /**
-   * The RestUtility bean for the Action service
-   *
-   * @return the RestUtility bean for the Action service
-   */
-  @Bean
-  @Qualifier("actionServiceRestUtility")
-  public RestUtility actionServiceRestUtility() {
-    return new RestUtility(appConfig.getActionSvc().getConnectionConfig());
-  }
-
-  /**
    * The RestUtility bean for the CollectionExercise service
    *
    * @return the RestUtility bean for the CollectionExercise service
