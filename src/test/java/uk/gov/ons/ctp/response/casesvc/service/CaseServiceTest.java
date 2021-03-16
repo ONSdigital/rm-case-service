@@ -699,7 +699,6 @@ public class CaseServiceTest {
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED);
     verify(caseEventRepo, times(1)).save(caseEvent);
 
-    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
     // no new action to be created
     verify(actionSvcClient, times(0))
         .postAction(any(String.class), any(UUID.class), any(String.class));
