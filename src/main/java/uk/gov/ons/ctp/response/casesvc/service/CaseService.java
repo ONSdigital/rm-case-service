@@ -444,37 +444,6 @@ public class CaseService {
         // fetch all B and BI cases associated to the case group being processed
         List<Case> cases =
                 caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(caseGroup.getCaseGroupPK());
-
-        // This section needs to be taken out once activeEnrolment is active
-        if (!actionSvcClient.isDeprecated()) {
-          List<ActionPlanDTO> actionPlans =
-                  actionSvcClient.getActionPlans(caseGroup.getCollectionExerciseId(), enrolments);
-
-          if (actionPlans == null || actionPlans.size() != 1) {
-            log.with("collection_exercise_id", caseGroup.getCollectionExerciseId())
-                    .with("enrolments", enrolments)
-                    .error("One action plan expected");
-            throw new IllegalStateException(
-                    "Expected one action plan for collection exercise with enrolmentStatus");
-          }
-          for (Case caze : cases) {
-            if (caze.getSampleUnitType() == SampleUnitType.B) {
-              caze.setActionPlanId(actionPlans.get(0).getId());
-              caseRepo.saveAndFlush(caze);
-              notificationPublisher.sendNotification(
-                      prepareCaseNotification(caze, CaseDTO.CaseEvent.ACTIONPLAN_CHANGED));
-            }
-          }
-        } else {
-          for (Case caze : cases) {
-            if (caze.getSampleUnitType() == SampleUnitType.B) {
-              caze.setActiveEnrolment(enrolments);
-              caseRepo.saveAndFlush(caze);
-              notificationPublisher.sendNotification(
-                      prepareCaseNotification(caze, CaseDTO.CaseEvent.ACTIONPLAN_CHANGED));
-            }
-          }
-        }
       }
     }
   }
