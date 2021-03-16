@@ -61,7 +61,6 @@ public class CaseCreationServiceTest {
     // Parent Only field
     sampleUnitParent.setCollectionExerciseId("14fb3e68-4dca-46db-bf49-04b84e07e77c");
     // Base sample unit data
-    sampleUnitParent.setActionPlanId("7bc5d41b-0549-40b3-ba76-42f6d4cf3991");
     sampleUnitParent.setCollectionInstrumentId("8bae64c5-a282-4e87-ae5d-cd4181ba6c73");
     sampleUnitParent.setPartyId("7bc5d41b-0549-40b3-ba76-42f6d4cf3992");
     sampleUnitParent.setSampleUnitRef("str1234");
@@ -103,8 +102,6 @@ public class CaseCreationServiceTest {
     assertEquals(
         UUID.fromString(sampleUnitParent.getCollectionInstrumentId()),
         capturedCase.getCollectionInstrumentId());
-    assertEquals(
-        UUID.fromString(sampleUnitParent.getActionPlanId()), capturedCase.getActionPlanId());
   }
 
   /**
@@ -116,7 +113,6 @@ public class CaseCreationServiceTest {
 
     SampleUnit sampleUnitChild = new SampleUnit();
     // Base sample unit data for child
-    sampleUnitChild.setActionPlanId("7bc5d41b-0549-40b3-ba76-42f6d4cf3991");
     sampleUnitChild.setCollectionInstrumentId("ed0015f0-2e7f-4cf3-ba6f-a752aebaf8a7");
     sampleUnitChild.setPartyId("73528fd7-ef04-4697-a94c-54edf3e73282");
     sampleUnitChild.setSampleUnitRef("str1235");
@@ -130,7 +126,6 @@ public class CaseCreationServiceTest {
     sampleUnitParent.setSampleUnitChildren(sampleUnitChildren);
     sampleUnitParent.setCollectionExerciseId("14fb3e68-4dca-46db-bf49-04b84e07e77c");
     // Base sample unit data for parent
-    sampleUnitParent.setActionPlanId("7bc5d41b-0549-40b3-ba76-42f6d4cf3992");
     sampleUnitParent.setCollectionInstrumentId("8bae64c5-a282-4e87-ae5d-cd4181ba6c73");
     sampleUnitParent.setPartyId("7bc5d41b-0549-40b3-ba76-42f6d4cf3992");
     sampleUnitParent.setSampleUnitRef("str1234");
