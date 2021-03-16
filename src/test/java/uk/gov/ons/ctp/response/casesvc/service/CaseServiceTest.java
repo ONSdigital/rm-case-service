@@ -706,7 +706,6 @@ public class CaseServiceTest {
     Case caze = argument.getValue();
     assertEquals(CaseState.ACTIONABLE, caze.getState());
     assertEquals(actionPlan.getId(), caze.getActionPlanId());
-    assertEquals(true, caze.isActiveEnrolment());
 
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
     // no new action to be created
