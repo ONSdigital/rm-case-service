@@ -103,8 +103,7 @@ public class CaseCreationServiceTest {
     assertEquals(
         UUID.fromString(sampleUnitParent.getCollectionInstrumentId()),
         capturedCase.getCollectionInstrumentId());
-    assertEquals(
-        UUID.fromString(sampleUnitParent.getActionPlanId()), capturedCase.getActionPlanId());
+    assertEquals(false, sampleUnitParent.isActiveEnrolment());
   }
 
   /**
