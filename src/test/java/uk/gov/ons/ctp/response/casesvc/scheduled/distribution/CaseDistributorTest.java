@@ -111,6 +111,8 @@ public class CaseDistributorTest {
 
     verify(internetAccessCodeSvcClient, times(0)).generateIACs(any(Integer.class));
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+    verify(caseService, times(0))
+        .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class), any(Boolean.class));
     verify(caseDistributionListManager, times(0)).unlockContainer();
@@ -135,6 +137,8 @@ public class CaseDistributorTest {
 
     verify(internetAccessCodeSvcClient, times(0)).generateIACs(any(Integer.class));
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+    verify(caseService, times(0))
+        .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class), any(Boolean.class));
     verify(caseDistributionListManager, times(1)).unlockContainer();
@@ -160,6 +164,8 @@ public class CaseDistributorTest {
 
     verify(internetAccessCodeSvcClient, times(1)).generateIACs(any(Integer.class));
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+    verify(caseService, times(0))
+        .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class), any(Boolean.class));
     verify(caseDistributionListManager, times(0)).unlockContainer();
@@ -193,6 +199,8 @@ public class CaseDistributorTest {
 
     CaseNotification caseNotification = new CaseNotification();
     caseNotification.setCaseId(cases.get(0).getId().toString());
+    when(caseService.prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class)))
+        .thenReturn(caseNotification);
 
     CaseDistributionInfo info = caseDistributor.distribute();
     assertEquals(0, info.getCasesFailed());
@@ -201,6 +209,8 @@ public class CaseDistributorTest {
     verify(internetAccessCodeSvcClient, times(1)).generateIACs(any(Integer.class));
     verify(caseRepo, times(5)).saveAndFlush(any(Case.class));
     verify(caseService, times(5)).saveCaseIacAudit(any());
+    verify(caseService, times(5))
+        .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, times(5)).sendNotification(any(CaseNotification.class));
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class), any(Boolean.class));
     verify(caseDistributionListManager, times(0)).unlockContainer();
@@ -234,6 +244,8 @@ public class CaseDistributorTest {
 
     verify(internetAccessCodeSvcClient, times(1)).generateIACs(any(Integer.class));
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
+    verify(caseService, times(0))
+        .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class), any(Boolean.class));
     verify(caseDistributionListManager, times(0)).unlockContainer();
@@ -275,6 +287,8 @@ public class CaseDistributorTest {
 
     verify(internetAccessCodeSvcClient, times(1)).generateIACs(any(Integer.class));
     verify(caseRepo, times(5)).saveAndFlush(any(Case.class));
+    verify(caseService, times(0))
+        .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class), any(Boolean.class));
     verify(caseDistributionListManager, times(0)).unlockContainer();
