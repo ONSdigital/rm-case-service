@@ -83,6 +83,16 @@ internet-access-code-svc:
     username: admin
     password: secret
 
+action-svc:
+  actions-path: /actions
+  action-plans-path: /actionplans
+  connection-config:
+    scheme: http
+    host: actionsvc.apps.onsdigital.uk
+    port: ${cloud.application.port}
+    username: admin
+    password: secret
+
 collection-exercise-svc:
   collection-exercise-path: /collectionexercises/{exerciseId}
   connection-config:

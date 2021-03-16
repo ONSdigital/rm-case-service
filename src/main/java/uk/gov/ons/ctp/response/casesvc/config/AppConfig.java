@@ -12,6 +12,7 @@ import uk.gov.ons.ctp.response.lib.rabbit.Rabbitmq;
 @ConfigurationProperties
 @Data
 public class AppConfig {
+  private ActionSvc actionSvc;
   private InternetAccessCodeSvc internetAccessCodeSvc;
   private CaseDistribution caseDistribution;
   private CollectionExerciseSvc collectionExerciseSvc;

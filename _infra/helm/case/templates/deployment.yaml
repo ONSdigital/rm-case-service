@@ -187,6 +187,22 @@ spec:
             {{- end}}
           - name: DATA_GRID_ADDRESS
             value: "$(REDIS_HOST):$(REDIS_PORT)"
+          - name: ACTION_SVC_CONNECTION_CONFIG_HOST
+            {{- if .Values.dns.enabled }}
+            value: "action.{{ .Values.namespace }}.svc.cluster.local"
+            {{- else }}
+            value: "$(ACTION_SERVICE_HOST)"
+            {{- end }}
+          - name: ACTION_SVC_CONNECTION_CONFIG_PORT
+            {{- if .Values.dns.enabled }}
+            value: "{{ .Values.dns.wellKnownPort }}"
+            {{- else }}
+            value: "$(ACTION_SERVICE_PORT)"
+            {{- end }}
+          - name: ACTION_SVC_CONNECTION_CONFIG_USERNAME
+            value: "$(SECURITY_USER_NAME)"
+          - name: ACTION_SVC_CONNECTION_CONFIG_PASSWORD
+            value: "$(SECURITY_USER_PASSWORD)"
           - name: INTERNET_ACCESS_CODE_SVC_CONNECTION_CONFIG_HOST
             {{- if .Values.dns.enabled }}
             value: "iac.{{ .Values.namespace }}.svc.cluster.local"
@@ -237,6 +253,8 @@ spec:
             value: "{{ .Values.tomcat.maxIdle }}"
           - name: SPRING_DATASOURCE_TOMCAT_MIN_IDLE
             value: "{{ .Values.tomcat.minIdle }}"
+          - name: ACTION_SVC_DEPRECATED
+            value: "{{ .Values.deprecateAction }}"
           - name: CASE_DISTRIBUTION_RETRIEVAL_MAX
             value: "{{ .Values.caseDistribution.retrievalMax }}"
           - name: CASE_DISTRIBUTION_DELAY_MILLI_SECONDS

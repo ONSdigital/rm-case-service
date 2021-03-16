@@ -11,13 +11,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import uk.gov.ons.ctp.response.casesvc.client.ActionSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
+import uk.gov.ons.ctp.response.casesvc.config.ActionSvc;
+import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
@@ -42,6 +46,7 @@ public class CaseCreationServiceTest {
   @Mock private CaseGroupRepository caseGroupRepo;
   @Mock private CaseEventRepository caseEventRepo;
   @Mock private CollectionExerciseSvcClient collectionExerciseSvcClient;
+  @Mock private ActionSvcClient actionSvcClient;
 
   /**
    * Create a Case and a Casegroup from the message that would be on the Case Delivery Queue. No

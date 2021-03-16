@@ -55,6 +55,7 @@ public class CaseDistributor {
   private InternetAccessCodeSvcClient internetAccessCodeSvcClient;
   private DistributedListManager<Integer> caseDistributionListManager;
   private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
+  private CaseNotificationPublisher notificationPublisher;
   private EventPublisher eventPublisher;
 
   /** Constructor for CaseDistributor */
@@ -74,6 +75,7 @@ public class CaseDistributor {
     this.internetAccessCodeSvcClient = internetAccessCodeSvcClient;
     this.caseDistributionListManager = caseDistributionListManager;
     this.caseSvcStateTransitionManager = caseSvcStateTransitionManager;
+    this.notificationPublisher = notificationPublisher;
     this.eventPublisher = eventPublisher;
   }
 
@@ -215,6 +217,9 @@ public class CaseDistributor {
 
     caseService.saveCaseIacAudit(updatedCase);
 
+    CaseNotification caseNotification = caseService.prepareCaseNotification(caze, event);
+    log.debug("Publishing caseNotification...");
+    notificationPublisher.sendNotification(caseNotification);
   }
 
   /**

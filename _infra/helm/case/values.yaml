@@ -65,6 +65,8 @@ dns:
   enabled: false
   wellKnownPort: 8080
 
+deprecateAction: false
+
 caseDistribution:
   retrievalMax: 1000
   delayMilliSeconds: 500
