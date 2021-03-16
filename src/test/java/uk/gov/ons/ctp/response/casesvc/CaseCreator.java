@@ -44,11 +44,7 @@ public class CaseCreator {
     SampleUnitParent sampleUnit = new SampleUnitParent();
     sampleUnit.setCollectionExerciseId(collectionExerciseId.toString());
     sampleUnit.setId(sampleUnitId.toString());
-    if (!appConfig.getActionSvc().isDeprecated()){
-      sampleUnit.setActionPlanId(UUID.randomUUID().toString());
-    } else {
-      sampleUnit.setActiveEnrolment(true);
-    }
+    sampleUnit.setActiveEnrolment(true);
     sampleUnit.setSampleUnitRef(sampleUnitRef);
     sampleUnit.setCollectionInstrumentId(UUID.randomUUID().toString());
     sampleUnit.setPartyId(UUID.randomUUID().toString());
