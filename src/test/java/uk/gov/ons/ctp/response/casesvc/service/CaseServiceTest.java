@@ -295,6 +295,9 @@ public class CaseServiceTest {
     // IAC should not be disabled for paper responses
     verify(caseIacAuditService, times(0)).disableAllIACsForCase(any(Case.class));
 
+    // action service should be told of case state change
+    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
+
     // event was saved
     verify(caseEventRepo, times(1)).save(caseEvent);
   }
@@ -326,6 +329,9 @@ public class CaseServiceTest {
     Case caseSaved = argument.getValue();
     assertEquals(1, caseSaved.getResponses().size());
     assertEquals(CaseState.INACTIONABLE, caseSaved.getState());
+
+    // action service should be told of case state change
+    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
 
     // event was saved
     verify(caseEventRepo, times(1)).save(caseEvent);
@@ -814,6 +820,7 @@ public class CaseServiceTest {
     verify(caseIacAuditService, times(1)).disableAllIACsForCase(any(Case.class));
     verify(caseSvcStateTransitionManager, times(1))
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
+    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
   }
 
   /**
@@ -845,10 +852,19 @@ public class CaseServiceTest {
     verify(caseEventRepo, times(1)).save(caseEvent);
     ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
     verify(caseRepo, times(1)).saveAndFlush(argument.capture());
+    verify(caseSvcStateTransitionManager, times(1))
+        .transition(
+            any(CaseState.class),
+            any(
+                CaseDTO.CaseEvent
+                    .class)); // action service should be told of the old case state change for both
+    // cases
 
     // Now verifying that case has been moved to INACTIONABLE
     Case oldCase = argument.getAllValues().get(0);
     assertEquals(CaseState.INACTIONABLE, oldCase.getState());
+
+    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
   }
 
   /**

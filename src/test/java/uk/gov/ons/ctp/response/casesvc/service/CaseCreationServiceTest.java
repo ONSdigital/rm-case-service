@@ -20,6 +20,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnit;
@@ -39,6 +40,7 @@ public class CaseCreationServiceTest {
 
   @Mock private CaseRepository caseRepo;
   @Mock private CaseGroupRepository caseGroupRepo;
+  @Mock private CaseEventRepository caseEventRepo;
   @Mock private CollectionExerciseSvcClient collectionExerciseSvcClient;
 
   /**
@@ -96,6 +98,8 @@ public class CaseCreationServiceTest {
     assertEquals(
         UUID.fromString(sampleUnitParent.getCollectionInstrumentId()),
         capturedCase.getCollectionInstrumentId());
+    assertEquals(
+        UUID.fromString(sampleUnitParent.getActionPlanId()), capturedCase.getActionPlanId());
   }
 
   /**
@@ -165,6 +169,7 @@ public class CaseCreationServiceTest {
     assertEquals(
         UUID.fromString(sampleUnitChild.getCollectionInstrumentId()),
         childCase.getCollectionInstrumentId());
+    assertEquals(UUID.fromString(sampleUnitChild.getActionPlanId()), childCase.getActionPlanId());
 
     Case parentCase = capturedCases.get(1);
     assertEquals(UUID.class, parentCase.getId().getClass());
@@ -178,5 +183,6 @@ public class CaseCreationServiceTest {
     assertEquals(
         UUID.fromString(sampleUnitParent.getCollectionInstrumentId()),
         parentCase.getCollectionInstrumentId());
+    assertEquals(UUID.fromString(sampleUnitParent.getActionPlanId()), parentCase.getActionPlanId());
   }
 }
