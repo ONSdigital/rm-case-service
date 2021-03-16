@@ -15,11 +15,11 @@
     "state": "LIVE",
     "caseTypes": [
       {
-        "actionEnrolment": "1cbea564-b989-4458-9db2-8a4db65fb82e",
+        "actionPlanId": "1cbea564-b989-4458-9db2-8a4db65fb82e",
         "sampleUnitType": "B"
       },
       {
-        "actionEnrolment": "50849aa2-439b-4849-9603-7e237662f52c",
+        "actionPlanId": "50849aa2-439b-4849-9603-7e237662f52c",
         "sampleUnitType": "BI"
       }
     ],
@@ -45,11 +45,11 @@
     "state": "READY_FOR_LIVE",
     "caseTypes": [
       {
-        "actionEnrolment": "fad7d46f-b53b-4690-a44b-8c61d815fdd3",
+        "actionPlanId": "fad7d46f-b53b-4690-a44b-8c61d815fdd3",
         "sampleUnitType": "B"
       },
       {
-        "actionEnrolment": "7f4f870c-b738-48dd-a355-2fa685d5ff5c",
+        "actionPlanId": "7f4f870c-b738-48dd-a355-2fa685d5ff5c",
         "sampleUnitType": "BI"
       }
     ],
