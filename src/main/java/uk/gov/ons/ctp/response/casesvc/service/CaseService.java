@@ -444,7 +444,7 @@ public class CaseService {
         // fetch all B and BI cases associated to the case group being processed
         List<Case> cases =
                 caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(caseGroup.getCaseGroupPK());
-        
+
         List<ActionPlanDTO> actionPlans =
                 actionSvcClient.getActionPlans(caseGroup.getCollectionExerciseId(), enrolments);
 
