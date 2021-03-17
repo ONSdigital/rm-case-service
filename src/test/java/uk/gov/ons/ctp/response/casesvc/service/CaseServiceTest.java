@@ -1004,6 +1004,9 @@ public class CaseServiceTest {
     verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
     verify(categoryRepo).findOne(CategoryName.NO_ACTIVE_ENROLMENTS);
     verify(caseEventRepo, times(1)).save(caseEvent);
+    ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
+    verify(caseRepo, times(1)).saveAndFlush(argument.capture());
+    verify(notificationPublisher, times(2)).sendNotification(any(CaseNotification.class));
   }
 
   /**
