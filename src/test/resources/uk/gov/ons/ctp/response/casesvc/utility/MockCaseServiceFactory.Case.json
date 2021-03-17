@@ -5,7 +5,6 @@
     "caseTypeId": 1,
     "createdDateTime": 1460736159699,
     "createdBy": "UnitTester",
-    "actionPlanId": 1
   },
   {
     "casePK": 2,
@@ -13,7 +12,6 @@
     "caseTypeId": 2,
     "createdDateTime": 1460736159699,
     "createdBy": "UnitTester",
-    "actionPlanId": 2
   },
   {
     "casePK": 3,
@@ -21,6 +19,5 @@
     "caseTypeId": 3,
     "createdDateTime": 1460736159699,
     "createdBy": "UnitTester",
-    "actionPlanId": 3
   }
 ]
