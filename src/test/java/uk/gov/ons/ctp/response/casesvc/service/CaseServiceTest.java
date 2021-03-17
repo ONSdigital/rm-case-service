@@ -698,6 +698,16 @@ public class CaseServiceTest {
     // Then
     verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED);
     verify(caseEventRepo, times(1)).save(caseEvent);
+    ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
+    verify(caseRepo, times(1)).saveAndFlush(argument.capture());
+
+    verify(caseSvcStateTransitionManager, times(1))
+            .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
+    Case caze = argument.getValue();
+    assertEquals(CaseState.ACTIONABLE, caze.getState());
+    assertEquals(actionPlan.getId(), caze.getActionPlanId());
+
+    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
 
     // no new action to be created
     verify(actionSvcClient, times(0))
