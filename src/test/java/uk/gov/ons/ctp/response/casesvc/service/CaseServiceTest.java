@@ -1005,7 +1005,7 @@ public class CaseServiceTest {
     verify(categoryRepo).findOne(CategoryName.NO_ACTIVE_ENROLMENTS);
     verify(caseEventRepo, times(1)).save(caseEvent);
     ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
-    verify(caseRepo, times(1)).saveAndFlush(argument.capture());
+    verify(caseRepo, times(2)).saveAndFlush(argument.capture());
     verify(notificationPublisher, times(2)).sendNotification(any(CaseNotification.class));
   }
 
@@ -1088,6 +1088,39 @@ public class CaseServiceTest {
     List<CaseGroup> capturedCaseGroup = caseGroup.getAllValues();
 
     verify(caseRepo, times(2)).saveAndFlush(any());
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void testRespondentEnrolledCaseEventWithNoActionPlansThrowsException()
+          throws CTPException {
+    // Given
+    given(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
+            .willReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
+    Category respondentEnrolledCategory = categories.get(CAT_RESPONDENT_ENROLED);
+    given(categoryRepo.findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED))
+            .willReturn(respondentEnrolledCategory);
+    given(caseGroupRepo.findOne(CASEGROUP_PK)).willReturn(caseGroups.get(CASEGROUP_PK));
+    List<CaseGroup> caseGroupList = Collections.singletonList(caseGroups.get(CASEGROUP_PK));
+    given(caseGroupService.findCaseGroupsForExecutedCollectionExercises(any()))
+            .willReturn(caseGroupList);
+    List<Case> caseList = Collections.singletonList(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
+    given(caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(any())).willReturn(caseList);
+    List<CollectionExerciseDTO> listCollex = Collections.singletonList(makeCollectionExercise());
+    given(collectionExerciseSvcClient.getCollectionExercises(null)).willReturn(listCollex);
+    given(caseRepo.saveAndFlush(any(Case.class)))
+            .willReturn(cases.get(ENROLMENT_CASE_INDIVIDUAL_FK));
+    ActionPlanDTO actionPlan = new ActionPlanDTO();
+    actionPlan.setId(UUID.randomUUID());
+    given(actionSvcClient.getActionPlans(any(UUID.class), anyBoolean())).willReturn(null);
+
+    // When
+    CaseEvent caseEvent =
+            fabricateEvent(
+                    CategoryDTO.CategoryName.RESPONDENT_ENROLED, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    caseService.createCaseEvent(caseEvent, cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
+
+    // Then IllegalStateException is thrown
+
   }
 
   @Test
