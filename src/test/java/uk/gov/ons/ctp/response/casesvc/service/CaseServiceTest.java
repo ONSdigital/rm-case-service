@@ -707,7 +707,7 @@ public class CaseServiceTest {
     assertEquals(CaseState.ACTIONABLE, caze.getState());
     assertEquals(actionPlan.getId(), caze.getActionPlanId());
 
-    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
+    verify(notificationPublisher, times(2)).sendNotification(any(CaseNotification.class));
 
     // no new action to be created
     verify(actionSvcClient, times(0))
