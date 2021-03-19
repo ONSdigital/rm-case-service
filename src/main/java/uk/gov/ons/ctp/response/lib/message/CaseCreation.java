@@ -28,7 +28,6 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="collectionInstrumentId" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="sampleUnitRef" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="sampleUnitType" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="actionPlanId" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -45,7 +44,6 @@ import javax.xml.bind.annotation.XmlType;
       "collectionInstrumentId",
       "sampleUnitRef",
       "sampleUnitType",
-      "actionPlanId",
       "activeEnrolment"
     })
 public class CaseCreation {
@@ -64,9 +62,6 @@ public class CaseCreation {
 
   @XmlElement(required = true)
   protected String sampleUnitType;
-
-  @XmlElement(nillable = true)
-  protected String actionPlanId;
 
   protected boolean activeEnrolment;
 
@@ -158,24 +153,6 @@ public class CaseCreation {
    */
   public void setSampleUnitType(String value) {
     this.sampleUnitType = value;
-  }
-
-  /**
-   * Gets the value of the actionPlanId property.
-   *
-   * @return possible object is {@link String }
-   */
-  public String getActionPlanId() {
-    return actionPlanId;
-  }
-
-  /**
-   * Sets the value of the actionPlanId property.
-   *
-   * @param value allowed object is {@link String }
-   */
-  public void setActionPlanId(String value) {
-    this.actionPlanId = value;
   }
 
   public boolean isActiveEnrolment() {

@@ -14,7 +14,5 @@ public class CaseTypeDTO {
   @JsonProperty("sampleUnitType")
   private String sampleUnitTypeFK;
 
-  private UUID actionPlanId;
-
   private boolean activeEnrolment;
 }

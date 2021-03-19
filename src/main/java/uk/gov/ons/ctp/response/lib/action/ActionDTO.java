@@ -47,8 +47,6 @@ public class ActionDTO {
 
   @NotNull private UUID caseId;
 
-  private UUID actionPlanId;
-
   private boolean activeEnrolment;
 
   private UUID actionRuleId;

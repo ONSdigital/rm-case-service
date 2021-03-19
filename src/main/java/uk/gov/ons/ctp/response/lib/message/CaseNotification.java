@@ -26,7 +26,6 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;all>
  *         &lt;element name="sampleUnitId" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="caseId" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="actionPlanId" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="exerciseId" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="partyId" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="sampleUnitType" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
@@ -47,8 +46,6 @@ public class CaseNotification {
 
   @XmlElement(required = true)
   protected String caseId;
-
-  protected String actionPlanId;
 
   protected boolean activeEnrolment;
 
@@ -102,24 +99,6 @@ public class CaseNotification {
    */
   public void setCaseId(String value) {
     this.caseId = value;
-  }
-
-  /**
-   * Gets the value of the actionPlanId property.
-   *
-   * @return possible object is {@link String }
-   */
-  public String getActionPlanId() {
-    return actionPlanId;
-  }
-
-  /**
-   * Sets the value of the actionPlanId property.
-   *
-   * @param value allowed object is {@link String }
-   */
-  public void setActionPlanId(String value) {
-    this.actionPlanId = value;
   }
 
   /**

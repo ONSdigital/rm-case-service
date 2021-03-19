@@ -705,7 +705,6 @@ public class CaseServiceTest {
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
     Case caze = argument.getValue();
     assertEquals(CaseState.ACTIONABLE, caze.getState());
-    assertEquals(actionPlan.getId(), caze.getActionPlanId());
 
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
     // no new action to be created
@@ -810,7 +809,7 @@ public class CaseServiceTest {
     c.setId(UUID.randomUUID());
     c.setSampleUnitType(SampleUnitDTO.SampleUnitType.B);
     c.setState(CaseState.ACTIONABLE);
-    c.setActionPlanId(UUID.randomUUID());
+    c.isActiveEnrolment();
     c.setCaseGroupId(groupId);
     c.setCaseGroupFK(ENROLMENT_CASE_INDIVIDUAL_FK);
     return c;
@@ -1058,14 +1057,14 @@ public class CaseServiceTest {
     SampleUnit sampleUnit = new SampleUnit();
     SampleUnitChildren sampleUnitChildren =
         new SampleUnitChildren(new ArrayList<>(Collections.singletonList(sampleUnit)));
-    sampleUnit.setActionPlanId(UUID.randomUUID().toString());
+    sampleUnit.setActiveEnrolment(false);
     sampleUnit.setCollectionInstrumentId(UUID.randomUUID().toString());
     sampleUnit.setPartyId(UUID.randomUUID().toString());
     sampleUnit.setSampleUnitRef("str1234");
     sampleUnit.setSampleUnitType("BI");
     sampleUnit.setId(UUID.randomUUID().toString());
 
-    sampleUnitParent.setActionPlanId(UUID.randomUUID().toString());
+    sampleUnitParent.setActiveEnrolment(false);
     sampleUnitParent.setCollectionExerciseId(UUID.randomUUID().toString());
     sampleUnitParent.setSampleUnitChildren(sampleUnitChildren);
     sampleUnitParent.setCollectionInstrumentId(UUID.randomUUID().toString());

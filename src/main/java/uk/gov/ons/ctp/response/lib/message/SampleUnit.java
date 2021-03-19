@@ -29,7 +29,6 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="sampleUnitType" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="partyId" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="collectionInstrumentId" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="actionPlanId" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -45,8 +44,7 @@ import javax.xml.bind.annotation.XmlType;
                 "sampleUnitType",
                 "partyId",
                 "collectionInstrumentId",
-                "activeEnrolment",
-                "actionPlanId"
+                "activeEnrolment"
         })
 @XmlSeeAlso({SampleUnitParent.class})
 public class SampleUnit {
@@ -65,8 +63,6 @@ public class SampleUnit {
   protected String collectionInstrumentId;
 
   protected boolean activeEnrolment;
-
-  protected String actionPlanId;
 
 
 
@@ -158,24 +154,6 @@ public class SampleUnit {
    */
   public void setCollectionInstrumentId(String value) {
     this.collectionInstrumentId = value;
-  }
-
-  /**
-   * Gets the value of the actionPlanId property.
-   *
-   * @return possible object is {@link String }
-   */
-  public String getActionPlanId() {
-    return actionPlanId;
-  }
-
-  /**
-   * Sets the value of the actionPlanId property.
-   *
-   * @param value allowed object is {@link String }
-   */
-  public void setActionPlanId(String value) {
-    this.actionPlanId = value;
   }
 
   public boolean isActiveEnrolment() {

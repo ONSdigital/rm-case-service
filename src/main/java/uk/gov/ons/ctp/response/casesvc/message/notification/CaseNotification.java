@@ -21,7 +21,6 @@ import javax.xml.bind.annotation.*;
  *       &lt;all&gt;
  *         &lt;element name="sampleUnitId" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
  *         &lt;element name="caseId" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
- *         &lt;element name="actionPlanId" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *         &lt;element name="exerciseId" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *         &lt;element name="partyId" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
  *         &lt;element name="sampleUnitType" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
@@ -43,8 +42,6 @@ public class CaseNotification {
 
   @XmlElement(required = true)
   protected String caseId;
-
-  protected String actionPlanId;
 
   protected boolean activeEnrolment;
 
@@ -74,7 +71,6 @@ public class CaseNotification {
   public CaseNotification(
           final String sampleUnitId,
           final String caseId,
-          final String actionPlanId,
           final boolean activeEnrolment,
           final String exerciseId,
           final String partyId,
@@ -85,7 +81,6 @@ public class CaseNotification {
           final String iac) {
     this.sampleUnitId = sampleUnitId;
     this.caseId = caseId;
-    this.actionPlanId = actionPlanId;
     this.exerciseId = exerciseId;
     this.partyId = partyId;
     this.sampleUnitType = sampleUnitType;
@@ -130,24 +125,6 @@ public class CaseNotification {
    */
   public void setCaseId(String value) {
     this.caseId = value;
-  }
-
-  /**
-   * Gets the value of the actionPlanId property.
-   *
-   * @return possible object is {@link String }
-   */
-  public String getActionPlanId() {
-    return actionPlanId;
-  }
-
-  /**
-   * Sets the value of the actionPlanId property.
-   *
-   * @param value allowed object is {@link String }
-   */
-  public void setActionPlanId(String value) {
-    this.actionPlanId = value;
   }
 
   public boolean isActiveEnrolment() {
@@ -263,7 +240,6 @@ public class CaseNotification {
   public <_B> void copyTo(final CaseNotification.Builder<_B> _other) {
     _other.sampleUnitId = this.sampleUnitId;
     _other.caseId = this.caseId;
-    _other.actionPlanId = this.actionPlanId;
     _other.activeEnrolment = this.activeEnrolment;
     _other.exerciseId = this.exerciseId;
     _other.partyId = this.partyId;
@@ -316,13 +292,6 @@ public class CaseNotification {
             ? (caseIdPropertyTree != null)
             : ((caseIdPropertyTree == null) || (!caseIdPropertyTree.isLeaf())))) {
       _other.caseId = this.caseId;
-    }
-    final PropertyTree actionPlanIdPropertyTree =
-            ((_propertyTree == null) ? null : _propertyTree.get("actionPlanId"));
-    if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-            ? (actionPlanIdPropertyTree != null)
-            : ((actionPlanIdPropertyTree == null) || (!actionPlanIdPropertyTree.isLeaf())))) {
-      _other.actionPlanId = this.actionPlanId;
     }
     final PropertyTree activeEnrolmentPropertyTree =
             ((_propertyTree == null) ? null : _propertyTree.get("activeEnrolment"));
@@ -421,7 +390,6 @@ public class CaseNotification {
     protected final CaseNotification _storedValue;
     private String sampleUnitId;
     private String caseId;
-    private String actionPlanId;
     private boolean activeEnrolment;
     private String exerciseId;
     private String partyId;
@@ -438,7 +406,6 @@ public class CaseNotification {
           _storedValue = null;
           this.sampleUnitId = _other.sampleUnitId;
           this.caseId = _other.caseId;
-          this.actionPlanId = _other.actionPlanId;
           this.activeEnrolment = _other.activeEnrolment;
           this.exerciseId = _other.exerciseId;
           this.partyId = _other.partyId;
@@ -478,13 +445,6 @@ public class CaseNotification {
                   ? (caseIdPropertyTree != null)
                   : ((caseIdPropertyTree == null) || (!caseIdPropertyTree.isLeaf())))) {
             this.caseId = _other.caseId;
-          }
-          final PropertyTree actionPlanIdPropertyTree =
-                  ((_propertyTree == null) ? null : _propertyTree.get("actionPlanId"));
-          if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-                  ? (actionPlanIdPropertyTree != null)
-                  : ((actionPlanIdPropertyTree == null) || (!actionPlanIdPropertyTree.isLeaf())))) {
-            this.actionPlanId = _other.actionPlanId;
           }
           final PropertyTree activeEnrolmentPropertyTree =
                   ((_propertyTree == null) ? null : _propertyTree.get("activeEnrolment"));
@@ -561,7 +521,6 @@ public class CaseNotification {
     protected <_P extends CaseNotification> _P init(final _P _product) {
       _product.sampleUnitId = this.sampleUnitId;
       _product.caseId = this.caseId;
-      _product.actionPlanId = this.actionPlanId;
       _product.activeEnrolment = this.activeEnrolment;
       _product.exerciseId = this.exerciseId;
       _product.partyId = this.partyId;
@@ -590,16 +549,6 @@ public class CaseNotification {
      */
     public CaseNotification.Builder<_B> withCaseId(final String caseId) {
       this.caseId = caseId;
-      return this;
-    }
-
-    /**
-     * Sets the new value of "actionPlanId" (any previous value will be replaced)
-     *
-     * @param actionPlanId New value of the "actionPlanId" property.
-     */
-    public CaseNotification.Builder<_B> withActionPlanId(final String actionPlanId) {
-      this.actionPlanId = actionPlanId;
       return this;
     }
 
@@ -696,8 +645,6 @@ public class CaseNotification {
     private com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>> caseId =
             null;
     private com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>
-            actionPlanId = null;
-    private com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>
             activeEnrolment = null;
     private com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>
             exerciseId = null;
@@ -727,9 +674,6 @@ public class CaseNotification {
       }
       if (this.caseId != null) {
         products.put("caseId", this.caseId.init());
-      }
-      if (this.actionPlanId != null) {
-        products.put("actionPlanId", this.actionPlanId.init());
       }
       if (this.activeEnrolment != null) {
         products.put("activeEnrolment", this.activeEnrolment.init());
@@ -773,15 +717,6 @@ public class CaseNotification {
               new com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>(
                       this._root, this, "caseId")
               : this.caseId);
-    }
-
-    public com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>
-    actionPlanId() {
-      return ((this.actionPlanId == null)
-              ? this.actionPlanId =
-              new com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>(
-                      this._root, this, "actionPlanId")
-              : this.actionPlanId);
     }
 
     public com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>

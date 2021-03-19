@@ -49,11 +49,10 @@ public class SampleUnitParent extends SampleUnit {
       final String sampleUnitType,
       final String partyId,
       final String collectionInstrumentId,
-      final String actionPlanId,
       final String collectionExerciseId,
       final SampleUnitChildren sampleUnitChildren,
       final boolean activeEnrolment) {
-    super(id, sampleUnitRef, sampleUnitType, partyId, collectionInstrumentId, activeEnrolment, actionPlanId);
+    super(id, sampleUnitRef, sampleUnitType, partyId, collectionInstrumentId, activeEnrolment);
     this.collectionExerciseId = collectionExerciseId;
     this.sampleUnitChildren = sampleUnitChildren;
   }
@@ -359,17 +358,6 @@ public class SampleUnitParent extends SampleUnit {
     @Override
     public Builder<_B> withCollectionInstrumentId(final String collectionInstrumentId) {
       super.withCollectionInstrumentId(collectionInstrumentId);
-      return this;
-    }
-
-    /**
-     * Sets the new value of "actionPlanId" (any previous value will be replaced)
-     *
-     * @param actionPlanId New value of the "actionPlanId" property.
-     */
-    @Override
-    public Builder<_B> withActionPlanId(final String actionPlanId) {
-      super.withActionPlanId(actionPlanId);
       return this;
     }
 

@@ -216,10 +216,6 @@ public class CaseDistributor {
     caseRepo.saveAndFlush(updatedCase);
 
     caseService.saveCaseIacAudit(updatedCase);
-
-    CaseNotification caseNotification = caseService.prepareCaseNotification(caze, event);
-    log.debug("Publishing caseNotification...");
-    notificationPublisher.sendNotification(caseNotification);
   }
 
   /**

@@ -246,37 +246,6 @@ public class CaseService {
   }
 
   /**
-   * Not sure this is the best place for this method, but .. several parts of case svc need to build
-   * a CaseNotification for a Case and need the services of the ActionPlanMappingService to get the
-   * actionPlanId This method just creates a CaseNotification Not sure this is the best place for
-   * this method, but .. several parts of case svc need to build a CaseNotification for a Case and
-   * need the services of the ActionPlanMappingService to get the actionPlanId This method just
-   * creates a CaseNotification
-   *
-   * @param caze The Case
-   * @param transitionEvent the event to inform the recipient of
-   * @return the newly created notification object
-   */
-  public CaseNotification prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent) {
-    CaseGroup caseGroup = caseGroupRepo.findOne(caze.getCaseGroupFK());
-    String iac = caseIacAuditService.findCaseIacByCasePK(caze.getCasePK());
-    // This to be taken out when actionsvc is depricated
-    String actionPlanId = caze.getActionPlanId() != null ? caze.getActionPlanId().toString() : null;
-    return new CaseNotification(
-            Objects.toString(caze.getSampleUnitId(), null),
-            caze.getId().toString(),
-            actionPlanId,
-            caze.isActiveEnrolment(),
-            caseGroup.getCollectionExerciseId().toString(),
-            Objects.toString(caze.getPartyId(), null),
-            caze.getSampleUnitType().toString(),
-            NotificationType.valueOf(transitionEvent.name()),
-            caseGroup.getSampleUnitRef(),
-            caseGroup.getStatus().toString(),
-            iac);
-  }
-
-  /**
    * Create a CaseEvent from the details provided in the passed CaseEvent. Some events will also as
    * a side effect create a new case - if so the details must be provided in the newCase argument,
    * otherwise it may remain null. If the newCase is passed it must also contain the contact details
@@ -449,8 +418,6 @@ public class CaseService {
             if (caze.getSampleUnitType() == SampleUnitType.B) {
               caze.setActiveEnrolment(enrolments);
               caseRepo.saveAndFlush(caze);
-              notificationPublisher.sendNotification(
-                      prepareCaseNotification(caze, CaseDTO.CaseEvent.ACTIONPLAN_CHANGED));
             }
           }
 
@@ -620,8 +587,6 @@ public class CaseService {
       if (!oldState.equals(newState)) {
         targetCase.setState(newState);
         caseRepo.saveAndFlush(targetCase);
-        notificationPublisher.sendNotification(
-                prepareCaseNotification(targetCase, transitionEvent));
       }
     }
   }

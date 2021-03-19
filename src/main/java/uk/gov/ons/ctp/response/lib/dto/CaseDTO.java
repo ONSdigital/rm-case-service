@@ -30,7 +30,6 @@ public class CaseDTO {
 
   private UUID id;
   private UUID sampleUnitId;
-  private UUID actionPlanId;
   private boolean activeEnrolment;
   private UUID collectionInstrumentId;
   private UUID partyId;

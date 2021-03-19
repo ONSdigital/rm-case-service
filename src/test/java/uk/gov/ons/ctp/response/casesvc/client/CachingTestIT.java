@@ -102,7 +102,7 @@ public class CachingTestIT {
                     .withBody(
                         "{\"id\":\"576357f9-697c-455a-a2c3-1b529752b245\",\"surveyId\":\""
                             + surveyId
-                            + "\",\"name\":null,\"actualExecutionDateTime\":null,\"scheduledExecutionDateTime\":null,\"scheduledStartDateTime\":null,\"actualPublishDateTime\":null,\"periodStartDateTime\":null,\"periodEndDateTime\":null,\"scheduledReturnDateTime\":null,\"scheduledEndDateTime\":null,\"executedBy\":null,\"state\":\"CREATED\",\"caseTypes\":[{\"actionPlanId\":\"fbff3117-1b15-469d-9835-c982e2ed6f9d\",\"sampleUnitType\":\"B\"},{\"actionPlanId\":\"eb201d99-eac8-4701-a61d-f5dbd1c77c97\",\"sampleUnitType\":\"BI\"}],\"exerciseRef\":\"510085\",\"userDescription\":\"January 2018\",\"created\":\"2019-02-13T10:13:19.530Z\",\"updated\":null,\"deleted\":null,\"validationErrors\":null,\"events\":[]}")
+                            + "\",\"name\":null,\"actualExecutionDateTime\":null,\"scheduledExecutionDateTime\":null,\"scheduledStartDateTime\":null,\"actualPublishDateTime\":null,\"periodStartDateTime\":null,\"periodEndDateTime\":null,\"scheduledReturnDateTime\":null,\"scheduledEndDateTime\":null,\"executedBy\":null,\"state\":\"CREATED\",\"caseTypes\":[{\"sampleUnitType\":\"B\"},`\"sampleUnitType\":\"BI\"}],\"exerciseRef\":\"510085\",\"userDescription\":\"January 2018\",\"created\":\"2019-02-13T10:13:19.530Z\",\"updated\":null,\"deleted\":null,\"validationErrors\":null,\"events\":[]}")
                     .withTransformers("response-template")));
   }
 }

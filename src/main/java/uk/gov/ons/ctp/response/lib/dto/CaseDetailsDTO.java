@@ -17,7 +17,6 @@ public class CaseDetailsDTO {
   private CaseState state;
 
   private UUID id;
-  private UUID actionPlanId;
   private UUID collectionInstrumentId;
   private UUID partyId;
   private UUID sampleUnitId;

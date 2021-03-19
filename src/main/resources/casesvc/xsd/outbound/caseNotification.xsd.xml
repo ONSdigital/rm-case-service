@@ -2,6 +2,5 @@
   <!--Optional:-->
   <caseId>string</caseId>
   <!--Optional:-->
-  <actionPlanId>string</actionPlanId>
   <notificationType>DEACTIVATED</notificationType>
 </not:caseNotification>
