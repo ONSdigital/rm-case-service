@@ -48,44 +48,44 @@ public class Case implements Serializable {
         @Parameter(name = "sequence_name", value = "casesvc.caseseq"),
         @Parameter(name = "increment_size", value = "1")
       })
-  @Column(name = "casepk")
+  @Column(name = "case_pk")
   private Integer casePK;
 
   @Column(name = "id")
   private UUID id;
 
-  @Column(name = "sampleunit_id")
+  @Column(name = "sample_unit_id")
   private UUID sampleUnitId;
 
   @Version
   @Column(name = "optlockversion")
   private int optLockVersion;
 
-  @Column(name = "casegroupfk")
+  @Column(name = "case_group_fk")
   private Integer caseGroupFK;
 
   @Column(name = "casegroupid")
   private UUID caseGroupId;
 
-  @Column(name = "sourcecase")
+  @Column(name = "source_case_id")
   private Integer sourceCaseId;
 
   @Generated(GenerationTime.INSERT)
-  @Column(name = "caseref")
+  @Column(name = "case_ref")
   private String caseRef;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "statefk")
+  @Column(name = "state_fk")
   private CaseState state;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "sampleunittype")
+  @Column(name = "sample_unit_type")
   private SampleUnitDTO.SampleUnitType sampleUnitType;
 
-  @Column(name = "partyid")
+  @Column(name = "party_id")
   private UUID partyId;
 
-  @Column(name = "collectioninstrumentid")
+  @Column(name = "collection_instrument_id")
   private UUID collectionInstrumentId;
 
   @Column(name = "actionplanid", nullable= true)
@@ -94,16 +94,16 @@ public class Case implements Serializable {
   @Column(name = "active_enrolment")
   private boolean activeEnrolment;
 
-  @Column(name = "createddatetime")
+  @Column(name = "created_date_time")
   private Timestamp createdDateTime;
 
-  @Column(name = "createdby")
+  @Column(name = "created_by")
   private String createdBy;
 
-  @OneToMany(mappedBy = "caseFK", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "case_fk", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   private List<Response> responses;
 
-  @OneToMany(mappedBy = "caseFK", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "case_fk", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private List<CaseIacAudit> iacAudits;
 
   @Transient private String iac;

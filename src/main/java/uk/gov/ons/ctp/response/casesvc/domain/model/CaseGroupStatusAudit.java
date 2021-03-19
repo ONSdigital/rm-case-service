@@ -34,18 +34,18 @@ public class CaseGroupStatusAudit {
             value = "casesvc.casegroupstatusauditseq"),
         @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
       })
-  @Column(name = "casegroupstatusauditpk")
+  @Column(name = "case_group_status_audit_pk")
   private Integer caseGroupStatusAuditPK;
 
-  @Column(name = "casegroupfk")
+  @Column(name = "case_group_fk")
   private int caseGroupFK;
 
-  @Column(name = "partyid")
+  @Column(name = "party_id")
   private UUID partyId;
 
   @Column(name = "status")
   private CaseGroupStatus status;
 
-  @Column(name = "createddatetime")
+  @Column(name = "created_date_time")
   private Timestamp createdDateTime;
 }

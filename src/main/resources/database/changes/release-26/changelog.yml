@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 26-1
+      author: Warren Bailey
+      changes:
+        - sqlFile:
+            comment: Rename columns for consistency.
+            path: rename-columns.sql
+            relativeToChangelogFile: true
+            splitStatements: false
