@@ -88,7 +88,7 @@ public class Case implements Serializable {
   @Column(name = "collection_instrument_id")
   private UUID collectionInstrumentId;
 
-  @Column(name = "actionplanid", nullable= true)
+  @Column(name = "action_plan_id", nullable= true)
   private UUID actionPlanId;
 
   @Column(name = "active_enrolment")
