@@ -64,7 +64,7 @@ public class Case implements Serializable {
   @Column(name = "case_group_fk")
   private Integer caseGroupFK;
 
-  @Column(name = "casegroupid")
+  @Column(name = "case_group_id")
   private UUID caseGroupId;
 
   @Column(name = "source_case_id")
