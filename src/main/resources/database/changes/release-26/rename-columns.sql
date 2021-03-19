@@ -28,7 +28,7 @@ ALTER TABLE casesvc.caseiacaudit RENAME COLUMN casefk TO case_fk;
 ALTER TABLE casesvc.caseiacaudit RENAME COLUMN createddatetime TO created_date_time;
 
 ALTER TABLE casesvc.category RENAME COLUMN categorypk TO category_pk;
-ALTER TABLE casesvc.category RENAME COLUMN long_description TO long_description;
+ALTER TABLE casesvc.category RENAME COLUMN longdescription TO long_description;
 ALTER TABLE casesvc.category RENAME COLUMN shortdescription TO short_description;
 ALTER TABLE casesvc.category RENAME COLUMN eventtype TO event_type;
 ALTER TABLE casesvc.category RENAME COLUMN oldcasesampleunittypes TO old_case_sample_unit_types;
