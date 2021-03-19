@@ -11,7 +11,6 @@
     "createdDateTime": 1460736159699,
     "createdBy": "SYSTEM",
     "iac": "bbbb cccc dddd",
-    "actionPlanId": "5381731e-e386-41a1-8462-26373744db81",
     "sampleUnitId": "a5427a90-c16a-4e5a-8f9b-f15be988f671",
     "responses": [
       {
@@ -32,7 +31,6 @@
     "createdDateTime": 1460736159699,
     "createdBy": "SYSTEM",
     "iac": "cccc dddd ffff",
-    "actionPlanId": "5381731e-e386-41a1-8462-26373744db82",
     "sampleUnitId": "13bb2902-8d5b-410d-b2d6-7d6ff6ebd9a9",
     "responses": [
       {
@@ -53,7 +51,6 @@
     "createdDateTime": 1460736159699,
     "createdBy": "SYSTEM",
     "iac": "dddd ffff gggg",
-    "actionPlanId": "5381731e-e386-41a1-8462-26373744db83",
     "sampleUnitId": "4922e8db-6bcd-40b1-bb52-ad396ad1e194",
     "responses": [
       {
@@ -74,7 +71,6 @@
     "createdDateTime": 1460736159699,
     "createdBy": "SYSTEM",
     "iac": "ffff gggg hhhh",
-    "actionPlanId": "5381731e-e386-41a1-8462-26373744db84",
     "sampleUnitId": "f7cfddb6-59e4-47f5-af0d-ac79286ddc68",
     "responses": [
       {
@@ -95,7 +91,6 @@
     "createdDateTime": 1460736159699,
     "createdBy": "SYSTEM",
     "iac": "gggg hhhh jjjj",
-    "actionPlanId": "5381731e-e386-41a1-8462-26373744db81",
     "sampleUnitId": "9e2e5cde-9827-4486-a9be-6f93efb7c025",
     "responses": [
       {
@@ -116,7 +111,6 @@
     "createdDateTime": 1460736159699,
     "createdBy": "SYSTEM",
     "iac": "hhhh jjjj kkkk",
-    "actionPlanId": "5381731e-e386-41a1-8462-26373744db82",
     "sampleUnitId": "a0090b46-538a-4427-b654-c383b789bf78",
     "responses": [
       {
@@ -137,7 +131,6 @@
     "createdDateTime": 1460736159699,
     "createdBy": "SYSTEM",
     "iac": "jjjj kkkk llll",
-    "actionPlanId": "5381731e-e386-41a1-8462-26373744db83",
     "sampleUnitId": "78f3df91-8291-4d91-8b50-137227a31be4",
     "responses": [
       {
@@ -158,7 +151,6 @@
     "createdDateTime": 1460736159699,
     "createdBy": "SYSTEM",
     "iac": "kkkk llll mmmm",
-    "actionPlanId": "5381731e-e386-41a1-8462-26373744db84",
     "sampleUnitId": "177afeb7-d53b-436c-942e-92cf12cbec8c",
     "responses": [
       {
@@ -179,7 +171,6 @@
     "createdDateTime": 1460736159699,
     "createdBy": "SYSTEM",
     "iac": "kkkk llll mmmm",
-    "actionPlanId": "5381731e-e386-41a1-8462-26373744db84",
     "sampleUnitId": "a1c1087f-f019-43a6-a228-024ee2cae2e0",
     "responses": []
   }

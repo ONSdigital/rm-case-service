@@ -103,8 +103,7 @@ public class CaseCreationServiceTest {
     assertEquals(
         UUID.fromString(sampleUnitParent.getCollectionInstrumentId()),
         capturedCase.getCollectionInstrumentId());
-    assertEquals(
-        UUID.fromString(sampleUnitParent.getActionPlanId()), capturedCase.getActionPlanId());
+    assertEquals(false, sampleUnitParent.isActiveEnrolment());
   }
 
   /**
@@ -174,7 +173,7 @@ public class CaseCreationServiceTest {
     assertEquals(
         UUID.fromString(sampleUnitChild.getCollectionInstrumentId()),
         childCase.getCollectionInstrumentId());
-    assertEquals(UUID.fromString(sampleUnitChild.getActionPlanId()), childCase.getActionPlanId());
+    assertEquals(false, childCase.isActiveEnrolment());
 
     Case parentCase = capturedCases.get(1);
     assertEquals(UUID.class, parentCase.getId().getClass());
@@ -188,6 +187,6 @@ public class CaseCreationServiceTest {
     assertEquals(
         UUID.fromString(sampleUnitParent.getCollectionInstrumentId()),
         parentCase.getCollectionInstrumentId());
-    assertEquals(UUID.fromString(sampleUnitParent.getActionPlanId()), parentCase.getActionPlanId());
+    assertEquals(false, parentCase.isActiveEnrolment());
   }
 }

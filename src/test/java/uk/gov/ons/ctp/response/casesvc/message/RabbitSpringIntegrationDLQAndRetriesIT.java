@@ -86,7 +86,7 @@ public class RabbitSpringIntegrationDLQAndRetriesIT {
     SampleUnitParent sampleUnit = new SampleUnitParent();
     sampleUnit.setCollectionExerciseId(collex.getId().toString());
     sampleUnit.setId(sampleUnitId.toString());
-    sampleUnit.setActionPlanId(UUID.randomUUID().toString());
+    sampleUnit.setActiveEnrolment(false);
     sampleUnit.setSampleUnitRef("LMS0004");
     sampleUnit.setCollectionInstrumentId(UUID.randomUUID().toString());
     sampleUnit.setSampleUnitType("VALUE_WHICH_WILL_SOME_SORT_OF_EXCEPTION_BECAUSE_ITS_GARBAGE");

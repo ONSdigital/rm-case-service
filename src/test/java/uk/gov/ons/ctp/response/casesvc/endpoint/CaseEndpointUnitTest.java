@@ -103,7 +103,7 @@ public final class CaseEndpointUnitTest {
   private static final String CASE1_CASEGROUP_SAMPLE_UNIT_TYPE = "B";
   private static final String CASE_CI_ID = "40c7c047-4fb3-4abe-926e-bf19fa2c0a1e";
   private static final String CASE_PARTY_ID = "3b136c4b-7a14-4904-9e01-13364dd7b972";
-  private static final String CASE_ACTIONPLAN_ID_1 = "5381731e-e386-41a1-8462-26373744db81";
+  private static final boolean CASE_ACTIVE_ENROLMENT = false;
   private static final String CASE_SAMPLE_UNIT_TYPE_B = "B";
   private static final String CASE1_DESCRIPTION = "desc 1";
   private static final String CASE2_DESCRIPTION = "desc 2";
@@ -218,7 +218,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.caseRef", is(ONE)));
     actions.andExpect(jsonPath("$.collectionInstrumentId", is(CASE_CI_ID)));
     actions.andExpect(jsonPath("$.partyId", is(CASE_PARTY_ID)));
-    actions.andExpect(jsonPath("$.actionPlanId", is(CASE_ACTIONPLAN_ID_1)));
+    actions.andExpect(jsonPath("$.activeEnrolment", is(CASE_ACTIVE_ENROLMENT)));
     actions.andExpect(jsonPath("$.sampleUnitType", is(CASE_SAMPLE_UNIT_TYPE_B)));
     actions.andExpect(jsonPath("$.state", is(CaseState.SAMPLED_INIT.name())));
     actions.andExpect(jsonPath("$.createdBy", is(SYSTEM)));
@@ -288,7 +288,7 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.iac", is(nullValue())));
     actions.andExpect(jsonPath("$.collectionInstrumentId", is(CASE_CI_ID)));
     actions.andExpect(jsonPath("$.partyId", is(CASE_PARTY_ID)));
-    actions.andExpect(jsonPath("$.actionPlanId", is(CASE_ACTIONPLAN_ID_1)));
+    actions.andExpect(jsonPath("$.activeEnrolment", is(CASE_ACTIVE_ENROLMENT)));
     actions.andExpect(jsonPath("$.sampleUnitType", is(CASE_SAMPLE_UNIT_TYPE_B)));
     actions.andExpect(jsonPath("$.state", is(CaseState.SAMPLED_INIT.name())));
     actions.andExpect(jsonPath("$.createdBy", is(SYSTEM)));
