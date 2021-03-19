@@ -553,11 +553,7 @@ public class CaseService {
     }
 
     newCase.setCollectionInstrumentId(UUID.fromString(caseData.getCollectionInstrumentId()));
-    if (!actionSvcClient.isDeprecated()) {
-      newCase.setActionPlanId(UUID.fromString(caseData.getActionPlanId()));
-    } else {
-      newCase.setActiveEnrolment(caseData.isActiveEnrolment());
-    }
+    newCase.setActiveEnrolment(caseData.isActiveEnrolment());
 
     // HardCoded values
     newCase.setState(CaseState.SAMPLED_INIT);
