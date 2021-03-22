@@ -367,6 +367,14 @@
                 <groupId>com.spotify</groupId>
                 <artifactId>dockerfile-maven-plugin</artifactId>
                 <version>1.4.4</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>javax.activation</groupId>
+                        <artifactId>javax.activation-api</artifactId>
+                        <version>1.2.0</version>
+                        <scope>compile</scope>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
                         <goals>
