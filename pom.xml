@@ -11,8 +11,8 @@
     <description>CTP : CaseService</description>
 
     <properties>
-        <springboot.version>1.5.6.RELEASE</springboot.version>
-        <springcloud.version>Dalston.SR1</springcloud.version>
+        <springboot.version>1.5.22.RELEASE</springboot.version>
+        <springcloud.version>Edgware.SR6</springcloud.version>
         <common.version>10.49.4</common.version>
         <java.version>11</java.version>
         <orika.version>1.5.1</orika.version>
@@ -367,6 +367,14 @@
                 <groupId>com.spotify</groupId>
                 <artifactId>dockerfile-maven-plugin</artifactId>
                 <version>1.4.4</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>javax.activation</groupId>
+                        <artifactId>javax.activation-api</artifactId>
+                        <version>1.2.0</version>
+                        <scope>compile</scope>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
                         <goals>
