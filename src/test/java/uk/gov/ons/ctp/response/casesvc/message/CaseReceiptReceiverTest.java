@@ -144,7 +144,6 @@ public class CaseReceiptReceiverTest {
   @Test
   public void testProcessUnlinkedOnlineCaseReceipt()
       throws CTPException, DatatypeConfigurationException {
-    Mockito.when(caseService.findCaseById(UUID.fromString(LINKED_CASE_ID))).thenReturn(null);
 
     CaseReceipt caseReceipt =
         buildCaseReceipt(
@@ -164,7 +163,6 @@ public class CaseReceiptReceiverTest {
   @Test
   public void testProcessUnlinkedPaperCaseReceipt()
       throws CTPException, DatatypeConfigurationException {
-    Mockito.when(caseService.findCaseById(UUID.fromString(LINKED_CASE_ID))).thenReturn(null);
 
     CaseReceipt caseReceipt =
         buildCaseReceipt(
@@ -184,7 +182,6 @@ public class CaseReceiptReceiverTest {
   @Test
   public void testProcessUnlinkedOfflineCaseReceipt()
       throws CTPException, DatatypeConfigurationException {
-    Mockito.when(caseService.findCaseById(UUID.fromString(LINKED_CASE_ID))).thenReturn(null);
 
     CaseReceipt caseReceipt =
         buildCaseReceipt(UNLINKED_CASE_ID, null, InboundChannel.PAPER, LINKED_PARTY_ID);

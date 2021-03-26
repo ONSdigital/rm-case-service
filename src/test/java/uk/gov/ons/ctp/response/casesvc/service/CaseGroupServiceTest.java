@@ -211,8 +211,6 @@ public class CaseGroupServiceTest {
         .willReturn(collectionExercise);
     given(collectionExerciseSvcClient.getCollectionExercises(collectionExercise.getSurveyId()))
         .willReturn(collectionExerciseDTOs);
-    given(caseGroupRepo.retrieveByPartyIdInListOfCollEx(PARTY_ID, eq(anyList())))
-        .willReturn(caseGroupList);
 
     // When
     caseGroupService.findCaseGroupsForExecutedCollectionExercises(caze);

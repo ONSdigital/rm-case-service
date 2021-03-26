@@ -225,8 +225,6 @@ public class CaseServiceTest {
   @Test
   public void testCreateCaseEventAgainstNonExistentCase() throws CTPException {
     when(caseRepo.getOne(NON_EXISTING_PARENT_CASE_FK)).thenReturn(null);
-    when(categoryRepo.getOne(CategoryDTO.CategoryName.COMPLETED_BY_PHONE))
-        .thenReturn(categories.get(CAT_PHYSICALLY_OR_MENTALLY_UNABLE));
 
     Timestamp currentTime = DateTimeUtil.nowUTC();
     HashMap<String, String> metadata = new HashMap<>();
@@ -669,8 +667,6 @@ public class CaseServiceTest {
   @Test
   public void testEventRespondentEnrolled() throws Exception {
     // Given
-    when(caseRepo.getOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
-        .thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
     Category respondentEnrolledCategory = categories.get(CAT_RESPONDENT_ENROLED);
     when(categoryRepo.getOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED))
         .thenReturn(respondentEnrolledCategory);
@@ -681,7 +677,6 @@ public class CaseServiceTest {
     List<Case> caseList = Collections.singletonList(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
     when(caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(any())).thenReturn(caseList);
     List<CollectionExerciseDTO> listCollex = Collections.singletonList(makeCollectionExercise());
-    when(collectionExerciseSvcClient.getCollectionExercises(null)).thenReturn(listCollex);
     when(caseRepo.saveAndFlush(any(Case.class)))
         .thenReturn(cases.get(ENROLMENT_CASE_INDIVIDUAL_FK));
 
@@ -909,8 +904,6 @@ public class CaseServiceTest {
     verify(caseSvcStateTransitionManager, times(1))
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
-    //    verify(actionSvcClient, times(1))
-    //        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -929,8 +922,6 @@ public class CaseServiceTest {
     when(categoryRepo.getOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD))
         .thenReturn(successfulResponseUploadedCategory);
 
-    when(caseRepo.findByCaseGroupId(null))
-        .thenReturn(Arrays.asList(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK)));
 
     CaseEvent caseEvent =
         fabricateEvent(
@@ -974,23 +965,13 @@ public class CaseServiceTest {
     Category noActiveEnrolmentCategory = categories.get(CAT_NO_ACTIVE_ENROLMENTS);
     when(categoryRepo.getOne(CategoryName.NO_ACTIVE_ENROLMENTS))
         .thenReturn(noActiveEnrolmentCategory);
-    when(caseRepo.findByCaseGroupId(null))
-        .thenReturn(
-            Arrays.asList(
-                cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK),
-                cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK)));
     CaseGroup caseGroup = makeCaseGroup();
-    when(caseGroupRepo.findById((Integer) null)).thenReturn(java.util.Optional.of(caseGroup));
-    when(internetAccessCodeSvcClient.generateIACs(1))
-        .thenReturn(Collections.singletonList(IAC_FOR_TEST));
     when(caseGroupService.findCaseGroupsForExecutedCollectionExercises(any()))
         .thenReturn(Collections.singletonList(caseGroup));
     List<Case> caseList = Collections.singletonList(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
     when(caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(any())).thenReturn(caseList);
     ActionPlanDTO actionPlan = new ActionPlanDTO();
     actionPlan.setId(UUID.randomUUID());
-    when(actionSvcClient.getActionPlans(any(UUID.class), anyBoolean()))
-        .thenReturn(Collections.singletonList(actionPlan));
 
     CaseEvent caseEvent =
         fabricateEvent(CategoryName.NO_ACTIVE_ENROLMENTS, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
@@ -1171,9 +1152,6 @@ public class CaseServiceTest {
             CaseState.ACTIONABLE, CaseDTO.CaseEvent.ACTIONPLAN_CHANGED))
         .thenReturn(CaseState.ACTIONABLE);
     when(caseSvcStateTransitionManager.transition(
-            CaseState.INACTIONABLE, CaseDTO.CaseEvent.DISABLED))
-        .thenReturn(CaseState.INACTIONABLE);
-    when(caseSvcStateTransitionManager.transition(
             CaseState.INACTIONABLE, CaseDTO.CaseEvent.DEACTIVATED))
         .thenReturn(CaseState.INACTIONABLE);
   }
@@ -1183,6 +1161,5 @@ public class CaseServiceTest {
     InternetAccessCodeSvc iacSvc = new InternetAccessCodeSvc();
     iacSvc.setIacPutPath(IAC_SVC_PUT_PATH);
     iacSvc.setIacPostPath(IAC_SVC_POST_PATH);
-    when(appConfig.getInternetAccessCodeSvc()).thenReturn(iacSvc);
   }
 }

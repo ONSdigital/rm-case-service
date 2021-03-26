@@ -274,10 +274,12 @@
             <version>1.4.9</version>
             <scope>test</scope>
         </dependency>
+        <!-- Added because of mockito errors. It's explained more here
+        https://dev.to/scottshipp/how-to-fix-a-mockito-cannot-mock-this-class-exception-in-a-spring-boot-app-457e -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>3.7.7</version>
+            <version>2.22.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
