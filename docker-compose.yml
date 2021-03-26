@@ -31,9 +31,9 @@ services:
     - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-case-it:5432/postgres?sslmode=disable
     - SPRING_DATASOURCE_USERNAME=postgres
     - SPRING_DATASOURCE_PASSWORD=postgres
-    - LIQUIBASE_URL=jdbc:postgresql://postgres-case-it:5432/postgres
-    - LIQUIBASE_USER=postgres
-    - LIQUIBASE_PASSWORD=postgres
+    - SPRING_LIQUIBASE_URL=jdbc:postgresql://postgres-case-it:5432/postgres
+    - SPRING_LIQUIBASE_USER=postgres
+    - SPRING_LIQUIBASE_PASSWORD=postgres
     - REDISSON_CONFIG_ADDRESS=redis-case-it:6379
     - DATA_GRID_ADDRESS=redis-case-it:6379
     - RABBITMQ_HOST=rabbitmq-case-it

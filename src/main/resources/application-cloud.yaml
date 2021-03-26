@@ -15,20 +15,10 @@ logging:
   profile: CLOUD
   useJson: true
 
-liquibase:
-  user: ${cloud.services.postgresql.connection.username}
-  password: ${cloud.services.postgresql.connection.password}
-  default-schema: casesvc
-  url: ${cloud.services.postgresql.connection.jdbcurl}
-  changeLog: classpath:/database/changelog-master.yml
-
 security:
   basic:
     enabled: true
     realm: sdc
-  user:
-    name: admin
-    password: secret
 
 management:
   security:
@@ -40,7 +30,8 @@ management:
 
 server:
   port: 8171
-  servlet-path: /
+  servlet:
+    path: /
 
 spring:
   application:
@@ -52,12 +43,23 @@ spring:
       max-active: 10
       max-idle: 5
       min-idle: 3
+    initialization-mode: always
     continue-on-error: true
     schema: classpath:/schema-cloud.sql
     user: ${cloud.services.postgresql.connection.username}
     password: ${cloud.services.postgresql.connection.password}
     default-schema: casesvc
     url: ${cloud.services.postgresql.connection.jdbcurl}
+  liquibase:
+    user: ${cloud.services.postgresql.connection.username}
+    password: ${cloud.services.postgresql.connection.password}
+    default-schema: casesvc
+    url: ${cloud.services.postgresql.connection.jdbcurl}
+    changeLog: classpath:/database/changelog-master.yml
+  security:
+    user:
+      name: admin
+      password: secret
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
