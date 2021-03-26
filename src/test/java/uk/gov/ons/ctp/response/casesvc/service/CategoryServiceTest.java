@@ -10,7 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
@@ -39,14 +39,14 @@ public class CategoryServiceTest {
   @Test
   public void testFindCategorySuccess() {
     // Given
-    given(categoryRepo.findOne(CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT))
+    given(categoryRepo.getOne(CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT))
         .willReturn(categories.get(0));
 
     // When
     categoryService.findCategory(CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
 
     // Then
-    verify(categoryRepo).findOne(CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
+    verify(categoryRepo).getOne(CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
   }
 
   @Test

@@ -258,7 +258,7 @@ public class CaseService {
    * @return the newly created notification object
    */
   public CaseNotification prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent) {
-    CaseGroup caseGroup = caseGroupRepo.findOne(caze.getCaseGroupFK());
+    CaseGroup caseGroup = caseGroupRepo.getOne(caze.getCaseGroupFK());
     String iac = caseIacAuditService.findCaseIacByCasePK(caze.getCasePK());
     // This to be taken out when actionsvc is depricated
     String actionPlanId = caze.getActionPlanId() != null ? caze.getActionPlanId().toString() : null;
@@ -318,7 +318,7 @@ public class CaseService {
           throws CTPException {
     log.with("case_event", caseEvent).debug("Creating case event");
 
-    Case targetCase = caseRepo.findOne(caseEvent.getCaseFK());
+    Case targetCase = caseRepo.getOne(caseEvent.getCaseFK());
     log.with("target_case", targetCase).debug("Found target case");
     if (targetCase == null) {
       return null;
@@ -345,7 +345,7 @@ public class CaseService {
           throws CTPException {
     log.with("case_event", caseEvent).debug("Creating case event");
 
-    Category category = categoryRepo.findOne(caseEvent.getCategory());
+    Category category = categoryRepo.getOne(caseEvent.getCategory());
     validateCaseEventRequest(category, targetCase);
 
     // save the case event to db
@@ -416,7 +416,7 @@ public class CaseService {
   }
 
   private void transitionCaseGroupStatus(final Case targetCase, final CaseEvent caseEvent) {
-    CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
+    CaseGroup caseGroup = caseGroupRepo.getOne(targetCase.getCaseGroupFK());
     try {
       caseGroupService.transitionCaseGroupStatus(
               caseGroup, caseEvent.getCategory(), targetCase.getPartyId());

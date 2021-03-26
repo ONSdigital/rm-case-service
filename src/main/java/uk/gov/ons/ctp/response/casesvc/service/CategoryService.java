@@ -30,7 +30,7 @@ public class CategoryService {
    */
   public Category findCategory(CategoryDTO.CategoryName categoryName) {
     log.with("category_name", categoryName).debug("Entering findCategory");
-    return categoryRepo.findOne(categoryName);
+    return categoryRepo.getOne(categoryName);
   }
 
   /**

@@ -46,7 +46,7 @@ public class CaseGroupService {
    */
   public CaseGroup findCaseGroupByCaseGroupPK(final Integer caseGroupPK) {
     log.with("case_group_pk", caseGroupPK).debug("Entering findCaseGroupByCaseGroupId");
-    return caseGroupRepo.findOne(caseGroupPK);
+    return caseGroupRepo.getOne(caseGroupPK);
   }
 
   /**
@@ -125,7 +125,7 @@ public class CaseGroupService {
     if (targetCase == null) {
       throw new CTPException(CTPException.Fault.SYSTEM_ERROR, "Target case must be supplied");
     }
-    CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
+    CaseGroup caseGroup = caseGroupRepo.getOne(targetCase.getCaseGroupFK());
     if (caseGroup == null) {
       throw new CTPException(
           CTPException.Fault.RESOURCE_NOT_FOUND,
