@@ -15,20 +15,10 @@ logging:
   profile: DEV
   useJson: false
 
-liquibase:
-  user: postgres
-  password: postgres
-  default-schema: casesvc
-  url: jdbc:postgresql://localhost:5432/ras
-  changeLog: classpath:/database/changelog-master.yml
-
 security:
   basic:
     enabled: true
     realm: sdc
-  user:
-    name: admin
-    password: secret
 
 management:
   security:
@@ -37,16 +27,16 @@ management:
   health:
     rabbit:
       enabled: false
+  endpoint:
+    info:
+      enabled: true
+  endpoints:
+    enabled-by-default: true
 
 server:
   port: 8171
-  servlet-path: /
-
-endpoints:
-  enabled: true
-  info:
-    enabled: true
-    sensitive: false
+  servlet:
+    path: /
 
 spring:
   output:
@@ -65,6 +55,16 @@ spring:
       max-active: 10
       max-idle: 5
       min-idle: 3
+  liquibase:
+    user: postgres
+    password: postgres
+    default-schema: casesvc
+    url: jdbc:postgresql://localhost:5432/ras
+    changeLog: classpath:/database/changelog-master.yml
+  security:
+    user:
+      name: admin
+      password: secret
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
