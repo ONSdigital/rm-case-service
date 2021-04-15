@@ -12,3 +12,4 @@ jobs:
           - shell: bash
             run: |
               sudo apt-get update
+              echo "${{ secrets.BOT_EMAIL }}"
