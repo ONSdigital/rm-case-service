@@ -1,0 +1,3 @@
+uses: actions/hello-world-docker-action@master
+with:
+  who-to-greet: 'Test hacker'
