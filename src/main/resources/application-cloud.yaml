@@ -30,8 +30,6 @@ management:
 
 server:
   port: 8171
-  servlet:
-    path: /
 
 spring:
   application:
@@ -56,6 +54,9 @@ spring:
     default-schema: casesvc
     url: ${cloud.services.postgresql.connection.jdbcurl}
     changeLog: classpath:/database/changelog-master.yml
+  mvc:
+    servlet:
+      path: /
   security:
     user:
       name: admin

@@ -36,6 +36,7 @@ public class CollectionExerciseSvcClient {
   @Autowired
   private RestUtility restUtility;
 
+  @Qualifier("customObjectMapper")
   @Autowired private ObjectMapper objectMapper;
 
   /**

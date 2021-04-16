@@ -35,8 +35,6 @@ management:
 
 server:
   port: 8171
-  servlet:
-    path: /
 
 spring:
   output:
@@ -62,6 +60,9 @@ spring:
     default-schema: casesvc
     url: jdbc:postgresql://localhost:5432/ras
     changeLog: classpath:/database/changelog-master.yml
+  mvc:
+    servlet:
+      path: /
   security:
     user:
       name: admin
@@ -69,7 +70,6 @@ spring:
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
-    show-sql: false
     properties:
       hibernate:
         ddl-auto: none
