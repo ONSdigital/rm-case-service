@@ -1,8 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.client;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -94,7 +93,7 @@ public class ActionSvcClientTest {
             .port(80)
             .path(ACTION_PATH)
             .build();
-    when(restUtility.createUriComponents(any(String.class), any(MultiValueMap.class)))
+    when(restUtility.createUriComponents(any(String.class), nullable(MultiValueMap.class)))
         .thenReturn(uriComponents);
 
     ActionDTO actionDTO = new ActionDTO();
