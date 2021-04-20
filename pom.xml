@@ -11,7 +11,7 @@
     <description>CaseService</description>
 
     <properties>
-        <springboot.version>2.0.9.RELEASE</springboot.version>
+        <springboot.version>2.1.18.RELEASE</springboot.version>
         <common.version>10.49.4</common.version>
         <jackson.version>2.12.2</jackson.version>
         <java.version>11</java.version>
@@ -288,16 +288,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>net.bytebuddy</groupId>
-            <artifactId>byte-buddy</artifactId>
-            <version>1.10.13</version>
-            <scope>test</scope>
+            <groupId>javax.xml.ws</groupId>
+            <artifactId>jaxws-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>net.bytebuddy</groupId>
-            <artifactId>byte-buddy-agent</artifactId>
-            <version>1.10.13</version>
-            <scope>test</scope>
+            <groupId>com.sun.xml.messaging.saaj</groupId>
+            <artifactId>saaj-impl</artifactId>
         </dependency>
     </dependencies>
 

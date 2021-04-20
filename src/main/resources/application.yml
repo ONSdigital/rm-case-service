@@ -60,6 +60,8 @@ spring:
     default-schema: casesvc
     url: jdbc:postgresql://localhost:5432/ras
     changeLog: classpath:/database/changelog-master.yml
+  main:
+    allow-bean-definition-overriding: true
   mvc:
     servlet:
       path: /
