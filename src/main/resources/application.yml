@@ -53,23 +53,6 @@ spring:
       max-active: 10
       max-idle: 5
       min-idle: 3
-    initialization-mode: always
-  liquibase:
-    user: postgres
-    password: postgres
-    default-schema: casesvc
-    url: jdbc:postgresql://localhost:5432/ras
-    changeLog: classpath:/database/changelog-master.yml
-  main:
-    allow-bean-definition-overriding: true
-  mvc:
-    servlet:
-      path: /
-  security:
-    user:
-      name: admin
-      password: secret
-
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
     properties:
