@@ -53,12 +53,17 @@ spring:
       max-active: 10
       max-idle: 5
       min-idle: 3
+    initialization-mode: always
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
     properties:
       hibernate:
         ddl-auto: none
         default_schema: casesvc
+  main:
+    allow-bean-definition-overriding: true
+  liquibase:
+    change-log: classpath:/database/changelog-master.yml
 
 data-grid:
   address: localhost:6379
