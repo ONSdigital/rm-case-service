@@ -21,6 +21,8 @@ import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.integration.annotation.IntegrationComponentScan;
+import org.springframework.integration.channel.PublishSubscribeChannel;
+import org.springframework.messaging.MessageChannel;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -275,5 +277,10 @@ public class CaseSvcApplication {
   @Bean
   public DateTimeUtil dateTimeUtil(){
     return new DateTimeUtil();
+  }
+
+  @Bean
+  public MessageChannel inputMessageChannel() {
+    return new PublishSubscribeChannel();
   }
 }
