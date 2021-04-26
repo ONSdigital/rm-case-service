@@ -67,6 +67,10 @@ dns:
 
 deprecateAction: false
 
+gcp:
+  project: ras-rm-sandbox
+  receiptTopic: ras-rm-receipt
+
 caseDistribution:
   retrievalMax: 1000
   delayMilliSeconds: 500

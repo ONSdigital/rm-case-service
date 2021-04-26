@@ -149,3 +149,6 @@ swagger-settings:
 retries:
   maxAttempts: 3
   backoff: 5000
+
+gcp:
+  receiptTopic: ras-rm-notify-test

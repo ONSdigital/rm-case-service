@@ -23,6 +23,9 @@ spec:
     spec:
       {{- if .Values.database.sqlProxyEnabled }}
       volumes:
+        - name: google-cloud-key
+          secret:
+            secretName: google-application-credentials
         - name: cloudsql-instance-credentials
           secret:
             secretName: cloudsql-proxy-credentials
@@ -67,6 +70,9 @@ spec:
           image: "{{ .Values.image.devRepo }}/{{ .Chart.Name }}:{{ .Values.image.tag }}"
           {{- end}}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: google-cloud-key
+              mountPath: /var/secrets/google
           ports:
             - name: http-server
               containerPort: {{ .Values.container.port }}
@@ -117,6 +123,12 @@ spec:
               secretKeyRef:
                 name: db-credentials
                 key: {{ .Values.database.secrets.passwordKey }}
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: /var/secrets/google/credentials.json
+          - name: GOOGLE_CLOUD_PROJECT
+            value: "{{ .Values.gcp.project }}"
+          - name: GCP_RECEIPTTOPIC
+            value: "{{ .Values.gcp.receiptTopic }}"
           - name: SECURITY_USER_NAME
             valueFrom:
               secretKeyRef:
