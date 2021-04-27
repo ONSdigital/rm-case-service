@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -200,7 +201,7 @@ public class CaseGroupServiceTest {
             .sampleUnitType("B")
             .status(CaseGroupStatus.NOTSTARTED)
             .build();
-    given(caseGroupRepo.getOne(any(int.class))).willReturn(caseGroup);
+    given(caseGroupRepo.findById(any(int.class))).willReturn(Optional.of(caseGroup));
     List<CaseGroup> caseGroupList = Collections.singletonList(caseGroup);
     List<CollectionExerciseDTO> collectionExerciseDTOs =
         FixtureHelper.loadClassFixtures(CollectionExerciseDTO[].class);
@@ -214,7 +215,7 @@ public class CaseGroupServiceTest {
     caseGroupService.findCaseGroupsForExecutedCollectionExercises(caze);
 
     // Then
-    verify(caseGroupRepo).getOne(caze.getCaseGroupFK());
+    verify(caseGroupRepo).findById(caze.getCaseGroupFK());
   }
 
   @Test(expected = CTPException.class)
@@ -232,7 +233,7 @@ public class CaseGroupServiceTest {
             .sampleUnitType("B")
             .status(CaseGroupStatus.NOTSTARTED)
             .build();
-    given(caseGroupRepo.getOne(any(int.class))).willReturn(caseGroup);
+    given(caseGroupRepo.findById(any(int.class))).willReturn(Optional.of(caseGroup));
     List<CaseGroup> caseGroupList = Collections.singletonList(caseGroup);
     List<CollectionExerciseDTO> collectionExerciseDTOs =
         FixtureHelper.loadClassFixtures(CollectionExerciseDTO[].class);
@@ -263,7 +264,7 @@ public class CaseGroupServiceTest {
             .sampleUnitType("B")
             .status(CaseGroupStatus.NOTSTARTED)
             .build();
-    given(caseGroupRepo.getOne(any(int.class))).willReturn(caseGroup);
+    given(caseGroupRepo.findById(any(int.class))).willReturn(Optional.of(caseGroup));
     List<CaseGroup> caseGroupList = Collections.singletonList(caseGroup);
     List<CollectionExerciseDTO> collectionExerciseDTOs =
         FixtureHelper.loadClassFixtures(CollectionExerciseDTO[].class);
@@ -281,7 +282,7 @@ public class CaseGroupServiceTest {
   public void CaseGroupFindForExecutedFindCaseGroupReturnsNullThrowsException() throws Exception {
     // Given
     Case caze = FixtureHelper.loadClassFixtures(Case[].class).get(0);
-    given(caseGroupRepo.getOne(any(int.class))).willReturn(null);
+    given(caseGroupRepo.findById(any(int.class))).willReturn(null);
 
     // When
     caseGroupService.findCaseGroupsForExecutedCollectionExercises(caze);

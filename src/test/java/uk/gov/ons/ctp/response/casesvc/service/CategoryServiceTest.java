@@ -5,6 +5,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,14 +41,14 @@ public class CategoryServiceTest {
   @Test
   public void testFindCategorySuccess() {
     // Given
-    given(categoryRepo.getOne(CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT))
-        .willReturn(categories.get(0));
+    given(categoryRepo.findById(CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT))
+        .willReturn(Optional.of(categories.get(0)));
 
     // When
     categoryService.findCategory(CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
 
     // Then
-    verify(categoryRepo).getOne(CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
+    verify(categoryRepo).findById(CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
   }
 
   @Test
