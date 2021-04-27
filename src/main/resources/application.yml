@@ -128,7 +128,6 @@ messaging:
   pubMaxAttempts: 3
   conMaxAttempts: 3
   prefetchCount: 10
-  txSize: 1
 
 swagger-settings:
   swagger-ui-active: true
