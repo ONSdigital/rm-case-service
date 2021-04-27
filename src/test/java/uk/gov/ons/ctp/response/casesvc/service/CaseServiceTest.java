@@ -222,7 +222,7 @@ public class CaseServiceTest {
    */
   @Test
   public void testCreateCaseEventAgainstNonExistentCase() throws CTPException {
-    when(caseRepo.findById(NON_EXISTING_PARENT_CASE_FK)).thenReturn(null);
+    when(caseRepo.findById(NON_EXISTING_PARENT_CASE_FK)).thenReturn(Optional.ofNullable(null));
 
     Timestamp currentTime = DateTimeUtil.nowUTC();
     HashMap<String, String> metadata = new HashMap<>();

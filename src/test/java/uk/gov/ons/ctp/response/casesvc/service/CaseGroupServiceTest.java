@@ -282,7 +282,7 @@ public class CaseGroupServiceTest {
   public void CaseGroupFindForExecutedFindCaseGroupReturnsNullThrowsException() throws Exception {
     // Given
     Case caze = FixtureHelper.loadClassFixtures(Case[].class).get(0);
-    given(caseGroupRepo.findById(any(int.class))).willReturn(null);
+    given(caseGroupRepo.findById(any(int.class))).willReturn(Optional.ofNullable(null));
 
     // When
     caseGroupService.findCaseGroupsForExecutedCollectionExercises(caze);
