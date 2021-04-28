@@ -63,6 +63,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
   liquibase:
+    liquibase-schema: casesvc
     change-log: classpath:/database/changelog-master.yml
 
 data-grid:
