@@ -3,6 +3,9 @@ spring:
     url: jdbc:postgresql://localhost:15432/postgres
   liquibase:
     url: jdbc:postgresql://localhost:15432/postgres
+  cloud:
+    gcp:
+      project-id: ras-rm-dev
 
 survey-svc:
   connection-config:
