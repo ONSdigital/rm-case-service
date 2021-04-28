@@ -1,8 +1,7 @@
-liquibase:
-  url: jdbc:postgresql://localhost:15432/postgres
-
 spring:
   datasource:
+    url: jdbc:postgresql://localhost:15432/postgres
+  liquibase:
     url: jdbc:postgresql://localhost:15432/postgres
 
 survey-svc:

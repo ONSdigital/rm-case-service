@@ -12,14 +12,12 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.response.casesvc.client.ActionSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.InternetAccessCodeSvcClient;
-import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
@@ -43,7 +41,6 @@ import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
 import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.utility.Constants;
-import uk.gov.ons.ctp.response.lib.action.ActionPlanDTO;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.common.error.CTPException;
 import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManager;
@@ -116,7 +113,7 @@ public class CaseService {
    * @return Case object or null
    */
   public Case findCaseById(final UUID id) {
-    Case caze = caseRepo.findById(id);
+    Case caze = caseRepo.findById(id).orElse(null);
 
     if (caze != null) {
       String iac = caseIacAuditService.findCaseIacByCasePK(caze.getCasePK());
@@ -258,7 +255,7 @@ public class CaseService {
    * @return the newly created notification object
    */
   public CaseNotification prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent) {
-    CaseGroup caseGroup = caseGroupRepo.findOne(caze.getCaseGroupFK());
+    CaseGroup caseGroup = caseGroupRepo.findById(caze.getCaseGroupFK()).orElse(null);
     String iac = caseIacAuditService.findCaseIacByCasePK(caze.getCasePK());
     // This code will still be here to support any legacy actions in play
     String actionPlanId = caze.getActionPlanId() != null ? caze.getActionPlanId().toString() : null;
@@ -318,7 +315,7 @@ public class CaseService {
           throws CTPException {
     log.with("case_event", caseEvent).debug("Creating case event");
 
-    Case targetCase = caseRepo.findOne(caseEvent.getCaseFK());
+    Case targetCase = caseRepo.findById(caseEvent.getCaseFK()).orElse(null);
     log.with("target_case", targetCase).debug("Found target case");
     if (targetCase == null) {
       return null;
@@ -345,7 +342,7 @@ public class CaseService {
           throws CTPException {
     log.with("case_event", caseEvent).debug("Creating case event");
 
-    Category category = categoryRepo.findOne(caseEvent.getCategory());
+    Category category = categoryRepo.findById(caseEvent.getCategory()).orElse(null);
     validateCaseEventRequest(category, targetCase);
 
     // save the case event to db
@@ -416,7 +413,7 @@ public class CaseService {
   }
 
   private void transitionCaseGroupStatus(final Case targetCase, final CaseEvent caseEvent) {
-    CaseGroup caseGroup = caseGroupRepo.findOne(targetCase.getCaseGroupFK());
+    CaseGroup caseGroup = caseGroupRepo.findById(targetCase.getCaseGroupFK()).orElse(null);
     try {
       caseGroupService.transitionCaseGroupStatus(
               caseGroup, caseEvent.getCategory(), targetCase.getPartyId());

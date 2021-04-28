@@ -48,7 +48,7 @@ public class DateTimeUtil {
     GregorianCalendar gregorianCalendar = new GregorianCalendar();
     gregorianCalendar.setTime(new Date());
 
-    XMLGregorianCalendar result = null;
+    XMLGregorianCalendar result;
     DatatypeFactory factory = DatatypeFactory.newInstance();
     result =
         factory.newXMLGregorianCalendar(
@@ -74,7 +74,7 @@ public class DateTimeUtil {
    */
   public static XMLGregorianCalendar stringToXMLGregorianCalendar(String string, String format)
       throws DatatypeConfigurationException {
-    XMLGregorianCalendar result = null;
+    XMLGregorianCalendar result;
     Date date;
     SimpleDateFormat simpleDateFormat;
     GregorianCalendar gregorianCalendar;

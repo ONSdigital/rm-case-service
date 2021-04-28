@@ -156,10 +156,10 @@ public class CaseDistributor {
     // REPLACEMENT_INIT states and
     // not in the excluded list
     Pageable pageable =
-        new PageRequest(
+        PageRequest.of(
             0,
             appConfig.getCaseDistribution().getRetrievalMax(),
-            new Sort(new Sort.Order(Direction.ASC, "createdDateTime")));
+            Sort.by(new Sort.Order(Direction.ASC, "createdDateTime")));
     excludedCases.add(IMPOSSIBLE_CASE_ID);
     cases =
         caseRepo.findByStateInAndCasePKNotIn(
