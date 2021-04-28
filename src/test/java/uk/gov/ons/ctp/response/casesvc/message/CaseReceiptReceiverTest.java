@@ -1,7 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.message;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED;
@@ -22,7 +22,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
@@ -144,7 +144,6 @@ public class CaseReceiptReceiverTest {
   @Test
   public void testProcessUnlinkedOnlineCaseReceipt()
       throws CTPException, DatatypeConfigurationException {
-    Mockito.when(caseService.findCaseById(UUID.fromString(LINKED_CASE_ID))).thenReturn(null);
 
     CaseReceipt caseReceipt =
         buildCaseReceipt(
@@ -164,7 +163,6 @@ public class CaseReceiptReceiverTest {
   @Test
   public void testProcessUnlinkedPaperCaseReceipt()
       throws CTPException, DatatypeConfigurationException {
-    Mockito.when(caseService.findCaseById(UUID.fromString(LINKED_CASE_ID))).thenReturn(null);
 
     CaseReceipt caseReceipt =
         buildCaseReceipt(
@@ -184,7 +182,6 @@ public class CaseReceiptReceiverTest {
   @Test
   public void testProcessUnlinkedOfflineCaseReceipt()
       throws CTPException, DatatypeConfigurationException {
-    Mockito.when(caseService.findCaseById(UUID.fromString(LINKED_CASE_ID))).thenReturn(null);
 
     CaseReceipt caseReceipt =
         buildCaseReceipt(UNLINKED_CASE_ID, null, InboundChannel.PAPER, LINKED_PARTY_ID);

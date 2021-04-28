@@ -3,8 +3,7 @@ package uk.gov.ons.ctp.response.casesvc.client;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -19,7 +18,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -72,7 +71,7 @@ public class InternetAccessCodeSvcClientTest {
             .port(80)
             .path(IAC_POST_PATH)
             .build();
-    when(restUtility.createUriComponents(any(String.class), any(MultiValueMap.class)))
+    when(restUtility.createUriComponents(any(String.class), nullable(MultiValueMap.class)))
         .thenReturn(uriComponents);
 
     int count = 3;
@@ -176,6 +175,7 @@ public class InternetAccessCodeSvcClientTest {
   public void testIsIACActive() {
     InternetAccessCodeSvc iacSvcConfig = new InternetAccessCodeSvc();
     iacSvcConfig.setIacPostPath(IAC_GET_PATH);
+    iacSvcConfig.setIacPutPath(IAC_PUT_PATH);
     when(appConfig.getInternetAccessCodeSvc()).thenReturn(iacSvcConfig);
     UriComponents uriComponents =
         UriComponentsBuilder.newInstance()
@@ -184,7 +184,8 @@ public class InternetAccessCodeSvcClientTest {
             .port(80)
             .path(IAC_GET_PATH)
             .build();
-    when(restUtility.createUriComponents(any(String.class), eq(null), eq(IAC)))
+
+    when(restUtility.createUriComponents(any(String.class), nullable(MultiValueMap.class), eq(IAC)))
         .thenReturn(uriComponents);
     when(restUtility.createHttpEntity(any())).thenReturn(null);
     InternetAccessCodeDTO iacDTO = new InternetAccessCodeDTO();

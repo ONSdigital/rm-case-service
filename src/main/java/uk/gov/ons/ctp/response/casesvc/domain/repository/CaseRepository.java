@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.domain.repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -49,7 +50,7 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
    * @param id the UUID
    * @return the case
    */
-  Case findById(UUID id);
+  Optional<Case> findById(UUID id);
 
   /**
    * Find cases assigned to a given partyId

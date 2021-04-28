@@ -15,21 +15,6 @@ logging:
   profile: DEV
   useJson: false
 
-liquibase:
-  user: postgres
-  password: postgres
-  default-schema: casesvc
-  url: jdbc:postgresql://localhost:5432/ras
-  changeLog: classpath:/database/changelog-master.yml
-
-security:
-  basic:
-    enabled: true
-    realm: sdc
-  user:
-    name: admin
-    password: secret
-
 management:
   security:
     roles: SUPERUSER
@@ -40,18 +25,8 @@ management:
 
 server:
   port: 8171
-  servlet-path: /
-
-endpoints:
-  enabled: true
-  info:
-    enabled: true
-    sensitive: false
 
 spring:
-  output:
-    ansi:
-      enabled: never
   application:
     name: ONS CaseService
   datasource:
@@ -65,7 +40,7 @@ spring:
       max-active: 10
       max-idle: 5
       min-idle: 3
-
+    initialization-mode: always
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
     show-sql: false
@@ -73,6 +48,14 @@ spring:
       hibernate:
         ddl-auto: none
         default_schema: casesvc
+  liquibase:
+    liquibase-schema: casesvc
+    change-log: classpath:/database/changelog-master.yml
+  main:
+    allow-bean-definition-overriding: true
+  output:
+    ansi:
+      enabled: never
 
 data-grid:
   address: localhost:6379
@@ -137,7 +120,6 @@ messaging:
   pubMaxAttempts: 3
   conMaxAttempts: 3
   prefetchCount: 10
-  txSize: 1
 
 swagger-settings:
   swagger-ui-active: true

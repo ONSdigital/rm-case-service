@@ -4,12 +4,10 @@ import static junit.framework.TestCase.assertNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -19,10 +17,10 @@ import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.Categor
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import ma.glasnost.orika.MapperFacade;
@@ -34,7 +32,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
 import uk.gov.ons.ctp.response.casesvc.client.ActionSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
@@ -194,8 +192,8 @@ public class CaseServiceTest {
    */
   @Test
   public void testCreateCaseEventWithTargetCase() throws CTPException {
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.CASE_CREATED))
-        .thenReturn(categories.get(CAT_PHYSICALLY_OR_MENTALLY_UNABLE));
+    when(categoryRepo.findById(CategoryDTO.CategoryName.CASE_CREATED))
+        .thenReturn(Optional.of(categories.get(CAT_PHYSICALLY_OR_MENTALLY_UNABLE)));
     Timestamp currentTime = DateTimeUtil.nowUTC();
     HashMap<String, String> metadata = new HashMap<>();
     metadata.put("partyId", UUID.randomUUID().toString());
@@ -224,9 +222,7 @@ public class CaseServiceTest {
    */
   @Test
   public void testCreateCaseEventAgainstNonExistentCase() throws CTPException {
-    when(caseRepo.findOne(NON_EXISTING_PARENT_CASE_FK)).thenReturn(null);
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.COMPLETED_BY_PHONE))
-        .thenReturn(categories.get(CAT_PHYSICALLY_OR_MENTALLY_UNABLE));
+    when(caseRepo.findById(NON_EXISTING_PARENT_CASE_FK)).thenReturn(Optional.ofNullable(null));
 
     Timestamp currentTime = DateTimeUtil.nowUTC();
     HashMap<String, String> metadata = new HashMap<>();
@@ -243,7 +239,7 @@ public class CaseServiceTest {
             metadata);
     CaseEvent result = caseService.createCaseEvent(caseEvent);
 
-    verify(caseRepo).findOne(NON_EXISTING_PARENT_CASE_FK);
+    verify(caseRepo).findById(NON_EXISTING_PARENT_CASE_FK);
     assertNull(result);
   }
 
@@ -254,17 +250,17 @@ public class CaseServiceTest {
    */
   @Test
   public void testCreateNonActionableEventAgainstInactionableCase() throws Exception {
-    when(caseRepo.findOne(INACTIONABLE_HOUSEHOLD_CASE_FK))
-        .thenReturn(cases.get(INACTIONABLE_HOUSEHOLD_CASE_FK));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.NO_LONGER_REQUIRED))
-        .thenReturn(categories.get(CAT_LACK_OF_COMPUTER_INTERNET_ACCESS));
+    when(caseRepo.findById(INACTIONABLE_HOUSEHOLD_CASE_FK))
+        .thenReturn(Optional.of(cases.get(INACTIONABLE_HOUSEHOLD_CASE_FK)));
+    when(categoryRepo.findById(CategoryDTO.CategoryName.NO_LONGER_REQUIRED))
+        .thenReturn(Optional.of(categories.get(CAT_LACK_OF_COMPUTER_INTERNET_ACCESS)));
 
     CaseEvent caseEvent =
         fabricateEvent(CategoryDTO.CategoryName.NO_LONGER_REQUIRED, INACTIONABLE_HOUSEHOLD_CASE_FK);
     caseService.createCaseEvent(caseEvent);
 
-    verify(caseRepo).findOne(INACTIONABLE_HOUSEHOLD_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.NO_LONGER_REQUIRED);
+    verify(caseRepo).findById(INACTIONABLE_HOUSEHOLD_CASE_FK);
+    verify(categoryRepo).findById(CategoryDTO.CategoryName.NO_LONGER_REQUIRED);
     // there was no change to case - no state transition
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(caseIacAuditService, times(0)).disableAllIACsForCase(any(Case.class));
@@ -282,18 +278,18 @@ public class CaseServiceTest {
    */
   @Test
   public void testCreatePaperResponseEventAgainstActionableCase() throws Exception {
-    when(caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK))
-        .thenReturn(cases.get(ACTIONABLE_HOUSEHOLD_CASE_FK));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.LACK_OF_COMPUTER_INTERNET_ACCESS))
-        .thenReturn(categories.get(CAT_PAPER_QUESTIONNAIRE_RESPONSE));
+    when(caseRepo.findById(ACTIONABLE_HOUSEHOLD_CASE_FK))
+        .thenReturn(Optional.of(cases.get(ACTIONABLE_HOUSEHOLD_CASE_FK)));
+    when(categoryRepo.findById(CategoryDTO.CategoryName.LACK_OF_COMPUTER_INTERNET_ACCESS))
+        .thenReturn(Optional.of(categories.get(CAT_PAPER_QUESTIONNAIRE_RESPONSE)));
 
     CaseEvent caseEvent =
         fabricateEvent(
             CategoryDTO.CategoryName.LACK_OF_COMPUTER_INTERNET_ACCESS, ACTIONABLE_HOUSEHOLD_CASE_FK);
     caseService.createCaseEvent(caseEvent);
 
-    verify(caseRepo).findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.LACK_OF_COMPUTER_INTERNET_ACCESS);
+    verify(caseRepo).findById(ACTIONABLE_HOUSEHOLD_CASE_FK);
+    verify(categoryRepo).findById(CategoryDTO.CategoryName.LACK_OF_COMPUTER_INTERNET_ACCESS);
 
     // there was a change to case - state transition and response saved
     ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
@@ -324,18 +320,18 @@ public class CaseServiceTest {
    */
   @Test
   public void testCreateOnlineResponseEventAgainstActionableCase() throws Exception {
-    when(caseRepo.findOne(ACTIONABLE_HOUSEHOLD_CASE_FK))
-        .thenReturn(cases.get(ACTIONABLE_HOUSEHOLD_CASE_FK));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.NON_RESIDENTIAL_ADDRESS))
-        .thenReturn(categories.get(CAT_ONLINE_QUESTIONNAIRE_RESPONSE));
+    when(caseRepo.findById(ACTIONABLE_HOUSEHOLD_CASE_FK))
+        .thenReturn(Optional.of(cases.get(ACTIONABLE_HOUSEHOLD_CASE_FK)));
+    when(categoryRepo.findById(CategoryDTO.CategoryName.NON_RESIDENTIAL_ADDRESS))
+        .thenReturn(Optional.of(categories.get(CAT_ONLINE_QUESTIONNAIRE_RESPONSE)));
 
     CaseEvent caseEvent =
         fabricateEvent(
             CategoryDTO.CategoryName.NON_RESIDENTIAL_ADDRESS, ACTIONABLE_HOUSEHOLD_CASE_FK);
     caseService.createCaseEvent(caseEvent);
 
-    verify(caseRepo).findOne(ACTIONABLE_HOUSEHOLD_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.NON_RESIDENTIAL_ADDRESS);
+    verify(caseRepo).findById(ACTIONABLE_HOUSEHOLD_CASE_FK);
+    verify(categoryRepo).findById(CategoryDTO.CategoryName.NON_RESIDENTIAL_ADDRESS);
 
     // there was a change to case - state transition and response saved
     ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
@@ -363,18 +359,18 @@ public class CaseServiceTest {
    */
   @Test
   public void testCreateResponseEventAgainstInActionableCase() throws Exception {
-    when(caseRepo.findOne(INACTIONABLE_HOUSEHOLD_CASE_FK))
-        .thenReturn(cases.get(INACTIONABLE_HOUSEHOLD_CASE_FK));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.NO_TRACE_OF_ADDRESS))
-        .thenReturn(categories.get(CAT_PAPER_QUESTIONNAIRE_RESPONSE));
+    when(caseRepo.findById(INACTIONABLE_HOUSEHOLD_CASE_FK))
+        .thenReturn(Optional.of(cases.get(INACTIONABLE_HOUSEHOLD_CASE_FK)));
+    when(categoryRepo.findById(CategoryDTO.CategoryName.NO_TRACE_OF_ADDRESS))
+        .thenReturn(Optional.of(categories.get(CAT_PAPER_QUESTIONNAIRE_RESPONSE)));
 
     CaseEvent caseEvent =
         fabricateEvent(
             CategoryDTO.CategoryName.NO_TRACE_OF_ADDRESS, INACTIONABLE_HOUSEHOLD_CASE_FK);
     caseService.createCaseEvent(caseEvent);
 
-    verify(caseRepo).findOne(INACTIONABLE_HOUSEHOLD_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.NO_TRACE_OF_ADDRESS);
+    verify(caseRepo).findById(INACTIONABLE_HOUSEHOLD_CASE_FK);
+    verify(categoryRepo).findById(CategoryDTO.CategoryName.NO_TRACE_OF_ADDRESS);
 
     // there was a change to case - state transition and response saved
     ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
@@ -405,18 +401,18 @@ public class CaseServiceTest {
    */
   @Test
   public void testEventCaseCreated() throws Exception {
-    when(caseRepo.findOne(INITIAL_BUSINESS_UNIT_CASE_FK))
-        .thenReturn(cases.get(INITIAL_BUSINESS_UNIT_CASE_FK));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.CASE_CREATED))
-        .thenReturn(categories.get(CAT_CASE_CREATED));
+    when(caseRepo.findById(INITIAL_BUSINESS_UNIT_CASE_FK))
+        .thenReturn(Optional.of(cases.get(INITIAL_BUSINESS_UNIT_CASE_FK)));
+    when(categoryRepo.findById(CategoryDTO.CategoryName.CASE_CREATED))
+        .thenReturn(Optional.of(categories.get(CAT_CASE_CREATED)));
 
     CaseEvent caseEvent =
         fabricateEvent(CategoryDTO.CategoryName.CASE_CREATED, INITIAL_BUSINESS_UNIT_CASE_FK);
 
     caseService.createCaseEvent(caseEvent);
 
-    verify(caseRepo, times(1)).findOne(INITIAL_BUSINESS_UNIT_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.CASE_CREATED);
+    verify(caseRepo, times(1)).findById(INITIAL_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findById(CategoryDTO.CategoryName.CASE_CREATED);
     verify(caseEventRepo, times(1)).save(caseEvent);
     verify(caseRepo, never()).saveAndFlush(any(Case.class));
     verify(caseIacAuditService, never()).disableAllIACsForCase(any(Case.class));
@@ -435,18 +431,18 @@ public class CaseServiceTest {
    */
   @Test
   public void testEventActionCreated() throws Exception {
-    when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
-        .thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.ACTION_CREATED))
-        .thenReturn(categories.get(CAT_ACTION_CREATED));
+    when(caseRepo.findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
+        .thenReturn(Optional.of(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK)));
+    when(categoryRepo.findById(CategoryDTO.CategoryName.ACTION_CREATED))
+        .thenReturn(Optional.of(categories.get(CAT_ACTION_CREATED)));
 
     CaseEvent caseEvent =
         fabricateEvent(CategoryDTO.CategoryName.ACTION_CREATED, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
 
     caseService.createCaseEvent(caseEvent);
 
-    verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.ACTION_CREATED);
+    verify(caseRepo, times(1)).findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findById(CategoryDTO.CategoryName.ACTION_CREATED);
     verify(caseEventRepo, times(1)).save(caseEvent);
     verify(caseRepo, never()).saveAndFlush(any(Case.class));
     verify(caseIacAuditService, never()).disableAllIACsForCase(any(Case.class));
@@ -465,18 +461,18 @@ public class CaseServiceTest {
    */
   @Test
   public void testEventActionUpdated() throws Exception {
-    when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
-        .thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.ACTION_UPDATED))
-        .thenReturn(categories.get(CAT_ACTION_UPDATED));
+    when(caseRepo.findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
+        .thenReturn(Optional.of(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK)));
+    when(categoryRepo.findById(CategoryDTO.CategoryName.ACTION_UPDATED))
+        .thenReturn(Optional.of(categories.get(CAT_ACTION_UPDATED)));
 
     CaseEvent caseEvent =
         fabricateEvent(CategoryDTO.CategoryName.ACTION_UPDATED, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
 
     caseService.createCaseEvent(caseEvent);
 
-    verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.ACTION_UPDATED);
+    verify(caseRepo, times(1)).findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findById(CategoryDTO.CategoryName.ACTION_UPDATED);
     verify(caseEventRepo, times(1)).save(caseEvent);
     verify(caseRepo, never()).saveAndFlush(any(Case.class));
     verify(caseIacAuditService, never()).disableAllIACsForCase(any(Case.class));
@@ -495,18 +491,18 @@ public class CaseServiceTest {
    */
   @Test
   public void testEventActionCompleted() throws Exception {
-    when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
-        .thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.ACTION_COMPLETED))
-        .thenReturn(categories.get(CAT_ACTION_COMPLETED));
+    when(caseRepo.findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
+        .thenReturn(Optional.of(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK)));
+    when(categoryRepo.findById(CategoryDTO.CategoryName.ACTION_COMPLETED))
+        .thenReturn(Optional.of(categories.get(CAT_ACTION_COMPLETED)));
 
     CaseEvent caseEvent =
         fabricateEvent(CategoryDTO.CategoryName.ACTION_COMPLETED, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
 
     caseService.createCaseEvent(caseEvent);
 
-    verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.ACTION_COMPLETED);
+    verify(caseRepo, times(1)).findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findById(CategoryDTO.CategoryName.ACTION_COMPLETED);
     verify(caseEventRepo, times(1)).save(caseEvent);
     verify(caseRepo, never()).saveAndFlush(any(Case.class));
     verify(caseIacAuditService, never()).disableAllIACsForCase(any(Case.class));
@@ -522,12 +518,12 @@ public class CaseServiceTest {
     Case targetCase = cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
     CaseGroup caseGroup = caseGroups.get(1);
 
-    when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
-        .thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
-    when(caseGroupRepo.findOne(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK).getCaseGroupFK()))
-        .thenReturn(caseGroup);
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD))
-        .thenReturn(categories.get(CAT_SUCCESSFUL_RESPONSE_UPLOAD));
+    when(caseRepo.findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
+        .thenReturn(Optional.of(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK)));
+    when(caseGroupRepo.findById(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK).getCaseGroupFK()))
+        .thenReturn(Optional.of(caseGroup));
+    when(categoryRepo.findById(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD))
+        .thenReturn(Optional.of(categories.get(CAT_SUCCESSFUL_RESPONSE_UPLOAD)));
 
     CaseEvent caseEvent1 =
         fabricateEvent(
@@ -544,12 +540,12 @@ public class CaseServiceTest {
 
   @Test
   public void testCaseGroupStatusNotUpdated() throws Exception {
-    when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
-        .thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
-    when(caseGroupRepo.findOne(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK).getCaseGroupFK()))
-        .thenReturn(caseGroups.get(1));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.SECURE_MESSAGE_SENT))
-        .thenReturn(categories.get(CAT_LACK_OF_COMPUTER_INTERNET_ACCESS));
+    when(caseRepo.findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
+        .thenReturn(Optional.of(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK)));
+    when(caseGroupRepo.findById(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK).getCaseGroupFK()))
+        .thenReturn(Optional.of(caseGroups.get(1)));
+    when(categoryRepo.findById(CategoryDTO.CategoryName.SECURE_MESSAGE_SENT))
+        .thenReturn(Optional.of(categories.get(CAT_LACK_OF_COMPUTER_INTERNET_ACCESS)));
 
     CaseEvent caseEvent1 =
         fabricateEvent(
@@ -569,10 +565,10 @@ public class CaseServiceTest {
   @Test
   public void testEventActionCancellationCompleted() throws Exception {
     Case targetCase = cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(targetCase);
+    when(caseRepo.findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(Optional.of(targetCase));
     Category category = categories.get(CAT_ACTION_CANCELLATION_COMPLETED);
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED))
-        .thenReturn(category);
+    when(categoryRepo.findById(CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED))
+        .thenReturn(Optional.of(category));
 
     CaseEvent caseEvent =
         fabricateEvent(
@@ -581,8 +577,8 @@ public class CaseServiceTest {
 
     caseService.createCaseEvent(caseEvent);
 
-    verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED);
+    verify(caseRepo, times(1)).findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findById(CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED);
     verify(caseEventRepo, times(1)).save(caseEvent);
     verify(caseRepo, never()).saveAndFlush(any(Case.class));
     verify(caseIacAuditService, never()).disableAllIACsForCase(any(Case.class));
@@ -606,10 +602,10 @@ public class CaseServiceTest {
    */
   @Test
   public void testEventActionCancellationCreated() throws Exception {
-    when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
-        .thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.ACTION_CANCELLATION_CREATED))
-        .thenReturn(categories.get(CAT_ACTION_CANCELLATION_CREATED));
+    when(caseRepo.findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
+        .thenReturn(Optional.of(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK)));
+    when(categoryRepo.findById(CategoryDTO.CategoryName.ACTION_CANCELLATION_CREATED))
+        .thenReturn(Optional.of(categories.get(CAT_ACTION_CANCELLATION_CREATED)));
 
     CaseEvent caseEvent =
         fabricateEvent(
@@ -617,8 +613,8 @@ public class CaseServiceTest {
 
     caseService.createCaseEvent(caseEvent);
 
-    verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.ACTION_CANCELLATION_CREATED);
+    verify(caseRepo, times(1)).findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findById(CategoryDTO.CategoryName.ACTION_CANCELLATION_CREATED);
     verify(caseEventRepo, times(1)).save(caseEvent);
     verify(caseRepo, never()).saveAndFlush(any(Case.class));
     verify(caseIacAuditService, never()).disableAllIACsForCase(any(Case.class));
@@ -637,10 +633,10 @@ public class CaseServiceTest {
    */
   @Test
   public void testEventAccessCodeAuthenticationAttempt() throws Exception {
-    when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
-        .thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT))
-        .thenReturn(categories.get(CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT));
+    when(caseRepo.findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
+        .thenReturn(Optional.of(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK)));
+    when(categoryRepo.findById(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT))
+        .thenReturn(Optional.of(categories.get(CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT)));
 
     CaseEvent caseEvent =
         fabricateEvent(
@@ -649,8 +645,8 @@ public class CaseServiceTest {
 
     caseService.createCaseEvent(caseEvent);
 
-    verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
+    verify(caseRepo, times(1)).findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findById(CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT);
     verify(caseEventRepo, times(1)).save(caseEvent);
     verify(caseRepo, never()).saveAndFlush(any(Case.class));
     verify(caseSvcStateTransitionManager, never())
@@ -669,19 +665,16 @@ public class CaseServiceTest {
   @Test
   public void testEventRespondentEnrolled() throws Exception {
     // Given
-    when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
-        .thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
     Category respondentEnrolledCategory = categories.get(CAT_RESPONDENT_ENROLED);
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED))
-        .thenReturn(respondentEnrolledCategory);
-    when(caseGroupRepo.findOne(CASEGROUP_PK)).thenReturn(caseGroups.get(CASEGROUP_PK));
+    when(categoryRepo.findById(CategoryDTO.CategoryName.RESPONDENT_ENROLED))
+        .thenReturn(Optional.of(respondentEnrolledCategory));
+    when(caseGroupRepo.findById(CASEGROUP_PK)).thenReturn(Optional.of(caseGroups.get(CASEGROUP_PK)));
     List<CaseGroup> caseGroupList = Collections.singletonList(caseGroups.get(CASEGROUP_PK));
     when(caseGroupService.findCaseGroupsForExecutedCollectionExercises(any()))
         .thenReturn(caseGroupList);
     List<Case> caseList = Collections.singletonList(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
     when(caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(any())).thenReturn(caseList);
     List<CollectionExerciseDTO> listCollex = Collections.singletonList(makeCollectionExercise());
-    when(collectionExerciseSvcClient.getCollectionExercises(null)).thenReturn(listCollex);
     when(caseRepo.saveAndFlush(any(Case.class)))
         .thenReturn(cases.get(ENROLMENT_CASE_INDIVIDUAL_FK));
 
@@ -692,7 +685,7 @@ public class CaseServiceTest {
     caseService.createCaseEvent(caseEvent, cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
 
     // Then
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.RESPONDENT_ENROLED);
+    verify(categoryRepo).findById(CategoryDTO.CategoryName.RESPONDENT_ENROLED);
     verify(caseEventRepo, times(1)).save(caseEvent);
     ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
     verify(caseRepo, times(1)).saveAndFlush(argument.capture());
@@ -826,10 +819,10 @@ public class CaseServiceTest {
    */
   @Test
   public void testEventCollectionInstrumentDownloaded() throws Exception {
-    when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
-        .thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED))
-        .thenReturn(categories.get(CAT_COLLECTION_INSTRUMENT_DOWNLOADED));
+    when(caseRepo.findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
+        .thenReturn(Optional.of(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK)));
+    when(categoryRepo.findById(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED))
+        .thenReturn(Optional.of(categories.get(CAT_COLLECTION_INSTRUMENT_DOWNLOADED)));
 
     CaseEvent caseEvent =
         fabricateEvent(
@@ -838,8 +831,8 @@ public class CaseServiceTest {
 
     caseService.createCaseEvent(caseEvent);
 
-    verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED);
+    verify(caseRepo, times(1)).findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findById(CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED);
     verify(caseEventRepo, times(1)).save(caseEvent);
     verify(caseRepo, never()).saveAndFlush(any(Case.class));
     verify(caseIacAuditService, never()).disableAllIACsForCase(any(Case.class));
@@ -858,10 +851,10 @@ public class CaseServiceTest {
    */
   @Test
   public void testEventUnsuccessfulResponseUploaded() throws Exception {
-    when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
-        .thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOAD))
-        .thenReturn(categories.get(CAT_UNSUCCESSFUL_RESPONSE_UPLOAD));
+    when(caseRepo.findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
+        .thenReturn(Optional.of(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK)));
+    when(categoryRepo.findById(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOAD))
+        .thenReturn(Optional.of(categories.get(CAT_UNSUCCESSFUL_RESPONSE_UPLOAD)));
 
     CaseEvent caseEvent =
         fabricateEvent(
@@ -870,8 +863,8 @@ public class CaseServiceTest {
 
     caseService.createCaseEvent(caseEvent);
 
-    verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOAD);
+    verify(caseRepo, times(1)).findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findById(CategoryDTO.CategoryName.UNSUCCESSFUL_RESPONSE_UPLOAD);
     verify(caseEventRepo, times(1)).save(caseEvent);
     verify(caseRepo, never()).saveAndFlush(any(Case.class));
     verify(caseIacAuditService, never()).disableAllIACsForCase(any(Case.class));
@@ -890,10 +883,10 @@ public class CaseServiceTest {
    */
   @Test
   public void testEventOfflineResponseProcessed() throws Exception {
-    when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
-        .thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED))
-        .thenReturn(categories.get(CAT_OFFLINE_RESPONSE_PROCESSED));
+    when(caseRepo.findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
+        .thenReturn(Optional.of(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK)));
+    when(categoryRepo.findById(CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED))
+        .thenReturn(Optional.of(categories.get(CAT_OFFLINE_RESPONSE_PROCESSED)));
 
     CaseEvent caseEvent =
         fabricateEvent(
@@ -901,16 +894,14 @@ public class CaseServiceTest {
 
     caseService.createCaseEvent(caseEvent);
 
-    verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED);
+    verify(caseRepo, times(1)).findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findById(CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED);
     verify(caseEventRepo, times(1)).save(caseEvent);
     verify(caseRepo, times(1)).saveAndFlush(any(Case.class));
     verify(caseIacAuditService, times(1)).disableAllIACsForCase(any(Case.class));
     verify(caseSvcStateTransitionManager, times(1))
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
-    //    verify(actionSvcClient, times(1))
-    //        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -922,23 +913,21 @@ public class CaseServiceTest {
    */
   @Test
   public void testEventSuccessfulResponseUploaded() throws Exception {
-    when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
-        .thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
+    when(caseRepo.findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
+        .thenReturn(Optional.of(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK)));
 
     Category successfulResponseUploadedCategory = categories.get(CAT_SUCCESSFUL_RESPONSE_UPLOAD);
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD))
-        .thenReturn(successfulResponseUploadedCategory);
+    when(categoryRepo.findById(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD))
+        .thenReturn(Optional.of(successfulResponseUploadedCategory));
 
-    when(caseRepo.findByCaseGroupId(null))
-        .thenReturn(Arrays.asList(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK)));
 
     CaseEvent caseEvent =
         fabricateEvent(
             CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
     caseService.createCaseEvent(caseEvent);
 
-    verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    verify(categoryRepo).findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD);
+    verify(caseRepo, times(1)).findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findById(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD);
     verify(caseEventRepo, times(1)).save(caseEvent);
     ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
     verify(caseRepo, times(1)).saveAndFlush(argument.capture());
@@ -969,35 +958,25 @@ public class CaseServiceTest {
    */
   @Test
   public void testEventSuccessfulNoActiveEnrolmentCaseEvent() throws Exception {
-    when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
-        .thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
+    when(caseRepo.findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
+        .thenReturn(Optional.of(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK)));
     Category noActiveEnrolmentCategory = categories.get(CAT_NO_ACTIVE_ENROLMENTS);
-    when(categoryRepo.findOne(CategoryName.NO_ACTIVE_ENROLMENTS))
-        .thenReturn(noActiveEnrolmentCategory);
-    when(caseRepo.findByCaseGroupId(null))
-        .thenReturn(
-            Arrays.asList(
-                cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK),
-                cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK)));
+    when(categoryRepo.findById(CategoryName.NO_ACTIVE_ENROLMENTS))
+        .thenReturn(Optional.of(noActiveEnrolmentCategory));
     CaseGroup caseGroup = makeCaseGroup();
-    when(caseGroupRepo.findById(null)).thenReturn(caseGroup);
-    when(internetAccessCodeSvcClient.generateIACs(1))
-        .thenReturn(Collections.singletonList(IAC_FOR_TEST));
     when(caseGroupService.findCaseGroupsForExecutedCollectionExercises(any()))
         .thenReturn(Collections.singletonList(caseGroup));
     List<Case> caseList = Collections.singletonList(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
     when(caseRepo.findByCaseGroupFKOrderByCreatedDateTimeDesc(any())).thenReturn(caseList);
     ActionPlanDTO actionPlan = new ActionPlanDTO();
     actionPlan.setId(UUID.randomUUID());
-    when(actionSvcClient.getActionPlans(any(UUID.class), anyBoolean()))
-        .thenReturn(Collections.singletonList(actionPlan));
 
     CaseEvent caseEvent =
         fabricateEvent(CategoryName.NO_ACTIVE_ENROLMENTS, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
     caseService.createCaseEvent(caseEvent);
 
-    verify(caseRepo, times(1)).findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    verify(categoryRepo).findOne(CategoryName.NO_ACTIVE_ENROLMENTS);
+    verify(caseRepo, times(1)).findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
+    verify(categoryRepo).findById(CategoryName.NO_ACTIVE_ENROLMENTS);
     verify(caseEventRepo, times(1)).save(caseEvent);
     ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
     verify(caseRepo, times(1)).saveAndFlush(argument.capture());
@@ -1010,11 +989,11 @@ public class CaseServiceTest {
    */
   @Test
   public void testGivenCaseGroupChangeIsInvalidWhenTransitionFailGracefully() throws Exception {
-    when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
-        .thenReturn(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK));
+    when(caseRepo.findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
+        .thenReturn(Optional.of(cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK)));
     Category successfulResponseUploadedCategory = categories.get(CAT_SUCCESSFUL_RESPONSE_UPLOAD);
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD))
-        .thenReturn(successfulResponseUploadedCategory);
+    when(categoryRepo.findById(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD))
+        .thenReturn(Optional.of(successfulResponseUploadedCategory));
 
     doThrow(new CTPException(CTPException.Fault.BAD_REQUEST))
         .when(caseGroupService)
@@ -1031,9 +1010,9 @@ public class CaseServiceTest {
   @Test
   public void testGenerateEnrolmentCodeCaseEvent() throws CTPException {
     Case actionableBCase = cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    when(caseRepo.findOne(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(actionableBCase);
-    when(categoryRepo.findOne(CategoryDTO.CategoryName.GENERATE_ENROLMENT_CODE))
-        .thenReturn(categories.get(CAT_GENERATE_ENROLMENT_CODE));
+    when(caseRepo.findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(Optional.of(actionableBCase));
+    when(categoryRepo.findById(CategoryDTO.CategoryName.GENERATE_ENROLMENT_CODE))
+        .thenReturn(Optional.of(categories.get(CAT_GENERATE_ENROLMENT_CODE)));
     when(internetAccessCodeSvcClient.isIacActive(actionableBCase.getIac())).thenReturn(false);
     when(internetAccessCodeSvcClient.generateIACs(1))
         .thenReturn(Collections.singletonList(IAC_FOR_TEST));
@@ -1117,7 +1096,7 @@ public class CaseServiceTest {
    */
   private void mockupCaseGroupRepo() throws Exception {
     List<CaseGroup> caseGroups = FixtureHelper.loadClassFixtures(CaseGroup[].class);
-    when(caseGroupRepo.findOne(CASEGROUP_PK)).thenReturn(caseGroups.get(CASEGROUP_PK - 1));
+    when(caseGroupRepo.findById(CASEGROUP_PK)).thenReturn(Optional.of(caseGroups.get(CASEGROUP_PK - 1)));
   }
 
   /**
@@ -1171,9 +1150,6 @@ public class CaseServiceTest {
             CaseState.ACTIONABLE, CaseDTO.CaseEvent.ACTIONPLAN_CHANGED))
         .thenReturn(CaseState.ACTIONABLE);
     when(caseSvcStateTransitionManager.transition(
-            CaseState.INACTIONABLE, CaseDTO.CaseEvent.DISABLED))
-        .thenReturn(CaseState.INACTIONABLE);
-    when(caseSvcStateTransitionManager.transition(
             CaseState.INACTIONABLE, CaseDTO.CaseEvent.DEACTIVATED))
         .thenReturn(CaseState.INACTIONABLE);
   }
@@ -1183,6 +1159,5 @@ public class CaseServiceTest {
     InternetAccessCodeSvc iacSvc = new InternetAccessCodeSvc();
     iacSvc.setIacPutPath(IAC_SVC_PUT_PATH);
     iacSvc.setIacPostPath(IAC_SVC_POST_PATH);
-    when(appConfig.getInternetAccessCodeSvc()).thenReturn(iacSvc);
   }
 }
