@@ -15,11 +15,6 @@ logging:
   profile: DEV
   useJson: false
 
-security:
-  basic:
-    enabled: true
-    realm: sdc
-
 management:
   security:
     roles: SUPERUSER
@@ -27,19 +22,11 @@ management:
   health:
     rabbit:
       enabled: false
-  endpoint:
-    info:
-      enabled: true
-  endpoints:
-    enabled-by-default: true
 
 server:
   port: 8171
 
 spring:
-  output:
-    ansi:
-      enabled: never
   application:
     name: ONS CaseService
   datasource:
@@ -61,11 +48,14 @@ spring:
       hibernate:
         ddl-auto: none
         default_schema: casesvc
-  main:
-    allow-bean-definition-overriding: true
   liquibase:
     liquibase-schema: casesvc
     change-log: classpath:/database/changelog-master.yml
+  main:
+    allow-bean-definition-overriding: true
+  output:
+    ansi:
+      enabled: never
 
 data-grid:
   address: localhost:6379
