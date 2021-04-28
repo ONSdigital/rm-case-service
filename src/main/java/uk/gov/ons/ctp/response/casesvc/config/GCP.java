@@ -2,9 +2,9 @@ package uk.gov.ons.ctp.response.casesvc.config;
 
 import lombok.Data;
 
-/** Config POJO for action plan exec params */
+/** Config POJO for GCP params */
 @Data
 public class GCP {
-  private String receiptTopic;
+  private String receiptSubscription;
 
 }

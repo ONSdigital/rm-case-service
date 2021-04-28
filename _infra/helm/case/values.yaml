@@ -69,7 +69,7 @@ deprecateAction: false
 
 gcp:
   project: ras-rm-sandbox
-  receiptTopic: ras-rm-receipt
+  receiptSubscription: ras-rm-receipt
 
 caseDistribution:
   retrievalMax: 1000

@@ -25,7 +25,7 @@ public class PubSubCaseReceiptSubscriptionAdapter {
             @Qualifier("inputMessageChannel") MessageChannel messageChannel,
             PubSubTemplate pubSubTemplate) {
         PubSubInboundChannelAdapter adapter =
-                new PubSubInboundChannelAdapter(pubSubTemplate, appConfig.getGcp().getReceiptTopic());
+                new PubSubInboundChannelAdapter(pubSubTemplate, appConfig.getGcp().getReceiptSubscription());
         adapter.setOutputChannel(messageChannel);
         adapter.setAckMode(AckMode.MANUAL);
         adapter.setPayloadType(String.class);
