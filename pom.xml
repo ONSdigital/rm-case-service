@@ -325,7 +325,7 @@
                         </goals>
                         <configuration>
                             <composeFile>${project.basedir}/docker-compose.yml</composeFile>
-<!--                            <skip>${dockerComposeSkip}</skip>-->
+                            <skip>${dockerComposeSkip}</skip>
                         </configuration>
                     </execution>
                     <execution>
@@ -337,7 +337,7 @@
                         <configuration>
                             <composeFile>${project.basedir}/docker-compose.yml</composeFile>
                             <detachedMode>true</detachedMode>
-<!--                            <skip>${dockerComposeSkip}</skip>-->
+                            <skip>${dockerComposeSkip}</skip>
                         </configuration>
                     </execution>
                     <execution>
@@ -348,7 +348,7 @@
                         </goals>
                         <configuration>
                             <composeFile>${project.basedir}/docker-compose.yml</composeFile>
-<!--                            <skip>${dockerComposeSkip}</skip>-->
+                            <skip>${dockerComposeSkip}</skip>
                         </configuration>
                     </execution>
                 </executions>
