@@ -12,8 +12,10 @@ import java.util.Random;
 import java.util.UUID;
 import org.junit.*;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.messaging.Message;
@@ -36,6 +38,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CreatedCaseEventDTO;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
+import org.springframework.integration.channel.PublishSubscribeChannel;
 
 @ContextConfiguration
 @ActiveProfiles("test")
@@ -43,6 +46,8 @@ import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class CaseReceiptReceiverIT {
+
+  @MockBean private PublishSubscribeChannel inputMessageChannel;
 
   private UUID collectionExerciseId;
 
