@@ -49,6 +49,9 @@ spring:
         ddl-auto: none
         default_schema: casesvc
   liquibase:
+    user: postgres
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/postgres
     liquibase-schema: casesvc
     change-log: classpath:/database/changelog-master.yml
   main:
