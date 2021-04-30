@@ -57,7 +57,8 @@ jobs:
 
       - name: Run Tests
         run: |
-          export LD_LIBRARY_PATH=/usr/local/lib mvn clean verify
+          export LD_LIBRARY_PATH=/usr/local/lib
+          mvn clean verify
 
       - name: pr docker tag
         if: github.ref != 'refs/heads/main'
