@@ -46,11 +46,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: GCR setup
+      - name: gcloud setup
         uses: google-github-actions/setup-gcloud@master
         with:
           service_account_key: ${{ secrets.GCR_KEY }}
         # Configure docker to use the gcloud command-line tool as a credential helper
+      - name: Configure GCR
         run: |
           gcloud auth configure-docker
 
