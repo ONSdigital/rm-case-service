@@ -51,7 +51,7 @@ jobs:
         with:
           service_account_key: ${{ secrets.GCR_KEY }}
         # Configure docker to use the gcloud command-line tool as a credential helper
-      - run: |
+        run: |
           gcloud auth configure-docker
 
       - name: Run Tests
