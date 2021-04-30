@@ -53,12 +53,11 @@ jobs:
         # Configure docker to use the gcloud command-line tool as a credential helper
       - name: Configure GCR
         run: |
-          export LD_LIBRARY_PATH=/usr/local/lib
           gcloud auth configure-docker
 
       - name: Run Tests
         run: |
-          mvn clean verify
+          export LD_LIBRARY_PATH=/usr/local/lib mvn clean verify
 
       - name: pr docker tag
         if: github.ref != 'refs/heads/main'
