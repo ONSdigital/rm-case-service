@@ -13,7 +13,7 @@ on:
       - main
     paths-ignore: 
       - _infra/spinnaker/**
-      - _infra/helm/case/Chart.yaml
+
 env:
   IMAGE: case
   REGISTRY_HOSTNAME: eu.gcr.io
