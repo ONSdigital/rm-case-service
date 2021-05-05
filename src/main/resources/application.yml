@@ -136,5 +136,4 @@ retries:
   backoff: 5000
 
 gcp:
-  projectId: ras-rm-sandbox
   receiptSubscription: ras-rm-notify-test
