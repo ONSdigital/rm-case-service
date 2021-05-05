@@ -46,15 +46,18 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Run Tests
-        run: |
-          mvn clean verify
       - uses: google-github-actions/setup-gcloud@master
         with:
           service_account_key: ${{ secrets.GCR_KEY }}
+          export_default_credentials: true
         # Configure docker to use the gcloud command-line tool as a credential helper
       - run: |
           gcloud auth configure-docker
+
+      - name: Run Tests
+        run: |
+          mvn clean verify
+
 
       - name: pr docker tag
         if: github.ref != 'refs/heads/main'
