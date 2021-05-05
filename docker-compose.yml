@@ -93,6 +93,15 @@ services:
       timeout: 10s
       retries: 10
 
+  pubsub:
+    container_name: pubsub-case-it
+    image: messagebird/gcloud-pubsub-emulator
+    environment:
+      - PUBSUB_PROJECT1=ras-rm-sandbox,ras-rm-receipt:ras-rm-receipt
+    ports:
+      - "38681:8681"
+
+
   start_dependencies:
     image: dadarek/wait-for-dependencies
     depends_on:
