@@ -9,6 +9,8 @@ import com.godaddy.logging.LoggingConfigs;
 import java.time.Clock;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+
+import liquibase.pro.packaged.C;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -42,6 +44,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
+import uk.gov.ons.ctp.response.casesvc.message.CaseReceiptReceiver;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
@@ -310,6 +313,8 @@ public class CaseSvcApplication {
       try {
         log.info("before readvalue");
         CaseReceipt receipt = mapper.readValue(payload, CaseReceipt.class);
+        CaseReceiptReceiver caseReceiptReceiver = new CaseReceiptReceiver();
+        caseReceiptReceiver.process(receipt);
         log.info(String.valueOf(receipt));
         log.info(receipt.getCaseId());
         log.info(receipt.getPartyId());
