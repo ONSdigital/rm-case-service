@@ -136,4 +136,4 @@ retries:
   backoff: 5000
 
 gcp:
-  receiptSubscription: ras-rm-notify-test
+  receiptSubscription: ras-rm-receipt
