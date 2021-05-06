@@ -1,9 +1,13 @@
 package uk.gov.ons.ctp.response.casesvc;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
 import com.godaddy.logging.LoggingConfigs;
 import java.time.Clock;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -38,6 +42,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
+import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
@@ -299,10 +304,19 @@ public class CaseSvcApplication {
   @ServiceActivator(inputChannel = "pubsubInputChannel")
   public MessageHandler messageReceiver() {
     return message -> {
-      log.info("Message arrived! Payload: " + new String((byte[]) message.getPayload()));
+      String payload = new String((byte[]) message.getPayload());
+      log.info("Message arrived! Payload: " + payload);
       BasicAcknowledgeablePubsubMessage originalMessage =
               message.getHeaders().get(GcpPubSubHeaders.ORIGINAL_MESSAGE, BasicAcknowledgeablePubsubMessage.class);
       originalMessage.ack();
+      ObjectMapper mapper = new ObjectMapper();
+      try {
+        CaseReceipt receipt = mapper.readValue(payload, CaseReceipt.class);
+        log.info(String.valueOf(receipt));
+        log.info(receipt.getCaseId());
+      } catch (JsonProcessingException e) {
+        throw new RuntimeException(e);
+      }
     };
   }
 
