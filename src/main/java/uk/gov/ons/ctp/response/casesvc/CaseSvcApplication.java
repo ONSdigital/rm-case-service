@@ -314,6 +314,7 @@ public class CaseSvcApplication {
         CaseReceipt receipt = mapper.readValue(payload, CaseReceipt.class);
         log.info(String.valueOf(receipt));
         log.info(receipt.getCaseId());
+        log.info(receipt.getPartyId());
       } catch (JsonProcessingException e) {
         throw new RuntimeException(e);
       }
