@@ -21,14 +21,15 @@ public class PubSubCaseReceiptSubscriptionAdapter {
     @Autowired AppConfig appConfig;
 
     @Bean
-    public PubSubInboundChannelAdapter inboundChannelAdapter(
-            @Qualifier("inputMessageChannel") MessageChannel messageChannel,
+    public PubSubInboundChannelAdapter messageChannelAdapter(
+            @Qualifier("pubsubInputChannel") MessageChannel inputChannel,
             PubSubTemplate pubSubTemplate) {
+        log.info("Receipt subscription [" + appConfig.getGcp().getReceiptSubscription() + "]");
         PubSubInboundChannelAdapter adapter =
                 new PubSubInboundChannelAdapter(pubSubTemplate, appConfig.getGcp().getReceiptSubscription());
-        adapter.setOutputChannel(messageChannel);
+        adapter.setOutputChannel(inputChannel);
         adapter.setAckMode(AckMode.MANUAL);
-        adapter.setPayloadType(String.class);
+
         return adapter;
     }
 }
