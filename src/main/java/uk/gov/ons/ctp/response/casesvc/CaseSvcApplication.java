@@ -309,6 +309,7 @@ public class CaseSvcApplication {
       BasicAcknowledgeablePubsubMessage originalMessage =
               message.getHeaders().get(GcpPubSubHeaders.ORIGINAL_MESSAGE, BasicAcknowledgeablePubsubMessage.class);
       originalMessage.ack();
+      log.info("after ack");
       ObjectMapper mapper = new ObjectMapper();
       try {
         CaseReceipt receipt = mapper.readValue(payload, CaseReceipt.class);
@@ -318,6 +319,7 @@ public class CaseSvcApplication {
       } catch (JsonProcessingException e) {
         throw new RuntimeException(e);
       }
+      log.info("after casting");
     };
   }
 
