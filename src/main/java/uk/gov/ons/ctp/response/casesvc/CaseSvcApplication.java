@@ -308,11 +308,13 @@ public class CaseSvcApplication {
       log.info("Message arrived! Payload: " + payload);
       ObjectMapper mapper = new ObjectMapper();
       try {
+        log.info("before readvalue");
         CaseReceipt receipt = mapper.readValue(payload, CaseReceipt.class);
         log.info(String.valueOf(receipt));
         log.info(receipt.getCaseId());
         log.info(receipt.getPartyId());
-      } catch (JsonProcessingException e) {
+      } catch (Exception e) {
+        log.info(String.valueOf(e));
         throw new RuntimeException(e);
       }
       log.info("before ack");
