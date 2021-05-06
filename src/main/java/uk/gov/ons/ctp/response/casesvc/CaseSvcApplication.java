@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc;
 
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
 import com.godaddy.logging.LoggingConfigs;
 import java.time.Clock;
 import javax.annotation.PostConstruct;
@@ -15,21 +17,29 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
+import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate;
+import org.springframework.cloud.gcp.pubsub.integration.AckMode;
+import org.springframework.cloud.gcp.pubsub.integration.inbound.PubSubInboundChannelAdapter;
+import org.springframework.cloud.gcp.pubsub.support.BasicAcknowledgeablePubsubMessage;
+import org.springframework.cloud.gcp.pubsub.support.GcpPubSubHeaders;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.integration.annotation.IntegrationComponentScan;
+import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.MessageHandler;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
+import uk.gov.ons.ctp.response.casesvc.message.PubSubCaseReceiptSubscriptionAdapter;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
@@ -68,6 +78,8 @@ public class CaseSvcApplication {
 
   private AppConfig appConfig;
   private StateTransitionManagerFactory caseSvcStateTransitionManagerFactory;
+
+  private static final Logger log = LoggerFactory.getLogger(CaseSvcApplication.class);
 
   /** Constructor for CaseSvcApplication */
   @Autowired
@@ -284,4 +296,29 @@ public class CaseSvcApplication {
   public MessageChannel pubsubInputChannel() {
     return new DirectChannel();
   }
+
+  @Bean
+  @ServiceActivator(inputChannel = "pubsubInputChannel")
+  public MessageHandler messageReceiver() {
+    return message -> {
+      log.info("Message arrived! Payload: " + new String((byte[]) message.getPayload()));
+      BasicAcknowledgeablePubsubMessage originalMessage =
+              message.getHeaders().get(GcpPubSubHeaders.ORIGINAL_MESSAGE, BasicAcknowledgeablePubsubMessage.class);
+      originalMessage.ack();
+    };
+  }
+
+  @Bean
+  public PubSubInboundChannelAdapter messageChannelAdapter(
+          @Qualifier("pubsubInputChannel") MessageChannel inputChannel,
+          PubSubTemplate pubSubTemplate) {
+    log.info("Receipt subscription [" + appConfig.getGcp().getReceiptSubscription() + "]");
+    PubSubInboundChannelAdapter adapter =
+            new PubSubInboundChannelAdapter(pubSubTemplate, appConfig.getGcp().getReceiptSubscription());
+    adapter.setOutputChannel(inputChannel);
+    adapter.setAckMode(AckMode.MANUAL);
+
+    return adapter;
+  }
+
 }
