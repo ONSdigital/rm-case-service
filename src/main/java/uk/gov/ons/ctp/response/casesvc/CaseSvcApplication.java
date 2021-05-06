@@ -306,10 +306,6 @@ public class CaseSvcApplication {
     return message -> {
       String payload = new String((byte[]) message.getPayload());
       log.info("Message arrived! Payload: " + payload);
-      BasicAcknowledgeablePubsubMessage originalMessage =
-              message.getHeaders().get(GcpPubSubHeaders.ORIGINAL_MESSAGE, BasicAcknowledgeablePubsubMessage.class);
-      originalMessage.ack();
-      log.info("after ack");
       ObjectMapper mapper = new ObjectMapper();
       try {
         CaseReceipt receipt = mapper.readValue(payload, CaseReceipt.class);
@@ -319,7 +315,10 @@ public class CaseSvcApplication {
       } catch (JsonProcessingException e) {
         throw new RuntimeException(e);
       }
-      log.info("after casting");
+      log.info("before ack");
+      BasicAcknowledgeablePubsubMessage originalMessage =
+              message.getHeaders().get(GcpPubSubHeaders.ORIGINAL_MESSAGE, BasicAcknowledgeablePubsubMessage.class);
+      originalMessage.ack();
     };
   }
 
