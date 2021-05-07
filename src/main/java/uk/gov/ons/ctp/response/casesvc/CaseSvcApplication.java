@@ -1,16 +1,13 @@
 package uk.gov.ons.ctp.response.casesvc;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
 import com.godaddy.logging.LoggingConfigs;
-import java.time.Clock;
-import java.util.Map;
-import javax.annotation.PostConstruct;
-
-import liquibase.pro.packaged.C;
+import com.google.cloud.pubsub.v1.AckReplyConsumer;
+import com.google.cloud.pubsub.v1.MessageReceiver;
+import com.google.cloud.pubsub.v1.Subscriber;
+import com.google.pubsub.v1.ProjectSubscriptionName;
+import com.google.pubsub.v1.PubsubMessage;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -23,48 +20,33 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
-import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate;
-import org.springframework.cloud.gcp.pubsub.integration.AckMode;
-import org.springframework.cloud.gcp.pubsub.integration.inbound.PubSubInboundChannelAdapter;
-import org.springframework.cloud.gcp.pubsub.support.BasicAcknowledgeablePubsubMessage;
-import org.springframework.cloud.gcp.pubsub.support.GcpPubSubHeaders;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.integration.annotation.IntegrationComponentScan;
-import org.springframework.integration.annotation.ServiceActivator;
-import org.springframework.integration.channel.DirectChannel;
-import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.MessageHandler;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
-import uk.gov.ons.ctp.response.casesvc.message.CaseReceiptReceiver;
-import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.state.CaseSvcStateTransitionManagerFactory;
-import uk.gov.ons.ctp.response.lib.common.distributed.DistributedInstanceManager;
-import uk.gov.ons.ctp.response.lib.common.distributed.DistributedInstanceManagerRedissonImpl;
-import uk.gov.ons.ctp.response.lib.common.distributed.DistributedLatchManager;
-import uk.gov.ons.ctp.response.lib.common.distributed.DistributedLatchManagerRedissonImpl;
-import uk.gov.ons.ctp.response.lib.common.distributed.DistributedListManager;
-import uk.gov.ons.ctp.response.lib.common.distributed.DistributedListManagerRedissonImpl;
-import uk.gov.ons.ctp.response.lib.common.distributed.DistributedLockManager;
-import uk.gov.ons.ctp.response.lib.common.distributed.DistributedLockManagerRedissonImpl;
+import uk.gov.ons.ctp.response.lib.common.distributed.*;
 import uk.gov.ons.ctp.response.lib.common.error.RestExceptionHandler;
 import uk.gov.ons.ctp.response.lib.common.jackson.CustomObjectMapper;
 import uk.gov.ons.ctp.response.lib.common.rest.RestUtility;
 import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManagerFactory;
 import uk.gov.ons.ctp.response.lib.common.time.DateTimeUtil;
+
+import javax.annotation.PostConstruct;
+import java.time.Clock;
 
 /** The 'main' entry point for the CaseSvc SpringBoot Application. */
 @SpringBootApplication
@@ -82,7 +64,7 @@ public class CaseSvcApplication {
   public static final String CASE_DISTRIBUTION_LIST = "casesvc.case.distribution";
   public static final String REPORT_EXECUTION_LOCK = "casesvc.report.execution";
 
-  private AppConfig appConfig;
+  private static AppConfig appConfig;
   private StateTransitionManagerFactory caseSvcStateTransitionManagerFactory;
 
   private static final Logger log = LoggerFactory.getLogger(CaseSvcApplication.class);
@@ -102,8 +84,9 @@ public class CaseSvcApplication {
    * @param args runtime command line args
    */
   public static void main(final String[] args) {
-
+    String projectId = "ras-rm-dev";
     SpringApplication.run(CaseSvcApplication.class, args);
+    subscribeAsyncExample(projectId, appConfig.getGcp().getReceiptSubscription());
   }
 
   @PostConstruct
@@ -298,48 +281,24 @@ public class CaseSvcApplication {
     return new DateTimeUtil();
   }
 
-  @Bean
-  public MessageChannel pubsubInputChannel() {
-    return new DirectChannel();
-  }
+  public static void subscribeAsyncExample(String projectId, String subscriptionId) {
+    ProjectSubscriptionName subscriptionName =
+            ProjectSubscriptionName.of(projectId, subscriptionId);
 
-  @Bean
-  @ServiceActivator(inputChannel = "pubsubInputChannel")
-  public MessageHandler messageReceiver() {
-    return message -> {
-      String payload = new String((byte[]) message.getPayload());
-      log.info("Message arrived! Payload: " + payload);
-      ObjectMapper mapper = new ObjectMapper();
-      try {
-        log.info("before readvalue");
-        CaseReceipt receipt = mapper.readValue(payload, CaseReceipt.class);
-        CaseReceiptReceiver caseReceiptReceiver = new CaseReceiptReceiver();
-        caseReceiptReceiver.process(receipt);
-        log.info(String.valueOf(receipt));
-        log.info(receipt.getCaseId());
-        log.info(receipt.getPartyId());
-      } catch (Exception e) {
-        log.info(String.valueOf(e));
-        throw new RuntimeException(e);
-      }
-      log.info("before ack");
-      BasicAcknowledgeablePubsubMessage originalMessage =
-              message.getHeaders().get(GcpPubSubHeaders.ORIGINAL_MESSAGE, BasicAcknowledgeablePubsubMessage.class);
-      originalMessage.ack();
-    };
-  }
+    // Instantiate an asynchronous message receiver.
+    MessageReceiver receiver =
+            (PubsubMessage message, AckReplyConsumer consumer) -> {
+              // Handle incoming message, then ack the received message.
+              log.info("Id: " + message.getMessageId());
+              log.info("Data: " + message.getData().toStringUtf8());
+              consumer.ack();
+            };
 
-  @Bean
-  public PubSubInboundChannelAdapter messageChannelAdapter(
-          @Qualifier("pubsubInputChannel") MessageChannel inputChannel,
-          PubSubTemplate pubSubTemplate) {
-    log.info("Receipt subscription [" + appConfig.getGcp().getReceiptSubscription() + "]");
-    PubSubInboundChannelAdapter adapter =
-            new PubSubInboundChannelAdapter(pubSubTemplate, appConfig.getGcp().getReceiptSubscription());
-    adapter.setOutputChannel(inputChannel);
-    adapter.setAckMode(AckMode.MANUAL);
-
-    return adapter;
+    Subscriber subscriber = null;
+    subscriber = Subscriber.newBuilder(subscriptionName, receiver).build();
+    // Start the subscriber.
+    subscriber.startAsync().awaitRunning();
+    System.out.printf("Listening for messages on %s:\n", subscriptionName.toString());
   }
 
 }
