@@ -136,4 +136,5 @@ retries:
   backoff: 5000
 
 gcp:
+  project: ras-rm-sandbox
   receiptSubscription: ras-rm-receipt

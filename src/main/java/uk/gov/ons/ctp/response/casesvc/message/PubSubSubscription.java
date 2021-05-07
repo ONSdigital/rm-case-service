@@ -26,18 +26,17 @@ public class PubSubSubscription {
     @EventListener(ApplicationReadyEvent.class)
     public void caseNotificationSubscription() {
         ProjectSubscriptionName subscriptionName =
-                ProjectSubscriptionName.of("ras-rm-dev", appConfig.getGcp().getReceiptSubscription());
-        // Instantiate an asynchronous message receiver.
+                ProjectSubscriptionName.of(
+                        appConfig.getGcp().getProject(),
+                        appConfig.getGcp().getReceiptSubscription());
         MessageReceiver receiver =
                 (PubsubMessage message, AckReplyConsumer consumer) -> {
-                    // Handle incoming message, then ack the received message.
                     String payload = message.getData().toStringUtf8();
-                    log.info("Data: " + payload);
                     ObjectMapper mapper = new ObjectMapper();
-                    CaseReceipt receipt = null;
+                    CaseReceipt receipt;
                     try {
                         receipt = mapper.readValue(payload, CaseReceipt.class);
-                        log.with("receipt", receipt).info("serialised the receipt");
+                        log.with("receipt", receipt).info("Received a receipt");
                     } catch (JsonProcessingException e) {
                         log.error(String.valueOf(e));
                         throw new RuntimeException(e);
@@ -49,10 +48,9 @@ public class PubSubSubscription {
                     }
                     consumer.ack();
                 };
-        Subscriber subscriber = null;
+        Subscriber subscriber;
         subscriber = Subscriber.newBuilder(subscriptionName, receiver).build();
-        // Start the subscriber.
         subscriber.startAsync().awaitRunning();
-        log.info("Listening for messages on [" + subscriptionName.toString() + "]");
+        log.with("subscription", subscriptionName.toString()).info("Listening for messages on subscription");
     }
 }
