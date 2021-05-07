@@ -21,6 +21,7 @@ import uk.gov.ons.ctp.response.lib.common.error.CTPException;
 public class PubSubSubscription {
     private static final Logger log = LoggerFactory.getLogger(PubSubSubscription.class);
     @Autowired private AppConfig appConfig;
+    @Autowired private CaseReceiptReceiver caseReceiptReceiver;
 
     @EventListener(ApplicationReadyEvent.class)
     public void caseNotificationSubscription() {
@@ -41,10 +42,9 @@ public class PubSubSubscription {
                         log.error(String.valueOf(e));
                         throw new RuntimeException(e);
                     }
-                    CaseReceiptReceiver caseReceiptReceiver = new CaseReceiptReceiver();
                     try {
                         caseReceiptReceiver.process(receipt);
-                    } catch (CTPException e) {
+                    } catch (Exception e) {
                         log.error(String.valueOf(e));
                     }
                     consumer.ack();
