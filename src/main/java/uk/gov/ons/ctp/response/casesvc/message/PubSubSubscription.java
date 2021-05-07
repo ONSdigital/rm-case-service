@@ -36,6 +36,7 @@ public class PubSubSubscription {
                     CaseReceipt receipt = null;
                     try {
                         receipt = mapper.readValue(payload, CaseReceipt.class);
+                        log.with("receipt", receipt).info("serialised the receipt");
                     } catch (JsonProcessingException e) {
                         log.error(String.valueOf(e));
                         throw new RuntimeException(e);
@@ -45,7 +46,6 @@ public class PubSubSubscription {
                         caseReceiptReceiver.process(receipt);
                     } catch (CTPException e) {
                         log.error(String.valueOf(e));
-                        throw new RuntimeException(e);
                     }
                     consumer.ack();
                 };
