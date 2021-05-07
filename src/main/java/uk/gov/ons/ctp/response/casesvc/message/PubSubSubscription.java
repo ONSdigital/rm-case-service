@@ -10,14 +10,17 @@ import com.google.pubsub.v1.PubsubMessage;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 
 @Component
 public class PubSubSubscription {
     private static final Logger log = LoggerFactory.getLogger(PubSubSubscription.class);
+    private AppConfig appConfig;
+
     @EventListener(ApplicationReadyEvent.class)
     public void caseNotificationSubscription() {
         ProjectSubscriptionName subscriptionName =
-                ProjectSubscriptionName.of("ras-rm-dev", "ras-rm-dev");
+                ProjectSubscriptionName.of("ras-rm-dev", appConfig.getGcp().getReceiptSubscription());
         // Instantiate an asynchronous message receiver.
         MessageReceiver receiver =
                 (PubsubMessage message, AckReplyConsumer consumer) -> {
