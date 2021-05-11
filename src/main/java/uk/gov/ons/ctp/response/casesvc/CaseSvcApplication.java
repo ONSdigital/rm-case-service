@@ -84,9 +84,7 @@ public class CaseSvcApplication {
    * @param args runtime command line args
    */
   public static void main(final String[] args) {
-    // String projectId = "ras-rm-dev";
     SpringApplication.run(CaseSvcApplication.class, args);
-    // subscribeAsyncExample(projectId, appConfig.getGcp().getReceiptSubscription());
   }
 
   @PostConstruct

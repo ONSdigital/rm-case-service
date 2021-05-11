@@ -15,7 +15,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
-import uk.gov.ons.ctp.response.lib.common.error.CTPException;
+import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
 
 @Component
 public class PubSubSubscription {
@@ -29,28 +29,33 @@ public class PubSubSubscription {
                 ProjectSubscriptionName.of(
                         appConfig.getGcp().getProject(),
                         appConfig.getGcp().getReceiptSubscription());
-        MessageReceiver receiver =
-                (PubsubMessage message, AckReplyConsumer consumer) -> {
-                    String payload = message.getData().toStringUtf8();
-                    ObjectMapper mapper = new ObjectMapper();
-                    CaseReceipt receipt;
-                    try {
-                        receipt = mapper.readValue(payload, CaseReceipt.class);
-                        log.with("receipt", receipt).info("Received a receipt");
-                    } catch (JsonProcessingException e) {
-                        log.error(String.valueOf(e));
-                        throw new RuntimeException(e);
-                    }
-                    try {
-                        caseReceiptReceiver.process(receipt);
-                    } catch (Exception e) {
-                        log.error(String.valueOf(e));
-                    }
-                    consumer.ack();
-                };
+        MessageReceiver receiver = createMessageReceiver();
         Subscriber subscriber;
         subscriber = Subscriber.newBuilder(subscriptionName, receiver).build();
         subscriber.startAsync().awaitRunning();
         log.with("subscription", subscriptionName.toString()).info("Listening for messages on subscription");
+    }
+
+    public MessageReceiver createMessageReceiver() {
+        return (PubsubMessage message, AckReplyConsumer consumer) -> {
+            String payload = message.getData().toStringUtf8();
+            log.with("payload", payload).info("Received a receipt");
+            ObjectMapper mapper = new ObjectMapper();
+            CaseReceipt receipt;
+            try {
+                receipt = mapper.readValue(payload, CaseReceipt.class);
+                log.with("receipt", receipt).info("Successfully serialised receipt");
+                receipt.setInboundChannel(InboundChannel.OFFLINE);
+                try {
+                    caseReceiptReceiver.process(receipt);
+                } catch (Exception e) {
+                    log.error(String.valueOf(e));
+                }
+                consumer.ack();
+            } catch (JsonProcessingException e) {
+                log.error(e,"Error serialising receipt.");
+                consumer.nack();
+            }
+        };
     }
 }
