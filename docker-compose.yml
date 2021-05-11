@@ -26,7 +26,7 @@ services:
     - postgres-case-it
     - redis-case-it
     - rabbitmq-case-it
-    image: eu.gcr.io/ons-rasrmbs-management/collection-exercise:11.1.0
+    image: eu.gcr.io/ons-rasrmbs-management/collection-exercise
     environment:
     - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-case-it:5432/postgres?sslmode=disable
     - SPRING_DATASOURCE_USERNAME=postgres
@@ -52,7 +52,7 @@ services:
 
   survey:
     container_name: survey-case-it
-    image: eu.gcr.io/ons-rasrmbs-management/survey:11.0.24
+    image: eu.gcr.io/ons-rasrmbs-management/survey
     external_links:
     - postgres-case-it
     environment:
@@ -65,7 +65,7 @@ services:
 
   action:
     container_name: action-case-it
-    image: eu.gcr.io/ons-rasrmbs-management/action:12.3.21
+    image: eu.gcr.io/ons-rasrmbs-management/action
     external_links:
     - postgres-case-it
     - rabbitmq-case-it
