@@ -64,10 +64,8 @@ public class CaseSvcApplication {
   public static final String CASE_DISTRIBUTION_LIST = "casesvc.case.distribution";
   public static final String REPORT_EXECUTION_LOCK = "casesvc.report.execution";
 
-  private static AppConfig appConfig;
+  private AppConfig appConfig;
   private StateTransitionManagerFactory caseSvcStateTransitionManagerFactory;
-
-  private static final Logger log = LoggerFactory.getLogger(CaseSvcApplication.class);
 
   /** Constructor for CaseSvcApplication */
   @Autowired
