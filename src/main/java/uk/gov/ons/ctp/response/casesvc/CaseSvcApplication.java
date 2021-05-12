@@ -279,24 +279,4 @@ public class CaseSvcApplication {
     return new DateTimeUtil();
   }
 
-//  public static void subscribeAsyncExample(String projectId, String subscriptionId) {
-//    ProjectSubscriptionName subscriptionName =
-//            ProjectSubscriptionName.of(projectId, subscriptionId);
-//
-//    // Instantiate an asynchronous message receiver.
-//    MessageReceiver receiver =
-//            (PubsubMessage message, AckReplyConsumer consumer) -> {
-//              // Handle incoming message, then ack the received message.
-//              log.info("Id: " + message.getMessageId());
-//              log.info("Data: " + message.getData().toStringUtf8());
-//              consumer.ack();
-//            };
-//
-//    Subscriber subscriber = null;
-//    subscriber = Subscriber.newBuilder(subscriptionName, receiver).build();
-//    // Start the subscriber.
-//    subscriber.startAsync().awaitRunning();
-//    log.info("Listening for messages on [" + subscriptionName.toString() + "]");
-//  }
-
 }
