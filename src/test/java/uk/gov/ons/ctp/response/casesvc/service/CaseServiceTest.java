@@ -285,7 +285,8 @@ public class CaseServiceTest {
 
     CaseEvent caseEvent =
         fabricateEvent(
-            CategoryDTO.CategoryName.LACK_OF_COMPUTER_INTERNET_ACCESS, ACTIONABLE_HOUSEHOLD_CASE_FK);
+            CategoryDTO.CategoryName.LACK_OF_COMPUTER_INTERNET_ACCESS,
+            ACTIONABLE_HOUSEHOLD_CASE_FK);
     caseService.createCaseEvent(caseEvent);
 
     verify(caseRepo).findById(ACTIONABLE_HOUSEHOLD_CASE_FK);
@@ -668,7 +669,8 @@ public class CaseServiceTest {
     Category respondentEnrolledCategory = categories.get(CAT_RESPONDENT_ENROLED);
     when(categoryRepo.findById(CategoryDTO.CategoryName.RESPONDENT_ENROLED))
         .thenReturn(Optional.of(respondentEnrolledCategory));
-    when(caseGroupRepo.findById(CASEGROUP_PK)).thenReturn(Optional.of(caseGroups.get(CASEGROUP_PK)));
+    when(caseGroupRepo.findById(CASEGROUP_PK))
+        .thenReturn(Optional.of(caseGroups.get(CASEGROUP_PK)));
     List<CaseGroup> caseGroupList = Collections.singletonList(caseGroups.get(CASEGROUP_PK));
     when(caseGroupService.findCaseGroupsForExecutedCollectionExercises(any()))
         .thenReturn(caseGroupList);
@@ -920,7 +922,6 @@ public class CaseServiceTest {
     when(categoryRepo.findById(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD))
         .thenReturn(Optional.of(successfulResponseUploadedCategory));
 
-
     CaseEvent caseEvent =
         fabricateEvent(
             CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
@@ -1010,7 +1011,8 @@ public class CaseServiceTest {
   @Test
   public void testGenerateEnrolmentCodeCaseEvent() throws CTPException {
     Case actionableBCase = cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    when(caseRepo.findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(Optional.of(actionableBCase));
+    when(caseRepo.findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
+        .thenReturn(Optional.of(actionableBCase));
     when(categoryRepo.findById(CategoryDTO.CategoryName.GENERATE_ENROLMENT_CODE))
         .thenReturn(Optional.of(categories.get(CAT_GENERATE_ENROLMENT_CODE)));
     when(internetAccessCodeSvcClient.isIacActive(actionableBCase.getIac())).thenReturn(false);
@@ -1096,7 +1098,8 @@ public class CaseServiceTest {
    */
   private void mockupCaseGroupRepo() throws Exception {
     List<CaseGroup> caseGroups = FixtureHelper.loadClassFixtures(CaseGroup[].class);
-    when(caseGroupRepo.findById(CASEGROUP_PK)).thenReturn(Optional.of(caseGroups.get(CASEGROUP_PK - 1)));
+    when(caseGroupRepo.findById(CASEGROUP_PK))
+        .thenReturn(Optional.of(caseGroups.get(CASEGROUP_PK - 1)));
   }
 
   /**
