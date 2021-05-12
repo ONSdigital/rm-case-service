@@ -110,8 +110,7 @@ public final class CaseEndpoint implements CTPEndpoint {
       @RequestParam(value = "iac", required = false) final boolean iac) {
 
     List<CaseDetailsDTO> cases =
-        sampleUnitIds
-            .stream()
+        sampleUnitIds.stream()
             .map(caze -> caseService.findCaseBySampleUnitId(caze))
             .filter(Objects::nonNull)
             .map(
@@ -180,8 +179,7 @@ public final class CaseEndpoint implements CTPEndpoint {
       cases.addAll(caseService.findCasesByCaseGroupFK(caseGroup.getCaseGroupPK()));
     }
     List<CaseDetailsDTO> caseDetailsDTOList =
-        cases
-            .stream()
+        cases.stream()
             .map(caseDetail -> buildDetailedCaseDTO(caseDetail, false, false))
             .collect(Collectors.toList());
 
@@ -266,8 +264,7 @@ public final class CaseEndpoint implements CTPEndpoint {
       return ResponseEntity.noContent().build();
     } else {
       List<CaseDetailsDTO> caseDetailsDTOList =
-          casesList
-              .stream()
+          casesList.stream()
               .map(c -> buildDetailedCaseDTO(c, false, iacFlag))
               .collect(Collectors.toList());
       return ResponseEntity.ok(caseDetailsDTOList);

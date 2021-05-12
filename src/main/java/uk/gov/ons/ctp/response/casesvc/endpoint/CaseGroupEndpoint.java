@@ -103,8 +103,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
     }
 
     List<CaseGroupDTO> resultList =
-        caseGroupList
-            .stream()
+        caseGroupList.stream()
             .map(cg -> mapperFacade.map(cg, CaseGroupDTO.class))
             .collect(Collectors.toList());
 

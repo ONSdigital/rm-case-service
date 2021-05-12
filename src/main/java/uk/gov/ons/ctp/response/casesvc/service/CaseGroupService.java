@@ -150,8 +150,7 @@ public class CaseGroupService {
     }
     // get published collection exercise
     List<CollectionExerciseDTO> publishedCollexs =
-        collectionExercises
-            .stream()
+        collectionExercises.stream()
             .filter(
                 ce ->
                     ce.getState().toString().equals("READY_FOR_LIVE")
