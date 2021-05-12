@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
+import uk.gov.ons.ctp.response.lib.common.error.CTPException;
 
 @Component
 public class PubSubSubscription {
@@ -48,8 +49,9 @@ public class PubSubSubscription {
                 receipt.setInboundChannel(InboundChannel.OFFLINE);
                 try {
                     caseReceiptReceiver.process(receipt);
-                } catch (Exception e) {
+                } catch (CTPException e) {
                     log.error(String.valueOf(e));
+                    consumer.nack();
                 }
                 consumer.ack();
             } catch (JsonProcessingException e) {
