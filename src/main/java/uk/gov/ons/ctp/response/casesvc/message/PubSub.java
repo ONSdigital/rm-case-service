@@ -19,7 +19,7 @@ public class PubSub {
     log.info("creating pubsub publish for topic " + topic + " in project " + project);
     log.info("Pubsub emulator host is set to " + System.getenv("PUBSUB_EMULATOR_HOST"));
     TopicName topicName = TopicName.of(project, topic);
-    if (null != System.getenv("PUBSUB_EMULATOR_HOST")) {
+    if (null == System.getenv("PUBSUB_EMULATOR_HOST")) {
       log.info("Returning actual Publisher");
       return Publisher.newBuilder(topicName).build();
     } else {
