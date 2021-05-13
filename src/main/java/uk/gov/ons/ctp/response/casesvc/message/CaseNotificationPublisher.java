@@ -53,7 +53,7 @@ public class CaseNotificationPublisher {
           .error("error case_notification can not be parsed.");
       throw new RuntimeException(e);
     } catch (InterruptedException | ExecutionException | IOException e) {
-      log.error("A pubsub error has occured", e);
+      log.error("A pubsub error has occured while processing Case Notification", e);
       throw new RuntimeException(e);
     }
   }
