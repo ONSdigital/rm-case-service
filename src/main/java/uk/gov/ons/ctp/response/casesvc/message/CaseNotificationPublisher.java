@@ -50,10 +50,10 @@ public class CaseNotificationPublisher {
       }
     } catch (JsonProcessingException e) {
       log.with("case_notification", caseNotificationDTO)
-          .error("error case_notification can not be parsed.");
+          .error("Error while case_notification can not be parsed.");
       throw new RuntimeException(e);
     } catch (InterruptedException | ExecutionException | IOException e) {
-      log.error("A pubsub error has occured while processing Case Notification", e);
+      log.error("PubSub Error while processing Case Notification", e);
       throw new RuntimeException(e);
     }
   }

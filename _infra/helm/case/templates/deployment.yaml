@@ -21,10 +21,10 @@ spec:
         helmVersion: {{ .Chart.Version }}
         env: {{ .Values.env }}
     spec:
-      - name: google-cloud-key
-        secret:
-          secretName: google-application-credentials
       volumes:
+        - name: google-cloud-key
+          secret:
+            secretName: google-application-credentials
       {{- if .Values.database.sqlProxyEnabled }}
         - name: cloudsql-instance-credentials
           secret:
