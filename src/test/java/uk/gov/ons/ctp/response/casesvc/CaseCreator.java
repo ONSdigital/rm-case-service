@@ -2,6 +2,8 @@ package uk.gov.ons.ctp.response.casesvc;
 
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
+import java.util.UUID;
+import javax.xml.bind.JAXBContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
@@ -10,9 +12,6 @@ import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnit
 import uk.gov.ons.ctp.response.lib.common.utility.Mapzer;
 import uk.gov.ons.ctp.response.lib.rabbit.Rabbitmq;
 import uk.gov.ons.ctp.response.lib.rabbit.SimpleMessageSender;
-
-import javax.xml.bind.JAXBContext;
-import java.util.UUID;
 
 @Component
 public class CaseCreator {

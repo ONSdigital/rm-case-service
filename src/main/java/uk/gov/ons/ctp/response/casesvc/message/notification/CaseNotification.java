@@ -3,8 +3,6 @@ package uk.gov.ons.ctp.response.casesvc.message.notification;
 import com.kscs.util.jaxb.Buildable;
 import com.kscs.util.jaxb.PropertyTree;
 import com.kscs.util.jaxb.PropertyTreeUse;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
-
 import java.util.HashMap;
 import java.util.Map;
 import javax.xml.bind.annotation.*;
@@ -34,8 +32,8 @@ import javax.xml.bind.annotation.*;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(
-        name = "CaseNotification",
-        propOrder = {})
+    name = "CaseNotification",
+    propOrder = {})
 @XmlRootElement(name = "caseNotification")
 public class CaseNotification {
 
@@ -72,17 +70,17 @@ public class CaseNotification {
 
   /** Fully-initialising value constructor */
   public CaseNotification(
-          final String sampleUnitId,
-          final String caseId,
-          final String actionPlanId,
-          final boolean activeEnrolment,
-          final String exerciseId,
-          final String partyId,
-          final String sampleUnitType,
-          final NotificationType notificationType,
-          final String sampleUnitRef,
-          final String status,
-          final String iac) {
+      final String sampleUnitId,
+      final String caseId,
+      final String actionPlanId,
+      final boolean activeEnrolment,
+      final String exerciseId,
+      final String partyId,
+      final String sampleUnitType,
+      final NotificationType notificationType,
+      final String sampleUnitRef,
+      final String status,
+      final String iac) {
     this.sampleUnitId = sampleUnitId;
     this.caseId = caseId;
     this.actionPlanId = actionPlanId;
@@ -288,7 +286,7 @@ public class CaseNotification {
 
   public static <_B> CaseNotification.Builder<_B> copyOf(final CaseNotification _other) {
     final CaseNotification.Builder<_B> _newBuilder =
-            new CaseNotification.Builder<_B>(null, null, false);
+        new CaseNotification.Builder<_B>(null, null, false);
     _other.copyTo(_newBuilder);
     return _newBuilder;
   }
@@ -300,118 +298,118 @@ public class CaseNotification {
    * @param _other A builder instance to which the state of this object will be copied.
    */
   public <_B> void copyTo(
-          final CaseNotification.Builder<_B> _other,
-          final PropertyTree _propertyTree,
-          final PropertyTreeUse _propertyTreeUse) {
+      final CaseNotification.Builder<_B> _other,
+      final PropertyTree _propertyTree,
+      final PropertyTreeUse _propertyTreeUse) {
     final PropertyTree sampleUnitIdPropertyTree =
-            ((_propertyTree == null) ? null : _propertyTree.get("sampleUnitId"));
+        ((_propertyTree == null) ? null : _propertyTree.get("sampleUnitId"));
     if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-            ? (sampleUnitIdPropertyTree != null)
-            : ((sampleUnitIdPropertyTree == null) || (!sampleUnitIdPropertyTree.isLeaf())))) {
+        ? (sampleUnitIdPropertyTree != null)
+        : ((sampleUnitIdPropertyTree == null) || (!sampleUnitIdPropertyTree.isLeaf())))) {
       _other.sampleUnitId = this.sampleUnitId;
     }
     final PropertyTree caseIdPropertyTree =
-            ((_propertyTree == null) ? null : _propertyTree.get("caseId"));
+        ((_propertyTree == null) ? null : _propertyTree.get("caseId"));
     if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-            ? (caseIdPropertyTree != null)
-            : ((caseIdPropertyTree == null) || (!caseIdPropertyTree.isLeaf())))) {
+        ? (caseIdPropertyTree != null)
+        : ((caseIdPropertyTree == null) || (!caseIdPropertyTree.isLeaf())))) {
       _other.caseId = this.caseId;
     }
     final PropertyTree actionPlanIdPropertyTree =
-            ((_propertyTree == null) ? null : _propertyTree.get("actionPlanId"));
+        ((_propertyTree == null) ? null : _propertyTree.get("actionPlanId"));
     if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-            ? (actionPlanIdPropertyTree != null)
-            : ((actionPlanIdPropertyTree == null) || (!actionPlanIdPropertyTree.isLeaf())))) {
+        ? (actionPlanIdPropertyTree != null)
+        : ((actionPlanIdPropertyTree == null) || (!actionPlanIdPropertyTree.isLeaf())))) {
       _other.actionPlanId = this.actionPlanId;
     }
     final PropertyTree activeEnrolmentPropertyTree =
-            ((_propertyTree == null) ? null : _propertyTree.get("activeEnrolment"));
+        ((_propertyTree == null) ? null : _propertyTree.get("activeEnrolment"));
     if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-            ? (activeEnrolmentPropertyTree != null)
-            : ((activeEnrolmentPropertyTree == null) || (!activeEnrolmentPropertyTree.isLeaf())))) {
+        ? (activeEnrolmentPropertyTree != null)
+        : ((activeEnrolmentPropertyTree == null) || (!activeEnrolmentPropertyTree.isLeaf())))) {
       _other.activeEnrolment = this.activeEnrolment;
     }
     final PropertyTree exerciseIdPropertyTree =
-            ((_propertyTree == null) ? null : _propertyTree.get("exerciseId"));
+        ((_propertyTree == null) ? null : _propertyTree.get("exerciseId"));
     if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-            ? (exerciseIdPropertyTree != null)
-            : ((exerciseIdPropertyTree == null) || (!exerciseIdPropertyTree.isLeaf())))) {
+        ? (exerciseIdPropertyTree != null)
+        : ((exerciseIdPropertyTree == null) || (!exerciseIdPropertyTree.isLeaf())))) {
       _other.exerciseId = this.exerciseId;
     }
     final PropertyTree partyIdPropertyTree =
-            ((_propertyTree == null) ? null : _propertyTree.get("partyId"));
+        ((_propertyTree == null) ? null : _propertyTree.get("partyId"));
     if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-            ? (partyIdPropertyTree != null)
-            : ((partyIdPropertyTree == null) || (!partyIdPropertyTree.isLeaf())))) {
+        ? (partyIdPropertyTree != null)
+        : ((partyIdPropertyTree == null) || (!partyIdPropertyTree.isLeaf())))) {
       _other.partyId = this.partyId;
     }
     final PropertyTree sampleUnitTypePropertyTree =
-            ((_propertyTree == null) ? null : _propertyTree.get("sampleUnitType"));
+        ((_propertyTree == null) ? null : _propertyTree.get("sampleUnitType"));
     if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-            ? (sampleUnitTypePropertyTree != null)
-            : ((sampleUnitTypePropertyTree == null) || (!sampleUnitTypePropertyTree.isLeaf())))) {
+        ? (sampleUnitTypePropertyTree != null)
+        : ((sampleUnitTypePropertyTree == null) || (!sampleUnitTypePropertyTree.isLeaf())))) {
       _other.sampleUnitType = this.sampleUnitType;
     }
     final PropertyTree notificationTypePropertyTree =
-            ((_propertyTree == null) ? null : _propertyTree.get("notificationType"));
+        ((_propertyTree == null) ? null : _propertyTree.get("notificationType"));
     if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-            ? (notificationTypePropertyTree != null)
-            : ((notificationTypePropertyTree == null) || (!notificationTypePropertyTree.isLeaf())))) {
+        ? (notificationTypePropertyTree != null)
+        : ((notificationTypePropertyTree == null) || (!notificationTypePropertyTree.isLeaf())))) {
       _other.notificationType = this.notificationType;
     }
     final PropertyTree sampleUnitRefPropertyTree =
-            ((_propertyTree == null) ? null : _propertyTree.get("sampleUnitRef"));
+        ((_propertyTree == null) ? null : _propertyTree.get("sampleUnitRef"));
     if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-            ? (sampleUnitRefPropertyTree != null)
-            : ((sampleUnitRefPropertyTree == null) || (!sampleUnitRefPropertyTree.isLeaf())))) {
+        ? (sampleUnitRefPropertyTree != null)
+        : ((sampleUnitRefPropertyTree == null) || (!sampleUnitRefPropertyTree.isLeaf())))) {
       _other.sampleUnitRef = this.sampleUnitRef;
     }
     final PropertyTree statusPropertyTree =
-            ((_propertyTree == null) ? null : _propertyTree.get("status"));
+        ((_propertyTree == null) ? null : _propertyTree.get("status"));
     if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-            ? (statusPropertyTree != null)
-            : ((statusPropertyTree == null) || (!statusPropertyTree.isLeaf())))) {
+        ? (statusPropertyTree != null)
+        : ((statusPropertyTree == null) || (!statusPropertyTree.isLeaf())))) {
       _other.status = this.status;
     }
     final PropertyTree iacPropertyTree =
-            ((_propertyTree == null) ? null : _propertyTree.get("iac"));
+        ((_propertyTree == null) ? null : _propertyTree.get("iac"));
     if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-            ? (iacPropertyTree != null)
-            : ((iacPropertyTree == null) || (!iacPropertyTree.isLeaf())))) {
+        ? (iacPropertyTree != null)
+        : ((iacPropertyTree == null) || (!iacPropertyTree.isLeaf())))) {
       _other.iac = this.iac;
     }
   }
 
   public <_B> CaseNotification.Builder<_B> newCopyBuilder(
-          final _B _parentBuilder,
-          final PropertyTree _propertyTree,
-          final PropertyTreeUse _propertyTreeUse) {
+      final _B _parentBuilder,
+      final PropertyTree _propertyTree,
+      final PropertyTreeUse _propertyTreeUse) {
     return new CaseNotification.Builder<_B>(
-            _parentBuilder, this, true, _propertyTree, _propertyTreeUse);
+        _parentBuilder, this, true, _propertyTree, _propertyTreeUse);
   }
 
   public CaseNotification.Builder<Void> newCopyBuilder(
-          final PropertyTree _propertyTree, final PropertyTreeUse _propertyTreeUse) {
+      final PropertyTree _propertyTree, final PropertyTreeUse _propertyTreeUse) {
     return newCopyBuilder(null, _propertyTree, _propertyTreeUse);
   }
 
   public static <_B> CaseNotification.Builder<_B> copyOf(
-          final CaseNotification _other,
-          final PropertyTree _propertyTree,
-          final PropertyTreeUse _propertyTreeUse) {
+      final CaseNotification _other,
+      final PropertyTree _propertyTree,
+      final PropertyTreeUse _propertyTreeUse) {
     final CaseNotification.Builder<_B> _newBuilder =
-            new CaseNotification.Builder<_B>(null, null, false);
+        new CaseNotification.Builder<_B>(null, null, false);
     _other.copyTo(_newBuilder, _propertyTree, _propertyTreeUse);
     return _newBuilder;
   }
 
   public static CaseNotification.Builder<Void> copyExcept(
-          final CaseNotification _other, final PropertyTree _propertyTree) {
+      final CaseNotification _other, final PropertyTree _propertyTree) {
     return copyOf(_other, _propertyTree, PropertyTreeUse.EXCLUDE);
   }
 
   public static CaseNotification.Builder<Void> copyOnly(
-          final CaseNotification _other, final PropertyTree _propertyTree) {
+      final CaseNotification _other, final PropertyTree _propertyTree) {
     return copyOf(_other, _propertyTree, PropertyTreeUse.INCLUDE);
   }
 
@@ -456,94 +454,92 @@ public class CaseNotification {
     }
 
     public Builder(
-            final _B _parentBuilder,
-            final CaseNotification _other,
-            final boolean _copy,
-            final PropertyTree _propertyTree,
-            final PropertyTreeUse _propertyTreeUse) {
+        final _B _parentBuilder,
+        final CaseNotification _other,
+        final boolean _copy,
+        final PropertyTree _propertyTree,
+        final PropertyTreeUse _propertyTreeUse) {
       this._parentBuilder = _parentBuilder;
       if (_other != null) {
         if (_copy) {
           _storedValue = null;
           final PropertyTree sampleUnitIdPropertyTree =
-                  ((_propertyTree == null) ? null : _propertyTree.get("sampleUnitId"));
+              ((_propertyTree == null) ? null : _propertyTree.get("sampleUnitId"));
           if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-                  ? (sampleUnitIdPropertyTree != null)
-                  : ((sampleUnitIdPropertyTree == null) || (!sampleUnitIdPropertyTree.isLeaf())))) {
+              ? (sampleUnitIdPropertyTree != null)
+              : ((sampleUnitIdPropertyTree == null) || (!sampleUnitIdPropertyTree.isLeaf())))) {
             this.sampleUnitId = _other.sampleUnitId;
           }
           final PropertyTree caseIdPropertyTree =
-                  ((_propertyTree == null) ? null : _propertyTree.get("caseId"));
+              ((_propertyTree == null) ? null : _propertyTree.get("caseId"));
           if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-                  ? (caseIdPropertyTree != null)
-                  : ((caseIdPropertyTree == null) || (!caseIdPropertyTree.isLeaf())))) {
+              ? (caseIdPropertyTree != null)
+              : ((caseIdPropertyTree == null) || (!caseIdPropertyTree.isLeaf())))) {
             this.caseId = _other.caseId;
           }
           final PropertyTree actionPlanIdPropertyTree =
-                  ((_propertyTree == null) ? null : _propertyTree.get("actionPlanId"));
+              ((_propertyTree == null) ? null : _propertyTree.get("actionPlanId"));
           if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-                  ? (actionPlanIdPropertyTree != null)
-                  : ((actionPlanIdPropertyTree == null) || (!actionPlanIdPropertyTree.isLeaf())))) {
+              ? (actionPlanIdPropertyTree != null)
+              : ((actionPlanIdPropertyTree == null) || (!actionPlanIdPropertyTree.isLeaf())))) {
             this.actionPlanId = _other.actionPlanId;
           }
           final PropertyTree activeEnrolmentPropertyTree =
-                  ((_propertyTree == null) ? null : _propertyTree.get("activeEnrolment"));
+              ((_propertyTree == null) ? null : _propertyTree.get("activeEnrolment"));
           if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-                  ? (activeEnrolmentPropertyTree != null)
-                  : ((activeEnrolmentPropertyTree == null) || (!activeEnrolmentPropertyTree.isLeaf())))) {
+              ? (activeEnrolmentPropertyTree != null)
+              : ((activeEnrolmentPropertyTree == null)
+                  || (!activeEnrolmentPropertyTree.isLeaf())))) {
             this.activeEnrolment = _other.activeEnrolment;
           }
           final PropertyTree exerciseIdPropertyTree =
-                  ((_propertyTree == null) ? null : _propertyTree.get("exerciseId"));
+              ((_propertyTree == null) ? null : _propertyTree.get("exerciseId"));
           if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-                  ? (exerciseIdPropertyTree != null)
-                  : ((exerciseIdPropertyTree == null) || (!exerciseIdPropertyTree.isLeaf())))) {
+              ? (exerciseIdPropertyTree != null)
+              : ((exerciseIdPropertyTree == null) || (!exerciseIdPropertyTree.isLeaf())))) {
             this.exerciseId = _other.exerciseId;
           }
           final PropertyTree partyIdPropertyTree =
-                  ((_propertyTree == null) ? null : _propertyTree.get("partyId"));
+              ((_propertyTree == null) ? null : _propertyTree.get("partyId"));
           if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-                  ? (partyIdPropertyTree != null)
-                  : ((partyIdPropertyTree == null) || (!partyIdPropertyTree.isLeaf())))) {
+              ? (partyIdPropertyTree != null)
+              : ((partyIdPropertyTree == null) || (!partyIdPropertyTree.isLeaf())))) {
             this.partyId = _other.partyId;
           }
           final PropertyTree sampleUnitTypePropertyTree =
-                  ((_propertyTree == null) ? null : _propertyTree.get("sampleUnitType"));
+              ((_propertyTree == null) ? null : _propertyTree.get("sampleUnitType"));
           if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-                  ? (sampleUnitTypePropertyTree != null)
-                  : ((sampleUnitTypePropertyTree == null) || (!sampleUnitTypePropertyTree.isLeaf())))) {
+              ? (sampleUnitTypePropertyTree != null)
+              : ((sampleUnitTypePropertyTree == null) || (!sampleUnitTypePropertyTree.isLeaf())))) {
             this.sampleUnitType = _other.sampleUnitType;
           }
           final PropertyTree notificationTypePropertyTree =
-                  ((_propertyTree == null) ? null : _propertyTree.get("notificationType"));
+              ((_propertyTree == null) ? null : _propertyTree.get("notificationType"));
           if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-                  ? (notificationTypePropertyTree != null)
-                  : ((notificationTypePropertyTree == null)
+              ? (notificationTypePropertyTree != null)
+              : ((notificationTypePropertyTree == null)
                   || (!notificationTypePropertyTree.isLeaf())))) {
             this.notificationType = _other.notificationType;
           }
           final PropertyTree sampleUnitRefPropertyTree =
-                  ((_propertyTree == null) ? null : _propertyTree.get("sampleUnitRef"));
+              ((_propertyTree == null) ? null : _propertyTree.get("sampleUnitRef"));
           if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-                  ? (sampleUnitRefPropertyTree != null)
-                  : ((sampleUnitRefPropertyTree == null)
-                  || (!sampleUnitRefPropertyTree.isLeaf())))) {
+              ? (sampleUnitRefPropertyTree != null)
+              : ((sampleUnitRefPropertyTree == null) || (!sampleUnitRefPropertyTree.isLeaf())))) {
             this.sampleUnitRef = _other.sampleUnitRef;
           }
           final PropertyTree statusPropertyTree =
-                  ((_propertyTree == null) ? null : _propertyTree.get("status"));
+              ((_propertyTree == null) ? null : _propertyTree.get("status"));
           if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-                  ? (statusPropertyTree != null)
-                  : ((statusPropertyTree == null)
-                  || (!statusPropertyTree.isLeaf())))) {
+              ? (statusPropertyTree != null)
+              : ((statusPropertyTree == null) || (!statusPropertyTree.isLeaf())))) {
             this.status = _other.status;
           }
           final PropertyTree iacPropertyTree =
-                  ((_propertyTree == null) ? null : _propertyTree.get("iac"));
+              ((_propertyTree == null) ? null : _propertyTree.get("iac"));
           if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-                  ? (iacPropertyTree != null)
-                  : ((iacPropertyTree == null)
-                  || (!iacPropertyTree.isLeaf())))) {
+              ? (iacPropertyTree != null)
+              : ((iacPropertyTree == null) || (!iacPropertyTree.isLeaf())))) {
             this.iac = _other.iac;
           }
         } else {
@@ -644,25 +640,22 @@ public class CaseNotification {
      * @param notificationType New value of the "notificationType" property.
      */
     public CaseNotification.Builder<_B> withNotificationType(
-            final NotificationType notificationType) {
+        final NotificationType notificationType) {
       this.notificationType = notificationType;
       return this;
     }
 
-    public CaseNotification.Builder<_B> withSampleUnitRef(
-            final String sampleUnitRef) {
+    public CaseNotification.Builder<_B> withSampleUnitRef(final String sampleUnitRef) {
       this.sampleUnitRef = sampleUnitRef;
       return this;
     }
 
-    public CaseNotification.Builder<_B> withStatus(
-            final String status) {
+    public CaseNotification.Builder<_B> withStatus(final String status) {
       this.status = status;
       return this;
     }
 
-    public CaseNotification.Builder<_B> withIac(
-            final String iac) {
+    public CaseNotification.Builder<_B> withIac(final String iac) {
       this.iac = iac;
       return this;
     }
@@ -689,30 +682,30 @@ public class CaseNotification {
   }
 
   public static class Selector<TRoot extends com.kscs.util.jaxb.Selector<TRoot, ?>, TParent>
-          extends com.kscs.util.jaxb.Selector<TRoot, TParent> {
+      extends com.kscs.util.jaxb.Selector<TRoot, TParent> {
 
     private com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>
-            sampleUnitId = null;
+        sampleUnitId = null;
     private com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>> caseId =
-            null;
+        null;
     private com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>
-            actionPlanId = null;
+        actionPlanId = null;
     private com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>
-            activeEnrolment = null;
+        activeEnrolment = null;
     private com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>
-            exerciseId = null;
+        exerciseId = null;
     private com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>> partyId =
-            null;
+        null;
     private com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>
-            sampleUnitType = null;
+        sampleUnitType = null;
     private com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>
-            notificationType = null;
+        notificationType = null;
     private com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>
-            sampleUnitRef = null;
-    private com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>
-            status = null;
-    private com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>
-            iac = null;
+        sampleUnitRef = null;
+    private com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>> status =
+        null;
+    private com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>> iac =
+        null;
 
     public Selector(final TRoot root, final TParent parent, final String propertyName) {
       super(root, parent, propertyName);
@@ -759,100 +752,98 @@ public class CaseNotification {
     }
 
     public com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>
-    sampleUnitId() {
+        sampleUnitId() {
       return ((this.sampleUnitId == null)
-              ? this.sampleUnitId =
+          ? this.sampleUnitId =
               new com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>(
-                      this._root, this, "sampleUnitId")
-              : this.sampleUnitId);
+                  this._root, this, "sampleUnitId")
+          : this.sampleUnitId);
     }
 
     public com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>> caseId() {
       return ((this.caseId == null)
-              ? this.caseId =
+          ? this.caseId =
               new com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>(
-                      this._root, this, "caseId")
-              : this.caseId);
+                  this._root, this, "caseId")
+          : this.caseId);
     }
 
     public com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>
-    actionPlanId() {
+        actionPlanId() {
       return ((this.actionPlanId == null)
-              ? this.actionPlanId =
+          ? this.actionPlanId =
               new com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>(
-                      this._root, this, "actionPlanId")
-              : this.actionPlanId);
+                  this._root, this, "actionPlanId")
+          : this.actionPlanId);
     }
 
     public com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>
-    actionEnrolment() {
+        actionEnrolment() {
       return ((this.activeEnrolment == null)
-              ? this.activeEnrolment =
+          ? this.activeEnrolment =
               new com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>(
-                      this._root, this, "activeEnrolment")
-              : this.activeEnrolment);
+                  this._root, this, "activeEnrolment")
+          : this.activeEnrolment);
     }
 
     public com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>
-    exerciseId() {
+        exerciseId() {
       return ((this.exerciseId == null)
-              ? this.exerciseId =
+          ? this.exerciseId =
               new com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>(
-                      this._root, this, "exerciseId")
-              : this.exerciseId);
+                  this._root, this, "exerciseId")
+          : this.exerciseId);
     }
 
     public com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>> partyId() {
       return ((this.partyId == null)
-              ? this.partyId =
+          ? this.partyId =
               new com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>(
-                      this._root, this, "partyId")
-              : this.partyId);
+                  this._root, this, "partyId")
+          : this.partyId);
     }
 
     public com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>
-    sampleUnitType() {
+        sampleUnitType() {
       return ((this.sampleUnitType == null)
-              ? this.sampleUnitType =
+          ? this.sampleUnitType =
               new com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>(
-                      this._root, this, "sampleUnitType")
-              : this.sampleUnitType);
+                  this._root, this, "sampleUnitType")
+          : this.sampleUnitType);
     }
 
     public com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>
-    notificationType() {
+        notificationType() {
       return ((this.notificationType == null)
-              ? this.notificationType =
+          ? this.notificationType =
               new com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>(
-                      this._root, this, "notificationType")
-              : this.notificationType);
+                  this._root, this, "notificationType")
+          : this.notificationType);
     }
 
     public com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>
-    sampleUnitRef() {
+        sampleUnitRef() {
       return ((this.sampleUnitRef == null)
-              ? this.sampleUnitRef =
+          ? this.sampleUnitRef =
               new com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>(
-                      this._root, this, "sampleUnitRef")
-              : this.sampleUnitRef);
+                  this._root, this, "sampleUnitRef")
+          : this.sampleUnitRef);
     }
 
-    public com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>
-    status() {
+    public com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>> status() {
       return ((this.status == null)
-              ? this.status =
+          ? this.status =
               new com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>(
-                      this._root, this, "status")
-              : this.status);
+                  this._root, this, "status")
+          : this.status);
     }
 
-    public com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>
-    iac() {
+    public com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>> iac() {
       return ((this.iac == null)
-              ? this.iac =
+          ? this.iac =
               new com.kscs.util.jaxb.Selector<TRoot, CaseNotification.Selector<TRoot, TParent>>(
-                      this._root, this, "iac")
-              : this.iac);
+                  this._root, this, "iac")
+          : this.iac);
     }
   }
 }
