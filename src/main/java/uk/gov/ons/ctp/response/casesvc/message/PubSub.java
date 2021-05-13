@@ -17,11 +17,17 @@ public class PubSub {
 
   private Publisher publisherSupplier(String project, String topic) throws IOException {
     log.info("creating pubsub publish for topic " + topic + " in project " + project);
-    log.info("Pubsub emulator host is set to " + System.getenv("PUBSUB_EMULATOR_HOST"));
+    String emulatorHost = System.getenv("PUBSUB_EMULATOR_HOST");
+    log.info("Pubsub emulator host is set to " + emulatorHost);
     TopicName topicName = TopicName.of(project, topic);
-    if (StringUtil.isEmpty(System.getenv("PUBSUB_EMULATOR_HOST")))
+    if (null != emulatorHost && StringUtil.isEmpty(emulatorHost)){
+      log.info("Returning Publisher");
       return Publisher.newBuilder(topicName).build();
-    else return new PubSubEmulator().getEmulatorPublisher(topicName);
+    }
+    else {
+      log.info("Returning emulator Publisher");
+      return new PubSubEmulator().getEmulatorPublisher(topicName);
+    }
   }
 
   public Publisher caseNotificationPublisher() throws IOException {
