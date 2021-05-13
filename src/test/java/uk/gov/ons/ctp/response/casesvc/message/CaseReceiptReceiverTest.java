@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import javax.xml.datatype.DatatypeConfigurationException;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,12 +47,12 @@ public class CaseReceiptReceiverTest {
 
   @Mock private CaseService caseService;
 
-  @Mock(name = "dateTimeUtil") private DateTimeUtil dateTimeUtil;
+  @Mock(name = "dateTimeUtil")
+  private DateTimeUtil dateTimeUtil;
 
   @Before
-  public void setup(){
-    Mockito.when(dateTimeUtil.getNowUTC())
-            .thenReturn(new Timestamp(CURRENT_TIME_IN_MILLISECONDS));
+  public void setup() {
+    Mockito.when(dateTimeUtil.getNowUTC()).thenReturn(new Timestamp(CURRENT_TIME_IN_MILLISECONDS));
   }
 
   /**
@@ -72,8 +71,7 @@ public class CaseReceiptReceiverTest {
         .thenReturn(existingCase);
 
     caseReceiptReceiver.process(
-        buildCaseReceipt(
-            LINKED_CASE_ID, LINKED_CASE_REF, InboundChannel.ONLINE, LINKED_PARTY_ID));
+        buildCaseReceipt(LINKED_CASE_ID, LINKED_CASE_REF, InboundChannel.ONLINE, LINKED_PARTY_ID));
     Map<String, String> metadata = new HashMap<>();
     metadata.put("partyId", LINKED_PARTY_ID);
     verify(caseService, times(1))
@@ -98,8 +96,7 @@ public class CaseReceiptReceiverTest {
         .thenReturn(existingCase);
 
     caseReceiptReceiver.process(
-        buildCaseReceipt(
-            LINKED_CASE_ID, LINKED_CASE_REF, InboundChannel.PAPER, LINKED_PARTY_ID));
+        buildCaseReceipt(LINKED_CASE_ID, LINKED_CASE_REF, InboundChannel.PAPER, LINKED_PARTY_ID));
     Map<String, String> metadata = new HashMap<>();
     metadata.put("partyId", LINKED_PARTY_ID);
 
@@ -199,10 +196,7 @@ public class CaseReceiptReceiverTest {
    * @throws DatatypeConfigurationException datatype configuration exception thrown
    */
   private CaseReceipt buildCaseReceipt(
-      String caseId,
-      String caseRef,
-      InboundChannel inboundChannel,
-      String partyId)
+      String caseId, String caseRef, InboundChannel inboundChannel, String partyId)
       throws DatatypeConfigurationException {
     CaseReceipt caseReceipt = new CaseReceipt();
     caseReceipt.setCaseId(caseId);
@@ -229,5 +223,4 @@ public class CaseReceiptReceiverTest {
     caseEvent.setMetadata(metadata);
     return caseEvent;
   }
-
 }

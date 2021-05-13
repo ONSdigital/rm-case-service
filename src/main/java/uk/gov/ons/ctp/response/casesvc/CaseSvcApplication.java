@@ -273,7 +273,7 @@ public class CaseSvcApplication {
   }
 
   @Bean
-  public DateTimeUtil dateTimeUtil(){
+  public DateTimeUtil dateTimeUtil() {
     return new DateTimeUtil();
   }
 }

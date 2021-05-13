@@ -37,7 +37,8 @@ public class CollectionExerciseSvcClient {
   private RestUtility restUtility;
 
   @Qualifier("customObjectMapper")
-  @Autowired private ObjectMapper objectMapper;
+  @Autowired
+  private ObjectMapper objectMapper;
 
   /**
    * Returns the CollectionExercise for a given UUID
