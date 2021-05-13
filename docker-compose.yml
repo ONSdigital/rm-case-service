@@ -33,14 +33,14 @@ services:
     - postgres-case-it
     - redis-case-it
     - rabbitmq-case-it
-    image: sdcplatform/collectionexercisesvc
+    image: eu.gcr.io/ons-rasrmbs-management/collection-exercise
     environment:
     - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-case-it:5432/postgres?sslmode=disable
     - SPRING_DATASOURCE_USERNAME=postgres
     - SPRING_DATASOURCE_PASSWORD=postgres
-    - LIQUIBASE_URL=jdbc:postgresql://postgres-case-it:5432/postgres
-    - LIQUIBASE_USER=postgres
-    - LIQUIBASE_PASSWORD=postgres
+    - SPRING_LIQUIBASE_URL=jdbc:postgresql://postgres-case-it:5432/postgres
+    - SPRING_LIQUIBASE_USER=postgres
+    - SPRING_LIQUIBASE_PASSWORD=postgres
     - REDISSON_CONFIG_ADDRESS=redis-case-it:6379
     - DATA_GRID_ADDRESS=redis-case-it:6379
     - RABBITMQ_HOST=rabbitmq-case-it
@@ -52,14 +52,14 @@ services:
     ports:
     - "38145:8145"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8145/info"]
+      test: ["CMD", "curl", "-f", "http://localhost:8145/actuator/info"]
       interval: 30s
       timeout: 10s
       retries: 10
 
   survey:
     container_name: survey-case-it
-    image: sdcplatform/surveysvc
+    image: eu.gcr.io/ons-rasrmbs-management/survey
     external_links:
     - postgres-case-it
     environment:
@@ -72,7 +72,7 @@ services:
 
   action:
     container_name: action-case-it
-    image: sdcplatform/actionsvc
+    image: eu.gcr.io/ons-rasrmbs-management/action
     external_links:
     - postgres-case-it
     - rabbitmq-case-it
@@ -81,9 +81,9 @@ services:
     - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-case-it:5432/postgres?sslmode=disable
     - SPRING_DATASOURCE_USERNAME=postgres
     - SPRING_DATASOURCE_PASSWORD=postgres
-    - LIQUIBASE_URL=jdbc:postgresql://postgres-case-it:5432/postgres
-    - LIQUIBASE_USER=postgres
-    - LIQUIBASE_PASSWORD=postgres
+    - SPRING_LIQUIBASE_URL=jdbc:postgresql://postgres-case-it:5432/postgres
+    - SPRING_LIQUIBASE_USER=postgres
+    - SPRING_LIQUIBASE_PASSWORD=postgres
     - REDISSON_CONFIG_ADDRESS=redis-case-it:6379
     - DATA_GRID_ADDRESS=redis-case-it:6379
     - RABBITMQ_HOST=rabbitmq-case-it
@@ -95,15 +95,7 @@ services:
     ports:
     - "38151:8151"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8151/info"]
+      test: ["CMD", "curl", "-f", "http://localhost:8151/actuator/info"]
       interval: 30s
       timeout: 10s
       retries: 10
-
-  start_dependencies:
-    image: dadarek/wait-for-dependencies
-    depends_on:
-      collectionexercise:
-        condition: service_healthy
-      action:
-        condition: service_healthy

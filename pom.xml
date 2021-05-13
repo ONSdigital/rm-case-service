@@ -343,7 +343,6 @@
                         </goals>
                         <configuration>
                             <composeFile>${project.basedir}/docker-compose.yml</composeFile>
-                            <skip>${dockerComposeSkip}</skip>
                         </configuration>
                     </execution>
                     <execution>
@@ -355,7 +354,6 @@
                         <configuration>
                             <composeFile>${project.basedir}/docker-compose.yml</composeFile>
                             <detachedMode>true</detachedMode>
-                            <skip>${dockerComposeSkip}</skip>
                         </configuration>
                     </execution>
                     <execution>
@@ -366,7 +364,6 @@
                         </goals>
                         <configuration>
                             <composeFile>${project.basedir}/docker-compose.yml</composeFile>
-                            <skip>${dockerComposeSkip}</skip>
                         </configuration>
                     </execution>
                 </executions>
@@ -403,33 +400,6 @@
                         <goals>
                             <goal>repackage</goal>
                         </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>dockerfile-maven-plugin</artifactId>
-                <version>1.4.4</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>javax.activation</groupId>
-                        <artifactId>javax.activation-api</artifactId>
-                        <version>1.2.0</version>
-                        <scope>compile</scope>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>build</goal>
-                        </goals>
-                        <phase>package</phase>
-                        <configuration>
-                            <repository>sdcplatform/${project.artifactId}</repository>
-                            <buildArgs>
-                                <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
-                            </buildArgs>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
