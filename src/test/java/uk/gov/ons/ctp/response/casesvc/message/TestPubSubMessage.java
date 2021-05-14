@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseNotificationDTO;
+import uk.gov.ons.ctp.response.casesvc.utility.PubSubEmulator;
 
 public class TestPubSubMessage {
   private static final Logger log = LoggerFactory.getLogger(TestPubSubMessage.class);

@@ -9,6 +9,7 @@ import jodd.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
+import uk.gov.ons.ctp.response.casesvc.utility.PubSubEmulator;
 
 @Component
 public class PubSub {
@@ -17,12 +18,12 @@ public class PubSub {
 
   private Publisher publisherSupplier(String project, String topic) throws IOException {
     log.info("creating pubsub publish for topic " + topic + " in project " + project);
-    log.info("Pubsub emulator host is set to " + System.getenv("PUBSUB_EMULATOR_HOST"));
     TopicName topicName = TopicName.of(project, topic);
     if (null == System.getenv("PUBSUB_EMULATOR_HOST")) {
       log.info("Returning actual Publisher");
       return Publisher.newBuilder(topicName).build();
     } else {
+      log.info("PubSub emulator host is set to " + System.getenv("PUBSUB_EMULATOR_HOST"));
       log.info("Returning emulator Publisher");
       return new PubSubEmulator().getEmulatorPublisher(topicName);
     }

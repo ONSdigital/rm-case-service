@@ -32,11 +32,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.gov.ons.ctp.response.casesvc.CaseCreator;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
-import uk.gov.ons.ctp.response.casesvc.message.PubSubEmulator;
 import uk.gov.ons.ctp.response.casesvc.message.TestPubSubMessage;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseIACDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseNotificationDTO;
+import uk.gov.ons.ctp.response.casesvc.utility.PubSubEmulator;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
 

@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.casesvc.message;
+package uk.gov.ons.ctp.response.casesvc.utility;
 
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
@@ -13,6 +13,9 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import java.io.IOException;
 
+/***
+ * This is a PubSub Emulator class. This is a utility class which is used for testing pubsub function
+ */
 public class PubSubEmulator {
   private static final String HOST_PORT = "localhost:18681";
   public static final ManagedChannel CHANNEL =
@@ -49,7 +52,7 @@ public class PubSubEmulator {
   }
 
   public Subscriber getEmulatorSubscriber(MessageReceiver receiver) {
-    return Subscriber.newBuilder(ProjectSubscriptionName.of("test", "test_subscription"), receiver)
+    return Subscriber.newBuilder(ProjectSubscriptionName.of(PROJECT_ID, SUBSCRIPTION_ID), receiver)
         .setChannelProvider(CHANNEL_PROVIDER)
         .setCredentialsProvider(CREDENTIAL_PROVIDER)
         .build();
@@ -67,7 +70,7 @@ public class PubSubEmulator {
     CHANNEL.shutdown();
   }
 
-  public void testInit() throws IOException {
+  public void testInit() {
     Topic topic = topicClient.createTopic(topicName);
     System.out.println("Created topic: " + topic.getName());
     Subscription subscription =

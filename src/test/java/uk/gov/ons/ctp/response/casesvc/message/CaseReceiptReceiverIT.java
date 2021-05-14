@@ -30,6 +30,7 @@ import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.representation.*;
+import uk.gov.ons.ctp.response.casesvc.utility.PubSubEmulator;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
 

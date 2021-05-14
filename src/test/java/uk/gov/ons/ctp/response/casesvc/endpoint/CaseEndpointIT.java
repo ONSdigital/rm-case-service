@@ -28,10 +28,10 @@ import uk.gov.ons.ctp.response.casesvc.CaseCreator;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
-import uk.gov.ons.ctp.response.casesvc.message.PubSubEmulator;
 import uk.gov.ons.ctp.response.casesvc.message.TestPubSubMessage;
 import uk.gov.ons.ctp.response.casesvc.representation.*;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
+import uk.gov.ons.ctp.response.casesvc.utility.PubSubEmulator;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
 
