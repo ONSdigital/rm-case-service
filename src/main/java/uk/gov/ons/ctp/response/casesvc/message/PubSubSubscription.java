@@ -41,21 +41,20 @@ public class PubSubSubscription {
         return (PubsubMessage message, AckReplyConsumer consumer) -> {
             String payload = message.getData().toStringUtf8();
             log.with("payload", payload).info("Received a receipt");
-            ObjectMapper mapper = new ObjectMapper();
-            CaseReceipt receipt;
             try {
-                receipt = mapper.readValue(payload, CaseReceipt.class);
-                log.with("receipt", receipt).info("Successfully serialised receipt");
-                receipt.setInboundChannel(InboundChannel.OFFLINE);
+                ObjectMapper mapper = new ObjectMapper();
+                CaseReceipt receipt = mapper.readValue(payload, CaseReceipt.class);
+                log.with("receipt", receipt).debug("Successfully serialised receipt");
+                receipt.setInboundChannel(InboundChannel.ONLINE);
                 try {
                     caseReceiptReceiver.process(receipt);
                 } catch (CTPException e) {
-                    log.error(String.valueOf(e));
+                    log.error("Error processing receipt", e);
                     consumer.nack();
                 }
                 consumer.ack();
             } catch (JsonProcessingException e) {
-                log.error(e,"Error serialising receipt.");
+                log.error("Error serialising receipt.", e);
                 consumer.nack();
             }
         };
