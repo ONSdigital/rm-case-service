@@ -13,7 +13,6 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.PubsubMessage;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
@@ -47,26 +46,26 @@ public class CaseNotificationPublisher {
         log.with("publisher", publisher).info("Publishing message to pubsub");
         ApiFuture<String> messageIdFuture = publisher.publish(pubsubMessage);
         ApiFutures.addCallback(
-                messageIdFuture,
-                new ApiFutureCallback<>() {
-                  @Override
-                  public void onFailure(Throwable throwable) {
-                    if (throwable instanceof ApiException) {
-                      ApiException apiException = ((ApiException) throwable);
-                      log.with("error",
-                              apiException.getStatusCode().getCode()).error("Case Notification sent failure");
-                    }
-                    log.with("message", message).error("Error Publishing pubsub message");
-                  }
+            messageIdFuture,
+            new ApiFutureCallback<>() {
+              @Override
+              public void onFailure(Throwable throwable) {
+                if (throwable instanceof ApiException) {
+                  ApiException apiException = ((ApiException) throwable);
+                  log.with("error", apiException.getStatusCode().getCode())
+                      .error("Case Notification sent failure");
+                }
+                log.with("message", message).error("Error Publishing pubsub message");
+              }
 
-                  @Override
-                  public void onSuccess(String messageId) {
-                    // Once published, returns server-assigned message ids (unique within the topic)
-                    log.with("messageId", messageId).info("Case Notification sent successfully");
-                  }
-                },
-                MoreExecutors.directExecutor());
-      }finally {
+              @Override
+              public void onSuccess(String messageId) {
+                // Once published, returns server-assigned message ids (unique within the topic)
+                log.with("messageId", messageId).info("Case Notification sent successfully");
+              }
+            },
+            MoreExecutors.directExecutor());
+      } finally {
         publisher.shutdown();
         pubSub.shutdown();
       }
