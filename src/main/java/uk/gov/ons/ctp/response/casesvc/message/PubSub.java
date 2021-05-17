@@ -23,7 +23,8 @@ public class PubSub {
       log.info("Returning actual Publisher");
       return Publisher.newBuilder(topicName).build();
     } else {
-      log.info("PubSub emulator host is set to " + System.getenv("PUBSUB_EMULATOR_HOST"));
+      log.with("PubSub emulator host",
+              System.getenv("PUBSUB_EMULATOR_HOST")).info("Returning emulator Publisher");
       log.info("Returning emulator Publisher");
       return new PubSubEmulator().getEmulatorPublisher(topicName);
     }

@@ -5,7 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
 import com.google.api.core.ApiFuture;
+import com.google.api.core.ApiFutureCallback;
+import com.google.api.core.ApiFutures;
+import com.google.api.gax.rpc.ApiException;
 import com.google.cloud.pubsub.v1.Publisher;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.PubsubMessage;
 import java.io.IOException;
@@ -42,9 +46,27 @@ public class CaseNotificationPublisher {
       try {
         log.with("publisher", publisher).info("Publishing message to pubsub");
         ApiFuture<String> messageIdFuture = publisher.publish(pubsubMessage);
-        String messageId = messageIdFuture.get();
-        log.with("messageId", messageId).info("Case Notification sent successfully");
-      } finally {
+        ApiFutures.addCallback(
+                messageIdFuture,
+                new ApiFutureCallback<>() {
+                  @Override
+                  public void onFailure(Throwable throwable) {
+                    if (throwable instanceof ApiException) {
+                      ApiException apiException = ((ApiException) throwable);
+                      log.with("error",
+                              apiException.getStatusCode().getCode()).error("Case Notification sent failure");
+                    }
+                    log.with("message", message).error("Error Publishing pubsub message");
+                  }
+
+                  @Override
+                  public void onSuccess(String messageId) {
+                    // Once published, returns server-assigned message ids (unique within the topic)
+                    log.with("messageId", messageId).info("Case Notification sent successfully");
+                  }
+                },
+                MoreExecutors.directExecutor());
+      }finally {
         publisher.shutdown();
         pubSub.shutdown();
       }
@@ -52,7 +74,7 @@ public class CaseNotificationPublisher {
       log.with("case_notification", caseNotificationDTO)
           .error("Error while case_notification can not be parsed.");
       throw new RuntimeException(e);
-    } catch (InterruptedException | ExecutionException | IOException e) {
+    } catch (IOException e) {
       log.error("PubSub Error while processing Case Notification", e);
       throw new RuntimeException(e);
     }
