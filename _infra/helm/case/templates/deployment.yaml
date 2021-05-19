@@ -279,5 +279,7 @@ spec:
             value: "{{ .Values.gcp.project }}"
           - name: GCP_CASENOTIFICATIONTOPIC
             value: "{{ .Values.gcp.caseNotificationTopic }}"
+          - name: GCP_RECEIPTSUBSCRIPTION
+            value: "{{ .Values.gcp.receiptSubscription }}"
           resources:
             {{- toYaml .Values.resources.application | nindent 12 }}

@@ -9,13 +9,17 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Random;
 import java.util.UUID;
 import org.junit.*;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -44,6 +48,8 @@ public class CaseReceiptReceiverIT {
   private UUID collectionExerciseId;
 
   private PubSubEmulator pubSubEmulator = new PubSubEmulator();
+  private String receiptFile =
+      "src/test/resources/uk/gov/ons/ctp/response/casesvc/message/receiptPubsub.json";
 
   @ClassRule
   public static final EnvironmentVariables environmentVariables =
@@ -54,6 +60,8 @@ public class CaseReceiptReceiverIT {
       new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
 
   @Autowired private MessageChannel caseReceiptTransformed;
+
+  @MockBean private CaseReceiptReceiver caseReceiptReceiver;
 
   @LocalServerPort private int port;
 
@@ -120,6 +128,22 @@ public class CaseReceiptReceiverIT {
     pubSubEmulator.testTeardown();
   }
 
+  @Test
+  public void testCaseNotificationReceiverIsReceivingMessageFromPubSub() throws Exception {
+    pubSubEmulator.testInit();
+    String json = readFileAsString(receiptFile);
+    pubSubEmulator.publishMessage(json);
+    Thread.sleep(2000);
+    ObjectMapper objectMapper = new ObjectMapper();
+    CaseReceipt caseReceipt = objectMapper.readValue(json, CaseReceipt.class);
+
+    // For now the inboundChannel is added before it gets to 'process' to emulate current behaviour
+    // in rabbit
+    caseReceipt.setInboundChannel(InboundChannel.ONLINE);
+    Mockito.verify(caseReceiptReceiver, Mockito.times(1)).process(caseReceipt);
+    pubSubEmulator.testTeardown();
+  }
+
   private void startCase(String caseId) throws Exception {
     CaseEventCreationRequestDTO caseEvent = new CaseEventCreationRequestDTO();
     caseEvent.setCategory(CategoryDTO.CategoryName.EQ_LAUNCH);
@@ -130,5 +154,9 @@ public class CaseReceiptReceiverIT {
         .header("Content-Type", "application/json")
         .body(caseEvent)
         .asObject(CreatedCaseEventDTO.class);
+  }
+
+  private static String readFileAsString(String file) throws Exception {
+    return new String(Files.readAllBytes(Paths.get(file)));
   }
 }

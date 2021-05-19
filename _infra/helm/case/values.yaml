@@ -70,6 +70,7 @@ deprecateAction: false
 gcp:
   project: ras-rm-sandbox
   receiptSubscription: ras-rm-receipt
+  caseNotificationTopic: ras-rm-case-notification-topic-test
 
 caseDistribution:
   retrievalMax: 1000
@@ -77,7 +78,3 @@ caseDistribution:
 
 messaging:
   consumingThreads: 10
-
-gcp:
-  project: ras-rm-sandbox
-  caseNotificationTopic: ras-rm-case-notification-topic-test
