@@ -20,14 +20,14 @@ import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
 import uk.gov.ons.ctp.response.lib.common.error.CTPException;
 
 @Component
-public class PubSubSubscription {
-  private static final Logger log = LoggerFactory.getLogger(PubSubSubscription.class);
+public class CaseReceiptPubSubSubscription {
+  private static final Logger log = LoggerFactory.getLogger(CaseReceiptPubSubSubscription.class);
   @Autowired private AppConfig appConfig;
   @Autowired private CaseReceiptReceiver caseReceiptReceiver;
   @Autowired private PubSub pubSub;
 
   @EventListener(ApplicationReadyEvent.class)
-  public void caseNotificationSubscription() throws IOException {
+  public void caseReceiptSubscription() throws IOException {
     ProjectSubscriptionName subscriptionName =
         ProjectSubscriptionName.of(
             appConfig.getGcp().getProject(), appConfig.getGcp().getReceiptSubscription());
@@ -45,8 +45,8 @@ public class PubSubSubscription {
       try {
         ObjectMapper mapper = new ObjectMapper();
         CaseReceipt receipt = mapper.readValue(payload, CaseReceipt.class);
-        log.with("receipt", receipt).debug("Successfully serialised receipt");
         receipt.setInboundChannel(InboundChannel.ONLINE);
+        log.with("receipt", receipt).debug("Successfully serialised receipt");
         try {
           caseReceiptReceiver.process(receipt);
         } catch (CTPException e) {
