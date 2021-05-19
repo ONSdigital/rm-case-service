@@ -38,16 +38,16 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(
-        name = "SampleUnit",
-        propOrder = {
-                "id",
-                "sampleUnitRef",
-                "sampleUnitType",
-                "partyId",
-                "collectionInstrumentId",
-                "activeEnrolment",
-                "actionPlanId"
-        })
+    name = "SampleUnit",
+    propOrder = {
+      "id",
+      "sampleUnitRef",
+      "sampleUnitType",
+      "partyId",
+      "collectionInstrumentId",
+      "activeEnrolment",
+      "actionPlanId"
+    })
 @XmlSeeAlso({SampleUnitParent.class})
 public class SampleUnit {
 
@@ -67,8 +67,6 @@ public class SampleUnit {
   protected boolean activeEnrolment;
 
   protected String actionPlanId;
-
-
 
   /**
    * Gets the value of the id property.

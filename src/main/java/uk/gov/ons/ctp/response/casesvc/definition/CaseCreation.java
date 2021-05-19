@@ -193,7 +193,7 @@ public class CaseCreation {
    * @param value allowed object is {@link String }
    */
   public void setActionPlanId(String value) {
-    if(actionPlanId != null) {
+    if (actionPlanId != null) {
       this.actionPlanId = value;
     }
   }
@@ -295,10 +295,10 @@ public class CaseCreation {
       _other.actionPlanId = this.actionPlanId;
     }
     final PropertyTree activeEnrolmentPropertyTree =
-            ((_propertyTree == null) ? null : _propertyTree.get("activeEnrolment"));
+        ((_propertyTree == null) ? null : _propertyTree.get("activeEnrolment"));
     if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-            ? (activeEnrolmentPropertyTree != null)
-            : ((activeEnrolmentPropertyTree == null) || (!activeEnrolmentPropertyTree.isLeaf())))) {
+        ? (activeEnrolmentPropertyTree != null)
+        : ((activeEnrolmentPropertyTree == null) || (!activeEnrolmentPropertyTree.isLeaf())))) {
       _other.activeEnrolment = this.activeEnrolment;
     }
   }
@@ -421,10 +421,11 @@ public class CaseCreation {
             this.actionPlanId = _other.actionPlanId;
           }
           final PropertyTree activeEnrolmentPropertyTree =
-                  ((_propertyTree == null) ? null : _propertyTree.get("activeEnrolment"));
+              ((_propertyTree == null) ? null : _propertyTree.get("activeEnrolment"));
           if (((_propertyTreeUse == PropertyTreeUse.INCLUDE)
-                  ? (activeEnrolmentPropertyTree != null)
-                  : ((activeEnrolmentPropertyTree == null) || (!activeEnrolmentPropertyTree.isLeaf())))) {
+              ? (activeEnrolmentPropertyTree != null)
+              : ((activeEnrolmentPropertyTree == null)
+                  || (!activeEnrolmentPropertyTree.isLeaf())))) {
             this.activeEnrolment = _other.activeEnrolment;
           }
         } else {
@@ -631,10 +632,10 @@ public class CaseCreation {
 
     public com.kscs.util.jaxb.Selector<TRoot, Selector<TRoot, TParent>> activeEnrolment() {
       return ((this.activeEnrolment == null)
-              ? this.activeEnrolment =
+          ? this.activeEnrolment =
               new com.kscs.util.jaxb.Selector<TRoot, Selector<TRoot, TParent>>(
-                      this._root, this, "activeEnrolment")
-              : this.activeEnrolment);
+                  this._root, this, "activeEnrolment")
+          : this.activeEnrolment);
     }
   }
 }

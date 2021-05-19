@@ -852,8 +852,7 @@ public final class CaseEndpointUnitTest {
    */
   @Test
   public void createCaseEventNoNewCase() throws Exception {
-    when(categoryService.findCategory(CategoryName.EQ_LAUNCH))
-        .thenReturn(categoryResults.get(0));
+    when(categoryService.findCategory(CategoryName.EQ_LAUNCH)).thenReturn(categoryResults.get(0));
     when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class)))
         .thenReturn(caseEventsResults.get(3));
     when(caseService.findCaseById(CASE9_ID)).thenReturn(caseResults.get(8));

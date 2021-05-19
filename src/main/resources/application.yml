@@ -134,3 +134,7 @@ swagger-settings:
 retries:
   maxAttempts: 3
   backoff: 5000
+
+gcp:
+  project: test
+  caseNotificationTopic: "test_topic"

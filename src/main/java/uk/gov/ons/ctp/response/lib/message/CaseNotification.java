@@ -39,8 +39,8 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(
-        name = "CaseNotification",
-        propOrder = {})
+    name = "CaseNotification",
+    propOrder = {})
 public class CaseNotification {
 
   protected String sampleUnitId;

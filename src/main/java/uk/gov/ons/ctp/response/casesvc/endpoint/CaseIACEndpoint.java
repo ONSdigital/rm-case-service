@@ -64,9 +64,7 @@ public final class CaseIACEndpoint implements CTPEndpoint {
     }
 
     List<CaseIACDTO> iacs =
-        actualCase
-            .getIacAudits()
-            .stream()
+        actualCase.getIacAudits().stream()
             .map(CaseIacAudit::getIac)
             .map(CaseIACDTO::new)
             .collect(Collectors.toList());
