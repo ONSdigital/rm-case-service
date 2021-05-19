@@ -1,13 +1,10 @@
 package uk.gov.ons.ctp.response.casesvc.message;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
-import static org.junit.Assert.assertEquals;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -21,9 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.support.GenericMessage;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -80,6 +75,7 @@ public class CaseReceiptReceiverIT {
 
   @Before
   public void testSetup() {
+    pubSubEmulator.testInit();
     Random rnd = new Random();
 
     int randNumber = 10000 + rnd.nextInt(900000);
@@ -95,42 +91,13 @@ public class CaseReceiptReceiverIT {
     collectionExerciseId = collex.getId();
   }
 
-  @Test
-  @Ignore
-  public void socialCaseShouldReceipt() throws Exception {
-    pubSubEmulator.testInit();
-    TestPubSubMessage pubSubMessage = new TestPubSubMessage();
-    // Given
-    UUID sampleUnitId = UUID.randomUUID();
-    caseCreator.postSampleUnit("LMS0003", "H", sampleUnitId, collectionExerciseId);
-    CaseNotificationDTO caseNotificationDTO = pubSubMessage.getPubSubCaseNotification();
-    startCase(caseNotificationDTO.getCaseId());
-    CaseReceipt caseReceipt =
-        new CaseReceipt(
-            "caseRef", caseNotificationDTO.getCaseId(), InboundChannel.OFFLINE, "partyId");
-    Message<CaseReceipt> message = new GenericMessage<>(caseReceipt);
-    iacServiceStub.disableIACStub();
-
-    // When
-    caseReceiptTransformed.send(message);
-
-    // Then
-    HttpResponse<CaseDetailsDTO[]> casesResponse =
-        Unirest.get(String.format("http://localhost:%d/cases/sampleunitids", port))
-            .basicAuth("admin", "secret")
-            .queryString("sampleUnitId", sampleUnitId)
-            .header("Content-Type", "application/json")
-            .asObject(CaseDetailsDTO[].class);
-    CaseDetailsDTO caseDetailsDTO = casesResponse.getBody()[0];
-    assertEquals(CaseGroupStatus.COMPLETE, caseDetailsDTO.getCaseGroup().getCaseGroupStatus());
-    assertEquals(1, caseDetailsDTO.getResponses().size());
-    assertEquals("OFFLINE", caseDetailsDTO.getResponses().get(0).getInboundChannel());
+  @After
+  public void testTearDown() {
     pubSubEmulator.testTeardown();
   }
 
   @Test
   public void testCaseNotificationReceiverIsReceivingMessageFromPubSub() throws Exception {
-    pubSubEmulator.testInit();
     String json = readFileAsString(receiptFile);
     pubSubEmulator.publishMessage(json);
     Thread.sleep(2000);
@@ -141,19 +108,6 @@ public class CaseReceiptReceiverIT {
     // in rabbit
     caseReceipt.setInboundChannel(InboundChannel.ONLINE);
     Mockito.verify(caseReceiptReceiver, Mockito.times(1)).process(caseReceipt);
-    pubSubEmulator.testTeardown();
-  }
-
-  private void startCase(String caseId) throws Exception {
-    CaseEventCreationRequestDTO caseEvent = new CaseEventCreationRequestDTO();
-    caseEvent.setCategory(CategoryDTO.CategoryName.EQ_LAUNCH);
-    caseEvent.setCreatedBy("test");
-    caseEvent.setDescription("test");
-    Unirest.post(String.format("http://localhost:%d/cases/%s/events", port, caseId))
-        .basicAuth("admin", "secret")
-        .header("Content-Type", "application/json")
-        .body(caseEvent)
-        .asObject(CreatedCaseEventDTO.class);
   }
 
   private static String readFileAsString(String file) throws Exception {

@@ -9,6 +9,7 @@ import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PubsubMessage;
+import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -23,15 +24,15 @@ public class PubSubSubscription {
   private static final Logger log = LoggerFactory.getLogger(PubSubSubscription.class);
   @Autowired private AppConfig appConfig;
   @Autowired private CaseReceiptReceiver caseReceiptReceiver;
+  @Autowired private PubSub pubSub;
 
   @EventListener(ApplicationReadyEvent.class)
-  public void caseNotificationSubscription() {
+  public void caseNotificationSubscription() throws IOException {
     ProjectSubscriptionName subscriptionName =
         ProjectSubscriptionName.of(
             appConfig.getGcp().getProject(), appConfig.getGcp().getReceiptSubscription());
     MessageReceiver receiver = createMessageReceiver();
-    Subscriber subscriber;
-    subscriber = Subscriber.newBuilder(subscriptionName, receiver).build();
+    Subscriber subscriber = pubSub.getCaseReceiptSubscriber(receiver);
     subscriber.startAsync().awaitRunning();
     log.with("subscription", subscriptionName.toString())
         .info("Listening for messages on subscription");

@@ -76,7 +76,7 @@ public class PubSubEmulator {
     try {
       ByteString data = ByteString.copyFromUtf8(message);
       PubsubMessage pubsubMessage = PubsubMessage.newBuilder().setData(data).build();
-      TopicName topicName = TopicName.of(PROJECT_ID, "ras-rm-receipt");
+      TopicName topicName = TopicName.of(PROJECT_ID, TOPIC_ID);
       Publisher publisher = getEmulatorPublisher(topicName);
       log.with("publisher", publisher).info("Publishing message to pubsub emulator");
       ApiFuture<String> messageIdFuture = publisher.publish(pubsubMessage);
