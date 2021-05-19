@@ -138,3 +138,4 @@ retries:
 gcp:
   project: ras-rm-sandbox
   receiptSubscription: ras-rm-receipt
+  caseNotificationTopic: "test_topic"

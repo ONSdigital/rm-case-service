@@ -77,10 +77,11 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
 
   @RequestMapping(value = "/cases/{collectionExerciseId}", method = RequestMethod.GET)
   public ResponseEntity findNumberOfCases(
-          @PathVariable("collectionExerciseId") final UUID collectionExerciseId)
-          throws CTPException {
-    log.with("collectionExerciseId", collectionExerciseId).debug("Finding number of cases against collectionExercise");
-    Long numberOfCases = caseGroupService.getNumberOfCasesAgainstCollectionExerciseId(collectionExerciseId);
+      @PathVariable("collectionExerciseId") final UUID collectionExerciseId) throws CTPException {
+    log.with("collectionExerciseId", collectionExerciseId)
+        .debug("Finding number of cases against collectionExercise");
+    Long numberOfCases =
+        caseGroupService.getNumberOfCasesAgainstCollectionExerciseId(collectionExerciseId);
     return ResponseEntity.ok(numberOfCases);
   }
 
@@ -102,8 +103,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
     }
 
     List<CaseGroupDTO> resultList =
-        caseGroupList
-            .stream()
+        caseGroupList.stream()
             .map(cg -> mapperFacade.map(cg, CaseGroupDTO.class))
             .collect(Collectors.toList());
 

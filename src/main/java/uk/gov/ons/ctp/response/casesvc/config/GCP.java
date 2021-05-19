@@ -5,7 +5,7 @@ import lombok.Data;
 /** Config POJO for GCP params */
 @Data
 public class GCP {
-  private String project;
-  private String receiptSubscription;
-
+  String project;
+  String receiptSubscription;
+  String caseNotificationTopic;
 }

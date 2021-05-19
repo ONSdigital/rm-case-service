@@ -150,8 +150,7 @@ public class CaseGroupService {
     }
     // get published collection exercise
     List<CollectionExerciseDTO> publishedCollexs =
-        collectionExercises
-            .stream()
+        collectionExercises.stream()
             .filter(
                 ce ->
                     ce.getState().toString().equals("READY_FOR_LIVE")
@@ -167,13 +166,13 @@ public class CaseGroupService {
     return caseGroupRepo.retrieveByPartyIdInListOfCollEx(partyId, collExs);
   }
 
-  public Long getNumberOfCasesAgainstCollectionExerciseId(UUID collectionExerciseId) throws CTPException {
+  public Long getNumberOfCasesAgainstCollectionExerciseId(UUID collectionExerciseId)
+      throws CTPException {
     Long numberOfCases = caseGroupRepo.findCasesAgainstCollectionExerciseID(collectionExerciseId);
     if (numberOfCases == null) {
       throw new CTPException(
-              CTPException.Fault.RESOURCE_NOT_FOUND,
-              String.format("Cannot find cases against collection exercise %s",
-                      collectionExerciseId));
+          CTPException.Fault.RESOURCE_NOT_FOUND,
+          String.format("Cannot find cases against collection exercise %s", collectionExerciseId));
     }
     return numberOfCases;
   }

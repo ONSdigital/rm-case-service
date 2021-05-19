@@ -50,14 +50,10 @@ import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseIacAuditRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
-import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnit;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitChildren;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
-import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.*;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
 import uk.gov.ons.ctp.response.lib.action.ActionPlanDTO;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
@@ -266,7 +262,7 @@ public class CaseServiceTest {
     verify(caseIacAuditService, times(0)).disableAllIACsForCase(any(Case.class));
     // event was saved
     verify(caseEventRepo, times(1)).save(caseEvent);
-    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
+    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotificationDTO.class));
     verify(actionSvcClient, times(0))
         .postAction(any(String.class), any(UUID.class), any(String.class));
   }
@@ -285,7 +281,8 @@ public class CaseServiceTest {
 
     CaseEvent caseEvent =
         fabricateEvent(
-            CategoryDTO.CategoryName.LACK_OF_COMPUTER_INTERNET_ACCESS, ACTIONABLE_HOUSEHOLD_CASE_FK);
+            CategoryDTO.CategoryName.LACK_OF_COMPUTER_INTERNET_ACCESS,
+            ACTIONABLE_HOUSEHOLD_CASE_FK);
     caseService.createCaseEvent(caseEvent);
 
     verify(caseRepo).findById(ACTIONABLE_HOUSEHOLD_CASE_FK);
@@ -302,7 +299,7 @@ public class CaseServiceTest {
     verify(caseIacAuditService, times(0)).disableAllIACsForCase(any(Case.class));
 
     // action service should be told of case state change
-    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
+    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotificationDTO.class));
 
     // no new action to be created
     verify(actionSvcClient, times(0))
@@ -341,7 +338,7 @@ public class CaseServiceTest {
     assertEquals(CaseState.INACTIONABLE, caseSaved.getState());
 
     // action service should be told of case state change
-    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
+    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotificationDTO.class));
 
     // no new action to be created
     verify(actionSvcClient, times(0))
@@ -383,7 +380,7 @@ public class CaseServiceTest {
     verify(caseIacAuditService, times(0)).disableAllIACsForCase(any(Case.class));
 
     // action service should NOT be told of case state change
-    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
+    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotificationDTO.class));
 
     // no new action to be created
     verify(actionSvcClient, times(0))
@@ -418,7 +415,7 @@ public class CaseServiceTest {
     verify(caseIacAuditService, never()).disableAllIACsForCase(any(Case.class));
     verify(caseSvcStateTransitionManager, never())
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
+    verify(notificationPublisher, never()).sendNotification(any(CaseNotificationDTO.class));
     verify(actionSvcClient, never())
         .postAction(any(String.class), any(UUID.class), any(String.class));
   }
@@ -448,7 +445,7 @@ public class CaseServiceTest {
     verify(caseIacAuditService, never()).disableAllIACsForCase(any(Case.class));
     verify(caseSvcStateTransitionManager, never())
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
+    verify(notificationPublisher, never()).sendNotification(any(CaseNotificationDTO.class));
     verify(actionSvcClient, never())
         .postAction(any(String.class), any(UUID.class), any(String.class));
   }
@@ -478,7 +475,7 @@ public class CaseServiceTest {
     verify(caseIacAuditService, never()).disableAllIACsForCase(any(Case.class));
     verify(caseSvcStateTransitionManager, never())
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
+    verify(notificationPublisher, never()).sendNotification(any(CaseNotificationDTO.class));
     verify(actionSvcClient, never())
         .postAction(any(String.class), any(UUID.class), any(String.class));
   }
@@ -508,7 +505,7 @@ public class CaseServiceTest {
     verify(caseIacAuditService, never()).disableAllIACsForCase(any(Case.class));
     verify(caseSvcStateTransitionManager, never())
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
+    verify(notificationPublisher, never()).sendNotification(any(CaseNotificationDTO.class));
     verify(actionSvcClient, never())
         .postAction(any(String.class), any(UUID.class), any(String.class));
   }
@@ -589,7 +586,7 @@ public class CaseServiceTest {
             caseGroups.get(CASEGROUP_PK - 1),
             CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED,
             targetCase.getPartyId());
-    verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
+    verify(notificationPublisher, never()).sendNotification(any(CaseNotificationDTO.class));
     verify(actionSvcClient, never())
         .postAction(any(String.class), any(UUID.class), any(String.class));
   }
@@ -620,7 +617,7 @@ public class CaseServiceTest {
     verify(caseIacAuditService, never()).disableAllIACsForCase(any(Case.class));
     verify(caseSvcStateTransitionManager, never())
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
+    verify(notificationPublisher, never()).sendNotification(any(CaseNotificationDTO.class));
     verify(actionSvcClient, never())
         .postAction(any(String.class), any(UUID.class), any(String.class));
   }
@@ -651,7 +648,7 @@ public class CaseServiceTest {
     verify(caseRepo, never()).saveAndFlush(any(Case.class));
     verify(caseSvcStateTransitionManager, never())
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
+    verify(notificationPublisher, never()).sendNotification(any(CaseNotificationDTO.class));
     verify(actionSvcClient, never())
         .postAction(any(String.class), any(UUID.class), any(String.class));
   }
@@ -668,7 +665,8 @@ public class CaseServiceTest {
     Category respondentEnrolledCategory = categories.get(CAT_RESPONDENT_ENROLED);
     when(categoryRepo.findById(CategoryDTO.CategoryName.RESPONDENT_ENROLED))
         .thenReturn(Optional.of(respondentEnrolledCategory));
-    when(caseGroupRepo.findById(CASEGROUP_PK)).thenReturn(Optional.of(caseGroups.get(CASEGROUP_PK)));
+    when(caseGroupRepo.findById(CASEGROUP_PK))
+        .thenReturn(Optional.of(caseGroups.get(CASEGROUP_PK)));
     List<CaseGroup> caseGroupList = Collections.singletonList(caseGroups.get(CASEGROUP_PK));
     when(caseGroupService.findCaseGroupsForExecutedCollectionExercises(any()))
         .thenReturn(caseGroupList);
@@ -696,7 +694,7 @@ public class CaseServiceTest {
     assertEquals(CaseState.ACTIONABLE, caze.getState());
     assertEquals(true, caze.isActiveEnrolment());
 
-    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
+    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotificationDTO.class));
     // no new action to be created
     verify(actionSvcClient, times(0))
         .postAction(any(String.class), any(UUID.class), any(String.class));
@@ -838,7 +836,7 @@ public class CaseServiceTest {
     verify(caseIacAuditService, never()).disableAllIACsForCase(any(Case.class));
     verify(caseSvcStateTransitionManager, never())
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
+    verify(notificationPublisher, never()).sendNotification(any(CaseNotificationDTO.class));
     verify(actionSvcClient, never())
         .postAction(any(String.class), any(UUID.class), any(String.class));
   }
@@ -870,7 +868,7 @@ public class CaseServiceTest {
     verify(caseIacAuditService, never()).disableAllIACsForCase(any(Case.class));
     verify(caseSvcStateTransitionManager, never())
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, never()).sendNotification(any(CaseNotification.class));
+    verify(notificationPublisher, never()).sendNotification(any(CaseNotificationDTO.class));
     verify(actionSvcClient, never())
         .postAction(any(String.class), any(UUID.class), any(String.class));
   }
@@ -901,7 +899,7 @@ public class CaseServiceTest {
     verify(caseIacAuditService, times(1)).disableAllIACsForCase(any(Case.class));
     verify(caseSvcStateTransitionManager, times(1))
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
+    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotificationDTO.class));
   }
 
   /**
@@ -919,7 +917,6 @@ public class CaseServiceTest {
     Category successfulResponseUploadedCategory = categories.get(CAT_SUCCESSFUL_RESPONSE_UPLOAD);
     when(categoryRepo.findById(CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD))
         .thenReturn(Optional.of(successfulResponseUploadedCategory));
-
 
     CaseEvent caseEvent =
         fabricateEvent(
@@ -943,7 +940,7 @@ public class CaseServiceTest {
     Case oldCase = argument.getAllValues().get(0);
     assertEquals(CaseState.INACTIONABLE, oldCase.getState());
 
-    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
+    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotificationDTO.class));
     // no new action to be created
     verify(actionSvcClient, times(0))
         .postAction(any(String.class), any(UUID.class), any(String.class));
@@ -980,7 +977,7 @@ public class CaseServiceTest {
     verify(caseEventRepo, times(1)).save(caseEvent);
     ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
     verify(caseRepo, times(1)).saveAndFlush(argument.capture());
-    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotification.class));
+    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotificationDTO.class));
   }
 
   /**
@@ -1010,7 +1007,8 @@ public class CaseServiceTest {
   @Test
   public void testGenerateEnrolmentCodeCaseEvent() throws CTPException {
     Case actionableBCase = cases.get(ACTIONABLE_BUSINESS_UNIT_CASE_FK);
-    when(caseRepo.findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK)).thenReturn(Optional.of(actionableBCase));
+    when(caseRepo.findById(ACTIONABLE_BUSINESS_UNIT_CASE_FK))
+        .thenReturn(Optional.of(actionableBCase));
     when(categoryRepo.findById(CategoryDTO.CategoryName.GENERATE_ENROLMENT_CODE))
         .thenReturn(Optional.of(categories.get(CAT_GENERATE_ENROLMENT_CODE)));
     when(internetAccessCodeSvcClient.isIacActive(actionableBCase.getIac())).thenReturn(false);
@@ -1096,7 +1094,8 @@ public class CaseServiceTest {
    */
   private void mockupCaseGroupRepo() throws Exception {
     List<CaseGroup> caseGroups = FixtureHelper.loadClassFixtures(CaseGroup[].class);
-    when(caseGroupRepo.findById(CASEGROUP_PK)).thenReturn(Optional.of(caseGroups.get(CASEGROUP_PK - 1)));
+    when(caseGroupRepo.findById(CASEGROUP_PK))
+        .thenReturn(Optional.of(caseGroups.get(CASEGROUP_PK - 1)));
   }
 
   /**

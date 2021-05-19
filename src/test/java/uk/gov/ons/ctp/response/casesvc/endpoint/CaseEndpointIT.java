@@ -8,15 +8,18 @@ import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemp
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import org.junit.*;
+import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -25,13 +28,10 @@ import uk.gov.ons.ctp.response.casesvc.CaseCreator;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
-import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
+import uk.gov.ons.ctp.response.casesvc.message.TestPubSubMessage;
+import uk.gov.ons.ctp.response.casesvc.representation.*;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
-import uk.gov.ons.ctp.response.casesvc.representation.CreatedCaseEventDTO;
+import uk.gov.ons.ctp.response.casesvc.utility.PubSubEmulator;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
 
@@ -40,10 +40,15 @@ import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CaseEndpointIT {
-
   private UUID collectionExerciseId;
   private Map<String, String> metadata;
+  private PubSubEmulator pubSubEmulator = new PubSubEmulator();
+
+  @ClassRule
+  public static final EnvironmentVariables environmentVariables =
+      new EnvironmentVariables().set("PUBSUB_EMULATOR_HOST", "127.0.0.1:18681");
 
   @ClassRule
   public static WireMockRule wireMockRule =
@@ -55,6 +60,8 @@ public class CaseEndpointIT {
   @Autowired private CollectionExerciseSvcClient collectionExerciseSvcClient;
   @Autowired private CaseRepository caseRepository;
   @Autowired private CaseEventRepository caseEventRepository;
+
+  public CaseEndpointIT() throws IOException {}
 
   @BeforeClass
   public static void setUp() throws InterruptedException {
@@ -87,22 +94,23 @@ public class CaseEndpointIT {
 
   @Test
   public void ensureSampleUnitIdReceived() throws Exception {
+    pubSubEmulator.testInit();
+    TestPubSubMessage message = new TestPubSubMessage();
     UUID sampleUnitId = UUID.randomUUID();
-
-    CaseNotification caseNotification =
-        caseCreator.sendSampleUnit("LMS0001", "H", sampleUnitId, collectionExerciseId);
-
-    assertThat(caseNotification.getSampleUnitId()).isEqualTo(sampleUnitId.toString());
+    caseCreator.postSampleUnit("LMS0001", "H", sampleUnitId, collectionExerciseId);
+    CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
+    assertThat(caseNotificationDTO.getSampleUnitId()).isEqualTo(sampleUnitId.toString());
+    pubSubEmulator.testTeardown();
   }
 
   @Test
   public void testCreateSocialCaseEvents() throws Exception {
-
+    pubSubEmulator.testInit();
     // Given
-    CaseNotification caseNotification =
-        caseCreator.sendSampleUnit("LMS0002", "H", UUID.randomUUID(), collectionExerciseId);
-
-    String caseID = caseNotification.getCaseId();
+    TestPubSubMessage message = new TestPubSubMessage();
+    caseCreator.postSampleUnit("LMS0002", "H", UUID.randomUUID(), collectionExerciseId);
+    CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
+    String caseID = caseNotificationDTO.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
         new CaseEventCreationRequestDTO(
             "TestEvent", CategoryName.ACTION_CREATED, "SYSTEM", "SOCIALNOT", metadata);
@@ -117,16 +125,17 @@ public class CaseEndpointIT {
 
     // Then
     assertThat(createdCaseResponse.getStatus()).isEqualTo(201);
+    pubSubEmulator.testTeardown();
   }
 
   @Test
   public void ensureCaseReturnedBySampleUnitId() throws Exception {
-
+    pubSubEmulator.testInit();
+    TestPubSubMessage message = new TestPubSubMessage();
     UUID sampleUnitId = UUID.randomUUID();
-    CaseNotification caseNotif =
-        caseCreator.sendSampleUnit("LMS0003", "H", sampleUnitId, collectionExerciseId);
-
-    UUID caseId = UUID.fromString(caseNotif.getCaseId());
+    caseCreator.postSampleUnit("LMS0003", "H", sampleUnitId, collectionExerciseId);
+    CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
+    UUID caseId = UUID.fromString(caseNotificationDTO.getCaseId());
 
     HttpResponse<CaseDetailsDTO[]> casesResponse =
         Unirest.get(String.format("http://localhost:%d/cases/sampleunitids", port))
@@ -138,6 +147,7 @@ public class CaseEndpointIT {
     UUID returnedCaseId = casesResponse.getBody()[0].getId();
 
     assertThat(returnedCaseId).isEqualTo(caseId);
+    pubSubEmulator.testTeardown();
   }
 
   /**
@@ -146,12 +156,12 @@ public class CaseEndpointIT {
    */
   @Test
   public void testCreateCollectionInstrumentDownloadedCaseEventWithBCaseSuccess() throws Exception {
-
+    pubSubEmulator.testInit();
+    TestPubSubMessage message = new TestPubSubMessage();
     // Given
-    CaseNotification caseNotification =
-        caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
-
-    String caseID = caseNotification.getCaseId();
+    caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
+    CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
+    String caseID = caseNotificationDTO.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
         new CaseEventCreationRequestDTO(
             "TestEvent",
@@ -179,6 +189,7 @@ public class CaseEndpointIT {
     assertThat(createdCaseResponse.getStatus()).isEqualTo(201);
     assertThat(affectedCase.getCaseGroup().getCaseGroupStatus())
         .isEqualTo(CaseGroupStatus.INPROGRESS);
+    pubSubEmulator.testTeardown();
   }
 
   /**
@@ -187,12 +198,12 @@ public class CaseEndpointIT {
    */
   @Test
   public void testCreateCollectionInstrumentErrorCaseEventWithBCaseSuccess() throws Exception {
-
+    pubSubEmulator.testInit();
+    TestPubSubMessage message = new TestPubSubMessage();
     // Given
-    CaseNotification caseNotification =
-        caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
-
-    String caseID = caseNotification.getCaseId();
+    caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
+    CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
+    String caseID = caseNotificationDTO.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
         new CaseEventCreationRequestDTO(
             "TestEvent", CategoryName.COLLECTION_INSTRUMENT_ERROR, "SYSTEM", "DUMMY", metadata);
@@ -216,6 +227,7 @@ public class CaseEndpointIT {
     assertThat(createdCaseResponse.getStatus()).isEqualTo(201);
     assertThat(affectedCase.getCaseGroup().getCaseGroupStatus())
         .isNotEqualTo(CaseGroupStatus.INPROGRESS);
+    pubSubEmulator.testTeardown();
   }
 
   /**
@@ -224,12 +236,12 @@ public class CaseEndpointIT {
    */
   @Test
   public void testCreateSuccessfulResponseUploadCaseEventWithBCaseSuccess() throws Exception {
-
+    pubSubEmulator.testInit();
+    TestPubSubMessage message = new TestPubSubMessage();
     // Given
-    CaseNotification caseNotification =
-        caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
-
-    String caseID = caseNotification.getCaseId();
+    caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
+    CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
+    String caseID = caseNotificationDTO.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
         new CaseEventCreationRequestDTO(
             "TestEvent", CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, "SYSTEM", "DUMMY", metadata);
@@ -253,6 +265,7 @@ public class CaseEndpointIT {
     assertThat(createdCaseResponse.getStatus()).isEqualTo(201);
     assertThat(affectedCase.getCaseGroup().getCaseGroupStatus())
         .isEqualTo(CaseGroupStatus.COMPLETE);
+    pubSubEmulator.testTeardown();
   }
 
   /**
@@ -260,46 +273,13 @@ public class CaseEndpointIT {
    * transitioned to Complete.
    */
   @Test
-  public void testCreateUnsuccessfulResponseUploadCaseEventWithBCaseSuccess() throws Exception {
-
-    // Given
-    CaseNotification caseNotification =
-        caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
-
-    String caseID = caseNotification.getCaseId();
-    CaseEventCreationRequestDTO caseEventCreationRequestDTO =
-        new CaseEventCreationRequestDTO(
-            "TestEvent", CategoryName.UNSUCCESSFUL_RESPONSE_UPLOAD, "SYSTEM", "DUMMY", metadata);
-
-    // When
-    HttpResponse<CreatedCaseEventDTO> createdCaseResponse =
-        Unirest.post("http://localhost:" + port + "/cases/" + caseID + "/events")
-            .basicAuth("admin", "secret")
-            .header("Content-Type", "application/json")
-            .body(caseEventCreationRequestDTO)
-            .asObject(CreatedCaseEventDTO.class);
-
-    HttpResponse<CaseDetailsDTO> returnedCaseResponse =
-        Unirest.get("http://localhost:" + port + "/cases/" + caseID)
-            .basicAuth("admin", "secret")
-            .asObject(CaseDetailsDTO.class);
-
-    CaseDetailsDTO affectedCase = returnedCaseResponse.getBody();
-
-    // Then
-    assertThat(createdCaseResponse.getStatus()).isEqualTo(201);
-    assertThat(affectedCase.getCaseGroup().getCaseGroupStatus())
-        .isNotEqualTo(CaseGroupStatus.COMPLETE);
-  }
-
-  @Test
   public void testGetCaseEventsWithCategory() throws Exception {
-
+    pubSubEmulator.testInit();
+    TestPubSubMessage message = new TestPubSubMessage();
     // Given
-    CaseNotification caseNotification =
-        caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
-
-    String caseID = caseNotification.getCaseId();
+    caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
+    CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
+    String caseID = caseNotificationDTO.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
         new CaseEventCreationRequestDTO(
             "TestEvent", CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, "SYSTEM", "DUMMY", metadata);
@@ -331,11 +311,12 @@ public class CaseEndpointIT {
     assertThat(returnedCaseEvents[0].getCategory())
         .isEqualTo(CategoryName.SUCCESSFUL_RESPONSE_UPLOAD);
     assertThat(returnedCaseEvents[0].getCreatedDateTime()).isNotNull();
+    pubSubEmulator.testTeardown();
   }
 
   @Test
   public void testGetCaseEventsWithCategoryMissingCaseShouldFail() throws Exception {
-
+    pubSubEmulator.testInit();
     // Given
 
     // When
@@ -352,16 +333,17 @@ public class CaseEndpointIT {
 
     // Then
     assertThat(returnedCaseEventsResponse.getStatus()).isEqualTo(404);
+    pubSubEmulator.testTeardown();
   }
 
   @Test
   public void testGetCaseEventsWithNonExistentCategory() throws Exception {
-
+    pubSubEmulator.testInit();
     // Given
-    CaseNotification caseNotification =
-        caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
-
-    String caseID = caseNotification.getCaseId();
+    TestPubSubMessage message = new TestPubSubMessage();
+    caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
+    CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
+    String caseID = caseNotificationDTO.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
         new CaseEventCreationRequestDTO(
             "TestEvent", CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, "SYSTEM", "DUMMY", metadata);
@@ -387,16 +369,17 @@ public class CaseEndpointIT {
 
     // Then
     assertThat(returnedCaseEventsResponse.getStatus()).isEqualTo(400);
+    pubSubEmulator.testTeardown();
   }
 
   @Test
   public void testGetNoCaseEventsWithCategory() throws Exception {
-
+    pubSubEmulator.testInit();
     // Given
-    CaseNotification caseNotification =
-        caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
-
-    String caseID = caseNotification.getCaseId();
+    TestPubSubMessage message = new TestPubSubMessage();
+    caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
+    CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
+    String caseID = caseNotificationDTO.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
         new CaseEventCreationRequestDTO(
             "TestEvent", CategoryName.SUCCESSFUL_RESPONSE_UPLOAD, "SYSTEM", "DUMMY", metadata);
@@ -422,5 +405,6 @@ public class CaseEndpointIT {
 
     // Then
     assertThat(returnedCaseEventsResponse.getStatus()).isEqualTo(204);
+    pubSubEmulator.testTeardown();
   }
 }

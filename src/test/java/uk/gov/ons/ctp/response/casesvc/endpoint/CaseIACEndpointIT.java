@@ -16,13 +16,15 @@ import com.godaddy.logging.LoggerFactory;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import java.io.IOException;
 import java.util.Random;
 import java.util.UUID;
 import org.junit.*;
+import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -30,9 +32,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.gov.ons.ctp.response.casesvc.CaseCreator;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
-import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
+import uk.gov.ons.ctp.response.casesvc.message.TestPubSubMessage;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseIACDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseNotificationDTO;
+import uk.gov.ons.ctp.response.casesvc.utility.PubSubEmulator;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
 
@@ -45,6 +49,11 @@ public class CaseIACEndpointIT {
   private UUID collectionExerciseId;
 
   private static final Logger log = LoggerFactory.getLogger(CaseIACEndpointIT.class);
+  private PubSubEmulator pubSubEmulator = new PubSubEmulator();
+
+  @ClassRule
+  public static final EnvironmentVariables environmentVariables =
+      new EnvironmentVariables().set("PUBSUB_EMULATOR_HOST", "127.0.0.1:18681");
 
   @ClassRule
   public static WireMockRule wireMockRule =
@@ -54,6 +63,8 @@ public class CaseIACEndpointIT {
 
   @Autowired private CaseCreator caseCreator;
   @Autowired private CollectionExerciseSvcClient collectionExerciseSvcClient;
+
+  public CaseIACEndpointIT() throws IOException {}
 
   @BeforeClass
   public static void setUp() throws InterruptedException {
@@ -81,38 +92,41 @@ public class CaseIACEndpointIT {
 
   @Test
   public void shouldCreateNewIACCode() throws Exception {
-
+    pubSubEmulator.testInit();
+    TestPubSubMessage pubSubMessage = new TestPubSubMessage();
     // Given
-    CaseNotification caseNotification =
-        caseCreator.sendSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
-    String notExpected = getCurrentIACCode(caseNotification.getCaseId());
+    caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
+    CaseNotificationDTO caseNotificationDTO = pubSubMessage.getPubSubCaseNotification();
+    String notExpected = getCurrentIACCode(caseNotificationDTO.getCaseId());
 
     // When
-    HttpResponse<String> actual = generateNewIACCode(caseNotification.getCaseId());
+    HttpResponse<String> actual = generateNewIACCode(caseNotificationDTO.getCaseId());
 
     // Then
     assertThat(actual.getStatus(), is(equalTo(HttpStatus.CREATED.value()))); // assert IAC in model
     assertThat(actual.getBody(), not(equalTo(notExpected)));
+    pubSubEmulator.testTeardown();
   }
 
   @Test
   public void shouldGetIacCodes() throws Exception {
-
+    pubSubEmulator.testInit();
+    TestPubSubMessage pubSubMessage = new TestPubSubMessage();
     // Given
-    CaseNotification caseNotification =
-        caseCreator.sendSampleUnit("BS123456", "B", UUID.randomUUID(), collectionExerciseId);
-
+    caseCreator.postSampleUnit("BS123456", "B", UUID.randomUUID(), collectionExerciseId);
+    CaseNotificationDTO caseNotificationDTO = pubSubMessage.getPubSubCaseNotification();
     // When
     HttpResponse<CaseIACDTO[]> iacs =
         Unirest.get("http://localhost:{port}/cases/{caseId}/iac")
             .routeParam("port", Integer.toString(port))
-            .routeParam("caseId", caseNotification.getCaseId())
+            .routeParam("caseId", caseNotificationDTO.getCaseId())
             .basicAuth("admin", "secret")
             .header("Content-Type", "application/json")
             .asObject(CaseIACDTO[].class);
 
     assertThat(iacs.getBody(), arrayWithSize(1));
     assertNotNull(iacs.getBody()[0]);
+    pubSubEmulator.testTeardown();
   }
 
   private String getCurrentIACCode(String caseId) throws UnirestException {

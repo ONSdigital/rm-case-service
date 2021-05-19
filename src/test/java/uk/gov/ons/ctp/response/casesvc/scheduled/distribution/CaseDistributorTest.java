@@ -27,8 +27,8 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.EventPublisher;
-import uk.gov.ons.ctp.response.casesvc.message.notification.CaseNotification;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseNotificationDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.lib.common.FixtureHelper;
@@ -113,7 +113,7 @@ public class CaseDistributorTest {
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(caseService, times(0))
         .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
+    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotificationDTO.class));
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class), any(Boolean.class));
     verify(caseDistributionListManager, times(0)).unlockContainer();
   }
@@ -139,7 +139,7 @@ public class CaseDistributorTest {
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(caseService, times(0))
         .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
+    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotificationDTO.class));
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class), any(Boolean.class));
     verify(caseDistributionListManager, times(1)).unlockContainer();
   }
@@ -166,7 +166,7 @@ public class CaseDistributorTest {
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(caseService, times(0))
         .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
+    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotificationDTO.class));
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class), any(Boolean.class));
     verify(caseDistributionListManager, times(0)).unlockContainer();
   }
@@ -197,7 +197,7 @@ public class CaseDistributorTest {
             CaseState.REPLACEMENT_INIT, CaseDTO.CaseEvent.REPLACED))
         .thenReturn(CaseState.ACTIONABLE);
 
-    CaseNotification caseNotification = new CaseNotification();
+    CaseNotificationDTO caseNotification = new CaseNotificationDTO();
     caseNotification.setCaseId(cases.get(0).getId().toString());
     when(caseService.prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class)))
         .thenReturn(caseNotification);
@@ -211,7 +211,7 @@ public class CaseDistributorTest {
     verify(caseService, times(5)).saveCaseIacAudit(any());
     verify(caseService, times(5))
         .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, times(5)).sendNotification(any(CaseNotification.class));
+    verify(notificationPublisher, times(5)).sendNotification(any(CaseNotificationDTO.class));
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class), any(Boolean.class));
     verify(caseDistributionListManager, times(0)).unlockContainer();
   }
@@ -246,7 +246,7 @@ public class CaseDistributorTest {
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
     verify(caseService, times(0))
         .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
+    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotificationDTO.class));
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class), any(Boolean.class));
     verify(caseDistributionListManager, times(0)).unlockContainer();
   }
@@ -289,7 +289,7 @@ public class CaseDistributorTest {
     verify(caseRepo, times(5)).saveAndFlush(any(Case.class));
     verify(caseService, times(0))
         .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotification.class));
+    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotificationDTO.class));
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class), any(Boolean.class));
     verify(caseDistributionListManager, times(0)).unlockContainer();
   }
