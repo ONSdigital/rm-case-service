@@ -1,13 +1,8 @@
 package uk.gov.ons.ctp.response.casesvc;
 
-import com.godaddy.logging.Logger;
-import com.godaddy.logging.LoggerFactory;
 import com.godaddy.logging.LoggingConfigs;
-import com.google.cloud.pubsub.v1.AckReplyConsumer;
-import com.google.cloud.pubsub.v1.MessageReceiver;
-import com.google.cloud.pubsub.v1.Subscriber;
-import com.google.pubsub.v1.ProjectSubscriptionName;
-import com.google.pubsub.v1.PubsubMessage;
+import java.time.Clock;
+import javax.annotation.PostConstruct;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -44,9 +39,6 @@ import uk.gov.ons.ctp.response.lib.common.rest.RestUtility;
 import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManagerFactory;
 import uk.gov.ons.ctp.response.lib.common.time.DateTimeUtil;
-
-import javax.annotation.PostConstruct;
-import java.time.Clock;
 
 /** The 'main' entry point for the CaseSvc SpringBoot Application. */
 @SpringBootApplication
@@ -276,5 +268,4 @@ public class CaseSvcApplication {
   public DateTimeUtil dateTimeUtil() {
     return new DateTimeUtil();
   }
-
 }

@@ -20,43 +20,43 @@ import uk.gov.ons.ctp.response.lib.common.error.CTPException;
 
 @Component
 public class PubSubSubscription {
-    private static final Logger log = LoggerFactory.getLogger(PubSubSubscription.class);
-    @Autowired private AppConfig appConfig;
-    @Autowired private CaseReceiptReceiver caseReceiptReceiver;
+  private static final Logger log = LoggerFactory.getLogger(PubSubSubscription.class);
+  @Autowired private AppConfig appConfig;
+  @Autowired private CaseReceiptReceiver caseReceiptReceiver;
 
-    @EventListener(ApplicationReadyEvent.class)
-    public void caseNotificationSubscription() {
-        ProjectSubscriptionName subscriptionName =
-                ProjectSubscriptionName.of(
-                        appConfig.getGcp().getProject(),
-                        appConfig.getGcp().getReceiptSubscription());
-        MessageReceiver receiver = createMessageReceiver();
-        Subscriber subscriber;
-        subscriber = Subscriber.newBuilder(subscriptionName, receiver).build();
-        subscriber.startAsync().awaitRunning();
-        log.with("subscription", subscriptionName.toString()).info("Listening for messages on subscription");
-    }
+  @EventListener(ApplicationReadyEvent.class)
+  public void caseNotificationSubscription() {
+    ProjectSubscriptionName subscriptionName =
+        ProjectSubscriptionName.of(
+            appConfig.getGcp().getProject(), appConfig.getGcp().getReceiptSubscription());
+    MessageReceiver receiver = createMessageReceiver();
+    Subscriber subscriber;
+    subscriber = Subscriber.newBuilder(subscriptionName, receiver).build();
+    subscriber.startAsync().awaitRunning();
+    log.with("subscription", subscriptionName.toString())
+        .info("Listening for messages on subscription");
+  }
 
-    public MessageReceiver createMessageReceiver() {
-        return (PubsubMessage message, AckReplyConsumer consumer) -> {
-            String payload = message.getData().toStringUtf8();
-            log.with("payload", payload).info("Received a receipt");
-            try {
-                ObjectMapper mapper = new ObjectMapper();
-                CaseReceipt receipt = mapper.readValue(payload, CaseReceipt.class);
-                log.with("receipt", receipt).debug("Successfully serialised receipt");
-                receipt.setInboundChannel(InboundChannel.ONLINE);
-                try {
-                    caseReceiptReceiver.process(receipt);
-                } catch (CTPException e) {
-                    log.error("Error processing receipt", e);
-                    consumer.nack();
-                }
-                consumer.ack();
-            } catch (JsonProcessingException e) {
-                log.error("Error serialising receipt.", e);
-                consumer.nack();
-            }
-        };
-    }
+  public MessageReceiver createMessageReceiver() {
+    return (PubsubMessage message, AckReplyConsumer consumer) -> {
+      String payload = message.getData().toStringUtf8();
+      log.with("payload", payload).info("Received a receipt");
+      try {
+        ObjectMapper mapper = new ObjectMapper();
+        CaseReceipt receipt = mapper.readValue(payload, CaseReceipt.class);
+        log.with("receipt", receipt).debug("Successfully serialised receipt");
+        receipt.setInboundChannel(InboundChannel.ONLINE);
+        try {
+          caseReceiptReceiver.process(receipt);
+        } catch (CTPException e) {
+          log.error("Error processing receipt", e);
+          consumer.nack();
+        }
+        consumer.ack();
+      } catch (JsonProcessingException e) {
+        log.error("Error serialising receipt.", e);
+        consumer.nack();
+      }
+    };
+  }
 }
