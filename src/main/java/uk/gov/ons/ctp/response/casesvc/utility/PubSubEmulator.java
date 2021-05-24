@@ -83,7 +83,7 @@ public class PubSubEmulator {
       String messageId = messageIdFuture.get();
       log.with("messageId", messageId).info("Published message to pubsub emulator");
     } catch (IOException | InterruptedException | ExecutionException e) {
-      e.printStackTrace();
+      log.error("Failed to publish message", e);
     }
   }
 

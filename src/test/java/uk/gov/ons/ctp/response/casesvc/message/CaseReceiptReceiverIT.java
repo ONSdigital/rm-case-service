@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.message;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
+import static org.junit.Assert.fail;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
@@ -36,6 +37,7 @@ public class CaseReceiptReceiverIT {
       pubSubEmulator = new PubSubEmulator();
     } catch (IOException e) {
       e.printStackTrace();
+      fail("Failed to create pubsub emulator");
     }
   }
 
