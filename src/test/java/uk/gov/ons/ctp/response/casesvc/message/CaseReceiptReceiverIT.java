@@ -1,7 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.message;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
-import static org.junit.Assert.fail;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
@@ -30,16 +29,7 @@ import uk.gov.ons.ctp.response.casesvc.utility.PubSubEmulator;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class CaseReceiptReceiverIT {
 
-  private static PubSubEmulator pubSubEmulator;
-
-  static {
-    try {
-      pubSubEmulator = new PubSubEmulator();
-    } catch (IOException e) {
-      e.printStackTrace();
-      fail("Failed to create pubsub emulator");
-    }
-  }
+  private static PubSubEmulator PUBSUBEMULATOR;
 
   private String receiptFile =
       "src/test/resources/uk/gov/ons/ctp/response/casesvc/message/receiptPubsub.json";
@@ -58,18 +48,19 @@ public class CaseReceiptReceiverIT {
 
   @BeforeClass
   public static void testSetup() throws IOException {
-    pubSubEmulator.testInit();
+    PUBSUBEMULATOR = new PubSubEmulator();
+    PUBSUBEMULATOR.testInit();
   }
 
   @AfterClass
   public static void testTearDown() {
-    pubSubEmulator.testTeardown();
+    PUBSUBEMULATOR.testTeardown();
   }
 
   @Test
   public void testCaseNotificationReceiverIsReceivingMessageFromPubSub() throws Exception {
     String json = readFileAsString(receiptFile);
-    pubSubEmulator.publishMessage(json);
+    PUBSUBEMULATOR.publishMessage(json);
     Thread.sleep(2000);
     ObjectMapper objectMapper = new ObjectMapper();
     CaseReceipt caseReceipt = objectMapper.readValue(json, CaseReceipt.class);
