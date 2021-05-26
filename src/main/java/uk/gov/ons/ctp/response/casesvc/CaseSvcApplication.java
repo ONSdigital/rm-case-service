@@ -32,14 +32,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.state.CaseSvcStateTransitionManagerFactory;
-import uk.gov.ons.ctp.response.lib.common.distributed.DistributedInstanceManager;
-import uk.gov.ons.ctp.response.lib.common.distributed.DistributedInstanceManagerRedissonImpl;
-import uk.gov.ons.ctp.response.lib.common.distributed.DistributedLatchManager;
-import uk.gov.ons.ctp.response.lib.common.distributed.DistributedLatchManagerRedissonImpl;
-import uk.gov.ons.ctp.response.lib.common.distributed.DistributedListManager;
-import uk.gov.ons.ctp.response.lib.common.distributed.DistributedListManagerRedissonImpl;
-import uk.gov.ons.ctp.response.lib.common.distributed.DistributedLockManager;
-import uk.gov.ons.ctp.response.lib.common.distributed.DistributedLockManagerRedissonImpl;
+import uk.gov.ons.ctp.response.lib.common.distributed.*;
 import uk.gov.ons.ctp.response.lib.common.error.RestExceptionHandler;
 import uk.gov.ons.ctp.response.lib.common.jackson.CustomObjectMapper;
 import uk.gov.ons.ctp.response.lib.common.rest.RestUtility;
@@ -81,7 +74,6 @@ public class CaseSvcApplication {
    * @param args runtime command line args
    */
   public static void main(final String[] args) {
-
     SpringApplication.run(CaseSvcApplication.class, args);
   }
 

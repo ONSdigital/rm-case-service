@@ -56,3 +56,8 @@ collection-exercise-svc:
     port: 38145
     username: admin
     password: secret
+
+gcp:
+  project: "test"
+  receiptSubscription: "test_subscription"
+  caseNotificationTopic: "test_topic"

@@ -136,5 +136,6 @@ retries:
   backoff: 5000
 
 gcp:
-  project: test
+  project: ras-rm-sandbox
+  receiptSubscription: ras-rm-receipt
   caseNotificationTopic: "test_topic"

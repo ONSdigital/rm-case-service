@@ -1,5 +1,8 @@
 package uk.gov.ons.ctp.response.casesvc.utility;
 
+import com.godaddy.logging.Logger;
+import com.godaddy.logging.LoggerFactory;
+import com.google.api.core.ApiFuture;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.api.gax.grpc.GrpcTransportChannel;
@@ -8,15 +11,18 @@ import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.cloud.pubsub.v1.*;
 import com.google.cloud.pubsub.v1.stub.GrpcSubscriberStub;
 import com.google.cloud.pubsub.v1.stub.SubscriberStubSettings;
+import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.*;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 /***
  * This is a PubSub Emulator class. This is a utility class which is used for testing pubsub function
  */
 public class PubSubEmulator {
+  private static final Logger log = LoggerFactory.getLogger(PubSubEmulator.class);
   private static final String HOST_PORT = "localhost:18681";
   public static final ManagedChannel CHANNEL =
       ManagedChannelBuilder.forTarget(HOST_PORT).usePlaintext().build();
@@ -64,6 +70,21 @@ public class PubSubEmulator {
             .setTransportChannelProvider(CHANNEL_PROVIDER)
             .setCredentialsProvider(CREDENTIAL_PROVIDER)
             .build());
+  }
+
+  public void publishMessage(String message) {
+    try {
+      ByteString data = ByteString.copyFromUtf8(message);
+      PubsubMessage pubsubMessage = PubsubMessage.newBuilder().setData(data).build();
+      TopicName topicName = TopicName.of(PROJECT_ID, TOPIC_ID);
+      Publisher publisher = getEmulatorPublisher(topicName);
+      log.with("publisher", publisher).info("Publishing message to pubsub emulator");
+      ApiFuture<String> messageIdFuture = publisher.publish(pubsubMessage);
+      String messageId = messageIdFuture.get();
+      log.with("messageId", messageId).info("Published message to pubsub emulator");
+    } catch (IOException | InterruptedException | ExecutionException e) {
+      log.error("Failed to publish message", e);
+    }
   }
 
   public void shutdown() {
