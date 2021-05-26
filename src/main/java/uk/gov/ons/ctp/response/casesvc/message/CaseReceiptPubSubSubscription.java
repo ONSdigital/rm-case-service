@@ -27,9 +27,11 @@ public class CaseReceiptPubSubSubscription {
   @Autowired private PubSub pubSub;
 
   /**
-   * Sets up a connection to the receipt subscription.  A receipt is sent to us from SDX
-   * when they receive and process a respondents EQ submission.
-   * @throws IOException */
+   * Sets up a connection to the receipt subscription. A receipt is sent to us from SDX when they
+   * receive and process a respondents EQ submission.
+   *
+   * @throws IOException
+   */
   @EventListener(ApplicationReadyEvent.class)
   public void caseReceiptSubscription() throws IOException {
     ProjectSubscriptionName subscriptionName =
