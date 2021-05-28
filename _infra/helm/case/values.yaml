@@ -71,6 +71,7 @@ gcp:
   project: ras-rm-sandbox
   receiptSubscription: ras-rm-receipt
   caseNotificationTopic: ras-rm-case-notification-topic-test
+  caseNotificationSubscription: ras-rm-case-notification-subscription-topic
 
 caseDistribution:
   retrievalMax: 1000

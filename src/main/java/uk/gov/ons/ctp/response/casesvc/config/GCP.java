@@ -8,4 +8,5 @@ public class GCP {
   String project;
   String receiptSubscription;
   String caseNotificationTopic;
+  String caseNotificationSubscription;
 }

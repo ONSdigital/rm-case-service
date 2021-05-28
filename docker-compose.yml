@@ -20,7 +20,7 @@ services:
     ports:
     - "18681:8681"
     environment:
-    - PUBSUB_PROJECT1=test
+    - PUBSUB_PROJECT1=test,test_case_creation_topic:test_case_creation_subscription
   rabbitmq:
     container_name: rabbitmq-case-it
     image: rabbitmq:3.6.10-management

@@ -61,3 +61,4 @@ gcp:
   project: "test"
   receiptSubscription: "test_subscription"
   caseNotificationTopic: "test_topic"
+  caseNotificationSubscription: "test_subscription"
