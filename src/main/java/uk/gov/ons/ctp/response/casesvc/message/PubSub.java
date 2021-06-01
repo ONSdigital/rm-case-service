@@ -52,7 +52,7 @@ public class PubSub {
    */
   public ProjectSubscriptionName getCaseReceiptSubscriptionName() {
     String project = appConfig.getGcp().getProject();
-    String subscriptionId = appConfig.getGcp().getCaseNotificationSubscription();
+    String subscriptionId = appConfig.getGcp().getReceiptSubscription();
     log.info(
         "creating pubsub subscription name for case creation notification "
             + subscriptionId
