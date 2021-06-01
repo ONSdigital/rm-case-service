@@ -61,21 +61,6 @@ public class PubSub {
     return ProjectSubscriptionName.of(project, subscriptionId);
   }
 
-  /***
-   * Provides subscription name for the case notification subscriber
-   * @return com.google.pubsub.v1.ProjectSubscriptionName
-   */
-  public ProjectSubscriptionName getCaseCreationSubscriptionName() {
-    String project = appConfig.getGcp().getProject();
-    String subscriptionId = appConfig.getGcp().getCaseNotificationSubscription();
-    log.info(
-        "creating pubsub subscription name for case notification "
-            + subscriptionId
-            + " in project "
-            + project);
-    return ProjectSubscriptionName.of(project, subscriptionId);
-  }
-
   /**
    * Provides PubSub subscriber for case notification against message receiver
    *
@@ -99,33 +84,6 @@ public class PubSub {
     } else {
       log.info("Returning emulator Subscriber");
       return new PubSubEmulator().getEmulatorSubscriber(receiver);
-    }
-  }
-
-  /**
-   * Provides PubSub subscriber for case creation notification against message receiver
-   *
-   * @param receiver: com.google.cloud.pubsub.v1.MessageReceiver;
-   * @return com.google.cloud.pubsub.v1.Subscriber;
-   */
-  public Subscriber getCaseCreationNotificationSubscriber(MessageReceiver receiver)
-      throws IOException {
-    if (StringUtil.isBlank(System.getenv("PUBSUB_EMULATOR_HOST"))) {
-      log.info("Returning Subscriber for case creation notification");
-      ExecutorProvider executorProvider =
-          InstantiatingExecutorProvider.newBuilder().setExecutorThreadCount(4).build();
-      // `setParallelPullCount` determines how many StreamingPull streams the subscriber will open
-      // to receive message. It defaults to 1. `setExecutorProvider` configures an executor for the
-      // subscriber to process messages. Here, the subscriber is configured to open 2 streams for
-      // receiving messages, each stream creates a new executor with 4 threads to help process the
-      // message callbacks. In total 2x4=8 threads are used for message processing.
-      return Subscriber.newBuilder(getCaseCreationSubscriptionName(), receiver)
-          .setParallelPullCount(2)
-          .setExecutorProvider(executorProvider)
-          .build();
-    } else {
-      log.info("Returning emulator Subscriber");
-      return new PubSubEmulator().getEmulatorSubscriberForCaseCreationNotification(receiver);
     }
   }
 }
