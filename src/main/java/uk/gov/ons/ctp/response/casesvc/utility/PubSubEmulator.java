@@ -31,7 +31,9 @@ public class PubSubEmulator {
   public static final CredentialsProvider CREDENTIAL_PROVIDER = NoCredentialsProvider.create();
   private static final String PROJECT_ID = "test";
   private static final String TOPIC_ID = "test_topic";
+  private static final String CASE_CREATION_TOPIC_ID = "test_case_creation_topic";
   private static final String SUBSCRIPTION_ID = "test_subscription";
+  private static final String CASE_CREATION_SUBSCRIPTION_ID = "test_case_creation_subscription";
   private final TopicAdminClient topicClient =
       TopicAdminClient.create(
           TopicAdminSettings.newBuilder()
@@ -45,8 +47,11 @@ public class PubSubEmulator {
               .setCredentialsProvider(PubSubEmulator.CREDENTIAL_PROVIDER)
               .build());
   TopicName topicName = TopicName.of(PROJECT_ID, TOPIC_ID);
+  TopicName caseCreationTopicName = TopicName.of(PROJECT_ID, CASE_CREATION_TOPIC_ID);
   ProjectSubscriptionName subscriptionName =
       ProjectSubscriptionName.of(PROJECT_ID, SUBSCRIPTION_ID);
+  ProjectSubscriptionName caseCreationSubscriptionName =
+      ProjectSubscriptionName.of(PROJECT_ID, CASE_CREATION_SUBSCRIPTION_ID);
 
   public PubSubEmulator() throws IOException {}
 
@@ -59,6 +64,14 @@ public class PubSubEmulator {
 
   public Subscriber getEmulatorSubscriber(MessageReceiver receiver) {
     return Subscriber.newBuilder(ProjectSubscriptionName.of(PROJECT_ID, SUBSCRIPTION_ID), receiver)
+        .setChannelProvider(CHANNEL_PROVIDER)
+        .setCredentialsProvider(CREDENTIAL_PROVIDER)
+        .build();
+  }
+
+  public Subscriber getEmulatorSubscriberForCaseCreationNotification(MessageReceiver receiver) {
+    return Subscriber.newBuilder(
+            ProjectSubscriptionName.of(PROJECT_ID, CASE_CREATION_SUBSCRIPTION_ID), receiver)
         .setChannelProvider(CHANNEL_PROVIDER)
         .setCredentialsProvider(CREDENTIAL_PROVIDER)
         .build();
@@ -82,6 +95,21 @@ public class PubSubEmulator {
       ApiFuture<String> messageIdFuture = publisher.publish(pubsubMessage);
       String messageId = messageIdFuture.get();
       log.with("messageId", messageId).info("Published message to pubsub emulator");
+    } catch (IOException | InterruptedException | ExecutionException e) {
+      log.error("Failed to publish message", e);
+    }
+  }
+
+  public void publishSampleCaseCreationMessage(String message) {
+    try {
+      ByteString data = ByteString.copyFromUtf8(message);
+      PubsubMessage pubsubMessage = PubsubMessage.newBuilder().setData(data).build();
+      TopicName topicName = TopicName.of(PROJECT_ID, CASE_CREATION_TOPIC_ID);
+      Publisher publisher = getEmulatorPublisher(topicName);
+      log.with("publisher", publisher).info("Publishing case creation message to pubsub emulator");
+      ApiFuture<String> messageIdFuture = publisher.publish(pubsubMessage);
+      String messageId = messageIdFuture.get();
+      log.with("messageId", messageId).info("Published case creation message to pubsub emulator");
     } catch (IOException | InterruptedException | ExecutionException e) {
       log.error("Failed to publish message", e);
     }

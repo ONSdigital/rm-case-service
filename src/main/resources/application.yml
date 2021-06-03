@@ -139,3 +139,4 @@ gcp:
   project: ras-rm-sandbox
   receiptSubscription: ras-rm-receipt
   caseNotificationTopic: "test_topic"
+  caseNotificationSubscription: "test_topic"
