@@ -96,11 +96,9 @@ public class CaseCreationReceiver {
   private ProjectSubscriptionName getCaseCreationSubscriptionName() {
     String project = appConfig.getGcp().getProject();
     String subscriptionId = appConfig.getGcp().getCaseNotificationSubscription();
-    log.info(
-        "creating pubsub subscription name for case notification "
-            + subscriptionId
-            + " in project "
-            + project);
+    log.with("Subscription id", subscriptionId)
+        .with("project", project)
+        .info("creating pubsub subscription name for case notification ");
     return ProjectSubscriptionName.of(project, subscriptionId);
   }
 }
