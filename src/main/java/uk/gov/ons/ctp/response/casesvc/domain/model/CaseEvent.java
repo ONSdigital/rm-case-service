@@ -44,22 +44,22 @@ public class CaseEvent implements Serializable {
         @Parameter(name = "sequence_name", value = "casesvc.caseeventseq"),
         @Parameter(name = "increment_size", value = "1")
       })
-  @Column(name = "caseeventpk")
+  @Column(name = "case_event_pk")
   private Integer caseEventPK;
 
-  @Column(name = "casefk")
+  @Column(name = "case_fk")
   private Integer caseFK;
 
   private String description;
 
-  @Column(name = "createdby")
+  @Column(name = "created_by")
   private String createdBy;
 
-  @Column(name = "createddatetime")
+  @Column(name = "created_date_time")
   private Timestamp createdDateTime;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "categoryfk")
+  @Column(name = "category_fk")
   private CategoryDTO.CategoryName category;
 
   @Column(name = "subcategory")

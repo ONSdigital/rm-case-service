@@ -35,15 +35,15 @@ public class CaseIacAudit {
             value = "casesvc.caseiacauditseq"),
         @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
       })
-  @Column(name = "caseiacauditpk")
+  @Column(name = "case_iac_audit_pk")
   private Integer caseIacAuditPK;
 
-  @Column(name = "casefk")
+  @Column(name = "case_fk")
   private int caseFK;
 
   @Column(name = "iac")
   private String iac;
 
-  @Column(name = "createddatetime")
+  @Column(name = "created_date_time")
   private Timestamp createdDateTime;
 }

@@ -26,33 +26,33 @@ public class Category implements Serializable {
   private static final long serialVersionUID = -8265556287097172790L;
 
   @Id
-  @Column(name = "categorypk")
+  @Column(name = "category_pk")
   @Enumerated(EnumType.STRING)
   private CategoryDTO.CategoryName categoryName;
 
-  @Column(name = "longdescription")
+  @Column(name = "long_description")
   private String longDescription;
 
-  @Column(name = "shortdescription")
+  @Column(name = "short_description")
   private String shortDescription;
 
   private String role;
 
   private String group;
 
-  @Column(name = "eventtype")
+  @Column(name = "event_type")
   @Enumerated(EnumType.STRING)
   private CaseDTO.CaseEvent eventType;
 
-  @Column(name = "oldcasesampleunittypes")
+  @Column(name = "old_case_sample_unit_types")
   private String oldCaseSampleUnitTypes;
 
-  @Column(name = "newcasesampleunittype")
+  @Column(name = "new_case_sample_unit_type")
   private String newCaseSampleUnitType;
 
-  @Column(name = "generatedactiontype")
+  @Column(name = "generated_action_type")
   private String generatedActionType;
 
-  @Column(name = "recalccollectioninstrument")
+  @Column(name = "recalc_collection_instrument")
   private Boolean recalcCollectionInstrument;
 }

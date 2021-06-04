@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 26-1
+      author: Adam Wilkie
+      changes:
+        - sqlFile:
+            comment: Rename database columns
+            path: renaming_database_columns.sql
+            relativeToChangelogFile: true
+            splitStatements: false

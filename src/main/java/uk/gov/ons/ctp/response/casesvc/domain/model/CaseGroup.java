@@ -38,24 +38,24 @@ public class CaseGroup implements Serializable {
         @Parameter(name = "sequence_name", value = "casesvc.casegroupseq"),
         @Parameter(name = "increment_size", value = "1")
       })
-  @Column(name = "casegrouppk")
+  @Column(name = "case_group_pk")
   private int caseGroupPK;
 
-  @Column(name = "collectionexerciseid")
+  @Column(name = "collection_exercise_id")
   private UUID collectionExerciseId;
 
   private UUID id;
 
-  @Column(name = "partyid")
+  @Column(name = "party_id")
   private UUID partyId;
 
-  @Column(name = "sampleunitref")
+  @Column(name = "sample_unit_ref")
   private String sampleUnitRef;
 
-  @Column(name = "sampleunittype")
+  @Column(name = "sample_unit_type")
   private String sampleUnitType;
 
-  @Column(name = "surveyid")
+  @Column(name = "survey_id")
   private UUID surveyId;
 
   @Enumerated(EnumType.STRING)
