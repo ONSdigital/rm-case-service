@@ -46,6 +46,6 @@ ALTER TABLE casesvc.caseiacaudit RENAME COLUMN casefk TO case_fk;
 ALTER TABLE casesvc.caseiacaudit RENAME COLUMN createddatetime TO created_date_time;
 
 ALTER TABLE casesvc.casegroupstatusaudit RENAME COLUMN casegroupstatusauditpk TO case_group_status_audit_pk;
-ALTER TABLE casesvc.casegroupstatusaudit RENAME COLUMN casegrouppk TO case_group_pk;
+ALTER TABLE casesvc.casegroupstatusaudit RENAME COLUMN casegroupfk TO case_group_fk;
 ALTER TABLE casesvc.casegroupstatusaudit RENAME COLUMN partyid TO party_id;
 ALTER TABLE casesvc.casegroupstatusaudit RENAME COLUMN createddatetime TO created_date_time;
