@@ -35,7 +35,7 @@ ALTER TABLE casesvc.case RENAME COLUMN optlockversion TO opt_lock_version;
 ALTER TABLE casesvc.casestate RENAME COLUMN statepk TO state_pk;
 
 ALTER TABLE casesvc.casegroup RENAME COLUMN casegrouppk TO case_group_pk;
-ALTER TABLE casesvc.casegroup RENAME COLUMN party TO party_id;
+ALTER TABLE casesvc.casegroup RENAME COLUMN partyid TO party_id;
 ALTER TABLE casesvc.casegroup RENAME COLUMN collectionexerciseid TO collection_exercise_id;
 ALTER TABLE casesvc.casegroup RENAME COLUMN sampleunitref TO sample_unit_ref;
 ALTER TABLE casesvc.casegroup RENAME COLUMN sampleunittype TO sample_unit_type;
