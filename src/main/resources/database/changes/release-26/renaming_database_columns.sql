@@ -2,7 +2,7 @@ ALTER TABLE casesvc.category RENAME COLUMN categorypk TO category_pk;
 ALTER TABLE casesvc.category RENAME COLUMN shortdescription TO short_description;
 ALTER TABLE casesvc.category RENAME COLUMN longdescription TO long_description;
 ALTER TABLE casesvc.category RENAME COLUMN eventtype TO event_type;
-ALTER TABLE casesvc.category RENAME COLUMN generatedactiontype TO generate_action_type;
+ALTER TABLE casesvc.category RENAME COLUMN generatedactiontype TO generated_action_type;
 ALTER TABLE casesvc.category RENAME COLUMN oldcasesampleunittypes TO old_case_sample_unit_types;
 ALTER TABLE casesvc.category RENAME COLUMN newcasesampleunittype TO new_case_sample_unit_type;
 ALTER TABLE casesvc.category RENAME COLUMN recalccollectioninstrument TO recalc_collection_instrument;
