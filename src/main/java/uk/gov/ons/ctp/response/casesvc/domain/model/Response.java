@@ -38,16 +38,16 @@ public class Response implements Serializable {
         @Parameter(name = "sequence_name", value = "casesvc.responseseq"),
         @Parameter(name = "increment_size", value = "1")
       })
-  @Column(name = "responsepk")
+  @Column(name = "response_pk")
   private Integer responsepk;
 
-  @Column(name = "casefk")
+  @Column(name = "case_fk")
   private Integer caseFK;
 
-  @Column(name = "inboundchannel")
+  @Column(name = "inbound_channel")
   @Enumerated(EnumType.STRING)
   private InboundChannel inboundChannel;
 
-  @Column(name = "responsedatetime")
+  @Column(name = "response_date_time")
   private Timestamp dateTime;
 }
