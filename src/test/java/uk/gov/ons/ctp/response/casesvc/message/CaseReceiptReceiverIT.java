@@ -67,7 +67,7 @@ public class CaseReceiptReceiverIT {
 
     // For now the inboundChannel is added before it gets to 'process' to emulate current behaviour
     // in rabbit
-    caseReceipt.setInboundChannel(InboundChannel.ONLINE);
+    caseReceipt.setInboundChannel(InboundChannel.OFFLINE);
     Mockito.verify(caseReceiptReceiver, Mockito.times(1)).process(caseReceipt);
   }
 
