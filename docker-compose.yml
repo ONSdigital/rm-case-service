@@ -53,6 +53,7 @@ services:
     - SURVEY_SVC_CONNECTION_CONFIG_PORT=8080
     - ACTION_SVC_CONNECTION_CONFIG_HOST=action-case-it
     - ACTION_SVC_CONNECTION_CONFIG_PORT=8151
+    - PUBSUB_EMULATOR_HOST=pubsub-emulator-it:8681
     ports:
     - "38145:8145"
     healthcheck:
