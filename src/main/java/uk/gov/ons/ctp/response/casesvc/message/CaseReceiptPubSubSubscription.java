@@ -51,7 +51,9 @@ public class CaseReceiptPubSubSubscription {
       try {
         ObjectMapper mapper = new ObjectMapper();
         CaseReceipt receipt = mapper.readValue(payload, CaseReceipt.class);
-        receipt.setInboundChannel(InboundChannel.ONLINE);
+        // TODO remove the inbound channel stuff as it's not needed
+        // however SDX gateway sets this to OFFLINE so we have to do this the same with the new gcp pubsub receipting
+        receipt.setInboundChannel(InboundChannel.OFFLINE);
         log.with("receipt", receipt).debug("Successfully serialised receipt");
         try {
           caseReceiptReceiver.process(receipt);
