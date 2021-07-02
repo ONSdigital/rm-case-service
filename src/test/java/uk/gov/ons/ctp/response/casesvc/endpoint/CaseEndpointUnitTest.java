@@ -53,7 +53,6 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDT
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
-import uk.gov.ons.ctp.response.casesvc.representation.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
@@ -224,13 +223,6 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.createdBy", is(SYSTEM)));
     actions.andExpect(jsonPath("$.createdDateTime", is(new DateMatcher(CASE_DATE_VALUE_1))));
 
-    actions.andExpect(jsonPath("$.responses", hasSize(1)));
-    actions.andExpect(
-        jsonPath("$.responses[*].inboundChannel", containsInAnyOrder(InboundChannel.PAPER.name())));
-
-    actions.andExpect(
-        jsonPath("$.responses[*].dateTime", contains(new DateMatcher(CASE_DATE_VALUE_1))));
-
     actions.andExpect(jsonPath("$.caseGroup.id", is(CASE1_CASEGROUP_ID.toString())));
     actions.andExpect(
         jsonPath(
@@ -293,12 +285,6 @@ public final class CaseEndpointUnitTest {
     actions.andExpect(jsonPath("$.state", is(CaseState.SAMPLED_INIT.name())));
     actions.andExpect(jsonPath("$.createdBy", is(SYSTEM)));
     actions.andExpect(jsonPath("$.createdDateTime", is(new DateMatcher(CASE_DATE_VALUE_1))));
-
-    actions.andExpect(jsonPath("$.responses", hasSize(1)));
-    actions.andExpect(
-        jsonPath("$.responses[*].inboundChannel", containsInAnyOrder(InboundChannel.PAPER.name())));
-    actions.andExpect(
-        jsonPath("$.responses[*].dateTime", contains(new DateMatcher(CASE_DATE_VALUE_1))));
 
     actions.andExpect(jsonPath("$.caseGroup.id", is(CASE1_CASEGROUP_ID.toString())));
     actions.andExpect(

@@ -35,7 +35,5 @@ public class CaseSvcBeanMapper extends ConfigurableMapper {
         .field("categoryName", "name")
         .byDefault()
         .register();
-
-    factory.classMap(Response.class, ResponseDTO.class).byDefault().register();
   }
 }

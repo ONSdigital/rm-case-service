@@ -290,9 +290,8 @@ public class CaseServiceTest {
 
     // there was a change to case - state transition and response saved
     ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
-    verify(caseRepo, times(1)).save(argument.capture());
+    verify(caseRepo, times(1)).saveAndFlush(argument.capture());
     Case caseSaved = argument.getValue();
-    assertEquals(1, caseSaved.getResponses().size());
     assertEquals(CaseState.INACTIONABLE, caseSaved.getState());
 
     // IAC should not be disabled for paper responses
@@ -332,9 +331,8 @@ public class CaseServiceTest {
 
     // there was a change to case - state transition and response saved
     ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
-    verify(caseRepo, times(1)).save(argument.capture());
+    verify(caseRepo, times(1)).saveAndFlush(argument.capture());
     Case caseSaved = argument.getValue();
-    assertEquals(1, caseSaved.getResponses().size());
     assertEquals(CaseState.INACTIONABLE, caseSaved.getState());
 
     // action service should be told of case state change
@@ -368,13 +366,6 @@ public class CaseServiceTest {
 
     verify(caseRepo).findById(INACTIONABLE_HOUSEHOLD_CASE_FK);
     verify(categoryRepo).findById(CategoryDTO.CategoryName.NO_TRACE_OF_ADDRESS);
-
-    // there was a change to case - state transition and response saved
-    ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
-    verify(caseRepo, times(1)).save(argument.capture());
-    Case caseSaved = argument.getValue();
-    assertEquals(2, caseSaved.getResponses().size());
-    assertEquals(CaseState.INACTIONABLE, caseSaved.getState());
 
     // IAC should not be disabled again!
     verify(caseIacAuditService, times(0)).disableAllIACsForCase(any(Case.class));

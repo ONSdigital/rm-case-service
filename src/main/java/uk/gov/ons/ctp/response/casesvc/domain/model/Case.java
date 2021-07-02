@@ -100,9 +100,6 @@ public class Case implements Serializable {
   @Column(name = "created_by")
   private String createdBy;
 
-  @OneToMany(mappedBy = "caseFK", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-  private List<Response> responses;
-
   @OneToMany(mappedBy = "caseFK", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private List<CaseIacAudit> iacAudits;
 
