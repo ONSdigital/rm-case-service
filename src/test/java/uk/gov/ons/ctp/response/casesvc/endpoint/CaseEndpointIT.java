@@ -72,6 +72,7 @@ public class CaseEndpointIT {
 
   @Before
   public void testSetup() {
+    pubSubEmulator.testInit();
     caseEventRepository.deleteAll();
     caseRepository.deleteAll();
 
@@ -92,20 +93,22 @@ public class CaseEndpointIT {
     metadata.put("partyId", UUID.randomUUID().toString());
   }
 
+  @After
+  public void teardown() {
+    pubSubEmulator.testTeardown();
+  }
+
   @Test
   public void ensureSampleUnitIdReceived() throws Exception {
-    pubSubEmulator.testInit();
     TestPubSubMessage message = new TestPubSubMessage();
     UUID sampleUnitId = UUID.randomUUID();
     caseCreator.postSampleUnit("LMS0001", "H", sampleUnitId, collectionExerciseId);
     CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
     assertThat(caseNotificationDTO.getSampleUnitId()).isEqualTo(sampleUnitId.toString());
-    pubSubEmulator.testTeardown();
   }
 
   @Test
   public void testCreateSocialCaseEvents() throws Exception {
-    pubSubEmulator.testInit();
     // Given
     TestPubSubMessage message = new TestPubSubMessage();
     caseCreator.postSampleUnit("LMS0002", "H", UUID.randomUUID(), collectionExerciseId);
@@ -125,12 +128,10 @@ public class CaseEndpointIT {
 
     // Then
     assertThat(createdCaseResponse.getStatus()).isEqualTo(201);
-    pubSubEmulator.testTeardown();
   }
 
   @Test
   public void ensureCaseReturnedBySampleUnitId() throws Exception {
-    pubSubEmulator.testInit();
     TestPubSubMessage message = new TestPubSubMessage();
     UUID sampleUnitId = UUID.randomUUID();
     caseCreator.postSampleUnit("LMS0003", "H", sampleUnitId, collectionExerciseId);
@@ -147,7 +148,6 @@ public class CaseEndpointIT {
     UUID returnedCaseId = casesResponse.getBody()[0].getId();
 
     assertThat(returnedCaseId).isEqualTo(caseId);
-    pubSubEmulator.testTeardown();
   }
 
   /**
@@ -156,7 +156,6 @@ public class CaseEndpointIT {
    */
   @Test
   public void testCreateCollectionInstrumentDownloadedCaseEventWithBCaseSuccess() throws Exception {
-    pubSubEmulator.testInit();
     TestPubSubMessage message = new TestPubSubMessage();
     // Given
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
@@ -189,7 +188,6 @@ public class CaseEndpointIT {
     assertThat(createdCaseResponse.getStatus()).isEqualTo(201);
     assertThat(affectedCase.getCaseGroup().getCaseGroupStatus())
         .isEqualTo(CaseGroupStatus.INPROGRESS);
-    pubSubEmulator.testTeardown();
   }
 
   /**
@@ -198,7 +196,6 @@ public class CaseEndpointIT {
    */
   @Test
   public void testCreateCollectionInstrumentErrorCaseEventWithBCaseSuccess() throws Exception {
-    pubSubEmulator.testInit();
     TestPubSubMessage message = new TestPubSubMessage();
     // Given
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
@@ -227,7 +224,6 @@ public class CaseEndpointIT {
     assertThat(createdCaseResponse.getStatus()).isEqualTo(201);
     assertThat(affectedCase.getCaseGroup().getCaseGroupStatus())
         .isNotEqualTo(CaseGroupStatus.INPROGRESS);
-    pubSubEmulator.testTeardown();
   }
 
   /**
@@ -236,7 +232,6 @@ public class CaseEndpointIT {
    */
   @Test
   public void testCreateSuccessfulResponseUploadCaseEventWithBCaseSuccess() throws Exception {
-    pubSubEmulator.testInit();
     TestPubSubMessage message = new TestPubSubMessage();
     // Given
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
@@ -265,7 +260,6 @@ public class CaseEndpointIT {
     assertThat(createdCaseResponse.getStatus()).isEqualTo(201);
     assertThat(affectedCase.getCaseGroup().getCaseGroupStatus())
         .isEqualTo(CaseGroupStatus.COMPLETE);
-    pubSubEmulator.testTeardown();
   }
 
   /**
@@ -274,7 +268,6 @@ public class CaseEndpointIT {
    */
   @Test
   public void testGetCaseEventsWithCategory() throws Exception {
-    pubSubEmulator.testInit();
     TestPubSubMessage message = new TestPubSubMessage();
     // Given
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
@@ -311,12 +304,10 @@ public class CaseEndpointIT {
     assertThat(returnedCaseEvents[0].getCategory())
         .isEqualTo(CategoryName.SUCCESSFUL_RESPONSE_UPLOAD);
     assertThat(returnedCaseEvents[0].getCreatedDateTime()).isNotNull();
-    pubSubEmulator.testTeardown();
   }
 
   @Test
   public void testGetCaseEventsWithCategoryMissingCaseShouldFail() throws Exception {
-    pubSubEmulator.testInit();
     // Given
 
     // When
@@ -333,12 +324,10 @@ public class CaseEndpointIT {
 
     // Then
     assertThat(returnedCaseEventsResponse.getStatus()).isEqualTo(404);
-    pubSubEmulator.testTeardown();
   }
 
   @Test
   public void testGetCaseEventsWithNonExistentCategory() throws Exception {
-    pubSubEmulator.testInit();
     // Given
     TestPubSubMessage message = new TestPubSubMessage();
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
@@ -369,12 +358,10 @@ public class CaseEndpointIT {
 
     // Then
     assertThat(returnedCaseEventsResponse.getStatus()).isEqualTo(400);
-    pubSubEmulator.testTeardown();
   }
 
   @Test
   public void testGetNoCaseEventsWithCategory() throws Exception {
-    pubSubEmulator.testInit();
     // Given
     TestPubSubMessage message = new TestPubSubMessage();
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
@@ -405,6 +392,5 @@ public class CaseEndpointIT {
 
     // Then
     assertThat(returnedCaseEventsResponse.getStatus()).isEqualTo(204);
-    pubSubEmulator.testTeardown();
   }
 }

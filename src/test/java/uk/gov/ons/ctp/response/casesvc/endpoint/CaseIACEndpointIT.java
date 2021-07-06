@@ -75,6 +75,7 @@ public class CaseIACEndpointIT {
 
   @Before
   public void testSetup() {
+    pubSubEmulator.testInit();
     Random rnd = new Random();
 
     int randNumber = 10000 + rnd.nextInt(900000);
@@ -90,9 +91,13 @@ public class CaseIACEndpointIT {
     collectionExerciseId = collex.getId();
   }
 
+  @After
+  public void teardown() {
+    pubSubEmulator.testTeardown();
+  }
+
   @Test
   public void shouldCreateNewIACCode() throws Exception {
-    pubSubEmulator.testInit();
     TestPubSubMessage pubSubMessage = new TestPubSubMessage();
     // Given
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
@@ -105,12 +110,10 @@ public class CaseIACEndpointIT {
     // Then
     assertThat(actual.getStatus(), is(equalTo(HttpStatus.CREATED.value()))); // assert IAC in model
     assertThat(actual.getBody(), not(equalTo(notExpected)));
-    pubSubEmulator.testTeardown();
   }
 
   @Test
   public void shouldGetIacCodes() throws Exception {
-    pubSubEmulator.testInit();
     TestPubSubMessage pubSubMessage = new TestPubSubMessage();
     // Given
     caseCreator.postSampleUnit("BS123456", "B", UUID.randomUUID(), collectionExerciseId);
@@ -126,7 +129,6 @@ public class CaseIACEndpointIT {
 
     assertThat(iacs.getBody(), arrayWithSize(1));
     assertNotNull(iacs.getBody()[0]);
-    pubSubEmulator.testTeardown();
   }
 
   private String getCurrentIACCode(String caseId) throws UnirestException {
