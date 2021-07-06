@@ -75,8 +75,6 @@ public class CaseIACEndpointIT {
 
   @Before
   public void testSetup() {
-    pubSubEmulator.testInit();
-    Thread.sleep(2000);
     Random rnd = new Random();
 
     int randNumber = 10000 + rnd.nextInt(900000);
@@ -94,6 +92,7 @@ public class CaseIACEndpointIT {
 
   @Test
   public void shouldCreateNewIACCode() throws Exception {
+    pubSubEmulator.testInit();
     TestPubSubMessage pubSubMessage = new TestPubSubMessage();
     // Given
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
@@ -111,6 +110,7 @@ public class CaseIACEndpointIT {
 
   @Test
   public void shouldGetIacCodes() throws Exception {
+    pubSubEmulator.testInit();
     TestPubSubMessage pubSubMessage = new TestPubSubMessage();
     // Given
     caseCreator.postSampleUnit("BS123456", "B", UUID.randomUUID(), collectionExerciseId);
