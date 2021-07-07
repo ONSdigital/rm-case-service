@@ -65,9 +65,6 @@ public class CaseReceiptReceiverIT {
     ObjectMapper objectMapper = new ObjectMapper();
     CaseReceipt caseReceipt = objectMapper.readValue(json, CaseReceipt.class);
 
-    // For now the inboundChannel is added before it gets to 'process' to emulate current behaviour
-    // in rabbit
-    caseReceipt.setInboundChannel(InboundChannel.OFFLINE);
     Mockito.verify(caseReceiptReceiver, Mockito.times(1)).process(caseReceipt);
   }
 
