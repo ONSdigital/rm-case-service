@@ -10,8 +10,7 @@
     "createdDateTime": 1460732606544,
     "createdBy": "me",
     "iac": "bbbb cccc dddd",
-    "actionPlanId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fa1",
-    "responses": []
+    "actionPlanId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fa1"
   },
   {
     "id": "2bc5d41b-0549-40b3-ba76-42f6d4cf3fd1",
@@ -24,13 +23,7 @@
     "createdDateTime": 1460732606544,
     "createdBy": "me",
     "iac": "cccc dddd ffff",
-    "actionPlanId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fa2",
-    "responses": [
-      {
-        "dateTime": 1460732606544,
-        "inboundChannel": "ONLINE"
-      }
-    ]
+    "actionPlanId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fa2"
   },
   {
     "id": "3bc5d41b-0549-40b3-ba76-42f6d4cf3fd1",
@@ -43,8 +36,7 @@
     "createdDateTime": 1460732606544,
     "createdBy": "me",
     "iac": "dddd ffff gggg",
-    "actionPlanId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fa3",
-    "responses": []
+    "actionPlanId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fa3"
   },
   {
     "id": "4bc5d41b-0549-40b3-ba76-42f6d4cf3fd1",
@@ -57,8 +49,7 @@
     "createdDateTime": 1460732606544,
     "createdBy": "me",
     "iac": "dddd ffff gggg",
-    "actionPlanId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fa3",
-    "responses": []
+    "actionPlanId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fa3"
   },
   {
     "id": "6bc5d41b-0549-40b3-ba76-42f6d4cf3fd1",
@@ -71,7 +62,6 @@
     "createdDateTime": 1460732606544,
     "createdBy": "me",
     "iac": "dddd ffff gggg",
-    "actionPlanId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fa3",
-    "responses": []
+    "actionPlanId": "7bc5d41b-0549-40b3-ba76-42f6d4cf3fa3"
   }
 ]

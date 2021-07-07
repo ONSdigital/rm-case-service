@@ -25,10 +25,6 @@ enrolment codes. Any enrolment changes will trigger new action plan.
 Each case event has a category, these categories are represent the type of event. For example, it could be
 respondent enrolled, completed by phone, eq launched.
 
-### Response
-This table is used to determine if a response is for a case is needed. The inbound channel represents
-the type of response (though in prod this is always OFFLINE?)
-
 ### Report
 Populated by the two stored procedures "generate_case_events_report" and "generate_repsonse_chasing_report". 
 This table stores info about case events and response chasing but doesn't appear to be read from.

@@ -40,6 +40,4 @@ public class CaseDTO {
   private String sampleUnitType;
 
   private Date createdDateTime;
-
-  private ResponseDTO[] responses;
 }

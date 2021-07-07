@@ -22,7 +22,6 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseIacAudit;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
-import uk.gov.ons.ctp.response.casesvc.domain.model.Response;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseIacAuditRepository;
@@ -343,9 +342,6 @@ public class CaseService {
     CaseEvent createdCaseEvent = caseEventRepo.save(caseEvent);
     log.debug("createdCaseEvent is {}", createdCaseEvent);
 
-    // do we need to record a response?
-    recordCaseResponse(category, targetCase, timestamp);
-
     transitionCaseGroupStatus(targetCase, caseEvent);
 
     switch (caseEvent.getCategory()) {
@@ -549,36 +545,6 @@ public class CaseService {
     newCase.setCreatedBy(Constants.SYSTEM);
 
     return newCase;
-  }
-
-  /**
-   * Check to see if the event requires a response to be recorded for the case and if so ... record
-   * it
-   *
-   * @param category the category details of the event
-   * @param targetCase the 'source' case the event is being created for
-   * @param timestamp timestamp the timestamp of the CaseResponse
-   */
-  private void recordCaseResponse(Category category, Case targetCase, Timestamp timestamp) {
-    InboundChannel channel = null;
-    if (category.getCategoryName() == CategoryName.OFFLINE_RESPONSE_PROCESSED) {
-      channel = InboundChannel.OFFLINE;
-    } else if (category.getCategoryName() == CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE) {
-      channel = InboundChannel.ONLINE;
-    } else if (category.getCategoryName() == CategoryName.PAPER_QUESTIONNAIRE_RESPONSE) {
-      channel = InboundChannel.PAPER;
-    }
-
-    if (channel != null) {
-      Response response =
-          Response.builder()
-              .inboundChannel(channel)
-              .caseFK(targetCase.getCasePK())
-              .dateTime(timestamp)
-              .build();
-      targetCase.getResponses().add(response);
-      caseRepo.save(targetCase);
-    }
   }
 
   /**

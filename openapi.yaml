@@ -623,10 +623,6 @@ components:
           type: string
         partyId:
           type: string
-        responses:
-          type: array
-          items:
-            $ref: '#/components/schemas/ResponseDTO'
         sampleUnitId:
           type: string
         sampleUnitType:
@@ -944,12 +940,4 @@ components:
         partyId:
           type: string
         subCategory:
-          type: string
-    ResponseDTO:
-      type: object
-      properties:
-        dateTime:
-          type: string
-          format: date-time
-        inboundChannel:
           type: string

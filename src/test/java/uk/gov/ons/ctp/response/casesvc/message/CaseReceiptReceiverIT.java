@@ -19,7 +19,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
-import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
 import uk.gov.ons.ctp.response.casesvc.utility.PubSubEmulator;
 
 @ContextConfiguration
@@ -65,9 +64,6 @@ public class CaseReceiptReceiverIT {
     ObjectMapper objectMapper = new ObjectMapper();
     CaseReceipt caseReceipt = objectMapper.readValue(json, CaseReceipt.class);
 
-    // For now the inboundChannel is added before it gets to 'process' to emulate current behaviour
-    // in rabbit
-    caseReceipt.setInboundChannel(InboundChannel.OFFLINE);
     Mockito.verify(caseReceiptReceiver, Mockito.times(1)).process(caseReceipt);
   }
 
