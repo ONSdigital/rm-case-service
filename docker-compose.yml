@@ -21,22 +21,11 @@ services:
     - "18681:8681"
     environment:
     - PUBSUB_PROJECT1=test,test_case_creation_topic:test_case_creation_subscription
-  rabbitmq:
-    container_name: rabbitmq-case-it
-    image: rabbitmq:3.6.10-management
-    ports:
-    - "34369:4369"
-    - "55672:25672"
-    - "35671:5671"
-    - "35672:5672"
-    - "46671:15671"
-    - "46672:15672"
   collectionexercise:
     container_name: collex-case-it
     external_links:
     - postgres-case-it
     - redis-case-it
-    - rabbitmq-case-it
     image: eu.gcr.io/ons-rasrmbs-management/collection-exercise
     environment:
     - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-case-it:5432/postgres?sslmode=disable
@@ -47,8 +36,6 @@ services:
     - SPRING_LIQUIBASE_PASSWORD=postgres
     - REDISSON_CONFIG_ADDRESS=redis-case-it:6379
     - DATA_GRID_ADDRESS=redis-case-it:6379
-    - RABBITMQ_HOST=rabbitmq-case-it
-    - RABBITMQ_PORT=5672
     - SURVEY_SVC_CONNECTION_CONFIG_HOST=survey-case-it
     - SURVEY_SVC_CONNECTION_CONFIG_PORT=8080
     - ACTION_SVC_CONNECTION_CONFIG_HOST=action-case-it

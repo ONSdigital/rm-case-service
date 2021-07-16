@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.annotation.MessageEndpoint;
-import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
@@ -44,7 +43,6 @@ public class CaseReceiptReceiver {
    * @throws CTPException CTPException
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false, value = "transactionManager")
-  @ServiceActivator(inputChannel = "caseReceiptTransformed", adviceChain = "caseReceiptRetryAdvice")
   public void process(CaseReceipt caseReceipt) throws CTPException {
     log.with("case_receipt", caseReceipt).debug("entering process with caseReceipt");
     UUID caseId = UUID.fromString(caseReceipt.getCaseId());

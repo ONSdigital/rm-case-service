@@ -17,7 +17,6 @@ import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
-import uk.gov.ons.ctp.response.casesvc.message.EventPublisher;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseNotificationDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
@@ -56,7 +55,6 @@ public class CaseDistributor {
   private DistributedListManager<Integer> caseDistributionListManager;
   private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
   private CaseNotificationPublisher notificationPublisher;
-  private EventPublisher eventPublisher;
 
   /** Constructor for CaseDistributor */
   @Autowired
@@ -67,8 +65,7 @@ public class CaseDistributor {
       final CaseService caseService,
       final InternetAccessCodeSvcClient internetAccessCodeSvcClient,
       final StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager,
-      final CaseNotificationPublisher notificationPublisher,
-      final EventPublisher eventPublisher) {
+      final CaseNotificationPublisher notificationPublisher) {
     this.appConfig = appConfig;
     this.caseRepo = caseRepo;
     this.caseService = caseService;
@@ -76,7 +73,6 @@ public class CaseDistributor {
     this.caseDistributionListManager = caseDistributionListManager;
     this.caseSvcStateTransitionManager = caseSvcStateTransitionManager;
     this.notificationPublisher = notificationPublisher;
-    this.eventPublisher = eventPublisher;
   }
 
   /**
@@ -202,7 +198,6 @@ public class CaseDistributor {
     switch (caze.getState()) {
       case SAMPLED_INIT:
         event = CaseDTO.CaseEvent.ACTIVATED;
-        eventPublisher.publishEvent("case Activated");
         break;
       case REPLACEMENT_INIT:
         event = CaseDTO.CaseEvent.REPLACED;

@@ -26,7 +26,6 @@ import uk.gov.ons.ctp.response.casesvc.config.InternetAccessCodeSvc;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
-import uk.gov.ons.ctp.response.casesvc.message.EventPublisher;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseNotificationDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
@@ -66,8 +65,6 @@ public class CaseDistributorTest {
   @Mock private CaseNotificationPublisher notificationPublisher;
 
   @Mock private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
-
-  @Mock private EventPublisher eventExchange;
 
   @InjectMocks private CaseDistributor caseDistributor;
 
