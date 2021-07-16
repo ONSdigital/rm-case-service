@@ -17,7 +17,6 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.integration.annotation.IntegrationComponentScan;
@@ -50,7 +49,6 @@ import uk.gov.ons.ctp.response.lib.common.time.DateTimeUtil;
 @EnableAsync
 @EnableCaching
 @EnableScheduling
-@ImportResource("springintegration/main.xml")
 public class CaseSvcApplication {
 
   public static final String CASE_DISTRIBUTION_LIST = "casesvc.case.distribution";
