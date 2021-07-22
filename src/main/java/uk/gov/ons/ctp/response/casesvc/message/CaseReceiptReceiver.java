@@ -55,6 +55,7 @@ public class CaseReceiptReceiver {
     log.with("existing_case", existingCase).info("Found existing case");
 
     CategoryDTO.CategoryName category = null;
+    log.with("inboundChannel", inboundChannel).info("just before switch");
     switch (inboundChannel) {
       case OFFLINE:
         category = OFFLINE_RESPONSE_PROCESSED;
@@ -68,6 +69,7 @@ public class CaseReceiptReceiver {
       default:
         break;
     }
+    log.with("category", category).info("After switch");
 
     if (existingCase == null) {
       log.with("case_id", caseId).error(EXISTING_CASE_NOT_FOUND);
@@ -81,6 +83,7 @@ public class CaseReceiptReceiver {
         caseEvent.setMetadata(metadata);
       }
       caseEvent.setCaseFK(existingCase.getCasePK());
+      log.info("Just before setting category");
       caseEvent.setCategory(category);
       log.with("case_event", caseEvent.getCategory()).info("New case event");
       caseEvent.setCreatedBy(SYSTEM);
