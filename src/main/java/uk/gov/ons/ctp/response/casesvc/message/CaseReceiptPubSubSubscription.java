@@ -57,6 +57,10 @@ public class CaseReceiptPubSubSubscription {
           log.error("Error processing receipt", e);
           consumer.nack();
         }
+        catch (Exception e) {
+          log.error("Unexpected error processing receipt", e);
+          consumer.nack();
+        }
         consumer.ack();
       } catch (JsonProcessingException e) {
         log.error("Error serialising receipt.", e);
