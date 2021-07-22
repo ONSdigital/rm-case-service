@@ -54,15 +54,15 @@ public class CaseReceiptPubSubSubscription {
         try {
           caseReceiptReceiver.process(receipt);
         } catch (CTPException e) {
-          log.error("Error processing receipt", e);
+          log.error(e, "Error processing receipt");
           consumer.nack();
         } catch (Exception e) {
-          log.error("Unexpected error processing receipt", e);
+          log.error(e, "Unexpected error processing receipt");
           consumer.nack();
         }
         consumer.ack();
       } catch (JsonProcessingException e) {
-        log.error("Error serialising receipt.", e);
+        log.error(e, "Error serialising receipt.");
         consumer.nack();
       }
     };
