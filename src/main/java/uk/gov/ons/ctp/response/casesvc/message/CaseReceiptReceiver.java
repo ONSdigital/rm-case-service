@@ -52,7 +52,7 @@ public class CaseReceiptReceiver {
     Timestamp responseTimestamp = dateTimeUtil.getNowUTC();
 
     Case existingCase = caseService.findCaseById(caseId);
-    log.with("existing_case", existingCase).debug("Found existing case");
+    log.with("existing_case", existingCase).info("Found existing case");
 
     CategoryDTO.CategoryName category = null;
     switch (inboundChannel) {
@@ -75,6 +75,7 @@ public class CaseReceiptReceiver {
       CaseEvent caseEvent = new CaseEvent();
       String partyId = caseReceipt.getPartyId();
       if (partyId != null && !partyId.isEmpty()) {
+        log.info("we've got a partyid");
         Map<String, String> metadata = new HashMap<>();
         metadata.put("partyId", partyId);
         caseEvent.setMetadata(metadata);
@@ -84,7 +85,7 @@ public class CaseReceiptReceiver {
       log.with("case_event", caseEvent.getCategory()).info("New case event");
       caseEvent.setCreatedBy(SYSTEM);
       caseEvent.setDescription(QUESTIONNAIRE_RESPONSE);
-      log.debug("about to invoke the event creation...");
+      log.info("about to invoke the event creation...");
       caseService.createCaseEvent(caseEvent, responseTimestamp);
     }
   }
