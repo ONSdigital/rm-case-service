@@ -56,8 +56,7 @@ public class CaseReceiptPubSubSubscription {
         } catch (CTPException e) {
           log.error("Error processing receipt", e);
           consumer.nack();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
           log.error("Unexpected error processing receipt", e);
           consumer.nack();
         }
