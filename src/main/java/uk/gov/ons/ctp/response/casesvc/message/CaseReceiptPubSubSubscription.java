@@ -54,10 +54,14 @@ public class CaseReceiptPubSubSubscription {
         try {
           caseReceiptReceiver.process(receipt);
         } catch (CTPException e) {
-          log.error(e, "Error processing receipt");
+          log.with("message", e.getMessage())
+              .with("stacktrace", e.getStackTrace())
+              .error(e, "Error processing receipt");
           consumer.nack();
         } catch (Exception e) {
-          log.error(e, "Unexpected error processing receipt");
+          log.with("message", e.getMessage())
+              .with("stacktrace", e.getStackTrace())
+              .error(e, "Unexpected error processing receipt");
           consumer.nack();
         }
         consumer.ack();
