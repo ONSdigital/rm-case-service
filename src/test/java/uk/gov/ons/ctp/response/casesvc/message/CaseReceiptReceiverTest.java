@@ -79,33 +79,7 @@ public class CaseReceiptReceiverTest {
   }
 
   /**
-   * ProcessLinkedPaperCaseReceipt
-   *
-   * @throws DatatypeConfigurationException if giveMeCalendarForNow fails
-   * @throws CTPException if case state transition errors
-   */
-  @Test
-  public void testProcessLinkedPaperCaseReceipt()
-      throws CTPException, DatatypeConfigurationException {
-    Case existingCase = new Case();
-    existingCase.setCasePK(LINKED_CASE_PK);
-    existingCase.setPartyId(UUID.fromString(LINKED_PARTY_ID));
-    Mockito.when(caseService.findCaseById(UUID.fromString(LINKED_CASE_ID)))
-        .thenReturn(existingCase);
-
-    caseReceiptReceiver.process(
-        buildCaseReceipt(LINKED_CASE_ID, LINKED_CASE_REF, InboundChannel.PAPER, LINKED_PARTY_ID));
-    Map<String, String> metadata = new HashMap<>();
-    metadata.put("partyId", LINKED_PARTY_ID);
-
-    verify(caseService, times(1))
-        .createCaseEvent(
-            eq(buildCaseEvent(LINKED_CASE_PK, OFFLINE_RESPONSE_PROCESSED, metadata)),
-            eq(new Timestamp(CURRENT_TIME_IN_MILLISECONDS)));
-  }
-
-  /**
-   * ProcessLinkedPaperCaseReceipt
+   * ProcessLinkedOfflineCaseReceipt
    *
    * @throws DatatypeConfigurationException if giveMeCalendarForNow fails
    * @throws CTPException if case state transition errors
@@ -143,43 +117,6 @@ public class CaseReceiptReceiverTest {
     CaseReceipt caseReceipt =
         buildCaseReceipt(
             UNLINKED_CASE_ID, UNLINKED_CASE_REF, InboundChannel.ONLINE, LINKED_PARTY_ID);
-
-    caseReceiptReceiver.process(caseReceipt);
-
-    verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class));
-  }
-
-  /**
-   * ProcessUnlinkedPaperCaseReceipt
-   *
-   * @throws DatatypeConfigurationException if giveMeCalendarForNow fails
-   * @throws CTPException if case state transition errors
-   */
-  @Test
-  public void testProcessUnlinkedPaperCaseReceipt()
-      throws CTPException, DatatypeConfigurationException {
-
-    CaseReceipt caseReceipt =
-        buildCaseReceipt(
-            UNLINKED_CASE_ID, UNLINKED_CASE_REF, InboundChannel.PAPER, LINKED_PARTY_ID);
-
-    caseReceiptReceiver.process(caseReceipt);
-
-    verify(caseService, times(0)).createCaseEvent(any(CaseEvent.class));
-  }
-
-  /**
-   * ProcessUnlinkedPaperCaseReceipt
-   *
-   * @throws DatatypeConfigurationException if giveMeCalendarForNow fails
-   * @throws CTPException if case state transition errors
-   */
-  @Test
-  public void testProcessUnlinkedOfflineCaseReceipt()
-      throws CTPException, DatatypeConfigurationException {
-
-    CaseReceipt caseReceipt =
-        buildCaseReceipt(UNLINKED_CASE_ID, null, InboundChannel.PAPER, LINKED_PARTY_ID);
 
     caseReceiptReceiver.process(caseReceipt);
 

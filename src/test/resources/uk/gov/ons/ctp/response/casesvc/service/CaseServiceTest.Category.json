@@ -209,17 +209,6 @@
     "eventType": "DISABLED"
   },
   {
-    "group": null,
-    "categoryName": "PAPER_QUESTIONNAIRE_RESPONSE",
-    "longDescription": "Paper Questionnaire Response",
-    "shortDescription": "Paper Questionnaire Response",
-    "role": null,
-    "generatedActionType": null,
-    "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "H,HI",
-    "eventType": "DEACTIVATED"
-  },
-  {
     "group": "general",
     "categoryName": "COMPLETED_BY_PHONE",
     "longDescription": "Completed By Phone",

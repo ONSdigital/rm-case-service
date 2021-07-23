@@ -83,7 +83,6 @@ public class CaseServiceTest {
   private static final int CAT_CASE_CREATED = 6;
   private static final int CAT_LACK_OF_COMPUTER_INTERNET_ACCESS = 8;
   private static final int CAT_ONLINE_QUESTIONNAIRE_RESPONSE = 18;
-  private static final int CAT_PAPER_QUESTIONNAIRE_RESPONSE = 19;
   private static final int CAT_RESPONDENT_ENROLED = 22;
   private static final int CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT = 25;
   private static final int CAT_COLLECTION_INSTRUMENT_DOWNLOADED = 26;
@@ -268,47 +267,6 @@ public class CaseServiceTest {
   }
 
   /**
-   * Tries to apply a response event against an actionable case Should allow it and record response.
-   *
-   * @throws Exception if fabricateEvent does
-   */
-  @Test
-  public void testCreatePaperResponseEventAgainstActionableCase() throws Exception {
-    when(caseRepo.findById(ACTIONABLE_HOUSEHOLD_CASE_FK))
-        .thenReturn(Optional.of(cases.get(ACTIONABLE_HOUSEHOLD_CASE_FK)));
-    when(categoryRepo.findById(CategoryDTO.CategoryName.LACK_OF_COMPUTER_INTERNET_ACCESS))
-        .thenReturn(Optional.of(categories.get(CAT_PAPER_QUESTIONNAIRE_RESPONSE)));
-
-    CaseEvent caseEvent =
-        fabricateEvent(
-            CategoryDTO.CategoryName.LACK_OF_COMPUTER_INTERNET_ACCESS,
-            ACTIONABLE_HOUSEHOLD_CASE_FK);
-    caseService.createCaseEvent(caseEvent);
-
-    verify(caseRepo).findById(ACTIONABLE_HOUSEHOLD_CASE_FK);
-    verify(categoryRepo).findById(CategoryDTO.CategoryName.LACK_OF_COMPUTER_INTERNET_ACCESS);
-
-    // there was a change to case - state transition and response saved
-    ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
-    verify(caseRepo, times(1)).saveAndFlush(argument.capture());
-    Case caseSaved = argument.getValue();
-    assertEquals(CaseState.INACTIONABLE, caseSaved.getState());
-
-    // IAC should not be disabled for paper responses
-    verify(caseIacAuditService, times(0)).disableAllIACsForCase(any(Case.class));
-
-    // action service should be told of case state change
-    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotificationDTO.class));
-
-    // no new action to be created
-    verify(actionSvcClient, times(0))
-        .postAction(any(String.class), any(UUID.class), any(String.class));
-
-    // event was saved
-    verify(caseEventRepo, times(1)).save(caseEvent);
-  }
-
-  /**
    * Tries to apply an online response event against an actionable case Should allow it and record
    * response.
    *
@@ -337,41 +295,6 @@ public class CaseServiceTest {
 
     // action service should be told of case state change
     verify(notificationPublisher, times(1)).sendNotification(any(CaseNotificationDTO.class));
-
-    // no new action to be created
-    verify(actionSvcClient, times(0))
-        .postAction(any(String.class), any(UUID.class), any(String.class));
-
-    // event was saved
-    verify(caseEventRepo, times(1)).save(caseEvent);
-  }
-
-  /**
-   * Tries to apply a response event against an already inactionable case Should allow it and record
-   * response but the state should remain inactionable.
-   *
-   * @throws Exception exception thrown
-   */
-  @Test
-  public void testCreateResponseEventAgainstInActionableCase() throws Exception {
-    when(caseRepo.findById(INACTIONABLE_HOUSEHOLD_CASE_FK))
-        .thenReturn(Optional.of(cases.get(INACTIONABLE_HOUSEHOLD_CASE_FK)));
-    when(categoryRepo.findById(CategoryDTO.CategoryName.NO_TRACE_OF_ADDRESS))
-        .thenReturn(Optional.of(categories.get(CAT_PAPER_QUESTIONNAIRE_RESPONSE)));
-
-    CaseEvent caseEvent =
-        fabricateEvent(
-            CategoryDTO.CategoryName.NO_TRACE_OF_ADDRESS, INACTIONABLE_HOUSEHOLD_CASE_FK);
-    caseService.createCaseEvent(caseEvent);
-
-    verify(caseRepo).findById(INACTIONABLE_HOUSEHOLD_CASE_FK);
-    verify(categoryRepo).findById(CategoryDTO.CategoryName.NO_TRACE_OF_ADDRESS);
-
-    // IAC should not be disabled again!
-    verify(caseIacAuditService, times(0)).disableAllIACsForCase(any(Case.class));
-
-    // action service should NOT be told of case state change
-    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotificationDTO.class));
 
     // no new action to be created
     verify(actionSvcClient, times(0))
