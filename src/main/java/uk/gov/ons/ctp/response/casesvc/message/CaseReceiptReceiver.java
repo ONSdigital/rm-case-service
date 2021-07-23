@@ -47,7 +47,7 @@ public class CaseReceiptReceiver {
     Timestamp responseTimestamp = dateTimeUtil.getNowUTC();
 
     Case existingCase = caseService.findCaseById(caseId);
-    log.with("existing_case", existingCase).info("Found existing case");
+    log.with("existing_case", existingCase).debug("Found existing case");
 
     if (existingCase == null) {
       log.with("case_id", caseId).error(EXISTING_CASE_NOT_FOUND);
