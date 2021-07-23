@@ -52,7 +52,6 @@ public class CaseReceiptPubSubSubscription {
         CaseReceipt receipt = mapper.readValue(payload, CaseReceipt.class);
         log.with("receipt", receipt).debug("Successfully serialised receipt");
         try {
-          log.info(caseReceiptReceiver.toString());
           caseReceiptReceiver.process(receipt);
         } catch (CTPException e) {
           log.error(e, "Error processing receipt");

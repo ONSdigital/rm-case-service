@@ -64,7 +64,7 @@ public class CaseReceiptReceiver {
       log.with("case_event", caseEvent.getCategory()).info("New case event");
       caseEvent.setCreatedBy(SYSTEM);
       caseEvent.setDescription(QUESTIONNAIRE_RESPONSE);
-      log.info("about to invoke the event creation...");
+      log.debug("about to invoke the event creation...");
       caseService.createCaseEvent(caseEvent, responseTimestamp);
     }
   }

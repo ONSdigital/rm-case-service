@@ -305,7 +305,7 @@ public class CaseService {
    */
   public CaseEvent createCaseEvent(final CaseEvent caseEvent, final Timestamp timestamp)
       throws CTPException {
-    log.with("case_event", caseEvent).debug("Creating case event");
+    log.with("case_event", caseEvent).info("Creating case event");
 
     Case targetCase = caseRepo.findById(caseEvent.getCaseFK()).orElse(null);
     log.with("target_case", targetCase).debug("Found target case");
