@@ -367,21 +367,6 @@ public class StateTransitionManagerUnitTest {
   }
 
   @Test
-  public void givenNotStartedWhenRequestToCompleteInAlternativeFormatThenOtherNonResponse()
-      throws CTPException {
-    // Given
-    CaseGroupStatus notStarted = CaseGroupStatus.NOTSTARTED;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            notStarted, CategoryDTO.CategoryName.REQUEST_TO_COMPLETE_IN_ALTERNATIVE_FORMAT);
-
-    // Then
-    assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
-  }
-
-  @Test
   public void givenInProgressWhenPhysicallyOrMentallyUnableThenOtherNonResponse()
       throws CTPException {
     // Given
@@ -454,21 +439,6 @@ public class StateTransitionManagerUnitTest {
   }
 
   @Test
-  public void givenInProgressWhenRequestToCompleteInAlternativeFormatThenOtherNonResponse()
-      throws CTPException {
-    // Given
-    CaseGroupStatus inProgress = CaseGroupStatus.INPROGRESS;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            inProgress, CategoryDTO.CategoryName.REQUEST_TO_COMPLETE_IN_ALTERNATIVE_FORMAT);
-
-    // Then
-    assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
-  }
-
-  @Test
   public void givenCompleteWhenPhysicallyOrMentallyUnableThenOtherNonResponse()
       throws CTPException {
     // Given
@@ -534,21 +504,6 @@ public class StateTransitionManagerUnitTest {
     CaseGroupStatus destinationState =
         caseGroupStateMachine.transition(
             complete, CategoryDTO.CategoryName.COMPLY_IN_DIFFERENT_COLLECTION_MODE);
-
-    // Then
-    assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
-  }
-
-  @Test
-  public void givenCompleteWhenRequestToCompleteInAlternativeFormatThenOtherNonResponse()
-      throws CTPException {
-    // Given
-    CaseGroupStatus complete = CaseGroupStatus.COMPLETE;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            complete, CategoryDTO.CategoryName.REQUEST_TO_COMPLETE_IN_ALTERNATIVE_FORMAT);
 
     // Then
     assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);

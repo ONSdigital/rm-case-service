@@ -12,5 +12,6 @@ DELETE FROM casesvc.category WHERE category_pk = 'OTHER_CIRCUMSTANTIAL_REFUSAL';
 DELETE FROM casesvc.category WHERE category_pk = 'OTHER_OUTRIGHT_REFUSAL';
 DELETE FROM casesvc.category WHERE category_pk = 'PARTIAL_INTERVIEW_REQUEST_DATA_DELETED';
 DELETE FROM casesvc.category WHERE category_pk = 'PARTIAL_INTERVIEW_REQUEST_DATA_DELETED_INCORRECT';
+DELETE FROM casesvc.category WHERE category_pk = 'REQUEST_TO_COMPLETE_IN_ALTERNATIVE_FORMAT';
 DELETE FROM casesvc.category WHERE category_pk = 'VACANT_OR_EMPTY';
 DELETE FROM casesvc.category WHERE category_pk = 'WRONG_ADDRESS';

@@ -121,10 +121,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CaseGroupStatus.NOTSTARTED,
         CategoryDTO.CategoryName.COMPLY_IN_DIFFERENT_COLLECTION_MODE,
         CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.NOTSTARTED,
-        CategoryDTO.CategoryName.REQUEST_TO_COMPLETE_IN_ALTERNATIVE_FORMAT,
-        CaseGroupStatus.OTHERNONRESPONSE);
 
     // Transitions to Other non-response
     // From in progress
@@ -148,10 +144,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CaseGroupStatus.INPROGRESS,
         CategoryDTO.CategoryName.COMPLY_IN_DIFFERENT_COLLECTION_MODE,
         CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.INPROGRESS,
-        CategoryDTO.CategoryName.REQUEST_TO_COMPLETE_IN_ALTERNATIVE_FORMAT,
-        CaseGroupStatus.OTHERNONRESPONSE);
 
     // Transitions to Other non-response
     // From complete
@@ -174,10 +166,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
     builder.put(
         CaseGroupStatus.COMPLETE,
         CategoryDTO.CategoryName.COMPLY_IN_DIFFERENT_COLLECTION_MODE,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.COMPLETE,
-        CategoryDTO.CategoryName.REQUEST_TO_COMPLETE_IN_ALTERNATIVE_FORMAT,
         CaseGroupStatus.OTHERNONRESPONSE);
 
     // Transitions to not eligible

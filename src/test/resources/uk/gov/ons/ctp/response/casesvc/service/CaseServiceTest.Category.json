@@ -132,17 +132,6 @@
     "eventType": "DISABLED"
   },
   {
-    "group": "general",
-    "categoryName": "REQUEST_TO_COMPLETE_IN_ALTERNATIVE_FORMAT",
-    "longDescription": "Request To Complete In Alternative Format",
-    "shortDescription": "Request To Complete In Alternative Format",
-    "role": "collect-csos, collect-admins",
-    "generatedActionType": null,
-    "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "H,HI,B,BI",
-    "eventType": null
-  },
-  {
     "group": null,
     "categoryName": "ONLINE_QUESTIONNAIRE_RESPONSE",
     "longDescription": "Online Questionnaire Response",
