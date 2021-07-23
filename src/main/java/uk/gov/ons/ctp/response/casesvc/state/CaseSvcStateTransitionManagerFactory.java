@@ -158,14 +158,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
     // From in progress
     builder.put(
         CaseGroupStatus.INPROGRESS,
-        CategoryDTO.CategoryName.PARTIAL_INTERVIEW_REQUEST_DATA_DELETED,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.INPROGRESS,
-        CategoryDTO.CategoryName.PARTIAL_INTERVIEW_REQUEST_DATA_DELETED_INCORRECT,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.INPROGRESS,
         CategoryDTO.CategoryName.PHYSICALLY_OR_MENTALLY_UNABLE,
         CaseGroupStatus.OTHERNONRESPONSE);
     builder.put(
@@ -195,14 +187,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
 
     // Transitions to Other non-response
     // From complete
-    builder.put(
-        CaseGroupStatus.COMPLETE,
-        CategoryDTO.CategoryName.FULL_INTERVIEW_REQUEST_DATA_DELETED,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.COMPLETE,
-        CategoryDTO.CategoryName.FULL_INTERVIEW_REQUEST_DATA_DELETED_INCORRECT,
-        CaseGroupStatus.OTHERNONRESPONSE);
     builder.put(
         CaseGroupStatus.COMPLETE,
         CategoryDTO.CategoryName.PHYSICALLY_OR_MENTALLY_UNABLE,
