@@ -738,101 +738,6 @@ public class StateTransitionManagerUnitTest {
     assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
   }
 
-  // Not started to unknown eligibility
-  @Test
-  public void givenNotStartedWhenNoTraceOfAddressThenUnknownEligibility() throws CTPException {
-    // Given
-    CaseGroupStatus notStarted = CaseGroupStatus.NOTSTARTED;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(notStarted, CategoryDTO.CategoryName.NO_TRACE_OF_ADDRESS);
-
-    // Then
-    assertEquals(CaseGroupStatus.UNKNOWNELIGIBILITY, destinationState);
-  }
-
-  @Test
-  public void givenNotStartedWhenWrongAddressThenUnknownEligibility() throws CTPException {
-    // Given
-    CaseGroupStatus notStarted = CaseGroupStatus.NOTSTARTED;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(notStarted, CategoryDTO.CategoryName.WRONG_ADDRESS);
-
-    // Then
-    assertEquals(CaseGroupStatus.UNKNOWNELIGIBILITY, destinationState);
-  }
-
-  // In progress to unknown eligibility
-  @Test
-  public void givenInProgressWhenNoTraceOfAddressThenUnknownEligibility() throws CTPException {
-    // Given
-    CaseGroupStatus inProgress = CaseGroupStatus.INPROGRESS;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(inProgress, CategoryDTO.CategoryName.NO_TRACE_OF_ADDRESS);
-
-    // Then
-    assertEquals(CaseGroupStatus.UNKNOWNELIGIBILITY, destinationState);
-  }
-
-  @Test
-  public void givenInProgressWhenWrongAddressThenUnknownEligibility() throws CTPException {
-    // Given
-    CaseGroupStatus inProgress = CaseGroupStatus.INPROGRESS;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(inProgress, CategoryDTO.CategoryName.WRONG_ADDRESS);
-
-    // Then
-    assertEquals(CaseGroupStatus.UNKNOWNELIGIBILITY, destinationState);
-  }
-
-  // Complete to unknown eligibility
-  @Test
-  public void givenCompleteWhenNoTraceOfAddressThenUnknownEligibility() throws CTPException {
-    // Given
-    CaseGroupStatus complete = CaseGroupStatus.COMPLETE;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(complete, CategoryDTO.CategoryName.NO_TRACE_OF_ADDRESS);
-
-    // Then
-    assertEquals(CaseGroupStatus.UNKNOWNELIGIBILITY, destinationState);
-  }
-
-  @Test
-  public void givenCompleteWhenWrongAddressThenUnknownEligibility() throws CTPException {
-    // Given
-    CaseGroupStatus complete = CaseGroupStatus.COMPLETE;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(complete, CategoryDTO.CategoryName.WRONG_ADDRESS);
-
-    // Then
-    assertEquals(CaseGroupStatus.UNKNOWNELIGIBILITY, destinationState);
-  }
-
-  // Not started to not eligible
-  @Test
-  public void givenNotStartedWhenVacantOrEmptyThenNotEligible() throws CTPException {
-    // Given
-    CaseGroupStatus notStarted = CaseGroupStatus.NOTSTARTED;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(notStarted, CategoryDTO.CategoryName.VACANT_OR_EMPTY);
-
-    // Then
-    assertEquals(CaseGroupStatus.NOTELIGIBLE, destinationState);
-  }
-
   @Test
   public void givenNotStartedWhenNonResidentialAddressThenNotEligible() throws CTPException {
     // Given
@@ -918,20 +823,6 @@ public class StateTransitionManagerUnitTest {
     assertEquals(CaseGroupStatus.NOTELIGIBLE, destinationState);
   }
 
-  // In progress to not eligible
-  @Test
-  public void givenInProgressWhenVacantOrEmptyThenNotEligible() throws CTPException {
-    // Given
-    CaseGroupStatus inProgress = CaseGroupStatus.INPROGRESS;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(inProgress, CategoryDTO.CategoryName.VACANT_OR_EMPTY);
-
-    // Then
-    assertEquals(CaseGroupStatus.NOTELIGIBLE, destinationState);
-  }
-
   @Test
   public void givenInProgressWhenNonResidentialAddressThenNotEligible() throws CTPException {
     // Given
@@ -1012,20 +903,6 @@ public class StateTransitionManagerUnitTest {
     // When
     CaseGroupStatus destinationState =
         caseGroupStateMachine.transition(inProgress, CategoryDTO.CategoryName.DECEASED);
-
-    // Then
-    assertEquals(CaseGroupStatus.NOTELIGIBLE, destinationState);
-  }
-
-  // Complete to not eligible
-  @Test
-  public void givenCompleteWhenVacantOrEmptyThenNotEligible() throws CTPException {
-    // Given
-    CaseGroupStatus complete = CaseGroupStatus.COMPLETE;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(complete, CategoryDTO.CategoryName.VACANT_OR_EMPTY);
 
     // Then
     assertEquals(CaseGroupStatus.NOTELIGIBLE, destinationState);

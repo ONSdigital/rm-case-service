@@ -232,45 +232,8 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CategoryDTO.CategoryName.REQUEST_TO_COMPLETE_IN_ALTERNATIVE_FORMAT,
         CaseGroupStatus.OTHERNONRESPONSE);
 
-    // Transitions to unknown eligibility
-    // From not started
-    builder.put(
-        CaseGroupStatus.NOTSTARTED,
-        CategoryDTO.CategoryName.NO_TRACE_OF_ADDRESS,
-        CaseGroupStatus.UNKNOWNELIGIBILITY);
-    builder.put(
-        CaseGroupStatus.NOTSTARTED,
-        CategoryDTO.CategoryName.WRONG_ADDRESS,
-        CaseGroupStatus.UNKNOWNELIGIBILITY);
-
-    // Transitions to unknown eligibility
-    // From in progress
-    builder.put(
-        CaseGroupStatus.INPROGRESS,
-        CategoryDTO.CategoryName.NO_TRACE_OF_ADDRESS,
-        CaseGroupStatus.UNKNOWNELIGIBILITY);
-    builder.put(
-        CaseGroupStatus.INPROGRESS,
-        CategoryDTO.CategoryName.WRONG_ADDRESS,
-        CaseGroupStatus.UNKNOWNELIGIBILITY);
-
-    // Transitions to unknown eligibility
-    // From complete
-    builder.put(
-        CaseGroupStatus.COMPLETE,
-        CategoryDTO.CategoryName.NO_TRACE_OF_ADDRESS,
-        CaseGroupStatus.UNKNOWNELIGIBILITY);
-    builder.put(
-        CaseGroupStatus.COMPLETE,
-        CategoryDTO.CategoryName.WRONG_ADDRESS,
-        CaseGroupStatus.UNKNOWNELIGIBILITY);
-
     // Transitions to not eligible
     // From not started
-    builder.put(
-        CaseGroupStatus.NOTSTARTED,
-        CategoryDTO.CategoryName.VACANT_OR_EMPTY,
-        CaseGroupStatus.NOTELIGIBLE);
     builder.put(
         CaseGroupStatus.NOTSTARTED,
         CategoryDTO.CategoryName.NON_RESIDENTIAL_ADDRESS,
@@ -298,10 +261,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
     // From in progress
     builder.put(
         CaseGroupStatus.INPROGRESS,
-        CategoryDTO.CategoryName.VACANT_OR_EMPTY,
-        CaseGroupStatus.NOTELIGIBLE);
-    builder.put(
-        CaseGroupStatus.INPROGRESS,
         CategoryDTO.CategoryName.NON_RESIDENTIAL_ADDRESS,
         CaseGroupStatus.NOTELIGIBLE);
     builder.put(
@@ -325,10 +284,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
 
     // Transitions to not eligible
     // From in progress
-    builder.put(
-        CaseGroupStatus.COMPLETE,
-        CategoryDTO.CategoryName.VACANT_OR_EMPTY,
-        CaseGroupStatus.NOTELIGIBLE);
     builder.put(
         CaseGroupStatus.COMPLETE,
         CategoryDTO.CategoryName.NON_RESIDENTIAL_ADDRESS,

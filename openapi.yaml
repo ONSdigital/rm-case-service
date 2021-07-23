@@ -671,7 +671,6 @@ components:
             - NO_ACTIVE_ENROLMENTS
             - NO_LONGER_REQUIRED
             - NO_PERSON_IN_ELIGIBLE_AGE_RANGE
-            - NO_TRACE_OF_ADDRESS
             - OFFLINE_RESPONSE_PROCESSED
             - ONLINE_QUESTIONNAIRE_RESPONSE
             - OTHER_CIRCUMSTANTIAL_REFUSAL
@@ -688,9 +687,7 @@ components:
             - SUCCESSFUL_RESPONSE_UPLOAD
             - TOO_BUSY
             - UNSUCCESSFUL_RESPONSE_UPLOAD
-            - VACANT_OR_EMPTY
             - VERIFICATION_CODE_SENT
-            - WRONG_ADDRESS
         createdBy:
           type: string
         description:
@@ -734,7 +731,6 @@ components:
             - NO_ACTIVE_ENROLMENTS
             - NO_LONGER_REQUIRED
             - NO_PERSON_IN_ELIGIBLE_AGE_RANGE
-            - NO_TRACE_OF_ADDRESS
             - OFFLINE_RESPONSE_PROCESSED
             - ONLINE_QUESTIONNAIRE_RESPONSE
             - OTHER_CIRCUMSTANTIAL_REFUSAL
@@ -751,9 +747,7 @@ components:
             - SUCCESSFUL_RESPONSE_UPLOAD
             - TOO_BUSY
             - UNSUCCESSFUL_RESPONSE_UPLOAD
-            - VACANT_OR_EMPTY
             - VERIFICATION_CODE_SENT
-            - WRONG_ADDRESS
         createdBy:
           type: string
         createdDateTime:
@@ -836,7 +830,6 @@ components:
             - NO_ACTIVE_ENROLMENTS
             - NO_LONGER_REQUIRED
             - NO_PERSON_IN_ELIGIBLE_AGE_RANGE
-            - NO_TRACE_OF_ADDRESS
             - OFFLINE_RESPONSE_PROCESSED
             - ONLINE_QUESTIONNAIRE_RESPONSE
             - OTHER_CIRCUMSTANTIAL_REFUSAL
@@ -853,9 +846,7 @@ components:
             - SUCCESSFUL_RESPONSE_UPLOAD
             - TOO_BUSY
             - UNSUCCESSFUL_RESPONSE_UPLOAD
-            - VACANT_OR_EMPTY
             - VERIFICATION_CODE_SENT
-            - WRONG_ADDRESS
         role:
           type: string
         shortDescription:
@@ -894,7 +885,6 @@ components:
             - NO_ACTIVE_ENROLMENTS
             - NO_LONGER_REQUIRED
             - NO_PERSON_IN_ELIGIBLE_AGE_RANGE
-            - NO_TRACE_OF_ADDRESS
             - OFFLINE_RESPONSE_PROCESSED
             - ONLINE_QUESTIONNAIRE_RESPONSE
             - OTHER_CIRCUMSTANTIAL_REFUSAL
@@ -911,9 +901,7 @@ components:
             - SUCCESSFUL_RESPONSE_UPLOAD
             - TOO_BUSY
             - UNSUCCESSFUL_RESPONSE_UPLOAD
-            - VACANT_OR_EMPTY
             - VERIFICATION_CODE_SENT
-            - WRONG_ADDRESS
         createdBy:
           type: string
         createdDateTime:

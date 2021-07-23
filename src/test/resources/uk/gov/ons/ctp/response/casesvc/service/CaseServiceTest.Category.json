@@ -111,17 +111,6 @@
   },
   {
     "group": null,
-    "categoryName": "WRONG_ADDRESS",
-    "longDescription": "Wrong Address",
-    "shortDescription": "Wrong Address",
-    "role": "collect-csos, collect-admins",
-    "generatedActionType": null,
-    "newCaseSampleUnitType": "H",
-    "oldCaseSampleUnitTypes": "H",
-    "eventType": "DEACTIVATED"
-  },
-  {
-    "group": null,
     "categoryName": "LANGUAGE_DIFFICULTIES",
     "longDescription": "Language Difficulties",
     "shortDescription": "Language Difficulties",
@@ -163,17 +152,6 @@
     "newCaseSampleUnitType": "HI",
     "oldCaseSampleUnitTypes": "HI",
     "eventType": "DISABLED"
-  },
-  {
-    "group": null,
-    "categoryName": "VACANT_OR_EMPTY",
-    "longDescription": "Vacant Or Empty",
-    "shortDescription": "Vacant Or Empty",
-    "role": "collect-csos, collect-admins",
-    "generatedActionType": null,
-    "newCaseSampleUnitType": "HI",
-    "oldCaseSampleUnitTypes": "H",
-    "eventType": null
   },
   {
     "group": "general",
