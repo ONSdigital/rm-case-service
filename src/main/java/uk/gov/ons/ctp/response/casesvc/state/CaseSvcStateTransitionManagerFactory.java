@@ -84,10 +84,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CaseGroupStatus.NOTSTARTED,
         CategoryDTO.CategoryName.PRIVACY_DATA_CONFIDENTIALITY_CONCERNS,
         CaseGroupStatus.REFUSAL);
-    builder.put(
-        CaseGroupStatus.NOTSTARTED,
-        CategoryDTO.CategoryName.OTHER_OUTRIGHT_REFUSAL,
-        CaseGroupStatus.REFUSAL);
 
     // Transitions to refusal
     // From in progress
@@ -95,20 +91,12 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CaseGroupStatus.INPROGRESS,
         CategoryDTO.CategoryName.PRIVACY_DATA_CONFIDENTIALITY_CONCERNS,
         CaseGroupStatus.REFUSAL);
-    builder.put(
-        CaseGroupStatus.INPROGRESS,
-        CategoryDTO.CategoryName.OTHER_OUTRIGHT_REFUSAL,
-        CaseGroupStatus.REFUSAL);
 
     // Transitions to refusal
     // From complete
     builder.put(
         CaseGroupStatus.COMPLETE,
         CategoryDTO.CategoryName.PRIVACY_DATA_CONFIDENTIALITY_CONCERNS,
-        CaseGroupStatus.REFUSAL);
-    builder.put(
-        CaseGroupStatus.COMPLETE,
-        CategoryDTO.CategoryName.OTHER_OUTRIGHT_REFUSAL,
         CaseGroupStatus.REFUSAL);
 
     // Transitions to Other non-response
@@ -131,10 +119,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CaseGroupStatus.OTHERNONRESPONSE);
     builder.put(
         CaseGroupStatus.NOTSTARTED,
-        CategoryDTO.CategoryName.OTHER_CIRCUMSTANTIAL_REFUSAL,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.NOTSTARTED,
         CategoryDTO.CategoryName.COMPLY_IN_DIFFERENT_COLLECTION_MODE,
         CaseGroupStatus.OTHERNONRESPONSE);
     builder.put(
@@ -162,10 +146,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CaseGroupStatus.OTHERNONRESPONSE);
     builder.put(
         CaseGroupStatus.INPROGRESS,
-        CategoryDTO.CategoryName.OTHER_CIRCUMSTANTIAL_REFUSAL,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.INPROGRESS,
         CategoryDTO.CategoryName.COMPLY_IN_DIFFERENT_COLLECTION_MODE,
         CaseGroupStatus.OTHERNONRESPONSE);
     builder.put(
@@ -190,10 +170,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
     builder.put(
         CaseGroupStatus.COMPLETE,
         CategoryDTO.CategoryName.TOO_BUSY,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.COMPLETE,
-        CategoryDTO.CategoryName.OTHER_CIRCUMSTANTIAL_REFUSAL,
         CaseGroupStatus.OTHERNONRESPONSE);
     builder.put(
         CaseGroupStatus.COMPLETE,

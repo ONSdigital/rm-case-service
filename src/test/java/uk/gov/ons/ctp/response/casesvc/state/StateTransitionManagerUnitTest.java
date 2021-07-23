@@ -263,20 +263,6 @@ public class StateTransitionManagerUnitTest {
     assertEquals(CaseGroupStatus.REFUSAL, destinationState);
   }
 
-  @Test
-  public void givenNotStartedWhenOtherOutrightRefusalThenRefusal() throws CTPException {
-    // Given
-    CaseGroupStatus notStarted = CaseGroupStatus.NOTSTARTED;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            notStarted, CategoryDTO.CategoryName.OTHER_OUTRIGHT_REFUSAL);
-
-    // Then
-    assertEquals(CaseGroupStatus.REFUSAL, destinationState);
-  }
-
   // In progress to refusal
   @Test
   public void givenInProgressWhenPrivacyDataConfidentialityConcernsThenRefusal()
@@ -293,20 +279,6 @@ public class StateTransitionManagerUnitTest {
     assertEquals(CaseGroupStatus.REFUSAL, destinationState);
   }
 
-  @Test
-  public void givenInProgressWhenOtherOutrightRefusalThenRefusal() throws CTPException {
-    // Given
-    CaseGroupStatus inProgress = CaseGroupStatus.INPROGRESS;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            inProgress, CategoryDTO.CategoryName.OTHER_OUTRIGHT_REFUSAL);
-
-    // Then
-    assertEquals(CaseGroupStatus.REFUSAL, destinationState);
-  }
-
   // Complete to refusal
   @Test
   public void givenCompleteWhenPrivacyDataConfidentialityConcernsThenRefusal() throws CTPException {
@@ -317,19 +289,6 @@ public class StateTransitionManagerUnitTest {
     CaseGroupStatus destinationState =
         caseGroupStateMachine.transition(
             complete, CategoryDTO.CategoryName.PRIVACY_DATA_CONFIDENTIALITY_CONCERNS);
-
-    // Then
-    assertEquals(CaseGroupStatus.REFUSAL, destinationState);
-  }
-
-  @Test
-  public void givenCompleteWhenOtherOutrightRefusalThenRefusal() throws CTPException {
-    // Given
-    CaseGroupStatus complete = CaseGroupStatus.COMPLETE;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(complete, CategoryDTO.CategoryName.OTHER_OUTRIGHT_REFUSAL);
 
     // Then
     assertEquals(CaseGroupStatus.REFUSAL, destinationState);
@@ -387,20 +346,6 @@ public class StateTransitionManagerUnitTest {
     // When
     CaseGroupStatus destinationState =
         caseGroupStateMachine.transition(notStarted, CategoryDTO.CategoryName.TOO_BUSY);
-
-    // Then
-    assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
-  }
-
-  @Test
-  public void givenNotStartedWhenOtherCircumstantialThenOtherNonResponse() throws CTPException {
-    // Given
-    CaseGroupStatus notStarted = CaseGroupStatus.NOTSTARTED;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            notStarted, CategoryDTO.CategoryName.OTHER_CIRCUMSTANTIAL_REFUSAL);
 
     // Then
     assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
@@ -494,20 +439,6 @@ public class StateTransitionManagerUnitTest {
   }
 
   @Test
-  public void givenInProgressWhenOtherCircumstantialThenOtherNonResponse() throws CTPException {
-    // Given
-    CaseGroupStatus inProgress = CaseGroupStatus.INPROGRESS;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            inProgress, CategoryDTO.CategoryName.OTHER_CIRCUMSTANTIAL_REFUSAL);
-
-    // Then
-    assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
-  }
-
-  @Test
   public void givenInProgressWhenComplyInDifferentCollectionModeThenOtherNonResponse()
       throws CTPException {
     // Given
@@ -588,20 +519,6 @@ public class StateTransitionManagerUnitTest {
     // When
     CaseGroupStatus destinationState =
         caseGroupStateMachine.transition(complete, CategoryDTO.CategoryName.TOO_BUSY);
-
-    // Then
-    assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
-  }
-
-  @Test
-  public void givenCompleteWhenOtherCircumstantialThenOtherNonResponse() throws CTPException {
-    // Given
-    CaseGroupStatus complete = CaseGroupStatus.COMPLETE;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            complete, CategoryDTO.CategoryName.OTHER_CIRCUMSTANTIAL_REFUSAL);
 
     // Then
     assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);

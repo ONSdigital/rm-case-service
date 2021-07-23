@@ -121,17 +121,6 @@
     "eventType": "DISABLED"
   },
   {
-    "group": "general",
-    "categoryName": "OTHER_CIRCUMSTANTIAL_REFUSAL",
-    "longDescription": "Other Circumstantial Refusal",
-    "shortDescription": "Other Circumstantial Refusal",
-    "role": "collect-field-escalate, collect-general-escalate, collect_admins",
-    "generatedActionType": null,
-    "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "H,HI,B,BI",
-    "eventType": null
-  },
-  {
     "group": null,
     "categoryName": "NO_LONGER_REQUIRED",
     "longDescription": "No Longer Required",
