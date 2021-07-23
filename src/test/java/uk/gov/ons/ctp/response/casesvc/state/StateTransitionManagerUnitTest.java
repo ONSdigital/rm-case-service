@@ -583,21 +583,6 @@ public class StateTransitionManagerUnitTest {
   }
 
   @Test
-  public void givenNotStartedWhenCommunalEstablishmentInstitutionThenNotEligible()
-      throws CTPException {
-    // Given
-    CaseGroupStatus notStarted = CaseGroupStatus.NOTSTARTED;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            notStarted, CategoryDTO.CategoryName.COMMUNAL_ESTABLISHMENT_INSTITUTION);
-
-    // Then
-    assertEquals(CaseGroupStatus.NOTELIGIBLE, destinationState);
-  }
-
-  @Test
   public void givenInProgressWhenNonResidentialAddressThenNotEligible() throws CTPException {
     // Given
     CaseGroupStatus inProgress = CaseGroupStatus.INPROGRESS;
@@ -626,21 +611,6 @@ public class StateTransitionManagerUnitTest {
   }
 
   @Test
-  public void givenInProgressWhenCommunalEstablishmentInstitutionThenNotEligible()
-      throws CTPException {
-    // Given
-    CaseGroupStatus inProgress = CaseGroupStatus.INPROGRESS;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            inProgress, CategoryDTO.CategoryName.COMMUNAL_ESTABLISHMENT_INSTITUTION);
-
-    // Then
-    assertEquals(CaseGroupStatus.NOTELIGIBLE, destinationState);
-  }
-
-  @Test
   public void givenCompleteWhenNonResidentialAddressThenNotEligible() throws CTPException {
     // Given
     CaseGroupStatus complete = CaseGroupStatus.COMPLETE;
@@ -663,21 +633,6 @@ public class StateTransitionManagerUnitTest {
     CaseGroupStatus destinationState =
         caseGroupStateMachine.transition(
             complete, CategoryDTO.CategoryName.ADDRESS_OCCUPIED_NO_RESIDENT);
-
-    // Then
-    assertEquals(CaseGroupStatus.NOTELIGIBLE, destinationState);
-  }
-
-  @Test
-  public void givenCompleteWhenCommunalEstablishmentInstitutionThenNotEligible()
-      throws CTPException {
-    // Given
-    CaseGroupStatus complete = CaseGroupStatus.COMPLETE;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            complete, CategoryDTO.CategoryName.COMMUNAL_ESTABLISHMENT_INSTITUTION);
 
     // Then
     assertEquals(CaseGroupStatus.NOTELIGIBLE, destinationState);

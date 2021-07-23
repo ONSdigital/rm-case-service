@@ -190,10 +190,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CaseGroupStatus.NOTSTARTED,
         CategoryDTO.CategoryName.ADDRESS_OCCUPIED_NO_RESIDENT,
         CaseGroupStatus.NOTELIGIBLE);
-    builder.put(
-        CaseGroupStatus.NOTSTARTED,
-        CategoryDTO.CategoryName.COMMUNAL_ESTABLISHMENT_INSTITUTION,
-        CaseGroupStatus.NOTELIGIBLE);
 
     // Transitions to not eligible
     // From in progress
@@ -205,10 +201,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CaseGroupStatus.INPROGRESS,
         CategoryDTO.CategoryName.ADDRESS_OCCUPIED_NO_RESIDENT,
         CaseGroupStatus.NOTELIGIBLE);
-    builder.put(
-        CaseGroupStatus.INPROGRESS,
-        CategoryDTO.CategoryName.COMMUNAL_ESTABLISHMENT_INSTITUTION,
-        CaseGroupStatus.NOTELIGIBLE);
 
     // Transitions to not eligible
     // From in progress
@@ -219,10 +211,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
     builder.put(
         CaseGroupStatus.COMPLETE,
         CategoryDTO.CategoryName.ADDRESS_OCCUPIED_NO_RESIDENT,
-        CaseGroupStatus.NOTELIGIBLE);
-    builder.put(
-        CaseGroupStatus.COMPLETE,
-        CategoryDTO.CategoryName.COMMUNAL_ESTABLISHMENT_INSTITUTION,
         CaseGroupStatus.NOTELIGIBLE);
 
     // Transitions from social outcomes to in progress

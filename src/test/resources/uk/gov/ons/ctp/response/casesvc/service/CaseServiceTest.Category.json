@@ -165,17 +165,6 @@
     "eventType": null
   },
   {
-    "group": "general",
-    "categoryName": "COMMUNAL_ESTABLISHMENT_INSTITUTION",
-    "longDescription": "Communal Establishment Institution",
-    "shortDescription": "Communal Establishment Institution",
-    "role": "collect-csos, collect-field-escalate, collect-general-escalate, collect-admins",
-    "generatedActionType": null,
-    "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "H,HI,B,BI",
-    "eventType": "DEACTIVATED"
-  },
-  {
     "group": null,
     "categoryName": "RESPONDENT_ENROLED",
     "longDescription": "Respondent Enroled",
