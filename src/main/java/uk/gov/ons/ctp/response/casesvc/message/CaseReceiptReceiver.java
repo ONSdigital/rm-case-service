@@ -1,8 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.message;
 
 import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED;
-import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE;
-import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.QUESTIONNAIRE_RESPONSE;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
@@ -20,8 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
-import uk.gov.ons.ctp.response.casesvc.message.feedback.InboundChannel;
-import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.lib.common.error.CTPException;
 import uk.gov.ons.ctp.response.lib.common.time.DateTimeUtil;
@@ -43,31 +39,15 @@ public class CaseReceiptReceiver {
    * @param caseReceipt to process
    * @throws CTPException CTPException
    */
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = false, value = "transactionManager")
+  @Transactional(propagation = Propagation.REQUIRED, value = "transactionManager")
   @ServiceActivator(inputChannel = "caseReceiptTransformed", adviceChain = "caseReceiptRetryAdvice")
   public void process(CaseReceipt caseReceipt) throws CTPException {
     log.with("case_receipt", caseReceipt).debug("entering process with caseReceipt");
     UUID caseId = UUID.fromString(caseReceipt.getCaseId());
-    InboundChannel inboundChannel = caseReceipt.getInboundChannel();
     Timestamp responseTimestamp = dateTimeUtil.getNowUTC();
 
     Case existingCase = caseService.findCaseById(caseId);
     log.with("existing_case", existingCase).debug("Found existing case");
-
-    CategoryDTO.CategoryName category = null;
-    switch (inboundChannel) {
-      case OFFLINE:
-        category = OFFLINE_RESPONSE_PROCESSED;
-        break;
-      case ONLINE:
-        category = ONLINE_QUESTIONNAIRE_RESPONSE;
-        break;
-      case PAPER:
-        category = PAPER_QUESTIONNAIRE_RESPONSE;
-        break;
-      default:
-        break;
-    }
 
     if (existingCase == null) {
       log.with("case_id", caseId).error(EXISTING_CASE_NOT_FOUND);
@@ -80,7 +60,7 @@ public class CaseReceiptReceiver {
         caseEvent.setMetadata(metadata);
       }
       caseEvent.setCaseFK(existingCase.getCasePK());
-      caseEvent.setCategory(category);
+      caseEvent.setCategory(OFFLINE_RESPONSE_PROCESSED);
       log.with("case_event", caseEvent.getCategory()).info("New case event");
       caseEvent.setCreatedBy(SYSTEM);
       caseEvent.setDescription(QUESTIONNAIRE_RESPONSE);

@@ -5,8 +5,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED;
-import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.ONLINE_QUESTIONNAIRE_RESPONSE;
-import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.PAPER_QUESTIONNAIRE_RESPONSE;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.QUESTIONNAIRE_RESPONSE;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
@@ -76,7 +74,7 @@ public class CaseReceiptReceiverTest {
     metadata.put("partyId", LINKED_PARTY_ID);
     verify(caseService, times(1))
         .createCaseEvent(
-            eq(buildCaseEvent(LINKED_CASE_PK, ONLINE_QUESTIONNAIRE_RESPONSE, metadata)),
+            eq(buildCaseEvent(LINKED_CASE_PK, OFFLINE_RESPONSE_PROCESSED, metadata)),
             eq(new Timestamp(CURRENT_TIME_IN_MILLISECONDS)));
   }
 
@@ -102,7 +100,7 @@ public class CaseReceiptReceiverTest {
 
     verify(caseService, times(1))
         .createCaseEvent(
-            eq(buildCaseEvent(LINKED_CASE_PK, PAPER_QUESTIONNAIRE_RESPONSE, metadata)),
+            eq(buildCaseEvent(LINKED_CASE_PK, OFFLINE_RESPONSE_PROCESSED, metadata)),
             eq(new Timestamp(CURRENT_TIME_IN_MILLISECONDS)));
   }
 
