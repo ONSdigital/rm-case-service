@@ -82,7 +82,7 @@ public class CaseServiceTest {
   private static final int CAT_PHYSICALLY_OR_MENTALLY_UNABLE = 5;
   private static final int CAT_CASE_CREATED = 6;
   private static final int CAT_LACK_OF_COMPUTER_INTERNET_ACCESS = 8;
-  private static final int CAT_ONLINE_QUESTIONNAIRE_RESPONSE = 13;
+  private static final int CAT_ONLINE_QUESTIONNAIRE_RESPONSE = 12;
   private static final int CAT_RESPONDENT_ENROLED = 14;
   private static final int CAT_ACCESS_CODE_AUTHENTICATION_ATTEMPT = 15;
   private static final int CAT_COLLECTION_INSTRUMENT_DOWNLOADED = 16;
