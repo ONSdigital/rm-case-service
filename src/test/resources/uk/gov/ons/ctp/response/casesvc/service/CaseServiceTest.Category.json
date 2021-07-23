@@ -210,28 +210,6 @@
     "recalcCollectionInstrument": false
   },
   {
-    "group": "general",
-    "categoryName": "DECEASED",
-    "longDescription": "Deceased",
-    "shortDescription": "Deceased",
-    "role": "collect-csos, collect-admins",
-    "generatedActionType": null,
-    "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "H,HI,B,BI",
-    "eventType": null
-  },
-  {
-    "group": "general",
-    "categoryName": "NO_PERSON_IN_ELIGIBLE_AGE_RANGE",
-    "longDescription": "No Person In Eligible Age Range",
-    "shortDescription": "No Person In Eligible Age Range",
-    "role": "collect-csos, collect-admins",
-    "generatedActionType": null,
-    "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "H,HI,B,BI",
-    "eventType": "DEACTIVATED"
-  },
-  {
     "group": null,
     "categoryName": "ACCESS_CODE_AUTHENTICATION_ATTEMPT",
     "longDescription": "Access Code authentication attempted",
