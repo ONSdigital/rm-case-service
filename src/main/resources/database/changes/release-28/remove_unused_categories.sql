@@ -1,4 +1,5 @@
 DELETE FROM casesvc.category WHERE category_pk = 'DECEASED';
+DELETE FROM casesvc.category WHERE category_pk = 'DWELLING_OF_FOREIGN_SERVICE_PERSONNEL_DIPLOMATS';
 DELETE FROM casesvc.category WHERE category_pk = 'FULL_INTERVIEW_REQUEST_DATA_DELETED';
 DELETE FROM casesvc.category WHERE category_pk = 'FULL_INTERVIEW_REQUEST_DATA_DELETED_INCORRECT';
 DELETE FROM casesvc.category WHERE category_pk = 'ILL_AT_HOME';

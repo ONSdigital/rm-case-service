@@ -598,21 +598,6 @@ public class StateTransitionManagerUnitTest {
   }
 
   @Test
-  public void givenNotStartedWhenDwellingOfForeignServicePersonnelOrDiplomatsThenNotEligible()
-      throws CTPException {
-    // Given
-    CaseGroupStatus notStarted = CaseGroupStatus.NOTSTARTED;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            notStarted, CategoryDTO.CategoryName.DWELLING_OF_FOREIGN_SERVICE_PERSONNEL_DIPLOMATS);
-
-    // Then
-    assertEquals(CaseGroupStatus.NOTELIGIBLE, destinationState);
-  }
-
-  @Test
   public void givenInProgressWhenNonResidentialAddressThenNotEligible() throws CTPException {
     // Given
     CaseGroupStatus inProgress = CaseGroupStatus.INPROGRESS;
@@ -656,21 +641,6 @@ public class StateTransitionManagerUnitTest {
   }
 
   @Test
-  public void givenInProgressWhenDwellingOfForeignServicePersonnelOrDiplomatsThenNotEligible()
-      throws CTPException {
-    // Given
-    CaseGroupStatus inProgress = CaseGroupStatus.INPROGRESS;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            inProgress, CategoryDTO.CategoryName.DWELLING_OF_FOREIGN_SERVICE_PERSONNEL_DIPLOMATS);
-
-    // Then
-    assertEquals(CaseGroupStatus.NOTELIGIBLE, destinationState);
-  }
-
-  @Test
   public void givenCompleteWhenNonResidentialAddressThenNotEligible() throws CTPException {
     // Given
     CaseGroupStatus complete = CaseGroupStatus.COMPLETE;
@@ -708,21 +678,6 @@ public class StateTransitionManagerUnitTest {
     CaseGroupStatus destinationState =
         caseGroupStateMachine.transition(
             complete, CategoryDTO.CategoryName.COMMUNAL_ESTABLISHMENT_INSTITUTION);
-
-    // Then
-    assertEquals(CaseGroupStatus.NOTELIGIBLE, destinationState);
-  }
-
-  @Test
-  public void givenCompleteWhenDwellingOfForeignServicePersonnelOrDiplomatsThenNotEligible()
-      throws CTPException {
-    // Given
-    CaseGroupStatus complete = CaseGroupStatus.COMPLETE;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            complete, CategoryDTO.CategoryName.DWELLING_OF_FOREIGN_SERVICE_PERSONNEL_DIPLOMATS);
 
     // Then
     assertEquals(CaseGroupStatus.NOTELIGIBLE, destinationState);

@@ -194,10 +194,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CaseGroupStatus.NOTSTARTED,
         CategoryDTO.CategoryName.COMMUNAL_ESTABLISHMENT_INSTITUTION,
         CaseGroupStatus.NOTELIGIBLE);
-    builder.put(
-        CaseGroupStatus.NOTSTARTED,
-        CategoryDTO.CategoryName.DWELLING_OF_FOREIGN_SERVICE_PERSONNEL_DIPLOMATS,
-        CaseGroupStatus.NOTELIGIBLE);
 
     // Transitions to not eligible
     // From in progress
@@ -213,10 +209,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CaseGroupStatus.INPROGRESS,
         CategoryDTO.CategoryName.COMMUNAL_ESTABLISHMENT_INSTITUTION,
         CaseGroupStatus.NOTELIGIBLE);
-    builder.put(
-        CaseGroupStatus.INPROGRESS,
-        CategoryDTO.CategoryName.DWELLING_OF_FOREIGN_SERVICE_PERSONNEL_DIPLOMATS,
-        CaseGroupStatus.NOTELIGIBLE);
 
     // Transitions to not eligible
     // From in progress
@@ -231,10 +223,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
     builder.put(
         CaseGroupStatus.COMPLETE,
         CategoryDTO.CategoryName.COMMUNAL_ESTABLISHMENT_INSTITUTION,
-        CaseGroupStatus.NOTELIGIBLE);
-    builder.put(
-        CaseGroupStatus.COMPLETE,
-        CategoryDTO.CategoryName.DWELLING_OF_FOREIGN_SERVICE_PERSONNEL_DIPLOMATS,
         CaseGroupStatus.NOTELIGIBLE);
 
     // Transitions from social outcomes to in progress
