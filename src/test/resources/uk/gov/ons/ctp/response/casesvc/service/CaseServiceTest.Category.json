@@ -133,17 +133,6 @@
   },
   {
     "group": null,
-    "categoryName": "LEGITIMACY_CONCERNS",
-    "longDescription": "Legitimacy Concerns",
-    "shortDescription": "Legitimacy Concerns",
-    "role": "collect-csos, collect-admins",
-    "generatedActionType": null,
-    "newCaseSampleUnitType": "HI",
-    "oldCaseSampleUnitTypes": "HI",
-    "eventType": "DEACTIVATED"
-  },
-  {
-    "group": null,
     "categoryName": "NO_LONGER_REQUIRED",
     "longDescription": "No Longer Required",
     "shortDescription": "No Longer Required",

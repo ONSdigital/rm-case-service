@@ -264,19 +264,6 @@ public class StateTransitionManagerUnitTest {
   }
 
   @Test
-  public void givenNotStartedWhenLegitimacyConcernsThenRefusal() throws CTPException {
-    // Given
-    CaseGroupStatus notStarted = CaseGroupStatus.NOTSTARTED;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(notStarted, CategoryDTO.CategoryName.LEGITIMACY_CONCERNS);
-
-    // Then
-    assertEquals(CaseGroupStatus.REFUSAL, destinationState);
-  }
-
-  @Test
   public void givenNotStartedWhenOtherOutrightRefusalThenRefusal() throws CTPException {
     // Given
     CaseGroupStatus notStarted = CaseGroupStatus.NOTSTARTED;
@@ -307,19 +294,6 @@ public class StateTransitionManagerUnitTest {
   }
 
   @Test
-  public void givenInProgressWhenLegitimacyConcernsThenRefusal() throws CTPException {
-    // Given
-    CaseGroupStatus inProgress = CaseGroupStatus.INPROGRESS;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(inProgress, CategoryDTO.CategoryName.LEGITIMACY_CONCERNS);
-
-    // Then
-    assertEquals(CaseGroupStatus.REFUSAL, destinationState);
-  }
-
-  @Test
   public void givenInProgressWhenOtherOutrightRefusalThenRefusal() throws CTPException {
     // Given
     CaseGroupStatus inProgress = CaseGroupStatus.INPROGRESS;
@@ -343,19 +317,6 @@ public class StateTransitionManagerUnitTest {
     CaseGroupStatus destinationState =
         caseGroupStateMachine.transition(
             complete, CategoryDTO.CategoryName.PRIVACY_DATA_CONFIDENTIALITY_CONCERNS);
-
-    // Then
-    assertEquals(CaseGroupStatus.REFUSAL, destinationState);
-  }
-
-  @Test
-  public void givenCompleteWhenLegitimacyConcernsThenRefusal() throws CTPException {
-    // Given
-    CaseGroupStatus complete = CaseGroupStatus.COMPLETE;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(complete, CategoryDTO.CategoryName.LEGITIMACY_CONCERNS);
 
     // Then
     assertEquals(CaseGroupStatus.REFUSAL, destinationState);

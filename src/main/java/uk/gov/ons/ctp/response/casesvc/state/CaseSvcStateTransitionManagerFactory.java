@@ -86,10 +86,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CaseGroupStatus.REFUSAL);
     builder.put(
         CaseGroupStatus.NOTSTARTED,
-        CategoryDTO.CategoryName.LEGITIMACY_CONCERNS,
-        CaseGroupStatus.REFUSAL);
-    builder.put(
-        CaseGroupStatus.NOTSTARTED,
         CategoryDTO.CategoryName.OTHER_OUTRIGHT_REFUSAL,
         CaseGroupStatus.REFUSAL);
 
@@ -101,10 +97,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CaseGroupStatus.REFUSAL);
     builder.put(
         CaseGroupStatus.INPROGRESS,
-        CategoryDTO.CategoryName.LEGITIMACY_CONCERNS,
-        CaseGroupStatus.REFUSAL);
-    builder.put(
-        CaseGroupStatus.INPROGRESS,
         CategoryDTO.CategoryName.OTHER_OUTRIGHT_REFUSAL,
         CaseGroupStatus.REFUSAL);
 
@@ -113,10 +105,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
     builder.put(
         CaseGroupStatus.COMPLETE,
         CategoryDTO.CategoryName.PRIVACY_DATA_CONFIDENTIALITY_CONCERNS,
-        CaseGroupStatus.REFUSAL);
-    builder.put(
-        CaseGroupStatus.COMPLETE,
-        CategoryDTO.CategoryName.LEGITIMACY_CONCERNS,
         CaseGroupStatus.REFUSAL);
     builder.put(
         CaseGroupStatus.COMPLETE,

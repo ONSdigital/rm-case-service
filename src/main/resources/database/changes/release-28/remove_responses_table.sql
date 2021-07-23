@@ -3,6 +3,7 @@ DELETE FROM casesvc.category WHERE categorypk = 'FULL_INTERVIEW_REQUEST_DATA_DEL
 DELETE FROM casesvc.category WHERE categorypk = 'FULL_INTERVIEW_REQUEST_DATA_DELETED_INCORRECT';
 DELETE FROM casesvc.category WHERE categorypk = 'ILL_AT_HOME';
 DELETE FROM casesvc.category WHERE categorypk = 'IN_HOSPITAL';
+DELETE FROM casesvc.category WHERE categorypk = 'LEGITIMACY_CONCERNS';
 DELETE FROM casesvc.category WHERE categorypk = 'NO_PERSON_IN_ELIGIBLE_AGE_RANGE';
 DELETE FROM casesvc.category WHERE categorypk = 'NO_TRACE_OF_ADDRESS';
 DELETE FROM casesvc.category WHERE categorypk = 'PARTIAL_INTERVIEW_REQUEST_DATA_DELETED';

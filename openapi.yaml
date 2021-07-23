@@ -663,7 +663,6 @@ components:
             - GENERATE_ENROLMENT_CODE
             - LACK_OF_COMPUTER_INTERNET_ACCESS
             - LANGUAGE_DIFFICULTIES
-            - LEGITIMACY_CONCERNS
             - NON_RESIDENTIAL_ADDRESS
             - NO_ACTIVE_ENROLMENTS
             - NO_LONGER_REQUIRED
@@ -717,7 +716,6 @@ components:
             - GENERATE_ENROLMENT_CODE
             - LACK_OF_COMPUTER_INTERNET_ACCESS
             - LANGUAGE_DIFFICULTIES
-            - LEGITIMACY_CONCERNS
             - NON_RESIDENTIAL_ADDRESS
             - NO_ACTIVE_ENROLMENTS
             - NO_LONGER_REQUIRED
@@ -810,7 +808,6 @@ components:
             - GENERATE_ENROLMENT_CODE
             - LACK_OF_COMPUTER_INTERNET_ACCESS
             - LANGUAGE_DIFFICULTIES
-            - LEGITIMACY_CONCERNS
             - NON_RESIDENTIAL_ADDRESS
             - NO_ACTIVE_ENROLMENTS
             - NO_LONGER_REQUIRED
@@ -859,7 +856,6 @@ components:
             - GENERATE_ENROLMENT_CODE
             - LACK_OF_COMPUTER_INTERNET_ACCESS
             - LANGUAGE_DIFFICULTIES
-            - LEGITIMACY_CONCERNS
             - NON_RESIDENTIAL_ADDRESS
             - NO_ACTIVE_ENROLMENTS
             - NO_LONGER_REQUIRED
