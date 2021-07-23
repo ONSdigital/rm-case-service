@@ -374,33 +374,6 @@ public class StateTransitionManagerUnitTest {
     assertEquals(CaseGroupStatus.REFUSAL, destinationState);
   }
 
-  // Not started to other non response
-  @Test
-  public void givenNotStartedWhenIllAtHomeThenOtherNonResponse() throws CTPException {
-    // Given
-    CaseGroupStatus notStarted = CaseGroupStatus.NOTSTARTED;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(notStarted, CategoryDTO.CategoryName.ILL_AT_HOME);
-
-    // Then
-    assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
-  }
-
-  @Test
-  public void givenNotStartedWhenInHospitalThenOtherNonResponse() throws CTPException {
-    // Given
-    CaseGroupStatus notStarted = CaseGroupStatus.NOTSTARTED;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(notStarted, CategoryDTO.CategoryName.IN_HOSPITAL);
-
-    // Then
-    assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
-  }
-
   @Test
   public void givenNotStartedWhenPhysicallyOrMentallyUnableThenOtherNonResponse()
       throws CTPException {
@@ -534,32 +507,6 @@ public class StateTransitionManagerUnitTest {
   }
 
   @Test
-  public void givenInProgressWhenIllAtHomeThenOtherNonResponse() throws CTPException {
-    // Given
-    CaseGroupStatus inProgress = CaseGroupStatus.INPROGRESS;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(inProgress, CategoryDTO.CategoryName.ILL_AT_HOME);
-
-    // Then
-    assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
-  }
-
-  @Test
-  public void givenInProgressWhenInHospitalThenOtherNonResponse() throws CTPException {
-    // Given
-    CaseGroupStatus inProgress = CaseGroupStatus.INPROGRESS;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(inProgress, CategoryDTO.CategoryName.IN_HOSPITAL);
-
-    // Then
-    assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
-  }
-
-  @Test
   public void givenInProgressWhenPhysicallyOrMentallyUnableThenOtherNonResponse()
       throws CTPException {
     // Given
@@ -686,32 +633,6 @@ public class StateTransitionManagerUnitTest {
     CaseGroupStatus destinationState =
         caseGroupStateMachine.transition(
             complete, CategoryDTO.CategoryName.FULL_INTERVIEW_REQUEST_DATA_DELETED_INCORRECT);
-
-    // Then
-    assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
-  }
-
-  @Test
-  public void givenCompleteWhenIllAtHomeThenOtherNonResponse() throws CTPException {
-    // Given
-    CaseGroupStatus complete = CaseGroupStatus.COMPLETE;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(complete, CategoryDTO.CategoryName.ILL_AT_HOME);
-
-    // Then
-    assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
-  }
-
-  @Test
-  public void givenCompleteWhenInHospitalThenOtherNonResponse() throws CTPException {
-    // Given
-    CaseGroupStatus complete = CaseGroupStatus.COMPLETE;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(complete, CategoryDTO.CategoryName.IN_HOSPITAL);
 
     // Then
     assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);

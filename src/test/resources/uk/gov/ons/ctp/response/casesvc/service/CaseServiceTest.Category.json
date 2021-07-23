@@ -100,17 +100,6 @@
   },
   {
     "group": "general",
-    "categoryName": "IN_HOSPITAL",
-    "longDescription": "In hospital",
-    "shortDescription": "In hospital",
-    "role": "collect-general-escalate, collect-csos, collect-admins",
-    "generatedActionType": "GC_ESCALATION",
-    "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "H,HI,B,BI",
-    "eventType": null
-  },
-  {
-    "group": "general",
     "categoryName": "TOO_BUSY",
     "longDescription": "Too Busy",
     "shortDescription": "Too Busy",

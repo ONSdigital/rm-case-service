@@ -127,14 +127,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
     // From not started
     builder.put(
         CaseGroupStatus.NOTSTARTED,
-        CategoryDTO.CategoryName.ILL_AT_HOME,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.NOTSTARTED,
-        CategoryDTO.CategoryName.IN_HOSPITAL,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.NOTSTARTED,
         CategoryDTO.CategoryName.PHYSICALLY_OR_MENTALLY_UNABLE,
         CaseGroupStatus.OTHERNONRESPONSE);
     builder.put(
@@ -174,14 +166,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CaseGroupStatus.OTHERNONRESPONSE);
     builder.put(
         CaseGroupStatus.INPROGRESS,
-        CategoryDTO.CategoryName.ILL_AT_HOME,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.INPROGRESS,
-        CategoryDTO.CategoryName.IN_HOSPITAL,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.INPROGRESS,
         CategoryDTO.CategoryName.PHYSICALLY_OR_MENTALLY_UNABLE,
         CaseGroupStatus.OTHERNONRESPONSE);
     builder.put(
@@ -218,14 +202,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
     builder.put(
         CaseGroupStatus.COMPLETE,
         CategoryDTO.CategoryName.FULL_INTERVIEW_REQUEST_DATA_DELETED_INCORRECT,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.COMPLETE,
-        CategoryDTO.CategoryName.ILL_AT_HOME,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.COMPLETE,
-        CategoryDTO.CategoryName.IN_HOSPITAL,
         CaseGroupStatus.OTHERNONRESPONSE);
     builder.put(
         CaseGroupStatus.COMPLETE,
