@@ -100,17 +100,6 @@
   },
   {
     "group": "general",
-    "categoryName": "IN_HOSPITAL",
-    "longDescription": "In hospital",
-    "shortDescription": "In hospital",
-    "role": "collect-general-escalate, collect-csos, collect-admins",
-    "generatedActionType": "GC_ESCALATION",
-    "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "H,HI,B,BI",
-    "eventType": null
-  },
-  {
-    "group": "general",
     "categoryName": "TOO_BUSY",
     "longDescription": "Too Busy",
     "shortDescription": "Too Busy",
@@ -122,17 +111,6 @@
   },
   {
     "group": null,
-    "categoryName": "WRONG_ADDRESS",
-    "longDescription": "Wrong Address",
-    "shortDescription": "Wrong Address",
-    "role": "collect-csos, collect-admins",
-    "generatedActionType": null,
-    "newCaseSampleUnitType": "H",
-    "oldCaseSampleUnitTypes": "H",
-    "eventType": "DEACTIVATED"
-  },
-  {
-    "group": null,
     "categoryName": "LANGUAGE_DIFFICULTIES",
     "longDescription": "Language Difficulties",
     "shortDescription": "Language Difficulties",
@@ -141,28 +119,6 @@
     "newCaseSampleUnitType": "H",
     "oldCaseSampleUnitTypes": "H",
     "eventType": "DISABLED"
-  },
-  {
-    "group": "general",
-    "categoryName": "OTHER_CIRCUMSTANTIAL_REFUSAL",
-    "longDescription": "Other Circumstantial Refusal",
-    "shortDescription": "Other Circumstantial Refusal",
-    "role": "collect-field-escalate, collect-general-escalate, collect_admins",
-    "generatedActionType": null,
-    "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "H,HI,B,BI",
-    "eventType": null
-  },
-  {
-    "group": null,
-    "categoryName": "LEGITIMACY_CONCERNS",
-    "longDescription": "Legitimacy Concerns",
-    "shortDescription": "Legitimacy Concerns",
-    "role": "collect-csos, collect-admins",
-    "generatedActionType": null,
-    "newCaseSampleUnitType": "HI",
-    "oldCaseSampleUnitTypes": "HI",
-    "eventType": "DEACTIVATED"
   },
   {
     "group": null,
@@ -177,28 +133,6 @@
   },
   {
     "group": null,
-    "categoryName": "VACANT_OR_EMPTY",
-    "longDescription": "Vacant Or Empty",
-    "shortDescription": "Vacant Or Empty",
-    "role": "collect-csos, collect-admins",
-    "generatedActionType": null,
-    "newCaseSampleUnitType": "HI",
-    "oldCaseSampleUnitTypes": "H",
-    "eventType": null
-  },
-  {
-    "group": "general",
-    "categoryName": "REQUEST_TO_COMPLETE_IN_ALTERNATIVE_FORMAT",
-    "longDescription": "Request To Complete In Alternative Format",
-    "shortDescription": "Request To Complete In Alternative Format",
-    "role": "collect-csos, collect-admins",
-    "generatedActionType": null,
-    "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "H,HI,B,BI",
-    "eventType": null
-  },
-  {
-    "group": null,
     "categoryName": "ONLINE_QUESTIONNAIRE_RESPONSE",
     "longDescription": "Online Questionnaire Response",
     "shortDescription": "Online Questionnaire Response",
@@ -207,17 +141,6 @@
     "newCaseSampleUnitType": null,
     "oldCaseSampleUnitTypes": "H,HI",
     "eventType": "DISABLED"
-  },
-  {
-    "group": null,
-    "categoryName": "PAPER_QUESTIONNAIRE_RESPONSE",
-    "longDescription": "Paper Questionnaire Response",
-    "shortDescription": "Paper Questionnaire Response",
-    "role": null,
-    "generatedActionType": null,
-    "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "H,HI",
-    "eventType": "DEACTIVATED"
   },
   {
     "group": "general",
@@ -231,17 +154,6 @@
     "eventType": null
   },
   {
-    "group": "general",
-    "categoryName": "COMMUNAL_ESTABLISHMENT_INSTITUTION",
-    "longDescription": "Communal Establishment Institution",
-    "shortDescription": "Communal Establishment Institution",
-    "role": "collect-csos, collect-field-escalate, collect-general-escalate, collect-admins",
-    "generatedActionType": null,
-    "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "H,HI,B,BI",
-    "eventType": "DEACTIVATED"
-  },
-  {
     "group": null,
     "categoryName": "RESPONDENT_ENROLED",
     "longDescription": "Respondent Enroled",
@@ -252,28 +164,6 @@
     "oldCaseSampleUnitTypes": "B",
     "eventType": "ACTIONPLAN_CHANGED",
     "recalcCollectionInstrument": false
-  },
-  {
-    "group": "general",
-    "categoryName": "DECEASED",
-    "longDescription": "Deceased",
-    "shortDescription": "Deceased",
-    "role": "collect-csos, collect-admins",
-    "generatedActionType": null,
-    "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "H,HI,B,BI",
-    "eventType": null
-  },
-  {
-    "group": "general",
-    "categoryName": "NO_PERSON_IN_ELIGIBLE_AGE_RANGE",
-    "longDescription": "No Person In Eligible Age Range",
-    "shortDescription": "No Person In Eligible Age Range",
-    "role": "collect-csos, collect-admins",
-    "generatedActionType": null,
-    "newCaseSampleUnitType": null,
-    "oldCaseSampleUnitTypes": "H,HI,B,BI",
-    "eventType": "DEACTIVATED"
   },
   {
     "group": null,

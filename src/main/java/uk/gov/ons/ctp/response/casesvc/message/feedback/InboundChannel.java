@@ -2,8 +2,7 @@ package uk.gov.ons.ctp.response.casesvc.message.feedback;
 
 public enum InboundChannel {
   OFFLINE,
-  ONLINE,
-  PAPER;
+  ONLINE;
 
   public String value() {
     return name();

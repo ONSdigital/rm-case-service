@@ -282,7 +282,7 @@ public class CaseService {
 
   /**
    * Create a CaseEvent for the specific scenario of an incoming CaseReceipt (sent by the SDX
-   * Gateway and containing the responseDateTime of the online/paper response).
+   * Gateway and containing the responseDateTime of the online response).
    *
    * @param caseEvent CaseEvent to be created
    * @param targetCase case to post caseEvent against
@@ -296,7 +296,7 @@ public class CaseService {
 
   /**
    * Create a CaseEvent for the specific scenario of an incoming CaseReceipt (sent by the SDX
-   * Gateway and containing the responseDateTime of the online/paper response).
+   * Gateway and containing the responseDateTime of the online response).
    *
    * @param caseEvent CaseEvent to be created
    * @param timestamp timestamp equals to the incoming CaseReceipt's responseDateTime.
@@ -317,7 +317,7 @@ public class CaseService {
 
   /**
    * Create a CaseEvent for the specific scenario of an incoming CaseReceipt (sent by the SDX
-   * Gateway and containing the responseDateTime of the online/paper response).
+   * Gateway and containing the responseDateTime of the online response).
    *
    * @param caseEvent CaseEvent to be created
    * @param timestamp timestamp equals to the incoming CaseReceipt's responseDateTime.
