@@ -23,6 +23,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.gov.ons.ctp.response.casesvc.CaseCreator;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
@@ -41,6 +42,7 @@ import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestPropertySource(locations = "classpath:/application-test.yml")
 public class CaseEndpointIT {
   private UUID collectionExerciseId;
   private Map<String, String> metadata;

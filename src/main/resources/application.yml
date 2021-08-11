@@ -59,6 +59,9 @@ spring:
   output:
     ansi:
       enabled: never
+  cloud:
+    gcp:
+      project-id: ras-rm-dev
 
 data-grid:
   address: localhost:6379

@@ -3,6 +3,7 @@ package uk.gov.ons.ctp.response.casesvc;
 import com.godaddy.logging.LoggingConfigs;
 import java.time.Clock;
 import javax.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -15,12 +16,20 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
+import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate;
+import org.springframework.cloud.gcp.pubsub.integration.inbound.PubSubInboundChannelAdapter;
+import org.springframework.cloud.gcp.pubsub.integration.outbound.PubSubMessageHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.integration.annotation.IntegrationComponentScan;
+import org.springframework.integration.annotation.MessagingGateway;
+import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.integration.channel.DirectChannel;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.MessageHandler;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -51,6 +60,7 @@ import uk.gov.ons.ctp.response.lib.common.time.DateTimeUtil;
 @EnableCaching
 @EnableScheduling
 @ImportResource("springintegration/main.xml")
+@Slf4j
 public class CaseSvcApplication {
 
   public static final String CASE_DISTRIBUTION_LIST = "casesvc.case.distribution";
@@ -267,5 +277,33 @@ public class CaseSvcApplication {
   @Bean
   public DateTimeUtil dateTimeUtil() {
     return new DateTimeUtil();
+  }
+
+  @Bean
+  public PubSubInboundChannelAdapter messageChannelAdapter(
+      @Qualifier("caseCreationChannel") MessageChannel inputChannel,
+      PubSubTemplate pubSubTemplate) {
+    String subscriptionName = appConfig.getGcp().getCaseNotificationSubscription();
+    log.info("Application Returning Subscriber::" + subscriptionName);
+    PubSubInboundChannelAdapter adapter =
+        new PubSubInboundChannelAdapter(pubSubTemplate, subscriptionName);
+    adapter.setOutputChannel(inputChannel);
+    return adapter;
+  }
+
+  @Bean
+  public MessageChannel caseCreationChannel() {
+    return new DirectChannel();
+  }
+
+  @Bean
+  @ServiceActivator(inputChannel = "actionCaseNotificationChannel")
+  public MessageHandler messageSender(PubSubTemplate pubsubTemplate) {
+    return new PubSubMessageHandler(pubsubTemplate, appConfig.getGcp().getCaseNotificationTopic());
+  }
+
+  @MessagingGateway(defaultRequestChannel = "actionCaseNotificationChannel")
+  public interface PubsubOutboundGateway {
+    void sendToPubsub(String text);
   }
 }
