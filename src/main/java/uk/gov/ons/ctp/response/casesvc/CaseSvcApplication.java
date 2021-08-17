@@ -280,11 +280,11 @@ public class CaseSvcApplication {
   }
 
   @Bean
-  public PubSubInboundChannelAdapter messageChannelAdapter(
+  public PubSubInboundChannelAdapter caseCreationChannelAdapter(
       @Qualifier("caseCreationChannel") MessageChannel inputChannel,
       PubSubTemplate pubSubTemplate) {
     String subscriptionName = appConfig.getGcp().getCaseNotificationSubscription();
-    log.info("Application Returning Subscriber::" + subscriptionName);
+    log.info("Application is listening for case creation on subscription id {}", subscriptionName);
     PubSubInboundChannelAdapter adapter =
         new PubSubInboundChannelAdapter(pubSubTemplate, subscriptionName);
     adapter.setOutputChannel(inputChannel);
@@ -298,12 +298,16 @@ public class CaseSvcApplication {
 
   @Bean
   @ServiceActivator(inputChannel = "actionCaseNotificationChannel")
-  public MessageHandler messageSender(PubSubTemplate pubsubTemplate) {
-    return new PubSubMessageHandler(pubsubTemplate, appConfig.getGcp().getCaseNotificationTopic());
+  public MessageHandler actionCaseNotificationMessageSender(PubSubTemplate pubsubTemplate) {
+    String topicId = appConfig.getGcp().getCaseNotificationTopic();
+    log.info(
+        "Application started with publisher for action case notification with topic Id {}",
+        topicId);
+    return new PubSubMessageHandler(pubsubTemplate, topicId);
   }
 
   @MessagingGateway(defaultRequestChannel = "actionCaseNotificationChannel")
-  public interface PubsubOutboundGateway {
-    void sendToPubsub(String text);
+  public interface PubSubOutboundActionCaseNotificationGateway {
+    void sendToPubSub(String text);
   }
 }

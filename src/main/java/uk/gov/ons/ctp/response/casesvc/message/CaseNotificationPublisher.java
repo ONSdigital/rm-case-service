@@ -19,11 +19,10 @@ public class CaseNotificationPublisher {
 
   @Autowired AppConfig appConfig;
 
-  @Autowired private PubSub pubSub;
-
   @Autowired private ObjectMapper objectMapper;
 
-  @Autowired private CaseSvcApplication.PubsubOutboundGateway messagingGateway;
+  @Autowired
+  private CaseSvcApplication.PubSubOutboundActionCaseNotificationGateway messagingGateway;
 
   /**
    * sends case notification to action service via pubsub
@@ -31,11 +30,11 @@ public class CaseNotificationPublisher {
    * @param caseNotificationDTO the CaseNotification to put on the pubsub
    */
   public void sendNotification(CaseNotificationDTO caseNotificationDTO) {
-    log.with("case_notification", caseNotificationDTO).info("sending CaseNotification to pubsub");
+    log.with("case_notification", caseNotificationDTO).info("sending CaseNotification to PubSub");
     try {
       String message = objectMapper.writeValueAsString(caseNotificationDTO);
-      log.info("Publishing message to pubsub");
-      messagingGateway.sendToPubsub(message);
+      log.info("Publishing message to PubSub");
+      messagingGateway.sendToPubSub(message);
     } catch (JsonProcessingException e) {
       log.with("case_notification", caseNotificationDTO)
           .error("Error while case_notification can not be parsed.");
