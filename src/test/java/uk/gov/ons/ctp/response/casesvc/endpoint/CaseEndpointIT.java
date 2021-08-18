@@ -15,6 +15,7 @@ import java.util.Random;
 import java.util.UUID;
 import org.junit.*;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -40,7 +41,6 @@ import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @TestPropertySource(locations = "classpath:/application-test.yml")
-@Ignore
 public class CaseEndpointIT {
   private UUID collectionExerciseId;
   private Map<String, String> metadata;
@@ -67,7 +67,7 @@ public class CaseEndpointIT {
   }
 
   @Before
-  public void testSetup() {
+  public void testSetup() throws InterruptedException {
     pubSubEmulator.testInit();
     caseEventRepository.deleteAll();
     caseRepository.deleteAll();
@@ -87,6 +87,7 @@ public class CaseEndpointIT {
     collectionExerciseId = collex.getId();
     metadata = new HashMap<>();
     metadata.put("partyId", UUID.randomUUID().toString());
+    Thread.sleep(2000);
   }
 
   @After
