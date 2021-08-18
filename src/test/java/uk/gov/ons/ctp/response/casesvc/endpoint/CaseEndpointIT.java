@@ -15,7 +15,6 @@ import java.util.Random;
 import java.util.UUID;
 import org.junit.*;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -40,7 +39,6 @@ import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @TestPropertySource(locations = "classpath:/application-test.yml")
 public class CaseEndpointIT {
   private UUID collectionExerciseId;
