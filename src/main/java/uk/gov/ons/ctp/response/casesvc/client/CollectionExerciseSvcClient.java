@@ -12,6 +12,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -61,6 +62,7 @@ public class CollectionExerciseSvcClient {
     HttpEntity<?> httpEntity = restUtility.createHttpEntity(null);
 
     log.with("collection_exercise_id").debug("Retrieving collection exercise");
+    restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
     ResponseEntity<CollectionExerciseDTO> responseEntity =
         restTemplate.exchange(
             uriComponents.toUri(), HttpMethod.GET, httpEntity, CollectionExerciseDTO.class);
@@ -83,6 +85,7 @@ public class CollectionExerciseSvcClient {
         restUtility.createUriComponents(
             appConfig.getCollectionExerciseSvc().getCollectionExerciseSurveyPath(), null, surveyId);
     HttpEntity<?> httpEntity = restUtility.createHttpEntity(null);
+    restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
     ResponseEntity<List<CollectionExerciseDTO>> responseEntity =
         restTemplate.exchange(
             uriComponents.toUri(),
@@ -113,6 +116,7 @@ public class CollectionExerciseSvcClient {
     collex.setExerciseRef(exerciseRef);
     collex.setUserDescription(userDescription);
     HttpEntity<?> httpEntity = restUtility.createHttpEntity(collex);
+    restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
     restTemplate.exchange(
         uriComponents.toUri(), HttpMethod.POST, httpEntity, CollectionExerciseDTO.class);
   }
