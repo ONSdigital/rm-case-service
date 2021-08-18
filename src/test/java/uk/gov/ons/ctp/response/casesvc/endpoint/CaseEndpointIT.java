@@ -62,12 +62,10 @@ public class CaseEndpointIT {
   public static void setUp() throws InterruptedException {
     ObjectMapper value = new ObjectMapper();
     UnirestInitialiser.initialise(value);
-    Thread.sleep(2000);
   }
 
   @Before
   public void testSetup() throws InterruptedException {
-    pubSubEmulator.testInit();
     caseEventRepository.deleteAll();
     caseRepository.deleteAll();
 
@@ -86,7 +84,7 @@ public class CaseEndpointIT {
     collectionExerciseId = collex.getId();
     metadata = new HashMap<>();
     metadata.put("partyId", UUID.randomUUID().toString());
-    Thread.sleep(2000);
+    pubSubEmulator.testInit();
   }
 
   @After
