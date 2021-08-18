@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import org.junit.*;
-import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,10 +46,6 @@ public class CaseEndpointIT {
   private UUID collectionExerciseId;
   private Map<String, String> metadata;
   private PubSubEmulator pubSubEmulator = new PubSubEmulator();
-
-  @ClassRule
-  public static final EnvironmentVariables environmentVariables =
-      new EnvironmentVariables().set("PUBSUB_EMULATOR_HOST", "127.0.0.1:18681");
 
   @ClassRule
   public static WireMockRule wireMockRule =

@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.UUID;
 import org.junit.*;
-import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -52,10 +51,6 @@ public class CaseIACEndpointIT {
 
   private static final Logger log = LoggerFactory.getLogger(CaseIACEndpointIT.class);
   private PubSubEmulator pubSubEmulator = new PubSubEmulator();
-
-  @ClassRule
-  public static final EnvironmentVariables environmentVariables =
-      new EnvironmentVariables().set("PUBSUB_EMULATOR_HOST", "127.0.0.1:18681");
 
   @ClassRule
   public static WireMockRule wireMockRule =

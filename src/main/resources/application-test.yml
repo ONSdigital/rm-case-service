@@ -1,3 +1,11 @@
+info:
+  name: ${project.artifactId}
+  version: ${project.version}
+  origin: ${scm.url}
+  commit: ${buildNumber}
+  branch: ${scmBranch}
+  built: ${timestamp}
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:15432/postgres
