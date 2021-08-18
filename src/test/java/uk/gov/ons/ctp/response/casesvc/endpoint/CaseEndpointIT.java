@@ -66,7 +66,15 @@ public class CaseEndpointIT {
   }
 
   @Before
-  public void testSetup() {
+  public void testSetup() {}
+
+  @After
+  public void teardown() {
+    pubSubEmulator.testTeardown();
+  }
+
+  @Test
+  public void ensureSampleUnitIdReceived() throws Exception {
     pubSubEmulator.testInit();
     caseEventRepository.deleteAll();
     caseRepository.deleteAll();
@@ -86,15 +94,6 @@ public class CaseEndpointIT {
     collectionExerciseId = collex.getId();
     metadata = new HashMap<>();
     metadata.put("partyId", UUID.randomUUID().toString());
-  }
-
-  @After
-  public void teardown() {
-    pubSubEmulator.testTeardown();
-  }
-
-  @Test
-  public void ensureSampleUnitIdReceived() throws Exception {
     TestPubSubMessage message = new TestPubSubMessage();
     UUID sampleUnitId = UUID.randomUUID();
     caseCreator.postSampleUnit("LMS0001", "H", sampleUnitId, collectionExerciseId);
@@ -104,6 +103,25 @@ public class CaseEndpointIT {
 
   @Test
   public void testCreateSocialCaseEvents() throws Exception {
+    pubSubEmulator.testInit();
+    caseEventRepository.deleteAll();
+    caseRepository.deleteAll();
+
+    Random rnd = new Random();
+
+    int randNumber = 10000 + rnd.nextInt(900000);
+
+    UUID surveyId = UUID.fromString("cb8accda-6118-4d3b-85a3-149e28960c54");
+
+    collectionExerciseSvcClient.createCollectionExercise(
+        surveyId, Integer.toString(randNumber), "January 2018");
+
+    CollectionExerciseDTO collex =
+        collectionExerciseSvcClient.getCollectionExercises(surveyId.toString()).get(0);
+
+    collectionExerciseId = collex.getId();
+    metadata = new HashMap<>();
+    metadata.put("partyId", UUID.randomUUID().toString());
     // Given
     TestPubSubMessage message = new TestPubSubMessage();
     caseCreator.postSampleUnit("LMS0002", "H", UUID.randomUUID(), collectionExerciseId);
@@ -127,6 +145,25 @@ public class CaseEndpointIT {
 
   @Test
   public void ensureCaseReturnedBySampleUnitId() throws Exception {
+    pubSubEmulator.testInit();
+    caseEventRepository.deleteAll();
+    caseRepository.deleteAll();
+
+    Random rnd = new Random();
+
+    int randNumber = 10000 + rnd.nextInt(900000);
+
+    UUID surveyId = UUID.fromString("cb8accda-6118-4d3b-85a3-149e28960c54");
+
+    collectionExerciseSvcClient.createCollectionExercise(
+        surveyId, Integer.toString(randNumber), "January 2018");
+
+    CollectionExerciseDTO collex =
+        collectionExerciseSvcClient.getCollectionExercises(surveyId.toString()).get(0);
+
+    collectionExerciseId = collex.getId();
+    metadata = new HashMap<>();
+    metadata.put("partyId", UUID.randomUUID().toString());
     TestPubSubMessage message = new TestPubSubMessage();
     UUID sampleUnitId = UUID.randomUUID();
     caseCreator.postSampleUnit("LMS0003", "H", sampleUnitId, collectionExerciseId);
@@ -151,6 +188,25 @@ public class CaseEndpointIT {
    */
   @Test
   public void testCreateCollectionInstrumentDownloadedCaseEventWithBCaseSuccess() throws Exception {
+    pubSubEmulator.testInit();
+    caseEventRepository.deleteAll();
+    caseRepository.deleteAll();
+
+    Random rnd = new Random();
+
+    int randNumber = 10000 + rnd.nextInt(900000);
+
+    UUID surveyId = UUID.fromString("cb8accda-6118-4d3b-85a3-149e28960c54");
+
+    collectionExerciseSvcClient.createCollectionExercise(
+        surveyId, Integer.toString(randNumber), "January 2018");
+
+    CollectionExerciseDTO collex =
+        collectionExerciseSvcClient.getCollectionExercises(surveyId.toString()).get(0);
+
+    collectionExerciseId = collex.getId();
+    metadata = new HashMap<>();
+    metadata.put("partyId", UUID.randomUUID().toString());
     TestPubSubMessage message = new TestPubSubMessage();
     // Given
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
@@ -191,6 +247,25 @@ public class CaseEndpointIT {
    */
   @Test
   public void testCreateCollectionInstrumentErrorCaseEventWithBCaseSuccess() throws Exception {
+    pubSubEmulator.testInit();
+    caseEventRepository.deleteAll();
+    caseRepository.deleteAll();
+
+    Random rnd = new Random();
+
+    int randNumber = 10000 + rnd.nextInt(900000);
+
+    UUID surveyId = UUID.fromString("cb8accda-6118-4d3b-85a3-149e28960c54");
+
+    collectionExerciseSvcClient.createCollectionExercise(
+        surveyId, Integer.toString(randNumber), "January 2018");
+
+    CollectionExerciseDTO collex =
+        collectionExerciseSvcClient.getCollectionExercises(surveyId.toString()).get(0);
+
+    collectionExerciseId = collex.getId();
+    metadata = new HashMap<>();
+    metadata.put("partyId", UUID.randomUUID().toString());
     TestPubSubMessage message = new TestPubSubMessage();
     // Given
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
@@ -227,6 +302,26 @@ public class CaseEndpointIT {
    */
   @Test
   public void testCreateSuccessfulResponseUploadCaseEventWithBCaseSuccess() throws Exception {
+
+    pubSubEmulator.testInit();
+    caseEventRepository.deleteAll();
+    caseRepository.deleteAll();
+
+    Random rnd = new Random();
+
+    int randNumber = 10000 + rnd.nextInt(900000);
+
+    UUID surveyId = UUID.fromString("cb8accda-6118-4d3b-85a3-149e28960c54");
+
+    collectionExerciseSvcClient.createCollectionExercise(
+        surveyId, Integer.toString(randNumber), "January 2018");
+
+    CollectionExerciseDTO collex =
+        collectionExerciseSvcClient.getCollectionExercises(surveyId.toString()).get(0);
+
+    collectionExerciseId = collex.getId();
+    metadata = new HashMap<>();
+    metadata.put("partyId", UUID.randomUUID().toString());
     TestPubSubMessage message = new TestPubSubMessage();
     // Given
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
@@ -263,6 +358,25 @@ public class CaseEndpointIT {
    */
   @Test
   public void testGetCaseEventsWithCategory() throws Exception {
+    pubSubEmulator.testInit();
+    caseEventRepository.deleteAll();
+    caseRepository.deleteAll();
+
+    Random rnd = new Random();
+
+    int randNumber = 10000 + rnd.nextInt(900000);
+
+    UUID surveyId = UUID.fromString("cb8accda-6118-4d3b-85a3-149e28960c54");
+
+    collectionExerciseSvcClient.createCollectionExercise(
+        surveyId, Integer.toString(randNumber), "January 2018");
+
+    CollectionExerciseDTO collex =
+        collectionExerciseSvcClient.getCollectionExercises(surveyId.toString()).get(0);
+
+    collectionExerciseId = collex.getId();
+    metadata = new HashMap<>();
+    metadata.put("partyId", UUID.randomUUID().toString());
     TestPubSubMessage message = new TestPubSubMessage();
     // Given
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
@@ -304,7 +418,25 @@ public class CaseEndpointIT {
   @Test
   public void testGetCaseEventsWithCategoryMissingCaseShouldFail() throws Exception {
     // Given
+    pubSubEmulator.testInit();
+    caseEventRepository.deleteAll();
+    caseRepository.deleteAll();
 
+    Random rnd = new Random();
+
+    int randNumber = 10000 + rnd.nextInt(900000);
+
+    UUID surveyId = UUID.fromString("cb8accda-6118-4d3b-85a3-149e28960c54");
+
+    collectionExerciseSvcClient.createCollectionExercise(
+        surveyId, Integer.toString(randNumber), "January 2018");
+
+    CollectionExerciseDTO collex =
+        collectionExerciseSvcClient.getCollectionExercises(surveyId.toString()).get(0);
+
+    collectionExerciseId = collex.getId();
+    metadata = new HashMap<>();
+    metadata.put("partyId", UUID.randomUUID().toString());
     // When
     HttpResponse returnedCaseEventsResponse =
         Unirest.get(
@@ -323,6 +455,25 @@ public class CaseEndpointIT {
 
   @Test
   public void testGetCaseEventsWithNonExistentCategory() throws Exception {
+    pubSubEmulator.testInit();
+    caseEventRepository.deleteAll();
+    caseRepository.deleteAll();
+
+    Random rnd = new Random();
+
+    int randNumber = 10000 + rnd.nextInt(900000);
+
+    UUID surveyId = UUID.fromString("cb8accda-6118-4d3b-85a3-149e28960c54");
+
+    collectionExerciseSvcClient.createCollectionExercise(
+        surveyId, Integer.toString(randNumber), "January 2018");
+
+    CollectionExerciseDTO collex =
+        collectionExerciseSvcClient.getCollectionExercises(surveyId.toString()).get(0);
+
+    collectionExerciseId = collex.getId();
+    metadata = new HashMap<>();
+    metadata.put("partyId", UUID.randomUUID().toString());
     // Given
     TestPubSubMessage message = new TestPubSubMessage();
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
@@ -357,6 +508,25 @@ public class CaseEndpointIT {
 
   @Test
   public void testGetNoCaseEventsWithCategory() throws Exception {
+    pubSubEmulator.testInit();
+    caseEventRepository.deleteAll();
+    caseRepository.deleteAll();
+
+    Random rnd = new Random();
+
+    int randNumber = 10000 + rnd.nextInt(900000);
+
+    UUID surveyId = UUID.fromString("cb8accda-6118-4d3b-85a3-149e28960c54");
+
+    collectionExerciseSvcClient.createCollectionExercise(
+        surveyId, Integer.toString(randNumber), "January 2018");
+
+    CollectionExerciseDTO collex =
+        collectionExerciseSvcClient.getCollectionExercises(surveyId.toString()).get(0);
+
+    collectionExerciseId = collex.getId();
+    metadata = new HashMap<>();
+    metadata.put("partyId", UUID.randomUUID().toString());
     // Given
     TestPubSubMessage message = new TestPubSubMessage();
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
