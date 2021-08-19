@@ -1,8 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc;
 
 import com.godaddy.logging.LoggingConfigs;
-import java.time.Clock;
-import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -18,16 +16,16 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate;
 import org.springframework.cloud.gcp.pubsub.integration.inbound.PubSubInboundChannelAdapter;
+import org.springframework.cloud.gcp.pubsub.integration.inbound.PubSubMessageSource;
 import org.springframework.cloud.gcp.pubsub.integration.outbound.PubSubMessageHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.integration.annotation.IntegrationComponentScan;
-import org.springframework.integration.annotation.MessagingGateway;
-import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.integration.annotation.*;
 import org.springframework.integration.channel.DirectChannel;
+import org.springframework.integration.core.MessageSource;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -48,6 +46,9 @@ import uk.gov.ons.ctp.response.lib.common.rest.RestUtility;
 import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManagerFactory;
 import uk.gov.ons.ctp.response.lib.common.time.DateTimeUtil;
+
+import javax.annotation.PostConstruct;
+import java.time.Clock;
 
 /** The 'main' entry point for the CaseSvc SpringBoot Application. */
 @SpringBootApplication
@@ -289,6 +290,18 @@ public class CaseSvcApplication {
         new PubSubInboundChannelAdapter(pubSubTemplate, subscriptionName);
     adapter.setOutputChannel(inputChannel);
     return adapter;
+  }
+
+  @Bean
+  @InboundChannelAdapter(
+          channel = "caseCreationChannel",
+          poller = @Poller(fixedDelay = "100"))
+  public MessageSource<Object> pubsubAdapter(PubSubTemplate pubSubTemplate) {
+    PubSubMessageSource messageSource =
+            new PubSubMessageSource(
+                    pubSubTemplate, appConfig.getGcp().getCaseNotificationSubscription());
+    messageSource.setBlockOnPull(true);
+    return messageSource;
   }
 
   @Bean

@@ -30,11 +30,18 @@ public class CaseNotificationPublisher {
    * @param caseNotificationDTO the CaseNotification to put on the pubsub
    */
   public void sendNotification(CaseNotificationDTO caseNotificationDTO) {
+    String caseId = caseNotificationDTO.getCaseId();
+    String sampleUnitId = caseNotificationDTO.getSampleUnitId();
     log.with("case_notification", caseNotificationDTO).info("sending CaseNotification to PubSub");
     try {
       String message = objectMapper.writeValueAsString(caseNotificationDTO);
-      log.info("Publishing message to PubSub");
+      log.with("case_id", caseId)
+              .with("sampleUnitId", sampleUnitId)
+              .info("Publishing message to PubSub for action case notification.");
       messagingGateway.sendToPubSub(message);
+      log.with("case_id", caseId)
+              .with("sampleUnitId", sampleUnitId)
+              .info("Message published successfully for action case notification.");
     } catch (JsonProcessingException e) {
       log.with("case_notification", caseNotificationDTO)
           .error("Error while case_notification can not be parsed.");
