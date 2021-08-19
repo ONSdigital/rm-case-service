@@ -1,6 +1,8 @@
 package uk.gov.ons.ctp.response.casesvc;
 
 import com.godaddy.logging.LoggingConfigs;
+import java.time.Clock;
+import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -46,9 +48,6 @@ import uk.gov.ons.ctp.response.lib.common.rest.RestUtility;
 import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManagerFactory;
 import uk.gov.ons.ctp.response.lib.common.time.DateTimeUtil;
-
-import javax.annotation.PostConstruct;
-import java.time.Clock;
 
 /** The 'main' entry point for the CaseSvc SpringBoot Application. */
 @SpringBootApplication
@@ -293,13 +292,11 @@ public class CaseSvcApplication {
   }
 
   @Bean
-  @InboundChannelAdapter(
-          channel = "caseCreationChannel",
-          poller = @Poller(fixedDelay = "100"))
+  @InboundChannelAdapter(channel = "caseCreationChannel", poller = @Poller(fixedDelay = "100"))
   public MessageSource<Object> pubsubAdapter(PubSubTemplate pubSubTemplate) {
     PubSubMessageSource messageSource =
-            new PubSubMessageSource(
-                    pubSubTemplate, appConfig.getGcp().getCaseNotificationSubscription());
+        new PubSubMessageSource(
+            pubSubTemplate, appConfig.getGcp().getCaseNotificationSubscription());
     messageSource.setBlockOnPull(true);
     return messageSource;
   }
