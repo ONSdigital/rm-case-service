@@ -17,6 +17,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate;
+import org.springframework.cloud.gcp.pubsub.integration.AckMode;
 import org.springframework.cloud.gcp.pubsub.integration.inbound.PubSubInboundChannelAdapter;
 import org.springframework.cloud.gcp.pubsub.integration.inbound.PubSubMessageSource;
 import org.springframework.cloud.gcp.pubsub.integration.outbound.PubSubMessageHandler;
@@ -298,6 +299,7 @@ public class CaseSvcApplication {
         new PubSubMessageSource(
             pubSubTemplate, appConfig.getGcp().getCaseNotificationSubscription());
     messageSource.setBlockOnPull(true);
+    messageSource.setAckMode(AckMode.MANUAL);
     return messageSource;
   }
 
