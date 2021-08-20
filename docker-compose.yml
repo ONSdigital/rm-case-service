@@ -40,7 +40,7 @@ services:
     external_links:
     - postgres-case-it
     - redis-case-it
-    image: eu.gcr.io/ons-rasrmbs-management/collection-exercise
+    image: eu.gcr.io/ons-rasrmbs-management/collection-exercise:latest
     environment:
     - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-case-it:5432/postgres?sslmode=disable
     - SPRING_DATASOURCE_USERNAME=postgres
@@ -60,7 +60,7 @@ services:
 
   survey:
     container_name: survey-case-it
-    image: eu.gcr.io/ons-rasrmbs-management/survey
+    image: eu.gcr.io/ons-rasrmbs-management/survey:latest
     external_links:
     - postgres-case-it
     environment:
