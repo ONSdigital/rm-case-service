@@ -13,7 +13,7 @@ spring:
     url: jdbc:postgresql://localhost:15432/postgres
   cloud:
     gcp:
-      project-id: test
+      project-id: ras-rm-dev
       pubsub:
         emulator-host: localhost:18681
 

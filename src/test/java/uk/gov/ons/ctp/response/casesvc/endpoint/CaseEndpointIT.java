@@ -72,7 +72,6 @@ public class CaseEndpointIT {
     pubSubEmulator.testInit();
     caseEventRepository.deleteAll();
     caseRepository.deleteAll();
-    Thread.sleep(2000);
   }
 
   @After
@@ -104,6 +103,7 @@ public class CaseEndpointIT {
     TestPubSubMessage message = new TestPubSubMessage();
     UUID sampleUnitId = UUID.randomUUID();
     caseCreator.postSampleUnit("LMS0001", "H", sampleUnitId, collectionExerciseId);
+    Thread.sleep(2000);
     CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
     assertThat(caseNotificationDTO.getSampleUnitId()).isEqualTo(sampleUnitId.toString());
   }
@@ -114,6 +114,7 @@ public class CaseEndpointIT {
     // Given
     TestPubSubMessage message = new TestPubSubMessage();
     caseCreator.postSampleUnit("LMS0002", "H", UUID.randomUUID(), collectionExerciseId);
+    Thread.sleep(2000);
     CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
     String caseID = caseNotificationDTO.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
@@ -138,6 +139,7 @@ public class CaseEndpointIT {
     TestPubSubMessage message = new TestPubSubMessage();
     UUID sampleUnitId = UUID.randomUUID();
     caseCreator.postSampleUnit("LMS0003", "H", sampleUnitId, collectionExerciseId);
+    Thread.sleep(2000);
     CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
     UUID caseId = UUID.fromString(caseNotificationDTO.getCaseId());
 
@@ -163,6 +165,7 @@ public class CaseEndpointIT {
     TestPubSubMessage message = new TestPubSubMessage();
     // Given
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
+    Thread.sleep(2000);
     CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
     String caseID = caseNotificationDTO.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
@@ -204,6 +207,7 @@ public class CaseEndpointIT {
     TestPubSubMessage message = new TestPubSubMessage();
     // Given
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
+    Thread.sleep(2000);
     CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
     String caseID = caseNotificationDTO.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
@@ -241,6 +245,7 @@ public class CaseEndpointIT {
     TestPubSubMessage message = new TestPubSubMessage();
     // Given
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
+    Thread.sleep(2000);
     CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
     String caseID = caseNotificationDTO.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
@@ -278,6 +283,7 @@ public class CaseEndpointIT {
     TestPubSubMessage message = new TestPubSubMessage();
     // Given
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
+    Thread.sleep(2000);
     CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
     String caseID = caseNotificationDTO.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
@@ -339,6 +345,7 @@ public class CaseEndpointIT {
     createCollectionData();
     TestPubSubMessage message = new TestPubSubMessage();
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
+    Thread.sleep(2000);
     CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
     String caseID = caseNotificationDTO.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
@@ -374,6 +381,7 @@ public class CaseEndpointIT {
     createCollectionData();
     TestPubSubMessage message = new TestPubSubMessage();
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
+    Thread.sleep(2000);
     CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
     String caseID = caseNotificationDTO.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
