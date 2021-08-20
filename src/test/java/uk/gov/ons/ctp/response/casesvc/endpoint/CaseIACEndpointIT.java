@@ -48,6 +48,7 @@ import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @TestPropertySource(locations = "classpath:/application-test.yml")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Ignore
 public class CaseIACEndpointIT {
   private UUID collectionExerciseId;
 
