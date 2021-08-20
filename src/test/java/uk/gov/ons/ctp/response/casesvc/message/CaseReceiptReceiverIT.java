@@ -28,7 +28,6 @@ import uk.gov.ons.ctp.response.casesvc.utility.PubSubEmulator;
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @TestPropertySource(locations = "classpath:/application-test.yml")
-@Ignore
 public class CaseReceiptReceiverIT {
 
   private static PubSubEmulator PUBSUBEMULATOR;
