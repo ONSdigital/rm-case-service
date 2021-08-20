@@ -21,6 +21,7 @@ import java.util.Random;
 import java.util.UUID;
 import org.junit.*;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -46,6 +47,7 @@ import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @TestPropertySource(locations = "classpath:/application-test.yml")
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CaseIACEndpointIT {
   private UUID collectionExerciseId;
 
@@ -67,7 +69,7 @@ public class CaseIACEndpointIT {
   public static void setUp() throws InterruptedException {
     ObjectMapper value = new ObjectMapper();
     UnirestInitialiser.initialise(value);
-    Thread.sleep(20000);
+    Thread.sleep(2000);
   }
 
   @Before

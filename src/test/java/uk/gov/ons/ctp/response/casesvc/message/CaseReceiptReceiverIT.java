@@ -62,7 +62,7 @@ public class CaseReceiptReceiverIT {
   public void testCaseNotificationReceiverIsReceivingMessageFromPubSub() throws Exception {
     String json = readFileAsString(receiptFile);
     PUBSUBEMULATOR.publishMessage(json);
-    Thread.sleep(20000);
+    Thread.sleep(2000);
     ObjectMapper objectMapper = new ObjectMapper();
     CaseReceipt caseReceipt = objectMapper.readValue(json, CaseReceipt.class);
 
