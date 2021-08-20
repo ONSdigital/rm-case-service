@@ -70,7 +70,15 @@ public class CaseEndpointIT {
     pubSubEmulator.testInit();
     caseEventRepository.deleteAll();
     caseRepository.deleteAll();
+    Thread.sleep(2000);
+  }
 
+  @After
+  public void teardown() {
+    pubSubEmulator.testTeardown();
+  }
+
+  public void createCollectionData() {
     Random rnd = new Random();
 
     int randNumber = 10000 + rnd.nextInt(900000);
@@ -86,16 +94,11 @@ public class CaseEndpointIT {
     collectionExerciseId = collex.getId();
     metadata = new HashMap<>();
     metadata.put("partyId", UUID.randomUUID().toString());
-    Thread.sleep(2000);
-  }
-
-  @After
-  public void teardown() {
-    pubSubEmulator.testTeardown();
   }
 
   @Test
   public void ensureSampleUnitIdReceived() throws Exception {
+    createCollectionData();
     TestPubSubMessage message = new TestPubSubMessage();
     UUID sampleUnitId = UUID.randomUUID();
     caseCreator.postSampleUnit("LMS0001", "H", sampleUnitId, collectionExerciseId);
@@ -105,6 +108,7 @@ public class CaseEndpointIT {
 
   @Test
   public void testCreateSocialCaseEvents() throws Exception {
+    createCollectionData();
     // Given
     TestPubSubMessage message = new TestPubSubMessage();
     caseCreator.postSampleUnit("LMS0002", "H", UUID.randomUUID(), collectionExerciseId);
@@ -128,6 +132,7 @@ public class CaseEndpointIT {
 
   @Test
   public void ensureCaseReturnedBySampleUnitId() throws Exception {
+    createCollectionData();
     TestPubSubMessage message = new TestPubSubMessage();
     UUID sampleUnitId = UUID.randomUUID();
     caseCreator.postSampleUnit("LMS0003", "H", sampleUnitId, collectionExerciseId);
@@ -152,6 +157,7 @@ public class CaseEndpointIT {
    */
   @Test
   public void testCreateCollectionInstrumentDownloadedCaseEventWithBCaseSuccess() throws Exception {
+    createCollectionData();
     TestPubSubMessage message = new TestPubSubMessage();
     // Given
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
@@ -192,6 +198,7 @@ public class CaseEndpointIT {
    */
   @Test
   public void testCreateCollectionInstrumentErrorCaseEventWithBCaseSuccess() throws Exception {
+    createCollectionData();
     TestPubSubMessage message = new TestPubSubMessage();
     // Given
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
@@ -228,6 +235,7 @@ public class CaseEndpointIT {
    */
   @Test
   public void testCreateSuccessfulResponseUploadCaseEventWithBCaseSuccess() throws Exception {
+    createCollectionData();
     TestPubSubMessage message = new TestPubSubMessage();
     // Given
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
@@ -264,6 +272,7 @@ public class CaseEndpointIT {
    */
   @Test
   public void testGetCaseEventsWithCategory() throws Exception {
+    createCollectionData();
     TestPubSubMessage message = new TestPubSubMessage();
     // Given
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
@@ -305,7 +314,7 @@ public class CaseEndpointIT {
   @Test
   public void testGetCaseEventsWithCategoryMissingCaseShouldFail() throws Exception {
     // Given
-
+    createCollectionData();
     // When
     HttpResponse returnedCaseEventsResponse =
         Unirest.get(
@@ -325,6 +334,7 @@ public class CaseEndpointIT {
   @Test
   public void testGetCaseEventsWithNonExistentCategory() throws Exception {
     // Given
+    createCollectionData();
     TestPubSubMessage message = new TestPubSubMessage();
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
     CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
@@ -359,6 +369,7 @@ public class CaseEndpointIT {
   @Test
   public void testGetNoCaseEventsWithCategory() throws Exception {
     // Given
+    createCollectionData();
     TestPubSubMessage message = new TestPubSubMessage();
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
     CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
