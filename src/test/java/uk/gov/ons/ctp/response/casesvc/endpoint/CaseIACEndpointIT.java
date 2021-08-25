@@ -70,7 +70,7 @@ public class CaseIACEndpointIT {
   public static void setUp() throws InterruptedException {
     ObjectMapper value = new ObjectMapper();
     UnirestInitialiser.initialise(value);
-    Thread.sleep(2000);
+    Thread.sleep(20000);
   }
 
   @Before
