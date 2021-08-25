@@ -29,7 +29,7 @@ public class PubSubEmulator {
   public static final TransportChannelProvider CHANNEL_PROVIDER =
       FixedTransportChannelProvider.create(GrpcTransportChannel.create(CHANNEL));
   public static final CredentialsProvider CREDENTIAL_PROVIDER = NoCredentialsProvider.create();
-  private static final String PROJECT_ID = "test";
+  private static final String PROJECT_ID = "ras-rm-dev";
   private static final String TOPIC_ID = "test_topic";
   private static final String CASE_CREATION_TOPIC_ID = "test_case_creation_topic";
   private static final String SUBSCRIPTION_ID = "test_subscription";

@@ -3,23 +3,16 @@ package uk.gov.ons.ctp.response.casesvc.message;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
-import com.google.api.gax.core.ExecutorProvider;
-import com.google.api.gax.core.InstantiatingExecutorProvider;
-import com.google.cloud.pubsub.v1.AckReplyConsumer;
-import com.google.cloud.pubsub.v1.MessageReceiver;
-import com.google.cloud.pubsub.v1.Subscriber;
-import com.google.pubsub.v1.ProjectSubscriptionName;
-import com.google.pubsub.v1.PubsubMessage;
 import java.io.IOException;
-import jodd.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
+import org.springframework.cloud.gcp.pubsub.support.AcknowledgeablePubsubMessage;
+import org.springframework.cloud.gcp.pubsub.support.GcpPubSubHeaders;
+import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
-import uk.gov.ons.ctp.response.casesvc.utility.PubSubEmulator;
 
 /** Receive a new case from the Collection Exercise service. */
 @Component
@@ -33,72 +26,23 @@ public class CaseCreationReceiver {
    * To process SampleUnitParents read from pubsub This creates application ready event listener to
    * provide a active subscription for the new case creation against the receiving SampleUnitParents
    */
-  @EventListener(ApplicationReadyEvent.class)
-  public void acceptSampleUnit() throws IOException {
-    log.debug("received CaseCreation Message from pubsub");
-    // Instantiate an asynchronous message receiver.
-    MessageReceiver receiver =
-        (PubsubMessage message, AckReplyConsumer consumer) -> {
-          // Handle incoming message, then ack the received message.
-          log.with(message.getMessageId()).info("Receiving message ID from PubSub");
-          log.with(message.getData().toString()).debug("Receiving data from PubSub ");
-          try {
-            SampleUnitParent caseCreation =
-                objectMapper.readValue(message.getData().toStringUtf8(), SampleUnitParent.class);
-            caseService.createInitialCase(caseCreation);
-            consumer.ack();
-          } catch (final IOException e) {
-            log.with(e)
-                .error(
-                    "Something went wrong while processing message received from PubSub "
-                        + "for case creation notification");
-            consumer.nack();
-          }
-        };
-    Subscriber subscriber = getCaseCreationNotificationSubscriber(receiver);
-    // Start the subscriber.
-    subscriber.startAsync().awaitRunning();
-    log.with(subscriber.getSubscriptionNameString())
-        .info("Listening for case creation notification messages on PubSub-subscription id");
-  }
-
-  /**
-   * Provides PubSub subscriber for case creation notification against message receiver
-   *
-   * @param receiver: com.google.cloud.pubsub.v1.MessageReceiver;
-   * @return com.google.cloud.pubsub.v1.Subscriber;
-   */
-  private Subscriber getCaseCreationNotificationSubscriber(MessageReceiver receiver)
-      throws IOException {
-    if (StringUtil.isBlank(System.getenv("PUBSUB_EMULATOR_HOST"))) {
-      log.info("Returning Subscriber for case creation notification");
-      ExecutorProvider executorProvider =
-          InstantiatingExecutorProvider.newBuilder().setExecutorThreadCount(4).build();
-      // `setParallelPullCount` determines how many StreamingPull streams the subscriber will open
-      // to receive message. It defaults to 1. `setExecutorProvider` configures an executor for the
-      // subscriber to process messages. Here, the subscriber is configured to open 2 streams for
-      // receiving messages, each stream creates a new executor with 4 threads to help process the
-      // message callbacks. In total 2x4=8 threads are used for message processing.
-      return Subscriber.newBuilder(getCaseCreationSubscriptionName(), receiver)
-          .setParallelPullCount(2)
-          .setExecutorProvider(executorProvider)
-          .build();
-    } else {
-      log.info("Returning emulator Subscriber");
-      return new PubSubEmulator().getEmulatorSubscriberForCaseCreationNotification(receiver);
+  @ServiceActivator(inputChannel = "caseCreationChannel")
+  public void messageReceiver(
+      String payload,
+      @Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) AcknowledgeablePubsubMessage message) {
+    log.with("payload", payload).info("New request for case creation");
+    try {
+      log.info("Mapping payload to SampleUnitParent object");
+      SampleUnitParent caseCreation = objectMapper.readValue(payload, SampleUnitParent.class);
+      log.info("Mapping successful, case creation process initiated");
+      caseService.createInitialCase(caseCreation);
+      message.ack();
+    } catch (final IOException e) {
+      log.with(e)
+          .error(
+              "Something went wrong while processing message received from PubSub "
+                  + "for case creation notification");
+      message.nack();
     }
-  }
-
-  /***
-   * Provides subscription name for the case notification subscriber
-   * @return com.google.pubsub.v1.ProjectSubscriptionName
-   */
-  private ProjectSubscriptionName getCaseCreationSubscriptionName() {
-    String project = appConfig.getGcp().getProject();
-    String subscriptionId = appConfig.getGcp().getCaseNotificationSubscription();
-    log.with("Subscription id", subscriptionId)
-        .with("project", project)
-        .info("creating pubsub subscription name for case notification ");
-    return ProjectSubscriptionName.of(project, subscriptionId);
   }
 }

@@ -1,5 +1,28 @@
 version: '2.1'
 services:
+  collectionexercise:
+    container_name: collex-case-it
+    external_links:
+      - postgres-case-it
+      - redis-case-it
+    image: eu.gcr.io/ons-rasrmbs-management/collection-exercise:11.1.8
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-case-it:5432/postgres?sslmode=disable
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_LIQUIBASE_URL=jdbc:postgresql://postgres-case-it:5432/postgres
+      - SPRING_LIQUIBASE_USER=postgres
+      - SPRING_LIQUIBASE_PASSWORD=postgres
+      - SPRING_CLOUD_GCP_PROJECTID=test
+      - SPRING_CLOUD_GCP_PUBSUB_EMULATORHOST:pubsub-emulator-it:8681
+      - REDISSON_CONFIG_ADDRESS=redis-case-it:6379
+      - DATA_GRID_ADDRESS=redis-case-it:6379
+      - SURVEY_SVC_CONNECTION_CONFIG_HOST=survey-case-it
+      - SURVEY_SVC_CONNECTION_CONFIG_PORT=8080
+      - PUBSUB_EMULATOR_HOST=pubsub-emulator-it:8681
+    ports:
+      - "38145:8145"
+
   postgres-database:
     container_name: postgres-case-it
     image: eu.gcr.io/ons-rasrmbs-management/postgres
@@ -9,18 +32,21 @@ services:
       - POSTGRES_DB=postgres
     ports:
     - "15432:5432"
+
   redis:
     container_name: redis-case-it
     image: redis:3.2.9
     ports:
     - "17379:6379"
+
   pubsub-emulator:
     container_name: pubsub-emulator-it
     image: eu.gcr.io/ons-rasrmbs-management/pubsub-emulator
     ports:
     - "18681:8681"
     environment:
-    - PUBSUB_PROJECT1=test,test_case_creation_topic:test_case_creation_subscription
+    - PUBSUB_PROJECT1=ras-rm-dev,test_case_creation_topic:test_case_creation_subscription
+
   rabbitmq:
     container_name: rabbitmq-case-it
     image: rabbitmq:3.6.10-management
@@ -31,40 +57,10 @@ services:
     - "35672:5672"
     - "46671:15671"
     - "46672:15672"
-  collectionexercise:
-    container_name: collex-case-it
-    external_links:
-    - postgres-case-it
-    - redis-case-it
-    - rabbitmq-case-it
-    image: eu.gcr.io/ons-rasrmbs-management/collection-exercise
-    environment:
-    - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-case-it:5432/postgres?sslmode=disable
-    - SPRING_DATASOURCE_USERNAME=postgres
-    - SPRING_DATASOURCE_PASSWORD=postgres
-    - SPRING_LIQUIBASE_URL=jdbc:postgresql://postgres-case-it:5432/postgres
-    - SPRING_LIQUIBASE_USER=postgres
-    - SPRING_LIQUIBASE_PASSWORD=postgres
-    - REDISSON_CONFIG_ADDRESS=redis-case-it:6379
-    - DATA_GRID_ADDRESS=redis-case-it:6379
-    - RABBITMQ_HOST=rabbitmq-case-it
-    - RABBITMQ_PORT=5672
-    - SURVEY_SVC_CONNECTION_CONFIG_HOST=survey-case-it
-    - SURVEY_SVC_CONNECTION_CONFIG_PORT=8080
-    - ACTION_SVC_CONNECTION_CONFIG_HOST=action-case-it
-    - ACTION_SVC_CONNECTION_CONFIG_PORT=8151
-    - PUBSUB_EMULATOR_HOST=pubsub-emulator-it:8681
-    ports:
-    - "38145:8145"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8145/actuator/info"]
-      interval: 30s
-      timeout: 10s
-      retries: 10
 
   survey:
     container_name: survey-case-it
-    image: eu.gcr.io/ons-rasrmbs-management/survey
+    image: eu.gcr.io/ons-rasrmbs-management/survey:latest
     external_links:
     - postgres-case-it
     environment:

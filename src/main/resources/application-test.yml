@@ -1,8 +1,21 @@
+info:
+  name: ${project.artifactId}
+  version: ${project.version}
+  origin: ${scm.url}
+  commit: ${buildNumber}
+  branch: ${scmBranch}
+  built: ${timestamp}
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:15432/postgres
   liquibase:
     url: jdbc:postgresql://localhost:15432/postgres
+  cloud:
+    gcp:
+      project-id: ras-rm-dev
+      pubsub:
+        emulator-host: localhost:18681
 
 survey-svc:
   connection-config:
@@ -61,4 +74,4 @@ gcp:
   project: "test"
   receiptSubscription: "test_subscription"
   caseNotificationTopic: "test_topic"
-  caseNotificationSubscription: "test_subscription"
+  caseNotificationSubscription: "test_case_creation_subscription"

@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import org.junit.*;
-import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +22,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.gov.ons.ctp.response.casesvc.CaseCreator;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
@@ -40,15 +40,12 @@ import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@TestPropertySource(locations = "classpath:/application-test.yml")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CaseEndpointIT {
   private UUID collectionExerciseId;
   private Map<String, String> metadata;
   private PubSubEmulator pubSubEmulator = new PubSubEmulator();
-
-  @ClassRule
-  public static final EnvironmentVariables environmentVariables =
-      new EnvironmentVariables().set("PUBSUB_EMULATOR_HOST", "127.0.0.1:18681");
 
   @ClassRule
   public static WireMockRule wireMockRule =
@@ -71,11 +68,18 @@ public class CaseEndpointIT {
   }
 
   @Before
-  public void testSetup() {
+  public void testSetup() throws InterruptedException {
     pubSubEmulator.testInit();
     caseEventRepository.deleteAll();
     caseRepository.deleteAll();
+  }
 
+  @After
+  public void teardown() {
+    pubSubEmulator.testTeardown();
+  }
+
+  public void createCollectionData() {
     Random rnd = new Random();
 
     int randNumber = 10000 + rnd.nextInt(900000);
@@ -93,25 +97,24 @@ public class CaseEndpointIT {
     metadata.put("partyId", UUID.randomUUID().toString());
   }
 
-  @After
-  public void teardown() {
-    pubSubEmulator.testTeardown();
-  }
-
   @Test
   public void ensureSampleUnitIdReceived() throws Exception {
+    createCollectionData();
     TestPubSubMessage message = new TestPubSubMessage();
     UUID sampleUnitId = UUID.randomUUID();
     caseCreator.postSampleUnit("LMS0001", "H", sampleUnitId, collectionExerciseId);
+    Thread.sleep(2000);
     CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
     assertThat(caseNotificationDTO.getSampleUnitId()).isEqualTo(sampleUnitId.toString());
   }
 
   @Test
   public void testCreateSocialCaseEvents() throws Exception {
+    createCollectionData();
     // Given
     TestPubSubMessage message = new TestPubSubMessage();
     caseCreator.postSampleUnit("LMS0002", "H", UUID.randomUUID(), collectionExerciseId);
+    Thread.sleep(2000);
     CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
     String caseID = caseNotificationDTO.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
@@ -132,9 +135,11 @@ public class CaseEndpointIT {
 
   @Test
   public void ensureCaseReturnedBySampleUnitId() throws Exception {
+    createCollectionData();
     TestPubSubMessage message = new TestPubSubMessage();
     UUID sampleUnitId = UUID.randomUUID();
     caseCreator.postSampleUnit("LMS0003", "H", sampleUnitId, collectionExerciseId);
+    Thread.sleep(2000);
     CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
     UUID caseId = UUID.fromString(caseNotificationDTO.getCaseId());
 
@@ -156,9 +161,11 @@ public class CaseEndpointIT {
    */
   @Test
   public void testCreateCollectionInstrumentDownloadedCaseEventWithBCaseSuccess() throws Exception {
+    createCollectionData();
     TestPubSubMessage message = new TestPubSubMessage();
     // Given
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
+    Thread.sleep(2000);
     CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
     String caseID = caseNotificationDTO.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
@@ -196,9 +203,11 @@ public class CaseEndpointIT {
    */
   @Test
   public void testCreateCollectionInstrumentErrorCaseEventWithBCaseSuccess() throws Exception {
+    createCollectionData();
     TestPubSubMessage message = new TestPubSubMessage();
     // Given
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
+    Thread.sleep(2000);
     CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
     String caseID = caseNotificationDTO.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
@@ -232,9 +241,11 @@ public class CaseEndpointIT {
    */
   @Test
   public void testCreateSuccessfulResponseUploadCaseEventWithBCaseSuccess() throws Exception {
+    createCollectionData();
     TestPubSubMessage message = new TestPubSubMessage();
     // Given
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
+    Thread.sleep(2000);
     CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
     String caseID = caseNotificationDTO.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
@@ -268,9 +279,11 @@ public class CaseEndpointIT {
    */
   @Test
   public void testGetCaseEventsWithCategory() throws Exception {
+    createCollectionData();
     TestPubSubMessage message = new TestPubSubMessage();
     // Given
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
+    Thread.sleep(2000);
     CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
     String caseID = caseNotificationDTO.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
@@ -309,7 +322,7 @@ public class CaseEndpointIT {
   @Test
   public void testGetCaseEventsWithCategoryMissingCaseShouldFail() throws Exception {
     // Given
-
+    createCollectionData();
     // When
     HttpResponse returnedCaseEventsResponse =
         Unirest.get(
@@ -329,8 +342,10 @@ public class CaseEndpointIT {
   @Test
   public void testGetCaseEventsWithNonExistentCategory() throws Exception {
     // Given
+    createCollectionData();
     TestPubSubMessage message = new TestPubSubMessage();
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
+    Thread.sleep(2000);
     CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
     String caseID = caseNotificationDTO.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
@@ -363,8 +378,10 @@ public class CaseEndpointIT {
   @Test
   public void testGetNoCaseEventsWithCategory() throws Exception {
     // Given
+    createCollectionData();
     TestPubSubMessage message = new TestPubSubMessage();
     caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
+    Thread.sleep(2000);
     CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
     String caseID = caseNotificationDTO.getCaseId();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
