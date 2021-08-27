@@ -42,7 +42,7 @@ public class CaseReceiptReceiver {
   @Transactional(propagation = Propagation.REQUIRED, value = "transactionManager")
   @ServiceActivator(inputChannel = "caseReceiptTransformed", adviceChain = "caseReceiptRetryAdvice")
   public void process(CaseReceipt caseReceipt) throws CTPException {
-    log.with("case_receipt", caseReceipt).debug("entering process with caseReceipt");
+    log.with("case_receipt", caseReceipt).info("Processing case receipt");
     UUID caseId = UUID.fromString(caseReceipt.getCaseId());
     Timestamp responseTimestamp = dateTimeUtil.getNowUTC();
 
@@ -67,5 +67,6 @@ public class CaseReceiptReceiver {
       log.debug("about to invoke the event creation...");
       caseService.createCaseEvent(caseEvent, responseTimestamp);
     }
+    log.with("case_receipt", caseReceipt).info("Case receipt processing complete");
   }
 }

@@ -1,10 +1,10 @@
 package uk.gov.ons.ctp.response.lib.common.rest;
 
 import java.nio.charset.Charset;
+import java.util.Base64;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.codec.Base64;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponents;
@@ -89,7 +89,7 @@ public class RestUtility {
 
     if (this.config.getUsername() != null && this.config.getPassword() != null) {
       String auth = this.config.getUsername() + ":" + this.config.getPassword();
-      byte[] encodedAuth = Base64.encode(auth.getBytes(Charset.forName("US-ASCII")));
+      byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(Charset.forName("US-ASCII")));
       String authHeader = "Basic " + new String(encodedAuth);
       headers.set("Authorization", authHeader);
     }
