@@ -71,7 +71,7 @@ collection-exercise-svc:
     password: secret
 
 gcp:
-  project: "test"
+  project: "ras-rm-dev"
   receiptSubscription: "test_subscription"
   caseNotificationTopic: "test_topic"
   caseNotificationSubscription: "test_case_creation_subscription"

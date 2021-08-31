@@ -19,7 +19,6 @@ import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.cloud.gcp.pubsub.core.PubSubTemplate;
 import org.springframework.cloud.gcp.pubsub.integration.AckMode;
 import org.springframework.cloud.gcp.pubsub.integration.inbound.PubSubInboundChannelAdapter;
-import org.springframework.cloud.gcp.pubsub.integration.inbound.PubSubMessageSource;
 import org.springframework.cloud.gcp.pubsub.integration.outbound.PubSubMessageHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -27,8 +26,7 @@ import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.integration.annotation.*;
-import org.springframework.integration.channel.DirectChannel;
-import org.springframework.integration.core.MessageSource;
+import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -289,23 +287,13 @@ public class CaseSvcApplication {
     PubSubInboundChannelAdapter adapter =
         new PubSubInboundChannelAdapter(pubSubTemplate, subscriptionName);
     adapter.setOutputChannel(inputChannel);
+    adapter.setAckMode(AckMode.MANUAL);
     return adapter;
   }
 
   @Bean
-  @InboundChannelAdapter(channel = "caseCreationChannel", poller = @Poller(fixedDelay = "100"))
-  public MessageSource<Object> pubsubAdapter(PubSubTemplate pubSubTemplate) {
-    PubSubMessageSource messageSource =
-        new PubSubMessageSource(
-            pubSubTemplate, appConfig.getGcp().getCaseNotificationSubscription());
-    messageSource.setBlockOnPull(true);
-    messageSource.setAckMode(AckMode.MANUAL);
-    return messageSource;
-  }
-
-  @Bean
   public MessageChannel caseCreationChannel() {
-    return new DirectChannel();
+    return new PublishSubscribeChannel();
   }
 
   @Bean
