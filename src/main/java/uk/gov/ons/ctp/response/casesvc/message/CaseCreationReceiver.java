@@ -37,7 +37,7 @@ public class CaseCreationReceiver {
         "Receiving message ID from PubSub",
         kv("messageId", pubSubMsg.getPubsubMessage().getMessageId()));
     String payload = new String((byte[]) message.getPayload());
-    log.info("Receiving data from PubSub ", kv("payload", payload));
+    log.info("New request for case notification", kv("payload", payload));
     try {
       log.info("Mapping payload to SampleUnitParent object");
       SampleUnitParent caseCreation = objectMapper.readValue(payload, SampleUnitParent.class);
