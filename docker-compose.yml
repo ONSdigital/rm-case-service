@@ -47,17 +47,6 @@ services:
     environment:
     - PUBSUB_PROJECT1=ras-rm-dev,test_case_creation_topic:test_case_creation_subscription
 
-  rabbitmq:
-    container_name: rabbitmq-case-it
-    image: rabbitmq:3.6.10-management
-    ports:
-    - "34369:4369"
-    - "55672:25672"
-    - "35671:5671"
-    - "35672:5672"
-    - "46671:15671"
-    - "46672:15672"
-
   survey:
     container_name: survey-case-it
     image: eu.gcr.io/ons-rasrmbs-management/survey:latest

@@ -22,7 +22,6 @@ import org.springframework.cloud.gcp.pubsub.integration.inbound.PubSubInboundCha
 import org.springframework.cloud.gcp.pubsub.integration.outbound.PubSubMessageHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.integration.annotation.*;
@@ -58,7 +57,6 @@ import uk.gov.ons.ctp.response.lib.common.time.DateTimeUtil;
 @EnableAsync
 @EnableCaching
 @EnableScheduling
-@ImportResource("springintegration/main.xml")
 @Slf4j
 public class CaseSvcApplication {
 

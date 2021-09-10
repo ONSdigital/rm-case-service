@@ -24,8 +24,7 @@ exercise id in order to swap it for a survey id
 1. Publish an event to the event publisher (unsure what this is for?) 
 1. It adds an IAC case audit record
 1. Prepares a case notification to inform the action service that a new case is ready.
-1. The CaseNotificationPublisher publish this to the rabbit queue Case.LifecycleEvents via the case-notification-outbound-flow.xml
-where it is read by action service.
+1. The CaseNotificationPublisher publish this to action via pub sub
  
 
 ### Receipt Process

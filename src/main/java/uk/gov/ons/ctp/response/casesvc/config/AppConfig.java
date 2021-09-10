@@ -4,7 +4,6 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.annotation.EnableRetry;
-import uk.gov.ons.ctp.response.lib.rabbit.Rabbitmq;
 
 /** Application Config bean */
 @EnableRetry
@@ -18,7 +17,6 @@ public class AppConfig {
   private CollectionExerciseSvc collectionExerciseSvc;
   private DataGrid dataGrid;
   private SwaggerSettings swaggerSettings;
-  private Rabbitmq rabbitmq;
   private Logging logging;
   private GCP gcp;
 }
