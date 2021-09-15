@@ -85,6 +85,19 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
     return ResponseEntity.ok(numberOfCases);
   }
 
+  @RequestMapping(value = "/cases/{collectionExerciseId}/all", method = RequestMethod.GET)
+  public ResponseEntity findAllCasesForCollectionExercise(
+      @PathVariable("collectionExerciseId") final UUID collectionExerciseId) throws CTPException {
+    // TODO: This endpoint needs to be combined with findNumberOfCases and given a sensible
+    // implementation.
+    // This is being added now to fix a production issue quickly.
+    log.with("collectionExerciseId", collectionExerciseId)
+        .debug("Finding all cases against collectionExercise");
+    Long numberOfCases =
+        caseGroupService.getAllCasesAgainstCollectionExerciseId(collectionExerciseId);
+    return ResponseEntity.ok(numberOfCases);
+  }
+
   /**
    * the GET endpoint to find CaseGroups by partyid UUID
    *
