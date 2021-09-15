@@ -171,6 +171,62 @@ paths:
         404:
           description: Not Found
           content: {}
+  /casegroups/cases/{collectionExerciseId}:
+    get:
+      tags:
+        - case-group-endpoint
+      summary: findCaseGroupsByCollectionExerciseId
+      operationId: findCaseGroupsByCollectionExerciseIddUsingGET
+      description: returns a count of casegroups with a given collection exercise id in the NOT_STARTED and IN_PROGRESS state
+      parameters:
+        - name: collectionExerciseId
+          in: path
+          description: the uuid of the collection exercise
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: number
+                example: 10503
+        401:
+          description: Unauthorized
+          content: { }
+        403:
+          description: Forbidden
+          content: { }
+  /casegroups/cases/{collectionExerciseId}/all:
+    get:
+      tags:
+        - case-group-endpoint
+      summary: findCaseGroupsByCollectionExerciseId
+      operationId: findCaseGroupsByCollectionExerciseIdUsingGET
+      description: returns a count of casegroups with a given collection exercise id
+      parameters:
+        - name: collectionExerciseId
+          in: path
+          description: the uuid of the collection exercise
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: number
+                example: 10503
+        401:
+          description: Unauthorized
+          content: { }
+        403:
+          description: Forbidden
+          content: { }
   /cases/casegroupid/{casegroupId}:
     get:
       tags:

@@ -176,4 +176,15 @@ public class CaseGroupService {
     }
     return numberOfCases;
   }
+
+  public Long getAllCasesAgainstCollectionExerciseId(UUID collectionExerciseId)
+      throws CTPException {
+    Long numberOfCases = caseGroupRepo.countCaseGroupByCollectionExerciseId(collectionExerciseId);
+    if (numberOfCases == null) {
+      throw new CTPException(
+          CTPException.Fault.RESOURCE_NOT_FOUND,
+          String.format("Cannot find cases against collection exercise %s", collectionExerciseId));
+    }
+    return numberOfCases;
+  }
 }

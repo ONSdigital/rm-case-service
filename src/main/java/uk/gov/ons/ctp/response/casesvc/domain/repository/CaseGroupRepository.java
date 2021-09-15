@@ -50,6 +50,8 @@ public interface CaseGroupRepository extends JpaRepository<CaseGroup, Integer> {
   CaseGroup findCaseGroupByCollectionExerciseIdAndSampleUnitRef(
       UUID collectionExerciseId, String ruRef);
 
+  Long countCaseGroupByCollectionExerciseId(UUID collectionExerciseId);
+
   @Query(
       "SELECT count (*) FROM CaseGroup cg, Case c "
           + "WHERE c.caseGroupFK=cg.caseGroupPK "
