@@ -461,8 +461,9 @@ public class CaseService {
     }
     caseRepo.saveAndFlush(parentCase);
     String code = internetAccessCodeSvcClient.generateIAC();
+    parentCase.setIac(code);
+    saveCaseIacAudit(parentCase);
     createCaseCreatedEvent(parentCase, category);
-    processCase(parentCase, Optional.of(code));
     log.with("case_id", parentCase.getId().toString())
         .with("sample_unit_type", parentCase.getSampleUnitType().toString())
         .info("New Case created");
