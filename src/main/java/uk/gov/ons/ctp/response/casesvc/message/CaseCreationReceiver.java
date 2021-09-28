@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
+import uk.gov.ons.ctp.response.lib.common.error.CTPException;
 
 /** Receive a new case from the Collection Exercise service. */
 @Component
@@ -32,7 +33,8 @@ public class CaseCreationReceiver {
   @ServiceActivator(inputChannel = "caseCreationChannel")
   public void messageReceiver(
       Message message,
-      @Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) BasicAcknowledgeablePubsubMessage pubSubMsg) {
+      @Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) BasicAcknowledgeablePubsubMessage pubSubMsg)
+      throws CTPException {
     log.info(
         "Receiving message ID from PubSub",
         kv("messageId", pubSubMsg.getPubsubMessage().getMessageId()));

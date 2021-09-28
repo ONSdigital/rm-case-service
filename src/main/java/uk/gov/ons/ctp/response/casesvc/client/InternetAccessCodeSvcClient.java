@@ -70,6 +70,31 @@ public class InternetAccessCodeSvcClient {
   }
 
   /**
+   * To generate IAC
+   *
+   * @return a list of IACs
+   */
+  @Retryable(
+      value = {RestClientException.class},
+      maxAttemptsExpression = "#{${retries.maxAttempts}}",
+      backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
+  public String generateIAC() {
+    log.with("count", "1").debug("Generating iac codes");
+    UriComponents uriComponents =
+        restUtility.createUriComponents(
+            appConfig.getInternetAccessCodeSvc().getIacPostPath(), null);
+
+    CreateInternetAccessCodeDTO createCodesDTO = new CreateInternetAccessCodeDTO(1, SYSTEM);
+    HttpEntity<CreateInternetAccessCodeDTO> httpEntity =
+        restUtility.createHttpEntity(createCodesDTO);
+
+    ResponseEntity<String> responseEntity =
+        restTemplate.exchange(uriComponents.toUri(), HttpMethod.POST, httpEntity, String.class);
+    log.with("count", "1").debug("Successfully generated iac codes");
+    return responseEntity.getBody();
+  }
+
+  /**
    * To disable an IAC
    *
    * @param iac the one to disable

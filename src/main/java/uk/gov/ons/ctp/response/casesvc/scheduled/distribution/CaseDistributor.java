@@ -2,9 +2,6 @@ package uk.gov.ons.ctp.response.casesvc.scheduled.distribution;
 
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -18,13 +15,16 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseNotificationDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.lib.common.distributed.DistributedListManager;
 import uk.gov.ons.ctp.response.lib.common.distributed.LockingException;
-import uk.gov.ons.ctp.response.lib.common.error.CTPException;
 import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManager;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * This is the 'service' class that distributes cases to the action service. It has a number of
@@ -96,24 +96,18 @@ public class CaseDistributor {
         int nbRetrievedCases = cases.size();
 
         try {
-          List<String> codes = internetAccessCodeSvcClient.generateIACs(nbRetrievedCases);
 
-          if (!CollectionUtils.isEmpty(codes)) {
-            if (nbRetrievedCases == codes.size()) {
-              for (int idx = 0; idx < nbRetrievedCases; idx++) {
-                Case caze = cases.get(idx);
-                try {
-                  processCase(caze, codes.get(idx));
-                  successes++;
-                } catch (Exception e) {
-                  log.with("case", caze)
-                      .error("Exception thrown processing case. Processing postponed", e);
-                  failures++;
-                }
-              }
+          for (int idx = 0; idx < nbRetrievedCases; idx++) {
+            Case caze = cases.get(idx);
+            try {
+              caseService.processCase(caze, Optional.empty());
+              successes++;
+            } catch (Exception e) {
+              log.with("case", caze)
+                  .error("Exception thrown processing case. Processing postponed", e);
+              failures++;
             }
           }
-
           distInfo.setCasesSucceeded(successes);
           distInfo.setCasesFailed(failures);
         } catch (Exception e) {
@@ -178,57 +172,5 @@ public class CaseDistributor {
     }
 
     return cases;
-  }
-
-  /**
-   * Deal with a single case.
-   *
-   * <p>The processing requires to write to our own case table. A CaseNotification is also produced
-   * and added to the outbound CaseNotifications sent to the action service.
-   *
-   * @param caze the case to deal with
-   * @param iac the IAC to assign to the Case
-   * @throws CTPException when transitionCase does.
-   */
-  private void processCase(final Case caze, final String iac) throws CTPException {
-    log.with("case_id", caze.getId()).debug("Processing case");
-
-    CaseDTO.CaseEvent event = null;
-    CaseState initialState = caze.getState();
-    switch (caze.getState()) {
-      case SAMPLED_INIT:
-        event = CaseDTO.CaseEvent.ACTIVATED;
-        break;
-      case REPLACEMENT_INIT:
-        event = CaseDTO.CaseEvent.REPLACED;
-        break;
-      default:
-        log.with("initial_state", initialState).error("Unexpected state found");
-    }
-
-    Case updatedCase = transitionCase(caze, event);
-    updatedCase.setIac(iac);
-    caseRepo.saveAndFlush(updatedCase);
-
-    caseService.saveCaseIacAudit(updatedCase);
-
-    CaseNotificationDTO caseNotification = caseService.prepareCaseNotification(caze, event);
-    log.debug("Publishing caseNotification...");
-    notificationPublisher.sendNotification(caseNotification);
-  }
-
-  /**
-   * Change the case status in db to indicate we have sent this case downstream, and clear previous
-   * situation (in the scenario where the case has prev. failed)
-   *
-   * @param caze the case to change and persist
-   * @param event the event to transition the case with
-   * @return the transitioned case
-   * @throws CTPException when case state transition error
-   */
-  private Case transitionCase(final Case caze, final CaseDTO.CaseEvent event) throws CTPException {
-    CaseState nextState = caseSvcStateTransitionManager.transition(caze.getState(), event);
-    caze.setState(nextState);
-    return caze;
   }
 }

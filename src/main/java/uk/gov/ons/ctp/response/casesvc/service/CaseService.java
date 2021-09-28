@@ -3,13 +3,7 @@ package uk.gov.ons.ctp.response.casesvc.service;
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -443,7 +437,7 @@ public class CaseService {
   }
 
   @Transactional
-  public void createInitialCase(SampleUnitParent sampleUnitParent) {
+  public void createInitialCase(SampleUnitParent sampleUnitParent) throws CTPException {
     CaseGroup newCaseGroup = createNewCaseGroup(sampleUnitParent);
     log.with("case_group_id", newCaseGroup.getId()).debug("Created new casegroup");
 
@@ -466,10 +460,69 @@ public class CaseService {
       }
     }
     caseRepo.saveAndFlush(parentCase);
+    String code = internetAccessCodeSvcClient.generateIAC();
     createCaseCreatedEvent(parentCase, category);
+    processCase(parentCase, Optional.of(code));
     log.with("case_id", parentCase.getId().toString())
         .with("sample_unit_type", parentCase.getSampleUnitType().toString())
         .info("New Case created");
+  }
+
+  /**
+   * Deal with a single case.
+   *
+   * <p>The processing requires to write to our own case table. A CaseNotification is also produced
+   * and added to the outbound CaseNotifications sent to the action service.
+   *
+   * @param caze the case to deal with
+   * @param iac the IAC to assign to the Case
+   * @throws CTPException when transitionCase does.
+   */
+  public void processCase(final Case caze, Optional<String> iac) throws CTPException {
+    log.with("case_id", caze.getId()).debug("Processing case");
+
+    CaseDTO.CaseEvent event = null;
+    CaseState initialState = caze.getState();
+    switch (caze.getState()) {
+      case SAMPLED_INIT:
+        event = CaseDTO.CaseEvent.ACTIVATED;
+        break;
+      case REPLACEMENT_INIT:
+        event = CaseDTO.CaseEvent.REPLACED;
+        break;
+      default:
+        log.with("initial_state", initialState).error("Unexpected state found");
+    }
+
+    boolean isIacPresent = iac.isPresent();
+
+    Case updatedCase = transitionCase(caze, event);
+    if (isIacPresent) {
+      updatedCase.setIac(Optional.of(iac).toString());
+      saveCaseIacAudit(updatedCase);
+    }
+    caseRepo.saveAndFlush(updatedCase);
+
+    CaseNotificationDTO caseNotification = prepareCaseNotification(caze, event);
+    log.debug("Publishing caseNotification...");
+    if (!isIacPresent) {
+      notificationPublisher.sendNotification(caseNotification);
+    }
+  }
+
+  /**
+   * Change the case status in db to indicate we have sent this case downstream, and clear previous
+   * situation (in the scenario where the case has prev. failed)
+   *
+   * @param caze the case to change and persist
+   * @param event the event to transition the case with
+   * @return the transitioned case
+   * @throws CTPException when case state transition error
+   */
+  private Case transitionCase(final Case caze, final CaseDTO.CaseEvent event) throws CTPException {
+    CaseState nextState = caseSvcStateTransitionManager.transition(caze.getState(), event);
+    caze.setState(nextState);
+    return caze;
   }
 
   /**
