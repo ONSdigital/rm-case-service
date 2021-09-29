@@ -24,6 +24,8 @@ import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.config.CaseDistribution;
 import uk.gov.ons.ctp.response.casesvc.config.InternetAccessCodeSvc;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseIacAudit;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseIacAuditRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
@@ -67,6 +69,8 @@ public class CaseDistributorTest {
   @Mock private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
   @InjectMocks private CaseDistributor caseDistributor;
+
+  @Mock private CaseIacAuditRepository iacAuditRepository;
 
   /**
    * All of these tests require the mocked repos to respond with predictable data loaded from test
@@ -142,33 +146,6 @@ public class CaseDistributorTest {
   }
 
   /**
-   * Test where we retrieve cases but IAC call fails
-   *
-   * @throws LockingException when caseDistributionListManager does
-   */
-  @SuppressWarnings("unchecked")
-  @Test
-  public void testFailIAC() throws LockingException {
-    when(caseRepo.findByStateInAndCasePKNotIn(
-            any(List.class), any(List.class), any(Pageable.class)))
-        .thenReturn(cases);
-    when(internetAccessCodeSvcClient.generateIACs(any(Integer.class)))
-        .thenThrow(new RuntimeException("IAC access failed"));
-
-    CaseDistributionInfo info = caseDistributor.distribute();
-    assertEquals(0, info.getCasesFailed());
-    assertEquals(0, info.getCasesSucceeded());
-
-    verify(internetAccessCodeSvcClient, times(1)).generateIACs(any(Integer.class));
-    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-    verify(caseService, times(0))
-        .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotificationDTO.class));
-    verify(caseDistributionListManager, times(1)).deleteList(any(String.class), any(Boolean.class));
-    verify(caseDistributionListManager, times(0)).unlockContainer();
-  }
-
-  /**
    * Test where we retrieve 5 cases (all at SAMPLED_INIT or REPLACEMENT_INIT) and 5 IACs correctly.
    *
    * @throws CTPException when caseSvcStateTransitionManager.transition does
@@ -180,12 +157,6 @@ public class CaseDistributorTest {
     when(caseRepo.findByStateInAndCasePKNotIn(
             any(List.class), any(List.class), any(Pageable.class)))
         .thenReturn(cases);
-
-    List<String> iacs = new ArrayList<>();
-    for (int i = 0; i < 5; i++) {
-      iacs.add(IAC);
-    }
-    when(internetAccessCodeSvcClient.generateIACs(any(Integer.class))).thenReturn(iacs);
 
     when(caseSvcStateTransitionManager.transition(
             CaseState.SAMPLED_INIT, CaseDTO.CaseEvent.ACTIVATED))
@@ -199,51 +170,19 @@ public class CaseDistributorTest {
     when(caseService.prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class)))
         .thenReturn(caseNotification);
 
+    CaseIacAudit caseIacAudit = new CaseIacAudit();
+    caseIacAudit.setIac("hdfhjkhkhfd");
+    when(iacAuditRepository.findTop1ByCaseFKOrderByCreatedDateTimeDesc(any()))
+        .thenReturn(caseIacAudit);
+
     CaseDistributionInfo info = caseDistributor.distribute();
     assertEquals(0, info.getCasesFailed());
     assertEquals(5, info.getCasesSucceeded());
 
-    verify(internetAccessCodeSvcClient, times(1)).generateIACs(any(Integer.class));
     verify(caseRepo, times(5)).saveAndFlush(any(Case.class));
-    verify(caseService, times(5)).saveCaseIacAudit(any());
     verify(caseService, times(5))
         .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));
     verify(notificationPublisher, times(5)).sendNotification(any(CaseNotificationDTO.class));
-    verify(caseDistributionListManager, times(1)).deleteList(any(String.class), any(Boolean.class));
-    verify(caseDistributionListManager, times(0)).unlockContainer();
-  }
-
-  /**
-   * Test where we retrieve 6 cases but only 4 IACs correctly.
-   *
-   * <p>5 Cases have a correct state (SAMPLED_INIT or REPLACEMENT_INIT). 1 case has an incorrect
-   * state (ACTIONABLE).
-   *
-   * @throws CTPException when caseSvcStateTransitionManager.transition does
-   * @throws LockingException when caseDistributionListManager does
-   */
-  @SuppressWarnings("unchecked")
-  @Test
-  public void testWeDontRetrieveEnoughIACs() throws CTPException, LockingException {
-    when(caseRepo.findByStateInAndCasePKNotIn(
-            any(List.class), any(List.class), any(Pageable.class)))
-        .thenReturn(cases);
-
-    List<String> iacs = new ArrayList<>();
-    for (int i = 0; i < 4; i++) {
-      iacs.add(IAC);
-    }
-    when(internetAccessCodeSvcClient.generateIACs(any(Integer.class))).thenReturn(iacs);
-
-    CaseDistributionInfo info = caseDistributor.distribute();
-    assertEquals(0, info.getCasesFailed());
-    assertEquals(0, info.getCasesSucceeded());
-
-    verify(internetAccessCodeSvcClient, times(1)).generateIACs(any(Integer.class));
-    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
-    verify(caseService, times(0))
-        .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotificationDTO.class));
     verify(caseDistributionListManager, times(1)).deleteList(any(String.class), any(Boolean.class));
     verify(caseDistributionListManager, times(0)).unlockContainer();
   }
@@ -262,12 +201,6 @@ public class CaseDistributorTest {
             any(List.class), any(List.class), any(Pageable.class)))
         .thenReturn(cases);
 
-    List<String> iacs = new ArrayList<>();
-    for (int i = 0; i < 5; i++) {
-      iacs.add(IAC);
-    }
-    when(internetAccessCodeSvcClient.generateIACs(any(Integer.class))).thenReturn(iacs);
-
     when(caseSvcStateTransitionManager.transition(
             CaseState.SAMPLED_INIT, CaseDTO.CaseEvent.ACTIVATED))
         .thenReturn(CaseState.ACTIONABLE);
@@ -278,11 +211,15 @@ public class CaseDistributorTest {
     when(caseRepo.saveAndFlush(any(Case.class)))
         .thenThrow(new RuntimeException("The DB is KO at the moment."));
 
+    CaseIacAudit caseIacAudit = new CaseIacAudit();
+    caseIacAudit.setIac("hdfhjkhkhfd");
+    when(iacAuditRepository.findTop1ByCaseFKOrderByCreatedDateTimeDesc(any()))
+        .thenReturn(caseIacAudit);
+
     CaseDistributionInfo info = caseDistributor.distribute();
     assertEquals(5, info.getCasesFailed());
     assertEquals(0, info.getCasesSucceeded());
 
-    verify(internetAccessCodeSvcClient, times(1)).generateIACs(any(Integer.class));
     verify(caseRepo, times(5)).saveAndFlush(any(Case.class));
     verify(caseService, times(0))
         .prepareCaseNotification(any(Case.class), any(CaseDTO.CaseEvent.class));

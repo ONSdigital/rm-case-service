@@ -941,6 +941,7 @@ public class CaseServiceTest {
 
   @Test
   public void testCreateInitialCaseWithSampleUnitChildren() throws Exception {
+    String collectionExerciseId = UUID.randomUUID().toString();
     SampleUnitParent sampleUnitParent = new SampleUnitParent();
     SampleUnit sampleUnit = new SampleUnit();
     SampleUnitChildren sampleUnitChildren =
@@ -953,7 +954,7 @@ public class CaseServiceTest {
     sampleUnit.setId(UUID.randomUUID().toString());
 
     sampleUnitParent.setActionPlanId(UUID.randomUUID().toString());
-    sampleUnitParent.setCollectionExerciseId(UUID.randomUUID().toString());
+    sampleUnitParent.setCollectionExerciseId(collectionExerciseId);
     sampleUnitParent.setSampleUnitChildren(sampleUnitChildren);
     sampleUnitParent.setCollectionInstrumentId(UUID.randomUUID().toString());
     sampleUnitParent.setPartyId(UUID.randomUUID().toString());
@@ -966,6 +967,12 @@ public class CaseServiceTest {
     when(collectionExerciseSvcClient.getCollectionExercise(any()))
         .thenReturn(collectionExercises.get(0));
 
+    when(caseRepo.saveAndFlush(any(Case.class)))
+        .thenReturn(cases.get(ENROLMENT_CASE_INDIVIDUAL_FK));
+
+    when(internetAccessCodeSvcClient.generateIACs(1))
+        .thenReturn(Collections.singletonList(IAC_FOR_TEST));
+
     caseService.createInitialCase(sampleUnitParent);
 
     ArgumentCaptor<CaseGroup> caseGroup = ArgumentCaptor.forClass(CaseGroup.class);
@@ -973,7 +980,56 @@ public class CaseServiceTest {
 
     List<CaseGroup> capturedCaseGroup = caseGroup.getAllValues();
 
+    assertEquals(
+        collectionExerciseId, capturedCaseGroup.get(0).getCollectionExerciseId().toString());
+    verify(caseRepo, times(4)).saveAndFlush(any());
+  }
+
+  @Test
+  public void testCreateInitialCaseWithSampleUnitChildrenFailedOnIACUpdate() throws Exception {
+    String collectionExerciseId = UUID.randomUUID().toString();
+    SampleUnitParent sampleUnitParent = new SampleUnitParent();
+    SampleUnit sampleUnit = new SampleUnit();
+    SampleUnitChildren sampleUnitChildren =
+        new SampleUnitChildren(new ArrayList<>(Collections.singletonList(sampleUnit)));
+    sampleUnit.setActionPlanId(UUID.randomUUID().toString());
+    sampleUnit.setCollectionInstrumentId(UUID.randomUUID().toString());
+    sampleUnit.setPartyId(UUID.randomUUID().toString());
+    sampleUnit.setSampleUnitRef("str1234");
+    sampleUnit.setSampleUnitType("BI");
+    sampleUnit.setId(UUID.randomUUID().toString());
+
+    sampleUnitParent.setActionPlanId(UUID.randomUUID().toString());
+    sampleUnitParent.setCollectionExerciseId(collectionExerciseId);
+    sampleUnitParent.setSampleUnitChildren(sampleUnitChildren);
+    sampleUnitParent.setCollectionInstrumentId(UUID.randomUUID().toString());
+    sampleUnitParent.setPartyId(UUID.randomUUID().toString());
+    sampleUnitParent.setSampleUnitRef("str1234");
+    sampleUnitParent.setSampleUnitType("B");
+    sampleUnitParent.setId(UUID.randomUUID().toString());
+
+    List<CollectionExerciseDTO> collectionExercises =
+        FixtureHelper.loadClassFixtures(CollectionExerciseDTO[].class);
+    when(collectionExerciseSvcClient.getCollectionExercise(any()))
+        .thenReturn(collectionExercises.get(0));
+
+    when(caseRepo.saveAndFlush(any(Case.class)))
+        .thenReturn(cases.get(ENROLMENT_CASE_INDIVIDUAL_FK));
+
+    when(internetAccessCodeSvcClient.generateIACs(any(Integer.class)))
+        .thenThrow(new RuntimeException("IAC access failed"));
+
+    caseService.createInitialCase(sampleUnitParent);
+
+    ArgumentCaptor<CaseGroup> caseGroup = ArgumentCaptor.forClass(CaseGroup.class);
+    verify(caseGroupRepo, times(1)).saveAndFlush(caseGroup.capture());
+
+    List<CaseGroup> capturedCaseGroup = caseGroup.getAllValues();
+
+    assertEquals(
+        collectionExerciseId, capturedCaseGroup.get(0).getCollectionExerciseId().toString());
     verify(caseRepo, times(2)).saveAndFlush(any());
+    verify(caseIacAuditRepo, times((0))).saveAndFlush(any());
   }
 
   @Test
