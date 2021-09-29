@@ -11,6 +11,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "case_action", schema = "casesvc")
 public class CaseAction {
 
   @Id

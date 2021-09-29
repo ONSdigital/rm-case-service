@@ -1,7 +1,7 @@
 -- Adding required indexes for case_action view.
-Create index idx_casegroup_collection_exercise_id
+CREATE INDEX idx_casegroup_collection_exercise_id
 ON casesvc.casegroup USING btree (collection_exercise_id);
-Create index idx_case_active_enrolment
+CREATE INDEX idx_case_active_enrolment
 ON casesvc.case USING btree (active_enrolment);
 
 -- Adding case_action_template table
@@ -43,21 +43,21 @@ CREATE TABLE casesvc.case_action_event (
     processed_timestamp TIMESTAMP);
 
 -- Adding required indexes to case_action_event
-Create index idx_case_action_event_case_id
+CREATE INDEX idx_case_action_event_case_id
 ON casesvc.case_action_event USING btree (case_id);
-Create index idx_case_action_event_event_tag
+CREATE INDEX idx_case_action_event_event_tag
 ON casesvc.case_action_event USING btree (event_tag);
-Create index idx_case_action_event_handler
+CREATE INDEX idx_case_action_event_handler
 ON casesvc.case_action_event USING btree (handler);
-Create index idx_case_action_event_status
+CREATE INDEX idx_case_action_event_status
 ON casesvc.case_action_event USING btree (status);
 
 -- Adding View case_action
 CREATE VIEW casesvc.case_action AS
-select cg.collection_exercise_id, c.id as case_id,cg.party_id, cg.sample_unit_ref, cg.sample_unit_type,
-cg.status, cg.survey_id, c.sampleunit_id as sample_unit_id, c.collection_instrument_id,
+SELECT cg.collection_exercise_id, c.id AS case_id,cg.party_id, cg.sample_unit_ref, cg.sample_unit_type,
+cg.status, cg.survey_id, c.sampleunit_id AS sample_unit_id, c.collection_instrument_id,
 iac.iac,
 c.active_enrolment
-from casesvc.casegroup cg, casesvc.case c
+FROM casesvc.casegroup cg, casesvc.case c
 LEFT JOIN casesvc.caseiacaudit iac ON iac.case_fk=c.case_pk
-where cg.case_group_pk=c.case_group_fk and c.state_fk='ACTIONABLE'
+WHERE cg.case_group_pk=c.case_group_fk AND c.state_fk='ACTIONABLE'
