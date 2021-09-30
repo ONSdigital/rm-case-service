@@ -8,11 +8,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.EQ_LAUNCH;
 
 import java.sql.Timestamp;
@@ -128,6 +124,8 @@ public class CaseServiceTest {
   @Mock private CaseNotificationPublisher notificationPublisher;
   @Mock private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
   @Spy private MapperFacade mapperFacade = new CaseSvcBeanMapper();
+
+  @Spy @InjectMocks private Case mockCase;
 
   @InjectMocks private CaseService caseService;
 
@@ -942,6 +940,7 @@ public class CaseServiceTest {
   @Test
   public void testCreateInitialCaseWithSampleUnitChildren() throws Exception {
     String collectionExerciseId = UUID.randomUUID().toString();
+    UUID partyId = UUID.randomUUID();
     SampleUnitParent sampleUnitParent = new SampleUnitParent();
     SampleUnit sampleUnit = new SampleUnit();
     SampleUnitChildren sampleUnitChildren =
@@ -957,7 +956,7 @@ public class CaseServiceTest {
     sampleUnitParent.setCollectionExerciseId(collectionExerciseId);
     sampleUnitParent.setSampleUnitChildren(sampleUnitChildren);
     sampleUnitParent.setCollectionInstrumentId(UUID.randomUUID().toString());
-    sampleUnitParent.setPartyId(UUID.randomUUID().toString());
+    sampleUnitParent.setPartyId(partyId.toString());
     sampleUnitParent.setSampleUnitRef("str1234");
     sampleUnitParent.setSampleUnitType("B");
     sampleUnitParent.setId(UUID.randomUUID().toString());
@@ -967,12 +966,16 @@ public class CaseServiceTest {
     when(collectionExerciseSvcClient.getCollectionExercise(any()))
         .thenReturn(collectionExercises.get(0));
 
-    when(caseRepo.saveAndFlush(any(Case.class)))
-        .thenReturn(cases.get(ENROLMENT_CASE_INDIVIDUAL_FK));
+    UUID groupUUIDOne = UUID.randomUUID();
 
+    mockCase = makeCaseWithPartyId(groupUUIDOne, partyId);
+    mockCase.setCasePK(1);
+
+    when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(mockCase);
     when(internetAccessCodeSvcClient.generateIACs(1))
         .thenReturn(Collections.singletonList(IAC_FOR_TEST));
 
+    when(caseIacAuditRepo.saveAndFlush(any())).thenReturn(new CaseIacAudit());
     caseService.createInitialCase(sampleUnitParent);
 
     ArgumentCaptor<CaseGroup> caseGroup = ArgumentCaptor.forClass(CaseGroup.class);
@@ -988,13 +991,14 @@ public class CaseServiceTest {
   @Test
   public void testCreateInitialCaseWithSampleUnitChildrenFailedOnIACUpdate() throws Exception {
     String collectionExerciseId = UUID.randomUUID().toString();
+    UUID partyId = UUID.randomUUID();
     SampleUnitParent sampleUnitParent = new SampleUnitParent();
     SampleUnit sampleUnit = new SampleUnit();
     SampleUnitChildren sampleUnitChildren =
         new SampleUnitChildren(new ArrayList<>(Collections.singletonList(sampleUnit)));
     sampleUnit.setActionPlanId(UUID.randomUUID().toString());
     sampleUnit.setCollectionInstrumentId(UUID.randomUUID().toString());
-    sampleUnit.setPartyId(UUID.randomUUID().toString());
+    sampleUnit.setPartyId(partyId.toString());
     sampleUnit.setSampleUnitRef("str1234");
     sampleUnit.setSampleUnitType("BI");
     sampleUnit.setId(UUID.randomUUID().toString());
@@ -1013,8 +1017,12 @@ public class CaseServiceTest {
     when(collectionExerciseSvcClient.getCollectionExercise(any()))
         .thenReturn(collectionExercises.get(0));
 
-    when(caseRepo.saveAndFlush(any(Case.class)))
-        .thenReturn(cases.get(ENROLMENT_CASE_INDIVIDUAL_FK));
+    UUID groupUUIDOne = UUID.randomUUID();
+
+    mockCase = makeCaseWithPartyId(groupUUIDOne, partyId);
+    mockCase.setCasePK(1);
+
+    when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(mockCase);
 
     when(internetAccessCodeSvcClient.generateIACs(any(Integer.class)))
         .thenThrow(new RuntimeException("IAC access failed"));

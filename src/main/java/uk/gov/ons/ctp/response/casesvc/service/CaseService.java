@@ -485,8 +485,9 @@ public class CaseService {
           .info("Calling IAC service to generate an IAC code.");
       String iac = internetAccessCodeSvcClient.generateIACs(1).get(0);
       createdCase.setIac(iac);
-      caseRepo.saveAndFlush(createdCase);
-      saveCaseIacAudit(createdCase);
+      Case updatedCase = caseRepo.saveAndFlush(createdCase);
+      updatedCase.setIac(iac);
+      saveCaseIacAudit(updatedCase);
       log.with("case_id", createdCase.getId().toString()).info("Case updated with IAC code.");
     } catch (Exception e) {
       log.error("Failed to obtain IAC codes", e);
