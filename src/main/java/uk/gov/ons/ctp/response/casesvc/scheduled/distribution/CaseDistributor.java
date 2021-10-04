@@ -110,8 +110,7 @@ public class CaseDistributor {
                 processCase(caze);
                 successes++;
               } else {
-                log.with("case", caze)
-                    .info("Can't process the case as IAC has not been updated");
+                log.with("case", caze).info("Can't process the case as IAC has not been updated");
                 caseService.updateCaseWithIACs(caze);
                 failures++;
               }
