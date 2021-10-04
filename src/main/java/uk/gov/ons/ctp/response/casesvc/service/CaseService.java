@@ -373,7 +373,7 @@ public class CaseService {
       propagation = Propagation.REQUIRED,
       readOnly = false,
       timeout = TRANSACTION_TIMEOUT)
-  public void saveCaseIacAudit(final Case updatedCase) {
+  private void saveCaseIacAudit(final Case updatedCase) {
     log.with("case_id", updatedCase.getId()).debug("Saving case iac audit");
     CaseIacAudit caseIacAudit = new CaseIacAudit();
     caseIacAudit.setCaseFK(updatedCase.getCasePK());
@@ -463,6 +463,7 @@ public class CaseService {
         log.with("case_id", childCase.getId().toString())
             .with("sample_unit_type", childCase.getSampleUnitType().toString())
             .debug("New Case created");
+        updateCaseWithIACs(childCase);
       }
     }
     caseRepo.saveAndFlush(parentCase);
@@ -470,6 +471,27 @@ public class CaseService {
     log.with("case_id", parentCase.getId().toString())
         .with("sample_unit_type", parentCase.getSampleUnitType().toString())
         .info("New Case created");
+    updateCaseWithIACs(parentCase);
+  }
+
+  /**
+   * This method updates the created case with IAC code
+   *
+   * @param createdCase Case Object
+   */
+  public void updateCaseWithIACs(Case createdCase) {
+    try {
+      log.with("case_id", createdCase.getId().toString())
+          .info("Calling IAC service to generate an IAC code.");
+      String iac = internetAccessCodeSvcClient.generateIACs(1).get(0);
+      createdCase.setIac(iac);
+      Case updatedCase = caseRepo.saveAndFlush(createdCase);
+      updatedCase.setIac(iac);
+      saveCaseIacAudit(updatedCase);
+      log.with("case_id", createdCase.getId().toString()).info("Case updated with IAC code.");
+    } catch (Exception e) {
+      log.error("Failed to obtain IAC codes", e);
+    }
   }
 
   /**

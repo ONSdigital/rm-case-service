@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 import uk.gov.ons.ctp.response.casesvc.client.InternetAccessCodeSvcClient;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseIacAudit;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseIacAuditRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
@@ -55,6 +57,7 @@ public class CaseDistributor {
   private DistributedListManager<Integer> caseDistributionListManager;
   private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
   private CaseNotificationPublisher notificationPublisher;
+  private CaseIacAuditRepository iacAuditRepository;
 
   /** Constructor for CaseDistributor */
   @Autowired
@@ -65,7 +68,8 @@ public class CaseDistributor {
       final CaseService caseService,
       final InternetAccessCodeSvcClient internetAccessCodeSvcClient,
       final StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager,
-      final CaseNotificationPublisher notificationPublisher) {
+      final CaseNotificationPublisher notificationPublisher,
+      final CaseIacAuditRepository iacAuditRepository) {
     this.appConfig = appConfig;
     this.caseRepo = caseRepo;
     this.caseService = caseService;
@@ -73,6 +77,7 @@ public class CaseDistributor {
     this.caseDistributionListManager = caseDistributionListManager;
     this.caseSvcStateTransitionManager = caseSvcStateTransitionManager;
     this.notificationPublisher = notificationPublisher;
+    this.iacAuditRepository = iacAuditRepository;
   }
 
   /**
@@ -96,21 +101,23 @@ public class CaseDistributor {
         int nbRetrievedCases = cases.size();
 
         try {
-          List<String> codes = internetAccessCodeSvcClient.generateIACs(nbRetrievedCases);
-
-          if (!CollectionUtils.isEmpty(codes)) {
-            if (nbRetrievedCases == codes.size()) {
-              for (int idx = 0; idx < nbRetrievedCases; idx++) {
-                Case caze = cases.get(idx);
-                try {
-                  processCase(caze, codes.get(idx));
-                  successes++;
-                } catch (Exception e) {
-                  log.with("case", caze)
-                      .error("Exception thrown processing case. Processing postponed", e);
-                  failures++;
-                }
+          for (int idx = 0; idx < nbRetrievedCases; idx++) {
+            Case caze = cases.get(idx);
+            try {
+              CaseIacAudit caseIacAudit =
+                  iacAuditRepository.findTop1ByCaseFKOrderByCreatedDateTimeDesc(caze.getCasePK());
+              if (null != caseIacAudit.getIac()) {
+                processCase(caze);
+                successes++;
+              } else {
+                log.with("case", caze).info("Can't process the case as IAC has not been updated");
+                caseService.updateCaseWithIACs(caze);
+                failures++;
               }
+            } catch (Exception e) {
+              log.with("case", caze)
+                  .error("Exception thrown processing case. Processing postponed", e);
+              failures++;
             }
           }
 
@@ -187,10 +194,9 @@ public class CaseDistributor {
    * and added to the outbound CaseNotifications sent to the action service.
    *
    * @param caze the case to deal with
-   * @param iac the IAC to assign to the Case
    * @throws CTPException when transitionCase does.
    */
-  private void processCase(final Case caze, final String iac) throws CTPException {
+  private void processCase(final Case caze) throws CTPException {
     log.with("case_id", caze.getId()).debug("Processing case");
 
     CaseDTO.CaseEvent event = null;
@@ -207,10 +213,7 @@ public class CaseDistributor {
     }
 
     Case updatedCase = transitionCase(caze, event);
-    updatedCase.setIac(iac);
     caseRepo.saveAndFlush(updatedCase);
-
-    caseService.saveCaseIacAudit(updatedCase);
 
     CaseNotificationDTO caseNotification = caseService.prepareCaseNotification(caze, event);
     log.debug("Publishing caseNotification...");
