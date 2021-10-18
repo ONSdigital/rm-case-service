@@ -41,14 +41,18 @@ public class CaseCreationReceiver {
     try {
       log.info("Mapping payload to SampleUnitParent object");
       SampleUnitParent caseCreation = objectMapper.readValue(payload, SampleUnitParent.class);
-      log.info("Mapping successful, case creation process initiated");
+      log.info("Mapping successful, case creation process initiated", kv("sampleUnitRef", caseCreation.getSampleUnitRef()));
       caseService.createInitialCase(caseCreation);
+      log.info("Case creation successful.  Acking message", kv("sampleUnitRef", caseCreation.getSampleUnitRef()));
       pubSubMsg.ack();
     } catch (final IOException e) {
       log.with(e)
           .error(
               "Something went wrong while processing message received from PubSub "
                   + "for case creation notification");
+      pubSubMsg.nack();
+    } catch (Exception e) {
+      log.with(e).error("An unexpected exception occurred during the case creation.  Nacking message");
       pubSubMsg.nack();
     }
   }
