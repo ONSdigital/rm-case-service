@@ -161,8 +161,8 @@ gcp:
   receiptSubscription: ras-rm-receipt
   caseNotificationTopic: "test_topic"
   caseNotificationSubscription: "test_subscription"
-  printFileTopic: ras-rm-print-file
-  notifyTopic: ras-rm-notify-test
+  printFileTopic: print-file-sinhaa
+  notifyTopic: ras-rm-notify-sinhaa
   bucket:
-    name: ras-rm-print-file
+    name: ras-rm-print-file-sinhaa
     prefix: ""

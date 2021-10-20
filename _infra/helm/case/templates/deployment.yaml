@@ -285,5 +285,13 @@ spec:
             value: "{{ .Values.gcp.caseNotificationSubscription }}"
           - name: SPRING_CLOUD_GCP_PROJECTID
             value: "{{ .Values.gcp.project }}"
+          - name: GCP_BUCKET_NAME
+            value: "{{ .Values.gcp.bucket.name }}"
+          - name: GCP_BUCKET_PREFIX
+            value: "{{ .Values.gcp.bucket.prefix }}"
+          - name: GCP_NOTIFYTOPIC
+            value: "{{ .Values.gcp.notifyTopic }}"
+          - name: GCP_PRINTFILETOPIC
+            value: "{{ .Values.gcp.printFileTopic }}"
           resources:
             {{- toYaml .Values.resources.application | nindent 12 }}

@@ -336,6 +336,14 @@ public class CaseSvcApplication {
     void sendToPubSub(String text);
   }
 
+  /** Bean used to create PubSub email channel */
+  @Bean
+  @ServiceActivator(inputChannel = "notifyEmailChannel")
+  public MessageHandler emailMessageSender(PubSubTemplate pubsubTemplate) {
+    return new PubSubMessageHandler(pubsubTemplate, appConfig.getGcp().getNotifyTopic());
+  }
+
+  /** Bean used to publish PubSub email message */
   @MessagingGateway(defaultRequestChannel = "notifyEmailChannel")
   public interface PubSubOutboundEmailGateway {
     void sendToPubSub(String text);
