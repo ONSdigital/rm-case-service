@@ -1,6 +1,8 @@
 package uk.gov.ons.ctp.response.casesvc;
 
 import com.godaddy.logging.LoggingConfigs;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import java.time.Clock;
 import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,7 @@ import org.springframework.integration.annotation.*;
 import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -189,6 +192,30 @@ public class CaseSvcApplication {
   }
 
   /**
+   * Bean used to access party frame service through REST calls
+   *
+   * @return the service client
+   */
+  @Bean
+  @Qualifier("partySvcClient")
+  public RestUtility partyClient() {
+    final RestUtility restUtility = new RestUtility(appConfig.getPartySvc().getConnectionConfig());
+    return restUtility;
+  }
+
+  /**
+   * Bean used to access survey service through REST calls
+   *
+   * @return the service client
+   */
+  @Bean
+  @Qualifier("surveySvcClient")
+  public RestUtility surveyClient() {
+    final RestUtility restUtility = new RestUtility(appConfig.getSurveySvc().getConnectionConfig());
+    return restUtility;
+  }
+
+  /**
    * The RestExceptionHandler to handle exceptions thrown in our endpoints
    *
    * @return the RestExceptionHandler
@@ -307,5 +334,26 @@ public class CaseSvcApplication {
   @MessagingGateway(defaultRequestChannel = "actionCaseNotificationChannel")
   public interface PubSubOutboundActionCaseNotificationGateway {
     void sendToPubSub(String text);
+  }
+
+  @MessagingGateway(defaultRequestChannel = "notifyEmailChannel")
+  public interface PubSubOutboundEmailGateway {
+    void sendToPubSub(String text);
+  }
+
+  /** Bean used to publish PubSub print file message */
+  @MessagingGateway(defaultRequestChannel = "printFileChannel")
+  public interface PubSubOutboundPrintFileGateway {
+    void sendToPubSub(String text, @Header("printFilename") String header);
+  }
+
+  /**
+   * Bean used to create and configure GCS Client
+   *
+   * @return the Storage Client
+   */
+  @Bean
+  public Storage storage() {
+    return StorageOptions.getDefaultInstance().getService();
   }
 }

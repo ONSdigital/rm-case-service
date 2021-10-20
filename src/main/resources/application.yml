@@ -48,7 +48,7 @@ spring:
   liquibase:
     user: postgres
     password: postgres
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/ras
     liquibase-schema: casesvc
     change-log: classpath:/database/changelog-master.yml
   main:
@@ -99,6 +99,34 @@ collection-exercise-svc:
     username: admin
     password: secret
 
+  # calling the party svc endpoint
+party-svc:
+  party-by-sample-unit-type-and-id-path: /party-api/v1/parties/type/{sampleUnitType}/id/{partyId}
+  connection-config:
+    scheme: http
+    host: localhost
+    port: 8081
+    username: admin
+    password: secret
+    retry-attempts: 1
+    retry-pause-milli-seconds: 5000
+    connect-timeout-milli-seconds: 5000
+    read-timeout-milli-seconds: 5000
+
+  # calling the survey svc endpoints
+survey-svc:
+  request-survey-path: /surveys/{surveyId}
+  connection-config:
+    scheme: http
+    host: localhost
+    port: 8080
+    username: admin
+    password: secret
+    retry-attempts: 5
+    retry-pause-milli-seconds: 5000
+    connect-timeout-milli-seconds: 5000
+    read-timeout-milli-seconds: 5000
+
 case-distribution:
   retrieval-max: 50
   delay-milli-seconds: 500
@@ -133,3 +161,7 @@ gcp:
   receiptSubscription: ras-rm-receipt
   caseNotificationTopic: "test_topic"
   caseNotificationSubscription: "test_subscription"
+  printFileTopic: ras-rm-print-file
+  bucket:
+    name: ras-rm-print-file
+    prefix: ""

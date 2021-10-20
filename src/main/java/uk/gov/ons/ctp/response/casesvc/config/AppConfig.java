@@ -19,4 +19,6 @@ public class AppConfig {
   private SwaggerSettings swaggerSettings;
   private Logging logging;
   private GCP gcp;
+  private PartySvc partySvc;
+  private SurveySvc surveySvc;
 }
