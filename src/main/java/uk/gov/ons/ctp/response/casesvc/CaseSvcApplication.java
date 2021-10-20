@@ -349,6 +349,14 @@ public class CaseSvcApplication {
     void sendToPubSub(String text);
   }
 
+
+  /** Bean used to create PubSub print file channel */
+  @Bean
+  @ServiceActivator(inputChannel = "printFileChannel")
+  public MessageHandler printFileMessageSender(PubSubTemplate pubsubTemplate) {
+    return new PubSubMessageHandler(pubsubTemplate, appConfig.getGcp().getPrintFileTopic());
+  }
+
   /** Bean used to publish PubSub print file message */
   @MessagingGateway(defaultRequestChannel = "printFileChannel")
   public interface PubSubOutboundPrintFileGateway {
