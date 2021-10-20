@@ -162,6 +162,7 @@ gcp:
   caseNotificationTopic: "test_topic"
   caseNotificationSubscription: "test_subscription"
   printFileTopic: ras-rm-print-file
+  notifyTopic: ras-rm-notify-test
   bucket:
     name: ras-rm-print-file
     prefix: ""

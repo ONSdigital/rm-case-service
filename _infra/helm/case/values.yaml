@@ -69,6 +69,11 @@ gcp:
   receiptSubscription: ras-rm-receipt
   caseNotificationTopic: ras-rm-case-notification-topic-test
   caseNotificationSubscription: ras-rm-case-notification-subscription-topic
+  notifyTopic: ras-rm-notify-test
+  printFileTopic: print-file
+  bucket:
+    name: "ras-rm-print-file"
+    prefix: ""
 
 caseDistribution:
   retrievalMax: 1000

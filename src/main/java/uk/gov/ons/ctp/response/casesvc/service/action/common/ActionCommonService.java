@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.response.casesvc.client.PartySvcClientService;
 import uk.gov.ons.ctp.response.casesvc.client.SurveySvcClientService;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseAction;
@@ -110,6 +111,7 @@ public class ActionCommonService {
     return actionEvent == null;
   }
 
+  @Transactional
   public void createCaseActionEvent(
       UUID actionCaseId,
       String templateType,

@@ -5,7 +5,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
-import com.google.api.core.ApiFuture;
 import java.util.concurrent.ExecutionException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +20,6 @@ import uk.gov.ons.ctp.response.casesvc.config.GCP;
 public class NotifyLetterServiceTest {
   @InjectMocks private NotifyLetterService notifyLetterService;
   @Mock private CaseSvcApplication.PubSubOutboundPrintFileGateway publisher;
-  @Mock ApiFuture<String> apiFuture;
   @Mock UploadObjectGCS uploadObjectGCS;
   @Mock AppConfig appConfig;
   @Mock GCP gcp;
