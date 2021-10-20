@@ -220,31 +220,31 @@ spec:
           - name: PARTY_SVC_CONNECTION_CONFIG_HOST
             {{- if .Values.dns.enabled }}
             value: "party.{{ .Values.namespace }}.svc.cluster.local"
-            {{ - else }}
+            {{- else }}
             value: "$(PARTY_SERVICE_HOST)"
-            {{ - end }}
+            {{- end }}
           - name: PARTY_SVC_CONNECTION_CONFIG_PORT
-            {{ - if .Values.dns.enabled }}
+            {{- if .Values.dns.enabled }}
             value: "{{ .Values.dns.wellKnownPort }}"
-            {{ - else }}
+            {{- else }}
             value: "$(PARTY_SERVICE_PORT)"
-            {{ - end }}
+            {{- end }}
           - name: PARTY_SVC_CONNECTION_CONFIG_USERNAME
             value: "$(SECURITY_USER_NAME)"
           - name: PARTY_SVC_CONNECTION_CONFIG_PASSWORD
             value: "$(SECURITY_USER_PASSWORD)"
           - name: SURVEY_SVC_CONNECTION_CONFIG_HOST
-            {{ - if .Values.dns.enabled }}
+            {{- if .Values.dns.enabled }}
             value: "survey.{{ .Values.namespace }}.svc.cluster.local"
-            {{ - else }}
+            {{- else }}
             value: "$(SURVEY_SERVICE_HOST)"
-            {{ - end }}
+            {{- end }}
           - name: SURVEY_SVC_CONNECTION-CONFIG_PORT
-            {{ - if .Values.dns.enabled }}
+            {{- if .Values.dns.enabled }}
             value: "{{ .Values.dns.wellKnownPort }}"
-            {{ - else }}
+            {{- else }}
             value: "$(SURVEY_SERVICE_PORT)"
-            {{ - end }}
+            {{- end }}
           - name: SURVEY_SVC_CONNECTION_CONFIG_USERNAME
             value: "$(SECURITY_USER_NAME)"
           - name: SURVEY_SVC_CONNECTION_CONFIG_PASSWORD
