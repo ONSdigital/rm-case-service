@@ -99,7 +99,7 @@ public class CaseIACEndpointIT {
   public void shouldCreateNewIACCode() throws Exception {
     TestPubSubMessage pubSubMessage = new TestPubSubMessage();
     // Given
-    caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
+    caseCreator.postSampleUnit("BS12351", "B", UUID.randomUUID(), collectionExerciseId);
     CaseNotificationDTO caseNotificationDTO = pubSubMessage.getPubSubCaseNotification();
     String notExpected = getCurrentIACCode(caseNotificationDTO.getCaseId());
 
