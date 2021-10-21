@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.ons.ctp.response.casesvc.client.PartySvcClientService;
 import uk.gov.ons.ctp.response.casesvc.client.SurveySvcClientService;
@@ -25,18 +26,9 @@ import uk.gov.ons.ctp.response.lib.survey.representation.SurveyDTO;
 @Service
 public class ActionCommonService {
   private static final Logger log = LoggerFactory.getLogger(ActionCommonService.class);
-  private final SurveySvcClientService surveySvcClientService;
-  private final PartySvcClientService partySvcClientService;
-  private final CaseActionAuditEventRepository actionEventAuditRepository;
-
-  public ActionCommonService(
-      SurveySvcClientService surveySvcClientService,
-      PartySvcClientService partySvcClientService,
-      CaseActionAuditEventRepository actionEventAuditRepository) {
-    this.surveySvcClientService = surveySvcClientService;
-    this.partySvcClientService = partySvcClientService;
-    this.actionEventAuditRepository = actionEventAuditRepository;
-  }
+  @Autowired private SurveySvcClientService surveySvcClientService;
+  @Autowired private PartySvcClientService partySvcClientService;
+  @Autowired private CaseActionAuditEventRepository actionEventAuditRepository;
 
   /**
    * Gets survey dto against survey id

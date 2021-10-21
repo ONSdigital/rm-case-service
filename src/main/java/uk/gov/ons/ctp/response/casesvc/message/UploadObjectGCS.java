@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.casesvc.service.action.letter;
+package uk.gov.ons.ctp.response.casesvc.message;
 
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;

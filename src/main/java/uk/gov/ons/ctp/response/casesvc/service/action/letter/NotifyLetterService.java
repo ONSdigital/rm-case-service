@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.ons.ctp.response.casesvc.CaseSvcApplication.PubSubOutboundPrintFileGateway;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
+import uk.gov.ons.ctp.response.casesvc.message.UploadObjectGCS;
 import uk.gov.ons.ctp.response.casesvc.representation.action.LetterEntry;
 
 @Slf4j
