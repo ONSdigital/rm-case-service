@@ -106,16 +106,22 @@ public class CaseDistributor {
             try {
               CaseIacAudit caseIacAudit =
                   iacAuditRepository.findTop1ByCaseFKOrderByCreatedDateTimeDesc(caze.getCasePK());
-              if (null != caseIacAudit.getIac()) {
+              if (caseIacAudit.getIac() != null) {
+                log.with("caseId", caze.getId())
+                    .with("case", caze)
+                    .debug("Processing case as IAC has been set");
                 processCase(caze);
                 successes++;
               } else {
-                log.with("case", caze).info("Can't process the case as IAC has not been updated");
+                log.with("caseId", caze.getId())
+                    .with("case", caze)
+                    .info("Can't process the case as IAC has not been updated");
                 caseService.updateCaseWithIACs(caze);
                 failures++;
               }
             } catch (Exception e) {
               log.with("case", caze)
+                  .with("caseId", caze.getId())
                   .error("Exception thrown processing case. Processing postponed", e);
               failures++;
             }
