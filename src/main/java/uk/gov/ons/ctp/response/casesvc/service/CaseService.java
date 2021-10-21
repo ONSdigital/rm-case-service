@@ -483,7 +483,7 @@ public class CaseService {
    *
    * @param createdCase Case Object
    */
-  public void updateCaseWithIACs(Case createdCase, String sampleUnitRef) {
+  private void updateCaseWithIACs(Case createdCase, String sampleUnitRef) {
     try {
       log.with("caseId", createdCase.getId().toString())
           .with("sampleUnitRef", sampleUnitRef)
