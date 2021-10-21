@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
@@ -22,21 +24,10 @@ import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 public class ProcessCaseActionEventService {
   private static final Logger log = LoggerFactory.getLogger(ProcessCaseActionEventService.class);
 
-  private final CollectionExerciseSvcClient collectionExerciseSvcClient;
-  private final ProcessEmailActionService processEmailService;
-  private final ProcessLetterActionService processLetterService;
-  private final CaseActionEventRequestRepository actionEventRequestRepository;
-
-  public ProcessCaseActionEventService(
-      CollectionExerciseSvcClient collectionExerciseClientService,
-      ProcessEmailActionService processEmailService,
-      ProcessLetterActionService processLetterActionService,
-      CaseActionEventRequestRepository actionEventRequestRepository) {
-    this.collectionExerciseSvcClient = collectionExerciseClientService;
-    this.processEmailService = processEmailService;
-    this.processLetterService = processLetterActionService;
-    this.actionEventRequestRepository = actionEventRequestRepository;
-  }
+  @Autowired private CollectionExerciseSvcClient collectionExerciseSvcClient;
+  @Autowired private ProcessEmailActionService processEmailService;
+  @Autowired private ProcessLetterActionService processLetterService;
+  @Autowired private CaseActionEventRequestRepository actionEventRequestRepository;
 
   /**
    * Processes Events. This method takes two attributes collection Exercise Id and Event Tag.
@@ -65,7 +56,7 @@ public class ProcessCaseActionEventService {
     if (!existingRequests.isEmpty()) {
       log.with("collectionExerciseId", collectionExerciseId)
           .with("eventTag", eventTag)
-          .info("An existing request is in progress");
+          .warn("Aborting processing event as an existing request is in progress.");
       return;
     }
     CaseActionEventRequest newRequest =
@@ -77,9 +68,9 @@ public class ProcessCaseActionEventService {
             .build();
     actionEventRequestRepository.save(newRequest);
     Future<Boolean> asyncEmailCall =
-        processEmailService.processEmailService(collectionExercise, eventTag);
+        processEmailService.processEmailService(collectionExercise, eventTag, instant);
     Future<Boolean> asyncLetterCall =
-        processLetterService.processLetterService(collectionExercise, eventTag);
+        processLetterService.processLetterService(collectionExercise, eventTag, instant);
     boolean emailStatus = asyncEmailCall.get();
     boolean letterStatus = asyncLetterCall.get();
     if (emailStatus && letterStatus) {
@@ -97,7 +88,7 @@ public class ProcessCaseActionEventService {
     List<CaseActionEventRequest> existingRequests =
         actionEventRequestRepository.findByStatus(ActionEventRequestStatus.RETRY);
     if (!existingRequests.isEmpty()) {
-      log.info("No event pending retry. Will try again next time.");
+      log.info("No events are pending retry. Will try again next time.");
       return;
     }
     for (CaseActionEventRequest existingRequest : existingRequests) {
@@ -105,10 +96,10 @@ public class ProcessCaseActionEventService {
           getCollectionExercise(existingRequest.getCollectionExerciseId());
       Future<Boolean> asyncEmailCall =
           processEmailService.processEmailService(
-              collectionExercise, existingRequest.getEventTag());
+              collectionExercise, existingRequest.getEventTag(), instant);
       Future<Boolean> asyncLetterCall =
           processLetterService.processLetterService(
-              collectionExercise, existingRequest.getEventTag());
+              collectionExercise, existingRequest.getEventTag(), instant);
       boolean emailStatus = asyncEmailCall.get();
       boolean letterStatus = asyncLetterCall.get();
       if (emailStatus && letterStatus) {

@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.casesvc.service.action.letter;
+package uk.gov.ons.ctp.response.casesvc.representation.action;
 
 import java.util.HashMap;
 import java.util.Map;

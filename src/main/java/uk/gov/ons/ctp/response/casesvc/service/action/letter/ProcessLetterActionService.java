@@ -11,6 +11,7 @@ import java.util.UUID;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionTemplate;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseActionRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.action.CaseActionParty;
 import uk.gov.ons.ctp.response.casesvc.representation.action.Contact;
+import uk.gov.ons.ctp.response.casesvc.representation.action.FilenamePrefix;
 import uk.gov.ons.ctp.response.casesvc.representation.action.LetterEntry;
 import uk.gov.ons.ctp.response.casesvc.service.action.ActionTemplateService;
 import uk.gov.ons.ctp.response.casesvc.service.action.common.ActionCommonService;
@@ -36,25 +38,14 @@ public class ProcessLetterActionService {
   public static final String CREATED = "CREATED";
   public static final String ENABLED = "ENABLED";
   public static final String PENDING = "PENDING";
-  private final ActionTemplateService actionTemplateService;
-  private final CaseActionRepository caseActionRepository;
-  private final ActionCommonService actionCommonService;
-  private final NotifyLetterService printFileService;
-
-  public ProcessLetterActionService(
-      ActionTemplateService actionTemplateService,
-      CaseActionRepository caseActionRepository,
-      ActionCommonService actionCommonService,
-      NotifyLetterService printFileService) {
-    this.actionTemplateService = actionTemplateService;
-    this.caseActionRepository = caseActionRepository;
-    this.actionCommonService = actionCommonService;
-    this.printFileService = printFileService;
-  }
+  @Autowired private ActionTemplateService actionTemplateService;
+  @Autowired private CaseActionRepository caseActionRepository;
+  @Autowired private ActionCommonService actionCommonService;
+  @Autowired private NotifyLetterService printFileService;
 
   @Async
   public Future<Boolean> processLetterService(
-      CollectionExerciseDTO collectionExerciseDTO, String eventTag) {
+      CollectionExerciseDTO collectionExerciseDTO, String eventTag, Instant instant) {
     CaseActionTemplate actionTemplate =
         actionTemplateService.mapEventTagToTemplate(eventTag, Boolean.FALSE);
     UUID collectionExerciseId = collectionExerciseDTO.getId();
@@ -65,9 +56,6 @@ public class ProcessLetterActionService {
           .info("No Template found, suggests no letters to be processed.");
       return new AsyncResult<>(Boolean.TRUE);
     }
-
-    // Instant at which this process started.
-    Instant instant = Instant.now();
 
     log.debug("Getting Letter cases against collectionExerciseId and event active enrolment");
 
@@ -134,7 +122,7 @@ public class ProcessLetterActionService {
     log.with("file processed?", isSuccess)
         .with("actionType", actionTemplate.getType())
         .info("Recording case action event");
-    if (isSuccess) {
+    if (true) {
       letterEntries.parallelStream()
           .forEach(
               letterEntry ->

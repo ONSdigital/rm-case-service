@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.ons.ctp.response.casesvc.CaseSvcApplication;
+import uk.gov.ons.ctp.response.casesvc.CaseSvcApplication.PubSubOutboundPrintFileGateway;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.representation.action.LetterEntry;
 
@@ -20,7 +20,7 @@ public class NotifyLetterService {
 
   @Autowired private UploadObjectGCS uploadObjectGCS;
 
-  @Autowired private CaseSvcApplication.PubSubOutboundPrintFileGateway printFilePublisher;
+  @Autowired private PubSubOutboundPrintFileGateway printFilePublisher;
 
   public boolean processPrintFile(String printFilename, List<LetterEntry> printFile) {
     boolean success = false;

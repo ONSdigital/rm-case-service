@@ -63,3 +63,16 @@ CREATE INDEX idx_case_action_event_request_collex
 ON casesvc.case_action_event_request USING btree (collection_exercise_id);
 CREATE INDEX idx_case_action_event_request_tag
 ON casesvc.case_action_event_request USING btree (event_tag);
+
+-- Drop existing case_action view
+Drop view casesvc.case_action cascade;
+
+-- Recreate case_action view with auto increment id
+CREATE VIEW casesvc.case_action AS
+SELECT row_number() OVER (PARTITION BY true) as id, cg.collection_exercise_id, c.id AS case_id,cg.party_id, cg.sample_unit_ref, cg.sample_unit_type,
+cg.status, cg.survey_id, c.sampleunit_id AS sample_unit_id, c.collection_instrument_id,
+iac.iac,
+c.active_enrolment
+FROM casesvc.casegroup cg, casesvc.case c
+LEFT JOIN casesvc.caseiacaudit iac ON iac.case_fk=c.case_pk
+WHERE cg.case_group_pk=c.case_group_fk AND c.state_fk='ACTIONABLE'

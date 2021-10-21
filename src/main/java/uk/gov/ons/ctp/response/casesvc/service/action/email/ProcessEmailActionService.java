@@ -50,7 +50,7 @@ public class ProcessEmailActionService {
    */
   @Async
   public Future<Boolean> processEmailService(
-      CollectionExerciseDTO collectionExerciseDTO, String eventTag) {
+      CollectionExerciseDTO collectionExerciseDTO, String eventTag, Instant instant) {
 
     CaseActionTemplate actionTemplate =
         actionTemplateService.mapEventTagToTemplate(eventTag, Boolean.TRUE);
@@ -62,11 +62,8 @@ public class ProcessEmailActionService {
           .info("No Email Action Template defined for this event.");
       return new AsyncResult<>(Boolean.TRUE);
     }
-    // Instant at which this process started.
-    Instant instant = Instant.now();
-    // Initial status of this async call will be considered as successfully processed i.e. true
-    // the subsequent processes will be delegated to set this attribute as failed i.e. false in case
-    // of any failure.
+    // Initial status of this async call will be considered as success unless the subsequent process
+    // changes
     AtomicBoolean asyncEmailCallStatus = new AtomicBoolean(Boolean.TRUE);
     log.debug("Getting Email cases against collectionExerciseId and event active enrolment");
     List<CaseAction> emailCases =

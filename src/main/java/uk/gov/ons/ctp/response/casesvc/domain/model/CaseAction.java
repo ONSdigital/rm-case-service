@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.domain.model;
 
+import java.math.BigInteger;
 import java.util.UUID;
 import javax.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,9 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 public class CaseAction {
 
   @Id
+  @Column(name = "id")
+  private BigInteger id;
+
   @Column(name = "collection_exercise_id")
   private UUID collectionExerciseId;
 
