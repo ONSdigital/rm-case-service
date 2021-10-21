@@ -36,6 +36,14 @@ public interface CaseGroupRepository extends JpaRepository<CaseGroup, Integer> {
   List<CaseGroup> findByPartyId(UUID partyId);
 
   /**
+   * @param sampleUnitRef
+   * @param collectionExerciseId
+   * @return
+   */
+  List<CaseGroup> findBySampleUnitRefAndCollectionExerciseId(
+      String sampleUnitRef, UUID collectionExerciseId);
+
+  /**
    * To find CaseGroup by party UUID where Collection Exercise in list supplied
    *
    * @param partyId the UUID of the Party
