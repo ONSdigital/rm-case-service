@@ -349,7 +349,6 @@ public class CaseSvcApplication {
     void sendToPubSub(String text);
   }
 
-
   /** Bean used to create PubSub print file channel */
   @Bean
   @ServiceActivator(inputChannel = "printFileChannel")
