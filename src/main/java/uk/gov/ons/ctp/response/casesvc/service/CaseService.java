@@ -445,7 +445,9 @@ public class CaseService {
   @Transactional
   public void createInitialCase(SampleUnitParent sampleUnitParent) {
     CaseGroup newCaseGroup = createNewCaseGroup(sampleUnitParent);
-    log.with("case_group_id", newCaseGroup.getId()).debug("Created new casegroup");
+    log.with("caseGroupId", newCaseGroup.getId())
+        .with("sampleUnitRef", sampleUnitParent.getSampleUnitRef())
+        .debug("Created new casegroup");
 
     Category category = new Category();
     category.setShortDescription("Initial creation of case");
@@ -460,18 +462,20 @@ public class CaseService {
         Case childCase = createNewCase(sampleUnitChild, newCaseGroup);
         caseRepo.saveAndFlush(childCase);
         createCaseCreatedEvent(childCase, category);
-        log.with("case_id", childCase.getId().toString())
-            .with("sample_unit_type", childCase.getSampleUnitType().toString())
-            .debug("New Case created");
-        updateCaseWithIACs(childCase);
+        log.with("caseId", childCase.getId().toString())
+            .with("sampleUnitType", childCase.getSampleUnitType().toString())
+            .with("sampleUnitRef", sampleUnitParent.getSampleUnitRef())
+            .debug("New child case created");
+        updateCaseWithIACs(childCase, sampleUnitParent.getSampleUnitRef());
       }
     }
     caseRepo.saveAndFlush(parentCase);
     createCaseCreatedEvent(parentCase, category);
-    log.with("case_id", parentCase.getId().toString())
+    log.with("caseId", parentCase.getId().toString())
         .with("sample_unit_type", parentCase.getSampleUnitType().toString())
+        .with("sampleUnitRef", sampleUnitParent.getSampleUnitRef())
         .info("New Case created");
-    updateCaseWithIACs(parentCase);
+    updateCaseWithIACs(parentCase, sampleUnitParent.getSampleUnitRef());
   }
 
   /**
@@ -479,19 +483,31 @@ public class CaseService {
    *
    * @param createdCase Case Object
    */
-  public void updateCaseWithIACs(Case createdCase) {
+  private void updateCaseWithIACs(Case createdCase, String sampleUnitRef) {
     try {
-      log.with("case_id", createdCase.getId().toString())
-          .info("Calling IAC service to generate an IAC code.");
-      String iac = internetAccessCodeSvcClient.generateIACs(1).get(0);
-      createdCase.setIac(iac);
-      Case updatedCase = caseRepo.saveAndFlush(createdCase);
-      updatedCase.setIac(iac);
-      saveCaseIacAudit(updatedCase);
-      log.with("case_id", createdCase.getId().toString()).info("Case updated with IAC code.");
+      log.with("caseId", createdCase.getId().toString())
+          .with("sampleUnitRef", sampleUnitRef)
+          .info("About to call IAC service to generate an IAC code.");
+      updateCaseWithIACs(createdCase);
+      log.with("caseId", createdCase.getId().toString())
+          .with("sampleUnitRef", sampleUnitRef)
+          .info("IAC received and saved");
     } catch (Exception e) {
-      log.error("Failed to obtain IAC codes", e);
+      log.with("caseId", createdCase.getId().toString())
+          .with("sampleUnitRef", sampleUnitRef)
+          .error("Failed to obtain IAC codes", e);
     }
+  }
+
+  public void updateCaseWithIACs(Case createdCase) {
+    log.with("caseId", createdCase.getId().toString())
+        .info("Calling IAC service to generate an IAC code.");
+    String iac = internetAccessCodeSvcClient.generateIACs(1).get(0);
+    createdCase.setIac(iac);
+    Case updatedCase = caseRepo.saveAndFlush(createdCase);
+    updatedCase.setIac(iac);
+    saveCaseIacAudit(updatedCase);
+    log.with("caseId", createdCase.getId().toString()).info("Case updated with IAC code.");
   }
 
   /**
@@ -609,6 +625,7 @@ public class CaseService {
    * @param caseEventCategory the category of the event that led to the creation of the case
    */
   private void createCaseCreatedEvent(Case caze, Category caseEventCategory) {
+    log.with("caseId", caze.getId().toString()).info("Creating case event.");
     CaseEvent newCaseCaseEvent = new CaseEvent();
     newCaseCaseEvent.setCaseFK(caze.getCasePK());
     newCaseCaseEvent.setCategory(CategoryDTO.CategoryName.CASE_CREATED);
@@ -618,6 +635,7 @@ public class CaseService {
         String.format(CASE_CREATED_EVENT_DESCRIPTION, caseEventCategory.getShortDescription()));
 
     caseEventRepo.saveAndFlush(newCaseCaseEvent);
+    log.with("caseId", caze.getId().toString()).info("Case event saved.");
   }
 
   /**

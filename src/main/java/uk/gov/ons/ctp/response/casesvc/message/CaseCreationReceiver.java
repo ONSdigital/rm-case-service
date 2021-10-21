@@ -1,7 +1,5 @@
 package uk.gov.ons.ctp.response.casesvc.message;
 
-import static net.logstash.logback.argument.StructuredArguments.kv;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
@@ -33,22 +31,32 @@ public class CaseCreationReceiver {
   public void messageReceiver(
       Message message,
       @Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) BasicAcknowledgeablePubsubMessage pubSubMsg) {
-    log.info(
-        "Receiving message ID from PubSub",
-        kv("messageId", pubSubMsg.getPubsubMessage().getMessageId()));
+    String messageId = pubSubMsg.getPubsubMessage().getMessageId();
+    log.with("messageId", messageId).info("Receiving message ID from PubSub");
     String payload = new String((byte[]) message.getPayload());
-    log.info("New request for case notification", kv("payload", payload));
+    log.with("payload", payload).info("New request for case notification");
     try {
-      log.info("Mapping payload to SampleUnitParent object");
+      log.with("messageId", messageId).info("Mapping payload to SampleUnitParent object");
       SampleUnitParent caseCreation = objectMapper.readValue(payload, SampleUnitParent.class);
-      log.info("Mapping successful, case creation process initiated");
+      log.with("messageId", messageId)
+          .with("sampleUnitRef", caseCreation.getSampleUnitRef())
+          .info("Mapping successful, case creation process initiated");
       caseService.createInitialCase(caseCreation);
+      log.with("messageId", messageId)
+          .with("sampleUnitRef", caseCreation.getSampleUnitRef())
+          .info("Case creation successful. Acking message");
       pubSubMsg.ack();
     } catch (final IOException e) {
-      log.with(e)
+      log.with("messageId", messageId)
+          .with(e)
           .error(
               "Something went wrong while processing message received from PubSub "
-                  + "for case creation notification");
+                  + "for case creation notification. Nacking message");
+      pubSubMsg.nack();
+    } catch (Exception e) {
+      log.with("messageId", messageId)
+          .with(e)
+          .error("An unexpected exception occurred during the case creation. Nacking message");
       pubSubMsg.nack();
     }
   }
