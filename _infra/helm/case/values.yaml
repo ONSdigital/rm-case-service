@@ -81,3 +81,9 @@ caseDistribution:
 
 messaging:
   consumingThreads: 10
+
+crons:
+  retryEventScheduler:
+    name: case-action-event-retry-scheduler
+    cron: "0 * * * *"
+    target: "retry-event"

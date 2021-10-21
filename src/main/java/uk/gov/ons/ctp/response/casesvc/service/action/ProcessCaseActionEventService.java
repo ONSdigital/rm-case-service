@@ -66,18 +66,36 @@ public class ProcessCaseActionEventService {
             .status(ActionEventRequestStatus.INPROGRESS)
             .build();
     actionEventRequestRepository.save(newRequest);
+    log.with("collectionExerciseId", collectionExerciseId)
+        .with("eventTag", eventTag)
+        .info("Requested event is now in progress.");
+    log.with("collectionExerciseId", collectionExerciseId)
+        .with("eventTag", eventTag)
+        .debug("Requested event will now trigger email processing asynchronously.");
     Future<Boolean> asyncEmailCall =
         processEmailService.processEmailService(collectionExercise, eventTag, instant);
+    log.with("collectionExerciseId", collectionExerciseId)
+        .with("eventTag", eventTag)
+        .debug("Requested event will now trigger letter processing asynchronously.");
     Future<Boolean> asyncLetterCall =
         processLetterService.processLetterService(collectionExercise, eventTag, instant);
     boolean emailStatus = asyncEmailCall.get();
     boolean letterStatus = asyncLetterCall.get();
     if (emailStatus && letterStatus) {
       newRequest.setStatus(ActionEventRequestStatus.COMPLETED);
+      log.with("collectionExerciseId", collectionExerciseId)
+          .with("eventTag", eventTag)
+          .info("Requested event is now successfully completed.");
     } else {
       newRequest.setStatus(ActionEventRequestStatus.RETRY);
+      log.with("collectionExerciseId", collectionExerciseId)
+          .with("eventTag", eventTag)
+          .info("Requested event was not successful, hence a retry will be initiated soon.");
     }
     actionEventRequestRepository.save(newRequest);
+    log.with("collectionExerciseId", collectionExerciseId)
+        .with("eventTag", eventTag)
+        .info("Processing finished.");
   }
 
   @Async
@@ -93,21 +111,35 @@ public class ProcessCaseActionEventService {
     for (CaseActionEventRequest existingRequest : existingRequests) {
       CollectionExerciseDTO collectionExercise =
           getCollectionExercise(existingRequest.getCollectionExerciseId());
+      log.with("collectionExerciseId", existingRequest.getCollectionExerciseId())
+          .with("eventTag", existingRequest.getEventTag())
+          .debug("Retry event will now trigger email processing asynchronously.");
       Future<Boolean> asyncEmailCall =
           processEmailService.processEmailService(
               collectionExercise, existingRequest.getEventTag(), instant);
+      log.with("collectionExerciseId", existingRequest.getCollectionExerciseId())
+          .with("eventTag", existingRequest.getEventTag())
+          .debug("Retry event will now trigger letter processing asynchronously.");
       Future<Boolean> asyncLetterCall =
           processLetterService.processLetterService(
               collectionExercise, existingRequest.getEventTag(), instant);
+
       boolean emailStatus = asyncEmailCall.get();
       boolean letterStatus = asyncLetterCall.get();
       if (emailStatus && letterStatus) {
         existingRequest.setStatus(ActionEventRequestStatus.COMPLETED);
+        log.with("collectionExerciseId", existingRequest.getCollectionExerciseId())
+            .with("eventTag", existingRequest.getEventTag())
+            .debug("Retry event is now successfully completed");
       } else {
         existingRequest.setStatus(ActionEventRequestStatus.FAILED);
+        log.with("collectionExerciseId", existingRequest.getCollectionExerciseId())
+            .with("eventTag", existingRequest.getEventTag())
+            .debug("Retry event has failed.");
       }
       actionEventRequestRepository.save(existingRequest);
     }
+    log.info("retry Event finished");
   }
 
   /**

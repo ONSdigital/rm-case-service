@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.casesvc.service.action.letter;
+package uk.gov.ons.ctp.response.casesvc.service.action;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,6 +7,7 @@ import java.util.UUID;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseAction;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionAuditEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionTemplate;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.action.ActionTemplateDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.action.LetterEntry;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
@@ -82,6 +83,7 @@ public class ProcessEventServiceTestData {
         .sampleUnitId(sampleUnitId)
         .sampleUnitRef(sampleUnitRef)
         .sampleUnitType(sampleUnitType)
+        .status(CaseGroupStatus.NOTSTARTED)
         .iac(iac)
         .build();
   }

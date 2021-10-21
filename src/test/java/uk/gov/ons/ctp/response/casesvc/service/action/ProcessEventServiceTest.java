@@ -15,7 +15,6 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseActionEventRequestRepository;
 import uk.gov.ons.ctp.response.casesvc.service.action.email.ProcessEmailActionService;
-import uk.gov.ons.ctp.response.casesvc.service.action.letter.ProcessEventServiceTestData;
 import uk.gov.ons.ctp.response.casesvc.service.action.letter.ProcessLetterActionService;
 
 @RunWith(MockitoJUnitRunner.class)

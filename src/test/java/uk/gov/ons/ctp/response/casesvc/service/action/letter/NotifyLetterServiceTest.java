@@ -16,6 +16,7 @@ import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.config.Bucket;
 import uk.gov.ons.ctp.response.casesvc.config.GCP;
 import uk.gov.ons.ctp.response.casesvc.message.UploadObjectGCS;
+import uk.gov.ons.ctp.response.casesvc.service.action.ProcessEventServiceTestData;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NotifyLetterServiceTest {
