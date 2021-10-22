@@ -162,7 +162,6 @@ public class CaseCreationServiceTest {
     Case childCase = capturedCases.get(0);
     assertEquals(UUID.class, childCase.getId().getClass());
     assertEquals(new Integer(capturedCaseGroup.getCaseGroupPK()), childCase.getCaseGroupFK());
-    assertEquals(new Integer(capturedCaseGroup.getCaseGroupPK()), childCase.getCaseGroupFK());
     assertEquals(capturedCaseGroup.getId(), childCase.getCaseGroupId());
     assertEquals(CaseState.SAMPLED_INIT, childCase.getState());
     assertEquals(
