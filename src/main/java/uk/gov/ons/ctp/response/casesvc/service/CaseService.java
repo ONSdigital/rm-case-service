@@ -444,38 +444,43 @@ public class CaseService {
 
   @Transactional
   public void createInitialCase(SampleUnitParent sampleUnitParent) {
-    CaseGroup newCaseGroup = createNewCaseGroup(sampleUnitParent);
-    log.with("caseGroupId", newCaseGroup.getId())
-        .with("sampleUnitRef", sampleUnitParent.getSampleUnitRef())
-        .debug("Created new casegroup");
+    if (caseGroupService.isCaseGroupUnique(sampleUnitParent)) {
+      CaseGroup newCaseGroup = createNewCaseGroup(sampleUnitParent);
+      log.with("caseGroupId", newCaseGroup.getId())
+          .with("collectionExericseId", sampleUnitParent.getCollectionExerciseId())
+          .with("sampleUnitRef", sampleUnitParent.getSampleUnitRef())
+          .debug("Created new casegroup");
 
-    Category category = new Category();
-    category.setShortDescription("Initial creation of case");
+      Category category = new Category();
+      category.setShortDescription("Initial creation of case");
 
-    Case parentCase = createNewCase(sampleUnitParent, newCaseGroup);
-    if (sampleUnitParent.getSampleUnitChildren() != null
-        && !sampleUnitParent.getSampleUnitChildren().getSampleUnitchildren().isEmpty()) {
-      parentCase.setState(CaseState.INACTIONABLE);
+      Case parentCase = createNewCase(sampleUnitParent, newCaseGroup);
+      if (sampleUnitParent.getSampleUnitChildren() != null
+          && !sampleUnitParent.getSampleUnitChildren().getSampleUnitchildren().isEmpty()) {
+        parentCase.setState(CaseState.INACTIONABLE);
 
-      for (SampleUnit sampleUnitChild :
-          sampleUnitParent.getSampleUnitChildren().getSampleUnitchildren()) {
-        Case childCase = createNewCase(sampleUnitChild, newCaseGroup);
-        caseRepo.saveAndFlush(childCase);
-        createCaseCreatedEvent(childCase, category);
-        log.with("caseId", childCase.getId().toString())
-            .with("sampleUnitType", childCase.getSampleUnitType().toString())
-            .with("sampleUnitRef", sampleUnitParent.getSampleUnitRef())
-            .debug("New child case created");
-        updateCaseWithIACs(childCase, sampleUnitParent.getSampleUnitRef());
+        for (SampleUnit sampleUnitChild :
+            sampleUnitParent.getSampleUnitChildren().getSampleUnitchildren()) {
+          Case childCase = createNewCase(sampleUnitChild, newCaseGroup);
+          caseRepo.saveAndFlush(childCase);
+          createCaseCreatedEvent(childCase, category);
+          log.with("caseId", childCase.getId().toString())
+              .with("sampleUnitType", childCase.getSampleUnitType().toString())
+              .with("sampleUnitRef", sampleUnitChild.getSampleUnitRef())
+              .with("collectionExericseId", sampleUnitParent.getCollectionExerciseId())
+              .debug("New child case created");
+          updateCaseWithIACs(childCase, sampleUnitParent.getSampleUnitRef());
+        }
       }
+      caseRepo.saveAndFlush(parentCase);
+      createCaseCreatedEvent(parentCase, category);
+      log.with("caseId", parentCase.getId().toString())
+          .with("sampleUnitTupe", parentCase.getSampleUnitType().toString())
+          .with("sampleUnitRef", sampleUnitParent.getSampleUnitRef())
+          .with("collectionExericseId", sampleUnitParent.getCollectionExerciseId())
+          .info("New Case created");
+      updateCaseWithIACs(parentCase, sampleUnitParent.getSampleUnitRef());
     }
-    caseRepo.saveAndFlush(parentCase);
-    createCaseCreatedEvent(parentCase, category);
-    log.with("caseId", parentCase.getId().toString())
-        .with("sample_unit_type", parentCase.getSampleUnitType().toString())
-        .with("sampleUnitRef", sampleUnitParent.getSampleUnitRef())
-        .info("New Case created");
-    updateCaseWithIACs(parentCase, sampleUnitParent.getSampleUnitRef());
   }
 
   /**

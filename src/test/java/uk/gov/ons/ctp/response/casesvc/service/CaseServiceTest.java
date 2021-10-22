@@ -976,6 +976,8 @@ public class CaseServiceTest {
         .thenReturn(Collections.singletonList(IAC_FOR_TEST));
 
     when(caseIacAuditRepo.saveAndFlush(any())).thenReturn(new CaseIacAudit());
+    when(caseGroupService.isCaseGroupUnique(any(SampleUnitParent.class))).thenReturn(true);
+
     caseService.createInitialCase(sampleUnitParent);
 
     ArgumentCaptor<CaseGroup> caseGroup = ArgumentCaptor.forClass(CaseGroup.class);
@@ -986,6 +988,42 @@ public class CaseServiceTest {
     assertEquals(
         collectionExerciseId, capturedCaseGroup.get(0).getCollectionExerciseId().toString());
     verify(caseRepo, times(4)).saveAndFlush(any());
+  }
+
+  @Test
+  public void testCreateInitialCaseWithSampleUnitChildrenDoesNothingIfDuplicate() throws Exception {
+    String collectionExerciseId = UUID.randomUUID().toString();
+    UUID partyId = UUID.randomUUID();
+    SampleUnitParent sampleUnitParent = new SampleUnitParent();
+    SampleUnit sampleUnit = new SampleUnit();
+    SampleUnitChildren sampleUnitChildren =
+        new SampleUnitChildren(new ArrayList<>(Collections.singletonList(sampleUnit)));
+    sampleUnit.setActionPlanId(UUID.randomUUID().toString());
+    sampleUnit.setCollectionInstrumentId(UUID.randomUUID().toString());
+    sampleUnit.setPartyId(UUID.randomUUID().toString());
+    sampleUnit.setSampleUnitRef("str1234");
+    sampleUnit.setSampleUnitType("BI");
+    sampleUnit.setId(UUID.randomUUID().toString());
+
+    sampleUnitParent.setActionPlanId(UUID.randomUUID().toString());
+    sampleUnitParent.setCollectionExerciseId(collectionExerciseId);
+    sampleUnitParent.setSampleUnitChildren(sampleUnitChildren);
+    sampleUnitParent.setCollectionInstrumentId(UUID.randomUUID().toString());
+    sampleUnitParent.setPartyId(partyId.toString());
+    sampleUnitParent.setSampleUnitRef("str1234");
+    sampleUnitParent.setSampleUnitType("B");
+    sampleUnitParent.setId(UUID.randomUUID().toString());
+
+    // case group is a duplicate
+    when(caseGroupService.isCaseGroupUnique(any(SampleUnitParent.class))).thenReturn(false);
+
+    // so this should do nothing
+    caseService.createInitialCase(sampleUnitParent);
+
+    // check
+    verify(caseGroupRepo, times(0)).saveAndFlush(any());
+    verify(caseRepo, times(0)).saveAndFlush(any());
+    verify(caseIacAuditRepo, times(0)).saveAndFlush(any());
   }
 
   @Test
@@ -1023,6 +1061,7 @@ public class CaseServiceTest {
     mockCase.setCasePK(1);
 
     when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(mockCase);
+    when(caseGroupService.isCaseGroupUnique(any(SampleUnitParent.class))).thenReturn(true);
 
     when(internetAccessCodeSvcClient.generateIACs(any(Integer.class)))
         .thenThrow(new RuntimeException("IAC access failed"));

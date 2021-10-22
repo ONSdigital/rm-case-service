@@ -41,6 +41,7 @@ public class CaseCreationServiceTest {
   @Mock private CaseRepository caseRepo;
   @Mock private CaseGroupRepository caseGroupRepo;
   @Mock private CaseEventRepository caseEventRepo;
+  @Mock private CaseGroupService caseGroupService;
   @Mock private CollectionExerciseSvcClient collectionExerciseSvcClient;
   @Mock private ActionSvcClient actionSvcClient;
 
@@ -66,6 +67,7 @@ public class CaseCreationServiceTest {
         FixtureHelper.loadClassFixtures(CollectionExerciseDTO[].class);
     when(collectionExerciseSvcClient.getCollectionExercise(any()))
         .thenReturn(collectionExercises.get(0));
+    when(caseGroupService.isCaseGroupUnique(any(SampleUnitParent.class))).thenReturn(true);
 
     caseService.createInitialCase(sampleUnitParent);
 
@@ -135,6 +137,7 @@ public class CaseCreationServiceTest {
         FixtureHelper.loadClassFixtures(CollectionExerciseDTO[].class);
     when(collectionExerciseSvcClient.getCollectionExercise(any()))
         .thenReturn(collectionExercises.get(0));
+    when(caseGroupService.isCaseGroupUnique(any(SampleUnitParent.class))).thenReturn(true);
 
     caseService.createInitialCase(sampleUnitParent);
 
@@ -183,5 +186,45 @@ public class CaseCreationServiceTest {
         UUID.fromString(sampleUnitParent.getCollectionInstrumentId()),
         parentCase.getCollectionInstrumentId());
     assertEquals(sampleUnitParent.isActiveEnrolment(), parentCase.isActiveEnrolment());
+  }
+
+  /**
+   * Create a Case and a Casegroup from the message that would be on the Case Delivery Queue. Child
+   * party present.
+   */
+  @Test
+  public void testCreateCaseAndCaseGroupDoesNothingIfDuplicate() throws Exception {
+
+    SampleUnit sampleUnitChild = new SampleUnit();
+    // Base sample unit data for child
+    sampleUnitChild.setActiveEnrolment(false);
+    sampleUnitChild.setCollectionInstrumentId("ed0015f0-2e7f-4cf3-ba6f-a752aebaf8a7");
+    sampleUnitChild.setPartyId("73528fd7-ef04-4697-a94c-54edf3e73282");
+    sampleUnitChild.setSampleUnitRef("str1235");
+    sampleUnitChild.setSampleUnitType("BI");
+    sampleUnitChild.setId(UUID.randomUUID().toString());
+    SampleUnitChildren sampleUnitChildren =
+        new SampleUnitChildren(new ArrayList<>(Collections.singletonList(sampleUnitChild)));
+
+    SampleUnitParent sampleUnitParent = new SampleUnitParent();
+    // Parent Only field
+    sampleUnitParent.setSampleUnitChildren(sampleUnitChildren);
+    sampleUnitParent.setCollectionExerciseId("14fb3e68-4dca-46db-bf49-04b84e07e77c");
+    // Base sample unit data for parent
+    sampleUnitParent.setActiveEnrolment(true);
+    sampleUnitParent.setCollectionInstrumentId("8bae64c5-a282-4e87-ae5d-cd4181ba6c73");
+    sampleUnitParent.setPartyId("7bc5d41b-0549-40b3-ba76-42f6d4cf3992");
+    sampleUnitParent.setSampleUnitRef("str1234");
+    sampleUnitParent.setSampleUnitType("B");
+    sampleUnitParent.setId(UUID.randomUUID().toString());
+
+    // case group already exists
+    when(caseGroupService.isCaseGroupUnique(any(SampleUnitParent.class))).thenReturn(false);
+
+    caseService.createInitialCase(sampleUnitParent);
+
+    // then nothing should be saved
+    verify(caseGroupRepo, times(0)).saveAndFlush(any(CaseGroup.class));
+    verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
   }
 }

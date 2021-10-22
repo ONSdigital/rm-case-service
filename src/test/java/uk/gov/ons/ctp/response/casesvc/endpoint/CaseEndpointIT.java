@@ -206,7 +206,7 @@ public class CaseEndpointIT {
     createCollectionData();
     TestPubSubMessage message = new TestPubSubMessage();
     // Given
-    caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
+    caseCreator.postSampleUnit("BS12346", "B", UUID.randomUUID(), collectionExerciseId);
     Thread.sleep(2000);
     CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
     String caseID = caseNotificationDTO.getCaseId();
@@ -244,7 +244,7 @@ public class CaseEndpointIT {
     createCollectionData();
     TestPubSubMessage message = new TestPubSubMessage();
     // Given
-    caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
+    caseCreator.postSampleUnit("BS12347", "B", UUID.randomUUID(), collectionExerciseId);
     Thread.sleep(2000);
     CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
     String caseID = caseNotificationDTO.getCaseId();
@@ -282,7 +282,7 @@ public class CaseEndpointIT {
     createCollectionData();
     TestPubSubMessage message = new TestPubSubMessage();
     // Given
-    caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
+    caseCreator.postSampleUnit("BS12348", "B", UUID.randomUUID(), collectionExerciseId);
     Thread.sleep(2000);
     CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
     String caseID = caseNotificationDTO.getCaseId();
@@ -344,7 +344,7 @@ public class CaseEndpointIT {
     // Given
     createCollectionData();
     TestPubSubMessage message = new TestPubSubMessage();
-    caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
+    caseCreator.postSampleUnit("BS12349", "B", UUID.randomUUID(), collectionExerciseId);
     Thread.sleep(2000);
     CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
     String caseID = caseNotificationDTO.getCaseId();
@@ -380,7 +380,7 @@ public class CaseEndpointIT {
     // Given
     createCollectionData();
     TestPubSubMessage message = new TestPubSubMessage();
-    caseCreator.postSampleUnit("BS12345", "B", UUID.randomUUID(), collectionExerciseId);
+    caseCreator.postSampleUnit("BS12350", "B", UUID.randomUUID(), collectionExerciseId);
     Thread.sleep(2000);
     CaseNotificationDTO caseNotificationDTO = message.getPubSubCaseNotification();
     String caseID = caseNotificationDTO.getCaseId();
