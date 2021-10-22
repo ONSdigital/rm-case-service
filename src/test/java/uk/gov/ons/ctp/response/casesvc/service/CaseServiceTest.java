@@ -991,6 +991,42 @@ public class CaseServiceTest {
   }
 
   @Test
+  public void testCreateInitialCaseWithSampleUnitChildrenDoesNothingIfDuplicate() throws Exception {
+    String collectionExerciseId = UUID.randomUUID().toString();
+    UUID partyId = UUID.randomUUID();
+    SampleUnitParent sampleUnitParent = new SampleUnitParent();
+    SampleUnit sampleUnit = new SampleUnit();
+    SampleUnitChildren sampleUnitChildren =
+        new SampleUnitChildren(new ArrayList<>(Collections.singletonList(sampleUnit)));
+    sampleUnit.setActionPlanId(UUID.randomUUID().toString());
+    sampleUnit.setCollectionInstrumentId(UUID.randomUUID().toString());
+    sampleUnit.setPartyId(UUID.randomUUID().toString());
+    sampleUnit.setSampleUnitRef("str1234");
+    sampleUnit.setSampleUnitType("BI");
+    sampleUnit.setId(UUID.randomUUID().toString());
+
+    sampleUnitParent.setActionPlanId(UUID.randomUUID().toString());
+    sampleUnitParent.setCollectionExerciseId(collectionExerciseId);
+    sampleUnitParent.setSampleUnitChildren(sampleUnitChildren);
+    sampleUnitParent.setCollectionInstrumentId(UUID.randomUUID().toString());
+    sampleUnitParent.setPartyId(partyId.toString());
+    sampleUnitParent.setSampleUnitRef("str1234");
+    sampleUnitParent.setSampleUnitType("B");
+    sampleUnitParent.setId(UUID.randomUUID().toString());
+
+    // case group is a duplicate
+    when(caseGroupService.isCaseGroupUnique(any(SampleUnitParent.class))).thenReturn(false);
+
+    // so this should do nothing
+    caseService.createInitialCase(sampleUnitParent);
+
+    // check
+    verify(caseGroupRepo, times(0)).saveAndFlush(any());
+    verify(caseRepo, times(0)).saveAndFlush(any());
+    verify(caseIacAuditRepo, times(0)).saveAndFlush(any());
+  }
+
+  @Test
   public void testCreateInitialCaseWithSampleUnitChildrenFailedOnIACUpdate() throws Exception {
     String collectionExerciseId = UUID.randomUUID().toString();
     UUID partyId = UUID.randomUUID();
