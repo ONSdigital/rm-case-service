@@ -442,34 +442,9 @@ public class CaseService {
     }
   }
 
-  private boolean isCaseGroupUnique(final SampleUnitParent sampleUnitParent) {
-
-    log.with("collectionExericseId", sampleUnitParent.getCollectionExerciseId())
-        .with("sampleUnitRef", sampleUnitParent.getSampleUnitRef())
-        .info("Check if case group already exists");
-    List<CaseGroup> caseGroups =
-        caseGroupRepo.findBySampleUnitRefAndCollectionExerciseId(
-            sampleUnitParent.getSampleUnitRef(),
-            UUID.fromString(sampleUnitParent.getCollectionExerciseId()));
-
-    boolean unique = caseGroups.isEmpty();
-
-    if (unique) {
-      log.with("collectionExericseId", sampleUnitParent.getCollectionExerciseId())
-          .with("sampleUnitRef", sampleUnitParent.getSampleUnitRef())
-          .info("Case group does not exists, creating new case group");
-    } else {
-      log.with("collectionExericseId", sampleUnitParent.getCollectionExerciseId())
-          .with("sampleUnitRef", sampleUnitParent.getSampleUnitRef())
-          .info("Case group already exists, skipping creation");
-    }
-
-    return unique;
-  }
-
   @Transactional
   public void createInitialCase(SampleUnitParent sampleUnitParent) {
-    if (isCaseGroupUnique(sampleUnitParent)) {
+    if (caseGroupService.isCaseGroupUnique(sampleUnitParent)) {
       CaseGroup newCaseGroup = createNewCaseGroup(sampleUnitParent);
       log.with("caseGroupId", newCaseGroup.getId())
           .with("collectionExericseId", sampleUnitParent.getCollectionExerciseId())

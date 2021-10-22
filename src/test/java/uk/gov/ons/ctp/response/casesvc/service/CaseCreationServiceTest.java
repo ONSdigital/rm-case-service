@@ -41,6 +41,7 @@ public class CaseCreationServiceTest {
   @Mock private CaseRepository caseRepo;
   @Mock private CaseGroupRepository caseGroupRepo;
   @Mock private CaseEventRepository caseEventRepo;
+  @Mock private CaseGroupService caseGroupService;
   @Mock private CollectionExerciseSvcClient collectionExerciseSvcClient;
   @Mock private ActionSvcClient actionSvcClient;
 
@@ -66,6 +67,7 @@ public class CaseCreationServiceTest {
         FixtureHelper.loadClassFixtures(CollectionExerciseDTO[].class);
     when(collectionExerciseSvcClient.getCollectionExercise(any()))
         .thenReturn(collectionExercises.get(0));
+    when(caseGroupService.isCaseGroupUnique(any(SampleUnitParent.class))).thenReturn(true);
 
     caseService.createInitialCase(sampleUnitParent);
 
@@ -135,6 +137,7 @@ public class CaseCreationServiceTest {
         FixtureHelper.loadClassFixtures(CollectionExerciseDTO[].class);
     when(collectionExerciseSvcClient.getCollectionExercise(any()))
         .thenReturn(collectionExercises.get(0));
+    when(caseGroupService.isCaseGroupUnique(any(SampleUnitParent.class))).thenReturn(true);
 
     caseService.createInitialCase(sampleUnitParent);
 

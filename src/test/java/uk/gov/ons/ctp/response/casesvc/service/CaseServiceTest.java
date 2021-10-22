@@ -976,6 +976,8 @@ public class CaseServiceTest {
         .thenReturn(Collections.singletonList(IAC_FOR_TEST));
 
     when(caseIacAuditRepo.saveAndFlush(any())).thenReturn(new CaseIacAudit());
+    when(caseGroupService.isCaseGroupUnique(any(SampleUnitParent.class))).thenReturn(true);
+
     caseService.createInitialCase(sampleUnitParent);
 
     ArgumentCaptor<CaseGroup> caseGroup = ArgumentCaptor.forClass(CaseGroup.class);
@@ -1023,6 +1025,7 @@ public class CaseServiceTest {
     mockCase.setCasePK(1);
 
     when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(mockCase);
+    when(caseGroupService.isCaseGroupUnique(any(SampleUnitParent.class))).thenReturn(true);
 
     when(internetAccessCodeSvcClient.generateIACs(any(Integer.class)))
         .thenThrow(new RuntimeException("IAC access failed"));
