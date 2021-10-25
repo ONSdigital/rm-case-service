@@ -40,10 +40,12 @@ public class CaseCreationReceiver {
       SampleUnitParent caseCreation = objectMapper.readValue(payload, SampleUnitParent.class);
       log.with("messageId", messageId)
           .with("sampleUnitRef", caseCreation.getSampleUnitRef())
+          .with("collectionExericseId", caseCreation.getCollectionExerciseId())
           .info("Mapping successful, case creation process initiated");
       caseService.createInitialCase(caseCreation);
       log.with("messageId", messageId)
           .with("sampleUnitRef", caseCreation.getSampleUnitRef())
+          .with("collectionExericseId", caseCreation.getCollectionExerciseId())
           .info("Case creation successful. Acking message");
       pubSubMsg.ack();
     } catch (final IOException e) {
