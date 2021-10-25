@@ -3,28 +3,46 @@ This repository contains the Case service. This microservice is a RESTful web se
 
 
 # Inbound process
-
-1. CaseCreation message arrives from the collection exercise service on the Case.CaseDelivery queue and is processed by the 
-case-creation-inbound-flow.xml where it is validated against the XSD and sent to the case transformed channel.
-1. This channel is processed by the CaseCreationReceiver class.
-1. The CaseCreationReceiver calls the CaseService to create the initial case.
-1. The CaseService then creates a Case Group based on the SampleUnit parent and saves it to the database
-1. To do this it has to obtain the survey id so it calls back to the collection exercise service with the collection 
-exercise id in order to swap it for a survey id 
-1. The CaseService then creates a child case for every SampleUnit child, saving each one to the database as it goes.
-1. All these child cases are created with a status of SAMPLED_INIT ready for the IAC scheduler.
-1. Finally it sends out some case created events to the event publisher.
+   1. CaseCreation message arrives from the sample service on the pubsub input channel `caseCreationChannel`.
+   2. This channel is processed by the CaseCreationReceiver class which includes validation fo the message.
+   3. The CaseCreationReceiver calls the CaseService to create the initial case.
+   4. The CaseService then creates a Case Group based on the SampleUnit parent and saves it to the database.
+   5. To do this it has to obtain the survey id, so it calls back to the collection exercise service with the collection
+      exercise id in order to swap it for a survey id
+   6. The CaseService then creates a child case for every SampleUnit child, saving each one to the database as it goes.
+   7. All these child cases are created with a status of SAMPLED_INIT ready for the IAC scheduler. 
+   8. Finally, it sends out some case created events to the event publisher.
 
 ## Outbound Process
 
-1. The CaseDistributionScheduler runs on a scheduled job every 0.5 seconds 
-1. It retrieves all cases in SAMPLED_INIT or REPLACEMENT_INIT state
-1. Once it has a count of these it sends a request to the IAC service to generate IAC codes for these cases
-1. It then updates all Cases with a generated IAC code (unless one fails in which case its left in the database for the next run)
-1. Publish an event to the event publisher (unsure what this is for?) 
-1. It adds an IAC case audit record
-1. Prepares a case notification to inform the action service that a new case is ready.
-1. The CaseNotificationPublisher publish this to action via pub sub
+   1. The CaseDistributionScheduler runs on a scheduled job every 0.5 seconds 
+   2. It retrieves all cases in SAMPLED_INIT or REPLACEMENT_INIT state
+   3. Once it has a count of these it sends a request to the IAC service to generate IAC codes for these cases
+   4. It then updates all Cases with a generated IAC code (unless one fails in which case its left in the database for the next run)
+   5. Publish an event to the event publisher (unsure what this is for?) 
+   6. It adds an IAC case audit record
+   7. Prepares a case notification to inform the action service that a new case is ready.
+   8. The CaseNotificationPublisher publish this to action via pub sub
+
+## Improvement Process
+   As a part of the improvement process the outbound process will be replaced by merging action to case service. 
+   Currently, the improvement is in progress and is feature flag off. As a part of this improvement collection exercise
+   service will now call `/process-event` endpoint in case service rather than action service to process the events.
+
+### Action Process/ Event Process
+   1. Collection exercise service gives a call to `/process-event` endpoint which is an async call.
+   2. Which calls `ProcessCaseActionService`.
+   3. `ProcessCaseActionService` then calls two async services i.e.`ProcessEmailActionService` and 
+      `ProcessLetterActionService`.
+   4. `ProcessEmailActionService` and `ProcessLetterActionService` calls back collection exercise service with the
+       collection exercise id in order to swap it for a survey id and then the survey service to confirm the correctness.
+       The services also calls party service to retried party information required for emails and letters.
+   5. `ProcessEmailActionService` then uses `NotifyEmailService` to publish PubSub email messages via `notifyEmailChannel`.
+   6. `ProcessLetterActionService` uses `UploadObjectGCS` to upload the created file to the GCP and then uses `NotifyLetterService`
+       to send letter message to PubSub via `printFileChannel`.
+   7. `/retry-event` follows the same process to retry first fail operation for event processing which is trigger by 
+      kubernetes cron job.
+   8. `/action-template` is provided to create new action template.
  
 
 ### Receipt Process
@@ -41,7 +59,9 @@ procedures run nightly at 11pm and populate the report table.
 ## This service calls other service rest API
 
 Collection Exercise - get collection exercise - used to obtain the survey id for a specific collection exercise id
-IAC service - generates an IAC code for a case. This allows a respondent to enroll into the collection exercise. 
+IAC service - generates an IAC code for a case. This allows a respondent to enroll into the collection exercise.
+Survey Service - to confirm survey associated to the collection exercise for event processing.
+Party Service - to gather party information required for letters and emails event.
 
 ## Micro Service Interactions 
 This service calls other services via Rabbit:
@@ -56,12 +76,12 @@ The REST API is called by:
     - /cases/partyid/{party_id}
     - /cases/{case_id}/events
     - /categories
-1. action-service
+2. action-service
     - /cases/{caseid}
     - /cases/{caseid}/events
     - /cases/{caseid}/iac
     - /casegroups/{caseGroupId}
-1. response-operations-ui
+3. response-operations-ui
     - /cases/{case_id}?iac=true
     - /cases/{case_id}/events
     - /cases/casegroupid/{case_group_id}
@@ -69,11 +89,15 @@ The REST API is called by:
     - /cases/partyid/{business_party_id}
     - /cases/{case_id}/iac
     - /cases/{case_id}/events
-1. ras-party
+4. ras-party
     - /cases/iac/{enrolment_code}
     - /cases/{case_id}/events
     - /cases/casegroupid/{case_group_id}
     - /casegroups/partyid/{business_id}
+5. action-event
+   - `/process-event`
+   - `/retry-event`
+   - `/action-template`
 
 ## This service is passed messages from
 1. collection-exercise via the Case.CaseDelivery
