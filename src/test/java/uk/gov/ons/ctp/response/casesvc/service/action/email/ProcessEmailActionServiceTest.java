@@ -17,8 +17,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseAction;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionTemplate.Handler;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseActionRepository;
-import uk.gov.ons.ctp.response.casesvc.representation.action.ActionTemplateDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.action.CaseActionParty;
 import uk.gov.ons.ctp.response.casesvc.service.action.ActionTemplateService;
 import uk.gov.ons.ctp.response.casesvc.service.action.ProcessEventServiceTestData;
@@ -78,8 +78,7 @@ public class ProcessEmailActionServiceTest {
         .thenReturn(actionCases);
 
     when(actionTemplateService.mapEventTagToTemplate("go_live", true))
-        .thenReturn(
-            testData.setupActionTemplate("BSNE", ActionTemplateDTO.Handler.EMAIL, "go_live"));
+        .thenReturn(testData.setupActionTemplate("BSNE", Handler.EMAIL, "go_live"));
     when(actionCommonService.isActionable(any(), any(), any())).thenReturn(Boolean.TRUE);
     PartyDTO parentParty =
         testData.setupBusinessParty("1", "YY", "test", "test@test.com", respondentId.toString());

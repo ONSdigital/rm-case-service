@@ -9,8 +9,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionTemplate;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionTemplate.Handler;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseActionTemplateRepository;
-import uk.gov.ons.ctp.response.casesvc.representation.action.ActionTemplateDTO;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ActionTemplateServiceTest {
@@ -27,29 +27,24 @@ public class ActionTemplateServiceTest {
     mockMpsActionTemplate.setDescription("Business Survey Notification Letter");
     mockMpsActionTemplate.setPrefix("BSNOT");
     mockMpsActionTemplate.setTag("mps");
-    mockMpsActionTemplate.setHandler(ActionTemplateDTO.Handler.LETTER);
-    Mockito.when(
-            actionTemplateRepository.findByTagAndHandler("mps", ActionTemplateDTO.Handler.LETTER))
+    mockMpsActionTemplate.setHandler(Handler.LETTER);
+    Mockito.when(actionTemplateRepository.findByTagAndHandler("mps", Handler.LETTER))
         .thenReturn(mockMpsActionTemplate);
 
     mockReminderActionTemplate.setType("BSRE");
     mockReminderActionTemplate.setDescription("Business Survey Reminder Email");
     mockReminderActionTemplate.setPrefix(null);
     mockReminderActionTemplate.setTag("reminder");
-    mockReminderActionTemplate.setHandler(ActionTemplateDTO.Handler.EMAIL);
-    Mockito.when(
-            actionTemplateRepository.findByTagAndHandler(
-                "reminder", ActionTemplateDTO.Handler.EMAIL))
+    mockReminderActionTemplate.setHandler(Handler.EMAIL);
+    Mockito.when(actionTemplateRepository.findByTagAndHandler("reminder2", Handler.EMAIL))
         .thenReturn(mockReminderActionTemplate);
 
     mockGoLiveActionTemplate.setType("BSNE");
     mockGoLiveActionTemplate.setDescription("Business Survey Notification Email");
     mockGoLiveActionTemplate.setPrefix(null);
     mockGoLiveActionTemplate.setTag("go_live");
-    mockGoLiveActionTemplate.setHandler(ActionTemplateDTO.Handler.LETTER);
-    Mockito.when(
-            actionTemplateRepository.findByTagAndHandler(
-                "go_live", ActionTemplateDTO.Handler.LETTER))
+    mockGoLiveActionTemplate.setHandler(Handler.LETTER);
+    Mockito.when(actionTemplateRepository.findByTagAndHandler("go_live", Handler.LETTER))
         .thenReturn(mockGoLiveActionTemplate);
   }
 

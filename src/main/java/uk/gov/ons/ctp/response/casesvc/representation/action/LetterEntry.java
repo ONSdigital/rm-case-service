@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionTemplate.Handler;
 
 @Data
 @AllArgsConstructor
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class LetterEntry {
   private UUID actionCaseId;
   private String actionTemplateType;
-  private ActionTemplateDTO.Handler actionTemplateHandler;
+  private Handler actionTemplateHandler;
   private String sampleUnitRef;
   private String iac;
   private String caseGroupStatus;

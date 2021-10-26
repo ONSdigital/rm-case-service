@@ -7,8 +7,8 @@ import java.util.UUID;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseAction;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionAuditEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionTemplate;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionTemplate.Handler;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
-import uk.gov.ons.ctp.response.casesvc.representation.action.ActionTemplateDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.action.LetterEntry;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.party.representation.Association;
@@ -41,8 +41,7 @@ public class ProcessEventServiceTestData {
     return survey;
   }
 
-  public CaseActionTemplate setupActionTemplate(
-      String type, ActionTemplateDTO.Handler handler, String tag) {
+  public CaseActionTemplate setupActionTemplate(String type, Handler handler, String tag) {
     return CaseActionTemplate.builder()
         .type(type)
         .description(type + handler.toString() + tag)
@@ -55,7 +54,7 @@ public class ProcessEventServiceTestData {
       UUID caseid,
       UUID collectionExerciseId,
       CaseActionAuditEvent.ActionEventStatus status,
-      ActionTemplateDTO.Handler handler,
+      Handler handler,
       String type) {
     return CaseActionAuditEvent.builder()
         .caseId(caseid)

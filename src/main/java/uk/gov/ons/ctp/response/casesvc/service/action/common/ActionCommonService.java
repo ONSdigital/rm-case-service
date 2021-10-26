@@ -15,8 +15,8 @@ import uk.gov.ons.ctp.response.casesvc.client.SurveySvcClientService;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseAction;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionAuditEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionTemplate;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionTemplate.Handler;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseActionAuditEventRepository;
-import uk.gov.ons.ctp.response.casesvc.representation.action.ActionTemplateDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.action.CaseActionParty;
 import uk.gov.ons.ctp.response.lib.party.representation.Association;
 import uk.gov.ons.ctp.response.lib.party.representation.PartyDTO;
@@ -105,7 +105,7 @@ public class ActionCommonService {
   public void createCaseActionEvent(
       UUID actionCaseId,
       String templateType,
-      ActionTemplateDTO.Handler templateHandler,
+      Handler templateHandler,
       UUID collectionExerciseId,
       String surveyId,
       Instant instant,

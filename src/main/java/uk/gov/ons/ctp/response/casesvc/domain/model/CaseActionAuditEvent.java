@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import uk.gov.ons.ctp.response.casesvc.representation.action.ActionTemplateDTO.Handler;
 
 @Entity
 @Data
@@ -45,7 +44,7 @@ public class CaseActionAuditEvent implements Serializable {
   @Enumerated(EnumType.STRING)
   @Column(name = "handler")
   @NotNull
-  private Handler handler;
+  private CaseActionTemplate.Handler handler;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "status")

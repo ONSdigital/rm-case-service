@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionAuditEvent;
-import uk.gov.ons.ctp.response.casesvc.representation.action.ActionTemplateDTO.Handler;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionTemplate.Handler;
 
 @Repository
 @Transactional(readOnly = true)

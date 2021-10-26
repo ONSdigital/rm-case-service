@@ -18,8 +18,8 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseAction;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionTemplate;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionTemplate.Handler;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseActionRepository;
-import uk.gov.ons.ctp.response.casesvc.representation.action.ActionTemplateDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.action.CaseActionParty;
 import uk.gov.ons.ctp.response.casesvc.representation.action.NotifyModel;
 import uk.gov.ons.ctp.response.casesvc.representation.action.NotifyModel.Notify.Classifiers;
@@ -108,7 +108,7 @@ public class ProcessEmailActionService {
       AtomicBoolean asyncEmailCallStatus) {
     UUID actionCaseId = caseAction.getCaseId();
     String templateType = caseActionTemplate.getType();
-    ActionTemplateDTO.Handler templateHandler = caseActionTemplate.getHandler();
+    Handler templateHandler = caseActionTemplate.getHandler();
     log.with("caseId", actionCaseId)
         .with("actionTemplate", templateType)
         .with("actionHandler", templateHandler)

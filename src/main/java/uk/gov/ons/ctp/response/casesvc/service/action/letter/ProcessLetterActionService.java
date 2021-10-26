@@ -122,7 +122,7 @@ public class ProcessLetterActionService {
     log.with("file processed?", isSuccess)
         .with("actionType", actionTemplate.getType())
         .info("Recording case action event");
-    if (true) {
+    if (isSuccess) {
       letterEntries.parallelStream()
           .forEach(
               letterEntry ->

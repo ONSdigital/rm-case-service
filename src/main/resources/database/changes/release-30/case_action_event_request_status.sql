@@ -29,24 +29,33 @@ ON casesvc.case_action_audit_event USING btree (status);
 
 -- Recreate case_action_template table
 CREATE TABLE casesvc.case_action_template (
-    type varchar (40) UNIQUE NOT NULL,
+    type varchar (40) NOT NULL,
     description varchar(350) NOT NULL,
-    event_tag_mapping varchar(100) NOT NULL,
+    event_tag varchar(100) NOT NULL,
     handler varchar CHECK (handler = 'EMAIL' OR handler = 'LETTER'),
-    prefix varchar (100));
+    prefix varchar (100),
+    CONSTRAINT unique_template_constraint UNIQUE (type, event_tag, handler));
 
 -- Adding required indexes to case_action_template
 CREATE INDEX idx_case_action_template_tag
-ON casesvc.case_action_template USING btree (event_tag_mapping);
+ON casesvc.case_action_template USING btree (event_tag);
 
 INSERT INTO casesvc.case_action_template
-    (type, description, event_tag_mapping, handler, prefix)
+    (type, description, event_tag, handler, prefix)
     VALUES
     ('BSNL', 'Business Survey Notification Letter', 'mps', 'LETTER', 'BSNOT'),
     ('BSNE', 'Business Survey Notification Email', 'go_live', 'EMAIL', NULL),
     ('BSRL', 'Business Survey Reminder Letter', 'reminder', 'LETTER', 'BSREM'),
     ('BSRE', 'Business Survey Reminder Email', 'reminder', 'EMAIL', NULL),
-    ('BSNUE', 'Business Survey Nudge Email', 'nudge', 'EMAIL', NULL);
+    ('BSRL', 'Business Survey Reminder Letter', 'reminder2', 'LETTER', 'BSREM'),
+    ('BSRE', 'Business Survey Reminder Email', 'reminder2', 'EMAIL', NULL),
+    ('BSRL', 'Business Survey Reminder Letter', 'reminder3', 'LETTER', 'BSREM'),
+    ('BSRE', 'Business Survey Reminder Email', 'reminder3', 'EMAIL', NULL),
+    ('BSNUE', 'Business Survey Nudge Email', 'nudge_email_0', 'EMAIL', NULL),
+    ('BSNUE', 'Business Survey Nudge Email', 'nudge_email_1', 'EMAIL', NULL),
+    ('BSNUE', 'Business Survey Nudge Email', 'nudge_email_2', 'EMAIL', NULL),
+    ('BSNUE', 'Business Survey Nudge Email', 'nudge_email_3', 'EMAIL', NULL),
+    ('BSNUE', 'Business Survey Nudge Email', 'nudge_email_4', 'EMAIL', NULL);
 
 
 
@@ -56,7 +65,7 @@ CREATE TABLE casesvc.case_action_event_request (
 	event_tag varchar(100) NOT NULL,
 	process_event_requested_time TIMESTAMP,
 	status varchar CHECK (status = 'INPROGRESS'  OR status = 'COMPLETED' OR status = 'FAILED' OR status = 'RETRY'),
-	CONSTRAINT u_constraint UNIQUE (collection_exercise_id, event_tag)
+	CONSTRAINT unique_action_event_constraint UNIQUE (collection_exercise_id, event_tag)
     );
 
 CREATE INDEX idx_case_action_event_request_collex

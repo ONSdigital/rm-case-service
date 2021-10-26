@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import uk.gov.ons.ctp.response.casesvc.representation.action.ActionTemplateDTO;
 
 @Entity
 @Data
@@ -16,6 +15,11 @@ import uk.gov.ons.ctp.response.casesvc.representation.action.ActionTemplateDTO;
 @NoArgsConstructor
 @Table(name = "case_action_template", schema = "casesvc")
 public class CaseActionTemplate implements Serializable {
+  public enum Handler {
+    EMAIL,
+    LETTER
+  }
+
   private static final long serialVersionUID = 7778360895016862376L;
 
   @Id
@@ -27,14 +31,14 @@ public class CaseActionTemplate implements Serializable {
   @NotNull
   private String description;
 
-  @Column(name = "event_tag_mapping")
+  @Column(name = "event_tag")
   @NotNull
   private String tag;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "handler")
   @NotNull
-  private ActionTemplateDTO.Handler handler;
+  private Handler handler;
 
   @Column(name = "prefix")
   private String prefix;
