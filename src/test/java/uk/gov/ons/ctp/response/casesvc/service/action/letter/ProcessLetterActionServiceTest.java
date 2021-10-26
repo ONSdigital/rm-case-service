@@ -23,7 +23,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseActionRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.action.CaseActionParty;
 import uk.gov.ons.ctp.response.casesvc.service.action.ActionTemplateService;
 import uk.gov.ons.ctp.response.casesvc.service.action.ProcessEventServiceTestData;
-import uk.gov.ons.ctp.response.casesvc.service.action.common.ActionCommonService;
+import uk.gov.ons.ctp.response.casesvc.service.action.common.ActionService;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.party.representation.PartyDTO;
 import uk.gov.ons.ctp.response.lib.sample.SampleUnitDTO;
@@ -34,7 +34,7 @@ public class ProcessLetterActionServiceTest {
   @Mock private ActionTemplateService actionTemplateService;
   @Mock private CaseActionRepository caseActionRepository;
   @Mock private NotifyLetterService letterService;
-  @Mock private ActionCommonService actionCommonService;
+  @Mock private ActionService actionService;
   @InjectMocks private ProcessLetterActionService processLetterActionService;
 
   private ProcessEventServiceTestData testData = new ProcessEventServiceTestData();
@@ -48,7 +48,7 @@ public class ProcessLetterActionServiceTest {
     Future<Boolean> future =
         processLetterActionService.processLetterService(
             collectionExerciseDTO, "mps", Instant.now());
-    Assert.assertEquals(future.get(), Boolean.TRUE);
+    Assert.assertEquals(future.get(), true);
     verify(letterService, never()).processPrintFile(any(), any());
   }
 
@@ -63,7 +63,7 @@ public class ProcessLetterActionServiceTest {
     CollectionExerciseDTO collectionExerciseDTO =
         testData.setupCollectionExerciseDTO(collectionExerciseId, surveyId, "400000005", "test");
     SurveyDTO surveyDTO = testData.setupSurveyDTO(surveyId, "test", "400000005", "test");
-    Mockito.when(actionCommonService.getSurvey(surveyId.toString())).thenReturn(surveyDTO);
+    Mockito.when(actionService.getSurvey(surveyId.toString())).thenReturn(surveyDTO);
     List<CaseAction> actionCases = new ArrayList<>();
     actionCases.add(
         testData.setupActionCase(
@@ -81,20 +81,20 @@ public class ProcessLetterActionServiceTest {
 
     when(actionTemplateService.mapEventTagToTemplate("mps", false))
         .thenReturn(testData.setupActionTemplate("BSNE", Handler.EMAIL, "mps"));
-    when(actionCommonService.isActionable(any(), any(), any())).thenReturn(Boolean.TRUE);
+    when(actionService.isActionable(any(), any(), any())).thenReturn(true);
     PartyDTO parentParty =
         testData.setupBusinessParty("1", "YY", "test", "test@test.com", respondentId.toString());
     PartyDTO childParty =
         testData.setupRespondentParty("test", "test", "test@test.com", respondentId.toString());
-    when(letterService.processPrintFile(any(), any())).thenReturn(Boolean.TRUE);
+    when(letterService.processPrintFile(any(), any())).thenReturn(true);
     CaseActionParty caseActionParty = new CaseActionParty(parentParty, List.of(childParty));
-    when(actionCommonService.setParties(any(), any())).thenReturn(caseActionParty);
+    when(actionService.setParties(any(), any())).thenReturn(caseActionParty);
     Future<Boolean> future =
         processLetterActionService.processLetterService(
             collectionExerciseDTO, "mps", Instant.now());
-    Assert.assertEquals(future.get(), Boolean.TRUE);
+    Assert.assertEquals(future.get(), true);
     verify(letterService, times(1)).processPrintFile(any(), any());
-    verify(actionCommonService, times(1))
+    verify(actionService, times(1))
         .createCaseActionEvent(any(), any(), any(), any(), any(), any(), any());
   }
 }

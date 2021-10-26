@@ -199,8 +199,7 @@ public class CaseSvcApplication {
   @Bean
   @Qualifier("partySvcClient")
   public RestUtility partyClient() {
-    final RestUtility restUtility = new RestUtility(appConfig.getPartySvc().getConnectionConfig());
-    return restUtility;
+    return new RestUtility(appConfig.getPartySvc().getConnectionConfig());
   }
 
   /**
@@ -211,8 +210,7 @@ public class CaseSvcApplication {
   @Bean
   @Qualifier("surveySvcClient")
   public RestUtility surveyClient() {
-    final RestUtility restUtility = new RestUtility(appConfig.getSurveySvc().getConnectionConfig());
-    return restUtility;
+    return new RestUtility(appConfig.getSurveySvc().getConnectionConfig());
   }
 
   /**

@@ -55,6 +55,7 @@ public class SurveySvcClientService {
         result = objectMapper.readValue(responseBody, SurveyDTO.class);
       } catch (final IOException e) {
         log.error("Unable to read survey response", e);
+        throw new RuntimeException(e);
       }
     }
     return result;

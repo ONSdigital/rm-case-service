@@ -42,7 +42,7 @@ public class PartySvcClientService {
       maxAttemptsExpression = "#{${retries.maxAttempts}}",
       backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
   public PartyDTO getParty(final String sampleUnitType, final UUID partyId) {
-    log.with("sample_unit_type", sampleUnitType).with("party_id", partyId).info("Getting party");
+    log.with("sampleUnitType", sampleUnitType).with("partyId", partyId).info("Getting party");
     final UriComponents uriComponents =
         restUtility.createUriComponents(
             appConfig.getPartySvc().getPartyBySampleUnitTypeAndIdPath(),
@@ -67,9 +67,9 @@ public class PartySvcClientService {
       final UUID partyId,
       final String surveyId,
       final List<String> enrolmentStatuses) {
-    log.with("sample_unit_type", sampleUnitType)
-        .with("party_id", partyId.toString())
-        .with("survey_id", surveyId)
+    log.with("sampleUnitType", sampleUnitType)
+        .with("partyId", partyId.toString())
+        .with("surveyId", surveyId)
         .info("Retrieving party by survey");
 
     final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();

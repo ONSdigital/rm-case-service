@@ -24,8 +24,8 @@ import uk.gov.ons.ctp.response.lib.sample.SampleUnitDTO;
 import uk.gov.ons.ctp.response.lib.survey.representation.SurveyDTO;
 
 @Service
-public class ActionCommonService {
-  private static final Logger log = LoggerFactory.getLogger(ActionCommonService.class);
+public class ActionService {
+  private static final Logger log = LoggerFactory.getLogger(ActionService.class);
   @Autowired private SurveySvcClientService surveySvcClientService;
   @Autowired private PartySvcClientService partySvcClientService;
   @Autowired private CaseActionAuditEventRepository actionEventAuditRepository;

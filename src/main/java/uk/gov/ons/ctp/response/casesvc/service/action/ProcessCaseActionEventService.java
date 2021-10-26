@@ -44,7 +44,7 @@ public class ProcessCaseActionEventService {
   public void processEvents(UUID collectionExerciseId, String eventTag)
       throws ExecutionException, InterruptedException {
     log.with("collectionExerciseId", collectionExerciseId)
-        .with("event_tag", eventTag)
+        .with("eventTag", eventTag)
         .info("Started processing");
     Instant instant = Instant.now();
     CollectionExerciseDTO collectionExercise = getCollectionExercise(collectionExerciseId);
@@ -90,6 +90,8 @@ public class ProcessCaseActionEventService {
       newRequest.setStatus(ActionEventRequestStatus.RETRY);
       log.with("collectionExerciseId", collectionExerciseId)
           .with("eventTag", eventTag)
+              .with("emailAsyncStatus", emailStatus)
+              .with("letterAsyncStatus", letterStatus)
           .info("Requested event was not successful, hence a retry will be initiated soon.");
     }
     actionEventRequestRepository.save(newRequest);

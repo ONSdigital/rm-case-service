@@ -25,7 +25,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.action.NotifyModel;
 import uk.gov.ons.ctp.response.casesvc.representation.action.NotifyModel.Notify.Classifiers;
 import uk.gov.ons.ctp.response.casesvc.representation.action.NotifyModel.Notify.Personalisation;
 import uk.gov.ons.ctp.response.casesvc.service.action.ActionTemplateService;
-import uk.gov.ons.ctp.response.casesvc.service.action.common.ActionCommonService;
+import uk.gov.ons.ctp.response.casesvc.service.action.common.ActionService;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.party.representation.Attributes;
 import uk.gov.ons.ctp.response.lib.party.representation.PartyDTO;
@@ -39,7 +39,7 @@ public class ProcessEmailActionService {
   @Autowired private ActionTemplateService actionTemplateService;
   @Autowired private CaseActionRepository caseActionRepository;
   @Autowired private NotifyEmailService emailService;
-  @Autowired private ActionCommonService actionCommonService;
+  @Autowired private ActionService actionService;
 
   /**
    * This async process takes collection exercise and event tag and processes the email action.
@@ -56,26 +56,26 @@ public class ProcessEmailActionService {
         actionTemplateService.mapEventTagToTemplate(eventTag, Boolean.TRUE);
     UUID collectionExerciseId = collectionExerciseDTO.getId();
     if (null == actionTemplate) {
-      log.with("activeEnrolment", Boolean.TRUE)
+      log.with("activeEnrolment", true)
           .with("event", eventTag)
           .with("collectionExerciseId", collectionExerciseId.toString())
           .info("No Email Action Template defined for this event.");
-      return new AsyncResult<>(Boolean.TRUE);
+      return new AsyncResult<>(true);
     }
     // Initial status of this async call will be considered as success unless the subsequent process
     // changes
-    AtomicBoolean asyncEmailCallStatus = new AtomicBoolean(Boolean.TRUE);
+    AtomicBoolean asyncEmailCallStatus = new AtomicBoolean(true);
     log.debug("Getting Email cases against collectionExerciseId and event active enrolment");
     List<CaseAction> emailCases =
         caseActionRepository.findByCollectionExerciseIdAndActiveEnrolment(
-            collectionExerciseId, Boolean.TRUE);
+            collectionExerciseId, true);
     log.with("email cases", emailCases.size())
         .with(collectionExerciseId.toString())
         .info("Processing email cases");
-    SurveyDTO survey = actionCommonService.getSurvey(collectionExerciseDTO.getSurveyId());
+    SurveyDTO survey = actionService.getSurvey(collectionExerciseDTO.getSurveyId());
     emailCases.parallelStream()
         .filter(
-            caseAction -> actionCommonService.isActionable(caseAction, actionTemplate, eventTag))
+            caseAction -> actionService.isActionable(caseAction, actionTemplate, eventTag))
         .forEach(
             caseAction ->
                 processEmailCase(
@@ -113,10 +113,10 @@ public class ProcessEmailActionService {
         .with("actionTemplate", templateType)
         .with("actionHandler", templateHandler)
         .info("Processing Email Event.");
-    boolean isSuccess = Boolean.TRUE;
+    boolean isSuccess = true;
     try {
       log.with("caseId", actionCaseId).info("Getting ActionCaseParty");
-      CaseActionParty actionCaseParty = actionCommonService.setParties(caseAction, survey);
+      CaseActionParty actionCaseParty = actionService.setParties(caseAction, survey);
       if (isBusinessNotification(caseAction)) {
         log.with("caseId", caseAction).info("Processing Email for isBusinessNotification true");
         actionCaseParty.getChildParties().parallelStream()
@@ -143,12 +143,13 @@ public class ProcessEmailActionService {
       log.with("caseId", actionCaseId)
           .with("actionTemplate", templateType)
           .with("actionHandler", templateHandler)
+              .with("exception", e)
           .warn("Processing Email Event FAILED.");
-      isSuccess = Boolean.FALSE;
-      asyncEmailCallStatus.set(Boolean.FALSE);
+      isSuccess = false;
+      asyncEmailCallStatus.set(false);
     }
     if (isSuccess) {
-      actionCommonService.createCaseActionEvent(
+      actionService.createCaseActionEvent(
           actionCaseId,
           templateType,
           templateHandler,

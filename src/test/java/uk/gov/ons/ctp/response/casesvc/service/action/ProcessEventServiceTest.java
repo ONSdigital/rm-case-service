@@ -36,9 +36,9 @@ public class ProcessEventServiceTest {
             testData.setupCollectionExerciseDTO(
                 collectionExerciseId, surveyId, "400000005", "test"));
     Mockito.when(emailEventService.processEmailService(any(), any(), any()))
-        .thenReturn(new AsyncResult<>(Boolean.TRUE));
+        .thenReturn(new AsyncResult<>(true));
     Mockito.when(processLetterActionService.processLetterService(any(), any(), any()))
-        .thenReturn(new AsyncResult<>(Boolean.TRUE));
+        .thenReturn(new AsyncResult<>(true));
     processEventService.processEvents(collectionExerciseId, "go_live");
     verify(caseActionEventRequestRepository, atLeast(2)).save(any());
     verify(caseActionEventRequestRepository, atMost(2)).save(any());
@@ -53,9 +53,9 @@ public class ProcessEventServiceTest {
             testData.setupCollectionExerciseDTO(
                 collectionExerciseId, surveyId, "400000005", "test"));
     Mockito.when(emailEventService.processEmailService(any(), any(), any()))
-        .thenReturn(new AsyncResult<>(Boolean.FALSE));
+        .thenReturn(new AsyncResult<>(false));
     Mockito.when(processLetterActionService.processLetterService(any(), any(), any()))
-        .thenReturn(new AsyncResult<>(Boolean.TRUE));
+        .thenReturn(new AsyncResult<>(true));
     processEventService.processEvents(collectionExerciseId, "go_live");
     verify(caseActionEventRequestRepository, atLeast(2)).save(any());
     verify(caseActionEventRequestRepository, atMost(2)).save(any());

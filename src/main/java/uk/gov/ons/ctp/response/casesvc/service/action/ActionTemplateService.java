@@ -29,10 +29,10 @@ public class ActionTemplateService {
     CaseActionTemplate template = actionTemplateRepository.findByTagAndHandler(tag, handler);
     if (template == null) {
       log.with("tag", tag)
-          .with("active enrolment", isActiveEnrolment)
+          .with("activeEnrolment", isActiveEnrolment)
           .warn("No Template registered against the event and active enrolment");
     }
-    log.with("tag", tag).with("active enrolment", isActiveEnrolment).debug("Template Found");
+    log.with("tag", tag).with("activeEnrolment", isActiveEnrolment).debug("Template Found");
     return template;
   }
 }

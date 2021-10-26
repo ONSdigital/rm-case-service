@@ -23,7 +23,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.action.Contact;
 import uk.gov.ons.ctp.response.casesvc.representation.action.FilenamePrefix;
 import uk.gov.ons.ctp.response.casesvc.representation.action.LetterEntry;
 import uk.gov.ons.ctp.response.casesvc.service.action.ActionTemplateService;
-import uk.gov.ons.ctp.response.casesvc.service.action.common.ActionCommonService;
+import uk.gov.ons.ctp.response.casesvc.service.action.common.ActionService;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.party.representation.Association;
 import uk.gov.ons.ctp.response.lib.party.representation.Attributes;
@@ -40,37 +40,37 @@ public class ProcessLetterActionService {
   public static final String PENDING = "PENDING";
   @Autowired private ActionTemplateService actionTemplateService;
   @Autowired private CaseActionRepository caseActionRepository;
-  @Autowired private ActionCommonService actionCommonService;
+  @Autowired private ActionService actionService;
   @Autowired private NotifyLetterService printFileService;
 
   @Async
   public Future<Boolean> processLetterService(
       CollectionExerciseDTO collectionExerciseDTO, String eventTag, Instant instant) {
     CaseActionTemplate actionTemplate =
-        actionTemplateService.mapEventTagToTemplate(eventTag, Boolean.FALSE);
+        actionTemplateService.mapEventTagToTemplate(eventTag, false);
     UUID collectionExerciseId = collectionExerciseDTO.getId();
     if (null == actionTemplate) {
-      log.with("activeEnrolment", Boolean.TRUE)
+      log.with("activeEnrolment", true)
           .with("event", eventTag)
           .with("collectionExerciseId", collectionExerciseId.toString())
           .info("No Template found, suggests no letters to be processed.");
-      return new AsyncResult<>(Boolean.TRUE);
+      return new AsyncResult<>(true);
     }
 
     log.debug("Getting Letter cases against collectionExerciseId and event active enrolment");
 
     List<CaseAction> letterCases =
         caseActionRepository.findByCollectionExerciseIdAndActiveEnrolment(
-            collectionExerciseId, Boolean.FALSE);
+            collectionExerciseId, false);
     log.with("letter cases", letterCases.size())
         .with(collectionExerciseId.toString())
         .info("Processing letter cases");
 
-    SurveyDTO survey = actionCommonService.getSurvey(collectionExerciseDTO.getSurveyId());
+    SurveyDTO survey = actionService.getSurvey(collectionExerciseDTO.getSurveyId());
 
     List<CaseAction> actionableLetterCases =
         letterCases.parallelStream()
-            .filter(c -> actionCommonService.isActionable(c, actionTemplate, eventTag))
+            .filter(c -> actionService.isActionable(c, actionTemplate, eventTag))
             .collect(Collectors.toList());
 
     if (actionableLetterCases.size() == 0) {
@@ -80,7 +80,7 @@ public class ProcessLetterActionService {
           .info(
               "No actionable cases found against the action type for collection exercise. "
                   + "Hence nothing to do");
-      return new AsyncResult<>(Boolean.TRUE);
+      return new AsyncResult<>(true);
     }
 
     log.with("no. of actionable cases", actionableLetterCases.size())
@@ -96,7 +96,7 @@ public class ProcessLetterActionService {
       log.with("actionType", actionTemplate.getType())
           .info(
               "Unable to collect all letter entries. Hence aborting the process and will try again");
-      return new AsyncResult<>(Boolean.FALSE);
+      return new AsyncResult<>(false);
     }
 
     log.with("no. of actionable cases", actionableLetterCases.size())
@@ -126,7 +126,7 @@ public class ProcessLetterActionService {
       letterEntries.parallelStream()
           .forEach(
               letterEntry ->
-                  actionCommonService.createCaseActionEvent(
+                  actionService.createCaseActionEvent(
                       letterEntry.getActionCaseId(),
                       letterEntry.getActionTemplateType(),
                       letterEntry.getActionTemplateHandler(),
@@ -151,15 +151,10 @@ public class ProcessLetterActionService {
     log.with("caseId", caseAction.getCaseId())
         .with("actionTemplateType", caseActionTemplate.getType())
         .info("Getting print file entry");
-    try {
-
-    } catch (Exception e) {
-
-    }
     String iac = caseAction.getIac();
     String sampleUnitRef = caseAction.getSampleUnitRef();
     String status = caseAction.getStatus().toString();
-    CaseActionParty actionCaseParty = actionCommonService.setParties(caseAction, survey);
+    CaseActionParty actionCaseParty = actionService.setParties(caseAction, survey);
     PartyDTO businessParty = actionCaseParty.getParentParty();
     Contact contact = new Contact();
     String respondentStatus = "";
