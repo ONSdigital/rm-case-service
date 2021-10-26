@@ -7,7 +7,9 @@
     "subCategory": "subcat 1",
     "createdBy": "me 1",
     "description": "desc 1",
-    "metadata": {"partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972"}
+    "metadata": {
+      "partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972"
+    }
   },
   {
     "createdDateTime": 1460736159799,
@@ -17,17 +19,9 @@
     "subCategory": "subcat 2",
     "createdBy": "me 2",
     "description": "desc 2",
-    "metadata": {"partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972"}
-  },
-  {
-    "createdDateTime": 1460736159899,
-    "caseEventPK": 3,
-    "caseFK": 3,
-    "category": "TOO_BUSY",
-    "subCategory": "subcat 3",
-    "createdBy": "me 3",
-    "description": "desc 3",
-    "metadata": {"partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972"}
+    "metadata": {
+      "partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972"
+    }
   },
   {
     "createdDateTime": 1460736159699,
@@ -37,6 +31,8 @@
     "subCategory": null,
     "createdBy": "unittest",
     "description": "sometest",
-    "metadata": {"partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972"}
+    "metadata": {
+      "partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972"
+    }
   }
 ]

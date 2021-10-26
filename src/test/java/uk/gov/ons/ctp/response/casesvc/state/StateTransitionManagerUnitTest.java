@@ -12,19 +12,15 @@ import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManager;
 
 public class StateTransitionManagerUnitTest {
 
-  private final CaseSvcStateTransitionManagerFactory factory =
-      new CaseSvcStateTransitionManagerFactory();
+  private final CaseSvcStateTransitionManagerFactory factory = new CaseSvcStateTransitionManagerFactory();
 
   @SuppressWarnings("unchecked")
-  private final StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseStateMachine =
-      (StateTransitionManager<CaseState, CaseDTO.CaseEvent>)
-          factory.getStateTransitionManager(CaseSvcStateTransitionManagerFactory.CASE_ENTITY);
+  private final StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseStateMachine = (StateTransitionManager<CaseState, CaseDTO.CaseEvent>) factory
+      .getStateTransitionManager(CaseSvcStateTransitionManagerFactory.CASE_ENTITY);
 
   @SuppressWarnings("unchecked")
-  private final StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName>
-      caseGroupStateMachine =
-          (StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName>)
-              factory.getStateTransitionManager(CaseSvcStateTransitionManagerFactory.CASE_GROUP);
+  private final StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName> caseGroupStateMachine = (StateTransitionManager<CaseGroupStatus, CategoryDTO.CategoryName>) factory
+      .getStateTransitionManager(CaseSvcStateTransitionManagerFactory.CASE_GROUP);
 
   @Test
   public void givenCaseStateSampledInitWhenActivatedThenActionable() throws CTPException {
@@ -32,8 +28,7 @@ public class StateTransitionManagerUnitTest {
     CaseState sampledInit = CaseState.SAMPLED_INIT;
 
     // When
-    CaseState destinationState =
-        caseStateMachine.transition(sampledInit, CaseDTO.CaseEvent.ACTIVATED);
+    CaseState destinationState = caseStateMachine.transition(sampledInit, CaseDTO.CaseEvent.ACTIVATED);
 
     // Then
     assertEquals(destinationState, CaseState.ACTIONABLE);
@@ -45,8 +40,7 @@ public class StateTransitionManagerUnitTest {
     CaseState replacementInit = CaseState.REPLACEMENT_INIT;
 
     // When
-    CaseState destinationState =
-        caseStateMachine.transition(replacementInit, CaseDTO.CaseEvent.REPLACED);
+    CaseState destinationState = caseStateMachine.transition(replacementInit, CaseDTO.CaseEvent.REPLACED);
 
     // Then
     assertEquals(destinationState, CaseState.ACTIONABLE);
@@ -58,8 +52,7 @@ public class StateTransitionManagerUnitTest {
     CaseState actionable = CaseState.ACTIONABLE;
 
     // When
-    CaseState destinationState =
-        caseStateMachine.transition(actionable, CaseDTO.CaseEvent.DISABLED);
+    CaseState destinationState = caseStateMachine.transition(actionable, CaseDTO.CaseEvent.DISABLED);
 
     // Then
     assertEquals(destinationState, CaseState.INACTIONABLE);
@@ -71,8 +64,7 @@ public class StateTransitionManagerUnitTest {
     CaseState actionable = CaseState.ACTIONABLE;
 
     // When
-    CaseState destinationState =
-        caseStateMachine.transition(actionable, CaseDTO.CaseEvent.DEACTIVATED);
+    CaseState destinationState = caseStateMachine.transition(actionable, CaseDTO.CaseEvent.DEACTIVATED);
 
     // Then
     assertEquals(destinationState, CaseState.INACTIONABLE);
@@ -84,8 +76,7 @@ public class StateTransitionManagerUnitTest {
     CaseState inactionable = CaseState.INACTIONABLE;
 
     // When
-    CaseState destinationState =
-        caseStateMachine.transition(inactionable, CaseDTO.CaseEvent.DISABLED);
+    CaseState destinationState = caseStateMachine.transition(inactionable, CaseDTO.CaseEvent.DISABLED);
 
     // Then
     assertEquals(destinationState, CaseState.INACTIONABLE);
@@ -97,8 +88,7 @@ public class StateTransitionManagerUnitTest {
     CaseState inactionable = CaseState.INACTIONABLE;
 
     // When
-    CaseState destinationState =
-        caseStateMachine.transition(inactionable, CaseDTO.CaseEvent.DEACTIVATED);
+    CaseState destinationState = caseStateMachine.transition(inactionable, CaseDTO.CaseEvent.DEACTIVATED);
 
     // Then
     assertEquals(destinationState, CaseState.INACTIONABLE);
@@ -110,9 +100,8 @@ public class StateTransitionManagerUnitTest {
     CaseGroupStatus notStarted = CaseGroupStatus.NOTSTARTED;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            notStarted, CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(notStarted,
+        CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED);
 
     // Then
     assertEquals(destinationState, CaseGroupStatus.INPROGRESS);
@@ -124,122 +113,111 @@ public class StateTransitionManagerUnitTest {
     CaseGroupStatus notStarted = CaseGroupStatus.NOTSTARTED;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(notStarted, CategoryDTO.CategoryName.EQ_LAUNCH);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(notStarted, CategoryDTO.CategoryName.EQ_LAUNCH);
 
     // Then
     assertEquals(destinationState, CaseGroupStatus.INPROGRESS);
   }
 
   @Test
-  public void givenCaseGroupStateNotStartedWhenSuccessfulResponseUploadedThenComplete()
-      throws CTPException {
+  public void givenCaseGroupStateNotStartedWhenSuccessfulResponseUploadedThenComplete() throws CTPException {
     // Given
     CaseGroupStatus notStarted = CaseGroupStatus.NOTSTARTED;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            notStarted, CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(notStarted,
+        CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD);
 
     // Then
     assertEquals(destinationState, CaseGroupStatus.COMPLETE);
   }
 
   @Test
-  public void givenCaseGroupStateNotStartedWhenCompletedByPhoneThenCompletedByPhone()
-      throws CTPException {
+  public void givenCaseGroupStateNotStartedWhenCompletedByPhoneThenCompletedByPhone() throws CTPException {
     // Given
     CaseGroupStatus notStarted = CaseGroupStatus.NOTSTARTED;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(notStarted, CategoryDTO.CategoryName.COMPLETED_BY_PHONE);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(notStarted,
+        CategoryDTO.CategoryName.COMPLETED_BY_PHONE);
 
     // Then
     assertEquals(destinationState, CaseGroupStatus.COMPLETEDBYPHONE);
   }
 
   @Test
-  public void givenCaseGroupStateNotStartedWhenNoLongerRequiredThenNoLongerRequired()
-      throws CTPException {
+  public void givenCaseGroupStateNotStartedWhenNoLongerRequiredThenNoLongerRequired() throws CTPException {
     // Given
     CaseGroupStatus notStarted = CaseGroupStatus.NOTSTARTED;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(notStarted, CategoryDTO.CategoryName.NO_LONGER_REQUIRED);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(notStarted,
+        CategoryDTO.CategoryName.NO_LONGER_REQUIRED);
 
     // Then
     assertEquals(destinationState, CaseGroupStatus.NOLONGERREQUIRED);
   }
 
   @Test
-  public void givenCaseGroupStateInProgressWhenSuccessfulResponseUploadThenComplete()
-      throws CTPException {
+  public void givenCaseGroupStateInProgressWhenSuccessfulResponseUploadThenComplete() throws CTPException {
     // Given
     CaseGroupStatus inProgress = CaseGroupStatus.INPROGRESS;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            inProgress, CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(inProgress,
+        CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD);
 
     // Then
     assertEquals(destinationState, CaseGroupStatus.COMPLETE);
   }
 
   @Test
-  public void givenCaseGroupStateInProgressWhenCompletedByPhoneThenCompletedByPhone()
-      throws CTPException {
+  public void givenCaseGroupStateInProgressWhenCompletedByPhoneThenCompletedByPhone() throws CTPException {
     // Given
     CaseGroupStatus inProgress = CaseGroupStatus.INPROGRESS;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(inProgress, CategoryDTO.CategoryName.COMPLETED_BY_PHONE);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(inProgress,
+        CategoryDTO.CategoryName.COMPLETED_BY_PHONE);
 
     // Then
     assertEquals(destinationState, CaseGroupStatus.COMPLETEDBYPHONE);
   }
 
   @Test
-  public void givenCaseGroupStateInProgressWhenNoLongerRequiredThenNoLongerRequired()
-      throws CTPException {
+  public void givenCaseGroupStateInProgressWhenNoLongerRequiredThenNoLongerRequired() throws CTPException {
     // Given
     CaseGroupStatus inProgress = CaseGroupStatus.INPROGRESS;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(inProgress, CategoryDTO.CategoryName.NO_LONGER_REQUIRED);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(inProgress,
+        CategoryDTO.CategoryName.NO_LONGER_REQUIRED);
 
     // Then
     assertEquals(destinationState, CaseGroupStatus.NOLONGERREQUIRED);
   }
 
   @Test
-  public void givenCaseGroupStateReopenedWhenCompletedByPhoneThenCompletedByPhone()
-      throws CTPException {
+  public void givenCaseGroupStateReopenedWhenCompletedByPhoneThenCompletedByPhone() throws CTPException {
     // Given
     CaseGroupStatus reopened = CaseGroupStatus.REOPENED;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(reopened, CategoryDTO.CategoryName.COMPLETED_BY_PHONE);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(reopened,
+        CategoryDTO.CategoryName.COMPLETED_BY_PHONE);
 
     // Then
     assertEquals(destinationState, CaseGroupStatus.COMPLETEDBYPHONE);
   }
 
   @Test
-  public void givenCaseGroupStateReopenedWhenNoLongerRequiredThenNoLongerRequired()
-      throws CTPException {
+  public void givenCaseGroupStateReopenedWhenNoLongerRequiredThenNoLongerRequired() throws CTPException {
     // Given
     CaseGroupStatus reopened = CaseGroupStatus.REOPENED;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(reopened, CategoryDTO.CategoryName.NO_LONGER_REQUIRED);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(reopened,
+        CategoryDTO.CategoryName.NO_LONGER_REQUIRED);
 
     // Then
     assertEquals(destinationState, CaseGroupStatus.NOLONGERREQUIRED);
@@ -249,15 +227,13 @@ public class StateTransitionManagerUnitTest {
 
   // Not started to refusal
   @Test
-  public void givenNotStartedWhenPrivacyDataConfidentialityConcernsThenRefusal()
-      throws CTPException {
+  public void givenNotStartedWhenPrivacyDataConfidentialityConcernsThenRefusal() throws CTPException {
     // Given
     CaseGroupStatus notStarted = CaseGroupStatus.NOTSTARTED;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            notStarted, CategoryDTO.CategoryName.PRIVACY_DATA_CONFIDENTIALITY_CONCERNS);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(notStarted,
+        CategoryDTO.CategoryName.PRIVACY_DATA_CONFIDENTIALITY_CONCERNS);
 
     // Then
     assertEquals(CaseGroupStatus.REFUSAL, destinationState);
@@ -265,15 +241,13 @@ public class StateTransitionManagerUnitTest {
 
   // In progress to refusal
   @Test
-  public void givenInProgressWhenPrivacyDataConfidentialityConcernsThenRefusal()
-      throws CTPException {
+  public void givenInProgressWhenPrivacyDataConfidentialityConcernsThenRefusal() throws CTPException {
     // Given
     CaseGroupStatus inProgress = CaseGroupStatus.INPROGRESS;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            inProgress, CategoryDTO.CategoryName.PRIVACY_DATA_CONFIDENTIALITY_CONCERNS);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(inProgress,
+        CategoryDTO.CategoryName.PRIVACY_DATA_CONFIDENTIALITY_CONCERNS);
 
     // Then
     assertEquals(CaseGroupStatus.REFUSAL, destinationState);
@@ -286,9 +260,8 @@ public class StateTransitionManagerUnitTest {
     CaseGroupStatus complete = CaseGroupStatus.COMPLETE;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            complete, CategoryDTO.CategoryName.PRIVACY_DATA_CONFIDENTIALITY_CONCERNS);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(complete,
+        CategoryDTO.CategoryName.PRIVACY_DATA_CONFIDENTIALITY_CONCERNS);
 
     // Then
     assertEquals(CaseGroupStatus.REFUSAL, destinationState);
@@ -307,60 +280,28 @@ public class StateTransitionManagerUnitTest {
 
     // Then
     assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
-  }
 
   @Test
-  public void givenNotStartedWhenLanguageDifficultiesThenOtherNonResponse() throws CTPException {
+  public void givenNotStartedWhenLackOfComputerOrInternetAccessThenOtherNonResponse() throws CTPException {
     // Given
     CaseGroupStatus notStarted = CaseGroupStatus.NOTSTARTED;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            notStarted, CategoryDTO.CategoryName.LANGUAGE_DIFFICULTIES);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(notStarted,
+        CategoryDTO.CategoryName.LACK_OF_COMPUTER_INTERNET_ACCESS);
 
     // Then
     assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
   }
 
   @Test
-  public void givenNotStartedWhenLackOfComputerOrInternetAccessThenOtherNonResponse()
-      throws CTPException {
+  public void givenNotStartedWhenComplyInDifferentCollectionModeThenOtherNonResponse() throws CTPException {
     // Given
     CaseGroupStatus notStarted = CaseGroupStatus.NOTSTARTED;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            notStarted, CategoryDTO.CategoryName.LACK_OF_COMPUTER_INTERNET_ACCESS);
-
-    // Then
-    assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
-  }
-
-  @Test
-  public void givenNotStartedWhenTooBusyThenOtherNonResponse() throws CTPException {
-    // Given
-    CaseGroupStatus notStarted = CaseGroupStatus.NOTSTARTED;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(notStarted, CategoryDTO.CategoryName.TOO_BUSY);
-
-    // Then
-    assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
-  }
-
-  @Test
-  public void givenNotStartedWhenComplyInDifferentCollectionModeThenOtherNonResponse()
-      throws CTPException {
-    // Given
-    CaseGroupStatus notStarted = CaseGroupStatus.NOTSTARTED;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            notStarted, CategoryDTO.CategoryName.COMPLY_IN_DIFFERENT_COLLECTION_MODE);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(notStarted,
+        CategoryDTO.CategoryName.COMPLY_IN_DIFFERENT_COLLECTION_MODE);
 
     // Then
     assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
@@ -379,148 +320,70 @@ public class StateTransitionManagerUnitTest {
 
     // Then
     assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
-  }
 
   @Test
-  public void givenInProgressWhenLanguageDifficultiesThenOtherNonResponse() throws CTPException {
+  public void givenInProgressWhenLackOfComputerOrInternetAccessThenOtherNonResponse() throws CTPException {
     // Given
     CaseGroupStatus inProgress = CaseGroupStatus.INPROGRESS;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            inProgress, CategoryDTO.CategoryName.LANGUAGE_DIFFICULTIES);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(inProgress,
+        CategoryDTO.CategoryName.LACK_OF_COMPUTER_INTERNET_ACCESS);
 
     // Then
     assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
   }
 
   @Test
-  public void givenInProgressWhenLackOfComputerOrInternetAccessThenOtherNonResponse()
-      throws CTPException {
+  public void givenInProgressWhenComplyInDifferentCollectionModeThenOtherNonResponse() throws CTPException {
     // Given
     CaseGroupStatus inProgress = CaseGroupStatus.INPROGRESS;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            inProgress, CategoryDTO.CategoryName.LACK_OF_COMPUTER_INTERNET_ACCESS);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(inProgress,
+        CategoryDTO.CategoryName.COMPLY_IN_DIFFERENT_COLLECTION_MODE);
 
     // Then
     assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
   }
 
   @Test
-  public void givenInProgressWhenTooBusyThenOtherNonResponse() throws CTPException {
-    // Given
-    CaseGroupStatus inProgress = CaseGroupStatus.INPROGRESS;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(inProgress, CategoryDTO.CategoryName.TOO_BUSY);
-
-    // Then
-    assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
-  }
-
-  @Test
-  public void givenInProgressWhenComplyInDifferentCollectionModeThenOtherNonResponse()
-      throws CTPException {
-    // Given
-    CaseGroupStatus inProgress = CaseGroupStatus.INPROGRESS;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            inProgress, CategoryDTO.CategoryName.COMPLY_IN_DIFFERENT_COLLECTION_MODE);
-
-    // Then
-    assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
-  }
-
-  @Test
-  public void givenCompleteWhenPhysicallyOrMentallyUnableThenOtherNonResponse()
-      throws CTPException {
+  public void givenCompleteWhenPhysicallyOrMentallyUnableThenOtherNonResponse() throws CTPException {
     // Given
     CaseGroupStatus complete = CaseGroupStatus.COMPLETE;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            complete, CategoryDTO.CategoryName.PHYSICALLY_OR_MENTALLY_UNABLE);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(complete,
+        CategoryDTO.CategoryName.PHYSICALLY_OR_MENTALLY_UNABLE);
 
     // Then
     assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
   }
 
   @Test
-  public void givenCompleteWhenLanguageDifficultiesThenOtherNonResponse() throws CTPException {
+  public void givenCompleteWhenLackOfComputerOrInternetAccessThenOtherNonResponse() throws CTPException {
     // Given
     CaseGroupStatus complete = CaseGroupStatus.COMPLETE;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(complete, CategoryDTO.CategoryName.LANGUAGE_DIFFICULTIES);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(complete,
+        CategoryDTO.CategoryName.LACK_OF_COMPUTER_INTERNET_ACCESS);
 
     // Then
     assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
   }
 
   @Test
-  public void givenCompleteWhenLackOfComputerOrInternetAccessThenOtherNonResponse()
-      throws CTPException {
+  public void givenCompleteWhenComplyInDifferentCollectionModeThenOtherNonResponse() throws CTPException {
     // Given
     CaseGroupStatus complete = CaseGroupStatus.COMPLETE;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            complete, CategoryDTO.CategoryName.LACK_OF_COMPUTER_INTERNET_ACCESS);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(complete,
+        CategoryDTO.CategoryName.COMPLY_IN_DIFFERENT_COLLECTION_MODE);
 
     // Then
     assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
-  }
-
-  @Test
-  public void givenCompleteWhenTooBusyThenOtherNonResponse() throws CTPException {
-    // Given
-    CaseGroupStatus complete = CaseGroupStatus.COMPLETE;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(complete, CategoryDTO.CategoryName.TOO_BUSY);
-
-    // Then
-    assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
-  }
-
-  @Test
-  public void givenCompleteWhenComplyInDifferentCollectionModeThenOtherNonResponse()
-      throws CTPException {
-    // Given
-    CaseGroupStatus complete = CaseGroupStatus.COMPLETE;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            complete, CategoryDTO.CategoryName.COMPLY_IN_DIFFERENT_COLLECTION_MODE);
-
-    // Then
-    assertEquals(CaseGroupStatus.OTHERNONRESPONSE, destinationState);
-  }
-
-  @Test
-  public void givenNotStartedWhenNonResidentialAddressThenNotEligible() throws CTPException {
-    // Given
-    CaseGroupStatus notStarted = CaseGroupStatus.NOTSTARTED;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            notStarted, CategoryDTO.CategoryName.NON_RESIDENTIAL_ADDRESS);
-
-    // Then
-    assertEquals(CaseGroupStatus.NOTELIGIBLE, destinationState);
   }
 
   @Test
@@ -529,23 +392,8 @@ public class StateTransitionManagerUnitTest {
     CaseGroupStatus notStarted = CaseGroupStatus.NOTSTARTED;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            notStarted, CategoryDTO.CategoryName.ADDRESS_OCCUPIED_NO_RESIDENT);
-
-    // Then
-    assertEquals(CaseGroupStatus.NOTELIGIBLE, destinationState);
-  }
-
-  @Test
-  public void givenInProgressWhenNonResidentialAddressThenNotEligible() throws CTPException {
-    // Given
-    CaseGroupStatus inProgress = CaseGroupStatus.INPROGRESS;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            inProgress, CategoryDTO.CategoryName.NON_RESIDENTIAL_ADDRESS);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(notStarted,
+        CategoryDTO.CategoryName.ADDRESS_OCCUPIED_NO_RESIDENT);
 
     // Then
     assertEquals(CaseGroupStatus.NOTELIGIBLE, destinationState);
@@ -557,23 +405,8 @@ public class StateTransitionManagerUnitTest {
     CaseGroupStatus inProgress = CaseGroupStatus.INPROGRESS;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            inProgress, CategoryDTO.CategoryName.ADDRESS_OCCUPIED_NO_RESIDENT);
-
-    // Then
-    assertEquals(CaseGroupStatus.NOTELIGIBLE, destinationState);
-  }
-
-  @Test
-  public void givenCompleteWhenNonResidentialAddressThenNotEligible() throws CTPException {
-    // Given
-    CaseGroupStatus complete = CaseGroupStatus.COMPLETE;
-
-    // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            complete, CategoryDTO.CategoryName.NON_RESIDENTIAL_ADDRESS);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(inProgress,
+        CategoryDTO.CategoryName.ADDRESS_OCCUPIED_NO_RESIDENT);
 
     // Then
     assertEquals(CaseGroupStatus.NOTELIGIBLE, destinationState);
@@ -585,9 +418,8 @@ public class StateTransitionManagerUnitTest {
     CaseGroupStatus complete = CaseGroupStatus.COMPLETE;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            complete, CategoryDTO.CategoryName.ADDRESS_OCCUPIED_NO_RESIDENT);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(complete,
+        CategoryDTO.CategoryName.ADDRESS_OCCUPIED_NO_RESIDENT);
 
     // Then
     assertEquals(CaseGroupStatus.NOTELIGIBLE, destinationState);
@@ -600,8 +432,7 @@ public class StateTransitionManagerUnitTest {
     CaseGroupStatus refusal = CaseGroupStatus.REFUSAL;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(refusal, CategoryDTO.CategoryName.EQ_LAUNCH);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(refusal, CategoryDTO.CategoryName.EQ_LAUNCH);
 
     // Then
     assertEquals(CaseGroupStatus.INPROGRESS, destinationState);
@@ -613,8 +444,8 @@ public class StateTransitionManagerUnitTest {
     CaseGroupStatus otherNonResponse = CaseGroupStatus.OTHERNONRESPONSE;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(otherNonResponse, CategoryDTO.CategoryName.EQ_LAUNCH);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(otherNonResponse,
+        CategoryDTO.CategoryName.EQ_LAUNCH);
 
     // Then
     assertEquals(CaseGroupStatus.INPROGRESS, destinationState);
@@ -626,8 +457,8 @@ public class StateTransitionManagerUnitTest {
     CaseGroupStatus notEligible = CaseGroupStatus.NOTELIGIBLE;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(notEligible, CategoryDTO.CategoryName.EQ_LAUNCH);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(notEligible,
+        CategoryDTO.CategoryName.EQ_LAUNCH);
 
     // Then
     assertEquals(CaseGroupStatus.INPROGRESS, destinationState);
@@ -639,8 +470,8 @@ public class StateTransitionManagerUnitTest {
     CaseGroupStatus unknownEligibility = CaseGroupStatus.UNKNOWNELIGIBILITY;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(unknownEligibility, CategoryDTO.CategoryName.EQ_LAUNCH);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(unknownEligibility,
+        CategoryDTO.CategoryName.EQ_LAUNCH);
 
     // Then
     assertEquals(CaseGroupStatus.INPROGRESS, destinationState);
@@ -653,9 +484,8 @@ public class StateTransitionManagerUnitTest {
     CaseGroupStatus refusal = CaseGroupStatus.REFUSAL;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            refusal, CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(refusal,
+        CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED);
 
     // Then
     assertEquals(CaseGroupStatus.COMPLETE, destinationState);
@@ -667,9 +497,8 @@ public class StateTransitionManagerUnitTest {
     CaseGroupStatus otherNonResponse = CaseGroupStatus.OTHERNONRESPONSE;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            otherNonResponse, CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(otherNonResponse,
+        CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED);
 
     // Then
     assertEquals(CaseGroupStatus.COMPLETE, destinationState);
@@ -681,9 +510,8 @@ public class StateTransitionManagerUnitTest {
     CaseGroupStatus notEligible = CaseGroupStatus.NOTELIGIBLE;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            notEligible, CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(notEligible,
+        CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED);
 
     // Then
     assertEquals(CaseGroupStatus.COMPLETE, destinationState);
@@ -695,9 +523,8 @@ public class StateTransitionManagerUnitTest {
     CaseGroupStatus unknownEligibility = CaseGroupStatus.UNKNOWNELIGIBILITY;
 
     // When
-    CaseGroupStatus destinationState =
-        caseGroupStateMachine.transition(
-            unknownEligibility, CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED);
+    CaseGroupStatus destinationState = caseGroupStateMachine.transition(unknownEligibility,
+        CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED);
 
     // Then
     assertEquals(CaseGroupStatus.COMPLETE, destinationState);

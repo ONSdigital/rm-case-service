@@ -120,13 +120,6 @@
   },
   {
     "group": null,
-    "categoryName": "RESPONDENT_EMAIL_AMENDED",
-    "longDescription": "Respondent Email Amended",
-    "shortDescription": "Respondent Email Amended",
-    "role": null
-  },
-  {
-    "group": null,
     "categoryName": "RESPONDENT_ENROLED",
     "longDescription": "Respondent Enroled",
     "shortDescription": "Respondent Enroled",
