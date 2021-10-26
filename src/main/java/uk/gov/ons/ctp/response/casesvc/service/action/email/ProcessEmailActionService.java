@@ -74,8 +74,7 @@ public class ProcessEmailActionService {
         .info("Processing email cases");
     SurveyDTO survey = actionService.getSurvey(collectionExerciseDTO.getSurveyId());
     emailCases.parallelStream()
-        .filter(
-            caseAction -> actionService.isActionable(caseAction, actionTemplate, eventTag))
+        .filter(caseAction -> actionService.isActionable(caseAction, actionTemplate, eventTag))
         .forEach(
             caseAction ->
                 processEmailCase(
@@ -143,7 +142,7 @@ public class ProcessEmailActionService {
       log.with("caseId", actionCaseId)
           .with("actionTemplate", templateType)
           .with("actionHandler", templateHandler)
-              .with("exception", e)
+          .with("exception", e)
           .warn("Processing Email Event FAILED.");
       isSuccess = false;
       asyncEmailCallStatus.set(false);
