@@ -2,10 +2,10 @@ databaseChangeLog:
 
   - changeSet:
       id: 30-1
-      author: Matt Crocker
+      author: Amit Sinha
       changes:
         - sqlFile:
-            comment: Removing more unused case categories
-            path: remove_more_unused_categories.sql
+            comment: Modifying tables case_action_event, case_action_template and adding case_action_event_request
+            path: case_action_event_request_status.sql
             relativeToChangelogFile: true
             splitStatements: false

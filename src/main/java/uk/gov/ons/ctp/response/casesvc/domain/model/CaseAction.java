@@ -1,20 +1,26 @@
 package uk.gov.ons.ctp.response.casesvc.domain.model;
 
+import java.math.BigInteger;
 import java.util.UUID;
 import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 
 @Entity
-@Builder
+@Data
 @AllArgsConstructor
+@Builder
 @NoArgsConstructor
 @Table(name = "case_action", schema = "casesvc")
 public class CaseAction {
 
   @Id
+  @Column(name = "id")
+  private BigInteger id;
+
   @Column(name = "collection_exercise_id")
   private UUID collectionExerciseId;
 

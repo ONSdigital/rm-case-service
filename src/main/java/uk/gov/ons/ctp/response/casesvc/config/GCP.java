@@ -9,4 +9,7 @@ public class GCP {
   String receiptSubscription;
   String caseNotificationTopic;
   String caseNotificationSubscription;
+  String notifyTopic;
+  String printFileTopic;
+  Bucket bucket;
 }

@@ -217,6 +217,38 @@ spec:
             value: "$(SECURITY_USER_NAME)"
           - name: COLLECTION_EXERCISE_SVC_CONNECTION_CONFIG_PASSWORD
             value: "$(SECURITY_USER_PASSWORD)"
+          - name: PARTY_SVC_CONNECTION_CONFIG_HOST
+            {{- if .Values.dns.enabled }}
+            value: "party.{{ .Values.namespace }}.svc.cluster.local"
+            {{- else }}
+            value: "$(PARTY_SERVICE_HOST)"
+            {{- end }}
+          - name: PARTY_SVC_CONNECTION_CONFIG_PORT
+            {{- if .Values.dns.enabled }}
+            value: "{{ .Values.dns.wellKnownPort }}"
+            {{- else }}
+            value: "$(PARTY_SERVICE_PORT)"
+            {{- end }}
+          - name: PARTY_SVC_CONNECTION_CONFIG_USERNAME
+            value: "$(SECURITY_USER_NAME)"
+          - name: PARTY_SVC_CONNECTION_CONFIG_PASSWORD
+            value: "$(SECURITY_USER_PASSWORD)"
+          - name: SURVEY_SVC_CONNECTION_CONFIG_HOST
+            {{- if .Values.dns.enabled }}
+            value: "survey.{{ .Values.namespace }}.svc.cluster.local"
+            {{- else }}
+            value: "$(SURVEY_SERVICE_HOST)"
+            {{- end }}
+          - name: SURVEY_SVC_CONNECTION-CONFIG_PORT
+            {{- if .Values.dns.enabled }}
+            value: "{{ .Values.dns.wellKnownPort }}"
+            {{- else }}
+            value: "$(SURVEY_SERVICE_PORT)"
+            {{- end }}
+          - name: SURVEY_SVC_CONNECTION_CONFIG_USERNAME
+            value: "$(SECURITY_USER_NAME)"
+          - name: SURVEY_SVC_CONNECTION_CONFIG_PASSWORD
+            value: "$(SECURITY_USER_PASSWORD)"
           - name: CASE_DISTRIBUTION_DELAY_MILLI_SECONDS
             value: "30000"
           - name: SPRING_LIQUIBASE_USER
@@ -253,5 +285,13 @@ spec:
             value: "{{ .Values.gcp.caseNotificationSubscription }}"
           - name: SPRING_CLOUD_GCP_PROJECTID
             value: "{{ .Values.gcp.project }}"
+          - name: GCP_BUCKET_NAME
+            value: "{{ .Values.gcp.bucket.name }}"
+          - name: GCP_BUCKET_PREFIX
+            value: "{{ .Values.gcp.bucket.prefix }}"
+          - name: GCP_NOTIFYTOPIC
+            value: "{{ .Values.gcp.notifyTopic }}"
+          - name: GCP_PRINTFILETOPIC
+            value: "{{ .Values.gcp.printFileTopic }}"
           resources:
             {{- toYaml .Values.resources.application | nindent 12 }}
