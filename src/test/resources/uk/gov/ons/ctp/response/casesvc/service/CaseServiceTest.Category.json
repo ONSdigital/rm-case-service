@@ -99,6 +99,28 @@
     "eventType": "DEACTIVATED"
   },
   {
+    "group": "general",
+    "categoryName": "PHYSICALLY_OR_MENTALLY_UNABLE",
+    "longDescription": "Physically or Mentally Unable",
+    "shortDescription": "Physically or Mentally Unable",
+    "role": "collect-general-escalate, collect-csos, collect-admins",
+    "generatedActionType": "GE_ESCALATION",
+    "newCaseSampleUnitType": null,
+    "oldCaseSampleUnitTypes": "H,HI,B,BI",
+    "eventType": null
+  },
+  {
+    "group": null,
+    "categoryName": "LACK_OF_COMPUTER_INTERNET_ACCESS ",
+    "longDescription": "Lack of Computer or Internet Access",
+    "shortDescription": "Lack of Computer or Internet Access",
+    "role": "collect-csos, collect-admins",
+    "generatedActionType": null,
+    "newCaseSampleUnitType": "H",
+    "oldCaseSampleUnitTypes": "H",
+    "eventType": "DISABLED"
+  },
+  {
     "group": null,
     "categoryName": "NO_LONGER_REQUIRED",
     "longDescription": "No Longer Required",

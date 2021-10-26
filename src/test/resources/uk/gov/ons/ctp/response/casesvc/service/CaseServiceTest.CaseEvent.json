@@ -19,6 +19,15 @@
   },
   {
     "createdDateTime": 1460736159699,
+    "caseEventPK": 3,
+    "caseFK": 2,
+    "category": "PHYSICALLY_OR_MENTALLY_UNABLE",
+    "subCategory": "subcat",
+    "createdBy": "me",
+    "description": "desc"
+  },
+  {
+    "createdDateTime": 1460736159699,
     "caseEventPK": 5,
     "caseFK": 1,
     "category": "ONLINE_QUESTIONNAIRE_RESPONSE",

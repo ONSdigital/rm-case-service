@@ -113,9 +113,16 @@
   },
   {
     "group": null,
-    "categoryName": "RESPONDENT_ACCOUNT_CREATED",
-    "longDescription": "Account created for respondent",
-    "shortDescription": "Account created for respondent",
+    "categoryName": "LACK_OF_COMPUTER_INTERNET_ACCESS",
+    "longDescription": "Lack of Computer or Internet Access",
+    "shortDescription": "Lack of Computer or Internet Access",
+    "role": null
+  },
+  {
+    "group": null,
+    "categoryName": "RESPONDENT_EMAIL_AMENDED",
+    "longDescription": "Respondent Email Amended",
+    "shortDescription": "Respondent Email Amended",
     "role": null
   },
   {

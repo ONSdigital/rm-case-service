@@ -24,6 +24,18 @@
     }
   },
   {
+    "createdDateTime": 1460736159899,
+    "caseEventPK": 3,
+    "caseFK": 3,
+    "category": "PHYSICALLY_OR_MENTALLY_UNABLE",
+    "subCategory": "subcat 3",
+    "createdBy": "me 3",
+    "description": "desc 3",
+    "metadata": {
+      "partyId": "3b136c4b-7a14-4904-9e01-13364dd7b972"
+    }
+  },
+  {
     "createdDateTime": 1460736159699,
     "caseEventPK": 4,
     "caseFK": 9,
