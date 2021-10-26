@@ -113,20 +113,6 @@
   },
   {
     "group": null,
-    "categoryName": "LACK_OF_COMPUTER_INTERNET_ACCESS",
-    "longDescription": "Lack of Computer or Internet Access",
-    "shortDescription": "Lack of Computer or Internet Access",
-    "role": null
-  },
-  {
-    "group": null,
-    "categoryName": "RESPONDENT_EMAIL_AMENDED",
-    "longDescription": "Respondent Email Amended",
-    "shortDescription": "Respondent Email Amended",
-    "role": null
-  },
-  {
-    "group": null,
     "categoryName": "RESPONDENT_ENROLED",
     "longDescription": "Respondent Enroled",
     "shortDescription": "Respondent Enroled",
