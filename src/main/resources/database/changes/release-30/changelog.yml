@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 30-1
+      author: Matt Crocker
+      changes:
+        - sqlFile:
+            comment: Removing more unused case categories
+            path: remove_more_unused_categories.sql
+            relativeToChangelogFile: true
+            splitStatements: false
