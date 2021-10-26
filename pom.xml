@@ -278,6 +278,12 @@
             <version>2.3.3</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-storage</artifactId>
+            <version>1.108.0</version>
+        </dependency>
+
         <!-- Third party end -->
 
         <!-- Testing -->
