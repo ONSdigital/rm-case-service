@@ -38,12 +38,14 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
     // From replacement init on replaced to actionable
     builder.put(CaseState.REPLACEMENT_INIT, CaseEvent.REPLACED, CaseState.ACTIONABLE);
 
-    // From actionable on actionplan changed, deactivated, disabled to actionable, inactionable
+    // From actionable on actionplan changed, deactivated, disabled to actionable,
+    // inactionable
     builder.put(CaseState.ACTIONABLE, CaseEvent.ACTIONPLAN_CHANGED, CaseState.ACTIONABLE);
     builder.put(CaseState.ACTIONABLE, CaseEvent.DEACTIVATED, CaseState.INACTIONABLE);
     builder.put(CaseState.ACTIONABLE, CaseEvent.DISABLED, CaseState.INACTIONABLE);
 
-    // From inactionable on actionplan changed, deactivated, disabled to inactionable
+    // From inactionable on actionplan changed, deactivated, disabled to
+    // inactionable
     builder.put(CaseState.INACTIONABLE, CaseEvent.ACTIVATED, CaseState.ACTIONABLE);
     builder.put(CaseState.INACTIONABLE, CaseEvent.ACTIONPLAN_CHANGED, CaseState.INACTIONABLE);
     builder.put(CaseState.INACTIONABLE, CaseEvent.DEACTIVATED, CaseState.INACTIONABLE);
@@ -57,8 +59,10 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
     ImmutableTable.Builder<CaseGroupStatus, CategoryDTO.CategoryName, CaseGroupStatus> builder =
         ImmutableTable.builder();
 
-    // From not started on ci downloaded, eq launch, successful response upload, completed by phone
-    // to in progress, in progress, completed, completed by phone, no longer required
+    // From not started on ci downloaded, eq launch, successful response upload,
+    // completed by phone
+    // to in progress, in progress, completed, completed by phone, no longer
+    // required
     builder.put(
         CaseGroupStatus.NOTSTARTED,
         CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED,
@@ -107,15 +111,7 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CaseGroupStatus.OTHERNONRESPONSE);
     builder.put(
         CaseGroupStatus.NOTSTARTED,
-        CategoryDTO.CategoryName.LANGUAGE_DIFFICULTIES,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.NOTSTARTED,
         CategoryDTO.CategoryName.LACK_OF_COMPUTER_INTERNET_ACCESS,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.NOTSTARTED,
-        CategoryDTO.CategoryName.TOO_BUSY,
         CaseGroupStatus.OTHERNONRESPONSE);
     builder.put(
         CaseGroupStatus.NOTSTARTED,
@@ -130,15 +126,7 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CaseGroupStatus.OTHERNONRESPONSE);
     builder.put(
         CaseGroupStatus.INPROGRESS,
-        CategoryDTO.CategoryName.LANGUAGE_DIFFICULTIES,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.INPROGRESS,
         CategoryDTO.CategoryName.LACK_OF_COMPUTER_INTERNET_ACCESS,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.INPROGRESS,
-        CategoryDTO.CategoryName.TOO_BUSY,
         CaseGroupStatus.OTHERNONRESPONSE);
     builder.put(
         CaseGroupStatus.INPROGRESS,
@@ -153,15 +141,7 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CaseGroupStatus.OTHERNONRESPONSE);
     builder.put(
         CaseGroupStatus.COMPLETE,
-        CategoryDTO.CategoryName.LANGUAGE_DIFFICULTIES,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.COMPLETE,
         CategoryDTO.CategoryName.LACK_OF_COMPUTER_INTERNET_ACCESS,
-        CaseGroupStatus.OTHERNONRESPONSE);
-    builder.put(
-        CaseGroupStatus.COMPLETE,
-        CategoryDTO.CategoryName.TOO_BUSY,
         CaseGroupStatus.OTHERNONRESPONSE);
     builder.put(
         CaseGroupStatus.COMPLETE,
@@ -172,10 +152,6 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
     // From not started
     builder.put(
         CaseGroupStatus.NOTSTARTED,
-        CategoryDTO.CategoryName.NON_RESIDENTIAL_ADDRESS,
-        CaseGroupStatus.NOTELIGIBLE);
-    builder.put(
-        CaseGroupStatus.NOTSTARTED,
         CategoryDTO.CategoryName.ADDRESS_OCCUPIED_NO_RESIDENT,
         CaseGroupStatus.NOTELIGIBLE);
 
@@ -183,19 +159,11 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
     // From in progress
     builder.put(
         CaseGroupStatus.INPROGRESS,
-        CategoryDTO.CategoryName.NON_RESIDENTIAL_ADDRESS,
-        CaseGroupStatus.NOTELIGIBLE);
-    builder.put(
-        CaseGroupStatus.INPROGRESS,
         CategoryDTO.CategoryName.ADDRESS_OCCUPIED_NO_RESIDENT,
         CaseGroupStatus.NOTELIGIBLE);
 
     // Transitions to not eligible
     // From in progress
-    builder.put(
-        CaseGroupStatus.COMPLETE,
-        CategoryDTO.CategoryName.NON_RESIDENTIAL_ADDRESS,
-        CaseGroupStatus.NOTELIGIBLE);
     builder.put(
         CaseGroupStatus.COMPLETE,
         CategoryDTO.CategoryName.ADDRESS_OCCUPIED_NO_RESIDENT,
@@ -241,7 +209,8 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED,
         CaseGroupStatus.COMPLETE);
 
-    // From in progress on successful response upload, completed by phone to completed, completed by
+    // From in progress on successful response upload, completed by phone to
+    // completed, completed by
     // phone, no longer required
     builder.put(
         CaseGroupStatus.INPROGRESS,

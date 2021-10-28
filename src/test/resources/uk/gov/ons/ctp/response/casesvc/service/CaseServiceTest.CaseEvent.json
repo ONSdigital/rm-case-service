@@ -21,7 +21,7 @@
     "createdDateTime": 1460736159699,
     "caseEventPK": 3,
     "caseFK": 2,
-    "category": "TOO_BUSY",
+    "category": "PHYSICALLY_OR_MENTALLY_UNABLE",
     "subCategory": "subcat",
     "createdBy": "me",
     "description": "desc"
