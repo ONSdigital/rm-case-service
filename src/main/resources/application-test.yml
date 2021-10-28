@@ -24,7 +24,7 @@ survey-svc:
     retry-attempts: 5
 
 action-svc:
-  deprecated: true
+  deprecated: false
   connection-config:
     port: 38151
 

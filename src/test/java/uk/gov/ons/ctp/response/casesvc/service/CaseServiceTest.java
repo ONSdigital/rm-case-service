@@ -33,6 +33,7 @@ import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
 import uk.gov.ons.ctp.response.casesvc.client.ActionSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.InternetAccessCodeSvcClient;
+import uk.gov.ons.ctp.response.casesvc.config.ActionSvc;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.config.InternetAccessCodeSvc;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
@@ -112,15 +113,13 @@ public class CaseServiceTest {
   @Mock private CaseGroupRepository caseGroupRepo;
   @Mock private CaseIacAuditRepository caseIacAuditRepo;
   @Mock private CategoryRepository categoryRepo;
-
+  @Mock private AppConfig appConfig;
   @Mock private ActionSvcClient actionSvcClient;
   @Mock private CaseGroupService caseGroupService;
   @Mock private CaseGroupAuditService caseGroupAuditService;
   @Mock private CollectionExerciseSvcClient collectionExerciseSvcClient;
   @Mock private InternetAccessCodeSvcClient internetAccessCodeSvcClient;
   @Mock private CaseIACService caseIacAuditService;
-
-  @Mock private AppConfig appConfig;
   @Mock private CaseNotificationPublisher notificationPublisher;
   @Mock private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
   @Spy private MapperFacade mapperFacade = new CaseSvcBeanMapper();
@@ -151,6 +150,8 @@ public class CaseServiceTest {
     mockAppConfigUse();
     mockupCaseEventRepo();
     mockupCollectionExerciseServiceClient();
+    ActionSvc actionSvc = new ActionSvc();
+    actionSvc.setDeprecated(false);
   }
 
   /**
@@ -1146,5 +1147,8 @@ public class CaseServiceTest {
     InternetAccessCodeSvc iacSvc = new InternetAccessCodeSvc();
     iacSvc.setIacPutPath(IAC_SVC_PUT_PATH);
     iacSvc.setIacPostPath(IAC_SVC_POST_PATH);
+    ActionSvc actionSvc = new ActionSvc();
+    actionSvc.setDeprecated(false);
+    when(appConfig.getActionSvc()).thenReturn(actionSvc);
   }
 }

@@ -7,6 +7,7 @@ import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 
 /**
  * This bean will have the caseDistributor injected into it by spring on constructions. It will then
@@ -17,6 +18,7 @@ public class CaseDistributionScheduler implements HealthIndicator {
   private static final Logger log = LoggerFactory.getLogger(CaseDistributionScheduler.class);
 
   @Autowired private CaseDistributor caseDistributorImpl;
+  @Autowired private CaseService caseService;
 
   private CaseDistributionInfo distribInfo = new CaseDistributionInfo();
 
@@ -28,10 +30,14 @@ public class CaseDistributionScheduler implements HealthIndicator {
   /** Create the scheduler for the Case Distributor */
   @Scheduled(fixedDelayString = "#{appConfig.caseDistribution.delayMilliSeconds}")
   public void run() {
-    try {
-      distribInfo = caseDistributorImpl.distribute();
-    } catch (Exception e) {
-      log.error("Exception in case distributor", e);
+    if (!caseService.isDeprecated()) {
+      try {
+        distribInfo = caseDistributorImpl.distribute();
+      } catch (Exception e) {
+        log.error("Exception in case distributor", e);
+      }
+    } else {
+      log.info("Action event will be performed by case itself.");
     }
   }
 }
