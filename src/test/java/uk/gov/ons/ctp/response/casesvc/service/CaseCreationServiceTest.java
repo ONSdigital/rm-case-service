@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -18,6 +19,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.ons.ctp.response.casesvc.client.ActionSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
+import uk.gov.ons.ctp.response.casesvc.config.ActionSvc;
+import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
@@ -44,6 +47,14 @@ public class CaseCreationServiceTest {
   @Mock private CaseGroupService caseGroupService;
   @Mock private CollectionExerciseSvcClient collectionExerciseSvcClient;
   @Mock private ActionSvcClient actionSvcClient;
+  @Mock private AppConfig mockAppConfig;
+
+  @Before
+  public void setActionDeprecatedFalse() {
+    ActionSvc actionSvc = new ActionSvc();
+    actionSvc.setDeprecated(false);
+    when(mockAppConfig.getActionSvc()).thenReturn(actionSvc);
+  }
 
   /**
    * Create a Case and a Casegroup from the message that would be on the Case Delivery Queue. No

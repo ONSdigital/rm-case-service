@@ -62,7 +62,7 @@ dns:
   enabled: false
   wellKnownPort: 8080
 
-deprecateAction: false
+deprecateAction: true
 
 gcp:
   project: ras-rm-sandbox

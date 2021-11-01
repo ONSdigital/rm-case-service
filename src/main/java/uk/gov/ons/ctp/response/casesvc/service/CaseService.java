@@ -11,12 +11,14 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.response.casesvc.client.ActionSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.InternetAccessCodeSvcClient;
+import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
@@ -56,6 +58,8 @@ public class CaseService {
 
   private static final int TRANSACTION_TIMEOUT = 30;
 
+  private final AppConfig appConfig;
+
   private CaseRepository caseRepo;
   private CaseEventRepository caseEventRepo;
   private CaseGroupRepository caseGroupRepo;
@@ -72,6 +76,7 @@ public class CaseService {
 
   /** Constructor for CaseService */
   public CaseService(
+      final AppConfig appConfig,
       final CaseRepository caseRepo,
       final CaseEventRepository caseEventRepo,
       final CaseGroupRepository caseGroupRepo,
@@ -84,6 +89,7 @@ public class CaseService {
       final CaseIACService caseIacAuditService,
       final CaseNotificationPublisher notificationPublisher,
       final StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager) {
+    this.appConfig = appConfig;
     this.caseRepo = caseRepo;
     this.caseEventRepo = caseEventRepo;
     this.caseGroupRepo = caseGroupRepo;
@@ -434,8 +440,10 @@ public class CaseService {
           if (caze.getSampleUnitType() == SampleUnitType.B) {
             caze.setActiveEnrolment(enrolments);
             caseRepo.saveAndFlush(caze);
-            notificationPublisher.sendNotification(
-                prepareCaseNotification(caze, CaseDTO.CaseEvent.ACTIONPLAN_CHANGED));
+            if (!isDeprecated()) {
+              notificationPublisher.sendNotification(
+                  prepareCaseNotification(caze, CaseDTO.CaseEvent.ACTIONPLAN_CHANGED));
+            }
           }
         }
       }
@@ -443,7 +451,7 @@ public class CaseService {
   }
 
   @Transactional
-  public void createInitialCase(SampleUnitParent sampleUnitParent) {
+  public void createInitialCase(SampleUnitParent sampleUnitParent) throws CTPException {
     if (caseGroupService.isCaseGroupUnique(sampleUnitParent)) {
       CaseGroup newCaseGroup = createNewCaseGroup(sampleUnitParent);
       log.with("caseGroupId", newCaseGroup.getId())
@@ -458,7 +466,6 @@ public class CaseService {
       if (sampleUnitParent.getSampleUnitChildren() != null
           && !sampleUnitParent.getSampleUnitChildren().getSampleUnitchildren().isEmpty()) {
         parentCase.setState(CaseState.INACTIONABLE);
-
         for (SampleUnit sampleUnitChild :
             sampleUnitParent.getSampleUnitChildren().getSampleUnitchildren()) {
           Case childCase = createNewCase(sampleUnitChild, newCaseGroup);
@@ -470,6 +477,10 @@ public class CaseService {
               .with("collectionExericseId", sampleUnitParent.getCollectionExerciseId())
               .debug("New child case created");
           updateCaseWithIACs(childCase, sampleUnitParent.getSampleUnitRef());
+
+          if (isDeprecated()) {
+            processCase(childCase);
+          }
         }
       }
       caseRepo.saveAndFlush(parentCase);
@@ -480,7 +491,37 @@ public class CaseService {
           .with("collectionExericseId", sampleUnitParent.getCollectionExerciseId())
           .info("New Case created");
       updateCaseWithIACs(parentCase, sampleUnitParent.getSampleUnitRef());
+      if (isDeprecated()) {
+        processCase(parentCase);
+      }
     }
+  }
+
+  @Async
+  private void processCase(final Case caze) throws CTPException {
+    log.with("case_id", caze.getId()).debug("Processing case");
+
+    CaseDTO.CaseEvent event = null;
+    CaseState initialState = caze.getState();
+    switch (caze.getState()) {
+      case SAMPLED_INIT:
+        event = CaseDTO.CaseEvent.ACTIVATED;
+        break;
+      case REPLACEMENT_INIT:
+        event = CaseDTO.CaseEvent.REPLACED;
+        break;
+      default:
+        log.with("initial_state", initialState).error("Unexpected state found");
+    }
+
+    Case updatedCase = transitionCase(caze, event);
+    caseRepo.saveAndFlush(updatedCase);
+  }
+
+  private Case transitionCase(final Case caze, final CaseDTO.CaseEvent event) throws CTPException {
+    CaseState nextState = caseSvcStateTransitionManager.transition(caze.getState(), event);
+    caze.setState(nextState);
+    return caze;
   }
 
   /**
@@ -617,8 +658,10 @@ public class CaseService {
       if (!oldState.equals(newState)) {
         targetCase.setState(newState);
         caseRepo.saveAndFlush(targetCase);
-        notificationPublisher.sendNotification(
-            prepareCaseNotification(targetCase, transitionEvent));
+        if (!isDeprecated()) {
+          notificationPublisher.sendNotification(
+              prepareCaseNotification(targetCase, transitionEvent));
+        }
       }
     }
   }
@@ -692,5 +735,9 @@ public class CaseService {
     } catch (IllegalArgumentException exc) {
       throw new CTPException(CTPException.Fault.BAD_REQUEST, exc.getMessage());
     }
+  }
+
+  public boolean isDeprecated() {
+    return appConfig.getActionSvc().isDeprecated();
   }
 }
