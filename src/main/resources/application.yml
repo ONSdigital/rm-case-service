@@ -161,6 +161,7 @@ gcp:
   receiptSubscription: ras-rm-receipt
   caseNotificationTopic: "test_topic"
   caseNotificationSubscription: "test_subscription"
+  collectionExerciseEventStatusTopic: "test_topic"
   printFileTopic: print-file-sinhaa
   notifyTopic: ras-rm-notify-sinhaa
   bucket:
