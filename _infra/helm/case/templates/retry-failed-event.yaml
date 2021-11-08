@@ -23,11 +23,11 @@ spec:
                       name: security-credentials
                       key: security-password
                 - name: APP_NAME
-                    {{- if .Values.dns.enabled }}
-                    value: "case.{{ .Values.namespace }}.svc.cluster.local"
-                    {{- else }}
-                    value: "$(CASE_SERVICE_HOST)"
-                    {{- end }}
+                  {{- if .Values.dns.enabled }}
+                  value: "case.{{ .Values.namespace }}.svc.cluster.local"
+                  {{- else }}
+                  value: "$(CASE_SERVICE_HOST)"
+                  {{- end }}
                 - name: APP_PORT
                   value: "{{ .Values.service.port }}"
                 - name: TARGET
