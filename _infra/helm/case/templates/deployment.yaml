@@ -2,6 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+    env: {{ .Values.env }}
 spec:
   replicas: {{ .Values.replicas }}
   strategy:
