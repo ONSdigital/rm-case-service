@@ -45,7 +45,7 @@ services:
     ports:
     - "18681:8681"
     environment:
-    - PUBSUB_PROJECT1=ras-rm-dev,test_case_creation_topic:test_case_creation_subscription
+    - PUBSUB_PROJECT1=ras-rm-dev,test_case_creation_topic:test_case_creation_subscription,test_event_status_topic:test_event_status_subscription
 
   survey:
     container_name: survey-case-it

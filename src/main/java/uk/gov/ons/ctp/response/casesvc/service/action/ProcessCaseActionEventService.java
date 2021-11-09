@@ -111,6 +111,13 @@ public class ProcessCaseActionEventService {
     updateCollectionExerciseEventStatus(newRequest, Optional.of(event));
   }
 
+  /**
+   * sends action case event request current status to collection exercise
+   *
+   * @param request
+   * @param event
+   * @throws JsonProcessingException
+   */
   private void updateCollectionExerciseEventStatus(
       CaseActionEventRequest request, Optional<CaseActionEvent> event)
       throws JsonProcessingException {
@@ -131,7 +138,7 @@ public class ProcessCaseActionEventService {
     Instant instant = Instant.now();
     List<CaseActionEventRequest> existingRequests =
         actionEventRequestRepository.findByStatus(ActionEventRequestStatus.RETRY);
-    if (!existingRequests.isEmpty()) {
+    if (existingRequests.isEmpty()) {
       log.info("No events are pending retry. Will try again next time.");
       return;
     }
@@ -143,7 +150,7 @@ public class ProcessCaseActionEventService {
           .with("eventTag", existingRequest.getEventTag())
           .debug("Retry event is now in progress.");
       actionEventRequestRepository.save(existingRequest);
-      updateCollectionExerciseEventStatus(existingRequest, null);
+      updateCollectionExerciseEventStatus(existingRequest, Optional.empty());
       CaseActionEvent actionEvent = new CaseActionEvent();
       actionEvent.setTag(CaseActionEvent.EventTag.valueOf(existingRequest.getEventTag()));
       actionEvent.setCollectionExerciseID(existingRequest.getCollectionExerciseId());
@@ -175,7 +182,7 @@ public class ProcessCaseActionEventService {
             .debug("Retry event has failed.");
       }
       actionEventRequestRepository.save(existingRequest);
-      updateCollectionExerciseEventStatus(existingRequest, null);
+      updateCollectionExerciseEventStatus(existingRequest, Optional.empty());
     }
     log.info("retry Event finished");
   }
