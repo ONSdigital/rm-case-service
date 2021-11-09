@@ -32,7 +32,6 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionEventRequest;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseActionEventRequestRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
-import uk.gov.ons.ctp.response.casesvc.message.TestPubSubMessage;
 import uk.gov.ons.ctp.response.casesvc.representation.action.CaseActionEvent;
 import uk.gov.ons.ctp.response.casesvc.service.action.email.ProcessEmailActionService;
 import uk.gov.ons.ctp.response.casesvc.service.action.letter.ProcessLetterActionService;
@@ -120,7 +119,6 @@ public class CaseActionEventIT {
             processLetterActionService.processLetterService(
                 any(CollectionExerciseDTO.class), anyString(), any(Instant.class)))
         .thenReturn(new AsyncResult<>(true));
-    TestPubSubMessage message = new TestPubSubMessage();
     UUID collectionExerciseId = createCollectionData();
     UUID sampleUnitId = UUID.randomUUID();
     caseCreator.postSampleUnit("LMS0001", "H", sampleUnitId, collectionExerciseId);
@@ -144,9 +142,6 @@ public class CaseActionEventIT {
     Assert.assertEquals(
         CaseActionEventRequest.ActionEventRequestStatus.COMPLETED,
         caseActionEventRequestList.get(0).getStatus());
-    CaseActionEvent eventStatus = message.getPubSubCaseActionEventStatus();
-    Assert.assertEquals(
-        CaseActionEventRequest.ActionEventRequestStatus.COMPLETED, eventStatus.getStatus());
   }
 
   @Test
@@ -159,7 +154,6 @@ public class CaseActionEventIT {
             processEmailActionService.processEmailService(
                 any(CollectionExerciseDTO.class), anyString(), any(Instant.class)))
         .thenReturn(new AsyncResult<>(true));
-    TestPubSubMessage message = new TestPubSubMessage();
     UUID collectionExerciseId = createCollectionData();
     UUID sampleUnitId = UUID.randomUUID();
     caseCreator.postSampleUnit("LMS0001", "H", sampleUnitId, collectionExerciseId);
@@ -183,9 +177,6 @@ public class CaseActionEventIT {
     Assert.assertEquals(
         CaseActionEventRequest.ActionEventRequestStatus.COMPLETED,
         caseActionEventRequestList.get(0).getStatus());
-    CaseActionEvent eventStatus = message.getPubSubCaseActionEventStatus();
-    Assert.assertEquals(
-        CaseActionEventRequest.ActionEventRequestStatus.COMPLETED, eventStatus.getStatus());
   }
 
   @Test
@@ -198,7 +189,6 @@ public class CaseActionEventIT {
             processLetterActionService.processLetterService(
                 any(CollectionExerciseDTO.class), anyString(), any(Instant.class)))
         .thenReturn(new AsyncResult<>(true));
-    TestPubSubMessage message = new TestPubSubMessage();
     UUID collectionExerciseId = createCollectionData();
     UUID sampleUnitId = UUID.randomUUID();
     caseCreator.postSampleUnit("LMS0001", "H", sampleUnitId, collectionExerciseId);
@@ -222,9 +212,6 @@ public class CaseActionEventIT {
     Assert.assertEquals(
         CaseActionEventRequest.ActionEventRequestStatus.RETRY,
         caseActionEventRequestList.get(0).getStatus());
-    CaseActionEvent eventStatus = message.getPubSubCaseActionEventStatus();
-    Assert.assertEquals(
-        CaseActionEventRequest.ActionEventRequestStatus.RETRY, eventStatus.getStatus());
     HttpResponse retryEventResponse =
         Unirest.post("http://localhost:" + port + "/retry-event")
             .basicAuth("admin", "secret")
