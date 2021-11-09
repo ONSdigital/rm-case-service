@@ -75,7 +75,7 @@ public class CaseActionEventIT {
   public static void setUp() throws InterruptedException {
     ObjectMapper value = new ObjectMapper();
     UnirestInitialiser.initialise(value);
-    Thread.sleep(20000);
+    Thread.sleep(2000);
   }
 
   @Before
@@ -136,7 +136,7 @@ public class CaseActionEventIT {
             .body(caseActionEvent)
             .asString();
     Assert.assertEquals(202, processEventResponse.getStatus());
-    Thread.sleep(10000);
+    Thread.sleep(5000);
     List<CaseActionEventRequest> caseActionEventRequestList =
         actionEventRequestRepository.findByCollectionExerciseIdAndEventTag(
             collectionExerciseId, "go_live");
@@ -175,7 +175,7 @@ public class CaseActionEventIT {
             .body(caseActionEvent)
             .asString();
     Assert.assertEquals(202, processEventResponse.getStatus());
-    Thread.sleep(10000);
+    Thread.sleep(5000);
     List<CaseActionEventRequest> caseActionEventRequestList =
         actionEventRequestRepository.findByCollectionExerciseIdAndEventTag(
             collectionExerciseId, "mps");
@@ -214,7 +214,7 @@ public class CaseActionEventIT {
             .body(caseActionEvent)
             .asString();
     Assert.assertEquals(202, processEventResponse.getStatus());
-    Thread.sleep(10000);
+    Thread.sleep(5000);
     List<CaseActionEventRequest> caseActionEventRequestList =
         actionEventRequestRepository.findByCollectionExerciseIdAndEventTag(
             collectionExerciseId, "go_live");
@@ -232,7 +232,7 @@ public class CaseActionEventIT {
             .body(caseActionEvent)
             .asString();
     Assert.assertEquals(202, retryEventResponse.getStatus());
-    Thread.sleep(10000);
+    Thread.sleep(5000);
     List<CaseActionEventRequest> retryCaseActionEventRequestList =
         actionEventRequestRepository.findByCollectionExerciseIdAndEventTag(
             collectionExerciseId, "go_live");
