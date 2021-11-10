@@ -126,8 +126,9 @@ public class ProcessCaseActionEventService {
       caseActionEvent.setCollectionExerciseID(request.getCollectionExerciseId());
       caseActionEvent.setTag(CaseActionEvent.EventTag.valueOf(request.getEventTag()));
     }
-    log.with("event", event).info("updating collection exercise event status");
-    collectionExerciseEventStatusUpdate.sendToPubSub(objectMapper.writeValueAsString(event));
+    log.with("event", caseActionEvent).info("updating collection exercise event status");
+    collectionExerciseEventStatusUpdate.sendToPubSub(
+        objectMapper.writeValueAsString(caseActionEvent));
   }
 
   @Async
