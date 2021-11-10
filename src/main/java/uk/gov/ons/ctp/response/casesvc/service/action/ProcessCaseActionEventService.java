@@ -78,7 +78,6 @@ public class ProcessCaseActionEventService {
     log.with("collectionExerciseId", collectionExerciseId)
         .with("eventTag", eventTag)
         .info("Requested event is now in progress.");
-    updateCollectionExerciseEventStatus(newRequest, Optional.of(event));
     log.with("collectionExerciseId", collectionExerciseId)
         .with("eventTag", eventTag)
         .debug("Requested event will now trigger email processing asynchronously.");
@@ -150,7 +149,6 @@ public class ProcessCaseActionEventService {
           .with("eventTag", existingRequest.getEventTag())
           .debug("Retry event is now in progress.");
       actionEventRequestRepository.save(existingRequest);
-      updateCollectionExerciseEventStatus(existingRequest, Optional.empty());
       CaseActionEvent actionEvent = new CaseActionEvent();
       actionEvent.setTag(CaseActionEvent.EventTag.valueOf(existingRequest.getEventTag()));
       actionEvent.setCollectionExerciseID(existingRequest.getCollectionExerciseId());

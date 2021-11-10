@@ -54,9 +54,9 @@ public class ProcessEventServiceTest {
     actionEvent.setCollectionExerciseID(collectionExerciseId);
     actionEvent.setTag(CaseActionEvent.EventTag.go_live);
     processEventService.processEvents(actionEvent);
-    verify(caseActionEventRequestRepository, atLeast(2)).save(any());
-    verify(caseActionEventRequestRepository, atMost(2)).save(any());
-    verify(collectionExerciseEventStatusUpdate, atLeast(2)).sendToPubSub(any());
+    verify(caseActionEventRequestRepository, times(2)).save(any());
+    verify(caseActionEventRequestRepository, times(2)).save(any());
+    verify(collectionExerciseEventStatusUpdate, times(1)).sendToPubSub(any());
   }
 
   @Test
@@ -76,8 +76,8 @@ public class ProcessEventServiceTest {
     actionEvent.setCollectionExerciseID(collectionExerciseId);
     actionEvent.setTag(CaseActionEvent.EventTag.go_live);
     processEventService.processEvents(actionEvent);
-    verify(caseActionEventRequestRepository, atLeast(2)).save(any());
-    verify(caseActionEventRequestRepository, atMost(2)).save(any());
-    verify(collectionExerciseEventStatusUpdate, atLeast(2)).sendToPubSub(any());
+    verify(caseActionEventRequestRepository, times(2)).save(any());
+    verify(caseActionEventRequestRepository, times(2)).save(any());
+    verify(collectionExerciseEventStatusUpdate, times(1)).sendToPubSub(any());
   }
 }
