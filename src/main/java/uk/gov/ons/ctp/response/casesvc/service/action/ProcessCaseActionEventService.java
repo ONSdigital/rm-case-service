@@ -7,7 +7,6 @@ import com.godaddy.logging.LoggerFactory;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -107,7 +106,7 @@ public class ProcessCaseActionEventService {
     log.with("collectionExerciseId", collectionExerciseId)
         .with("eventTag", eventTag)
         .info("Processing finished.");
-    updateCollectionExerciseEventStatus(newRequest, Optional.of(event));
+    updateCollectionExerciseEventStatus(newRequest, event);
   }
 
   /**
@@ -118,15 +117,14 @@ public class ProcessCaseActionEventService {
    * @throws JsonProcessingException
    */
   private void updateCollectionExerciseEventStatus(
-      CaseActionEventRequest request, Optional<CaseActionEvent> event)
-      throws JsonProcessingException {
-    CaseActionEvent caseActionEvent = event.isPresent() ? event.get() : new CaseActionEvent();
+      CaseActionEventRequest request, CaseActionEvent event) throws JsonProcessingException {
+    CaseActionEvent caseActionEvent = (null != event) ? event : new CaseActionEvent();
     caseActionEvent.setStatus(request.getStatus());
-    if (event.isEmpty()) {
+    if (event == null) {
       caseActionEvent.setCollectionExerciseID(request.getCollectionExerciseId());
       caseActionEvent.setTag(CaseActionEvent.EventTag.valueOf(request.getEventTag()));
     }
-    log.with("event", caseActionEvent).info("updating collection exercise event status");
+    log.with("event", event).info("updating collection exercise event status");
     collectionExerciseEventStatusUpdate.sendToPubSub(
         objectMapper.writeValueAsString(caseActionEvent));
   }
@@ -181,7 +179,7 @@ public class ProcessCaseActionEventService {
             .debug("Retry event has failed.");
       }
       actionEventRequestRepository.save(existingRequest);
-      updateCollectionExerciseEventStatus(existingRequest, Optional.empty());
+      updateCollectionExerciseEventStatus(existingRequest, null);
     }
     log.info("retry Event finished");
   }
