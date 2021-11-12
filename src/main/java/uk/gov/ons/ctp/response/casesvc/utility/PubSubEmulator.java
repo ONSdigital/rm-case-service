@@ -69,9 +69,9 @@ public class PubSubEmulator {
         .build();
   }
 
-  public Subscriber getEmulatorSubscriberForCaseCreationNotification(MessageReceiver receiver) {
+  public Subscriber getEmulatorSubscriberForCaseActionEventStatus(MessageReceiver receiver) {
     return Subscriber.newBuilder(
-            ProjectSubscriptionName.of(PROJECT_ID, CASE_CREATION_SUBSCRIPTION_ID), receiver)
+            ProjectSubscriptionName.of(PROJECT_ID, "test_event_status_subscription"), receiver)
         .setChannelProvider(CHANNEL_PROVIDER)
         .setCredentialsProvider(CREDENTIAL_PROVIDER)
         .build();

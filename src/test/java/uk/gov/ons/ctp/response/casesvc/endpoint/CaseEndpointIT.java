@@ -27,6 +27,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.gov.ons.ctp.response.casesvc.CaseCreator;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.message.TestPubSubMessage;
 import uk.gov.ons.ctp.response.casesvc.representation.*;
@@ -57,6 +58,7 @@ public class CaseEndpointIT {
   @Autowired private CollectionExerciseSvcClient collectionExerciseSvcClient;
   @Autowired private CaseRepository caseRepository;
   @Autowired private CaseEventRepository caseEventRepository;
+  @Autowired private CaseGroupRepository caseGroupRepository;
 
   public CaseEndpointIT() throws IOException {}
 
@@ -72,6 +74,7 @@ public class CaseEndpointIT {
     pubSubEmulator.testInit();
     caseEventRepository.deleteAll();
     caseRepository.deleteAll();
+    caseGroupRepository.deleteAll();
   }
 
   @After

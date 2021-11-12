@@ -44,5 +44,5 @@ public class CaseActionEventRequest implements Serializable {
   @Enumerated(EnumType.STRING)
   @Column(name = "status")
   @NotNull
-  private CaseActionEventRequest.ActionEventRequestStatus status;
+  private ActionEventRequestStatus status;
 }

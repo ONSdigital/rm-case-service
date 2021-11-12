@@ -282,6 +282,8 @@ spec:
             value: "{{ .Values.gcp.project }}"
           - name: GCP_CASENOTIFICATIONTOPIC
             value: "{{ .Values.gcp.caseNotificationTopic }}"
+          - name: GCP_COLLECTIONEXERCISEEVENTSTATUSTOPIC
+            value: "{{ .Values.gcp.collectionExerciseEventStatusTopic }}"
           - name: GCP_RECEIPTSUBSCRIPTION
             value: "{{ .Values.gcp.receiptSubscription }}"
           - name: GCP_CASENOTIFICATIONSUBSCRIPTION
