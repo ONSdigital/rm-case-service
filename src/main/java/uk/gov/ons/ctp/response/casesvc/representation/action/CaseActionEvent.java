@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionEventRequest;
 
 @Data
 @AllArgsConstructor
@@ -28,4 +29,5 @@ public class CaseActionEvent {
 
   @NotNull private UUID collectionExerciseID;
   @NotNull private EventTag tag;
+  private CaseActionEventRequest.ActionEventRequestStatus status;
 }

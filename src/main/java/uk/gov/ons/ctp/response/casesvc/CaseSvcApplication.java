@@ -369,4 +369,19 @@ public class CaseSvcApplication {
   public Storage storage() {
     return StorageOptions.getDefaultInstance().getService();
   }
+
+  @Bean
+  @ServiceActivator(inputChannel = "collectionExerciseEventStatusChannel")
+  public MessageHandler collectionExerciseEventStatusMessageSender(PubSubTemplate pubsubTemplate) {
+    String topicId = appConfig.getGcp().getCollectionExerciseEventStatusTopic();
+    log.info(
+        "Application started with publisher for collection exercise event status with topic Id {}",
+        topicId);
+    return new PubSubMessageHandler(pubsubTemplate, topicId);
+  }
+
+  @MessagingGateway(defaultRequestChannel = "collectionExerciseEventStatusChannel")
+  public interface PubSubOutboundCollectionExerciseEventStatusGateway {
+    void sendToPubSub(String text);
+  }
 }

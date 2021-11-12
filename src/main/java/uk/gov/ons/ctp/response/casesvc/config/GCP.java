@@ -12,4 +12,5 @@ public class GCP {
   String notifyTopic;
   String printFileTopic;
   Bucket bucket;
+  String collectionExerciseEventStatusTopic;
 }

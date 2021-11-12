@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
 import java.util.concurrent.ExecutionException;
@@ -30,16 +31,17 @@ public class CaseActionEventEndpoint {
       method = RequestMethod.POST,
       consumes = "application/json")
   public ResponseEntity processEvents(@RequestBody @Valid CaseActionEvent event)
-      throws ExecutionException, InterruptedException {
+      throws ExecutionException, InterruptedException, JsonProcessingException {
     log.with("collectionExercise", event.getCollectionExerciseID())
         .with("EventTag", event.getTag())
         .info("Processing Event");
-    processEventService.processEvents(event.getCollectionExerciseID(), event.getTag().toString());
+    processEventService.processEvents(event);
     return ResponseEntity.accepted().body(null);
   }
 
   @RequestMapping(value = "/retry-event", method = RequestMethod.POST)
-  public ResponseEntity retryFailedEvents() throws ExecutionException, InterruptedException {
+  public ResponseEntity retryFailedEvents()
+      throws ExecutionException, InterruptedException, JsonProcessingException {
     log.info("Initiating retry schedule for failed events if any.");
     processEventService.retryEvents();
     return ResponseEntity.accepted().body(null);

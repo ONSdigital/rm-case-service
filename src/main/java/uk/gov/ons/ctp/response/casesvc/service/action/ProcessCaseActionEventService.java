@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.service.action;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
 import java.sql.Timestamp;
@@ -11,10 +13,12 @@ import java.util.concurrent.Future;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import uk.gov.ons.ctp.response.casesvc.CaseSvcApplication.PubSubOutboundCollectionExerciseEventStatusGateway;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionEventRequest;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionEventRequest.ActionEventRequestStatus;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseActionEventRequestRepository;
+import uk.gov.ons.ctp.response.casesvc.representation.action.CaseActionEvent;
 import uk.gov.ons.ctp.response.casesvc.service.action.email.ProcessEmailActionService;
 import uk.gov.ons.ctp.response.casesvc.service.action.letter.ProcessLetterActionService;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
@@ -27,6 +31,10 @@ public class ProcessCaseActionEventService {
   @Autowired private ProcessEmailActionService processEmailService;
   @Autowired private ProcessLetterActionService processLetterService;
   @Autowired private CaseActionEventRequestRepository actionEventRequestRepository;
+  @Autowired private ObjectMapper objectMapper;
+
+  @Autowired
+  private PubSubOutboundCollectionExerciseEventStatusGateway collectionExerciseEventStatusUpdate;
 
   /**
    * Processes Events. This method takes two attributes collection Exercise Id and Event Tag.
@@ -36,13 +44,13 @@ public class ProcessCaseActionEventService {
    * (isActiveEnrolment == false) Maps letter cases to ActionTemplate processes letter cases if
    * actionable
    *
-   * @param collectionExerciseId - is passed by collectionexercisesvc scheduler as a part of the
-   *     event process.
-   * @param eventTag - is passed by collectionexercisesvc scheduler as a part of the event process.
+   * @param event - Event information is passed
    */
   @Async
-  public void processEvents(UUID collectionExerciseId, String eventTag)
-      throws ExecutionException, InterruptedException {
+  public void processEvents(CaseActionEvent event)
+      throws ExecutionException, InterruptedException, JsonProcessingException {
+    UUID collectionExerciseId = event.getCollectionExerciseID();
+    String eventTag = event.getTag().toString();
     log.with("collectionExerciseId", collectionExerciseId)
         .with("eventTag", eventTag)
         .info("Started processing");
@@ -98,21 +106,52 @@ public class ProcessCaseActionEventService {
     log.with("collectionExerciseId", collectionExerciseId)
         .with("eventTag", eventTag)
         .info("Processing finished.");
+    updateCollectionExerciseEventStatus(newRequest, event);
+  }
+
+  /**
+   * sends action case event request current status to collection exercise
+   *
+   * @param request
+   * @param event
+   * @throws JsonProcessingException
+   */
+  private void updateCollectionExerciseEventStatus(
+      CaseActionEventRequest request, CaseActionEvent event) throws JsonProcessingException {
+    CaseActionEvent caseActionEvent = (null != event) ? event : new CaseActionEvent();
+    caseActionEvent.setStatus(request.getStatus());
+    if (event == null) {
+      caseActionEvent.setCollectionExerciseID(request.getCollectionExerciseId());
+      caseActionEvent.setTag(CaseActionEvent.EventTag.valueOf(request.getEventTag()));
+    }
+    log.with("event", event).info("updating collection exercise event status");
+    collectionExerciseEventStatusUpdate.sendToPubSub(
+        objectMapper.writeValueAsString(caseActionEvent));
   }
 
   @Async
-  public void retryEvents() throws ExecutionException, InterruptedException {
+  public void retryEvents()
+      throws ExecutionException, InterruptedException, JsonProcessingException {
     log.info("Starting retry Event processing");
     Instant instant = Instant.now();
     List<CaseActionEventRequest> existingRequests =
         actionEventRequestRepository.findByStatus(ActionEventRequestStatus.RETRY);
-    if (!existingRequests.isEmpty()) {
+    if (existingRequests.isEmpty()) {
       log.info("No events are pending retry. Will try again next time.");
       return;
     }
     for (CaseActionEventRequest existingRequest : existingRequests) {
       CollectionExerciseDTO collectionExercise =
           getCollectionExercise(existingRequest.getCollectionExerciseId());
+      existingRequest.setStatus(ActionEventRequestStatus.INPROGRESS);
+      log.with("collectionExerciseId", existingRequest.getCollectionExerciseId())
+          .with("eventTag", existingRequest.getEventTag())
+          .debug("Retry event is now in progress.");
+      actionEventRequestRepository.save(existingRequest);
+      CaseActionEvent actionEvent = new CaseActionEvent();
+      actionEvent.setTag(CaseActionEvent.EventTag.valueOf(existingRequest.getEventTag()));
+      actionEvent.setCollectionExerciseID(existingRequest.getCollectionExerciseId());
+
       log.with("collectionExerciseId", existingRequest.getCollectionExerciseId())
           .with("eventTag", existingRequest.getEventTag())
           .debug("Retry event will now trigger email processing asynchronously.");
@@ -140,6 +179,7 @@ public class ProcessCaseActionEventService {
             .debug("Retry event has failed.");
       }
       actionEventRequestRepository.save(existingRequest);
+      updateCollectionExerciseEventStatus(existingRequest, null);
     }
     log.info("retry Event finished");
   }
