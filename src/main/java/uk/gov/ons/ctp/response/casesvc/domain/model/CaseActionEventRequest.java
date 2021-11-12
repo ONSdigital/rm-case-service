@@ -24,7 +24,8 @@ public class CaseActionEventRequest implements Serializable {
     INPROGRESS,
     COMPLETED,
     FAILED,
-    RETRY
+    RETRY,
+    PROCESSED
   }
 
   @Id
