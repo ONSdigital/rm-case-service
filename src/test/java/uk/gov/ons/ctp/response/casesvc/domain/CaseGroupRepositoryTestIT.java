@@ -1,10 +1,10 @@
 package uk.gov.ons.ctp.response.casesvc.domain;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
-import static org.assertj.core.api.Java6Assertions.assertThat;
 
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -23,8 +23,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.gov.ons.ctp.response.casesvc.CaseCreator;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseAction;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseActionRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
+import uk.gov.ons.ctp.response.casesvc.representation.action.CaseAction;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 
 @ContextConfiguration
@@ -37,9 +37,9 @@ import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 @Sql(
     executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
     scripts = "classpath:/delete-test-data.sql")
-public class CaseActionRepositoryTestIT {
+public class CaseGroupRepositoryTestIT {
 
-  @Autowired private CaseActionRepository actionCase;
+  @Autowired private CaseGroupRepository actionCase;
   @Autowired private CaseCreator caseCreator;
   @Autowired private CollectionExerciseSvcClient collectionExerciseSvcClient;
 
@@ -50,7 +50,7 @@ public class CaseActionRepositoryTestIT {
   @Test
   public void testNoDateInView() throws Exception {
     List<CaseAction> collectionExercises = actionCase.findByCollectionExerciseId(UUID.randomUUID());
-    assertThat(collectionExercises).isEmpty();
+    Assert.assertTrue(collectionExercises.isEmpty());
   }
 
   @Test
@@ -77,5 +77,25 @@ public class CaseActionRepositoryTestIT {
         actionCase.findByCollectionExerciseId(collectionExerciseId);
     // Then
     Assert.assertEquals(1, collectionExercises.size());
+    Assert.assertEquals(collectionExerciseId, collectionExercises.get(0).getCollectionExerciseId());
+    UUID caseId = collectionExercises.get(0).getCaseId();
+    boolean isActiveEnrolment = collectionExercises.get(0).isActiveEnrolment();
+
+    CaseAction caseIdObject = actionCase.findByCaseId(caseId);
+    Assert.assertEquals(collectionExerciseId, caseIdObject.getCollectionExerciseId());
+
+    List<CaseAction> caseObjects =
+        actionCase.findByCollectionExerciseIdAndActiveEnrolment(
+            collectionExerciseId, isActiveEnrolment);
+    Assert.assertEquals(1, caseObjects.size());
+    Assert.assertEquals(caseId, caseObjects.get(0).getCaseId());
+
+    List<UUID> caseIds = new ArrayList<>();
+    caseIds.add(UUID.randomUUID());
+    caseIds.add(UUID.randomUUID());
+    caseIds.add(caseId);
+    List<CaseAction> casesObject = actionCase.findByCaseIdIn(caseIds);
+    Assert.assertEquals(1, casesObject.size());
+    Assert.assertEquals(collectionExerciseId, casesObject.get(0).getCollectionExerciseId());
   }
 }

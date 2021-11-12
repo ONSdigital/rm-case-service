@@ -15,13 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseAction;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionTemplate;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseActionRepository;
-import uk.gov.ons.ctp.response.casesvc.representation.action.CaseActionParty;
-import uk.gov.ons.ctp.response.casesvc.representation.action.Contact;
-import uk.gov.ons.ctp.response.casesvc.representation.action.FilenamePrefix;
-import uk.gov.ons.ctp.response.casesvc.representation.action.LetterEntry;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
+import uk.gov.ons.ctp.response.casesvc.representation.action.*;
 import uk.gov.ons.ctp.response.casesvc.service.action.ActionTemplateService;
 import uk.gov.ons.ctp.response.casesvc.service.action.common.ActionService;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
@@ -39,7 +35,7 @@ public class ProcessLetterActionService {
   public static final String ENABLED = "ENABLED";
   public static final String PENDING = "PENDING";
   @Autowired private ActionTemplateService actionTemplateService;
-  @Autowired private CaseActionRepository caseActionRepository;
+  @Autowired private CaseGroupRepository caseGroupRepository;
   @Autowired private ActionService actionService;
   @Autowired private NotifyLetterService printFileService;
 
@@ -60,7 +56,7 @@ public class ProcessLetterActionService {
     log.debug("Getting Letter cases against collectionExerciseId and event active enrolment");
 
     List<CaseAction> letterCases =
-        caseActionRepository.findByCollectionExerciseIdAndActiveEnrolment(
+        caseGroupRepository.findByCollectionExerciseIdAndActiveEnrolment(
             collectionExerciseId, false);
     log.with("letter cases", letterCases.size())
         .with(collectionExerciseId.toString())

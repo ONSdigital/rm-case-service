@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 32-1
+      author: Amit Sinha
+      changes:
+        - sqlFile:
+            comment: Drop case_action view
+            path: remove_case_action_view.sql
+            relativeToChangelogFile: true
+            splitStatements: false

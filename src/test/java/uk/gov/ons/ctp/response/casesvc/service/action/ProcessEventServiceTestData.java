@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseAction;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionAuditEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionTemplate;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionTemplate.Handler;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
+import uk.gov.ons.ctp.response.casesvc.representation.action.CaseAction;
 import uk.gov.ons.ctp.response.casesvc.representation.action.LetterEntry;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.party.representation.Association;
@@ -47,21 +46,6 @@ public class ProcessEventServiceTestData {
         .description(type + handler.toString() + tag)
         .handler(handler)
         .tag(tag)
-        .build();
-  }
-
-  public CaseActionAuditEvent setActionEvent(
-      UUID caseid,
-      UUID collectionExerciseId,
-      CaseActionAuditEvent.ActionEventStatus status,
-      Handler handler,
-      String type) {
-    return CaseActionAuditEvent.builder()
-        .caseId(caseid)
-        .collectionExerciseId(collectionExerciseId)
-        .status(status)
-        .handler(handler)
-        .type(type)
         .build();
   }
 
