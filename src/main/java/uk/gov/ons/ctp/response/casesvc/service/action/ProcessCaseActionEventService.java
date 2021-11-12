@@ -119,7 +119,11 @@ public class ProcessCaseActionEventService {
   private void updateCollectionExerciseEventStatus(
       CaseActionEventRequest request, CaseActionEvent event) throws JsonProcessingException {
     CaseActionEvent caseActionEvent = (null != event) ? event : new CaseActionEvent();
-    caseActionEvent.setStatus(request.getStatus());
+    ActionEventRequestStatus status =
+        request.getStatus().equals(ActionEventRequestStatus.COMPLETED)
+            ? ActionEventRequestStatus.PROCESSED
+            : request.getStatus();
+    caseActionEvent.setStatus(status);
     if (event == null) {
       caseActionEvent.setCollectionExerciseID(request.getCollectionExerciseId());
       caseActionEvent.setTag(CaseActionEvent.EventTag.valueOf(request.getEventTag()));

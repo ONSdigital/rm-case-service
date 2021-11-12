@@ -149,7 +149,7 @@ public class CaseActionEventIT {
         caseActionEventRequestList.get(0).getStatus());
     CaseActionEvent eventStatus = message.getPubSubCaseActionEventStatus();
     Assert.assertEquals(
-        CaseActionEventRequest.ActionEventRequestStatus.COMPLETED, eventStatus.getStatus());
+        CaseActionEventRequest.ActionEventRequestStatus.PROCESSED, eventStatus.getStatus());
   }
 
   @Test
@@ -188,7 +188,7 @@ public class CaseActionEventIT {
         caseActionEventRequestList.get(0).getStatus());
     CaseActionEvent eventStatus = message.getPubSubCaseActionEventStatus();
     Assert.assertEquals(
-        CaseActionEventRequest.ActionEventRequestStatus.COMPLETED, eventStatus.getStatus());
+        CaseActionEventRequest.ActionEventRequestStatus.PROCESSED, eventStatus.getStatus());
   }
 
   @Test
