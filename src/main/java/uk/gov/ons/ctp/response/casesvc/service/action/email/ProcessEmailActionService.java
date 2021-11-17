@@ -16,10 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseAction;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionTemplate;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionTemplate.Handler;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseActionRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
+import uk.gov.ons.ctp.response.casesvc.representation.action.CaseAction;
 import uk.gov.ons.ctp.response.casesvc.representation.action.CaseActionParty;
 import uk.gov.ons.ctp.response.casesvc.representation.action.NotifyModel;
 import uk.gov.ons.ctp.response.casesvc.representation.action.NotifyModel.Notify.Classifiers;
@@ -37,7 +37,7 @@ public class ProcessEmailActionService {
   private static final Logger log = LoggerFactory.getLogger(ProcessEmailActionService.class);
   public static final String DATE_FORMAT_IN_REMINDER_EMAIL = "dd/MM/yyyy";
   @Autowired private ActionTemplateService actionTemplateService;
-  @Autowired private CaseActionRepository caseActionRepository;
+  @Autowired private CaseGroupRepository caseGroupRepository;
   @Autowired private NotifyEmailService emailService;
   @Autowired private ActionService actionService;
 
@@ -67,7 +67,7 @@ public class ProcessEmailActionService {
     AtomicBoolean asyncEmailCallStatus = new AtomicBoolean(true);
     log.debug("Getting Email cases against collectionExerciseId and event active enrolment");
     List<CaseAction> emailCases =
-        caseActionRepository.findByCollectionExerciseIdAndActiveEnrolment(
+        caseGroupRepository.findByCollectionExerciseIdAndActiveEnrolment(
             collectionExerciseId, true);
     log.with("email cases", emailCases.size())
         .with(collectionExerciseId.toString())

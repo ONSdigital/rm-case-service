@@ -17,9 +17,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.ons.ctp.response.casesvc.domain.model.CaseAction;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionTemplate.Handler;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseActionRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
+import uk.gov.ons.ctp.response.casesvc.representation.action.CaseAction;
 import uk.gov.ons.ctp.response.casesvc.representation.action.CaseActionParty;
 import uk.gov.ons.ctp.response.casesvc.service.action.ActionTemplateService;
 import uk.gov.ons.ctp.response.casesvc.service.action.ProcessEventServiceTestData;
@@ -32,7 +32,7 @@ import uk.gov.ons.ctp.response.lib.survey.representation.SurveyDTO;
 @RunWith(MockitoJUnitRunner.class)
 public class ProcessLetterActionServiceTest {
   @Mock private ActionTemplateService actionTemplateService;
-  @Mock private CaseActionRepository caseActionRepository;
+  @Mock private CaseGroupRepository caseGroupRepository;
   @Mock private NotifyLetterService letterService;
   @Mock private ActionService actionService;
   @InjectMocks private ProcessLetterActionService processLetterActionService;
@@ -75,7 +75,7 @@ public class ProcessLetterActionServiceTest {
             sampleUnitId,
             "400000005",
             "oiauen"));
-    when(caseActionRepository.findByCollectionExerciseIdAndActiveEnrolment(
+    when(caseGroupRepository.findByCollectionExerciseIdAndActiveEnrolment(
             collectionExerciseId, false))
         .thenReturn(actionCases);
 

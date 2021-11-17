@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
+import uk.gov.ons.ctp.response.casesvc.representation.action.CaseAction;
 
 /** JPA Data Repository. */
 @Repository
@@ -67,4 +68,81 @@ public interface CaseGroupRepository extends JpaRepository<CaseGroup, Integer> {
           + "AND (cg.status='NOTSTARTED' OR cg.status='INPROGRESS')")
   Long findCasesAgainstCollectionExerciseID(
       @Param("collectionExerciseId") UUID collectionExerciseId);
+
+  /**
+   * find cases for action
+   *
+   * @param collectionExerciseId the collection exercise id
+   * @return the list of case actions
+   */
+  @Query(
+      value =
+          "SELECT new uk.gov.ons.ctp.response.casesvc.representation.action.CaseAction"
+              + "(cg.collectionExerciseId, c.id AS caseId,cg.partyId, cg.sampleUnitRef, cg.sampleUnitType, "
+              + "cg.status, cg.surveyId, c.sampleUnitId AS sampleUnitId, c.collectionInstrumentId, iac.iac, "
+              + "c.activeEnrolment) "
+              + "FROM CaseGroup cg, Case c "
+              + "LEFT JOIN CaseIacAudit iac ON iac.caseFK=c.casePK "
+              + "WHERE cg.caseGroupPK=c.caseGroupFK AND c.state='ACTIONABLE' "
+              + "AND cg.collectionExerciseId = :collectionExerciseId ")
+  List<CaseAction> findByCollectionExerciseId(
+      @Param("collectionExerciseId") UUID collectionExerciseId);
+
+  /**
+   * find case for action
+   *
+   * @param caseId case id
+   * @return case action
+   */
+  @Query(
+      value =
+          "SELECT new uk.gov.ons.ctp.response.casesvc.representation.action.CaseAction"
+              + "(cg.collectionExerciseId, c.id AS caseId,cg.partyId, cg.sampleUnitRef, cg.sampleUnitType, "
+              + "cg.status, cg.surveyId, c.sampleUnitId AS sampleUnitId, c.collectionInstrumentId, iac.iac, "
+              + "c.activeEnrolment) "
+              + "FROM CaseGroup cg, Case c "
+              + "LEFT JOIN CaseIacAudit iac ON iac.caseFK=c.casePK "
+              + "WHERE cg.caseGroupPK=c.caseGroupFK AND c.state='ACTIONABLE' "
+              + "AND c.id = :caseId ")
+  CaseAction findByCaseId(@Param("caseId") UUID caseId);
+
+  /**
+   * find cases for action
+   *
+   * @param collectionExerciseId the collection exercise id
+   * @param activeEnrolment active enrolment true or false
+   * @return the list of case actions
+   */
+  @Query(
+      value =
+          "SELECT new uk.gov.ons.ctp.response.casesvc.representation.action.CaseAction"
+              + "(cg.collectionExerciseId, c.id AS caseId,cg.partyId, cg.sampleUnitRef, cg.sampleUnitType, "
+              + "cg.status, cg.surveyId, c.sampleUnitId AS sampleUnitId, c.collectionInstrumentId, iac.iac, "
+              + "c.activeEnrolment) "
+              + "FROM CaseGroup cg, Case c "
+              + "LEFT JOIN CaseIacAudit iac ON iac.caseFK=c.casePK "
+              + "WHERE cg.caseGroupPK=c.caseGroupFK AND c.state='ACTIONABLE' "
+              + "AND cg.collectionExerciseId = :collectionExerciseId "
+              + "AND c.activeEnrolment = :activeEnrolment")
+  List<CaseAction> findByCollectionExerciseIdAndActiveEnrolment(
+      @Param("collectionExerciseId") UUID collectionExerciseId,
+      @Param("activeEnrolment") boolean activeEnrolment);
+
+  /**
+   * find cases for action
+   *
+   * @param caseIds list of cases
+   * @return the list of case actions
+   */
+  @Query(
+      value =
+          "SELECT new uk.gov.ons.ctp.response.casesvc.representation.action.CaseAction"
+              + "(cg.collectionExerciseId, c.id AS caseId,cg.partyId, cg.sampleUnitRef, cg.sampleUnitType, "
+              + "cg.status, cg.surveyId, c.sampleUnitId AS sampleUnitId, c.collectionInstrumentId, iac.iac, "
+              + "c.activeEnrolment) "
+              + "FROM CaseGroup cg, Case c "
+              + "LEFT JOIN CaseIacAudit iac ON iac.caseFK=c.casePK "
+              + "WHERE cg.caseGroupPK=c.caseGroupFK AND c.state='ACTIONABLE' "
+              + "AND c.id IN :caseIds ")
+  List<CaseAction> findByCaseIdIn(@Param("caseIds") List<UUID> caseIds);
 }
