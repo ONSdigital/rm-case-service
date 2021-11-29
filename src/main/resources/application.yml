@@ -129,7 +129,7 @@ survey-svc:
 
 case-distribution:
   retrieval-max: 50
-  delay-milli-seconds: 500
+  delay-milli-seconds: 9999999
 
 redelivery-policy:
   maxRedeliveries: 10
