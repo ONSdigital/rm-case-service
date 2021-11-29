@@ -27,7 +27,11 @@ public class CaseDistributionScheduler implements HealthIndicator {
     return Health.up().withDetail("activationInfo", distribInfo).build();
   }
 
-  /** Create the scheduler for the Case Distributor */
+  /** Create the scheduler for the Case Distributor
+   * Cron is set to 31st of Feb intended not to be run as
+   * this process will be taken out with new case action run
+   * */
+
   @Scheduled(cron = "0 15 10 15 * ?")
   public void run() {
     if (!caseService.isDeprecated()) {
