@@ -36,8 +36,6 @@ public class CaseDistributionScheduler implements HealthIndicator {
       } catch (Exception e) {
         log.error("Exception in case distributor", e);
       }
-    } else {
-      log.info("Action event will be performed by case itself.");
     }
   }
 }
