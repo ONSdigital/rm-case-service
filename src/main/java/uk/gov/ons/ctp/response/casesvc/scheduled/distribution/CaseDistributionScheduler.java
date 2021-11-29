@@ -28,7 +28,7 @@ public class CaseDistributionScheduler implements HealthIndicator {
   }
 
   /** Create the scheduler for the Case Distributor */
-  @Scheduled(fixedDelayString = "#{appConfig.caseDistribution.delayMilliSeconds}")
+  @Scheduled(cron = "0 15 10 15 * ?")
   public void run() {
     if (!caseService.isDeprecated()) {
       try {
