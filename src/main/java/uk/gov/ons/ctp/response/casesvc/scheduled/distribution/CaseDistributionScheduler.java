@@ -32,7 +32,7 @@ public class CaseDistributionScheduler implements HealthIndicator {
    * this process will be taken out with new case action run
    * */
 
-  @Scheduled(cron = "0 15 10 15 * ?")
+  @Scheduled(cron = "0 0 5 31 2 ?")
   public void run() {
     if (!caseService.isDeprecated()) {
       try {
