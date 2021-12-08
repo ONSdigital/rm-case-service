@@ -51,6 +51,8 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
     builder.put(CaseState.INACTIONABLE, CaseEvent.DEACTIVATED, CaseState.INACTIONABLE);
     builder.put(CaseState.INACTIONABLE, CaseEvent.DISABLED, CaseState.INACTIONABLE);
 
+    // FORCED_COMPLETED_TO_NOTSTARTED new event entry
+    builder.put(CaseState.ACTIONABLE, CaseEvent.ACTIVATED, CaseState.ACTIONABLE);
     return new BasicStateTransitionManager<>(builder.build().rowMap());
   }
 
@@ -234,6 +236,17 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CaseGroupStatus.REOPENED,
         CategoryDTO.CategoryName.NO_LONGER_REQUIRED,
         CaseGroupStatus.NOLONGERREQUIRED);
+
+    // New transition to enable users to change completedbyphon and no longer required to not
+    // started
+    builder.put(
+        CaseGroupStatus.COMPLETEDBYPHONE,
+        CategoryDTO.CategoryName.FORCED_COMPLETED_TO_NOTSTARTED,
+        CaseGroupStatus.NOTSTARTED);
+    builder.put(
+        CaseGroupStatus.NOLONGERREQUIRED,
+        CategoryDTO.CategoryName.FORCED_COMPLETED_TO_NOTSTARTED,
+        CaseGroupStatus.NOTSTARTED);
 
     return new BasicStateTransitionManager<>(builder.build().rowMap());
   }
