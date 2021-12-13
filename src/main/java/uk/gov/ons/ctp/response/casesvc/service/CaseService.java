@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -28,7 +27,6 @@ import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseIacAuditRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
-import uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnit;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.representation.*;
@@ -229,37 +227,6 @@ public class CaseService {
    */
   public List<CaseEvent> findCaseEventsByCaseFK(final Integer caseFK) {
     return caseEventRepo.findByCaseFKOrderByCreatedDateTimeDesc(caseFK);
-  }
-
-  /**
-   * Not sure this is the best place for this method, but .. several parts of case svc need to build
-   * a CaseNotification for a Case and need the services of the ActionPlanMappingService to get the
-   * actionPlanId This method just creates a CaseNotification Not sure this is the best place for
-   * this method, but .. several parts of case svc need to build a CaseNotification for a Case and
-   * need the services of the ActionPlanMappingService to get the actionPlanId This method just
-   * creates a CaseNotification
-   *
-   * @param caze The Case
-   * @param transitionEvent the event to inform the recipient of
-   * @return the newly created notification object
-   */
-  public CaseNotificationDTO prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent) {
-    CaseGroup caseGroup = caseGroupRepo.findById(caze.getCaseGroupFK()).orElse(null);
-    String iac = caseIacAuditService.findCaseIacByCasePK(caze.getCasePK());
-    // This code will still be here to support any legacy actions in play
-    String actionPlanId = caze.getActionPlanId() != null ? caze.getActionPlanId().toString() : null;
-    return new CaseNotificationDTO(
-        Objects.toString(caze.getSampleUnitId(), null),
-        caze.getId().toString(),
-        actionPlanId,
-        caze.isActiveEnrolment(),
-        caseGroup.getCollectionExerciseId().toString(),
-        Objects.toString(caze.getPartyId(), null),
-        caze.getSampleUnitType().toString(),
-        NotificationType.valueOf(transitionEvent.name()),
-        caseGroup.getSampleUnitRef(),
-        caseGroup.getStatus().toString(),
-        iac);
   }
 
   /**
