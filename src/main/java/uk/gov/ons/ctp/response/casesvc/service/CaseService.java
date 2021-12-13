@@ -15,7 +15,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import uk.gov.ons.ctp.response.casesvc.client.ActionSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.InternetAccessCodeSvcClient;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
@@ -29,7 +28,6 @@ import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseIacAuditRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
-import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnit;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
@@ -65,13 +63,10 @@ public class CaseService {
   private CaseGroupRepository caseGroupRepo;
   private CaseIacAuditRepository caseIacAuditRepo;
   private CategoryRepository categoryRepo;
-
-  private ActionSvcClient actionSvcClient;
   private CollectionExerciseSvcClient collectionExerciseSvcClient;
   private CaseGroupService caseGroupService;
   private InternetAccessCodeSvcClient internetAccessCodeSvcClient;
   private CaseIACService caseIacAuditService;
-  private CaseNotificationPublisher notificationPublisher;
   private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
   /** Constructor for CaseService */
@@ -82,12 +77,10 @@ public class CaseService {
       final CaseGroupRepository caseGroupRepo,
       final CaseIacAuditRepository caseIacAuditRepo,
       final CategoryRepository categoryRepo,
-      final ActionSvcClient actionSvcClient,
       final CollectionExerciseSvcClient collectionExerciseSvcClient,
       final CaseGroupService caseGroupService,
       final InternetAccessCodeSvcClient internetAccessCodeSvcClient,
       final CaseIACService caseIacAuditService,
-      final CaseNotificationPublisher notificationPublisher,
       final StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager) {
     this.appConfig = appConfig;
     this.caseRepo = caseRepo;
@@ -95,12 +88,10 @@ public class CaseService {
     this.caseGroupRepo = caseGroupRepo;
     this.caseIacAuditRepo = caseIacAuditRepo;
     this.categoryRepo = categoryRepo;
-    this.actionSvcClient = actionSvcClient;
     this.collectionExerciseSvcClient = collectionExerciseSvcClient;
     this.caseGroupService = caseGroupService;
     this.internetAccessCodeSvcClient = internetAccessCodeSvcClient;
     this.caseIacAuditService = caseIacAuditService;
-    this.notificationPublisher = notificationPublisher;
     this.caseSvcStateTransitionManager = caseSvcStateTransitionManager;
   }
 
@@ -440,10 +431,6 @@ public class CaseService {
           if (caze.getSampleUnitType() == SampleUnitType.B) {
             caze.setActiveEnrolment(enrolments);
             caseRepo.saveAndFlush(caze);
-            if (!isDeprecated()) {
-              notificationPublisher.sendNotification(
-                  prepareCaseNotification(caze, CaseDTO.CaseEvent.ACTIONPLAN_CHANGED));
-            }
           }
         }
       }
@@ -477,10 +464,7 @@ public class CaseService {
               .with("collectionExericseId", sampleUnitParent.getCollectionExerciseId())
               .debug("New child case created");
           updateCaseWithIACs(childCase, sampleUnitParent.getSampleUnitRef());
-
-          if (isDeprecated()) {
-            processCase(childCase);
-          }
+          processCase(childCase);
         }
       }
       caseRepo.saveAndFlush(parentCase);
@@ -491,9 +475,7 @@ public class CaseService {
           .with("collectionExericseId", sampleUnitParent.getCollectionExerciseId())
           .info("New Case created");
       updateCaseWithIACs(parentCase, sampleUnitParent.getSampleUnitRef());
-      if (isDeprecated()) {
-        processCase(parentCase);
-      }
+      processCase(parentCase);
     }
   }
 
@@ -658,10 +640,6 @@ public class CaseService {
       if (!oldState.equals(newState)) {
         targetCase.setState(newState);
         caseRepo.saveAndFlush(targetCase);
-        if (!isDeprecated()) {
-          notificationPublisher.sendNotification(
-              prepareCaseNotification(targetCase, transitionEvent));
-        }
       }
     }
   }
@@ -735,9 +713,5 @@ public class CaseService {
     } catch (IllegalArgumentException exc) {
       throw new CTPException(CTPException.Fault.BAD_REQUEST, exc.getMessage());
     }
-  }
-
-  public boolean isDeprecated() {
-    return appConfig.getActionSvc().isDeprecated();
   }
 }

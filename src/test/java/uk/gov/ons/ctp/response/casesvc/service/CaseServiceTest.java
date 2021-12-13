@@ -30,10 +30,8 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
-import uk.gov.ons.ctp.response.casesvc.client.ActionSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.InternetAccessCodeSvcClient;
-import uk.gov.ons.ctp.response.casesvc.config.ActionSvc;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.config.InternetAccessCodeSvc;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
@@ -46,7 +44,6 @@ import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseIacAuditRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
-import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnit;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitChildren;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
@@ -114,13 +111,11 @@ public class CaseServiceTest {
   @Mock private CaseIacAuditRepository caseIacAuditRepo;
   @Mock private CategoryRepository categoryRepo;
   @Mock private AppConfig appConfig;
-  @Mock private ActionSvcClient actionSvcClient;
   @Mock private CaseGroupService caseGroupService;
   @Mock private CaseGroupAuditService caseGroupAuditService;
   @Mock private CollectionExerciseSvcClient collectionExerciseSvcClient;
   @Mock private InternetAccessCodeSvcClient internetAccessCodeSvcClient;
   @Mock private CaseIACService caseIacAuditService;
-  @Mock private CaseNotificationPublisher notificationPublisher;
   @Mock private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
   @Spy private MapperFacade mapperFacade = new CaseSvcBeanMapper();
 
@@ -150,8 +145,6 @@ public class CaseServiceTest {
     mockAppConfigUse();
     mockupCaseEventRepo();
     mockupCollectionExerciseServiceClient();
-    ActionSvc actionSvc = new ActionSvc();
-    actionSvc.setDeprecated(false);
   }
 
   /**
@@ -260,9 +253,6 @@ public class CaseServiceTest {
     verify(caseIacAuditService, times(0)).disableAllIACsForCase(any(Case.class));
     // event was saved
     verify(caseEventRepo, times(1)).save(caseEvent);
-    verify(notificationPublisher, times(0)).sendNotification(any(CaseNotificationDTO.class));
-    verify(actionSvcClient, times(0))
-        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -290,9 +280,6 @@ public class CaseServiceTest {
     verify(caseIacAuditService, never()).disableAllIACsForCase(any(Case.class));
     verify(caseSvcStateTransitionManager, never())
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, never()).sendNotification(any(CaseNotificationDTO.class));
-    verify(actionSvcClient, never())
-        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -320,9 +307,6 @@ public class CaseServiceTest {
     verify(caseIacAuditService, never()).disableAllIACsForCase(any(Case.class));
     verify(caseSvcStateTransitionManager, never())
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, never()).sendNotification(any(CaseNotificationDTO.class));
-    verify(actionSvcClient, never())
-        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -350,9 +334,6 @@ public class CaseServiceTest {
     verify(caseIacAuditService, never()).disableAllIACsForCase(any(Case.class));
     verify(caseSvcStateTransitionManager, never())
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, never()).sendNotification(any(CaseNotificationDTO.class));
-    verify(actionSvcClient, never())
-        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -380,9 +361,6 @@ public class CaseServiceTest {
     verify(caseIacAuditService, never()).disableAllIACsForCase(any(Case.class));
     verify(caseSvcStateTransitionManager, never())
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, never()).sendNotification(any(CaseNotificationDTO.class));
-    verify(actionSvcClient, never())
-        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   @Test
@@ -461,9 +439,6 @@ public class CaseServiceTest {
             caseGroups.get(CASEGROUP_PK - 1),
             CategoryDTO.CategoryName.ACTION_CANCELLATION_COMPLETED,
             targetCase.getPartyId());
-    verify(notificationPublisher, never()).sendNotification(any(CaseNotificationDTO.class));
-    verify(actionSvcClient, never())
-        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -492,9 +467,6 @@ public class CaseServiceTest {
     verify(caseIacAuditService, never()).disableAllIACsForCase(any(Case.class));
     verify(caseSvcStateTransitionManager, never())
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, never()).sendNotification(any(CaseNotificationDTO.class));
-    verify(actionSvcClient, never())
-        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -523,9 +495,6 @@ public class CaseServiceTest {
     verify(caseRepo, never()).saveAndFlush(any(Case.class));
     verify(caseSvcStateTransitionManager, never())
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, never()).sendNotification(any(CaseNotificationDTO.class));
-    verify(actionSvcClient, never())
-        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -568,11 +537,6 @@ public class CaseServiceTest {
     Case caze = argument.getValue();
     assertEquals(CaseState.ACTIONABLE, caze.getState());
     assertEquals(true, caze.isActiveEnrolment());
-
-    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotificationDTO.class));
-    // no new action to be created
-    verify(actionSvcClient, times(0))
-        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -712,9 +676,6 @@ public class CaseServiceTest {
     verify(caseIacAuditService, never()).disableAllIACsForCase(any(Case.class));
     verify(caseSvcStateTransitionManager, never())
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, never()).sendNotification(any(CaseNotificationDTO.class));
-    verify(actionSvcClient, never())
-        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -744,9 +705,6 @@ public class CaseServiceTest {
     verify(caseIacAuditService, never()).disableAllIACsForCase(any(Case.class));
     verify(caseSvcStateTransitionManager, never())
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, never()).sendNotification(any(CaseNotificationDTO.class));
-    verify(actionSvcClient, never())
-        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -775,7 +733,6 @@ public class CaseServiceTest {
     verify(caseIacAuditService, times(1)).disableAllIACsForCase(any(Case.class));
     verify(caseSvcStateTransitionManager, times(1))
         .transition(any(CaseState.class), any(CaseDTO.CaseEvent.class));
-    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotificationDTO.class));
   }
 
   /**
@@ -823,11 +780,6 @@ public class CaseServiceTest {
     // Now verifying that case has been moved to INACTIONABLE
     Case oldCase = argument.getAllValues().get(0);
     assertEquals(CaseState.INACTIONABLE, oldCase.getState());
-
-    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotificationDTO.class));
-    // no new action to be created
-    verify(actionSvcClient, times(0))
-        .postAction(any(String.class), any(UUID.class), any(String.class));
   }
 
   /**
@@ -861,7 +813,6 @@ public class CaseServiceTest {
     verify(caseEventRepo, times(1)).save(caseEvent);
     ArgumentCaptor<Case> argument = ArgumentCaptor.forClass(Case.class);
     verify(caseRepo, times(1)).saveAndFlush(argument.capture());
-    verify(notificationPublisher, times(1)).sendNotification(any(CaseNotificationDTO.class));
   }
 
   /**
@@ -959,7 +910,7 @@ public class CaseServiceTest {
 
     assertEquals(
         collectionExerciseId, capturedCaseGroup.get(0).getCollectionExerciseId().toString());
-    verify(caseRepo, times(4)).saveAndFlush(any());
+    verify(caseRepo, times(6)).saveAndFlush(any());
   }
 
   @Test
@@ -1047,7 +998,7 @@ public class CaseServiceTest {
 
     assertEquals(
         collectionExerciseId, capturedCaseGroup.get(0).getCollectionExerciseId().toString());
-    verify(caseRepo, times(2)).saveAndFlush(any());
+    verify(caseRepo, times(4)).saveAndFlush(any());
     verify(caseIacAuditRepo, times((0))).saveAndFlush(any());
   }
 
@@ -1147,8 +1098,5 @@ public class CaseServiceTest {
     InternetAccessCodeSvc iacSvc = new InternetAccessCodeSvc();
     iacSvc.setIacPutPath(IAC_SVC_PUT_PATH);
     iacSvc.setIacPostPath(IAC_SVC_POST_PATH);
-    ActionSvc actionSvc = new ActionSvc();
-    actionSvc.setDeprecated(false);
-    when(appConfig.getActionSvc()).thenReturn(actionSvc);
   }
 }

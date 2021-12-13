@@ -6,9 +6,6 @@ import com.google.cloud.storage.StorageOptions;
 import java.time.Clock;
 import javax.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
-import org.redisson.Redisson;
-import org.redisson.api.RedissonClient;
-import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
@@ -63,9 +60,6 @@ import uk.gov.ons.ctp.response.lib.common.time.DateTimeUtil;
 @Slf4j
 public class CaseSvcApplication {
 
-  public static final String CASE_DISTRIBUTION_LIST = "casesvc.case.distribution";
-  public static final String REPORT_EXECUTION_LOCK = "casesvc.report.execution";
-
   private AppConfig appConfig;
   private StateTransitionManagerFactory caseSvcStateTransitionManagerFactory;
 
@@ -118,37 +112,6 @@ public class CaseSvcApplication {
   }
 
   /**
-   * The DistributedListManager for CaseDistribution
-   *
-   * @param redissonClient the redissonClient
-   * @return the DistributedListManager
-   */
-  @Bean
-  public DistributedListManager<Integer> caseDistributionListManager(
-      RedissonClient redissonClient) {
-    return new DistributedListManagerRedissonImpl<>(
-        CASE_DISTRIBUTION_LIST,
-        redissonClient,
-        appConfig.getDataGrid().getListTimeToWaitSeconds(),
-        appConfig.getDataGrid().getListTimeToLiveSeconds());
-  }
-
-  /**
-   * The RedissonClient
-   *
-   * @return the RedissonClient
-   */
-  @Bean
-  public RedissonClient redissonClient() {
-    Config config = new Config();
-    config
-        .useSingleServer()
-        .setAddress(appConfig.getDataGrid().getAddress())
-        .setPassword(appConfig.getDataGrid().getPassword());
-    return Redisson.create(config);
-  }
-
-  /**
    * The restTemplate bean injected in REST client classes
    *
    * @return the restTemplate used in REST calls
@@ -167,17 +130,6 @@ public class CaseSvcApplication {
   @Qualifier("iacServiceRestUtility")
   public RestUtility iacServiceRestUtility() {
     return new RestUtility(appConfig.getInternetAccessCodeSvc().getConnectionConfig());
-  }
-
-  /**
-   * The RestUtility bean for the Action service
-   *
-   * @return the RestUtility bean for the Action service
-   */
-  @Bean
-  @Qualifier("actionServiceRestUtility")
-  public RestUtility actionServiceRestUtility() {
-    return new RestUtility(appConfig.getActionSvc().getConnectionConfig());
   }
 
   /**
@@ -234,46 +186,6 @@ public class CaseSvcApplication {
     return new CustomObjectMapper();
   }
 
-  /**
-   * Bean used to access Distributed Lock Manager
-   *
-   * @param redissonClient Redisson Client
-   * @return the Distributed Lock Manager
-   */
-  @Bean
-  public DistributedInstanceManager reportDistributedInstanceManager(
-      RedissonClient redissonClient) {
-    return new DistributedInstanceManagerRedissonImpl(REPORT_EXECUTION_LOCK, redissonClient);
-  }
-
-  /**
-   * Bean used to access Distributed Latch Manager
-   *
-   * @param redissonClient Redisson Client
-   * @return the Distributed Lock Manager
-   */
-  @Bean
-  public DistributedLatchManager reportDistributedLatchManager(RedissonClient redissonClient) {
-    return new DistributedLatchManagerRedissonImpl(
-        REPORT_EXECUTION_LOCK,
-        redissonClient,
-        appConfig.getDataGrid().getReportLockTimeToLiveSeconds());
-  }
-
-  /**
-   * Bean used to access Distributed Execution Lock Manager
-   *
-   * @param redissonClient Redisson Client
-   * @return the Distributed Lock Manager
-   */
-  @Bean
-  public DistributedLockManager reportDistributedLockManager(RedissonClient redissonClient) {
-    return new DistributedLockManagerRedissonImpl(
-        REPORT_EXECUTION_LOCK,
-        redissonClient,
-        appConfig.getDataGrid().getReportLockTimeToLiveSeconds());
-  }
-
   @Bean
   public Clock clock() {
     return Clock.systemDefaultZone();
@@ -317,21 +229,6 @@ public class CaseSvcApplication {
   @Bean
   public MessageChannel caseCreationChannel() {
     return new PublishSubscribeChannel();
-  }
-
-  @Bean
-  @ServiceActivator(inputChannel = "actionCaseNotificationChannel")
-  public MessageHandler actionCaseNotificationMessageSender(PubSubTemplate pubsubTemplate) {
-    String topicId = appConfig.getGcp().getCaseNotificationTopic();
-    log.info(
-        "Application started with publisher for action case notification with topic Id {}",
-        topicId);
-    return new PubSubMessageHandler(pubsubTemplate, topicId);
-  }
-
-  @MessagingGateway(defaultRequestChannel = "actionCaseNotificationChannel")
-  public interface PubSubOutboundActionCaseNotificationGateway {
-    void sendToPubSub(String text);
   }
 
   /** Bean used to create PubSub email channel */

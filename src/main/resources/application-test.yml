@@ -23,11 +23,6 @@ survey-svc:
     password: secret
     retry-attempts: 5
 
-action-svc:
-  deprecated: false
-  connection-config:
-    port: 38151
-
 redisson-config:
   address: localhost:17379
 
