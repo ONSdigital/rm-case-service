@@ -17,6 +17,8 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 import org.junit.*;
@@ -33,10 +35,11 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.gov.ons.ctp.response.casesvc.CaseCreator;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
-import uk.gov.ons.ctp.response.casesvc.message.TestPubSubMessage;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseIACDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseNotificationDTO;
 import uk.gov.ons.ctp.response.casesvc.utility.PubSubEmulator;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
@@ -50,6 +53,7 @@ import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CaseIACEndpointIT {
   private UUID collectionExerciseId;
+  private Map<String, String> metadata;
 
   private static final Logger log = LoggerFactory.getLogger(CaseIACEndpointIT.class);
   private PubSubEmulator pubSubEmulator = new PubSubEmulator();
@@ -62,6 +66,9 @@ public class CaseIACEndpointIT {
 
   @Autowired private CaseCreator caseCreator;
   @Autowired private CollectionExerciseSvcClient collectionExerciseSvcClient;
+  @Autowired private CaseRepository caseRepository;
+  @Autowired private CaseEventRepository caseEventRepository;
+  @Autowired private CaseGroupRepository caseGroupRepository;
 
   public CaseIACEndpointIT() throws IOException {}
 
@@ -73,8 +80,14 @@ public class CaseIACEndpointIT {
   }
 
   @Before
-  public void testSetup() {
+  public void testSetup() throws Exception {
     pubSubEmulator.testInit();
+    caseEventRepository.deleteAll();
+    caseRepository.deleteAll();
+    caseGroupRepository.deleteAll();
+  }
+
+  public void createCollectionData() {
     Random rnd = new Random();
 
     int randNumber = 10000 + rnd.nextInt(900000);
@@ -88,6 +101,8 @@ public class CaseIACEndpointIT {
         collectionExerciseSvcClient.getCollectionExercises(surveyId.toString()).get(0);
 
     collectionExerciseId = collex.getId();
+    metadata = new HashMap<>();
+    metadata.put("partyId", UUID.randomUUID().toString());
   }
 
   @After
@@ -97,14 +112,17 @@ public class CaseIACEndpointIT {
 
   @Test
   public void shouldCreateNewIACCode() throws Exception {
-    TestPubSubMessage pubSubMessage = new TestPubSubMessage();
     // Given
-    caseCreator.postSampleUnit("BS12351", "B", UUID.randomUUID(), collectionExerciseId);
-    CaseNotificationDTO caseNotificationDTO = pubSubMessage.getPubSubCaseNotification();
-    String notExpected = getCurrentIACCode(caseNotificationDTO.getCaseId());
+    createCollectionData();
+    UUID sampleUnitId = UUID.randomUUID();
+    caseCreator.postSampleUnit("LMS0001", "H", sampleUnitId, collectionExerciseId);
+    Thread.sleep(3000);
+    HttpResponse<CaseDetailsDTO[]> casesResponse = getCreatedCase(sampleUnitId);
+    String caseID = casesResponse.getBody()[0].getId().toString();
+    String notExpected = getCurrentIACCode(caseID);
 
     // When
-    HttpResponse<String> actual = generateNewIACCode(caseNotificationDTO.getCaseId());
+    HttpResponse<String> actual = generateNewIACCode(caseID);
 
     // Then
     assertThat(actual.getStatus(), is(equalTo(HttpStatus.CREATED.value()))); // assert IAC in model
@@ -113,15 +131,18 @@ public class CaseIACEndpointIT {
 
   @Test
   public void shouldGetIacCodes() throws Exception {
-    TestPubSubMessage pubSubMessage = new TestPubSubMessage();
     // Given
-    caseCreator.postSampleUnit("BS123456", "B", UUID.randomUUID(), collectionExerciseId);
-    CaseNotificationDTO caseNotificationDTO = pubSubMessage.getPubSubCaseNotification();
+    createCollectionData();
+    UUID sampleUnitId = UUID.randomUUID();
+    caseCreator.postSampleUnit("LMS0001", "H", sampleUnitId, collectionExerciseId);
+    Thread.sleep(3000);
+    HttpResponse<CaseDetailsDTO[]> casesResponse = getCreatedCase(sampleUnitId);
+    String caseID = casesResponse.getBody()[0].getId().toString();
     // When
     HttpResponse<CaseIACDTO[]> iacs =
         Unirest.get("http://localhost:{port}/cases/{caseId}/iac")
             .routeParam("port", Integer.toString(port))
-            .routeParam("caseId", caseNotificationDTO.getCaseId())
+            .routeParam("caseId", caseID)
             .basicAuth("admin", "secret")
             .header("Content-Type", "application/json")
             .asObject(CaseIACDTO[].class);
@@ -150,5 +171,15 @@ public class CaseIACEndpointIT {
         .basicAuth("admin", "secret")
         .header("Content-Type", "application/json")
         .asString();
+  }
+
+  private HttpResponse<CaseDetailsDTO[]> getCreatedCase(UUID sampleUnitId) throws Exception {
+    HttpResponse<CaseDetailsDTO[]> casesResponse =
+        Unirest.get(String.format("http://localhost:%d/cases/sampleunitids", port))
+            .basicAuth("admin", "secret")
+            .queryString("sampleUnitId", sampleUnitId)
+            .header("Content-Type", "application/json")
+            .asObject(CaseDetailsDTO[].class);
+    return casesResponse;
   }
 }

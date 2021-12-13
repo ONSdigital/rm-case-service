@@ -10,16 +10,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.ons.ctp.response.casesvc.client.ActionSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
-import uk.gov.ons.ctp.response.casesvc.config.ActionSvc;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
@@ -29,10 +26,12 @@ import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnit;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitChildren;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
+import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.common.FixtureHelper;
+import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.lib.sample.SampleUnitDTO;
 
 /** Test Case created by Sample */
@@ -46,15 +45,8 @@ public class CaseCreationServiceTest {
   @Mock private CaseEventRepository caseEventRepo;
   @Mock private CaseGroupService caseGroupService;
   @Mock private CollectionExerciseSvcClient collectionExerciseSvcClient;
-  @Mock private ActionSvcClient actionSvcClient;
   @Mock private AppConfig mockAppConfig;
-
-  @Before
-  public void setActionDeprecatedFalse() {
-    ActionSvc actionSvc = new ActionSvc();
-    actionSvc.setDeprecated(false);
-    when(mockAppConfig.getActionSvc()).thenReturn(actionSvc);
-  }
+  @Mock private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
   /**
    * Create a Case and a Casegroup from the message that would be on the Case Delivery Queue. No
@@ -79,6 +71,9 @@ public class CaseCreationServiceTest {
     when(collectionExerciseSvcClient.getCollectionExercise(any()))
         .thenReturn(collectionExercises.get(0));
     when(caseGroupService.isCaseGroupUnique(any(SampleUnitParent.class))).thenReturn(true);
+    when(caseSvcStateTransitionManager.transition(
+            CaseState.SAMPLED_INIT, CaseDTO.CaseEvent.ACTIVATED))
+        .thenReturn(CaseState.ACTIONABLE);
 
     caseService.createInitialCase(sampleUnitParent);
 
@@ -97,13 +92,13 @@ public class CaseCreationServiceTest {
     assertEquals(CaseGroupStatus.NOTSTARTED, capturedCaseGroup.getStatus());
 
     ArgumentCaptor<Case> caze = ArgumentCaptor.forClass(Case.class);
-    verify(caseRepo, times(1)).saveAndFlush(caze.capture());
+    verify(caseRepo, times(2)).saveAndFlush(caze.capture());
     Case capturedCase = caze.getValue();
 
     assertEquals(UUID.class, capturedCase.getId().getClass());
     assertEquals(new Integer(capturedCaseGroup.getCaseGroupPK()), capturedCase.getCaseGroupFK());
     assertEquals(capturedCaseGroup.getId(), capturedCase.getCaseGroupId());
-    assertEquals(CaseState.SAMPLED_INIT, capturedCase.getState());
+    assertEquals(CaseState.ACTIONABLE, capturedCase.getState());
     assertEquals(
         SampleUnitDTO.SampleUnitType.valueOf(sampleUnitParent.getSampleUnitType()),
         capturedCase.getSampleUnitType());
@@ -149,7 +144,11 @@ public class CaseCreationServiceTest {
     when(collectionExerciseSvcClient.getCollectionExercise(any()))
         .thenReturn(collectionExercises.get(0));
     when(caseGroupService.isCaseGroupUnique(any(SampleUnitParent.class))).thenReturn(true);
-
+    when(caseSvcStateTransitionManager.transition(
+            CaseState.SAMPLED_INIT, CaseDTO.CaseEvent.ACTIVATED))
+        .thenReturn(CaseState.ACTIONABLE);
+    when(caseSvcStateTransitionManager.transition(CaseState.INACTIONABLE, null))
+        .thenReturn(CaseState.INACTIONABLE);
     caseService.createInitialCase(sampleUnitParent);
 
     // CaseGroup attributes from parent data, case from child sample unit
@@ -167,14 +166,14 @@ public class CaseCreationServiceTest {
     assertEquals(CaseGroupStatus.NOTSTARTED, capturedCaseGroup.getStatus());
 
     ArgumentCaptor<Case> caze = ArgumentCaptor.forClass(Case.class);
-    verify(caseRepo, times(2)).saveAndFlush(caze.capture());
+    verify(caseRepo, times(4)).saveAndFlush(caze.capture());
     List<Case> capturedCases = caze.getAllValues();
 
     Case childCase = capturedCases.get(0);
     assertEquals(UUID.class, childCase.getId().getClass());
     assertEquals(new Integer(capturedCaseGroup.getCaseGroupPK()), childCase.getCaseGroupFK());
     assertEquals(capturedCaseGroup.getId(), childCase.getCaseGroupId());
-    assertEquals(CaseState.SAMPLED_INIT, childCase.getState());
+    assertEquals(CaseState.ACTIONABLE, childCase.getState());
     assertEquals(
         SampleUnitDTO.SampleUnitType.valueOf(sampleUnitChild.getSampleUnitType()),
         childCase.getSampleUnitType());
@@ -184,7 +183,7 @@ public class CaseCreationServiceTest {
         childCase.getCollectionInstrumentId());
     assertEquals(sampleUnitChild.isActiveEnrolment(), childCase.isActiveEnrolment());
 
-    Case parentCase = capturedCases.get(1);
+    Case parentCase = capturedCases.get(2);
     assertEquals(UUID.class, parentCase.getId().getClass());
     assertEquals(new Integer(capturedCaseGroup.getCaseGroupPK()), parentCase.getCaseGroupFK());
     assertEquals(capturedCaseGroup.getId(), parentCase.getCaseGroupId());

@@ -60,12 +60,6 @@ spring:
     gcp:
       project-id: ras-rm-dev
 
-data-grid:
-  address: localhost:6379
-  list-time-to-live-seconds: 60
-  list-time-to-wait-seconds: 60
-  report-lock-time-to-live-seconds: 300
-
 internet-access-code-svc:
   iac-get-path: /iacs/{iac}
   iac-post-path: /iacs
@@ -77,16 +71,6 @@ internet-access-code-svc:
     username: admin
     password: secret
 
-action-svc:
-  deprecated: false
-  actions-path: /actions
-  action-plans-path: /actionplans
-  connection-config:
-    scheme: http
-    host: localhost
-    port: 8151
-    username: admin
-    password: secret
     
 collection-exercise-svc:
   collection-exercise-path: /collectionexercises/{exerciseId}

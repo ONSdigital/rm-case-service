@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -15,7 +14,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import uk.gov.ons.ctp.response.casesvc.client.ActionSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.InternetAccessCodeSvcClient;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
@@ -29,8 +27,6 @@ import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseIacAuditRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CategoryRepository;
-import uk.gov.ons.ctp.response.casesvc.message.CaseNotificationPublisher;
-import uk.gov.ons.ctp.response.casesvc.message.notification.NotificationType;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnit;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.representation.*;
@@ -65,13 +61,10 @@ public class CaseService {
   private CaseGroupRepository caseGroupRepo;
   private CaseIacAuditRepository caseIacAuditRepo;
   private CategoryRepository categoryRepo;
-
-  private ActionSvcClient actionSvcClient;
   private CollectionExerciseSvcClient collectionExerciseSvcClient;
   private CaseGroupService caseGroupService;
   private InternetAccessCodeSvcClient internetAccessCodeSvcClient;
   private CaseIACService caseIacAuditService;
-  private CaseNotificationPublisher notificationPublisher;
   private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
 
   /** Constructor for CaseService */
@@ -82,12 +75,10 @@ public class CaseService {
       final CaseGroupRepository caseGroupRepo,
       final CaseIacAuditRepository caseIacAuditRepo,
       final CategoryRepository categoryRepo,
-      final ActionSvcClient actionSvcClient,
       final CollectionExerciseSvcClient collectionExerciseSvcClient,
       final CaseGroupService caseGroupService,
       final InternetAccessCodeSvcClient internetAccessCodeSvcClient,
       final CaseIACService caseIacAuditService,
-      final CaseNotificationPublisher notificationPublisher,
       final StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager) {
     this.appConfig = appConfig;
     this.caseRepo = caseRepo;
@@ -95,12 +86,10 @@ public class CaseService {
     this.caseGroupRepo = caseGroupRepo;
     this.caseIacAuditRepo = caseIacAuditRepo;
     this.categoryRepo = categoryRepo;
-    this.actionSvcClient = actionSvcClient;
     this.collectionExerciseSvcClient = collectionExerciseSvcClient;
     this.caseGroupService = caseGroupService;
     this.internetAccessCodeSvcClient = internetAccessCodeSvcClient;
     this.caseIacAuditService = caseIacAuditService;
-    this.notificationPublisher = notificationPublisher;
     this.caseSvcStateTransitionManager = caseSvcStateTransitionManager;
   }
 
@@ -238,37 +227,6 @@ public class CaseService {
    */
   public List<CaseEvent> findCaseEventsByCaseFK(final Integer caseFK) {
     return caseEventRepo.findByCaseFKOrderByCreatedDateTimeDesc(caseFK);
-  }
-
-  /**
-   * Not sure this is the best place for this method, but .. several parts of case svc need to build
-   * a CaseNotification for a Case and need the services of the ActionPlanMappingService to get the
-   * actionPlanId This method just creates a CaseNotification Not sure this is the best place for
-   * this method, but .. several parts of case svc need to build a CaseNotification for a Case and
-   * need the services of the ActionPlanMappingService to get the actionPlanId This method just
-   * creates a CaseNotification
-   *
-   * @param caze The Case
-   * @param transitionEvent the event to inform the recipient of
-   * @return the newly created notification object
-   */
-  public CaseNotificationDTO prepareCaseNotification(Case caze, CaseDTO.CaseEvent transitionEvent) {
-    CaseGroup caseGroup = caseGroupRepo.findById(caze.getCaseGroupFK()).orElse(null);
-    String iac = caseIacAuditService.findCaseIacByCasePK(caze.getCasePK());
-    // This code will still be here to support any legacy actions in play
-    String actionPlanId = caze.getActionPlanId() != null ? caze.getActionPlanId().toString() : null;
-    return new CaseNotificationDTO(
-        Objects.toString(caze.getSampleUnitId(), null),
-        caze.getId().toString(),
-        actionPlanId,
-        caze.isActiveEnrolment(),
-        caseGroup.getCollectionExerciseId().toString(),
-        Objects.toString(caze.getPartyId(), null),
-        caze.getSampleUnitType().toString(),
-        NotificationType.valueOf(transitionEvent.name()),
-        caseGroup.getSampleUnitRef(),
-        caseGroup.getStatus().toString(),
-        iac);
   }
 
   /**
@@ -440,10 +398,6 @@ public class CaseService {
           if (caze.getSampleUnitType() == SampleUnitType.B) {
             caze.setActiveEnrolment(enrolments);
             caseRepo.saveAndFlush(caze);
-            if (!isDeprecated()) {
-              notificationPublisher.sendNotification(
-                  prepareCaseNotification(caze, CaseDTO.CaseEvent.ACTIONPLAN_CHANGED));
-            }
           }
         }
       }
@@ -477,10 +431,7 @@ public class CaseService {
               .with("collectionExericseId", sampleUnitParent.getCollectionExerciseId())
               .debug("New child case created");
           updateCaseWithIACs(childCase, sampleUnitParent.getSampleUnitRef());
-
-          if (isDeprecated()) {
-            processCase(childCase);
-          }
+          processCase(childCase);
         }
       }
       caseRepo.saveAndFlush(parentCase);
@@ -491,9 +442,7 @@ public class CaseService {
           .with("collectionExericseId", sampleUnitParent.getCollectionExerciseId())
           .info("New Case created");
       updateCaseWithIACs(parentCase, sampleUnitParent.getSampleUnitRef());
-      if (isDeprecated()) {
-        processCase(parentCase);
-      }
+      processCase(parentCase);
     }
   }
 
@@ -658,10 +607,6 @@ public class CaseService {
       if (!oldState.equals(newState)) {
         targetCase.setState(newState);
         caseRepo.saveAndFlush(targetCase);
-        if (!isDeprecated()) {
-          notificationPublisher.sendNotification(
-              prepareCaseNotification(targetCase, transitionEvent));
-        }
       }
     }
   }
@@ -735,9 +680,5 @@ public class CaseService {
     } catch (IllegalArgumentException exc) {
       throw new CTPException(CTPException.Fault.BAD_REQUEST, exc.getMessage());
     }
-  }
-
-  public boolean isDeprecated() {
-    return appConfig.getActionSvc().isDeprecated();
   }
 }

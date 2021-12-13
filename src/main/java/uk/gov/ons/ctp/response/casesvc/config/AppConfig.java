@@ -11,11 +11,9 @@ import org.springframework.retry.annotation.EnableRetry;
 @ConfigurationProperties
 @Data
 public class AppConfig {
-  private ActionSvc actionSvc;
   private InternetAccessCodeSvc internetAccessCodeSvc;
   private CaseDistribution caseDistribution;
   private CollectionExerciseSvc collectionExerciseSvc;
-  private DataGrid dataGrid;
   private SwaggerSettings swaggerSettings;
   private Logging logging;
   private GCP gcp;

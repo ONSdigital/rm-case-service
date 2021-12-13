@@ -32,7 +32,7 @@ services:
       - POSTGRES_DB=postgres
     ports:
     - "15432:5432"
-
+  # redis is used for collection exercise and not for case service
   redis:
     container_name: redis-case-it
     image: redis:3.2.9
