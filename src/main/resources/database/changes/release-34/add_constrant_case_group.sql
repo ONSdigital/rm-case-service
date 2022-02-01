@@ -1,0 +1,1 @@
+ ALTER TABLE casesvc.casegroup ADD CONSTRAINT unique_casegroup_constraint UNIQUE (collection_exercise_id, sample_unit_ref);

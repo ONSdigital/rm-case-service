@@ -16,6 +16,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.dao.DataIntegrityViolationException;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
@@ -70,7 +71,6 @@ public class CaseCreationServiceTest {
         FixtureHelper.loadClassFixtures(CollectionExerciseDTO[].class);
     when(collectionExerciseSvcClient.getCollectionExercise(any()))
         .thenReturn(collectionExercises.get(0));
-    when(caseGroupService.isCaseGroupUnique(any(SampleUnitParent.class))).thenReturn(true);
     when(caseSvcStateTransitionManager.transition(
             CaseState.SAMPLED_INIT, CaseDTO.CaseEvent.ACTIVATED))
         .thenReturn(CaseState.ACTIONABLE);
@@ -143,7 +143,6 @@ public class CaseCreationServiceTest {
         FixtureHelper.loadClassFixtures(CollectionExerciseDTO[].class);
     when(collectionExerciseSvcClient.getCollectionExercise(any()))
         .thenReturn(collectionExercises.get(0));
-    when(caseGroupService.isCaseGroupUnique(any(SampleUnitParent.class))).thenReturn(true);
     when(caseSvcStateTransitionManager.transition(
             CaseState.SAMPLED_INIT, CaseDTO.CaseEvent.ACTIVATED))
         .thenReturn(CaseState.ACTIONABLE);
@@ -227,14 +226,17 @@ public class CaseCreationServiceTest {
     sampleUnitParent.setSampleUnitRef("str1234");
     sampleUnitParent.setSampleUnitType("B");
     sampleUnitParent.setId(UUID.randomUUID().toString());
+    List<CollectionExerciseDTO> collectionExercises =
+        FixtureHelper.loadClassFixtures(CollectionExerciseDTO[].class);
+    when(collectionExerciseSvcClient.getCollectionExercise(any()))
+        .thenReturn(collectionExercises.get(0));
 
-    // case group already exists
-    when(caseGroupService.isCaseGroupUnique(any(SampleUnitParent.class))).thenReturn(false);
+    when(caseGroupRepo.saveAndFlush(any())).thenThrow(new DataIntegrityViolationException(any()));
 
     caseService.createInitialCase(sampleUnitParent);
 
     // then nothing should be saved
-    verify(caseGroupRepo, times(0)).saveAndFlush(any(CaseGroup.class));
+    verify(caseGroupRepo, times(1)).saveAndFlush(any(CaseGroup.class));
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
   }
 }

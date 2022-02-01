@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -406,7 +407,7 @@ public class CaseService {
 
   @Transactional
   public void createInitialCase(SampleUnitParent sampleUnitParent) throws CTPException {
-    if (caseGroupService.isCaseGroupUnique(sampleUnitParent)) {
+    try {
       CaseGroup newCaseGroup = createNewCaseGroup(sampleUnitParent);
       log.with("caseGroupId", newCaseGroup.getId())
           .with("collectionExericseId", sampleUnitParent.getCollectionExerciseId())
@@ -443,6 +444,11 @@ public class CaseService {
           .info("New Case created");
       updateCaseWithIACs(parentCase, sampleUnitParent.getSampleUnitRef());
       processCase(parentCase);
+    } catch (DataIntegrityViolationException exception) {
+      log.with("collectionExericseId", sampleUnitParent.getCollectionExerciseId())
+          .with("sampleUnitRef", sampleUnitParent.getSampleUnitRef())
+          .with("error", exception)
+          .warn("Case already exists. Ignoring case creation");
     }
   }
 
@@ -637,7 +643,8 @@ public class CaseService {
    * @param caseGroupData SampleUnitParent from which to create CaseGroup.
    * @return newcaseGroup created caseGroup.
    */
-  private CaseGroup createNewCaseGroup(SampleUnitParent caseGroupData) {
+  private CaseGroup createNewCaseGroup(SampleUnitParent caseGroupData)
+      throws DataIntegrityViolationException {
     CaseGroup newCaseGroup = new CaseGroup();
 
     newCaseGroup.setId(UUID.randomUUID());

@@ -12,13 +12,7 @@ import static org.mockito.Mockito.*;
 import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.EQ_LAUNCH;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import ma.glasnost.orika.MapperFacade;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +23,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.dao.DataIntegrityViolationException;
 import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.InternetAccessCodeSvcClient;
@@ -899,7 +894,6 @@ public class CaseServiceTest {
         .thenReturn(Collections.singletonList(IAC_FOR_TEST));
 
     when(caseIacAuditRepo.saveAndFlush(any())).thenReturn(new CaseIacAudit());
-    when(caseGroupService.isCaseGroupUnique(any(SampleUnitParent.class))).thenReturn(true);
 
     caseService.createInitialCase(sampleUnitParent);
 
@@ -936,15 +930,11 @@ public class CaseServiceTest {
     sampleUnitParent.setSampleUnitRef("str1234");
     sampleUnitParent.setSampleUnitType("B");
     sampleUnitParent.setId(UUID.randomUUID().toString());
-
-    // case group is a duplicate
-    when(caseGroupService.isCaseGroupUnique(any(SampleUnitParent.class))).thenReturn(false);
-
+    when(caseGroupRepo.saveAndFlush(any())).thenThrow(new DataIntegrityViolationException(any()));
     // so this should do nothing
     caseService.createInitialCase(sampleUnitParent);
 
     // check
-    verify(caseGroupRepo, times(0)).saveAndFlush(any());
     verify(caseRepo, times(0)).saveAndFlush(any());
     verify(caseIacAuditRepo, times(0)).saveAndFlush(any());
   }
@@ -984,7 +974,6 @@ public class CaseServiceTest {
     mockCase.setCasePK(1);
 
     when(caseRepo.saveAndFlush(any(Case.class))).thenReturn(mockCase);
-    when(caseGroupService.isCaseGroupUnique(any(SampleUnitParent.class))).thenReturn(true);
 
     when(internetAccessCodeSvcClient.generateIACs(any(Integer.class)))
         .thenThrow(new RuntimeException("IAC access failed"));
