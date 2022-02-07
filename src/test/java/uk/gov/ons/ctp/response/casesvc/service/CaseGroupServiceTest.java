@@ -3,7 +3,6 @@ package uk.gov.ons.ctp.response.casesvc.service;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.*;
@@ -16,7 +15,6 @@ import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
-import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
@@ -296,56 +294,5 @@ public class CaseGroupServiceTest {
     caseGroupService.findCaseGroupsForExecutedCollectionExercises(null);
 
     // Then throws CTPException
-  }
-
-  @Test
-  public void isUniqueTrue() {
-    UUID collectionExerciseId = UUID.randomUUID();
-    String sampleUnitRef = "1234578";
-
-    SampleUnitParent parent = new SampleUnitParent();
-    parent.setCollectionExerciseId(collectionExerciseId.toString());
-    parent.setSampleUnitRef(sampleUnitRef);
-
-    given(
-            caseGroupRepo.findBySampleUnitRefAndCollectionExerciseId(
-                sampleUnitRef, collectionExerciseId))
-        .willReturn(Collections.emptyList());
-
-    assertTrue("should be unique", caseGroupService.isCaseGroupUnique(parent));
-
-    verify(caseGroupRepo, times(1))
-        .findBySampleUnitRefAndCollectionExerciseId(sampleUnitRef, collectionExerciseId);
-  }
-
-  @Test
-  public void isUniqueFalse() {
-
-    UUID collectionExerciseId = UUID.randomUUID();
-    String sampleUnitRef = "1234578";
-
-    CaseGroup caseGroup =
-        CaseGroup.builder()
-            .id(UUID.randomUUID())
-            .collectionExerciseId(collectionExerciseId)
-            .partyId(PARTY_ID)
-            .sampleUnitRef(sampleUnitRef)
-            .sampleUnitType("B")
-            .status(CaseGroupStatus.NOTSTARTED)
-            .build();
-
-    SampleUnitParent parent = new SampleUnitParent();
-    parent.setCollectionExerciseId(collectionExerciseId.toString());
-    parent.setSampleUnitRef(sampleUnitRef);
-
-    given(
-            caseGroupRepo.findBySampleUnitRefAndCollectionExerciseId(
-                sampleUnitRef, collectionExerciseId))
-        .willReturn(Arrays.asList(caseGroup));
-
-    assertFalse("should be unique", caseGroupService.isCaseGroupUnique(parent));
-
-    verify(caseGroupRepo, times(1))
-        .findBySampleUnitRefAndCollectionExerciseId(sampleUnitRef, collectionExerciseId);
   }
 }

@@ -13,7 +13,6 @@ import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
-import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
@@ -187,26 +186,5 @@ public class CaseGroupService {
           String.format("Cannot find cases against collection exercise %s", collectionExerciseId));
     }
     return numberOfCases;
-  }
-
-  public boolean isCaseGroupUnique(final SampleUnitParent sampleUnitParent) {
-    log.with("collectionExericseId", sampleUnitParent.getCollectionExerciseId())
-        .with("sampleUnitRef", sampleUnitParent.getSampleUnitRef())
-        .info("Check if case group already exists");
-    List<CaseGroup> caseGroups =
-        caseGroupRepo.findBySampleUnitRefAndCollectionExerciseId(
-            sampleUnitParent.getSampleUnitRef(),
-            UUID.fromString(sampleUnitParent.getCollectionExerciseId()));
-    boolean unique = caseGroups.isEmpty();
-    if (unique) {
-      log.with("collectionExericseId", sampleUnitParent.getCollectionExerciseId())
-          .with("sampleUnitRef", sampleUnitParent.getSampleUnitRef())
-          .info("Case group does not exists, creating new case group");
-    } else {
-      log.with("collectionExericseId", sampleUnitParent.getCollectionExerciseId())
-          .with("sampleUnitRef", sampleUnitParent.getSampleUnitRef())
-          .info("Case group already exists, skipping creation");
-    }
-    return unique;
   }
 }
