@@ -216,6 +216,10 @@ spec:
             value: "$(SECURITY_USER_NAME)"
           - name: SURVEY_SVC_CONNECTION_CONFIG_PASSWORD
             value: "$(SECURITY_USER_PASSWORD)"
+          - name: SURVEY_SVC_MULTIPLE_FORM_TYPE_SUPPORTED_SURVEYS_IDS
+            value: "{{ .Values.surveySvc.multipleFormTypeSupportedSurveysIds }}"
+          - name: SURVEY_SVC_MULTIPLE_FORM_TYPE_SUPPORTED
+            value: "{{ .Values.surveySvc.multipleFormTypeSupported }}"
           - name: CASE_DISTRIBUTION_DELAY_MILLI_SECONDS
             value: "30000"
           - name: SPRING_LIQUIBASE_USER
