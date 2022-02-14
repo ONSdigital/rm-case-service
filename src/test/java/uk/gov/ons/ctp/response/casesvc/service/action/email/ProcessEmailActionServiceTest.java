@@ -117,7 +117,7 @@ public class ProcessEmailActionServiceTest {
     survey.setId(surveyId.toString());
     survey.setLegalBasis("test");
     survey.setLongName("test");
-    survey.setSurveyRef("400000005");
+    survey.setSurveyRef("202");
     survey.setId("202");
     Mockito.when(actionService.getSurvey(surveyId.toString())).thenReturn(survey);
     SurveySvc mockSurveySvc = new SurveySvc();

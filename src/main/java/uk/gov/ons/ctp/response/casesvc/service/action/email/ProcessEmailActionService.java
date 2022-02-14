@@ -250,7 +250,7 @@ public class ProcessEmailActionService {
           .legalBasis(survey.getLegalBasis())
           .region(businessParty.getAttributes().getRegion())
           .surveyRef(survey.getSurveyRef())
-          .formType(businessParty.getAttributes().getFormtype())
+          .formType(businessParty.getAttributes().getFormType())
           .build();
     return Classifiers.builder()
         .actionType(caseActionTemplate.getType())
@@ -271,9 +271,9 @@ public class ProcessEmailActionService {
     String supportedMultipleSurveys =
         appConfig.getSurveySvc().getMultipleFormTypeSupportedSurveysIds();
     String supportedMultipleFormsTypes = appConfig.getSurveySvc().getMultipleFormTypeSupported();
-    String surveyId = survey.getId();
-    String formType = businessParty.getAttributes().getFormtype();
-    if (isSupportedStringPresent(surveyId, getSupportedList(supportedMultipleSurveys))
+    String surveyRef = survey.getSurveyRef();
+    String formType = businessParty.getAttributes().getFormType();
+    if (isSupportedStringPresent(surveyRef, getSupportedList(supportedMultipleSurveys))
         && isSupportedStringPresent(formType, getSupportedList(supportedMultipleFormsTypes))) {
       return true;
     }
