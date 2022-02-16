@@ -244,19 +244,16 @@ public class ProcessEmailActionService {
   private Classifiers getClassifiers(
       PartyDTO businessParty, SurveyDTO survey, CaseActionTemplate caseActionTemplate) {
     log.info("collecting classifiers for email");
-    if (isMultipleTemplateSurvey(businessParty, survey))
-      return Classifiers.builder()
-          .actionType(caseActionTemplate.getType())
-          .legalBasis(survey.getLegalBasis())
-          .region(businessParty.getAttributes().getRegion())
-          .surveyRef(survey.getSurveyRef())
-          .formType(businessParty.getAttributes().getFormType())
-          .build();
+    String form_type =
+        isMultipleTemplateSurvey(businessParty, survey)
+            ? businessParty.getAttributes().getFormType()
+            : "";
     return Classifiers.builder()
         .actionType(caseActionTemplate.getType())
         .legalBasis(survey.getLegalBasis())
         .region(businessParty.getAttributes().getRegion())
         .surveyRef(survey.getSurveyRef())
+        .formType(form_type)
         .build();
   }
 
