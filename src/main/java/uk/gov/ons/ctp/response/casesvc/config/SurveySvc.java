@@ -8,4 +8,6 @@ import uk.gov.ons.ctp.response.lib.common.rest.RestUtilityConfig;
 public class SurveySvc {
   private RestUtilityConfig connectionConfig;
   private String requestSurveyPath;
+  private String multipleFormTypeSupportedSurveyIds;
+  private String multipleFormTypeSupported;
 }

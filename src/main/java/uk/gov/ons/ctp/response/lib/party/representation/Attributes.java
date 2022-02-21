@@ -25,7 +25,7 @@ public class Attributes {
   public String inclexcl;
   public long froempment;
   public long cellNo;
-  public String formtype;
+  public String formType;
   public String legalstatus;
   public String entref;
   public long frotover;

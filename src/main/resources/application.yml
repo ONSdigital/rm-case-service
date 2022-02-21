@@ -110,6 +110,8 @@ survey-svc:
     retry-pause-milli-seconds: 5000
     connect-timeout-milli-seconds: 5000
     read-timeout-milli-seconds: 5000
+  multiple-form-type-supported-survey-ids: "202,203"
+  multiple-form-type-supported: "1862,1864,1874"
 
 case-distribution:
   retrieval-max: 50
@@ -151,3 +153,5 @@ gcp:
   bucket:
     name: ras-rm-print-file-sinhaa
     prefix: ""
+
+

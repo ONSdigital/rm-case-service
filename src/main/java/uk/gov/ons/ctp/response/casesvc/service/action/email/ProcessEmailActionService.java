@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
+import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionTemplate;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionTemplate.Handler;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
@@ -36,6 +37,7 @@ import uk.gov.ons.ctp.response.lib.survey.representation.SurveyDTO;
 public class ProcessEmailActionService {
   private static final Logger log = LoggerFactory.getLogger(ProcessEmailActionService.class);
   public static final String DATE_FORMAT_IN_REMINDER_EMAIL = "dd/MM/yyyy";
+  @Autowired private AppConfig appConfig;
   @Autowired private ActionTemplateService actionTemplateService;
   @Autowired private CaseGroupRepository caseGroupRepository;
   @Autowired private NotifyEmailService emailService;
@@ -242,12 +244,37 @@ public class ProcessEmailActionService {
   private Classifiers getClassifiers(
       PartyDTO businessParty, SurveyDTO survey, CaseActionTemplate caseActionTemplate) {
     log.info("collecting classifiers for email");
+    String form_type =
+        isMultipleTemplateSurvey(businessParty, survey)
+            ? businessParty.getAttributes().getFormType()
+            : "";
     return Classifiers.builder()
         .actionType(caseActionTemplate.getType())
         .legalBasis(survey.getLegalBasis())
         .region(businessParty.getAttributes().getRegion())
         .surveyRef(survey.getSurveyRef())
+        .formType(form_type)
         .build();
+  }
+
+  /**
+   * Checks if the classifier required is for supported multiple templates
+   *
+   * @param businessParty
+   * @param survey
+   * @return
+   */
+  private boolean isMultipleTemplateSurvey(PartyDTO businessParty, SurveyDTO survey) {
+    String supportedMultipleSurveys =
+        appConfig.getSurveySvc().getMultipleFormTypeSupportedSurveyIds();
+    String supportedMultipleFormsTypes = appConfig.getSurveySvc().getMultipleFormTypeSupported();
+    String surveyRef = survey.getSurveyRef();
+    String formType = businessParty.getAttributes().getFormType();
+    if (isSupportedStringPresent(surveyRef, getSupportedList(supportedMultipleSurveys))
+        && isSupportedStringPresent(formType, getSupportedList(supportedMultipleFormsTypes))) {
+      return true;
+    }
+    return false;
   }
 
   private String generateTradingStyle(final Attributes businessUnitAttributes) {
@@ -268,5 +295,29 @@ public class ProcessEmailActionService {
    */
   private boolean isBusinessNotification(CaseAction caseAction) {
     return caseAction.getSampleUnitType().equals(SampleUnitDTO.SampleUnitType.B.name());
+  }
+
+  /**
+   * This function provides an array to the comma separated environment variables.
+   *
+   * @param commaSeparatedString
+   * @return : Arrays of String
+   */
+  private String[] getSupportedList(String commaSeparatedString) {
+    return commaSeparatedString.split(",");
+  }
+
+  /**
+   * Takes the arrays of string and checks if the value is present.
+   *
+   * @param value
+   * @param valueArray
+   * @return boolean: True if present
+   */
+  private boolean isSupportedStringPresent(String value, String[] valueArray) {
+    if (null == value || null == valueArray || value.isEmpty() || valueArray.length == 0) {
+      return false;
+    }
+    return Arrays.stream(valueArray).anyMatch(value::equals);
   }
 }

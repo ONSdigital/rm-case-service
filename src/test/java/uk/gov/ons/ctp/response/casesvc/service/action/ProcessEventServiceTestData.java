@@ -80,6 +80,7 @@ public class ProcessEventServiceTestData {
     attributes.setRegion(region);
     attributes.setName(name);
     attributes.setEmailAddress(email);
+    attributes.setFormType("1862");
     List<Association> associationList = new ArrayList<>();
     List<Enrolment> enrolments = new ArrayList<>();
     enrolments.add(enrolment);

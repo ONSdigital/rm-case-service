@@ -81,6 +81,10 @@ public class NotifyModel {
       @JsonInclude(Include.NON_NULL)
       private String legalBasis;
 
+      @JsonProperty("form_type")
+      @JsonInclude(Include.NON_NULL)
+      private String formType;
+
       public static ClassifiersBuilder builder() {
         return new ClassifiersBuilder();
       }
@@ -101,6 +105,7 @@ public class NotifyModel {
         private String legalBasis;
         private String region;
         private String surveyRef;
+        private String formType;
 
         /*
          * This is lifted directly from the old notify-gateway and comms-template.
@@ -108,7 +113,7 @@ public class NotifyModel {
         public Classifiers build() {
           if (NUDGE_EMAIL.equals(actionType)) {
             actionType = NUDGE;
-            return new Classifiers(actionType, "", "", "");
+            return new Classifiers(actionType, "", "", "", "");
           }
 
           // if not not england is england. welcome to ras-rm.
@@ -125,7 +130,7 @@ public class NotifyModel {
           } else if (REMINDER_EMAIL.equalsIgnoreCase(actionType)) {
             actionType = REMINDER;
           }
-          return new Classifiers(actionType, surveyRef, region, legalBasis);
+          return new Classifiers(actionType, surveyRef, region, legalBasis, formType);
         }
 
         public ClassifiersBuilder actionType(String actionType) {
@@ -145,6 +150,11 @@ public class NotifyModel {
 
         public ClassifiersBuilder region(String region) {
           this.region = region;
+          return this;
+        }
+
+        public ClassifiersBuilder formType(String formType) {
+          this.formType = formType;
           return this;
         }
       }
