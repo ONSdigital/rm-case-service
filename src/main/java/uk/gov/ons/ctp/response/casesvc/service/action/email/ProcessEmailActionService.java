@@ -266,7 +266,7 @@ public class ProcessEmailActionService {
    */
   private boolean isMultipleTemplateSurvey(PartyDTO businessParty, SurveyDTO survey) {
     String supportedMultipleSurveys =
-        appConfig.getSurveySvc().getMultipleFormTypeSupportedSurveysIds();
+        appConfig.getSurveySvc().getMultipleFormTypeSupportedSurveyIds();
     String supportedMultipleFormsTypes = appConfig.getSurveySvc().getMultipleFormTypeSupported();
     String surveyRef = survey.getSurveyRef();
     String formType = businessParty.getAttributes().getFormType();

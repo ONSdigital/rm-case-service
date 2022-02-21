@@ -217,7 +217,7 @@ spec:
           - name: SURVEY_SVC_CONNECTION_CONFIG_PASSWORD
             value: "$(SECURITY_USER_PASSWORD)"
           - name: SURVEY_SVC_MULTIPLE_FORM_TYPE_SUPPORTED_SURVEYS_IDS
-            value: "{{ .Values.surveySvc.multipleFormTypeSupportedSurveysIds }}"
+            value: "{{ .Values.surveySvc.multipleFormTypeSupportedSurveyIds }}"
           - name: SURVEY_SVC_MULTIPLE_FORM_TYPE_SUPPORTED
             value: "{{ .Values.surveySvc.multipleFormTypeSupported }}"
           - name: CASE_DISTRIBUTION_DELAY_MILLI_SECONDS

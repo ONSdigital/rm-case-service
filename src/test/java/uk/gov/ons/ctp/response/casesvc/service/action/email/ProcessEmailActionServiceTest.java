@@ -66,7 +66,7 @@ public class ProcessEmailActionServiceTest {
     SurveyDTO surveyDTO = testData.setupSurveyDTO(surveyId, "test", "400000005", "test");
     Mockito.when(actionService.getSurvey(surveyId.toString())).thenReturn(surveyDTO);
     SurveySvc mockSurveySvc = new SurveySvc();
-    mockSurveySvc.setMultipleFormTypeSupportedSurveysIds("202,203");
+    mockSurveySvc.setMultipleFormTypeSupportedSurveyIds("202,203");
     mockSurveySvc.setMultipleFormTypeSupported("1862,1864,1874");
     Mockito.when(appConfig.getSurveySvc()).thenReturn(mockSurveySvc);
     List<CaseAction> actionCases = new ArrayList<>();
@@ -121,7 +121,7 @@ public class ProcessEmailActionServiceTest {
     survey.setId("202");
     Mockito.when(actionService.getSurvey(surveyId.toString())).thenReturn(survey);
     SurveySvc mockSurveySvc = new SurveySvc();
-    mockSurveySvc.setMultipleFormTypeSupportedSurveysIds("202,203");
+    mockSurveySvc.setMultipleFormTypeSupportedSurveyIds("202,203");
     mockSurveySvc.setMultipleFormTypeSupported("1862,1864,1874");
     Mockito.when(appConfig.getSurveySvc()).thenReturn(mockSurveySvc);
     List<CaseAction> actionCases = new ArrayList<>();

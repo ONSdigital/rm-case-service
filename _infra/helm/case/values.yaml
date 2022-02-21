@@ -87,5 +87,5 @@ crons:
     target: "retry-event"
 
 surveySvc:
-  multipleFormTypeSupportedSurveysIds: "202"
+  multipleFormTypeSupportedSurveyIds: "202"
   multipleFormTypeSupported: "1862,1864,1874"
