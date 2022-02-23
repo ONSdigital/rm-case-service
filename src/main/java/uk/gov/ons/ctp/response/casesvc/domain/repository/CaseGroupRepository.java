@@ -121,9 +121,11 @@ public interface CaseGroupRepository extends JpaRepository<CaseGroup, Integer> {
               + "c.activeEnrolment) "
               + "FROM CaseGroup cg, Case c "
               + "LEFT JOIN CaseIacAudit iac ON iac.caseFK=c.casePK "
+              + "AND iac.createdDateTime = (SELECT max(createdDateTime) from "
+              + "CaseIacAudit z WHERE z.caseFK=c.casePK)"
               + "WHERE cg.caseGroupPK=c.caseGroupFK AND c.state='ACTIONABLE' "
               + "AND cg.collectionExerciseId = :collectionExerciseId "
-              + "AND c.activeEnrolment = :activeEnrolment")
+              + "AND c.activeEnrolment = :activeEnrolment ORDER BY cg.sampleUnitRef, iac.createdDateTime DESC")
   List<CaseAction> findByCollectionExerciseIdAndActiveEnrolment(
       @Param("collectionExerciseId") UUID collectionExerciseId,
       @Param("activeEnrolment") boolean activeEnrolment);
