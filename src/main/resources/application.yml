@@ -112,6 +112,7 @@ survey-svc:
     read-timeout-milli-seconds: 5000
   multiple-form-type-supported-survey-ids: "202,203"
   multiple-form-type-supported: "1862,1864,1874"
+  survey-id-supported-template: "024,283"
 
 case-distribution:
   retrieval-max: 50
@@ -143,13 +144,13 @@ retries:
   backoff: 5000
 
 gcp:
-  project: ras-rm-sandbox
-  receiptSubscription: ras-rm-receipt
-  caseNotificationTopic: "test_topic"
-  caseNotificationSubscription: "test_subscription"
+  project: ras-rm-dev
+  receiptSubscription: sdx-receipt-sinhaa
+  caseNotificationTopic: "case-notification-sinhaa"
+  caseNotificationSubscription: "case-notification-sinhaa"
   collectionExerciseEventStatusTopic: "test_event_status_topic"
-  printFileTopic: "test_notify_letter_topic"
-  notifyTopic: "test_notify_email_topic"
+  printFileTopic: "print-file-sinhaa"
+  notifyTopic: "ras-rm-notify-sinhaa"
   bucket:
     name: ras-rm-print-file-sinhaa
     prefix: ""

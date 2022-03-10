@@ -10,4 +10,5 @@ public class SurveySvc {
   private String requestSurveyPath;
   private String multipleFormTypeSupportedSurveyIds;
   private String multipleFormTypeSupported;
+  private String surveyIdSupportedTemplate;
 }
