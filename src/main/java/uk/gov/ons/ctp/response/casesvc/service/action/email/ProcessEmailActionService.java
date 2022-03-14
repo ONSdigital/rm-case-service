@@ -244,17 +244,33 @@ public class ProcessEmailActionService {
   private Classifiers getClassifiers(
       PartyDTO businessParty, SurveyDTO survey, CaseActionTemplate caseActionTemplate) {
     log.info("collecting classifiers for email");
-    String form_type =
+    String formType =
         isMultipleTemplateSurvey(businessParty, survey)
             ? businessParty.getAttributes().getFormType()
             : "";
+    String surveyRef = isSurveyIdSupportedTemplate(survey) ? survey.getSurveyRef() : "";
     return Classifiers.builder()
         .actionType(caseActionTemplate.getType())
         .legalBasis(survey.getLegalBasis())
         .region(businessParty.getAttributes().getRegion())
-        .surveyRef(survey.getSurveyRef())
-        .formType(form_type)
+        .surveyRef(surveyRef)
+        .formType(formType)
         .build();
+  }
+
+  /**
+   * Checks if the classifier required is for survey id supported template
+   *
+   * @param survey
+   * @return boolean
+   */
+  private boolean isSurveyIdSupportedTemplate(SurveyDTO survey) {
+    String surveyIdSupportedTemplate = appConfig.getSurveySvc().getSurveyIdSupportedTemplate();
+    String surveyRef = survey.getSurveyRef();
+    if (isSupportedStringPresent(surveyRef, getSupportedList(surveyIdSupportedTemplate))) {
+      return true;
+    }
+    return false;
   }
 
   /**

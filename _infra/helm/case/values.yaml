@@ -89,3 +89,4 @@ crons:
 surveySvc:
   multipleFormTypeSupportedSurveyIds: "202"
   multipleFormTypeSupported: "1862,1864,1874"
+  surveyIdSupportedTemplate: "024,283"

@@ -220,6 +220,8 @@ spec:
             value: "{{ .Values.surveySvc.multipleFormTypeSupportedSurveyIds }}"
           - name: SURVEY_SVC_MULTIPLE_FORM_TYPE_SUPPORTED
             value: "{{ .Values.surveySvc.multipleFormTypeSupported }}"
+          - name: SURVEY_SVC_SURVEY_ID_SUPPORTED_TEMPLATE
+            value: "{{ .Values.surveySvc.surveyIdSupportedTemplate }}"
           - name: CASE_DISTRIBUTION_DELAY_MILLI_SECONDS
             value: "30000"
           - name: SPRING_LIQUIBASE_USER

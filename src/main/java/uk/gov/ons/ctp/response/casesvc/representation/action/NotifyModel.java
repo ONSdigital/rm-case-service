@@ -97,7 +97,6 @@ public class NotifyModel {
         private static final String NOTIFICATION_EMAIL = "BSNE";
         private static final String REMINDER = "REMINDER";
         private static final String NOTIFICATION = "NOTIFICATION";
-        private static final String COVID_SURVEY_ID = "283";
         // a region of YY appears to be any region that isnt england
         private static final String NOT_ENGLAND = "YY";
 
@@ -119,10 +118,6 @@ public class NotifyModel {
           // if not not england is england. welcome to ras-rm.
           if (!NOT_ENGLAND.equals(region)) {
             region = "";
-          }
-
-          if (!COVID_SURVEY_ID.equals(surveyRef)) {
-            surveyRef = "";
           }
 
           if (NOTIFICATION_EMAIL.equalsIgnoreCase(actionType)) {

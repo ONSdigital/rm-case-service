@@ -112,6 +112,7 @@ survey-svc:
     read-timeout-milli-seconds: 5000
   multiple-form-type-supported-survey-ids: "202,203"
   multiple-form-type-supported: "1862,1864,1874"
+  survey-id-supported-template: "024,283"
 
 case-distribution:
   retrieval-max: 50
