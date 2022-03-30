@@ -44,7 +44,7 @@ jobs:
 
 
       - name: gcloud setup
-        uses: google-github-actions/setup-gcloud@0
+        uses: google-github-actions/setup-gcloud@v0
         with:
           service_account_key: ${{ secrets.GCR_KEY }}
           export_default_credentials: true
