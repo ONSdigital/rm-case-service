@@ -40,6 +40,7 @@ spring:
     initialization-mode: always
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
+    defer-datasource-initialization: true
     show-sql: false
     properties:
       hibernate:
