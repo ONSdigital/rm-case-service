@@ -11,9 +11,9 @@
     <description>CaseService</description>
 
     <properties>
-        <springboot.version>2.5.12</springboot.version>
+        <springboot.version>2.6.6</springboot.version>
         <common.version>10.49.4</common.version>
-        <jackson.version>2.12.2</jackson.version>
+        <jackson.version>2.13.2</jackson.version>
         <java.version>11</java.version>
         <orika.version>1.5.4</orika.version>
         <surefire.version>2.20</surefire.version>
