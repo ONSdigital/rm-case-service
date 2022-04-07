@@ -11,7 +11,7 @@
     <description>CaseService</description>
 
     <properties>
-        <springboot.version>2.4.11</springboot.version>
+        <springboot.version>2.5.12</springboot.version>
         <common.version>10.49.4</common.version>
         <jackson.version>2.12.2</jackson.version>
         <java.version>11</java.version>
@@ -54,7 +54,7 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-gcp-starter-pubsub</artifactId>
-            <version>1.2.3.RELEASE</version>
+            <version>1.2.8.RELEASE</version>
         </dependency>
 
         <dependency>
