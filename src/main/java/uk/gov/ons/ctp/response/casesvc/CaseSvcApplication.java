@@ -5,12 +5,17 @@ import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
 import java.time.Clock;
 import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
+import liquibase.integration.spring.SpringLiquibase;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.EnableCaching;
@@ -20,6 +25,7 @@ import org.springframework.cloud.gcp.pubsub.integration.AckMode;
 import org.springframework.cloud.gcp.pubsub.integration.inbound.PubSubInboundChannelAdapter;
 import org.springframework.cloud.gcp.pubsub.integration.outbound.PubSubMessageHandler;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -70,6 +76,43 @@ public class CaseSvcApplication {
     this.appConfig = appConfig;
     this.caseSvcStateTransitionManagerFactory = caseSvcStateTransitionManagerFactory;
   }
+
+  @Autowired private DataSource dataSource;
+
+  @Bean
+  public LiquibaseProperties liquibaseProperties() {
+    return new LiquibaseProperties();
+  }
+
+  @Bean
+  @DependsOn(value = "entityManagerFactory")
+  @DependsOnDatabaseInitialization
+  public CustomSpringLiquibase liquibase() {
+    LiquibaseProperties liquibaseProperties = liquibaseProperties();
+    SpringLiquibase liquibase = new SpringLiquibase();
+    liquibase.setChangeLog(liquibaseProperties.getChangeLog());
+    liquibase.setContexts(liquibaseProperties.getContexts());
+    liquibase.setDataSource(getDataSource(liquibaseProperties));
+    liquibase.setDefaultSchema(liquibaseProperties.getDefaultSchema());
+    liquibase.setDropFirst(liquibaseProperties.isDropFirst());
+    liquibase.setShouldRun(true);
+    liquibase.setLabels(liquibaseProperties.getLabels());
+    liquibase.setChangeLogParameters(liquibaseProperties.getParameters());
+    return new CustomSpringLiquibase(liquibase);
+  }
+
+  private DataSource getDataSource(LiquibaseProperties liquibaseProperties) {
+    if (liquibaseProperties.getUrl() == null) {
+      return this.dataSource;
+    }
+
+    return DataSourceBuilder.create()
+            .url(liquibaseProperties.getUrl())
+            .username(liquibaseProperties.getUser())
+            .password(liquibaseProperties.getPassword())
+            .build();
+  }
+
 
   /**
    * The main entry point for this applicaion.
