@@ -39,10 +39,9 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
     show-sql: false
     defer-datasource-initialization: true
-    properties:
-      hibernate:
-        ddl-auto: update
-        default_schema: casesvc
+    hibernate:
+      ddl-auto: update
+      default_schema: casesvc
   sql:
     init:
       mode: always
