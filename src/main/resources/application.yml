@@ -16,6 +16,10 @@ logging:
   useJson: false
 
 management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
   security:
     roles: SUPERUSER
     enabled: true
