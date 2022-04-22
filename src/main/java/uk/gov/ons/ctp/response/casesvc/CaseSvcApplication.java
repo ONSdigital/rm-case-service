@@ -25,8 +25,8 @@ import org.springframework.cloud.gcp.pubsub.integration.AckMode;
 import org.springframework.cloud.gcp.pubsub.integration.inbound.PubSubInboundChannelAdapter;
 import org.springframework.cloud.gcp.pubsub.integration.outbound.PubSubMessageHandler;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.integration.annotation.*;
@@ -107,12 +107,11 @@ public class CaseSvcApplication {
     }
 
     return DataSourceBuilder.create()
-            .url(liquibaseProperties.getUrl())
-            .username(liquibaseProperties.getUser())
-            .password(liquibaseProperties.getPassword())
-            .build();
+        .url(liquibaseProperties.getUrl())
+        .username(liquibaseProperties.getUser())
+        .password(liquibaseProperties.getPassword())
+        .build();
   }
-
 
   /**
    * The main entry point for this applicaion.
