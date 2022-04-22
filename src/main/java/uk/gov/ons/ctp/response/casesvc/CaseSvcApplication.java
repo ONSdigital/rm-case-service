@@ -65,8 +65,9 @@ import uk.gov.ons.ctp.response.lib.common.time.DateTimeUtil;
 @Slf4j
 public class CaseSvcApplication {
 
-  private AppConfig appConfig;
-  private StateTransitionManagerFactory caseSvcStateTransitionManagerFactory;
+  @Autowired private AppConfig appConfig;
+  @Autowired private DataSource dataSource;
+  @Autowired private StateTransitionManagerFactory caseSvcStateTransitionManagerFactory;
 
   /** Constructor for CaseSvcApplication */
   @Autowired
@@ -76,8 +77,6 @@ public class CaseSvcApplication {
     this.appConfig = appConfig;
     this.caseSvcStateTransitionManagerFactory = caseSvcStateTransitionManagerFactory;
   }
-
-  @Autowired private DataSource dataSource;
 
   @Bean
   public LiquibaseProperties liquibaseProperties() {
