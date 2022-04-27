@@ -35,9 +35,6 @@ spring:
     username: postgres
     password: postgres
     driverClassName: org.postgresql.Driver
-    hikari:
-      maximum-pool-size: 2
-      minimum-idle: 1
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
     show-sql: false
@@ -54,7 +51,6 @@ spring:
     password: postgres
     url: jdbc:postgresql://localhost:5432/ras
     liquibase-schema: casesvc
-    default-schema: casesvc
     change-log: classpath:/database/changelog-master.yml
     enabled: false
   main:
