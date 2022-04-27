@@ -35,8 +35,7 @@ spring:
     username: postgres
     password: postgres
     driverClassName: org.postgresql.Driver
-    dbcp2:
-      maxTotal: 100
+    max-active: 100
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
     show-sql: false
