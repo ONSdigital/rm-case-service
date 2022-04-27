@@ -36,7 +36,8 @@ spring:
     password: postgres
     driverClassName: org.postgresql.Driver
     hikari:
-      maximumPoolSize: 100
+      maximum-pool-size: 5
+      minimum-idle: 1
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
     show-sql: false
