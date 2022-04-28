@@ -14,7 +14,6 @@ public class AppConfig {
   private InternetAccessCodeSvc internetAccessCodeSvc;
   private CaseDistribution caseDistribution;
   private CollectionExerciseSvc collectionExerciseSvc;
-  private SwaggerSettings swaggerSettings;
   private Logging logging;
   private GCP gcp;
   private PartySvc partySvc;
