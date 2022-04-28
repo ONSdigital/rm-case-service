@@ -25,7 +25,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TypeDefs({ @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class) })
+@TypeDefs({@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)})
 @Table(name = "caseevent", schema = "casesvc")
 public class CaseEvent implements Serializable {
 
