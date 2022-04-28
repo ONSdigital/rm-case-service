@@ -37,6 +37,7 @@ spring:
     driverClassName: org.postgresql.Driver
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
+    open-in-view: true
     show-sql: false
     defer-datasource-initialization: true
     hibernate:

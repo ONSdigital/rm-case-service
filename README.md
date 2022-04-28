@@ -128,5 +128,9 @@ Open API spec can be found [here](API.yaml)
 ## To test
 See curlTests.txt under /test/resources
 
+## Issues with schema startup
+
+There is currently an issue with the SQL scripts due to upgrading to Spring Boot 2.6.6. You might see an error about not being able to create `iac.iac` on the first start - this will only appear on the first run and should be fine on future runs.
+
 ## Copyright
 Copyright (C) 2017 Crown Copyright (Office for National Statistics) 
