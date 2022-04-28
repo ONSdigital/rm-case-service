@@ -43,6 +43,8 @@ spring:
     hibernate:
       ddl-auto: update
       default_schema: casesvc
+      hbm2ddl:
+        schema_filter_provider: uk.gov.ons.ctp.response.casesvc.CustomProvider
   sql:
     init:
       mode: always
