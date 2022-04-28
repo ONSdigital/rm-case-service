@@ -8,6 +8,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -32,8 +34,9 @@ public class CaseEvent implements Serializable {
   private static final long serialVersionUID = 6034836141646834386L;
 
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "case_event_pk")
-  private Integer caseEventPK;
+  private Long caseEventPK;
 
   @Column(name = "case_fk")
   private Integer caseFK;
