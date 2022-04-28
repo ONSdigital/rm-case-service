@@ -181,7 +181,7 @@ public class CaseServiceTest {
     metadata.put("partyId", UUID.randomUUID().toString());
     CaseEvent caseEvent =
         new CaseEvent(
-            1L,
+            1,
             NON_EXISTING_PARENT_CASE_FK,
             CASEEVENT_DESCRIPTION,
             CASEEVENT_CREATEDBY,
@@ -211,7 +211,7 @@ public class CaseServiceTest {
     metadata.put("partyId", UUID.randomUUID().toString());
     CaseEvent caseEvent =
         new CaseEvent(
-            1L,
+            1,
             NON_EXISTING_PARENT_CASE_FK,
             CASEEVENT_DESCRIPTION,
             CASEEVENT_CREATEDBY,
