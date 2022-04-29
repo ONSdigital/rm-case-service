@@ -39,11 +39,8 @@ public class CaseEvent implements Serializable {
   @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "caseeventseq_gen")
   @GenericGenerator(
       name = "caseeventseq_gen",
-      strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-      parameters = {
-        @Parameter(name = "sequence_name", value = "casesvc.caseeventseq"),
-        @Parameter(name = "increment_size", value = "1")
-      })
+      strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator"
+  )
   @Column(name = "case_event_pk")
   private Integer caseEventPK;
 
