@@ -17,7 +17,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
@@ -39,8 +38,7 @@ public class CaseEvent implements Serializable {
   @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "caseeventseq_gen")
   @GenericGenerator(
       name = "caseeventseq_gen",
-      strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator"
-  )
+      strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator")
   @Column(name = "case_event_pk")
   private Integer caseEventPK;
 
