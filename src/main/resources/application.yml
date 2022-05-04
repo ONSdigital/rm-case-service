@@ -47,6 +47,7 @@ spring:
       hibernate:
         hbm2ddl:
           schema_filter_provider: uk.gov.ons.ctp.response.casesvc.CustomProvider
+        use-new-id-generator-mappings: false
   sql:
     init:
       mode: always
