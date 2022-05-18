@@ -46,7 +46,7 @@ spring:
     properties:
       hibernate:
         hbm2ddl:
-          schema_filter_provider: uk.gov.ons.ctp.response.casesvc.CustomProvider
+          schema_filter_provider: src/main/java/uk/gov/ons/ctp/response/casesvc/CustomProvider
         id:
           new_generator_mappings: false
   sql:
