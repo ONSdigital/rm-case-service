@@ -93,7 +93,7 @@ public class CollectionExerciseSvcClient {
   }
 
   /**
-   * Creates a CollectionExercise
+   * Creates a CollectionExercise. This is an updated comment
    *
    * @param surveyId the survey ID for the collection exercise
    * @param exerciseRef the Exercise ref for the collection exercise
@@ -104,7 +104,7 @@ public class CollectionExerciseSvcClient {
     log.with("survey_id", surveyId)
         .with("exercise_ref", exerciseRef)
         .with("user_description", userDescription)
-        .debug("Creating a collection exercise");
+        .debug("Creating a collection exercise blah");
     CollectionExerciseDTO collex = new CollectionExerciseDTO();
     final UriComponents uriComponents =
         restUtility.createUriComponents(
