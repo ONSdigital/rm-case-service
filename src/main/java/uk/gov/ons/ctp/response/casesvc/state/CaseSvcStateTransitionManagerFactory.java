@@ -61,10 +61,7 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
     ImmutableTable.Builder<CaseGroupStatus, CategoryDTO.CategoryName, CaseGroupStatus> builder =
         ImmutableTable.builder();
 
-    // From not started on ci downloaded, eq launch, successful response upload,
-    // completed by phone
-    // to in progress, in progress, completed, completed by phone, no longer
-    // required
+    // NOT STARTED
     builder.put(
         CaseGroupStatus.NOTSTARTED,
         CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED,
