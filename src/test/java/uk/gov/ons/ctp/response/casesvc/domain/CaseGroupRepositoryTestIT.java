@@ -4,7 +4,9 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
 
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -23,6 +25,7 @@ import uk.gov.ons.ctp.response.casesvc.CaseCreator;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.action.CaseAction;
+import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 
 @ContextConfiguration
 @ActiveProfiles("test")
@@ -50,50 +53,49 @@ public class CaseGroupRepositoryTestIT {
     Assert.assertTrue(collectionExercises.isEmpty());
   }
 
-  //  @Test
-  //  public void testDateInView() throws Exception {
-  //    Random rnd = new Random();
-  //
-  //    int randNumber = 10000 + rnd.nextInt(900000);
-  //
-  //    UUID surveyId = UUID.fromString("cb8accda-6118-4d3b-85a3-149e28960c54");
-  //
-  //    collectionExerciseSvcClient.createCollectionExercise(
-  //            surveyId, Integer.toString(randNumber), "January 2018");
-  //
-  //    CollectionExerciseDTO collex =
-  //        collectionExerciseSvcClient.getCollectionExercises(surveyId.toString()).get(0);
-  //
-  //    UUID collectionExerciseId = collex.getId();
-  //    // Given
-  //    caseCreator.postSampleUnit("LMS0002", "H", UUID.randomUUID(), collectionExerciseId);
-  //    Thread.sleep(2000);
-  //
-  //    // When
-  //    List<CaseAction> collectionExercises =
-  //        actionCase.findByCollectionExerciseId(collectionExerciseId);
-  //    // Then
-  //    Assert.assertEquals(1, collectionExercises.size());
-  //    Assert.assertEquals(collectionExerciseId,
-  // collectionExercises.get(0).getCollectionExerciseId());
-  //    UUID caseId = collectionExercises.get(0).getCaseId();
-  //    boolean isActiveEnrolment = collectionExercises.get(0).isActiveEnrolment();
-  //
-  //    CaseAction caseIdObject = actionCase.findByCaseId(caseId);
-  //    Assert.assertEquals(collectionExerciseId, caseIdObject.getCollectionExerciseId());
-  //
-  //    List<CaseAction> caseObjects =
-  //        actionCase.findByCollectionExerciseIdAndActiveEnrolment(
-  //            collectionExerciseId, isActiveEnrolment);
-  //    Assert.assertEquals(1, caseObjects.size());
-  //    Assert.assertEquals(caseId, caseObjects.get(0).getCaseId());
-  //
-  //    List<UUID> caseIds = new ArrayList<>();
-  //    caseIds.add(UUID.randomUUID());
-  //    caseIds.add(UUID.randomUUID());
-  //    caseIds.add(caseId);
-  //    List<CaseAction> casesObject = actionCase.findByCaseIdIn(caseIds);
-  //    Assert.assertEquals(1, casesObject.size());
-  //    Assert.assertEquals(collectionExerciseId, casesObject.get(0).getCollectionExerciseId());
-  //  }
+  @Test
+  public void testDateInView() throws Exception {
+    Random rnd = new Random();
+
+    int randNumber = 10000 + rnd.nextInt(900000);
+
+    UUID surveyId = UUID.fromString("cb8accda-6118-4d3b-85a3-149e28960c54");
+
+    collectionExerciseSvcClient.createCollectionExercise(
+        surveyId, Integer.toString(randNumber), "January 2018");
+
+    CollectionExerciseDTO collex =
+        collectionExerciseSvcClient.getCollectionExercises(surveyId.toString()).get(0);
+
+    UUID collectionExerciseId = collex.getId();
+    // Given
+    caseCreator.postSampleUnit("LMS0002", "H", UUID.randomUUID(), collectionExerciseId);
+    Thread.sleep(2000);
+
+    // When
+    List<CaseAction> collectionExercises =
+        actionCase.findByCollectionExerciseId(collectionExerciseId);
+    // Then
+    Assert.assertEquals(1, collectionExercises.size());
+    Assert.assertEquals(collectionExerciseId, collectionExercises.get(0).getCollectionExerciseId());
+    UUID caseId = collectionExercises.get(0).getCaseId();
+    boolean isActiveEnrolment = collectionExercises.get(0).isActiveEnrolment();
+
+    CaseAction caseIdObject = actionCase.findByCaseId(caseId);
+    Assert.assertEquals(collectionExerciseId, caseIdObject.getCollectionExerciseId());
+
+    List<CaseAction> caseObjects =
+        actionCase.findByCollectionExerciseIdAndActiveEnrolment(
+            collectionExerciseId, isActiveEnrolment);
+    Assert.assertEquals(1, caseObjects.size());
+    Assert.assertEquals(caseId, caseObjects.get(0).getCaseId());
+
+    List<UUID> caseIds = new ArrayList<>();
+    caseIds.add(UUID.randomUUID());
+    caseIds.add(UUID.randomUUID());
+    caseIds.add(caseId);
+    List<CaseAction> casesObject = actionCase.findByCaseIdIn(caseIds);
+    Assert.assertEquals(1, casesObject.size());
+    Assert.assertEquals(collectionExerciseId, casesObject.get(0).getCollectionExerciseId());
+  }
 }
