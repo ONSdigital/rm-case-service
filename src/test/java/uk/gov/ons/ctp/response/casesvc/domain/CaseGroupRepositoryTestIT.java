@@ -19,7 +19,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.gov.ons.ctp.response.casesvc.CaseCreator;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
@@ -34,9 +33,6 @@ import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestPropertySource(locations = "classpath:/application-test.yml")
-@Sql(
-    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-    scripts = "classpath:/delete-test-data.sql")
 public class CaseGroupRepositoryTestIT {
 
   @Autowired private CaseGroupRepository actionCase;
@@ -76,7 +72,7 @@ public class CaseGroupRepositoryTestIT {
     List<CaseAction> collectionExercises =
         actionCase.findByCollectionExerciseId(collectionExerciseId);
     // Then
-    Assert.assertEquals(1, collectionExercises.size());
+    Assert.assertEquals(2, collectionExercises.size());
     Assert.assertEquals(collectionExerciseId, collectionExercises.get(0).getCollectionExerciseId());
     UUID caseId = collectionExercises.get(0).getCaseId();
     boolean isActiveEnrolment = collectionExercises.get(0).isActiveEnrolment();
@@ -87,7 +83,7 @@ public class CaseGroupRepositoryTestIT {
     List<CaseAction> caseObjects =
         actionCase.findByCollectionExerciseIdAndActiveEnrolment(
             collectionExerciseId, isActiveEnrolment);
-    Assert.assertEquals(1, caseObjects.size());
+    Assert.assertEquals(2, caseObjects.size());
     Assert.assertEquals(caseId, caseObjects.get(0).getCaseId());
 
     List<UUID> caseIds = new ArrayList<>();
