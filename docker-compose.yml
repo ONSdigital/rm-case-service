@@ -4,7 +4,6 @@ services:
     container_name: collex-case-it
     external_links:
       - postgres-case-it
-      - redis-case-it
     image: eu.gcr.io/ons-rasrmbs-management/collection-exercise:latest
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-case-it:5432/postgres?sslmode=disable
@@ -15,8 +14,6 @@ services:
       - SPRING_LIQUIBASE_PASSWORD=postgres
       - SPRING_CLOUD_GCP_PROJECTID=test
       - SPRING_CLOUD_GCP_PUBSUB_EMULATORHOST:pubsub-emulator-it:8681
-      - REDISSON_CONFIG_ADDRESS=redis-case-it:6379
-      - DATA_GRID_ADDRESS=redis-case-it:6379
       - SURVEY_SVC_CONNECTION_CONFIG_HOST=survey-case-it
       - SURVEY_SVC_CONNECTION_CONFIG_PORT=8080
       - PUBSUB_EMULATOR_HOST=pubsub-emulator-it:8681
@@ -32,12 +29,6 @@ services:
       - POSTGRES_DB=postgres
     ports:
     - "15432:5432"
-  # redis is used for collection exercise and not for case service
-  redis:
-    container_name: redis-case-it
-    image: redis:3.2.9
-    ports:
-    - "17379:6379"
 
   pubsub-emulator:
     container_name: pubsub-emulator-it
