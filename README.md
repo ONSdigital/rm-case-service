@@ -108,9 +108,6 @@ Suggested improvements can be found here:
 [Improvements](IMPROVEMENTS.md)
 
 ## Running
-
-There are two ways of running this service
-
 * Run
     ```bash
     cp .maven.settings.xml ~/.m2/settings.xml  # This only needs to be done once to set up mavens settings file
