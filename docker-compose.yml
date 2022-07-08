@@ -5,7 +5,7 @@ services:
     external_links:
       - postgres-case-it
       - redis-case-it
-    image: eu.gcr.io/ons-rasrmbs-management/collection-exercise:11.1.8
+    image: eu.gcr.io/ons-rasrmbs-management/collection-exercise:latest
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-case-it:5432/postgres?sslmode=disable
       - SPRING_DATASOURCE_USERNAME=postgres
