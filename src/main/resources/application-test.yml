@@ -57,7 +57,9 @@ internet-access-code-svc:
 
 collection-exercise-svc:
   connection-config:
-    port: 38145
+    scheme: http
+    host: localhost
+    port: 8145
     username: admin
     password: secret
 
