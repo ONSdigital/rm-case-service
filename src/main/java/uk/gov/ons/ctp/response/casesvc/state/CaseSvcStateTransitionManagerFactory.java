@@ -71,6 +71,10 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT,
         CaseGroupStatus.NOTSTARTED);
     builder.put(
+        CaseGroupStatus.NOTSTARTED,
+        CategoryDTO.CategoryName.RESPONDENT_ENROLED,
+        CaseGroupStatus.NOTSTARTED);
+    builder.put(
         CaseGroupStatus.NOTSTARTED, CategoryDTO.CategoryName.EQ_LAUNCH, CaseGroupStatus.INPROGRESS);
     builder.put(
         CaseGroupStatus.NOTSTARTED,
