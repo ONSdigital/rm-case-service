@@ -23,12 +23,6 @@ survey-svc:
     password: secret
     retry-attempts: 5
 
-redisson-config:
-  address: localhost:17379
-
-data-grid:
-  address: localhost:17379
-
 case-distribution:
   retrieval-max: 50
   delay-milli-seconds: 500
