@@ -1,2 +1,0 @@
-INSERT INTO casesvc.category ("categorypk", "shortdescription", "longdescription", "eventtype", "role", "generatedactiontype", "group", "oldcasesampleunittypes", "newcasesampleunittype", "recalccollectioninstrument")
-VALUES ('NO_ACTIVE_ENROLMENTS', 'No active enrolments', 'No active enrolments remaining for case', 'ACTIVATED', NULL, NULL, NULL, 'B', NULL, NULL)

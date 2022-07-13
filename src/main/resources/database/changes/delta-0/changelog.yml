@@ -1,0 +1,20 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 0-1
+      author: Mark Price
+      changes:
+        - sqlFile:
+            comment: Rebase July 2022
+            path: objects.sql
+            relativeToChangelogFile: true
+            splitStatements: false
+  - changeSet:
+      id: 0-2
+      author: Mark Price
+      changes:
+        - sqlFile:
+            comment: Rebase July 2022
+            path: data.sql
+            relativeToChangelogFile: true
+            splitStatements: false
