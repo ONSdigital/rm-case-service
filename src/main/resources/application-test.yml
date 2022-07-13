@@ -23,10 +23,10 @@ spring:
         emulator-host: localhost:18681
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
-    show-sql: false
+    show-sql: true
     defer-datasource-initialization: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
       default_schema: casesvc
 
 survey-svc:

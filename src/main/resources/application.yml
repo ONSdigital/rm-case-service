@@ -38,10 +38,10 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
     open-in-view: true
-    show-sql: false
+    show-sql: true
     defer-datasource-initialization: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
       default_schema: casesvc
     properties:
       hibernate:
