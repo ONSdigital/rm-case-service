@@ -108,11 +108,7 @@ Suggested improvements can be found here:
 [Improvements](IMPROVEMENTS.md)
 
 ## Running
-
-There are two ways of running this service
-
-* The easiest way is via docker (https://github.com/ONSdigital/ras-rm-docker-dev)
-* Alternatively running the service up in isolation
+* Run
     ```bash
     cp .maven.settings.xml ~/.m2/settings.xml  # This only needs to be done once to set up mavens settings file
     mvn clean install
@@ -124,6 +120,12 @@ To use the code styler please goto this url (https://github.com/google/google-ja
 
 ## API
 Open API spec can be found [here](API.yaml)
+
+## Integration tests
+Use the command 'mvn clean install' this will run the tests in docker.
+
+Note: You may need to a service account and key can be found locally in your environment and use the command 
+"export GOOGLE_APPLICATION_CREDENTIALS='/[PATH]/[NAME_OF_KEY].json'" (remove the double quotes)
 
 ## To test
 See curlTests.txt under /test/resources
