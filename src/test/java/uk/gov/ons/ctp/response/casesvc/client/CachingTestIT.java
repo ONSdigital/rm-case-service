@@ -18,6 +18,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 
@@ -27,6 +28,9 @@ import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @TestPropertySource(locations = "classpath:/application-test.yml")
+@Sql(
+        executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
+        scripts = "classpath:/delete-test-data.sql")
 public class CachingTestIT {
 
   @Autowired private CollectionExerciseSvcClient collectionExerciseSvcClient;
