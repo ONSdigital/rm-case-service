@@ -41,7 +41,7 @@ spring:
     show-sql: true
     defer-datasource-initialization: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
       default_schema: casesvc
     properties:
       hibernate:
