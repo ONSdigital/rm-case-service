@@ -10,6 +10,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import java.util.UUID;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,8 @@ import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 @TestPropertySource(locations = "classpath:/application-test.yml")
 @Sql(
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-        scripts = "classpath:/delete-test-data.sql")
+        scripts = "classpath:/drop-objects.sql")
+@Ignore
 public class CachingTestIT {
 
   @Autowired private CollectionExerciseSvcClient collectionExerciseSvcClient;
