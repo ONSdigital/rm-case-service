@@ -4,19 +4,22 @@ skinparam state {
 }
 
 [*] --> NOTSTARTED
-NOTSTARTED --> INPROGRESS : collection_instrument_downloaded [[https://github.com/ONSdigital/ras-frontstage-api/blob/main/frontstage_api/controllers/collection_instrument_controller.py#L33 *]]
-NOTSTARTED --> INPROGRESS : eq_launch [[https://github.com/ONSdigital/ras-frontstage-api/blob/main/frontstage_api/resources/surveys/generate_eq_url.py#L51 *]]
-NOTSTARTED --> COMPLETE : successful_response_upload [[https://github.com/ONSdigital/ras-frontstage-api/blob/main/frontstage_api/controllers/collection_instrument_controller.py#L54 *]]
+NOTSTARTED --> INPROGRESS : COLLECTION_INSTRUMENT_DOWNLOADED
+NOTSTARTED --> INPROGRESS : EQ_LAUNCH
+NOTSTARTED --> COMPLETE : SUCCESSFUL_RESPONSE_UPLOAD
+NOTSTARTED --> NOTSTARTED: ACCESS_CODE_AUTHENTICATION_ATTEMPT
+NOTSTARTED --> NOTSTARTED: RESPONDENT_ENROLED
 
-NOTSTARTED --> COMPLETEDBYPHONE : completed_by_phone
-NOTSTARTED --> NOLONGERREQUIRED : no_longer_required
+NOTSTARTED --> COMPLETEDBYPHONE : COMPLETED_BY_PHONE
+NOTSTARTED --> NOLONGERREQUIRED : NO_LONGER_REQUIRED
     
-INPROGRESS --> COMPLETE : offline_response_processed [[https://github.com/ONSdigital/rm-case-service/blob/main/src/main/java/uk/gov/ons/ctp/response/casesvc/message/impl/CaseReceiptReceiverImpl.java#L60 *]]
-INPROGRESS --> COMPLETE : successful_response_upload [[https://github.com/ONSdigital/ras-frontstage-api/blob/888192443e7f2a6bcd3ce72ce3b0db32d11e85bb/frontstage_api/controllers/collection_instrument_controller.py#L54 *]]
+INPROGRESS --> COMPLETE : OFFLINE_RESPONSE_PROCESSED
+INPROGRESS --> COMPLETE : SUCCESSFUL_RESPONSE_UPLOAD
+INPROGRESS -> INPROGRESS: EQ_LAUNCH
+INPROGRESS -> INPROGRESS: ACCESS_CODE_AUTHENTICATION_ATTEMPT
+INPROGRESS -> COMPLETEDBYPHONE : COMPLETED_BY_PHONE
+INPROGRESS --> NOLONGERREQUIRED : NO_LONGER_REQUIRED
 
-INPROGRESS --> COMPLETEDBYPHONE : completed_by_phone [[https://github.com/ONSdigital/response-operations-ui/blob/main/response_operations_ui/templates/change-response-status.html#L59 *]]
-INPROGRESS --> NOLONGERREQUIRED : no_longer_required [[https://github.com/ONSdigital/response-operations-ui/blob/main/response_operations_ui/templates/change-response-status.html#L59 *]]
-
-REOPENED --> COMPLETEDBYPHONE : completed_by_phone [[https://github.com/ONSdigital/response-operations-ui/blob/main/response_operations_ui/templates/change-response-status.html#L59 *]]
-REOPENED --> NOLONGERREQUIRED : no_longer_required [[https://github.com/ONSdigital/response-operations-ui/blob/main/response_operations_ui/templates/change-response-status.html#L59 *]]
+REOPENED --> COMPLETEDBYPHONE : COMPLETED_BY_PHONE
+REOPENED --> NOLONGERREQUIRED : NO_LONGER_REQUIRED
 @enduml

@@ -61,14 +61,19 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
     ImmutableTable.Builder<CaseGroupStatus, CategoryDTO.CategoryName, CaseGroupStatus> builder =
         ImmutableTable.builder();
 
-    // From not started on ci downloaded, eq launch, successful response upload,
-    // completed by phone
-    // to in progress, in progress, completed, completed by phone, no longer
-    // required
+    // NOT STARTED
     builder.put(
         CaseGroupStatus.NOTSTARTED,
         CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED,
         CaseGroupStatus.INPROGRESS);
+    builder.put(
+        CaseGroupStatus.NOTSTARTED,
+        CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT,
+        CaseGroupStatus.NOTSTARTED);
+    builder.put(
+        CaseGroupStatus.NOTSTARTED,
+        CategoryDTO.CategoryName.RESPONDENT_ENROLED,
+        CaseGroupStatus.NOTSTARTED);
     builder.put(
         CaseGroupStatus.NOTSTARTED, CategoryDTO.CategoryName.EQ_LAUNCH, CaseGroupStatus.INPROGRESS);
     builder.put(
@@ -214,6 +219,12 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
     // From in progress on successful response upload, completed by phone to
     // completed, completed by
     // phone, no longer required
+    builder.put(
+        CaseGroupStatus.INPROGRESS, CategoryDTO.CategoryName.EQ_LAUNCH, CaseGroupStatus.INPROGRESS);
+    builder.put(
+        CaseGroupStatus.INPROGRESS,
+        CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT,
+        CaseGroupStatus.INPROGRESS);
     builder.put(
         CaseGroupStatus.INPROGRESS,
         CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD,
