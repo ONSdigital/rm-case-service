@@ -15,7 +15,7 @@ spring:
       minimum-idle: 2
   liquibase:
     url: jdbc:postgresql://localhost:15432/postgres
-    default-schema: casesvc
+    liquibase-schema: casesvc
   cloud:
     gcp:
       project-id: ras-rm-dev
