@@ -29,9 +29,6 @@ import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @TestPropertySource(locations = "classpath:/application-test.yml")
-@Sql(
-    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD,
-    scripts = "classpath:/drop-objects.sql")
 @Ignore
 public class CachingTestIT {
 

@@ -26,7 +26,7 @@ spring:
     show-sql: true
     defer-datasource-initialization: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
       default_schema: casesvc
 
 survey-svc:
