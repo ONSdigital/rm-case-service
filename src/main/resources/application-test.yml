@@ -17,6 +17,13 @@ spring:
       project-id: ras-rm-dev
       pubsub:
         emulator-host: localhost:18681
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL94Dialect
+    show-sql: false
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: update
+      default_schema: casesvc
 
 survey-svc:
   connection-config:
