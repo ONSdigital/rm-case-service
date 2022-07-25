@@ -6,7 +6,6 @@ import com.google.cloud.storage.StorageOptions;
 import java.time.Clock;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
-
 import liquibase.integration.spring.SpringLiquibase;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +13,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
-import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.EnableCaching;
@@ -80,40 +79,40 @@ public class CaseSvcApplication {
     this.caseSvcStateTransitionManagerFactory = caseSvcStateTransitionManagerFactory;
   }
 
-    @Bean
-    public LiquibaseProperties liquibaseProperties() {
-      return new LiquibaseProperties();
+  @Bean
+  public LiquibaseProperties liquibaseProperties() {
+    return new LiquibaseProperties();
+  }
+
+  @Bean
+  @DependsOn(value = "entityManagerFactory")
+  @DependsOnDatabaseInitialization
+  public CustomSpringLiquibase liquibase() {
+    LiquibaseProperties liquibaseProperties = liquibaseProperties();
+    SpringLiquibase liquibase = new SpringLiquibase();
+    liquibase.setChangeLog(liquibaseProperties.getChangeLog());
+    liquibase.setContexts(liquibaseProperties.getContexts());
+    liquibase.setDataSource(getDataSource(liquibaseProperties));
+    liquibase.setDefaultSchema(liquibaseProperties.getDefaultSchema());
+    liquibase.setDropFirst(liquibaseProperties.isDropFirst());
+    liquibase.setShouldRun(true);
+    liquibase.setLabels(liquibaseProperties.getLabels());
+    liquibase.setChangeLogParameters(liquibaseProperties.getParameters());
+    liquibase.setLiquibaseSchema(liquibaseProperties.getLiquibaseSchema());
+    return new CustomSpringLiquibase(liquibase);
+  }
+
+  private DataSource getDataSource(LiquibaseProperties liquibaseProperties) {
+    if (liquibaseProperties.getUrl() == null) {
+      return this.dataSource;
     }
 
-    @Bean
-    @DependsOn(value = "entityManagerFactory")
-    @DependsOnDatabaseInitialization
-    public CustomSpringLiquibase liquibase() {
-      LiquibaseProperties liquibaseProperties = liquibaseProperties();
-      SpringLiquibase liquibase = new SpringLiquibase();
-      liquibase.setChangeLog(liquibaseProperties.getChangeLog());
-      liquibase.setContexts(liquibaseProperties.getContexts());
-      liquibase.setDataSource(getDataSource(liquibaseProperties));
-      liquibase.setDefaultSchema(liquibaseProperties.getDefaultSchema());
-      liquibase.setDropFirst(liquibaseProperties.isDropFirst());
-      liquibase.setShouldRun(true);
-      liquibase.setLabels(liquibaseProperties.getLabels());
-      liquibase.setChangeLogParameters(liquibaseProperties.getParameters());
-      liquibase.setLiquibaseSchema(liquibaseProperties.getLiquibaseSchema());
-      return new CustomSpringLiquibase(liquibase);
-    }
-
-    private DataSource getDataSource(LiquibaseProperties liquibaseProperties) {
-      if (liquibaseProperties.getUrl() == null) {
-        return this.dataSource;
-      }
-
-      return DataSourceBuilder.create()
-          .url(liquibaseProperties.getUrl())
-          .username(liquibaseProperties.getUser())
-          .password(liquibaseProperties.getPassword())
-          .build();
-    }
+    return DataSourceBuilder.create()
+        .url(liquibaseProperties.getUrl())
+        .username(liquibaseProperties.getUser())
+        .password(liquibaseProperties.getPassword())
+        .build();
+  }
 
   /**
    * The main entry point for this applicaion.
