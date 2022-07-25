@@ -40,7 +40,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
-import uk.gov.ons.ctp.response.casesvc.liquibase.CustomSpringLiquibase;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;

@@ -1,4 +1,4 @@
-package uk.gov.ons.ctp.response.casesvc.liquibase;
+package uk.gov.ons.ctp.response.casesvc;
 
 import liquibase.integration.spring.SpringLiquibase;
 import org.springframework.beans.factory.BeanNameAware;
