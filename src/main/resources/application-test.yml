@@ -9,10 +9,6 @@ info:
 spring:
   datasource:
     url: jdbc:postgresql://localhost:15432/postgres
-    hikari:
-      connection-timeout: 20000
-      maximum-pool-size: 5
-      minimum-idle: 2
   liquibase:
     url: jdbc:postgresql://localhost:15432/postgres
     liquibase-schema: casesvc
