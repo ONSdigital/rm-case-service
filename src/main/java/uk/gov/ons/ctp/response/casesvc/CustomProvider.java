@@ -1,12 +1,12 @@
- package uk.gov.ons.ctp.response.casesvc;
+package uk.gov.ons.ctp.response.casesvc;
 
- import org.hibernate.boot.model.relational.Namespace;
- import org.hibernate.boot.model.relational.Sequence;
- import org.hibernate.mapping.Table;
- import org.hibernate.tool.schema.spi.SchemaFilter;
- import org.hibernate.tool.schema.spi.SchemaFilterProvider;
+import org.hibernate.boot.model.relational.Namespace;
+import org.hibernate.boot.model.relational.Sequence;
+import org.hibernate.mapping.Table;
+import org.hibernate.tool.schema.spi.SchemaFilter;
+import org.hibernate.tool.schema.spi.SchemaFilterProvider;
 
- public class CustomProvider implements SchemaFilterProvider {
+public class CustomProvider implements SchemaFilterProvider {
 
   @Override
   public SchemaFilter getCreateFilter() {
@@ -27,9 +27,9 @@
   public SchemaFilter getValidateFilter() {
     return CustomFilter.INSTANCE;
   }
- }
+}
 
- class CustomFilter implements SchemaFilter {
+class CustomFilter implements SchemaFilter {
   public static final CustomFilter INSTANCE = new CustomFilter();
 
   @Override
@@ -48,4 +48,4 @@
     // and stripping that out is too messy right now (Spring Boot 2.6.6 upgrade)
     return false;
   }
- }
+}
