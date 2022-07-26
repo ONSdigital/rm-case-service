@@ -132,13 +132,6 @@ redelivery-policy:
   initialRedeliveryDelay: 1000
   redeliveryDelay: 1000
 
-swagger-settings:
-  swagger-ui-active: true
-  group-name: caseservice-api
-  title: Case Service API
-  description: API for ${project.artifactId}
-  version: ${project.version}
-
 messaging:
   backoffInitial: 5000
   backoffMultiplier: 3

@@ -130,8 +130,5 @@ Note: You may need to a service account and key can be found locally in your env
 ## To test
 See curlTests.txt under /test/resources
 
-## Swagger Specifications
-To view the Swagger Specifications for the Sample Service, run the service and navigate to http://localhost:8171/swagger-ui.html.
-
 ## Copyright
 Copyright (C) 2017 Crown Copyright (Office for National Statistics) 
