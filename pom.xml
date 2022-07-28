@@ -11,7 +11,7 @@
     <description>CaseService</description>
 
     <properties>
-        <springboot.version>2.4.11</springboot.version>
+        <springboot.version>2.6.6</springboot.version>
         <common.version>10.49.4</common.version>
         <jackson.version>2.13.3</jackson.version>
         <java.version>11</java.version>
@@ -20,7 +20,6 @@
         <godaddylogging.version>1.2.5</godaddylogging.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <springfox.version>2.7.0</springfox.version>
     </properties>
 
     <scm>
@@ -54,7 +53,7 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-gcp-starter-pubsub</artifactId>
-            <version>1.2.3.RELEASE</version>
+            <version>1.2.8.RELEASE</version>
         </dependency>
 
         <dependency>
@@ -120,23 +119,6 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-crypto</artifactId>
             <version>5.0.19.RELEASE</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>${springfox.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>${springfox.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-spring-web</artifactId>
-            <version>${springfox.version}</version>
         </dependency>
 
         <!-- SPRING END -->

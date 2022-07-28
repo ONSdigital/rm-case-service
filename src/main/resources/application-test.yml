@@ -11,6 +11,7 @@ spring:
     url: jdbc:postgresql://localhost:15432/postgres
   liquibase:
     url: jdbc:postgresql://localhost:15432/postgres
+    liquibase-schema: casesvc
   cloud:
     gcp:
       project-id: ras-rm-dev
@@ -32,12 +33,12 @@ schedules:
   distribution-schedule-delay-milli-seconds: 1000
 
 collection-instrument-svc:
-    connection-config:
-        port: 18002
+  connection-config:
+    port: 18002
 
 party-svc:
-    connection-config:
-        port: 18002
+  connection-config:
+    port: 18002
 
 internet-access-code-svc:
   iac-post-path: /iacs

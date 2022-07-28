@@ -1,1 +1,1 @@
-CREATE SCHEMA casesvc;
+CREATE SCHEMA IF NOT EXISTS casesvc;
