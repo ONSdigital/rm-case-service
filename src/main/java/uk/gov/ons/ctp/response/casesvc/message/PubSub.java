@@ -18,8 +18,9 @@ public class PubSub {
   private static final Logger log = LoggerFactory.getLogger(PubSub.class);
   @Autowired AppConfig appConfig;
 
-  /***
-   * Provides subscription name for the case notification subscriber
+  /**
+   * * Provides subscription name for the case notification subscriber
+   *
    * @return com.google.pubsub.v1.ProjectSubscriptionName
    */
   public ProjectSubscriptionName getCaseReceiptSubscriptionName() {

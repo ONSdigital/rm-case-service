@@ -13,7 +13,6 @@ import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.Categor
 
 import java.sql.Timestamp;
 import java.util.*;
-import ma.glasnost.orika.MapperFacade;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,11 +23,11 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.dao.DataIntegrityViolationException;
-import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.InternetAccessCodeSvcClient;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.config.InternetAccessCodeSvc;
+import uk.gov.ons.ctp.response.casesvc.domain.ObjectTestConverter;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
@@ -112,8 +111,6 @@ public class CaseServiceTest {
   @Mock private InternetAccessCodeSvcClient internetAccessCodeSvcClient;
   @Mock private CaseIACService caseIacAuditService;
   @Mock private StateTransitionManager<CaseState, CaseDTO.CaseEvent> caseSvcStateTransitionManager;
-  @Spy private MapperFacade mapperFacade = new CaseSvcBeanMapper();
-
   @Spy @InjectMocks private Case mockCase;
 
   @InjectMocks private CaseService caseService;
@@ -850,7 +847,7 @@ public class CaseServiceTest {
             CategoryDTO.CategoryName.GENERATE_ENROLMENT_CODE, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
     caseService.createCaseEvent(caseEvent);
 
-    Case updatedBCase = mapperFacade.map(actionableBCase, Case.class);
+    Case updatedBCase = ObjectTestConverter.caze(actionableBCase);
     updatedBCase.setIac(IAC_FOR_TEST);
     verify(caseIacAuditRepo, times(1)).saveAndFlush(any());
   }

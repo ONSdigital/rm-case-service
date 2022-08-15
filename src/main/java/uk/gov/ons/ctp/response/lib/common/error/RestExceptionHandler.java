@@ -86,7 +86,9 @@ public class RestExceptionHandler {
   public ResponseEntity<?> handleInvalidRequestException(InvalidRequestException ex) {
 
     String errors =
-        ex.getErrors().getFieldErrors().stream()
+        ex.getErrors()
+            .getFieldErrors()
+            .stream()
             .map(e -> String.format("field=%s message=%s", e.getField(), e.getDefaultMessage()))
             .collect(Collectors.joining(","));
 

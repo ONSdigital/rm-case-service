@@ -11,19 +11,16 @@ import static uk.gov.ons.ctp.response.lib.common.utility.MockMvcControllerAdvice
 
 import java.util.ArrayList;
 import java.util.List;
-import ma.glasnost.orika.MapperFacade;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
 import uk.gov.ons.ctp.response.lib.common.FixtureHelper;
@@ -47,7 +44,6 @@ public final class CategoryEndpointUnitTest {
   private static final String CATEGORY1_GROUP = "general";
   @InjectMocks private CategoryEndpoint categoryEndpoint;
   @Mock private CategoryService categoryService;
-  @Spy private MapperFacade mapperFacade = new CaseSvcBeanMapper();
   private MockMvc mockMvc;
   private List<Category> categoryResults;
 

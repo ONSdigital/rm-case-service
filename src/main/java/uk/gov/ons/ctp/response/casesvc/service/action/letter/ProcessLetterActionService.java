@@ -65,7 +65,8 @@ public class ProcessLetterActionService {
     SurveyDTO survey = actionService.getSurvey(collectionExerciseDTO.getSurveyId());
 
     List<CaseAction> actionableLetterCases =
-        letterCases.parallelStream()
+        letterCases
+            .parallelStream()
             .filter(c -> actionService.isActionable(c, actionTemplate, eventTag))
             .collect(Collectors.toList());
 
@@ -84,7 +85,8 @@ public class ProcessLetterActionService {
         .info("Populating letter data for letter cases.");
 
     List<LetterEntry> letterEntries =
-        actionableLetterCases.parallelStream()
+        actionableLetterCases
+            .parallelStream()
             .map(c -> getPrintFileEntry(c, actionTemplate, survey))
             .collect(Collectors.toList());
 
@@ -119,7 +121,8 @@ public class ProcessLetterActionService {
         .with("actionType", actionTemplate.getType())
         .info("Recording case action event");
     if (isSuccess) {
-      letterEntries.parallelStream()
+      letterEntries
+          .parallelStream()
           .forEach(
               letterEntry ->
                   actionService.createCaseActionEvent(

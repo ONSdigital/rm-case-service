@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
-import ma.glasnost.orika.MapperFacade;
+//import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
@@ -26,11 +26,11 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
+import uk.gov.ons.ctp.response.casesvc.domain.model.ObjectConverter;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CreatedCaseEventDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
@@ -59,7 +59,7 @@ public final class CaseEndpoint implements CTPEndpoint {
   private CaseService caseService;
   private CaseGroupService caseGroupService;
   private CategoryService categoryService;
-  private MapperFacade mapperFacade;
+//  private MapperFacade mapperFacade;
   private CaseRepository caseRepository;
 
   /** Contructor for CaseEndpoint */
@@ -68,13 +68,13 @@ public final class CaseEndpoint implements CTPEndpoint {
       final CaseService caseService,
       final CaseGroupService caseGroupService,
       final CategoryService categoryService,
-      final CaseRepository caseRepository,
-      final @Qualifier("caseSvcBeanMapper") MapperFacade mapperFacade) {
+      final CaseRepository caseRepository) {
+//      final @Qualifier("caseSvcBeanMapper") MapperFacade mapperFacade) {
     this.caseService = caseService;
     this.caseGroupService = caseGroupService;
     this.categoryService = categoryService;
     this.caseRepository = caseRepository;
-    this.mapperFacade = mapperFacade;
+//    this.mapperFacade = mapperFacade;
   }
 
   /**
@@ -110,7 +110,8 @@ public final class CaseEndpoint implements CTPEndpoint {
       @RequestParam(value = "iac", required = false) final boolean iac) {
 
     List<CaseDetailsDTO> cases =
-        sampleUnitIds.stream()
+        sampleUnitIds
+            .stream()
             .map(caze -> caseService.findCaseBySampleUnitId(caze))
             .filter(Objects::nonNull)
             .map(
@@ -179,7 +180,8 @@ public final class CaseEndpoint implements CTPEndpoint {
       cases.addAll(caseService.findCasesByCaseGroupFK(caseGroup.getCaseGroupPK()));
     }
     List<CaseDetailsDTO> caseDetailsDTOList =
-        cases.stream()
+        cases
+            .stream()
             .map(caseDetail -> buildDetailedCaseDTO(caseDetail, false, false))
             .collect(Collectors.toList());
 
@@ -264,7 +266,8 @@ public final class CaseEndpoint implements CTPEndpoint {
       return ResponseEntity.noContent().build();
     } else {
       List<CaseDetailsDTO> caseDetailsDTOList =
-          casesList.stream()
+          casesList
+              .stream()
               .map(c -> buildDetailedCaseDTO(c, false, iacFlag))
               .collect(Collectors.toList());
       return ResponseEntity.ok(caseDetailsDTOList);
@@ -296,11 +299,11 @@ public final class CaseEndpoint implements CTPEndpoint {
 
     if (categories == null || categories.isEmpty()) {
       List<CaseEvent> caseEvents = caseService.findCaseEventsByCaseFK(caze.getCasePK());
-      caseEventDTOs = mapperFacade.mapAsList(caseEvents, CaseEventDTO.class);
+      caseEventDTOs = ObjectConverter.caseEventDTOList(caseEvents);
     } else {
       List<CaseEvent> caseEvents =
           caseService.findCaseEventsByCaseFKAndCategory(caze.getCasePK(), categories);
-      caseEventDTOs = mapperFacade.mapAsList(caseEvents, CaseEventDTO.class);
+      caseEventDTOs = ObjectConverter.caseEventDTOList(caseEvents);
     }
 
     return CollectionUtils.isEmpty(caseEventDTOs)
@@ -332,7 +335,7 @@ public final class CaseEndpoint implements CTPEndpoint {
       throw new InvalidRequestException("Binding errors for case event creation: ", bindingResult);
     }
 
-    CaseEvent caseEvent = mapperFacade.map(caseEventCreationRequestDTO, CaseEvent.class);
+    CaseEvent caseEvent = ObjectConverter.caseEvent(caseEventCreationRequestDTO);
 
     // Find target case and add to event
     Case targetCase = caseService.findCaseById(caseId);
@@ -346,7 +349,7 @@ public final class CaseEndpoint implements CTPEndpoint {
     CaseEvent createdCaseEvent = caseService.createCaseEvent(caseEvent, targetCase);
 
     CreatedCaseEventDTO mappedCaseEvent =
-        mapperFacade.map(createdCaseEvent, CreatedCaseEventDTO.class);
+        ObjectConverter.createdCaseEventDTO(createdCaseEvent);
     mappedCaseEvent.setCaseId(caseId);
 
     String newResourceUrl =
@@ -367,14 +370,14 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @return CaseDetailsDTO caseDetails object
    */
   private CaseDetailsDTO buildDetailedCaseDTO(Case caze, boolean caseevents, boolean iac) {
-    CaseDetailsDTO caseDetailsDTO = mapperFacade.map(caze, CaseDetailsDTO.class);
+    CaseDetailsDTO caseDetailsDTO = ObjectConverter.caseDetailsDTO(caze);
 
     CaseGroup parentCaseGroup = caseGroupService.findCaseGroupByCaseGroupPK(caze.getCaseGroupFK());
-    caseDetailsDTO.setCaseGroup(mapperFacade.map(parentCaseGroup, CaseGroupDTO.class));
+    caseDetailsDTO.setCaseGroup(ObjectConverter.caseGroupDTO(parentCaseGroup));
 
     if (caseevents) {
       List<CaseEvent> caseEvents = caseService.findCaseEventsByCaseFK(caze.getCasePK());
-      List<CaseEventDTO> caseEventDTOs = mapperFacade.mapAsList(caseEvents, CaseEventDTO.class);
+      List<CaseEventDTO> caseEventDTOs = ObjectConverter.caseEventDTOList(caseEvents);
       caseDetailsDTO.setCaseEvents(caseEventDTOs);
     }
 
