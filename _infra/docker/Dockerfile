@@ -1,4 +1,4 @@
-FROM openjdk:11-jre-slim
+FROM openjdk:17-slim
 
 ARG JAR_FILE=case.jar
 RUN apt-get update

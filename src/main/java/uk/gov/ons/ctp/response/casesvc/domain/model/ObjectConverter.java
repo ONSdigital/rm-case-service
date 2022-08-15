@@ -29,6 +29,7 @@ public class ObjectConverter {
     caseEventDTO.setDescription(caseEventDTO.getDescription());
     caseEventDTO.setMetadata(caseEvent.getMetadata());
     caseEventDTO.setSubCategory(caseEvent.getSubCategory());
+    caseEventDTO.setCreatedDateTime(caseEvent.getCreatedDateTime());
 
     return caseEventDTO;
   }
