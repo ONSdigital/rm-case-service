@@ -24,7 +24,7 @@ public final class CategoryEndpoint implements CTPEndpoint {
 
   public static final String ERRORMSG_CATEGORYNOTFOUND = "Category not found for";
 
-  @Autowired private CategoryService categoryService
+  @Autowired private CategoryService categoryService;
 
   /**
    * the GET endpoint to retrieve all categories
