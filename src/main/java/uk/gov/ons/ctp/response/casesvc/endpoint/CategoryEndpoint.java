@@ -3,9 +3,7 @@ package uk.gov.ons.ctp.response.casesvc.endpoint;
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
 import java.util.List;
-//import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,11 +24,7 @@ public final class CategoryEndpoint implements CTPEndpoint {
 
   public static final String ERRORMSG_CATEGORYNOTFOUND = "Category not found for";
 
-  @Autowired private CategoryService categoryService;
-
-//  @Qualifier("caseSvcBeanMapper")
-//  @Autowired
-//  private MapperFacade mapperFacade;
+  @Autowired private CategoryService categoryService
 
   /**
    * the GET endpoint to retrieve all categories

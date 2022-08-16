@@ -16,29 +16,25 @@ public class ObjectConverter {
   public static List<CaseEventDTO> caseEventDTOList(List<CaseEvent> caseEvents) {
     List<CaseEventDTO> mappedCaseEventDTO = new ArrayList<>();
     for (int i = 1; i <= caseEvents.size(); i++) {
-      CaseEvent caseEvent = caseEvents.get(i);
-      mappedCaseEventDTO.add(caseEventDTO(caseEvent));
+      CaseEvent caseEvent = caseEvents.get(i - 1);
+      CaseEventDTO caseEventDTO = new CaseEventDTO();
+      caseEventDTO.setCategory(caseEvent.getCategory());
+      caseEventDTO.setCreatedBy(caseEvent.getCreatedBy());
+      caseEventDTO.setDescription(caseEvent.getDescription());
+      caseEventDTO.setMetadata(caseEvent.getMetadata());
+      caseEventDTO.setSubCategory(caseEvent.getSubCategory());
+      caseEventDTO.setCreatedDateTime(caseEvent.getCreatedDateTime());
+
+      mappedCaseEventDTO.add(caseEventDTO);
     }
     return mappedCaseEventDTO;
-  }
-
-  public static CaseEventDTO caseEventDTO(CaseEvent caseEvent) {
-    CaseEventDTO caseEventDTO = new CaseEventDTO();
-    caseEventDTO.setCategory(caseEvent.getCategory());
-    caseEventDTO.setCreatedBy(caseEvent.getCreatedBy());
-    caseEventDTO.setDescription(caseEventDTO.getDescription());
-    caseEventDTO.setMetadata(caseEvent.getMetadata());
-    caseEventDTO.setSubCategory(caseEvent.getSubCategory());
-    caseEventDTO.setCreatedDateTime(caseEvent.getCreatedDateTime());
-
-    return caseEventDTO;
   }
 
   public static CreatedCaseEventDTO createdCaseEventDTO(CaseEvent caseEvent) {
     CreatedCaseEventDTO createdCaseEventDTO = new CreatedCaseEventDTO();
 
     createdCaseEventDTO.setCreatedBy(caseEvent.getCreatedBy());
-    createdCaseEventDTO.setCreatedDateTime(createdCaseEventDTO.getCreatedDateTime());
+    createdCaseEventDTO.setCreatedDateTime(caseEvent.getCreatedDateTime());
     createdCaseEventDTO.setDescription(caseEvent.getDescription());
     createdCaseEventDTO.setCategory(caseEvent.getCategory());
     createdCaseEventDTO.setMetadata(caseEvent.getMetadata());
@@ -95,7 +91,7 @@ public class ObjectConverter {
   public static List<CategoryDTO> categoryDTO(List<Category> categories) {
     List<CategoryDTO> mappedCategoryDTO = new ArrayList<>();
     for (int i = 1; i <= categories.size(); i++) {
-      Category category = categories.get(i);
+      Category category = categories.get(i - 1);
       CategoryDTO categoryDTO = new CategoryDTO();
 
       categoryDTO.setShortDescription(category.getShortDescription());
