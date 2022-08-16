@@ -65,14 +65,15 @@ public class ObjectConverter {
   public static CaseGroupDTO caseGroupDTO(CaseGroup caseGroup) {
     CaseGroupDTO caseGroupDTO = new CaseGroupDTO();
 
-    caseGroupDTO.setCaseGroupStatus(caseGroup.getStatus());
-    caseGroupDTO.setCollectionExerciseId(caseGroup.getCollectionExerciseId());
-    caseGroupDTO.setId(caseGroup.getId());
-    caseGroupDTO.setPartyId(caseGroup.getPartyId());
-    caseGroupDTO.setSampleUnitRef(caseGroup.getSampleUnitRef());
-    caseGroupDTO.setSampleUnitType(caseGroup.getSampleUnitType());
-    caseGroupDTO.setSurveyId(caseGroup.getSurveyId());
-
+    if (caseGroup != null) {
+      caseGroupDTO.setCaseGroupStatus(caseGroup.getStatus());
+      caseGroupDTO.setCollectionExerciseId(caseGroup.getCollectionExerciseId());
+      caseGroupDTO.setId(caseGroup.getId());
+      caseGroupDTO.setPartyId(caseGroup.getPartyId());
+      caseGroupDTO.setSampleUnitRef(caseGroup.getSampleUnitRef());
+      caseGroupDTO.setSampleUnitType(caseGroup.getSampleUnitType());
+      caseGroupDTO.setSurveyId(caseGroup.getSurveyId());
+    }
     return caseGroupDTO;
   }
 
