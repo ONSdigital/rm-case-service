@@ -9,9 +9,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
-//import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
@@ -59,7 +57,6 @@ public final class CaseEndpoint implements CTPEndpoint {
   private CaseService caseService;
   private CaseGroupService caseGroupService;
   private CategoryService categoryService;
-//  private MapperFacade mapperFacade;
   private CaseRepository caseRepository;
 
   /** Contructor for CaseEndpoint */
@@ -69,12 +66,10 @@ public final class CaseEndpoint implements CTPEndpoint {
       final CaseGroupService caseGroupService,
       final CategoryService categoryService,
       final CaseRepository caseRepository) {
-//      final @Qualifier("caseSvcBeanMapper") MapperFacade mapperFacade) {
     this.caseService = caseService;
     this.caseGroupService = caseGroupService;
     this.categoryService = categoryService;
     this.caseRepository = caseRepository;
-//    this.mapperFacade = mapperFacade;
   }
 
   /**
