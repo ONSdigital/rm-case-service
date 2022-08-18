@@ -343,8 +343,7 @@ public final class CaseEndpoint implements CTPEndpoint {
 
     CaseEvent createdCaseEvent = caseService.createCaseEvent(caseEvent, targetCase);
 
-    CreatedCaseEventDTO mappedCaseEvent =
-        ObjectConverter.createdCaseEventDTO(createdCaseEvent);
+    CreatedCaseEventDTO mappedCaseEvent = ObjectConverter.createdCaseEventDTO(createdCaseEvent);
     mappedCaseEvent.setCaseId(caseId);
 
     String newResourceUrl =
