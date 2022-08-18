@@ -27,7 +27,6 @@ import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.client.InternetAccessCodeSvcClient;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.config.InternetAccessCodeSvc;
-import uk.gov.ons.ctp.response.casesvc.domain.ObjectTestConverter;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
@@ -847,7 +846,7 @@ public class CaseServiceTest {
             CategoryDTO.CategoryName.GENERATE_ENROLMENT_CODE, ACTIONABLE_BUSINESS_UNIT_CASE_FK);
     caseService.createCaseEvent(caseEvent);
 
-    Case updatedBCase = ObjectTestConverter.caze(actionableBCase);
+    Case updatedBCase = caze(actionableBCase);
     updatedBCase.setIac(IAC_FOR_TEST);
     verify(caseIacAuditRepo, times(1)).saveAndFlush(any());
   }
@@ -1084,5 +1083,34 @@ public class CaseServiceTest {
     InternetAccessCodeSvc iacSvc = new InternetAccessCodeSvc();
     iacSvc.setIacPutPath(IAC_SVC_PUT_PATH);
     iacSvc.setIacPostPath(IAC_SVC_POST_PATH);
+  }
+
+  // Had to add a case mapper to the test due to the removal of the Orika mapper. This should only
+  // be temporary and
+  // Removed once a new custom mapper is created
+  private static Case caze(Case caze) {
+    Case testCaze = new Case();
+
+    testCaze.setIac(caze.getIac());
+    testCaze.setState(caze.getState());
+    testCaze.setPartyId(caze.getPartyId());
+    testCaze.setId(caze.getId());
+    testCaze.setCreatedBy(caze.getCreatedBy());
+    testCaze.setCasePK(caze.getCasePK());
+    testCaze.setActiveEnrolment(caze.isActiveEnrolment());
+    testCaze.setCaseGroupFK(caze.getCaseGroupFK());
+    testCaze.setCaseGroupId(caze.getCaseGroupId());
+    testCaze.setSampleUnitType(caze.getSampleUnitType());
+    testCaze.setSampleUnitId(caze.getSampleUnitId());
+    testCaze.setOptLockVersion(caze.getOptLockVersion());
+    testCaze.setCaseGroupFK(caze.getCaseGroupFK());
+    testCaze.setSourceCaseId(caze.getSourceCaseId());
+    testCaze.setCaseRef(caze.getCaseRef());
+    testCaze.setCollectionInstrumentId(caze.getCollectionInstrumentId());
+    testCaze.setActionPlanId(caze.getActionPlanId());
+    testCaze.setCreatedDateTime(caze.getCreatedDateTime());
+    testCaze.setIacAudits(caze.getIacAudits());
+
+    return testCaze;
   }
 }

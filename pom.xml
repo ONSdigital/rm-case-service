@@ -19,7 +19,6 @@
         <godaddylogging.version>1.2.5</godaddylogging.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <jvm.options>--add-opens java.base/java.util=ALL-UNNAMED</jvm.options>
     </properties>
 
     <scm>
@@ -377,8 +376,10 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.18.1</version>
+                <!-- The below argument was added to prevent an error being thrown due to accessing of an unnamed
+                source. This seemed to be the only solution -->
                 <configuration>
-                    <argLine>${jvm.options}</argLine>
+                    <argLine>--add-opens java.base/java.util=ALL-UNNAMED</argLine>
                 </configuration>
                 <executions>
                     <execution>
