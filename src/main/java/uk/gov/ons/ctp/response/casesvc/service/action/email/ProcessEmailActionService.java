@@ -75,7 +75,8 @@ public class ProcessEmailActionService {
         .with(collectionExerciseId.toString())
         .info("Processing email cases");
     SurveyDTO survey = actionService.getSurvey(collectionExerciseDTO.getSurveyId());
-    emailCases.parallelStream()
+    emailCases
+        .parallelStream()
         .filter(caseAction -> actionService.isActionable(caseAction, actionTemplate, eventTag))
         .forEach(
             caseAction ->
@@ -120,7 +121,9 @@ public class ProcessEmailActionService {
       CaseActionParty actionCaseParty = actionService.setParties(caseAction, survey);
       if (isBusinessNotification(caseAction)) {
         log.with("caseId", caseAction).info("Processing Email for isBusinessNotification true");
-        actionCaseParty.getChildParties().parallelStream()
+        actionCaseParty
+            .getChildParties()
+            .parallelStream()
             .forEach(
                 respondentParty ->
                     processEmail(

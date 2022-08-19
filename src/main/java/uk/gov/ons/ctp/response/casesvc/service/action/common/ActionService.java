@@ -72,10 +72,13 @@ public class ActionService {
   private List<PartyDTO> getRespondentParties(PartyDTO businessParty) {
     log.info("getting respondent party");
     final List<String> respondentPartyIds =
-        businessParty.getAssociations().stream()
+        businessParty
+            .getAssociations()
+            .stream()
             .map(Association::getPartyId)
             .collect(Collectors.toList());
-    return respondentPartyIds.stream()
+    return respondentPartyIds
+        .stream()
         .map(
             id ->
                 partySvcClientService.getParty(

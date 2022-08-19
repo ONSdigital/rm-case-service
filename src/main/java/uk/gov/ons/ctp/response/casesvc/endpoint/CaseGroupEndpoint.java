@@ -7,9 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
+import uk.gov.ons.ctp.response.casesvc.domain.model.ObjectConverter;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
@@ -37,7 +36,6 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   private CaseService caseService;
   private CategoryService categoryService;
   private StateTransitionManager<CaseGroupStatus, CategoryName> caseGroupStatusTransitionManager;
-  private MapperFacade mapperFacade;
 
   /** Constructor for CaseGroupEndpoint */
   @Autowired
@@ -45,13 +43,12 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
       final CaseService caseService,
       final CaseGroupService caseGroupService,
       final CategoryService categoryService,
-      final StateTransitionManager<CaseGroupStatus, CategoryName> caseGroupStatusTransitionManager,
-      final @Qualifier("caseSvcBeanMapper") MapperFacade mapperFacade) {
+      final StateTransitionManager<CaseGroupStatus, CategoryName>
+          caseGroupStatusTransitionManager) {
     this.caseService = caseService;
     this.caseGroupService = caseGroupService;
     this.categoryService = categoryService;
     this.caseGroupStatusTransitionManager = caseGroupStatusTransitionManager;
-    this.mapperFacade = mapperFacade;
   }
 
   /**
@@ -72,7 +69,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
           String.format("CaseGroup not found for casegroup id %s", caseGroupId));
     }
 
-    return mapperFacade.map(caseGroupObj, CaseGroupDTO.class);
+    return ObjectConverter.caseGroupDTO(caseGroupObj);
   }
 
   @RequestMapping(value = "/cases/{collectionExerciseId}", method = RequestMethod.GET)
@@ -116,9 +113,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
     }
 
     List<CaseGroupDTO> resultList =
-        caseGroupList.stream()
-            .map(cg -> mapperFacade.map(cg, CaseGroupDTO.class))
-            .collect(Collectors.toList());
+        caseGroupList.stream().map(ObjectConverter::caseGroupDTO).collect(Collectors.toList());
 
     return ResponseEntity.ok(resultList);
   }

@@ -18,8 +18,9 @@ import io.grpc.ManagedChannelBuilder;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
-/***
- * This is a PubSub Emulator class. This is a utility class which is used for testing pubsub function
+/**
+ * * This is a PubSub Emulator class. This is a utility class which is used for testing pubsub
+ * function
  */
 public class PubSubEmulator {
   private static final Logger log = LoggerFactory.getLogger(PubSubEmulator.class);

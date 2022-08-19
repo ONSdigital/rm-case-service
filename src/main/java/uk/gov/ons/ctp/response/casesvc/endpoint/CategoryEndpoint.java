@@ -3,9 +3,7 @@ package uk.gov.ons.ctp.response.casesvc.endpoint;
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
 import java.util.List;
-import ma.glasnost.orika.MapperFacade;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
+import uk.gov.ons.ctp.response.casesvc.domain.model.ObjectConverter;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
 import uk.gov.ons.ctp.response.lib.common.endpoint.CTPEndpoint;
@@ -26,10 +25,6 @@ public final class CategoryEndpoint implements CTPEndpoint {
   public static final String ERRORMSG_CATEGORYNOTFOUND = "Category not found for";
 
   @Autowired private CategoryService categoryService;
-
-  @Qualifier("caseSvcBeanMapper")
-  @Autowired
-  private MapperFacade mapperFacade;
 
   /**
    * the GET endpoint to retrieve all categories
@@ -45,7 +40,7 @@ public final class CategoryEndpoint implements CTPEndpoint {
     log.with("role", role).debug("Entering findCategories");
 
     List<Category> categories = categoryService.findCategories(role, group);
-    List<CategoryDTO> categoryDTOs = mapperFacade.mapAsList(categories, CategoryDTO.class);
+    List<CategoryDTO> categoryDTOs = ObjectConverter.categoryDTO(categories);
     return CollectionUtils.isEmpty(categoryDTOs)
         ? ResponseEntity.noContent().build()
         : ResponseEntity.ok(categoryDTOs);

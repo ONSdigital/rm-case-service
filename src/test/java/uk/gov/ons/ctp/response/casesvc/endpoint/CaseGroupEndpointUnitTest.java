@@ -12,7 +12,6 @@ import static uk.gov.ons.ctp.response.lib.common.utility.MockMvcControllerAdvice
 
 import java.util.List;
 import java.util.UUID;
-import ma.glasnost.orika.MapperFacade;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -23,7 +22,6 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import uk.gov.ons.ctp.response.casesvc.CaseSvcBeanMapper;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
@@ -62,7 +60,6 @@ public final class CaseGroupEndpointUnitTest {
   @Mock private CaseGroupService caseGroupService;
   @Mock private CaseService caseService;
   @Mock private CategoryService categoryService;
-  @Spy private MapperFacade mapperFacade = new CaseSvcBeanMapper();
 
   @Spy
   @SuppressWarnings("unchecked")

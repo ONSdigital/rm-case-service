@@ -56,7 +56,8 @@ public class CategoryService {
     boolean roleFiltered = !StringUtils.isEmpty(role);
     boolean groupFiltered = !StringUtils.isEmpty(group);
     List<Category> filteredCategories =
-        categories.stream()
+        categories
+            .stream()
             .filter(
                 cat ->
                     (roleFiltered
