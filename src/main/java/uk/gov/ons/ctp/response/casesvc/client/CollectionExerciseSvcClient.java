@@ -3,6 +3,8 @@ package uk.gov.ons.ctp.response.casesvc.client;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
+
+import java.net.SocketException;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,7 +115,13 @@ public class CollectionExerciseSvcClient {
     collex.setExerciseRef(exerciseRef);
     collex.setUserDescription(userDescription);
     HttpEntity<?> httpEntity = restUtility.createHttpEntity(collex);
-    restTemplate.exchange(
-        uriComponents.toUri(), HttpMethod.POST, httpEntity, CollectionExerciseDTO.class);
+    log.info("Test collection: " + collex);
+
+    try {
+      restTemplate.exchange(
+          uriComponents.toUri(), HttpMethod.POST, httpEntity, CollectionExerciseDTO.class);
+    } catch (RestClientException e) {
+      log.error("Error returned for RestClientException", e);
+    }
   }
 }
