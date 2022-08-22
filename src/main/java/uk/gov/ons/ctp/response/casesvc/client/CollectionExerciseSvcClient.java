@@ -3,8 +3,6 @@ package uk.gov.ons.ctp.response.casesvc.client;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
-
-import java.net.SocketException;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
