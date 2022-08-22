@@ -114,6 +114,7 @@ public class CollectionExerciseSvcClient {
     collex.setUserDescription(userDescription);
     HttpEntity<?> httpEntity = restUtility.createHttpEntity(collex);
     log.info("Test collection: " + collex);
+    log.info("httpEntity: " + httpEntity.toString());
 
     try {
       restTemplate.exchange(
