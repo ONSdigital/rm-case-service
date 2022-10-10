@@ -125,7 +125,7 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @param partyId to find by
    * @param caseevents flag used to return or not CaseEvents
    * @param iac flag used to return or not the iac
-   * @param max_cases_per_survey the maximum number of cases to return per survey
+   * @param maxCasesPerSurvey the maximum number of cases to return per survey
    * @return the cases found
    */
   @RequestMapping(value = "/partyid/{partyId}", method = RequestMethod.GET)
