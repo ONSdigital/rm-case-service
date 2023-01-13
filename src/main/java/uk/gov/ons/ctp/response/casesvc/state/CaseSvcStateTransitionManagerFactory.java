@@ -227,6 +227,10 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CaseGroupStatus.INPROGRESS);
     builder.put(
         CaseGroupStatus.INPROGRESS,
+        CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED,
+        CaseGroupStatus.INPROGRESS);
+    builder.put(
+        CaseGroupStatus.INPROGRESS,
         CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD,
         CaseGroupStatus.COMPLETE);
     builder.put(
