@@ -263,6 +263,14 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CategoryDTO.CategoryName.COMPLETED_TO_NOTSTARTED,
         CaseGroupStatus.NOTSTARTED);
 
+    // In response-operations-ui, looking at the cases for a survey also shows you an unused IAC code.  By viewing this
+    // an ACCESS_CODE_AUTHENTICATION_ATTEMPT event happens.  If the respondent has completed the survey then we
+    // shouldn't throw a warning just because we wanted to look at a completely valid page.
+    builder.put(
+            CaseGroupStatus.COMPLETE,
+            CategoryDTO.CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT,
+            CaseGroupStatus.COMPLETE);
+
     return new BasicStateTransitionManager<>(builder.build().rowMap());
   }
 
