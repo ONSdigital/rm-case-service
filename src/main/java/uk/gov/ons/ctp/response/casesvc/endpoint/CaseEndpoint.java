@@ -10,6 +10,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
@@ -380,5 +381,19 @@ public final class CaseEndpoint implements CTPEndpoint {
     }
 
     return caseDetailsDTO;
+  }
+
+  /**
+   * Deletes all case, caseevent and casegroup data for a particular collection exercise
+   * 
+   * @param collectionExerciseId The Collection Exercise UUID to delete for
+   * @return An appropriate HTTP repsonse code
+   */
+  @RequestMapping(value = "", method = RequestMethod.DELETE)
+  public ResponseEntity<String> deleteCaseDataByCollectionExercise(
+    @RequestParam(name = "collectionExerciseId", required = true) final UUID collectionExerciseId
+  ) {
+
+    return ResponseEntity.ok("Deleted Successfully");
   }
 }

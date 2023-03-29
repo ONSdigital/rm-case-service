@@ -59,4 +59,14 @@ public class MvcHelper {
         .contentType(MediaType.TEXT_XML)
         .accept(MediaType.APPLICATION_JSON);
   }
+
+  /**
+   * Mock Http Servlet Request Builder
+   * 
+   * @param url url to request
+   * @return MockHttpServletRequestBuilder Mock Http Servlet Request Builder
+   */
+  public static MockHttpServletRequestBuilder deleteUrl(String url) {
+    return delete(url);
+  }
 }
