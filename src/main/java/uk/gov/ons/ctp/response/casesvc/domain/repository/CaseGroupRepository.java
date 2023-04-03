@@ -70,22 +70,12 @@ public interface CaseGroupRepository extends JpaRepository<CaseGroup, Integer> {
       @Param("collectionExerciseId") UUID collectionExerciseId);
 
   /**
-   * find cases for action
+   * find case groups for a collection exercise
    *
    * @param collectionExerciseId the collection exercise id
    * @return the list of case actions
    */
-  @Query(
-      value =
-          "SELECT new uk.gov.ons.ctp.response.casesvc.representation.action.CaseAction"
-              + "(cg.collectionExerciseId, c.id AS caseId,cg.partyId, cg.sampleUnitRef, cg.sampleUnitType, "
-              + "cg.status, cg.surveyId, c.sampleUnitId AS sampleUnitId, c.collectionInstrumentId, iac.iac, "
-              + "c.activeEnrolment) "
-              + "FROM CaseGroup cg, Case c "
-              + "LEFT JOIN CaseIacAudit iac ON iac.caseFK=c.casePK "
-              + "WHERE cg.caseGroupPK=c.caseGroupFK AND c.state='ACTIONABLE' "
-              + "AND cg.collectionExerciseId = :collectionExerciseId ")
-  List<CaseAction> findByCollectionExerciseId(
+  List<CaseGroup> findByCollectionExerciseId(
       @Param("collectionExerciseId") UUID collectionExerciseId);
 
   /**
