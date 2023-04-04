@@ -75,8 +75,7 @@ public interface CaseGroupRepository extends JpaRepository<CaseGroup, Integer> {
    * @param collectionExerciseId the collection exercise id
    * @return the list of case actions
    */
-  List<CaseGroup> findByCollectionExerciseId(
-      @Param("collectionExerciseId") UUID collectionExerciseId);
+  List<CaseGroup> findCaseGroupByCollectionExerciseId(UUID collectionExerciseId);
 
   /**
    * find case for action

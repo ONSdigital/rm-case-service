@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
+import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 
 /** JPA Data Repository. */
@@ -78,4 +79,8 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
 
   /** Find a case by it's PK */
   Case findByCasePK(int casePK);
+
+  /** Find List of Cases by List of CaseGroupFK */
+  List<Case> findByCaseGroupFkIn(List<CaseGroup> caseGroupFKs);
+
 }

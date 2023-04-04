@@ -10,7 +10,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
@@ -26,7 +25,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.domain.model.ObjectConverter;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
@@ -58,7 +57,7 @@ public final class CaseEndpoint implements CTPEndpoint {
   private CaseService caseService;
   private CaseGroupService caseGroupService;
   private CategoryService categoryService;
-  private CaseRepository caseRepository;
+  private CaseEventRepository caseEventRepository;
 
   /** Contructor for CaseEndpoint */
   @Autowired
@@ -66,11 +65,11 @@ public final class CaseEndpoint implements CTPEndpoint {
       final CaseService caseService,
       final CaseGroupService caseGroupService,
       final CategoryService categoryService,
-      final CaseRepository caseRepository) {
+      final CaseEventRepository caseEventRepository) {
     this.caseService = caseService;
     this.caseGroupService = caseGroupService;
     this.categoryService = categoryService;
-    this.caseRepository = caseRepository;
+    this.caseEventRepository = caseEventRepository;
   }
 
   /**
@@ -389,10 +388,21 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @param collectionExerciseId The Collection Exercise UUID to delete for
    * @return An appropriate HTTP repsonse code
    */
-  @RequestMapping(value = "", method = RequestMethod.DELETE)
+  @RequestMapping(value = "/cases", method = RequestMethod.DELETE)
   public ResponseEntity<String> deleteCaseDataByCollectionExercise(
-    @RequestParam(name = "collectionExerciseId", required = true) final UUID collectionExerciseId
-  ) {
+    @RequestParam(name = "collectionExerciseId") final UUID collectionExerciseId) throws CTPException {
+
+    List<CaseGroup> caseGroupList = caseGroupService.findCaseGroupsForCollectionExercise(collectionExerciseId);
+
+    List<Case> caseList = caseService.findCasesByGroupFK(caseGroupList);
+
+    List<CaseEvent> caseEventsList = caseEventRepository.findByCaseFKIn(caseList);
+
+    caseEventRepository.deleteAll(caseEventsList);
+
+    caseGroupService.deleteCaseGroups(caseGroupList);
+
+    caseService.deleteCasesInList(caseList);
 
     return ResponseEntity.ok("Deleted Successfully");
   }

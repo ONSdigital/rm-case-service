@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
 
@@ -18,6 +19,9 @@ public interface CaseEventRepository extends JpaRepository<CaseEvent, Integer> {
    * @return the case event or null if not found
    */
   List<CaseEvent> findByCaseFKOrderByCreatedDateTimeDesc(Integer caseFK);
+
+  /** Find List of Case Events by Case FK */
+  List<CaseEvent> findByCaseFKIn(List<Case> caseList);
 
   List<CaseEvent> findByCaseFKAndCategoryInOrderByCreatedDateTimeDesc(
       Integer caseFK, Set<CategoryName> categoryNames);
