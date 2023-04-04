@@ -906,13 +906,12 @@ public final class CaseEndpointUnitTest {
    */
   @Test
   public void deleteCaseDataByCollectionExercise() throws Exception {
-    when(caseGroupService.findCaseGroupsForCollectionExercise(EXISTING_COLLECTION_EXERCISE_ID)).thenReturn(caseGroupResults);
+    when(caseGroupService.findCaseGroupsForCollectionExercise(EXISTING_COLLECTION_EXERCISE_ID))
+        .thenReturn(caseGroupResults);
     when(caseService.findCasesByGroupFK(caseGroupResults)).thenReturn(caseResults);
     when(caseEventRepository.findByCaseFKIn(caseResults)).thenReturn(caseEventsResults);
 
-    ResultActions actions =
-        mockMvc.perform(
-            deleteUrl("/cases/" + EXISTING_COLLECTION_EXERCISE_ID));
+    ResultActions actions = mockMvc.perform(deleteUrl("/cases/" + EXISTING_COLLECTION_EXERCISE_ID));
 
     actions.andExpect(status().isOk()).andExpect(content().string("\"Deleted Successfully\""));
   }

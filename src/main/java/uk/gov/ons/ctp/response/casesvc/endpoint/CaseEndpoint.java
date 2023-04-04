@@ -384,8 +384,8 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @return An appropriate HTTP repsonse code
    */
   @DeleteMapping("{collectionExerciseId}")
-  public ResponseEntity<String> deleteCaseDataByCollectionExercise(@PathVariable UUID collectionExerciseId)
-      throws CTPException {
+  public ResponseEntity<String> deleteCaseDataByCollectionExercise(
+      @PathVariable UUID collectionExerciseId) throws CTPException {
 
     List<CaseGroup> caseGroupList =
         caseGroupService.findCaseGroupsForCollectionExercise(collectionExerciseId);
