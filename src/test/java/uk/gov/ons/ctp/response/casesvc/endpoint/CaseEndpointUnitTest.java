@@ -11,16 +11,16 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.CATEGORY_ACCESS_CODE_AUTHENTICATION_ATTEMPT_NOT_FOUND;
 import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.ERRORMSG_CASENOTFOUND;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
+import static uk.gov.ons.ctp.response.lib.common.MvcHelper.deleteUrl;
 import static uk.gov.ons.ctp.response.lib.common.MvcHelper.getJson;
 import static uk.gov.ons.ctp.response.lib.common.MvcHelper.postJson;
-import static uk.gov.ons.ctp.response.lib.common.MvcHelper.deleteUrl;
 import static uk.gov.ons.ctp.response.lib.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
 
 import java.util.ArrayList;
@@ -42,8 +42,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
-import io.grpc.InternalConfigSelector.Result;
 import uk.gov.ons.ctp.response.casesvc.client.InternetAccessCodeSvcClient;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
@@ -73,7 +71,7 @@ public final class CaseEndpointUnitTest {
       UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3999");
   private static final UUID EXISTING_PARTY_UUID =
       UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfe111");
-  private static final UUID EXISTING_COLLECTION_EXERCISE_ID = 
+  private static final UUID EXISTING_COLLECTION_EXERCISE_ID =
       UUID.fromString("f34950d7-ed1e-4c16-941a-a8f793c266a1");
   private static final UUID CASE_ID_UNCHECKED_EXCEPTION_CASE =
       UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3999");
@@ -900,15 +898,16 @@ public final class CaseEndpointUnitTest {
 
   /**
    * a test deleting case data by collection exercise ID
-   * 
+   *
    * @throws Exception exception thrown
    */
   @Test
   public void deleteCaseDataByCollectionExercise() throws Exception {
-    ResultActions actions = mockMvc.perform(deleteUrl(String.format("/cases?collectionExerciseId=%s", EXISTING_COLLECTION_EXERCISE_ID)));
+    ResultActions actions =
+        mockMvc.perform(
+            deleteUrl(
+                String.format("/cases?collectionExerciseId=%s", EXISTING_COLLECTION_EXERCISE_ID)));
 
-    actions
-        .andExpect(status().isOk())
-        .andExpect(content().string("\"Deleted Successfully\""));
+    actions.andExpect(status().isOk()).andExpect(content().string("\"Deleted Successfully\""));
   }
 }

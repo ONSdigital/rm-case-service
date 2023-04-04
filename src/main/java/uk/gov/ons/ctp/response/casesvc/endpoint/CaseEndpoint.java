@@ -384,15 +384,17 @@ public final class CaseEndpoint implements CTPEndpoint {
 
   /**
    * Deletes all case, caseevent and casegroup data for a particular collection exercise
-   * 
+   *
    * @param collectionExerciseId The Collection Exercise UUID to delete for
    * @return An appropriate HTTP repsonse code
    */
   @RequestMapping(value = "/cases", method = RequestMethod.DELETE)
   public ResponseEntity<String> deleteCaseDataByCollectionExercise(
-    @RequestParam(name = "collectionExerciseId") final UUID collectionExerciseId) throws CTPException {
+      @RequestParam(name = "collectionExerciseId") final UUID collectionExerciseId)
+      throws CTPException {
 
-    List<CaseGroup> caseGroupList = caseGroupService.findCaseGroupsForCollectionExercise(collectionExerciseId);
+    List<CaseGroup> caseGroupList =
+        caseGroupService.findCaseGroupsForCollectionExercise(collectionExerciseId);
 
     List<Case> caseList = caseService.findCasesByGroupFK(caseGroupList);
 

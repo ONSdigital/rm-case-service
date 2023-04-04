@@ -189,8 +189,10 @@ public class CaseGroupService {
     return numberOfCases;
   }
 
-  public List<CaseGroup> findCaseGroupsForCollectionExercise(UUID collectionExerciseId) throws CTPException {
-    List<CaseGroup> caseGroups = caseGroupRepo.findCaseGroupByCollectionExerciseId(collectionExerciseId);
+  public List<CaseGroup> findCaseGroupsForCollectionExercise(UUID collectionExerciseId)
+      throws CTPException {
+    List<CaseGroup> caseGroups =
+        caseGroupRepo.findCaseGroupByCollectionExerciseId(collectionExerciseId);
     if (caseGroups == null) {
       throw new CTPException(
           CTPException.Fault.RESOURCE_NOT_FOUND,
