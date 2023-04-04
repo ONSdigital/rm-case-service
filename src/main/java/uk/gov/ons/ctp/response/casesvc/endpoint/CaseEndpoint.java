@@ -13,12 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
@@ -388,9 +383,8 @@ public final class CaseEndpoint implements CTPEndpoint {
    * @param collectionExerciseId The Collection Exercise UUID to delete for
    * @return An appropriate HTTP repsonse code
    */
-  @RequestMapping(value = "/cases", method = RequestMethod.DELETE)
-  public ResponseEntity<String> deleteCaseDataByCollectionExercise(
-      @RequestParam(name = "collectionExerciseId") final UUID collectionExerciseId)
+  @DeleteMapping("{collectionExerciseId}")
+  public ResponseEntity<String> deleteCaseDataByCollectionExercise(@PathVariable UUID collectionExerciseId)
       throws CTPException {
 
     List<CaseGroup> caseGroupList =

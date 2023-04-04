@@ -47,6 +47,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
@@ -165,6 +166,8 @@ public final class CaseEndpointUnitTest {
   @Mock private InternetAccessCodeSvcClient internetAccessCodeSvcClient;
 
   @Mock private CaseRepository caseRepository;
+
+  @Mock private CaseEventRepository caseEventRepository;
 
   private MockMvc mockMvc;
   private List<Case> caseResults;
@@ -903,10 +906,13 @@ public final class CaseEndpointUnitTest {
    */
   @Test
   public void deleteCaseDataByCollectionExercise() throws Exception {
+    when(caseGroupService.findCaseGroupsForCollectionExercise(EXISTING_COLLECTION_EXERCISE_ID)).thenReturn(caseGroupResults);
+    when(caseService.findCasesByGroupFK(caseGroupResults)).thenReturn(caseResults);
+    when(caseEventRepository.findByCaseFKIn(caseResults)).thenReturn(caseEventsResults);
+
     ResultActions actions =
         mockMvc.perform(
-            deleteUrl(
-                String.format("/cases?collectionExerciseId=%s", EXISTING_COLLECTION_EXERCISE_ID)));
+            deleteUrl("/cases/" + EXISTING_COLLECTION_EXERCISE_ID));
 
     actions.andExpect(status().isOk()).andExpect(content().string("\"Deleted Successfully\""));
   }
