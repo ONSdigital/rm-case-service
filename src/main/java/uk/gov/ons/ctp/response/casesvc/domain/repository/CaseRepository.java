@@ -81,5 +81,5 @@ public interface CaseRepository extends JpaRepository<Case, Integer> {
   Case findByCasePK(int casePK);
 
   /** Find List of Cases by List of CaseGroupFK */
-  List<Case> findByCaseGroupFkIn(List<CaseGroup> caseGroupFKs);
+  List<Case> findBycaseGroupFKIn(List<CaseGroup> caseGroupFKs);
 }

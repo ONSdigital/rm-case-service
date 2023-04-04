@@ -690,7 +690,7 @@ public class CaseService {
   }
 
   public List<Case> findCasesByGroupFK(List<CaseGroup> caseGroupList) {
-    return caseRepo.findByCaseGroupFkIn(caseGroupList);
+    return caseRepo.findBycaseGroupFKIn(caseGroupList);
   }
 
   public void deleteCasesInList(List<Case> caseList) {
