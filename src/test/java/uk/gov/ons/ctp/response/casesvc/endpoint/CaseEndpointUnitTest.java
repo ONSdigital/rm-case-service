@@ -909,7 +909,7 @@ public final class CaseEndpointUnitTest {
     when(caseGroupService.findCaseGroupsForCollectionExercise(EXISTING_COLLECTION_EXERCISE_ID))
         .thenReturn(caseGroupResults);
     when(caseService.findCasesByGroupFK(caseGroupResults)).thenReturn(caseResults);
-    when(caseEventRepository.findByCaseFKIn(caseResults)).thenReturn(caseEventsResults);
+    when(caseEventRepository.findByCaseFKIn(any())).thenReturn(caseEventsResults);
 
     ResultActions actions = mockMvc.perform(deleteUrl("/cases/" + EXISTING_COLLECTION_EXERCISE_ID));
 
