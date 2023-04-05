@@ -389,20 +389,13 @@ public final class CaseEndpoint implements CTPEndpoint {
 
     List<CaseGroup> caseGroupList =
         caseGroupService.findCaseGroupsForCollectionExercise(collectionExerciseId);
-
     List<Case> caseList = caseService.findCasesByGroupFK(caseGroupList);
+    List<Integer> listOfCasePKs = caseList.stream().map(Case::getCasePK).toList();
+    List<CaseEvent> caseEventsList = caseEventRepository.findByCaseFKIn(listOfCasePKs);
 
-    List<Integer> listOfCaseFks = caseList.stream().map(Case::getCasePK).toList();
-    List<CaseEvent> caseEventsList = caseEventRepository.findByCaseFKIn(listOfCaseFks);
-
-    System.out.println(listOfCaseFks);
-    System.out.println(caseEventsList);
-
-    //    caseEventRepository.deleteAll(caseEventsList);
-    //
-    //    caseGroupService.deleteCaseGroups(caseGroupList);
-    //
-    //    caseService.deleteCasesInList(caseList);
+    caseEventRepository.deleteAll(caseEventsList);
+    caseGroupService.deleteCaseGroups(caseGroupList);
+    caseService.deleteCasesInList(caseList);
 
     return ResponseEntity.ok("Deleted Successfully");
   }
