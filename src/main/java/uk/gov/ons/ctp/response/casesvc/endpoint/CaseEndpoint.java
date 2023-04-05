@@ -387,6 +387,8 @@ public final class CaseEndpoint implements CTPEndpoint {
   public ResponseEntity<String> deleteCaseDataByCollectionExercise(
       @PathVariable UUID collectionExerciseId) throws CTPException {
 
+    log.with("collection_exercise_id", collectionExerciseId).debug("Deleting cases");
+
     List<CaseGroup> caseGroupList =
         caseGroupService.findCaseGroupsForCollectionExercise(collectionExerciseId);
     List<Case> caseList = caseService.findCasesByGroupFK(caseGroupList);
@@ -396,6 +398,8 @@ public final class CaseEndpoint implements CTPEndpoint {
     caseEventRepository.deleteAll(caseEventsList);
     caseService.deleteCasesInList(caseList);
     caseGroupService.deleteCaseGroups(caseGroupList);
+
+    log.with("collection_exercise_id", collectionExerciseId).debug("Delete successful");
 
     return ResponseEntity.ok("Deleted Successfully");
   }

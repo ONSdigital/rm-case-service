@@ -691,7 +691,6 @@ public class CaseService {
 
   public List<Case> findCasesByGroupFK(List<CaseGroup> caseGroupList) {
     List<Integer> listOfGroupFKs = caseGroupList.stream().map(CaseGroup::getCaseGroupPK).toList();
-    System.out.println(listOfGroupFKs);
     return caseRepo.findBycaseGroupFKIn(listOfGroupFKs);
   }
 
