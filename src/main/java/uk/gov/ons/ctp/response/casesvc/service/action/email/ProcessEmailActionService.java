@@ -252,6 +252,8 @@ public class ProcessEmailActionService {
             ? businessParty.getAttributes().getFormType()
             : "";
     String surveyRef = isSurveyIdSupportedTemplate(survey) ? survey.getSurveyRef() : "";
+    log.info("Region before change");
+    log.info(businessParty.getAttributes().getRegion());
     return Classifiers.builder()
         .actionType(caseActionTemplate.getType())
         .legalBasis(survey.getLegalBasis())
