@@ -24,6 +24,8 @@ public class NotifyEmailService {
     try {
       String message = objectMapper.writeValueAsString(notifyPayload);
       pubEmailPublisher.sendToPubSub(message);
+      log.info("Message sent to pubsub: ");
+      log.info(message);
       log.info("Email notification sent to PubSub successfully. ");
     } catch (JsonProcessingException e) {
       log.error("Error converting an actionRequest to JSON", e);
