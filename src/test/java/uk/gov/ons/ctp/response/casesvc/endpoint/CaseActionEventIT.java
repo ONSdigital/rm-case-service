@@ -27,6 +27,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.gov.ons.ctp.response.casesvc.CaseCreator;
+import uk.gov.ons.ctp.response.casesvc.PubSubTestEmulator;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionEventRequest;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseActionEventRequestRepository;
@@ -37,7 +38,6 @@ import uk.gov.ons.ctp.response.casesvc.message.TestPubSubMessage;
 import uk.gov.ons.ctp.response.casesvc.representation.action.CaseActionEvent;
 import uk.gov.ons.ctp.response.casesvc.service.action.email.ProcessEmailActionService;
 import uk.gov.ons.ctp.response.casesvc.service.action.letter.ProcessLetterActionService;
-import uk.gov.ons.ctp.response.casesvc.utility.PubSubEmulator;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
 
@@ -53,7 +53,7 @@ import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
 public class CaseActionEventIT {
   private UUID collectionExerciseId;
   private Map<String, String> metadata;
-  private PubSubEmulator pubSubEmulator = new PubSubEmulator();
+  private PubSubTestEmulator pubSubEmulator = new PubSubTestEmulator();
 
   @MockBean private ProcessLetterActionService processLetterActionService;
   @MockBean private ProcessEmailActionService processEmailActionService;

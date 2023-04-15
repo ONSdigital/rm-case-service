@@ -10,12 +10,12 @@ import com.google.pubsub.v1.PubsubMessage;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import uk.gov.ons.ctp.response.casesvc.PubSubTestEmulator;
 import uk.gov.ons.ctp.response.casesvc.representation.action.CaseActionEvent;
-import uk.gov.ons.ctp.response.casesvc.utility.PubSubEmulator;
 
 public class TestPubSubMessage {
   private static final Logger log = LoggerFactory.getLogger(TestPubSubMessage.class);
-  private final PubSubEmulator pubsubEmulator = new PubSubEmulator();
+  private final PubSubTestEmulator pubsubEmulator = new PubSubTestEmulator();
   private String receivedMessage = null;
 
   public TestPubSubMessage() throws IOException {}
