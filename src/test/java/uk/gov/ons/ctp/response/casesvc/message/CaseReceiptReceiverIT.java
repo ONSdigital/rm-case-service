@@ -1,18 +1,11 @@
 package uk.gov.ons.ctp.response.casesvc.message;
 
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import org.junit.*;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -31,12 +24,6 @@ public class CaseReceiptReceiverIT {
 
   private final PubSubTestEmulator pubSubEmulator = new PubSubTestEmulator();
 
-  @ClassRule
-  public static WireMockRule wireMockRule =
-      new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
-
-  @MockBean private CaseReceiptReceiver caseReceiptReceiver;
-
   public CaseReceiptReceiverIT() throws IOException {}
 
   @Before
@@ -51,17 +38,19 @@ public class CaseReceiptReceiverIT {
 
   @Test
   public void testCaseNotificationReceiverIsReceivingMessageFromPubSub() throws Exception {
+    // Publish a test receipt
     String receiptFile =
         "src/test/resources/uk/gov/ons/ctp/response/casesvc/message/receiptPubsub.json";
     String json = readFileAsString(receiptFile);
-    System.out.println("************PUBLISHING****************");
     pubSubEmulator.publishMessage(json);
-    System.out.println("^^^^^^^^^^^^PUBLISHED^^^^^^^^^^^^^^^^");
-    Thread.sleep(2000);
-    ObjectMapper objectMapper = new ObjectMapper();
-    CaseReceipt caseReceipt = objectMapper.readValue(json, CaseReceipt.class);
 
-    Mockito.verify(caseReceiptReceiver, Mockito.times(1)).process(caseReceipt);
+    // Call the receiver to get the receipt message
+    TestPubSubMessage message = new TestPubSubMessage();
+    Thread.sleep(2000);
+    CaseReceipt caseReceipt = message.getCaseReceipt();
+
+    // Test the case ID of the receipt received is the one we published
+    Assert.assertEquals(caseReceipt.getCaseId(), "9b872c6c-3339-4db9-9ef6-ff37a4446321");
   }
 
   private static String readFileAsString(String file) throws Exception {

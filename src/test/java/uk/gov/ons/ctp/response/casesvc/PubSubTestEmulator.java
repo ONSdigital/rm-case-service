@@ -18,10 +18,7 @@ import io.grpc.ManagedChannelBuilder;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
-/**
- * * This is a PubSub Emulator class. This is a utility class which is used for testing pubsub
- * function
- */
+/** * This is a PubSub Emulator class which is used for testing pubsub function */
 public class PubSubTestEmulator {
   private static final Logger log = LoggerFactory.getLogger(PubSubTestEmulator.class);
   private static final String HOST_PORT = "localhost:18681";
@@ -31,9 +28,9 @@ public class PubSubTestEmulator {
       FixedTransportChannelProvider.create(GrpcTransportChannel.create(CHANNEL));
   public static final CredentialsProvider CREDENTIAL_PROVIDER = NoCredentialsProvider.create();
   private static final String PROJECT_ID = "ras-rm-dev";
-  private static final String TOPIC_ID = "test_topic";
+  private static final String RECEIPT_TOPIC_ID = "test_receipt_topic";
   private static final String CASE_CREATION_TOPIC_ID = "test_case_creation_topic";
-  private static final String SUBSCRIPTION_ID = "test_subscription";
+  private static final String RECEIPT_SUBSCRIPTION_ID = "test_receipt_subscription";
   private static final String CASE_CREATION_SUBSCRIPTION_ID = "test_case_creation_subscription";
   private final TopicAdminClient topicClient =
       TopicAdminClient.create(
@@ -47,10 +44,10 @@ public class PubSubTestEmulator {
               .setTransportChannelProvider(PubSubTestEmulator.CHANNEL_PROVIDER)
               .setCredentialsProvider(PubSubTestEmulator.CREDENTIAL_PROVIDER)
               .build());
-  TopicName topicName = TopicName.of(PROJECT_ID, TOPIC_ID);
+  TopicName topicName = TopicName.of(PROJECT_ID, RECEIPT_TOPIC_ID);
   TopicName caseCreationTopicName = TopicName.of(PROJECT_ID, CASE_CREATION_TOPIC_ID);
   ProjectSubscriptionName subscriptionName =
-      ProjectSubscriptionName.of(PROJECT_ID, SUBSCRIPTION_ID);
+      ProjectSubscriptionName.of(PROJECT_ID, RECEIPT_SUBSCRIPTION_ID);
   ProjectSubscriptionName caseCreationSubscriptionName =
       ProjectSubscriptionName.of(PROJECT_ID, CASE_CREATION_SUBSCRIPTION_ID);
 
@@ -63,16 +60,8 @@ public class PubSubTestEmulator {
         .build();
   }
 
-  public Subscriber getEmulatorSubscriber(MessageReceiver receiver) {
-    return Subscriber.newBuilder(ProjectSubscriptionName.of(PROJECT_ID, SUBSCRIPTION_ID), receiver)
-        .setChannelProvider(CHANNEL_PROVIDER)
-        .setCredentialsProvider(CREDENTIAL_PROVIDER)
-        .build();
-  }
-
-  public Subscriber getEmulatorSubscriberForCaseActionEventStatus(MessageReceiver receiver) {
-    return Subscriber.newBuilder(
-            ProjectSubscriptionName.of(PROJECT_ID, "test_event_status_subscription"), receiver)
+  public Subscriber getEmulatorSubscriber(MessageReceiver receiver, String subscription) {
+    return Subscriber.newBuilder(ProjectSubscriptionName.of(PROJECT_ID, subscription), receiver)
         .setChannelProvider(CHANNEL_PROVIDER)
         .setCredentialsProvider(CREDENTIAL_PROVIDER)
         .build();
@@ -90,7 +79,7 @@ public class PubSubTestEmulator {
     try {
       ByteString data = ByteString.copyFromUtf8(message);
       PubsubMessage pubsubMessage = PubsubMessage.newBuilder().setData(data).build();
-      TopicName topicName = TopicName.of(PROJECT_ID, TOPIC_ID);
+      TopicName topicName = TopicName.of(PROJECT_ID, RECEIPT_TOPIC_ID);
       Publisher publisher = getEmulatorPublisher(topicName);
       log.with("publisher", publisher).info("Publishing message to pubsub emulator");
       ApiFuture<String> messageIdFuture = publisher.publish(pubsubMessage);
@@ -122,11 +111,11 @@ public class PubSubTestEmulator {
 
   public void testInit() {
     Topic topic = topicClient.createTopic(topicName);
-    System.out.println("Created topic: " + topic.getName());
+    log.info("Created topic: " + topic.getName());
     Subscription subscription =
         subscriptionAdminClient.createSubscription(
             subscriptionName, topicName, PushConfig.getDefaultInstance(), 10);
-    System.out.println("Created pull subscription: " + subscription.getName());
+    log.info("Created pull subscription: " + subscription.getName());
   }
 
   public void testTeardown() {
