@@ -205,7 +205,7 @@ public class CaseGroupService {
     caseGroupRepo.deleteAll(caseGroupList);
   }
 
-  @Transactional(propagation=Propagation.REQUIRED)
+  @Transactional(propagation = Propagation.REQUIRED)
   public void deleteCaseGroupsByCollectionExerciseId(UUID collectionExerciseId) {
     caseGroupRepo.deleteCaseGroupsByCollectionExerciseId(collectionExerciseId);
   }
