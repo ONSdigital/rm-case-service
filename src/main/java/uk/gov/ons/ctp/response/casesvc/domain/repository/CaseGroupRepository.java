@@ -3,6 +3,7 @@ package uk.gov.ons.ctp.response.casesvc.domain.repository;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -136,4 +137,14 @@ public interface CaseGroupRepository extends JpaRepository<CaseGroup, Integer> {
               + "WHERE cg.caseGroupPK=c.caseGroupFK AND c.state='ACTIONABLE' "
               + "AND c.id IN :caseIds ")
   List<CaseAction> findByCaseIdIn(@Param("caseIds") List<UUID> caseIds);
+
+  /**
+   * find cases for action
+   *
+   * @param collectionExerciseID UUID of the collection exercise to delete casegroup entities
+   */
+  @Modifying
+  @Query("DELETE FROM CaseGroup cg WHERE cg.collectionExerciseId = :collectionExerciseId")
+  void deleteCaseGroupsByCollectionExerciseId(
+      @Param("collectionExerciseId") UUID collectionExerciseID);
 }

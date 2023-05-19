@@ -204,4 +204,8 @@ public class CaseGroupService {
   public void deleteCaseGroups(List<CaseGroup> caseGroupList) {
     caseGroupRepo.deleteAll(caseGroupList);
   }
+
+  public void deleteCaseGroupsByCollectionExerciseId(UUID collectionExerciseId) {
+    caseGroupRepo.deleteCaseGroupsByCollectionExerciseId(collectionExerciseId);
+  }
 }
