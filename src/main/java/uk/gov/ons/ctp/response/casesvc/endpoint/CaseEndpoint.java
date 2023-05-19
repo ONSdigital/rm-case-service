@@ -378,9 +378,9 @@ public final class CaseEndpoint implements CTPEndpoint {
   }
 
   /**
-   * Deletes all casegroup data for a particular collection exercise
-   * casegroup FK REFERENCE constraint defines DELETE CASCADE on case
-   * case FK REFERENCE constraint defines DELETE CASCADE on caseevent
+   * Deletes all casegroup data for a particular collection exercise casegroup FK REFERENCE
+   * constraint defines DELETE CASCADE on case case FK REFERENCE constraint defines DELETE CASCADE
+   * on caseevent
    *
    * @param collectionExerciseId The Collection Exercise UUID to delete for
    * @return An appropriate HTTP repsonse code
