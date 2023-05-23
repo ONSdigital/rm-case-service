@@ -173,7 +173,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    caseGroupService.deleteCaseGroupByCollectionExerciceId(collectionExerciseId);
+    caseGroupService.deleteCaseGroupByCollectionExerciseId(collectionExerciseId);
 
     log.with("collection_exercise_id", collectionExerciseId).info("Delete successful");
 

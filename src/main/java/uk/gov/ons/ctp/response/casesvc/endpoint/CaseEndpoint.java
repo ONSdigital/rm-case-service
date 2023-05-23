@@ -20,7 +20,6 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
 import uk.gov.ons.ctp.response.casesvc.domain.model.ObjectConverter;
-import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventDTO;
@@ -52,19 +51,16 @@ public final class CaseEndpoint implements CTPEndpoint {
   private CaseService caseService;
   private CaseGroupService caseGroupService;
   private CategoryService categoryService;
-  private CaseEventRepository caseEventRepository;
 
   /** Contructor for CaseEndpoint */
   @Autowired
   public CaseEndpoint(
       final CaseService caseService,
       final CaseGroupService caseGroupService,
-      final CategoryService categoryService,
-      final CaseEventRepository caseEventRepository) {
+      final CategoryService categoryService) {
     this.caseService = caseService;
     this.caseGroupService = caseGroupService;
     this.categoryService = categoryService;
-    this.caseEventRepository = caseEventRepository;
   }
 
   /**

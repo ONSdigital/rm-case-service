@@ -189,7 +189,7 @@ public class CaseGroupService {
     return numberOfCases;
   }
 
-  public void deleteCaseGroupByCollectionExerciceId(UUID collectionExerciseId) {
+  public void deleteCaseGroupByCollectionExerciseId(UUID collectionExerciseId) {
     caseGroupRepo.deleteCaseGroupsByCollectionExerciseId(collectionExerciseId);
   }
 }
