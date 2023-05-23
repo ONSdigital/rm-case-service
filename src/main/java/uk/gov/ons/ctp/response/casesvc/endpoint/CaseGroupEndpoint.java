@@ -154,7 +154,9 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   }
 
   /**
-   * Deletes all case, caseevent and casegroup data for a particular collection exercise
+   * Deletes all casegroup data for a particular collection exercise casegroup FK REFERENCE
+   * constraint defines DELETE CASCADE on case case FK REFERENCE constraint defines DELETE CASCADE
+   * on caseevent
    *
    * @param collectionExerciseId The Collection Exercise UUID to delete for
    * @return An appropriate HTTP repsonse code
@@ -173,10 +175,11 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    caseGroupService.deleteCaseGroupByCollectionExerciseId(collectionExerciseId);
+    int deletedRows = caseGroupService.deleteCaseGroupByCollectionExerciseId(collectionExerciseId);
 
-    log.with("collection_exercise_id", collectionExerciseId).info("Delete successful");
+    log.with("collection_exercise_id", collectionExerciseId).info("Deleted {} of {} expected cases successfully", caseGroupCount, deletedRows);
+    String output = "Deleted" + deletedRows + " cases successfully";
 
-    return ResponseEntity.ok("Deleted Successfully");
+    return ResponseEntity.ok(output);
   }
 }

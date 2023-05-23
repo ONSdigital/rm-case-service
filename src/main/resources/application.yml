@@ -12,6 +12,7 @@ logging:
   level:
     uk.gov.ons.ctp: DEBUG
     org.springframework: ERROR
+    hibernate.sql: DEBUG
   profile: DEV
   useJson: false
 
@@ -38,7 +39,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
     open-in-view: true
-    show-sql: false
+    show-sql: true
     defer-datasource-initialization: true
     hibernate:
       ddl-auto: update
@@ -49,6 +50,7 @@ spring:
           schema_filter_provider: uk.gov.ons.ctp.response.casesvc.CustomProvider
         id:
           new_generator_mappings: false
+        format_sql: true
   sql:
     init:
       mode: always

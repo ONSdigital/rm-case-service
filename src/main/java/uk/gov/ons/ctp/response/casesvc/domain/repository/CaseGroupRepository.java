@@ -145,6 +145,6 @@ public interface CaseGroupRepository extends JpaRepository<CaseGroup, Integer> {
    */
   @Modifying
   @Query("DELETE FROM CaseGroup cg WHERE cg.collectionExerciseId = :collectionExerciseId")
-  void deleteCaseGroupsByCollectionExerciseId(
+  int deleteCaseGroupsByCollectionExerciseId(
       @Param("collectionExerciseId") UUID collectionExerciseID);
 }
