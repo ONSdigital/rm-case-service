@@ -688,13 +688,4 @@ public class CaseService {
       throw new CTPException(CTPException.Fault.BAD_REQUEST, exc.getMessage());
     }
   }
-
-  public List<Case> findCasesByGroupFK(List<CaseGroup> caseGroupList) {
-    List<Integer> listOfGroupFKs = caseGroupList.stream().map(CaseGroup::getCaseGroupPK).toList();
-    return caseRepo.findBycaseGroupFKIn(listOfGroupFKs);
-  }
-
-  public void deleteCasesInList(List<Case> caseList) {
-    caseRepo.deleteAll(caseList);
-  }
 }

@@ -19,9 +19,6 @@ public interface CaseEventRepository extends JpaRepository<CaseEvent, Integer> {
    */
   List<CaseEvent> findByCaseFKOrderByCreatedDateTimeDesc(Integer caseFK);
 
-  /** Find List of Case Events by Case FK */
-  List<CaseEvent> findByCaseFKIn(List<Integer> caseList);
-
   List<CaseEvent> findByCaseFKAndCategoryInOrderByCreatedDateTimeDesc(
       Integer caseFK, Set<CategoryName> categoryNames);
 }

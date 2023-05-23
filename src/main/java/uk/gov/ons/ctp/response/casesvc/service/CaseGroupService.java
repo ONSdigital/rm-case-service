@@ -189,19 +189,7 @@ public class CaseGroupService {
     return numberOfCases;
   }
 
-  public List<CaseGroup> findCaseGroupsForCollectionExercise(UUID collectionExerciseId)
-      throws CTPException {
-    List<CaseGroup> caseGroups =
-        caseGroupRepo.findCaseGroupByCollectionExerciseId(collectionExerciseId);
-    if (caseGroups == null) {
-      throw new CTPException(
-          CTPException.Fault.RESOURCE_NOT_FOUND,
-          String.format("Cannot find cases against collection exercise %s", collectionExerciseId));
-    }
-    return caseGroups;
-  }
-
-  public void deleteCaseGroups(List<CaseGroup> caseGroupList) {
-    caseGroupRepo.deleteAll(caseGroupList);
+  public void deleteCaseGroupByCollectionExerciceId(UUID collectionExerciseId) {
+    caseGroupRepo.deleteCaseGroupsByCollectionExerciseId(collectionExerciseId);
   }
 }

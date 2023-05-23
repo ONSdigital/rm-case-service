@@ -376,31 +376,4 @@ public final class CaseEndpoint implements CTPEndpoint {
 
     return caseDetailsDTO;
   }
-
-  /**
-   * Deletes all case, caseevent and casegroup data for a particular collection exercise
-   *
-   * @param collectionExerciseId The Collection Exercise UUID to delete for
-   * @return An appropriate HTTP repsonse code
-   */
-  @DeleteMapping("{collectionExerciseId}")
-  public ResponseEntity<String> deleteCaseDataByCollectionExercise(
-      @PathVariable UUID collectionExerciseId) throws CTPException {
-
-    log.with("collection_exercise_id", collectionExerciseId).info("Deleting cases");
-
-    List<CaseGroup> caseGroupList =
-        caseGroupService.findCaseGroupsForCollectionExercise(collectionExerciseId);
-    List<Case> caseList = caseService.findCasesByGroupFK(caseGroupList);
-    List<Integer> listOfCasePKs = caseList.stream().map(Case::getCasePK).toList();
-    List<CaseEvent> caseEventsList = caseEventRepository.findByCaseFKIn(listOfCasePKs);
-
-    caseEventRepository.deleteAll(caseEventsList);
-    caseService.deleteCasesInList(caseList);
-    caseGroupService.deleteCaseGroups(caseGroupList);
-
-    log.with("collection_exercise_id", collectionExerciseId).info("Delete successful");
-
-    return ResponseEntity.ok("Deleted Successfully");
-  }
 }

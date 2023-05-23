@@ -8,12 +8,10 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.ObjectConverter;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupDTO;
@@ -153,5 +151,32 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   private boolean isValidEvent(String event) {
     return Arrays.stream(CategoryName.values()).map(Enum::name).filter(e -> e.equals(event)).count()
         == 1;
+  }
+
+  /**
+   * Deletes all case, caseevent and casegroup data for a particular collection exercise
+   *
+   * @param collectionExerciseId The Collection Exercise UUID to delete for
+   * @return An appropriate HTTP repsonse code
+   */
+  @DeleteMapping("collectionExercises/{collectionExerciseId}")
+  public ResponseEntity<String> deleteCaseDataByCollectionExercise(
+      @PathVariable UUID collectionExerciseId) throws CTPException {
+
+    log.with("collection_exercise_id", collectionExerciseId).info("Deleting cases");
+
+    Long caseGroupCount =
+        caseGroupService.getAllCasesAgainstCollectionExerciseId(collectionExerciseId);
+    if (caseGroupCount == 0) {
+      log.with("collection_exercise_id", collectionExerciseId)
+          .info("No content found for Collection Exercise ID");
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    caseGroupService.deleteCaseGroupByCollectionExerciceId(collectionExerciseId);
+
+    log.with("collection_exercise_id", collectionExerciseId).info("Delete successful");
+
+    return ResponseEntity.ok("Deleted Successfully");
   }
 }
