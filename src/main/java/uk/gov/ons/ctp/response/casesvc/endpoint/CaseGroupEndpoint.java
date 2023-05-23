@@ -177,7 +177,8 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
 
     int deletedRows = caseGroupService.deleteCaseGroupByCollectionExerciseId(collectionExerciseId);
 
-    log.with("collection_exercise_id", collectionExerciseId).info("Deleted {} of {} expected cases successfully", caseGroupCount, deletedRows);
+    log.with("collection_exercise_id", collectionExerciseId)
+        .info("Deleted {} of {} expected cases successfully", caseGroupCount, deletedRows);
     String output = "Deleted" + deletedRows + " cases successfully";
 
     return ResponseEntity.ok(output);
