@@ -11,14 +11,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.CATEGORY_ACCESS_CODE_AUTHENTICATION_ATTEMPT_NOT_FOUND;
 import static uk.gov.ons.ctp.response.casesvc.endpoint.CaseEndpoint.ERRORMSG_CASENOTFOUND;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
-import static uk.gov.ons.ctp.response.lib.common.MvcHelper.deleteUrl;
 import static uk.gov.ons.ctp.response.lib.common.MvcHelper.getJson;
 import static uk.gov.ons.ctp.response.lib.common.MvcHelper.postJson;
 import static uk.gov.ons.ctp.response.lib.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
@@ -29,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
@@ -898,22 +895,5 @@ public final class CaseEndpointUnitTest {
     when(bindingResult.hasErrors()).thenReturn(true);
     CaseEventCreationRequestDTO caseEventDTO = new CaseEventCreationRequestDTO();
     caseEndpoint.createCaseEvent(CASE1_ID, caseEventDTO, bindingResult);
-  }
-
-  /**
-   * a test deleting case data by collection exercise ID
-   *
-   * @throws Exception exception thrown
-   */
-  @Test
-  @Ignore
-  public void deleteCaseDataByCollectionExercise() throws Exception {
-    when(caseGroupService.getAllCasesAgainstCollectionExerciseId(EXISTING_COLLECTION_EXERCISE_ID))
-        .thenReturn(Long.valueOf(1));
-    ResultActions actions =
-        mockMvc.perform(
-            deleteUrl("/casegroups/collectionExercises/" + EXISTING_COLLECTION_EXERCISE_ID));
-
-    actions.andExpect(status().isOk()).andExpect(content().string("\"Deleted Successfully\""));
   }
 }

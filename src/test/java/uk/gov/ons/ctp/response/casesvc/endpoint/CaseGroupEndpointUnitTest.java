@@ -4,9 +4,8 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static uk.gov.ons.ctp.response.lib.common.MvcHelper.deleteUrl;
 import static uk.gov.ons.ctp.response.lib.common.MvcHelper.getJson;
 import static uk.gov.ons.ctp.response.lib.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
 
@@ -38,6 +37,8 @@ import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManager;
 /** A test of the CaseGroup endpoint */
 public final class CaseGroupEndpointUnitTest {
 
+  private static final UUID EXISTING_COLLECTION_EXERCISE_ID =
+      UUID.fromString("f34950d7-ed1e-4c16-941a-a8f793c266a1");
   private static final UUID CASE_GROUP_UUID = UUID.randomUUID();
   private static final String NON_EXISTENT_CASE_GROUP_UUID = "9a5f2be5-f944-41f9-982c-3517cfcfe666";
   private static final UUID CASE_GROUP_UUID_UNCHECKED_EXCEPTION = UUID.randomUUID();
@@ -197,5 +198,41 @@ public final class CaseGroupEndpointUnitTest {
         jsonPath(
             "$[*].collectionExerciseId",
             containsInAnyOrder(COLLEX1_ID.toString(), COLLEX2_ID.toString())));
+  }
+
+  /**
+   * a test deleting case data by collection exercise ID
+   *
+   * @throws Exception exception thrown
+   */
+  @Test
+  public void deleteCaseDataByCollectionExercise() throws Exception {
+    when(caseGroupService.getAllCasesAgainstCollectionExerciseId(EXISTING_COLLECTION_EXERCISE_ID))
+        .thenReturn(Long.valueOf(1));
+    when(caseGroupService.deleteCaseGroupByCollectionExerciseId(EXISTING_COLLECTION_EXERCISE_ID))
+        .thenReturn(1);
+    ResultActions actions =
+        mockMvc.perform(
+            deleteUrl("/casegroups/collectionExercises/" + EXISTING_COLLECTION_EXERCISE_ID));
+
+    actions
+        .andExpect(status().isOk())
+        .andExpect(content().string("\"Deleted 1 cases successfully\""));
+  }
+
+  /**
+   * a test deleting case data by collection exercise ID
+   *
+   * @throws Exception exception thrown
+   */
+  @Test
+  public void deleteCaseDataByCollectionExerciseForNonExistentCase() throws Exception {
+    when(caseGroupService.getAllCasesAgainstCollectionExerciseId(EXISTING_COLLECTION_EXERCISE_ID))
+        .thenReturn(Long.valueOf(0));
+    ResultActions actions =
+        mockMvc.perform(
+            deleteUrl("/casegroups/collectionExercises/" + EXISTING_COLLECTION_EXERCISE_ID));
+
+    actions.andExpect(status().isNotFound());
   }
 }
