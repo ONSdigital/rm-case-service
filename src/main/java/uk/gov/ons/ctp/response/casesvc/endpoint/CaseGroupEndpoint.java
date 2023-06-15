@@ -180,7 +180,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
         .info("Deleted {} expected cases successfully", deletedRows);
 
     DeletedObject deletedObject = DeletedObject.builder()
-        .DELETED(deletedRows)
+        .deleted(deletedRows)
         .build();
 
     if (deletedRows == 0) {
@@ -192,6 +192,6 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   @Builder
   @AllArgsConstructor
   private static class DeletedObject {
-    final int DELETED;
+    final int deleted;
   }
 }
