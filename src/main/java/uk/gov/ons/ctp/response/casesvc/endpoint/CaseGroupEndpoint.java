@@ -2,11 +2,17 @@ package uk.gov.ons.ctp.response.casesvc.endpoint;
 
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -162,26 +168,30 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
    * @return An appropriate HTTP repsonse code
    */
   @DeleteMapping("collectionExercises/{collectionExerciseId}")
-  public ResponseEntity<String> deleteCaseDataByCollectionExercise(
-      @PathVariable UUID collectionExerciseId) throws CTPException {
-
-    Long caseGroupCount =
-        caseGroupService.getAllCasesAgainstCollectionExerciseId(collectionExerciseId);
-    if (caseGroupCount == 0) {
-      log.with("collection_exercise_id", collectionExerciseId)
-          .info("No content found for Collection Exercise ID");
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+  public ResponseEntity<DeletedObject> deleteCaseDataByCollectionExercise(
+      @PathVariable UUID collectionExerciseId) {
 
     log.with("collection_exercise_id", collectionExerciseId)
-        .info("Deleting cases {}", caseGroupCount);
+        .info("Deleting cases");
 
     int deletedRows = caseGroupService.deleteCaseGroupByCollectionExerciseId(collectionExerciseId);
 
     log.with("collection_exercise_id", collectionExerciseId)
-        .info("Deleted {} of {} expected cases successfully", caseGroupCount, deletedRows);
-    String output = "Deleted " + deletedRows + " cases successfully";
+        .info("Deleted {} expected cases successfully", deletedRows);
 
-    return ResponseEntity.ok(output);
+    DeletedObject deletedObject = DeletedObject.builder()
+        .DELETED(deletedRows)
+        .build();
+
+    if (deletedRows == 0) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    return ResponseEntity.ok(deletedObject);
+  }
+  @Data
+  @Builder
+  @AllArgsConstructor
+  private static class DeletedObject {
+    final int DELETED;
   }
 }

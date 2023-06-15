@@ -207,8 +207,6 @@ public final class CaseGroupEndpointUnitTest {
    */
   @Test
   public void deleteCaseDataByCollectionExercise() throws Exception {
-    when(caseGroupService.getAllCasesAgainstCollectionExerciseId(EXISTING_COLLECTION_EXERCISE_ID))
-        .thenReturn(Long.valueOf(1));
     when(caseGroupService.deleteCaseGroupByCollectionExerciseId(EXISTING_COLLECTION_EXERCISE_ID))
         .thenReturn(1);
     ResultActions actions =
@@ -217,7 +215,7 @@ public final class CaseGroupEndpointUnitTest {
 
     actions
         .andExpect(status().isOk())
-        .andExpect(content().string("\"Deleted 1 cases successfully\""));
+        .andExpect(content().json("{\"deleted\":1}"));
   }
 
   /**
@@ -227,8 +225,8 @@ public final class CaseGroupEndpointUnitTest {
    */
   @Test
   public void deleteCaseDataByCollectionExerciseForNonExistentCase() throws Exception {
-    when(caseGroupService.getAllCasesAgainstCollectionExerciseId(EXISTING_COLLECTION_EXERCISE_ID))
-        .thenReturn(Long.valueOf(0));
+    when(caseGroupService.deleteCaseGroupByCollectionExerciseId(EXISTING_COLLECTION_EXERCISE_ID))
+        .thenReturn(0);
     ResultActions actions =
         mockMvc.perform(
             deleteUrl("/casegroups/collectionExercises/" + EXISTING_COLLECTION_EXERCISE_ID));

@@ -228,12 +228,12 @@ paths:
           description: Forbidden
           content: { }
   /casegroups/collectionExercise/{collectionExerciseId}:
-    get:
+    delete:
       tags:
         - case-group-endpoint
       summary: deleteCasesByCollectionExerciseId
       operationId: deleteCasesByCollectionExerciseId
-      description: deletes all cases associated with collection exercise id
+      description: deletes all casegroups, cases and caseevents
       parameters:
         - name: collectionExerciseId
           in: path
@@ -245,10 +245,13 @@ paths:
         200:
           description: OK
           content:
-            text/plain:
+            application/json:
               schema:
-                type: number
-                example: 10503
+                type: object
+                properties:
+                  deleted:
+                    type: integer
+                    description: count of deleted caseGroups
         401:
           description: Unauthorized
           content: { }
