@@ -211,7 +211,7 @@ public final class CaseGroupEndpointUnitTest {
         .thenReturn(1);
     ResultActions actions =
         mockMvc.perform(
-            deleteUrl("/casegroups/collectionExercises/" + EXISTING_COLLECTION_EXERCISE_ID));
+            deleteUrl("/casegroups/collectionExercise/" + EXISTING_COLLECTION_EXERCISE_ID));
 
     actions.andExpect(status().isOk()).andExpect(content().json("{\"deleted\":1}"));
   }
@@ -227,7 +227,7 @@ public final class CaseGroupEndpointUnitTest {
         .thenReturn(0);
     ResultActions actions =
         mockMvc.perform(
-            deleteUrl("/casegroups/collectionExercises/" + EXISTING_COLLECTION_EXERCISE_ID));
+            deleteUrl("/casegroups/collectionExercise/" + EXISTING_COLLECTION_EXERCISE_ID));
 
     actions.andExpect(status().isNotFound());
   }

@@ -164,7 +164,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
    * @param collectionExerciseId The Collection Exercise UUID to delete for
    * @return An appropriate HTTP repsonse code
    */
-  @DeleteMapping("collectionExercises/{collectionExerciseId}")
+  @DeleteMapping("collectionExercise/{collectionExerciseId}")
   public ResponseEntity<DeletedObject> deleteCaseDataByCollectionExercise(
       @PathVariable UUID collectionExerciseId) {
 
