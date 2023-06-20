@@ -7,13 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.ObjectConverter;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupDTO;
@@ -153,5 +154,39 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   private boolean isValidEvent(String event) {
     return Arrays.stream(CategoryName.values()).map(Enum::name).filter(e -> e.equals(event)).count()
         == 1;
+  }
+
+  /**
+   * Deletes all casegroup data for a particular collection exercise casegroup FK REFERENCE
+   * constraint defines DELETE CASCADE on case case FK REFERENCE constraint defines DELETE CASCADE
+   * on caseevent
+   *
+   * @param collectionExerciseId The Collection Exercise UUID to delete for
+   * @return An appropriate HTTP repsonse code
+   */
+  @DeleteMapping("collectionExercise/{collectionExerciseId}")
+  public ResponseEntity<DeletedObject> deleteCaseDataByCollectionExercise(
+      @PathVariable UUID collectionExerciseId) {
+
+    log.with("collection_exercise_id", collectionExerciseId).info("Deleting cases");
+
+    int deletedRows = caseGroupService.deleteCaseGroupByCollectionExerciseId(collectionExerciseId);
+
+    log.with("collection_exercise_id", collectionExerciseId)
+        .info("Deleted {} expected casegroups successfully", deletedRows);
+
+    DeletedObject deletedObject = DeletedObject.builder().deleted(deletedRows).build();
+
+    if (deletedRows == 0) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    return ResponseEntity.ok(deletedObject);
+  }
+
+  @Data
+  @Builder
+  @AllArgsConstructor
+  private static class DeletedObject {
+    final int deleted;
   }
 }

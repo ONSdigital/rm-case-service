@@ -227,6 +227,40 @@ paths:
         403:
           description: Forbidden
           content: { }
+  /casegroups/collectionExercise/{collectionExerciseId}:
+    delete:
+      tags:
+        - case-group-endpoint
+      summary: deleteCasesByCollectionExerciseId
+      operationId: deleteCasesByCollectionExerciseId
+      description: deletes all casegroups, cases and caseevents
+      parameters:
+        - name: collectionExerciseId
+          in: path
+          description: the uuid of the collection exercise
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  deleted:
+                    type: integer
+                    description: count of deleted caseGroups
+        401:
+          description: Unauthorized
+          content: { }
+        403:
+          description: Forbidden
+          content: { }
+        404:
+          description: Not Found
+          content: { }
   /cases/casegroupid/{casegroupId}:
     get:
       tags:

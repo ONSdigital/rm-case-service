@@ -188,4 +188,9 @@ public class CaseGroupService {
     }
     return numberOfCases;
   }
+
+  @Transactional(propagation = Propagation.REQUIRED)
+  public int deleteCaseGroupByCollectionExerciseId(UUID collectionExerciseId) {
+    return caseGroupRepo.deleteCaseGroupsByCollectionExerciseId(collectionExerciseId);
+  }
 }

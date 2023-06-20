@@ -3,6 +3,7 @@ package uk.gov.ons.ctp.response.casesvc.domain.repository;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -70,23 +71,12 @@ public interface CaseGroupRepository extends JpaRepository<CaseGroup, Integer> {
       @Param("collectionExerciseId") UUID collectionExerciseId);
 
   /**
-   * find cases for action
+   * find case groups for a collection exercise
    *
    * @param collectionExerciseId the collection exercise id
    * @return the list of case actions
    */
-  @Query(
-      value =
-          "SELECT new uk.gov.ons.ctp.response.casesvc.representation.action.CaseAction"
-              + "(cg.collectionExerciseId, c.id AS caseId,cg.partyId, cg.sampleUnitRef, cg.sampleUnitType, "
-              + "cg.status, cg.surveyId, c.sampleUnitId AS sampleUnitId, c.collectionInstrumentId, iac.iac, "
-              + "c.activeEnrolment) "
-              + "FROM CaseGroup cg, Case c "
-              + "LEFT JOIN CaseIacAudit iac ON iac.caseFK=c.casePK "
-              + "WHERE cg.caseGroupPK=c.caseGroupFK AND c.state='ACTIONABLE' "
-              + "AND cg.collectionExerciseId = :collectionExerciseId ")
-  List<CaseAction> findByCollectionExerciseId(
-      @Param("collectionExerciseId") UUID collectionExerciseId);
+  List<CaseGroup> findCaseGroupByCollectionExerciseId(UUID collectionExerciseId);
 
   /**
    * find case for action
@@ -147,4 +137,14 @@ public interface CaseGroupRepository extends JpaRepository<CaseGroup, Integer> {
               + "WHERE cg.caseGroupPK=c.caseGroupFK AND c.state='ACTIONABLE' "
               + "AND c.id IN :caseIds ")
   List<CaseAction> findByCaseIdIn(@Param("caseIds") List<UUID> caseIds);
+
+  /**
+   * find cases for action
+   *
+   * @param collectionExerciseID UUID of the collection exercise to delete casegroup entities
+   */
+  @Modifying
+  @Query("DELETE FROM CaseGroup cg WHERE cg.collectionExerciseId = :collectionExerciseId")
+  int deleteCaseGroupsByCollectionExerciseId(
+      @Param("collectionExerciseId") UUID collectionExerciseID);
 }
