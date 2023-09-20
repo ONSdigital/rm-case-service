@@ -98,7 +98,7 @@ public class NotifyModel {
         private static final String REMINDER = "REMINDER";
         private static final String NOTIFICATION = "NOTIFICATION";
         // a region of YY appears to be any region that isnt england
-        private static final String NOT_ENGLAND = "YY";
+        private static final String NI_REGION_CODE = "YY";
 
         private String actionType;
         private String legalBasis;
@@ -115,8 +115,8 @@ public class NotifyModel {
             return new Classifiers(actionType, "", "", "", "");
           }
 
-          // if not not england is england. welcome to ras-rm.
-          if (!NOT_ENGLAND.equals(region)) {
+          // if NOT NI then England
+          if (!NI_REGION_CODE.equals(region)) {
             region = "";
           }
 
