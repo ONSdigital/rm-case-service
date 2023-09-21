@@ -115,7 +115,7 @@ public class NotifyModel {
             return new Classifiers(actionType, "", "", "", "");
           }
 
-          // if NOT NI then England
+          // if NOT NI then England/Wales
           if (!NI_REGION_CODE.equals(region)) {
             region = "";
           }
