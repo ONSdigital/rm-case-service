@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 35-1
+      author: Jacob Harrison
+      changes:
+        - sqlFile:
+            comment: Update constraints on case and caseevent to cascade casegroup deletions
+            path: add_delete_cascade_constraints.sql
+            relativeToChangelogFile: true
+            splitStatements: false

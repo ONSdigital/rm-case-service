@@ -45,6 +45,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseEvent;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Category;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseEventCreationRequestDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
@@ -69,6 +70,8 @@ public final class CaseEndpointUnitTest {
       UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3999");
   private static final UUID EXISTING_PARTY_UUID =
       UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfe111");
+  private static final UUID EXISTING_COLLECTION_EXERCISE_ID =
+      UUID.fromString("f34950d7-ed1e-4c16-941a-a8f793c266a1");
   private static final UUID CASE_ID_UNCHECKED_EXCEPTION_CASE =
       UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3999");
   private static final UUID EXISTING_SURVEY_ID =
@@ -161,6 +164,8 @@ public final class CaseEndpointUnitTest {
   @Mock private InternetAccessCodeSvcClient internetAccessCodeSvcClient;
 
   @Mock private CaseRepository caseRepository;
+
+  @Mock private CaseEventRepository caseEventRepository;
 
   private MockMvc mockMvc;
   private List<Case> caseResults;

@@ -30,6 +30,14 @@ server:
 spring:
   application:
     name: ONS CaseService
+  main:
+    allow-bean-definition-overriding: true
+  output:
+    ansi:
+      enabled: never
+  cloud:
+    gcp:
+      project-id: ras-rm-dev
   datasource:
     url: jdbc:postgresql://localhost:5432/ras
     username: postgres
@@ -41,14 +49,13 @@ spring:
     show-sql: false
     defer-datasource-initialization: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
       default_schema: casesvc
     properties:
       hibernate:
-        hbm2ddl:
-          schema_filter_provider: uk.gov.ons.ctp.response.casesvc.CustomProvider
-        id:
-          new_generator_mappings: false
+        hibernate:
+          id:
+            new_generator_mappings: false
   sql:
     init:
       mode: always
@@ -57,17 +64,10 @@ spring:
     user: postgres
     password: postgres
     url: jdbc:postgresql://localhost:5432/ras
-    liquibase-schema: casesvc
     change-log: classpath:/database/changelog-master.yml
+    liquibase-schema: casesvc
+    default-schema: casesvc
     enabled: false
-  main:
-    allow-bean-definition-overriding: true
-  output:
-    ansi:
-      enabled: never
-  cloud:
-    gcp:
-      project-id: ras-rm-dev
 
 internet-access-code-svc:
   iac-get-path: /iacs/{iac}
@@ -79,7 +79,6 @@ internet-access-code-svc:
     port: 8121
     username: admin
     password: secret
-
 
 collection-exercise-svc:
   collection-exercise-path: /collectionexercises/{exerciseId}
