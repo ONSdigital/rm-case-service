@@ -19,19 +19,29 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 @Component
 public class CaseCreationReceiver {
   private static final Logger log = LoggerFactory.getLogger(CaseCreationReceiver.class);
-  @Autowired private ObjectMapper objectMapper;
-  @Autowired private CaseService caseService;
-  @Autowired AppConfig appConfig;
+  @Autowired
+  private ObjectMapper objectMapper;
+  @Autowired
+  private CaseService caseService;
+  @Autowired
+  AppConfig appConfig;
 
   /**
-   * To process SampleUnitParents read from pubsub This creates application ready event listener to
-   * provide a active subscription for the new case creation against the receiving SampleUnitParents
+   * To process SampleUnitParents read from pubsub This creates application ready
+   * event listener to
+   * provide a active subscription for the new case creation against the receiving
+   * SampleUnitParents
    */
   @ServiceActivator(inputChannel = "caseCreationChannel")
   public void messageReceiver(
       Message message,
       @Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) BasicAcknowledgeablePubsubMessage pubSubMsg) {
     String messageId = pubSubMsg.getPubsubMessage().getMessageId();
+    try {
+      Thread.sleep(1500);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
     log.with("messageId", messageId).info("Receiving message ID from PubSub");
     String payload = new String((byte[]) message.getPayload());
     log.with("payload", payload).info("New request for case notification");
