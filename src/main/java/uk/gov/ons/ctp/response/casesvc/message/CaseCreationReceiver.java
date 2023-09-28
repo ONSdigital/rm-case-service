@@ -32,6 +32,11 @@ public class CaseCreationReceiver {
       Message message,
       @Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) BasicAcknowledgeablePubsubMessage pubSubMsg) {
     String messageId = pubSubMsg.getPubsubMessage().getMessageId();
+    try {
+      Thread.sleep(1500);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
     log.with("messageId", messageId).info("Receiving message ID from PubSub");
     String payload = new String((byte[]) message.getPayload());
     log.with("payload", payload).info("New request for case notification");
