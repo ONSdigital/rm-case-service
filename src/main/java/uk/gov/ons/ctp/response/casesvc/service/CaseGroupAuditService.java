@@ -22,7 +22,7 @@ public class CaseGroupAuditService {
     auditEntity.setCaseGroupFK(caseGroup.getCaseGroupPK());
     auditEntity.setStatus(caseGroup.getStatus());
     auditEntity.setPartyId(partyId);
-    auditEntity.setCreatedDateTime(caseGroup.getChangeStateTimestamp());
+    auditEntity.setCreatedDateTime(caseGroup.getStatusChangeTimestamp());
     log.with("audit_entity", auditEntity).debug("Updating the caseGroupStatus");
     caseGroupStatusAuditRepository.saveAndFlush(auditEntity);
   }

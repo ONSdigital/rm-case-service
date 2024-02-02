@@ -63,6 +63,6 @@ public class CaseGroup implements Serializable {
   @Column(name = "status")
   private CaseGroupStatus status;
 
-  @Column(name = "change_state_timestamp")
-  private Timestamp changeStateTimestamp;
+  @Column(name = "status_change_timestamp")
+  private Timestamp statusChangeTimestamp;
 }

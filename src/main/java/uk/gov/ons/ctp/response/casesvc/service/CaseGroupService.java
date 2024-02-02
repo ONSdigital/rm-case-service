@@ -107,7 +107,7 @@ public class CaseGroupService {
 
     if (newCaseGroupStatus != null && !oldCaseGroupStatus.equals(newCaseGroupStatus)) {
       caseGroup.setStatus(newCaseGroupStatus);
-      caseGroup.setChangeStateTimestamp(DateTimeUtil.nowUTC());
+      caseGroup.setStatusChangeTimestamp(DateTimeUtil.nowUTC());
       caseGroupRepo.saveAndFlush(caseGroup);
       caseGroupAuditService.updateAuditTable(caseGroup, partyId);
     }
