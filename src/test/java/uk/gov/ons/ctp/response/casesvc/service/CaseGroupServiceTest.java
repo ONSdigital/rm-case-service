@@ -6,7 +6,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 import java.util.*;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -43,7 +42,7 @@ public class CaseGroupServiceTest {
   private static final UUID SURVEY_ID = UUID.fromString("cb8accda-6118-4d3b-85a3-149e28960c54");
 
   @Test
-  public void givenCaseGroupStatusWhenCaseGroupStatusTransitionedThenTransitionIsSaved()
+  public void testCaseGroupCorrectlyTransitionsToNewStatus()
       throws Exception {
     // Given
     CaseGroup caseGroup =
@@ -65,13 +64,13 @@ public class CaseGroupServiceTest {
     caseGroupService.transitionCaseGroupStatus(caseGroup, categoryName, caseGroup.getPartyId());
 
     // Then
-    Assert.assertNotNull(caseGroup.getStatusChangeTimestamp());
-    Assert.assertEquals(caseGroup.getStatus(), CaseGroupStatus.COMPLETE);
+    assertNotNull(caseGroup.getStatusChangeTimestamp());
+    assertEquals(caseGroup.getStatus(), CaseGroupStatus.COMPLETE);
     verify(caseGroupRepo).saveAndFlush(caseGroup);
   }
 
   @Test
-  public void givenCaseGroupStatusWhenCaseGroupStatusTransitionedThenTransitionIsAudited()
+  public void testCaseGroupStatusChangeIsCorrectlyAudited()
       throws Exception {
     // Given
     CaseGroup caseGroup =
@@ -93,7 +92,6 @@ public class CaseGroupServiceTest {
     caseGroupService.transitionCaseGroupStatus(caseGroup, categoryName, caseGroup.getPartyId());
 
     // Then
-
     verify(caseGroupAuditService).updateAuditTable(caseGroup, caseGroup.getPartyId());
   }
 
