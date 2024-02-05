@@ -42,8 +42,7 @@ public class CaseGroupServiceTest {
   private static final UUID SURVEY_ID = UUID.fromString("cb8accda-6118-4d3b-85a3-149e28960c54");
 
   @Test
-  public void testCaseGroupCorrectlyTransitionsToNewStatus()
-      throws Exception {
+  public void testCaseGroupCorrectlyTransitionsToNewStatus() throws Exception {
     // Given
     CaseGroup caseGroup =
         CaseGroup.builder()
@@ -70,8 +69,7 @@ public class CaseGroupServiceTest {
   }
 
   @Test
-  public void testCaseGroupStatusChangeIsCorrectlyAudited()
-      throws Exception {
+  public void testCaseGroupStatusChangeIsCorrectlyAudited() throws Exception {
     // Given
     CaseGroup caseGroup =
         CaseGroup.builder()
