@@ -582,8 +582,7 @@ public class StateTransitionManagerUnitTest {
   }
 
   @Test
-  public void givenStatusCompleteWhenTransitionCompletedToNotStartedThenStatusNotStarted()
-      throws CTPException {
+  public void testCaseGroupTransitionFromCompleteToNotStarted() throws CTPException {
     // Given
     CaseGroupStatus complete = CaseGroupStatus.COMPLETE;
 
