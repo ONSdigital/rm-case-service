@@ -6,6 +6,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 import java.util.*;
+
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -294,5 +296,31 @@ public class CaseGroupServiceTest {
     caseGroupService.findCaseGroupsForExecutedCollectionExercises(null);
 
     // Then throws CTPException
+  }
+
+  @Test
+  public void givenCaseGroupStatusWhenCaseGroupStatusTransitionedThenStatusChangeTimestampIsUpdated()
+          throws Exception {
+    // Given
+    CaseGroup caseGroup =
+            CaseGroup.builder()
+                    .id(UUID.randomUUID())
+                    .collectionExerciseId(UUID.randomUUID())
+                    .partyId(UUID.randomUUID())
+                    .sampleUnitRef("12345")
+                    .sampleUnitType("B")
+                    .status(CaseGroupStatus.NOTSTARTED)
+                    .build();
+
+    CategoryDTO.CategoryName categoryName =
+            CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED;
+    given(caseGroupStatusTransitionManager.transition(caseGroup.getStatus(), categoryName))
+            .willReturn(CaseGroupStatus.COMPLETE);
+
+    // When
+    caseGroupService.transitionCaseGroupStatus(caseGroup, categoryName, caseGroup.getPartyId());
+
+    // Then
+    Assert.assertNotNull(caseGroup.getStatusChangeTimestamp());
   }
 }
