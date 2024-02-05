@@ -580,4 +580,19 @@ public class StateTransitionManagerUnitTest {
     // Then
     assertEquals(CaseGroupStatus.COMPLETE, destinationState);
   }
+
+  @Test
+  public void givenStatusCompleteWhenTransitionCompletedToNotStartedThenStatusNotStarted()
+      throws CTPException {
+    // Given
+    CaseGroupStatus complete = CaseGroupStatus.COMPLETE;
+
+    // When
+    CaseGroupStatus destinationState =
+        caseGroupStateMachine.transition(
+            complete, CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED);
+
+    // Then
+    assertEquals(CaseGroupStatus.COMPLETE, destinationState);
+  }
 }
