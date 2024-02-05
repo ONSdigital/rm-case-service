@@ -42,8 +42,7 @@ public class CaseGroupServiceTest {
   private static final UUID SURVEY_ID = UUID.fromString("cb8accda-6118-4d3b-85a3-149e28960c54");
 
   @Test
-  public void givenCaseGroupStatusWhenCaseGroupStatusTransitionedThenTransitionIsSaved()
-      throws Exception {
+  public void testCaseGroupCorrectlyTransitionsToNewStatus() throws Exception {
     // Given
     CaseGroup caseGroup =
         CaseGroup.builder()
@@ -64,12 +63,13 @@ public class CaseGroupServiceTest {
     caseGroupService.transitionCaseGroupStatus(caseGroup, categoryName, caseGroup.getPartyId());
 
     // Then
+    assertNotNull(caseGroup.getStatusChangeTimestamp());
+    assertEquals(caseGroup.getStatus(), CaseGroupStatus.COMPLETE);
     verify(caseGroupRepo).saveAndFlush(caseGroup);
   }
 
   @Test
-  public void givenCaseGroupStatusWhenCaseGroupStatusTransitionedThenTransitionIsAudited()
-      throws Exception {
+  public void testCaseGroupStatusChangeIsCorrectlyAudited() throws Exception {
     // Given
     CaseGroup caseGroup =
         CaseGroup.builder()

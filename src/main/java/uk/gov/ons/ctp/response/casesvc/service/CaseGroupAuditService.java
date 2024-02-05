@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroupStatusAudit;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupStatusAuditRepository;
-import uk.gov.ons.ctp.response.lib.common.time.DateTimeUtil;
 
 @Service
 public class CaseGroupAuditService {
@@ -23,7 +22,7 @@ public class CaseGroupAuditService {
     auditEntity.setCaseGroupFK(caseGroup.getCaseGroupPK());
     auditEntity.setStatus(caseGroup.getStatus());
     auditEntity.setPartyId(partyId);
-    auditEntity.setCreatedDateTime(DateTimeUtil.nowUTC());
+    auditEntity.setCreatedDateTime(caseGroup.getStatusChangeTimestamp());
     log.with("audit_entity", auditEntity).debug("Updating the caseGroupStatus");
     caseGroupStatusAuditRepository.saveAndFlush(auditEntity);
   }
