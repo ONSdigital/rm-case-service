@@ -65,6 +65,8 @@ public class CaseGroupServiceTest {
     caseGroupService.transitionCaseGroupStatus(caseGroup, categoryName, caseGroup.getPartyId());
 
     // Then
+    Assert.assertNotNull(caseGroup.getStatusChangeTimestamp());
+    Assert.assertEquals(caseGroup.getStatus(), CaseGroupStatus.COMPLETE);
     verify(caseGroupRepo).saveAndFlush(caseGroup);
   }
 
@@ -91,6 +93,7 @@ public class CaseGroupServiceTest {
     caseGroupService.transitionCaseGroupStatus(caseGroup, categoryName, caseGroup.getPartyId());
 
     // Then
+
     verify(caseGroupAuditService).updateAuditTable(caseGroup, caseGroup.getPartyId());
   }
 
@@ -295,32 +298,5 @@ public class CaseGroupServiceTest {
     caseGroupService.findCaseGroupsForExecutedCollectionExercises(null);
 
     // Then throws CTPException
-  }
-
-  @Test
-  public void
-      givenCaseGroupStatusWhenCaseGroupStatusTransitionedThenStatusChangeTimestampIsUpdated()
-          throws Exception {
-    // Given
-    CaseGroup caseGroup =
-        CaseGroup.builder()
-            .id(UUID.randomUUID())
-            .collectionExerciseId(UUID.randomUUID())
-            .partyId(UUID.randomUUID())
-            .sampleUnitRef("12345")
-            .sampleUnitType("B")
-            .status(CaseGroupStatus.NOTSTARTED)
-            .build();
-
-    CategoryDTO.CategoryName categoryName =
-        CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED;
-    given(caseGroupStatusTransitionManager.transition(caseGroup.getStatus(), categoryName))
-        .willReturn(CaseGroupStatus.COMPLETE);
-
-    // When
-    caseGroupService.transitionCaseGroupStatus(caseGroup, categoryName, caseGroup.getPartyId());
-
-    // Then
-    Assert.assertNotNull(caseGroup.getStatusChangeTimestamp());
   }
 }
