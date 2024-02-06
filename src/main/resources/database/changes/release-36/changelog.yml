@@ -1,0 +1,11 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 36-1
+      author: Steve Scorfield
+      changes:
+        - sqlFile:
+            comment: Add a timestamp column for when a status change is made to the survey for a respondent
+            path: add_timestamp_for_status_change.sql
+            relativeToChangelogFile: true
+            splitStatements: false
