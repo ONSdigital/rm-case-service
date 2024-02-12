@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.domain.model;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -61,4 +62,7 @@ public class CaseGroup implements Serializable {
   @Enumerated(EnumType.STRING)
   @Column(name = "status")
   private CaseGroupStatus status;
+
+  @Column(name = "status_change_timestamp")
+  private Timestamp statusChangeTimestamp;
 }
