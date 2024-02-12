@@ -252,7 +252,7 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CategoryDTO.CategoryName.NO_LONGER_REQUIRED,
         CaseGroupStatus.NOLONGERREQUIRED);
 
-    // New transition to enable users to change completed by phone and no longer required to not
+    // New transition to enable users to change completed by phone, no longer required and complete to not
     // started
     builder.put(
         CaseGroupStatus.COMPLETEDBYPHONE,
