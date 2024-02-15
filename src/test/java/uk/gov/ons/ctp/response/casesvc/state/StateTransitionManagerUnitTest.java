@@ -36,7 +36,7 @@ public class StateTransitionManagerUnitTest {
         caseStateMachine.transition(sampledInit, CaseDTO.CaseEvent.ACTIVATED);
 
     // Then
-    assertEquals(destinationState, CaseState.ACTIONABLE);
+    assertEquals(CaseState.ACTIONABLE, destinationState);
   }
 
   @Test
@@ -49,7 +49,7 @@ public class StateTransitionManagerUnitTest {
         caseStateMachine.transition(replacementInit, CaseDTO.CaseEvent.REPLACED);
 
     // Then
-    assertEquals(destinationState, CaseState.ACTIONABLE);
+    assertEquals(CaseState.ACTIONABLE, destinationState);
   }
 
   @Test
@@ -62,7 +62,7 @@ public class StateTransitionManagerUnitTest {
         caseStateMachine.transition(actionable, CaseDTO.CaseEvent.DISABLED);
 
     // Then
-    assertEquals(destinationState, CaseState.INACTIONABLE);
+    assertEquals(CaseState.INACTIONABLE, destinationState);
   }
 
   @Test
@@ -75,7 +75,7 @@ public class StateTransitionManagerUnitTest {
         caseStateMachine.transition(actionable, CaseDTO.CaseEvent.DEACTIVATED);
 
     // Then
-    assertEquals(destinationState, CaseState.INACTIONABLE);
+    assertEquals(CaseState.INACTIONABLE, destinationState);
   }
 
   @Test
@@ -88,7 +88,7 @@ public class StateTransitionManagerUnitTest {
         caseStateMachine.transition(inactionable, CaseDTO.CaseEvent.DISABLED);
 
     // Then
-    assertEquals(destinationState, CaseState.INACTIONABLE);
+    assertEquals(CaseState.INACTIONABLE, destinationState);
   }
 
   @Test
@@ -101,7 +101,7 @@ public class StateTransitionManagerUnitTest {
         caseStateMachine.transition(inactionable, CaseDTO.CaseEvent.DEACTIVATED);
 
     // Then
-    assertEquals(destinationState, CaseState.INACTIONABLE);
+    assertEquals(CaseState.INACTIONABLE, destinationState);
   }
 
   @Test
@@ -115,7 +115,7 @@ public class StateTransitionManagerUnitTest {
             notStarted, CategoryDTO.CategoryName.COLLECTION_INSTRUMENT_DOWNLOADED);
 
     // Then
-    assertEquals(destinationState, CaseGroupStatus.INPROGRESS);
+    assertEquals(CaseGroupStatus.INPROGRESS, destinationState);
   }
 
   @Test
@@ -128,7 +128,7 @@ public class StateTransitionManagerUnitTest {
         caseGroupStateMachine.transition(notStarted, CategoryDTO.CategoryName.EQ_LAUNCH);
 
     // Then
-    assertEquals(destinationState, CaseGroupStatus.INPROGRESS);
+    assertEquals(CaseGroupStatus.INPROGRESS, destinationState);
   }
 
   @Test
@@ -143,7 +143,7 @@ public class StateTransitionManagerUnitTest {
             notStarted, CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD);
 
     // Then
-    assertEquals(destinationState, CaseGroupStatus.COMPLETE);
+    assertEquals(CaseGroupStatus.COMPLETE, destinationState);
   }
 
   @Test
@@ -157,7 +157,7 @@ public class StateTransitionManagerUnitTest {
         caseGroupStateMachine.transition(notStarted, CategoryDTO.CategoryName.COMPLETED_BY_PHONE);
 
     // Then
-    assertEquals(destinationState, CaseGroupStatus.COMPLETEDBYPHONE);
+    assertEquals(CaseGroupStatus.COMPLETEDBYPHONE, destinationState);
   }
 
   @Test
@@ -171,7 +171,7 @@ public class StateTransitionManagerUnitTest {
         caseGroupStateMachine.transition(notStarted, CategoryDTO.CategoryName.NO_LONGER_REQUIRED);
 
     // Then
-    assertEquals(destinationState, CaseGroupStatus.NOLONGERREQUIRED);
+    assertEquals(CaseGroupStatus.NOLONGERREQUIRED, destinationState);
   }
 
   @Test
@@ -186,7 +186,7 @@ public class StateTransitionManagerUnitTest {
             inProgress, CategoryDTO.CategoryName.SUCCESSFUL_RESPONSE_UPLOAD);
 
     // Then
-    assertEquals(destinationState, CaseGroupStatus.COMPLETE);
+    assertEquals(CaseGroupStatus.COMPLETE, destinationState);
   }
 
   @Test
@@ -200,7 +200,7 @@ public class StateTransitionManagerUnitTest {
         caseGroupStateMachine.transition(inProgress, CategoryDTO.CategoryName.COMPLETED_BY_PHONE);
 
     // Then
-    assertEquals(destinationState, CaseGroupStatus.COMPLETEDBYPHONE);
+    assertEquals(CaseGroupStatus.COMPLETEDBYPHONE, destinationState);
   }
 
   @Test
@@ -214,7 +214,7 @@ public class StateTransitionManagerUnitTest {
         caseGroupStateMachine.transition(inProgress, CategoryDTO.CategoryName.NO_LONGER_REQUIRED);
 
     // Then
-    assertEquals(destinationState, CaseGroupStatus.NOLONGERREQUIRED);
+    assertEquals(CaseGroupStatus.NOLONGERREQUIRED, destinationState);
   }
 
   @Test
@@ -228,7 +228,7 @@ public class StateTransitionManagerUnitTest {
         caseGroupStateMachine.transition(reopened, CategoryDTO.CategoryName.COMPLETED_BY_PHONE);
 
     // Then
-    assertEquals(destinationState, CaseGroupStatus.COMPLETEDBYPHONE);
+    assertEquals(CaseGroupStatus.COMPLETEDBYPHONE, destinationState);
   }
 
   @Test
@@ -242,7 +242,7 @@ public class StateTransitionManagerUnitTest {
         caseGroupStateMachine.transition(reopened, CategoryDTO.CategoryName.NO_LONGER_REQUIRED);
 
     // Then
-    assertEquals(destinationState, CaseGroupStatus.NOLONGERREQUIRED);
+    assertEquals(CaseGroupStatus.NOLONGERREQUIRED, destinationState);
   }
 
   // Social Outcomes
@@ -576,6 +576,20 @@ public class StateTransitionManagerUnitTest {
     CaseGroupStatus destinationState =
         caseGroupStateMachine.transition(
             unknownEligibility, CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED);
+
+    // Then
+    assertEquals(CaseGroupStatus.COMPLETE, destinationState);
+  }
+
+  @Test
+  public void testCaseGroupTransitionFromCompleteToNotStarted() throws CTPException {
+    // Given
+    CaseGroupStatus notStarted = CaseGroupStatus.NOTSTARTED;
+
+    // When
+    CaseGroupStatus destinationState =
+        caseGroupStateMachine.transition(
+            notStarted, CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED);
 
     // Then
     assertEquals(CaseGroupStatus.COMPLETE, destinationState);
