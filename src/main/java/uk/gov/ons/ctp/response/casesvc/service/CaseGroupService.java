@@ -18,6 +18,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.common.error.CTPException;
 import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManager;
+import uk.gov.ons.ctp.response.lib.common.time.DateTimeUtil;
 
 /**
  * A CaseGroupService implementation which encapsulates all business logic operating on the
@@ -106,6 +107,7 @@ public class CaseGroupService {
 
     if (newCaseGroupStatus != null && !oldCaseGroupStatus.equals(newCaseGroupStatus)) {
       caseGroup.setStatus(newCaseGroupStatus);
+      caseGroup.setStatusChangeTimestamp(DateTimeUtil.nowUTC());
       caseGroupRepo.saveAndFlush(caseGroup);
       caseGroupAuditService.updateAuditTable(caseGroup, partyId);
     }

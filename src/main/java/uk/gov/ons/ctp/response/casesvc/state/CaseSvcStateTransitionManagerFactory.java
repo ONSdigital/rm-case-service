@@ -13,7 +13,7 @@ import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManagerFactory;
 
 /**
- * This is the state transition manager actory for the actionsvc. It intended that this will be
+ * This is the state transition manager factory for the actionsvc. It intended that this will be
  * refactored into a common framework class and that it initialises each entities manager from
  * database held transitions.
  */
@@ -252,7 +252,8 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CategoryDTO.CategoryName.NO_LONGER_REQUIRED,
         CaseGroupStatus.NOLONGERREQUIRED);
 
-    // New transition to enable users to change completed by phone and no longer required to not
+    // New transition to enable users to change completed by phone, no longer required and complete
+    // to not
     // started
     builder.put(
         CaseGroupStatus.COMPLETEDBYPHONE,
@@ -260,6 +261,10 @@ public class CaseSvcStateTransitionManagerFactory implements StateTransitionMana
         CaseGroupStatus.NOTSTARTED);
     builder.put(
         CaseGroupStatus.NOLONGERREQUIRED,
+        CategoryDTO.CategoryName.COMPLETED_TO_NOTSTARTED,
+        CaseGroupStatus.NOTSTARTED);
+    builder.put(
+        CaseGroupStatus.COMPLETE,
         CategoryDTO.CategoryName.COMPLETED_TO_NOTSTARTED,
         CaseGroupStatus.NOTSTARTED);
 
