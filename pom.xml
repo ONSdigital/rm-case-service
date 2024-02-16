@@ -128,15 +128,14 @@
             <version>6.2.1</version>
         </dependency>
 
-        <!-- SPRING END -->
-
-        <!-- third party libraries -->
-
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>spring-cloud-gcp-starter-pubsub</artifactId>
         </dependency>
 
+        <!-- SPRING END -->
+
+        <!-- third party libraries -->
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-pubsub</artifactId>
