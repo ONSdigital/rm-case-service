@@ -131,4 +131,4 @@ Note: You may need to a service account and key can be found locally in your env
 See curlTests.txt under /test/resources
 
 ## Copyright
-Copyright (C) 2017 Crown Copyright (Office for National Statistics) 
+Copyright (C) 2017 Crown Copyright (Office for National Statistics)
