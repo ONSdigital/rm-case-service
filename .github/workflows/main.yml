@@ -10,7 +10,7 @@ on:
     branches:
       - main
     paths-ignore:
-      - '_infra/helm/case/Chart.yaml'
+      - '**/helm/case/Chart.yaml'
 
 env:
   IMAGE: case
