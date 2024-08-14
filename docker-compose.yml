@@ -1,4 +1,3 @@
-version: '2.1'
 services:
   collectionexercise:
     container_name: collex-case-it
