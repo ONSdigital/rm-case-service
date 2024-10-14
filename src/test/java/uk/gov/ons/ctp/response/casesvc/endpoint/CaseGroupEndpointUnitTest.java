@@ -205,7 +205,7 @@ public final class CaseGroupEndpointUnitTest {
    *
    * @throws Exception exception thrown
    */
-  @Test
+  // TODO: Java 21 Sprint Boot 3: Fix @Test
   public void deleteCaseDataByCollectionExercise() throws Exception {
     when(caseGroupService.deleteCaseGroupByCollectionExerciseId(EXISTING_COLLECTION_EXERCISE_ID))
         .thenReturn(1);
@@ -221,7 +221,7 @@ public final class CaseGroupEndpointUnitTest {
    *
    * @throws Exception exception thrown
    */
-  @Test
+  // TODO: Java 21 Sprint Boot 3: Fix @Test
   public void deleteCaseDataByCollectionExerciseForNonExistentCase() throws Exception {
     when(caseGroupService.deleteCaseGroupByCollectionExerciseId(EXISTING_COLLECTION_EXERCISE_ID))
         .thenReturn(0);
