@@ -589,7 +589,7 @@ public class StateTransitionManagerUnitTest {
     // When
     CaseGroupStatus destinationState =
         caseGroupStateMachine.transition(
-            notStarted, CategoryDTO.CategoryName.COMPLETED_TO_NOTSTARTED);
+            caseGroupStatus, CategoryDTO.CategoryName.COMPLETED_TO_NOTSTARTED);
 
     // Then
     assertEquals(CaseGroupStatus.NOTSTARTED, destinationState);
