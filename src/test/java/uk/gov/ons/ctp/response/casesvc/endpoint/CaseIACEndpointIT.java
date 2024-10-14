@@ -50,6 +50,7 @@ import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @TestPropertySource(locations = "classpath:/application-test.yml")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+// TODO: Java 21 Sprint Boot 3: Fix github.tomakehurst.wiremock
 public class CaseIACEndpointIT {
   private UUID collectionExerciseId;
   private Map<String, String> metadata;

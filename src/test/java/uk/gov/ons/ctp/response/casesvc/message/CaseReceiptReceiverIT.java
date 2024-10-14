@@ -27,6 +27,7 @@ import uk.gov.ons.ctp.response.casesvc.utility.PubSubEmulator;
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @TestPropertySource(locations = "classpath:/application-test.yml")
+// TODO: Java 21 Sprint Boot 3: Fix github.tomakehurst.wiremock
 public class CaseReceiptReceiverIT {
 
   private static PubSubEmulator PUBSUBEMULATOR;

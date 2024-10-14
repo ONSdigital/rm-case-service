@@ -26,6 +26,7 @@ import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @TestPropertySource(locations = "classpath:/application-test.yml")
+// TODO: Java 21 Sprint Boot 3: Fix github.tomakehurst.wiremock
 public class CachingTestIT {
 
   @Autowired private CollectionExerciseSvcClient collectionExerciseSvcClient;

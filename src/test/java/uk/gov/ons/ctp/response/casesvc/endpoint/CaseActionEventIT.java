@@ -49,6 +49,7 @@ import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
     locations = "classpath:/application-test.yml",
     properties = "action-svc.deprecated=true")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+// TODO: Java 21 Sprint Boot 3: Fix github.tomakehurst.wiremock
 public class CaseActionEventIT {
   private UUID collectionExerciseId;
   private Map<String, String> metadata;
