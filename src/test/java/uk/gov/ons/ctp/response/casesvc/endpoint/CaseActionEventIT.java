@@ -57,7 +57,9 @@ public class CaseActionEventIT {
   @MockBean private ProcessLetterActionService processLetterActionService;
   @MockBean private ProcessEmailActionService processEmailActionService;
 
-  @ClassRule public static WireMockRule wireMockRule = new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
+  @ClassRule
+  public static WireMockRule wireMockRule =
+      new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
 
   @LocalServerPort private int port;
 

@@ -38,7 +38,9 @@ public class CaseReceiptReceiverIT {
   public static final EnvironmentVariables environmentVariables =
       new EnvironmentVariables().set("PUBSUB_EMULATOR_HOST", "127.0.0.1:18681");
 
-  @ClassRule public static WireMockRule wireMockRule = new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
+  @ClassRule
+  public static WireMockRule wireMockRule =
+      new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
 
   @MockBean private CaseReceiptReceiver caseReceiptReceiver;
 

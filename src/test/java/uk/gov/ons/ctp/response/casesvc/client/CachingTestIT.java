@@ -30,7 +30,9 @@ public class CachingTestIT {
 
   @Autowired private CollectionExerciseSvcClient collectionExerciseSvcClient;
 
-  @ClassRule public static WireMockRule wireMockRule = new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
+  @ClassRule
+  public static WireMockRule wireMockRule =
+      new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
 
   private UUID collectionExerciseId = UUID.fromString("cb8accda-6118-4d3b-85a3-149e28960c55");
 
