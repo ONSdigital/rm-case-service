@@ -9,7 +9,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.godaddy.logging.Logger;
 import com.godaddy.logging.LoggerFactory;
@@ -26,7 +25,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -58,9 +57,7 @@ public class CaseIACEndpointIT {
   private static final Logger log = LoggerFactory.getLogger(CaseIACEndpointIT.class);
   private PubSubEmulator pubSubEmulator = new PubSubEmulator();
 
-  @ClassRule
-  public static WireMockRule wireMockRule =
-      new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
+  @ClassRule public static WireMockRule wireMockRule = new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
 
   @LocalServerPort private int port;
 

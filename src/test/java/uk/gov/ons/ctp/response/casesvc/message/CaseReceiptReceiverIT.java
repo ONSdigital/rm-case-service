@@ -3,7 +3,6 @@ package uk.gov.ons.ctp.response.casesvc.message;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -39,9 +38,7 @@ public class CaseReceiptReceiverIT {
   public static final EnvironmentVariables environmentVariables =
       new EnvironmentVariables().set("PUBSUB_EMULATOR_HOST", "127.0.0.1:18681");
 
-  @ClassRule
-  public static WireMockRule wireMockRule =
-      new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
+  @ClassRule public static WireMockRule wireMockRule = new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
 
   @MockBean private CaseReceiptReceiver caseReceiptReceiver;
 

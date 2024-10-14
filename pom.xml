@@ -11,7 +11,7 @@
     <description>CaseService</description>
 
     <properties>
-        <springboot.version>3.1.4</springboot.version>
+        <springboot.version>3.3.3</springboot.version>
         <common.version>10.49.4</common.version>
         <jackson.version>2.16.1</jackson.version>
         <java.version>21</java.version>
@@ -159,7 +159,7 @@
         <dependency>
             <groupId>com.github.tomakehurst</groupId>
             <artifactId>wiremock</artifactId>
-            <version>2.27.2</version>
+            <version>3.0.1</version>
             <scope>test</scope>
         </dependency>
 <!--        <dependency>-->
@@ -292,14 +292,14 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.5.0</version>
+            <version>5.14.1</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
-            <version>1.14.8</version>
+            <version>1.15.3</version>
         </dependency>
 
         <dependency>
@@ -378,7 +378,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.12.1</version>
+                <version>3.8.1</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -387,7 +387,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>${surefire.version}</version>
+                <version>3.2.5</version>
                 <dependencies>
                     <dependency>
                         <groupId>org.apache.maven.surefire</groupId>

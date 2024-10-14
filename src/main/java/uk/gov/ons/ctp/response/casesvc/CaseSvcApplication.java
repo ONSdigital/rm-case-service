@@ -95,7 +95,7 @@ public class CaseSvcApplication {
     liquibase.setDefaultSchema(liquibaseProperties.getDefaultSchema());
     liquibase.setDropFirst(liquibaseProperties.isDropFirst());
     liquibase.setShouldRun(true);
-    liquibase.setLabels(liquibaseProperties.getLabels());
+    // liquibase.setLabels(liquibaseProperties.getLabels());
     liquibase.setChangeLogParameters(liquibaseProperties.getParameters());
     liquibase.setLiquibaseSchema(liquibaseProperties.getLiquibaseSchema());
     return new CustomSpringLiquibase(liquibase);
