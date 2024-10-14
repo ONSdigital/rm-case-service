@@ -57,9 +57,7 @@ public class CaseIACEndpointIT {
   private static final Logger log = LoggerFactory.getLogger(CaseIACEndpointIT.class);
   private PubSubEmulator pubSubEmulator = new PubSubEmulator();
 
-  @ClassRule
-  public static WireMockRule wireMockRule =
-      new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
+  @ClassRule public static WireMockRule wireMockRule = new WireMockRule(options().port(18002));
 
   @LocalServerPort private int port;
 
