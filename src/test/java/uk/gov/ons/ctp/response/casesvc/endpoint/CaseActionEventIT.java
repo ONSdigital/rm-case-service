@@ -5,7 +5,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
@@ -19,7 +18,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -50,6 +49,7 @@ import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
     locations = "classpath:/application-test.yml",
     properties = "action-svc.deprecated=true")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+// TODO: Java 21 Sprint Boot 3: Fix github.tomakehurst.wiremock
 public class CaseActionEventIT {
   private UUID collectionExerciseId;
   private Map<String, String> metadata;
@@ -58,9 +58,7 @@ public class CaseActionEventIT {
   @MockBean private ProcessLetterActionService processLetterActionService;
   @MockBean private ProcessEmailActionService processEmailActionService;
 
-  @ClassRule
-  public static WireMockRule wireMockRule =
-      new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
+  @ClassRule public static WireMockRule wireMockRule = new WireMockRule(options().port(18002));
 
   @LocalServerPort private int port;
 

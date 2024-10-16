@@ -1,26 +1,19 @@
 package uk.gov.ons.ctp.response.casesvc.domain.model;
 
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+// import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Map;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Parameter;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
+import org.hibernate.type.SqlTypes;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 
 /** Domain model object. */
@@ -29,7 +22,8 @@ import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TypeDefs({@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)})
+// @TypeDefs({@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)})
+// @Convert(attributeName = "entityAttrName", converter = JsonBinaryType.class)
 @Table(name = "caseevent", schema = "casesvc")
 public class CaseEvent implements Serializable {
 
@@ -66,6 +60,7 @@ public class CaseEvent implements Serializable {
   private String subCategory;
 
   @Column(name = "metadata")
-  @Type(type = "jsonb")
+  // @Type(type = "jsonb")
+  @JdbcTypeCode(SqlTypes.JSON)
   private Map<String, String> metadata;
 }
