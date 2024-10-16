@@ -16,7 +16,7 @@
         <jackson.version>2.16.1</jackson.version>
         <java.version>21</java.version>
         <surefire.version>3.2.5</surefire.version>
-        <godaddylogging.version>1.2.5</godaddylogging.version>
+        <!-- godaddylogging.version>1.2.5</godaddylogging.version -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <failsafe.skipITs>true</failsafe.skipITs>
@@ -164,11 +164,21 @@
             <version>1.18.30</version>
         </dependency>
         <dependency>
+            <!-- Required to fix unit tests but breaks IT tests -->
+            <!-- due to exception in wiremock.jetty9.JettyHttpServer.createServerConnector -->
             <groupId>com.github.tomakehurst</groupId>
             <artifactId>wiremock</artifactId>
             <version>2.27.2</version>
             <scope>test</scope>
         </dependency>
+<!--        <dependency>-->
+<!--            &lt;!&ndash; required to fix IT tests but breaks unit tests &ndash;&gt;-->
+<!--            &lt;!&ndash; with Class versions V1_5 or less must use F_NEW frames in godaddy logging &ndash;&gt;-->
+<!--            <groupId>org.wiremock</groupId>-->
+<!--            <artifactId>wiremock-standalone</artifactId>-->
+<!--            <version>3.9.1</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
 <!--        <dependency>-->
 <!--            <groupId>com.vladmihalcea</groupId>-->
 <!--            <artifactId>hibernate-types-5</artifactId>-->
@@ -196,7 +206,7 @@
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
-            <version>6.6</version>
+            <version>8.0</version>
         </dependency>
 
         <dependency>
@@ -225,7 +235,7 @@
         <dependency>
             <groupId>com.godaddy</groupId>
             <artifactId>logging</artifactId>
-            <version>${godaddylogging.version}</version>
+            <version>1.2.5</version>
         </dependency>
 
         <dependency>
@@ -442,6 +452,14 @@
                 <configuration>
                     <argLine>--add-opens java.base/java.util=ALL-UNNAMED</argLine>
                     <skipITs>${failsafe.skipITs}</skipITs>
+                    <!-- for local development when investigating individual ITs -->
+<!--                    <excludes>-->
+<!--                        <exclude>**/CaseActionEventIT.java</exclude>-->
+<!--                        <exclude>**/CaseReceiptReceiverIT.java</exclude>-->
+<!--                        <exclude>**/CaseActionEventIT.java</exclude>-->
+<!--                        <exclude>**/CaseEndpointIT.java</exclude>-->
+<!--                        <exclude>**/CaseIACEndpointIT.java</exclude>-->
+<!--                    </excludes>-->
                 </configuration>
                 <executions>
                     <execution>
