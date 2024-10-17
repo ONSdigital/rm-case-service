@@ -96,7 +96,8 @@ public class CaseCreationServiceTest {
     Case capturedCase = caze.getValue();
 
     assertEquals(UUID.class, capturedCase.getId().getClass());
-    assertEquals(new Integer(capturedCaseGroup.getCaseGroupPK()), capturedCase.getCaseGroupFK());
+    assertEquals(
+        Integer.valueOf(capturedCaseGroup.getCaseGroupPK()), capturedCase.getCaseGroupFK());
     assertEquals(capturedCaseGroup.getId(), capturedCase.getCaseGroupId());
     assertEquals(CaseState.ACTIONABLE, capturedCase.getState());
     assertEquals(
@@ -170,7 +171,7 @@ public class CaseCreationServiceTest {
 
     Case childCase = capturedCases.get(0);
     assertEquals(UUID.class, childCase.getId().getClass());
-    assertEquals(new Integer(capturedCaseGroup.getCaseGroupPK()), childCase.getCaseGroupFK());
+    assertEquals(Integer.valueOf(capturedCaseGroup.getCaseGroupPK()), childCase.getCaseGroupFK());
     assertEquals(capturedCaseGroup.getId(), childCase.getCaseGroupId());
     assertEquals(CaseState.ACTIONABLE, childCase.getState());
     assertEquals(
@@ -184,7 +185,7 @@ public class CaseCreationServiceTest {
 
     Case parentCase = capturedCases.get(2);
     assertEquals(UUID.class, parentCase.getId().getClass());
-    assertEquals(new Integer(capturedCaseGroup.getCaseGroupPK()), parentCase.getCaseGroupFK());
+    assertEquals(Integer.valueOf(capturedCaseGroup.getCaseGroupPK()), parentCase.getCaseGroupFK());
     assertEquals(capturedCaseGroup.getId(), parentCase.getCaseGroupId());
     assertEquals(CaseState.INACTIONABLE, parentCase.getState());
     assertEquals(

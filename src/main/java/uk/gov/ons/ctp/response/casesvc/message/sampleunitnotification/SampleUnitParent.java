@@ -1,12 +1,10 @@
 package uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @SuperBuilder
