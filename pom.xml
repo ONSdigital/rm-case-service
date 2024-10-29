@@ -163,22 +163,22 @@
             <artifactId>lombok</artifactId>
             <version>1.18.30</version>
         </dependency>
-<!--        <dependency>-->
-<!--            &lt;!&ndash; Required to fix unit tests but breaks IT tests &ndash;&gt;-->
-<!--            &lt;!&ndash; due to exception in wiremock.jetty9.JettyHttpServer.createServerConnector &ndash;&gt;-->
-<!--            <groupId>com.github.tomakehurst</groupId>-->
-<!--            <artifactId>wiremock</artifactId>-->
-<!--            <version>2.27.2</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
         <dependency>
-            <!-- required to fix IT tests but breaks unit tests -->
-            <!-- with Class versions V1_5 or less must use F_NEW frames in godaddy logging -->
-            <groupId>org.wiremock</groupId>
-            <artifactId>wiremock-standalone</artifactId>
-            <version>3.9.1</version>
+            <!-- Required to fix unit tests but breaks IT tests -->
+            <!-- due to exception in wiremock.jetty9.JettyHttpServer.createServerConnector -->
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock</artifactId>
+            <version>2.27.2</version>
             <scope>test</scope>
         </dependency>
+<!--        <dependency>-->
+<!--            &lt;!&ndash; required to fix IT tests but breaks unit tests &ndash;&gt;-->
+<!--            &lt;!&ndash; with Class versions V1_5 or less must use F_NEW frames in godaddy logging &ndash;&gt;-->
+<!--            <groupId>org.wiremock</groupId>-->
+<!--            <artifactId>wiremock-standalone</artifactId>-->
+<!--            <version>3.9.1</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
 <!--        <dependency>-->
 <!--            <groupId>com.vladmihalcea</groupId>-->
 <!--            <artifactId>hibernate-types-5</artifactId>-->
