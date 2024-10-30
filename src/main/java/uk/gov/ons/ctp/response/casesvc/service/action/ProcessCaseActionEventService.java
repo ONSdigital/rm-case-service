@@ -2,8 +2,8 @@ package uk.gov.ons.ctp.response.casesvc.service.action;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.godaddy.logging.Logger;
-import com.godaddy.logging.LoggerFactory;
+//import com.godaddy.logging.Logger;
+//import com.godaddy.logging.LoggerFactory;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
@@ -25,7 +25,7 @@ import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 
 @Service
 public class ProcessCaseActionEventService {
-  private static final Logger log = LoggerFactory.getLogger(ProcessCaseActionEventService.class);
+  //private static final Logger log = LoggerFactory.getLogger(ProcessCaseActionEventService.class);
 
   @Autowired private CollectionExerciseSvcClient collectionExerciseSvcClient;
   @Autowired private ProcessEmailActionService processEmailService;
@@ -51,9 +51,9 @@ public class ProcessCaseActionEventService {
       throws ExecutionException, InterruptedException, JsonProcessingException {
     UUID collectionExerciseId = event.getCollectionExerciseID();
     String eventTag = event.getTag().toString();
-    log.with("collectionExerciseId", collectionExerciseId)
-        .with("eventTag", eventTag)
-        .info("Started processing");
+//    log.with("collectionExerciseId", collectionExerciseId)
+//        .with("eventTag", eventTag)
+//        .info("Started processing");
     Instant instant = Instant.now();
     CollectionExerciseDTO collectionExercise = getCollectionExercise(collectionExerciseId);
     // Check if ProcessActionEventRequest table for existing status else add it.
@@ -61,9 +61,9 @@ public class ProcessCaseActionEventService {
         actionEventRequestRepository.findByCollectionExerciseIdAndEventTag(
             collectionExerciseId, eventTag);
     if (!existingRequests.isEmpty()) {
-      log.with("collectionExerciseId", collectionExerciseId)
-          .with("eventTag", eventTag)
-          .warn("Aborting processing event as an existing request is in progress.");
+//      log.with("collectionExerciseId", collectionExerciseId)
+//          .with("eventTag", eventTag)
+//          .warn("Aborting processing event as an existing request is in progress.");
       return;
     }
     CaseActionEventRequest newRequest =
@@ -74,38 +74,38 @@ public class ProcessCaseActionEventService {
             .status(ActionEventRequestStatus.INPROGRESS)
             .build();
     actionEventRequestRepository.save(newRequest);
-    log.with("collectionExerciseId", collectionExerciseId)
-        .with("eventTag", eventTag)
-        .info("Requested event is now in progress.");
-    log.with("collectionExerciseId", collectionExerciseId)
-        .with("eventTag", eventTag)
-        .debug("Requested event will now trigger email processing asynchronously.");
+//    log.with("collectionExerciseId", collectionExerciseId)
+//        .with("eventTag", eventTag)
+//        .info("Requested event is now in progress.");
+//    log.with("collectionExerciseId", collectionExerciseId)
+//        .with("eventTag", eventTag)
+//        .debug("Requested event will now trigger email processing asynchronously.");
     Future<Boolean> asyncEmailCall =
         processEmailService.processEmailService(collectionExercise, eventTag, instant);
-    log.with("collectionExerciseId", collectionExerciseId)
-        .with("eventTag", eventTag)
-        .debug("Requested event will now trigger letter processing asynchronously.");
+//    log.with("collectionExerciseId", collectionExerciseId)
+//        .with("eventTag", eventTag)
+//        .debug("Requested event will now trigger letter processing asynchronously.");
     Future<Boolean> asyncLetterCall =
         processLetterService.processLetterService(collectionExercise, eventTag, instant);
     boolean emailStatus = asyncEmailCall.get();
     boolean letterStatus = asyncLetterCall.get();
     if (emailStatus && letterStatus) {
       newRequest.setStatus(ActionEventRequestStatus.COMPLETED);
-      log.with("collectionExerciseId", collectionExerciseId)
-          .with("eventTag", eventTag)
-          .info("Requested event is now successfully completed.");
+//      log.with("collectionExerciseId", collectionExerciseId)
+//          .with("eventTag", eventTag)
+//          .info("Requested event is now successfully completed.");
     } else {
       newRequest.setStatus(ActionEventRequestStatus.RETRY);
-      log.with("collectionExerciseId", collectionExerciseId)
-          .with("eventTag", eventTag)
-          .with("emailAsyncStatus", emailStatus)
-          .with("letterAsyncStatus", letterStatus)
-          .info("Requested event was not successful, hence a retry will be initiated soon.");
+//      log.with("collectionExerciseId", collectionExerciseId)
+//          .with("eventTag", eventTag)
+//          .with("emailAsyncStatus", emailStatus)
+//          .with("letterAsyncStatus", letterStatus)
+//          .info("Requested event was not successful, hence a retry will be initiated soon.");
     }
     actionEventRequestRepository.save(newRequest);
-    log.with("collectionExerciseId", collectionExerciseId)
-        .with("eventTag", eventTag)
-        .info("Processing finished.");
+//    log.with("collectionExerciseId", collectionExerciseId)
+//        .with("eventTag", eventTag)
+//        .info("Processing finished.");
     updateCollectionExerciseEventStatus(newRequest, event);
   }
 
@@ -128,7 +128,7 @@ public class ProcessCaseActionEventService {
       caseActionEvent.setCollectionExerciseID(request.getCollectionExerciseId());
       caseActionEvent.setTag(CaseActionEvent.EventTag.valueOf(request.getEventTag()));
     }
-    log.with("event", event).info("updating collection exercise event status");
+    //log.with("event", event).info("updating collection exercise event status");
     collectionExerciseEventStatusUpdate.sendToPubSub(
         objectMapper.writeValueAsString(caseActionEvent));
   }
@@ -136,35 +136,35 @@ public class ProcessCaseActionEventService {
   @Async
   public void retryEvents()
       throws ExecutionException, InterruptedException, JsonProcessingException {
-    log.info("Starting retry Event processing");
+    //log.info("Starting retry Event processing");
     Instant instant = Instant.now();
     List<CaseActionEventRequest> existingRequests =
         actionEventRequestRepository.findByStatus(ActionEventRequestStatus.RETRY);
     if (existingRequests.isEmpty()) {
-      log.info("No events are pending retry. Will try again next time.");
+      //log.info("No events are pending retry. Will try again next time.");
       return;
     }
     for (CaseActionEventRequest existingRequest : existingRequests) {
       CollectionExerciseDTO collectionExercise =
           getCollectionExercise(existingRequest.getCollectionExerciseId());
       existingRequest.setStatus(ActionEventRequestStatus.INPROGRESS);
-      log.with("collectionExerciseId", existingRequest.getCollectionExerciseId())
-          .with("eventTag", existingRequest.getEventTag())
-          .debug("Retry event is now in progress.");
+      //log.with("collectionExerciseId", existingRequest.getCollectionExerciseId())
+//          .with("eventTag", existingRequest.getEventTag())
+//          .debug("Retry event is now in progress.");
       actionEventRequestRepository.save(existingRequest);
       CaseActionEvent actionEvent = new CaseActionEvent();
       actionEvent.setTag(CaseActionEvent.EventTag.valueOf(existingRequest.getEventTag()));
       actionEvent.setCollectionExerciseID(existingRequest.getCollectionExerciseId());
 
-      log.with("collectionExerciseId", existingRequest.getCollectionExerciseId())
-          .with("eventTag", existingRequest.getEventTag())
-          .debug("Retry event will now trigger email processing asynchronously.");
+//      log.with("collectionExerciseId", existingRequest.getCollectionExerciseId())
+//          .with("eventTag", existingRequest.getEventTag())
+//          .debug("Retry event will now trigger email processing asynchronously.");
       Future<Boolean> asyncEmailCall =
           processEmailService.processEmailService(
               collectionExercise, existingRequest.getEventTag(), instant);
-      log.with("collectionExerciseId", existingRequest.getCollectionExerciseId())
-          .with("eventTag", existingRequest.getEventTag())
-          .debug("Retry event will now trigger letter processing asynchronously.");
+//      log.with("collectionExerciseId", existingRequest.getCollectionExerciseId())
+//          .with("eventTag", existingRequest.getEventTag())
+//          .debug("Retry event will now trigger letter processing asynchronously.");
       Future<Boolean> asyncLetterCall =
           processLetterService.processLetterService(
               collectionExercise, existingRequest.getEventTag(), instant);
@@ -173,19 +173,19 @@ public class ProcessCaseActionEventService {
       boolean letterStatus = asyncLetterCall.get();
       if (emailStatus && letterStatus) {
         existingRequest.setStatus(ActionEventRequestStatus.COMPLETED);
-        log.with("collectionExerciseId", existingRequest.getCollectionExerciseId())
-            .with("eventTag", existingRequest.getEventTag())
-            .debug("Retry event is now successfully completed");
+//        log.with("collectionExerciseId", existingRequest.getCollectionExerciseId())
+//            .with("eventTag", existingRequest.getEventTag())
+//            .debug("Retry event is now successfully completed");
       } else {
         existingRequest.setStatus(ActionEventRequestStatus.FAILED);
-        log.with("collectionExerciseId", existingRequest.getCollectionExerciseId())
-            .with("eventTag", existingRequest.getEventTag())
-            .debug("Retry event has failed.");
+//        log.with("collectionExerciseId", existingRequest.getCollectionExerciseId())
+//            .with("eventTag", existingRequest.getEventTag())
+//            .debug("Retry event has failed.");
       }
       actionEventRequestRepository.save(existingRequest);
       updateCollectionExerciseEventStatus(existingRequest, null);
     }
-    log.info("retry Event finished");
+    //log.info("retry Event finished");
   }
 
   /**
@@ -195,7 +195,7 @@ public class ProcessCaseActionEventService {
    * @return
    */
   private CollectionExerciseDTO getCollectionExercise(UUID collectionExerciseId) {
-    log.with("collectionExerciseId", collectionExerciseId).debug("Getting collectionExercise");
+    //log.with("collectionExerciseId", collectionExerciseId).debug("Getting collectionExercise");
     return collectionExerciseSvcClient.getCollectionExercise(collectionExerciseId);
   }
 }
