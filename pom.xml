@@ -164,26 +164,29 @@
             <version>1.18.30</version>
         </dependency>
         <dependency>
-            <!-- Required to fix unit tests but breaks IT tests with: -->
+            <!-- TODO: unit tests only pass with this version of wiremock -->
+            <!-- however this breaks the IT tests with: -->
             <!-- due to exception in wiremock.jetty9.JettyHttpServer.createServerConnector -->
             <groupId>com.github.tomakehurst</groupId>
             <artifactId>wiremock</artifactId>
             <version>2.27.2</version>
             <scope>test</scope>
         </dependency>
-<!--        <dependency>-->
-<!--            &lt;!&ndash; required to fix IT tests but breaks unit tests &ndash;&gt;-->
-<!--            &lt;!&ndash; with Class versions V1_5 or less must use F_NEW frames in godaddy logging &ndash;&gt;-->
-<!--            <groupId>org.wiremock</groupId>-->
-<!--            <artifactId>wiremock-standalone</artifactId>-->
-<!--            <version>3.9.1</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>com.vladmihalcea</groupId>-->
-<!--            <artifactId>hibernate-types-5</artifactId>-->
-<!--            <version>2.21.1</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <!-- TODO: however, if we use the new preferred org.wiremock instead (which has the above tomakehurst bundled) -->
+            <!-- this breaks both the unit and IT tests with: -->
+            <!-- Class versions V1_5 or less must use F_NEW frames -->
+            <!-- this seems to be related to calls to godaddy logging happening around ASM reflection -->
+            <groupId>org.wiremock</groupId>
+            <artifactId>wiremock-standalone</artifactId>
+            <version>3.9.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.vladmihalcea</groupId>
+            <artifactId>hibernate-types-5</artifactId>
+            <version>2.21.1</version>
+        </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
