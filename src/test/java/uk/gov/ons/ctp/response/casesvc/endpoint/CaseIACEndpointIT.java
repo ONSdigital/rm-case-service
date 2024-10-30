@@ -10,8 +10,8 @@ import static org.junit.Assert.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import com.godaddy.logging.Logger;
-import com.godaddy.logging.LoggerFactory;
+//import com.godaddy.logging.Logger;
+//import com.godaddy.logging.LoggerFactory;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -55,7 +55,7 @@ public class CaseIACEndpointIT {
   private UUID collectionExerciseId;
   private Map<String, String> metadata;
 
-  private static final Logger log = LoggerFactory.getLogger(CaseIACEndpointIT.class);
+  //private static final Logger log = LoggerFactory.getLogger(CaseIACEndpointIT.class);
   private PubSubEmulator pubSubEmulator = new PubSubEmulator();
 
   @ClassRule public static WireMockRule wireMockRule = new WireMockRule(options().port(18002));
