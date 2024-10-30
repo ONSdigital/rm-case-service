@@ -163,15 +163,15 @@
             <artifactId>lombok</artifactId>
             <version>1.18.30</version>
         </dependency>
-        <dependency>
-            <!-- TODO: unit tests only pass with this version of wiremock -->
-            <!-- however this breaks the IT tests with: -->
-            <!-- due to exception in wiremock.jetty9.JettyHttpServer.createServerConnector -->
-            <groupId>com.github.tomakehurst</groupId>
-            <artifactId>wiremock</artifactId>
-            <version>2.27.2</version>
-            <scope>test</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            &lt;!&ndash; TODO: unit tests only pass with this version of wiremock &ndash;&gt;-->
+<!--            &lt;!&ndash; however this breaks the IT tests with: &ndash;&gt;-->
+<!--            &lt;!&ndash; due to exception in wiremock.jetty9.JettyHttpServer.createServerConnector &ndash;&gt;-->
+<!--            <groupId>com.github.tomakehurst</groupId>-->
+<!--            <artifactId>wiremock</artifactId>-->
+<!--            <version>2.27.2</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
         <dependency>
             <!-- TODO: however, if we use the new preferred org.wiremock instead (which has the above tomakehurst bundled) -->
             <!-- this breaks both the unit and IT tests with: -->
@@ -182,11 +182,12 @@
             <version>3.9.1</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.vladmihalcea</groupId>
-            <artifactId>hibernate-types-5</artifactId>
-            <version>2.21.1</version>
-        </dependency>
+        <!-- the hibernate-types-5 appear to now be available in the hibernate-core package -->
+<!--        <dependency>-->
+<!--            <groupId>com.vladmihalcea</groupId>-->
+<!--            <artifactId>hibernate-types-5</artifactId>-->
+<!--            <version>2.21.1</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
