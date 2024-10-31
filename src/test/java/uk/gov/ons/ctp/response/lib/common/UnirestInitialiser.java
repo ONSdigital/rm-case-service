@@ -7,6 +7,7 @@ import java.io.IOException;
 
 public class UnirestInitialiser {
   public static void initialise(final ObjectMapper mapper) {
+    // mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
     Unirest.setObjectMapper(
         new com.mashape.unirest.http.ObjectMapper() {
           public <T> T readValue(final String value, final Class<T> valueType) {

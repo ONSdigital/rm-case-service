@@ -13,6 +13,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 //import com.godaddy.logging.Logger;
 //import com.godaddy.logging.LoggerFactory;
 import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import java.io.IOException;
@@ -27,11 +28,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.web.client.RestClient;
 import uk.gov.ons.ctp.response.casesvc.CaseCreator;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
@@ -172,12 +176,31 @@ public class CaseIACEndpointIT {
   }
 
   private HttpResponse<CaseDetailsDTO[]> getCreatedCase(UUID sampleUnitId) throws Exception {
+
+    RestClient restClient = RestClient.builder()
+            .baseUrl(String.format("http://localhost:%d/cases/sampleunitids", port))
+            .defaultHeaders(
+              httpHeaders -> {
+                httpHeaders.setBasicAuth("admin", "secret");
+                httpHeaders.set("Content-Type", "application/json");
+              }
+              ).build();
+
+    String data = restClient.get()
+            .uri("?sampleUnitId=%s",sampleUnitId)
+            .accept(MediaType.APPLICATION_JSON)
+            .retrieve()
+            .body(String.class);
+
+    System.out.println(data);
+
     HttpResponse<CaseDetailsDTO[]> casesResponse =
         Unirest.get(String.format("http://localhost:%d/cases/sampleunitids", port))
             .basicAuth("admin", "secret")
             .queryString("sampleUnitId", sampleUnitId)
             .header("Content-Type", "application/json")
             .asObject(CaseDetailsDTO[].class);
+
     return casesResponse;
   }
 }
