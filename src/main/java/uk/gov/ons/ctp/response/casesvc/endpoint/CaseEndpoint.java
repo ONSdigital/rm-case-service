@@ -1,7 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
-import com.godaddy.logging.Logger;
-import com.godaddy.logging.LoggerFactory;
+// import com.godaddy.logging.Logger;
+// import com.godaddy.logging.LoggerFactory;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ import uk.gov.ons.ctp.response.lib.common.time.DateTimeUtil;
 @RestController
 @RequestMapping(value = "/cases", produces = "application/json")
 public final class CaseEndpoint implements CTPEndpoint {
-  private static final Logger log = LoggerFactory.getLogger(CaseEndpoint.class);
+  // private static final Logger log = LoggerFactory.getLogger(CaseEndpoint.class);
 
   public static final String CATEGORY_ACCESS_CODE_AUTHENTICATION_ATTEMPT_NOT_FOUND =
       "Category ACCESS_CODE_AUTHENTICATION_ATTEMPT does not exist";
@@ -78,7 +78,7 @@ public final class CaseEndpoint implements CTPEndpoint {
       @RequestParam(value = "caseevents", required = false) boolean caseevents,
       @RequestParam(value = "iac", required = false) boolean iac)
       throws CTPException {
-    log.with("case_id", caseId).debug("Entering findCaseById");
+    // log.with("case_id", caseId).debug("Entering findCaseById");
     Case caseObj = caseService.findCaseById(caseId);
     if (caseObj == null) {
       throw new CTPException(
@@ -94,7 +94,7 @@ public final class CaseEndpoint implements CTPEndpoint {
       @RequestParam(value = "sampleUnitId") final List<UUID> sampleUnitIds,
       @RequestParam(value = "caseevents", required = false) final boolean caseevents,
       @RequestParam(value = "iac", required = false) final boolean iac) {
-
+    System.out.println("**** HERE 3 ****");
     List<CaseDetailsDTO> cases =
         sampleUnitIds
             .stream()
@@ -106,7 +106,8 @@ public final class CaseEndpoint implements CTPEndpoint {
                   return cdd;
                 })
             .collect(Collectors.toList());
-
+    System.out.println("**** caseId: " + cases.get(0).getId());
+    System.out.println("**** HERE 4 ****");
     return ResponseEntity.ok(cases);
   }
 
@@ -129,9 +130,9 @@ public final class CaseEndpoint implements CTPEndpoint {
 
     List<Case> casesList;
     if (maxCasesPerSurvey != null) {
-      log.with("party_id", partyId)
-          .with("max_cases_per_survey", maxCasesPerSurvey)
-          .info("Retrieving cases by party");
+      //      log.with("party_id", partyId)
+      //          .with("max_cases_per_survey", maxCasesPerSurvey)
+      //          .info("Retrieving cases by party");
       casesList = caseService.findCasesByPartyIdLimitedPerSurvey(partyId, iac, maxCasesPerSurvey);
 
     } else {
@@ -158,7 +159,7 @@ public final class CaseEndpoint implements CTPEndpoint {
   @RequestMapping(value = "/surveyid/{surveyId}", method = RequestMethod.GET)
   public ResponseEntity<List<CaseDetailsDTO>> findCasesBySurveyId(
       @PathVariable("surveyId") final UUID surveyId) {
-    log.with("survey_id", surveyId).debug("Retrieving cases by survey");
+    // log.with("survey_id", surveyId).debug("Retrieving cases by survey");
     List<CaseGroup> caseGroupsList = caseGroupService.findCaseGroupBySurveyId(surveyId);
     List<Case> cases = new ArrayList<>();
 
@@ -189,7 +190,7 @@ public final class CaseEndpoint implements CTPEndpoint {
       @RequestParam(value = "caseevents", required = false) final boolean caseevents,
       @RequestParam(value = "iac", required = false) final boolean iacFlag)
       throws CTPException {
-    log.debug("Retrieving case by iac");
+    // log.debug("Retrieving case by iac");
     Case targetCase = caseService.findCaseByIac(iac);
     if (targetCase == null) {
       throw new CTPException(
@@ -238,7 +239,7 @@ public final class CaseEndpoint implements CTPEndpoint {
       @PathVariable("casegroupId") final UUID casegroupId,
       @RequestParam(value = "iac", required = false) final boolean iacFlag)
       throws CTPException {
-    log.with("case_group_id", casegroupId).debug("Entering findCasesInCaseGroup");
+    //  log.with("case_group_id", casegroupId).debug("Entering findCasesInCaseGroup");
 
     CaseGroup caseGroup = caseGroupService.findCaseGroupById(casegroupId);
     if (caseGroup == null) {
@@ -273,7 +274,7 @@ public final class CaseEndpoint implements CTPEndpoint {
       @PathVariable("caseId") final UUID caseId,
       @RequestParam(value = "category", required = false) final List<String> categories)
       throws CTPException {
-    log.with("case_id", caseId).debug("Entering findCaseEventsByCaseId");
+    // log.with("case_id", caseId).debug("Entering findCaseEventsByCaseId");
     Case caze = caseService.findCaseById(caseId);
     if (caze == null) {
       throw new CTPException(
@@ -314,9 +315,9 @@ public final class CaseEndpoint implements CTPEndpoint {
       @RequestBody @Valid final CaseEventCreationRequestDTO caseEventCreationRequestDTO,
       BindingResult bindingResult)
       throws CTPException, InvalidRequestException {
-    log.with("case_id", caseId)
-        .with("category", caseEventCreationRequestDTO.getCategory())
-        .debug("Creating case event");
+    //    log.with("case_id", caseId)
+    //        .with("category", caseEventCreationRequestDTO.getCategory())
+    //        .debug("Creating case event");
     if (bindingResult.hasErrors()) {
       throw new InvalidRequestException("Binding errors for case event creation: ", bindingResult);
     }
