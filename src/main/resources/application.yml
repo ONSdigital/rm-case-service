@@ -44,7 +44,7 @@ spring:
     password: postgres
     driverClassName: org.postgresql.Driver
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQL94Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     open-in-view: true
     show-sql: false
     defer-datasource-initialization: true
