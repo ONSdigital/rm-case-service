@@ -185,8 +185,8 @@ jobs:
       - name: Push Release image
         if: github.ref == 'refs/heads/main'
         run: |
-          docker push "$REGISTRY_HOSTNAME"/"$RELEASE_HOST"/"$IMAGE":${{ env.version }}
-          docker push "$REGISTRY_HOSTNAME"/"$RELEASE_HOST"/"$IMAGE":latest
+          docker push "$REGISTRY_HOSTNAME"/"$GAR_GOOGLE_PROJECT_ID"/"$GAR_REPOSITORY"/"$IMAGE":${{ env.version }}
+          docker push "$REGISTRY_HOSTNAME"/"$GAR_GOOGLE_PROJECT_ID"/"$GAR_REPOSITORY"/"$IMAGE":latest
 
       - name: Publish Charts
         if: github.ref == 'refs/heads/main'
