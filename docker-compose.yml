@@ -32,7 +32,7 @@ services:
 
   pubsub-emulator:
     container_name: pubsub-emulator-it
-    image: eu.gcr.io/ons-rasrmbs-management/pubsub-emulator
+    image: europe-west2-docker.pkg.dev/ons-ci-rmrasbs/images/pubsub-emulator
     ports:
     - "18681:8681"
     environment:
