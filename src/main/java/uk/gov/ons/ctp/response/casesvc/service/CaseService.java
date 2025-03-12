@@ -405,7 +405,7 @@ public class CaseService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackFor = Exception.class)
   public void createInitialCase(SampleUnitParent sampleUnitParent) throws CTPException {
     try {
       CaseGroup newCaseGroup = createNewCaseGroup(sampleUnitParent);
@@ -449,6 +449,7 @@ public class CaseService {
           .with("sampleUnitRef", sampleUnitParent.getSampleUnitRef())
           .with("error", exception)
           .warn("Case already exists. Ignoring case creation");
+      throw new CTPException(CTPException.Fault.DUPLICATE_RECORD, exception.getMessage());
     }
   }
 
