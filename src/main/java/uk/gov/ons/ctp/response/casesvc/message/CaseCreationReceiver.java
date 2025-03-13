@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
+import uk.gov.ons.ctp.response.lib.common.error.CTPException;
 
 /** Receive a new case from the Collection Exercise service. */
 @Component
@@ -48,6 +49,13 @@ public class CaseCreationReceiver {
           .with("collectionExericseId", caseCreation.getCollectionExerciseId())
           .info("Case creation successful. Acking message");
       pubSubMsg.ack();
+    } catch (CTPException e) {
+      if (e.getFault() == CTPException.Fault.DUPLICATE_RECORD) {
+        log.with("payload", payload).info("Case already exists. Acking message");
+        pubSubMsg.ack();
+      } else {
+        pubSubMsg.nack();
+      }
     } catch (final IOException e) {
       log.with("messageId", messageId)
           .with(e)

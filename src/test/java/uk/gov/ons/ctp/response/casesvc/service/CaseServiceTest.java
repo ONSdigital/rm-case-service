@@ -903,7 +903,7 @@ public class CaseServiceTest {
     verify(caseRepo, times(6)).saveAndFlush(any());
   }
 
-  @Test
+  @Test(expected = CTPException.class)
   public void testCreateInitialCaseWithSampleUnitChildrenDoesNothingIfDuplicate() throws Exception {
     String collectionExerciseId = UUID.randomUUID().toString();
     UUID partyId = UUID.randomUUID();
