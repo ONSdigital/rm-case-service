@@ -34,7 +34,8 @@ public class RestExceptionHandler {
    */
   @ExceptionHandler(CTPException.class)
   public ResponseEntity<?> handleCTPException(CTPException exception) {
-    log.error("Uncaught CTPException", exception,
+    log.error("Uncaught CTPException",
+        kv("exception", exception),
         kv("fault", exception.getFault()),
         kv("exception_message", exception.getMessage()));
 
@@ -93,7 +94,8 @@ public class RestExceptionHandler {
             .stream()
             .map(e -> String.format("field=%s message=%s", e.getField(), e.getDefaultMessage()))
             .collect(Collectors.joining(","));
-    log.error("Unhandled InvalidRequestException", ex,
+    log.error("Unhandled InvalidRequestException",
+        kv("exception", ex),
         kv("validation_errors", errors),
         kv("source_message", ex.getSourceMessage()));
     CTPException ourException =
@@ -111,7 +113,8 @@ public class RestExceptionHandler {
   @ExceptionHandler(HttpMessageNotReadableException.class)
   public ResponseEntity<?> handleHttpMessageNotReadableException(
       HttpMessageNotReadableException ex) {
-    log.error("Uncaught HttpMessageNotReadableException", ex);
+    log.error("Uncaught HttpMessageNotReadableException",
+        kv("exception", ex));
     String message =
         ex.getMessage().startsWith(XML_ERROR_MESSAGE)
             ? PROVIDED_XML_INCORRECT
@@ -132,7 +135,8 @@ public class RestExceptionHandler {
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<?> handleMethodArgumentNotValidException(
       MethodArgumentNotValidException ex) {
-    log.error("Unhandled MethodArgumentNotValidException", ex,
+    log.error("Unhandled MethodArgumentNotValidException",
+        kv("exception", ex),
         kv("parameter", ex.getParameter().getParameterName()));
     CTPException ourException =
         new CTPException(CTPException.Fault.VALIDATION_FAILED, INVALID_JSON);

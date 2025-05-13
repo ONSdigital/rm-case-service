@@ -44,7 +44,9 @@ public class PartySvcClientService {
       maxAttemptsExpression = "#{${retries.maxAttempts}}",
       backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
   public PartyDTO getParty(final String sampleUnitType, final UUID partyId) {
-    log.info("Getting party", kv("sampleUnitType", sampleUnitType), kv("partyId", partyId));
+    log.info("Getting party",
+        kv("sampleUnitType", sampleUnitType),
+        kv("partyId", partyId));
     final UriComponents uriComponents =
         restUtility.createUriComponents(
             appConfig.getPartySvc().getPartyBySampleUnitTypeAndIdPath(),
@@ -69,8 +71,7 @@ public class PartySvcClientService {
       final UUID partyId,
       final String surveyId,
       final List<String> enrolmentStatuses) {
-    log.info(
-        "Retrieving party by survey",
+    log.info("Retrieving party by survey",
         kv("sampleUnitType", sampleUnitType),
         kv("partyId", partyId),
         kv("surveyId", surveyId));
