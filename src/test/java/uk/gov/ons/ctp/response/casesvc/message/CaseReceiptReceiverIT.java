@@ -1,10 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.message;
 
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -28,6 +25,7 @@ import uk.gov.ons.ctp.response.casesvc.utility.PubSubEmulator;
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @TestPropertySource(locations = "classpath:/application-test.yml")
+@WireMockTest(httpPort = 18002)
 public class CaseReceiptReceiverIT {
 
   private static PubSubEmulator PUBSUBEMULATOR;
@@ -38,10 +36,6 @@ public class CaseReceiptReceiverIT {
   @ClassRule
   public static final EnvironmentVariables environmentVariables =
       new EnvironmentVariables().set("PUBSUB_EMULATOR_HOST", "127.0.0.1:18681");
-
-  @ClassRule
-  public static WireMockRule wireMockRule =
-      new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
 
   @MockBean private CaseReceiptReceiver caseReceiptReceiver;
 

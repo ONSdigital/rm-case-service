@@ -1,12 +1,10 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import java.io.IOException;
@@ -50,6 +48,7 @@ import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
     locations = "classpath:/application-test.yml",
     properties = "action-svc.deprecated=true")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@WireMockTest(httpPort = 18002)
 public class CaseActionEventIT {
   private UUID collectionExerciseId;
   private Map<String, String> metadata;
@@ -57,10 +56,6 @@ public class CaseActionEventIT {
 
   @MockBean private ProcessLetterActionService processLetterActionService;
   @MockBean private ProcessEmailActionService processEmailActionService;
-
-  @ClassRule
-  public static WireMockRule wireMockRule =
-      new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
 
   @LocalServerPort private int port;
 
