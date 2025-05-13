@@ -1,13 +1,11 @@
 package uk.gov.ons.ctp.response.casesvc;
 
-import com.godaddy.logging.LoggingConfigs;
 import com.google.cloud.spring.pubsub.core.PubSubTemplate;
 import com.google.cloud.spring.pubsub.integration.AckMode;
 import com.google.cloud.spring.pubsub.integration.inbound.PubSubInboundChannelAdapter;
 import com.google.cloud.spring.pubsub.integration.outbound.PubSubMessageHandler;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageOptions;
-import jakarta.annotation.PostConstruct;
 import java.time.Clock;
 import javax.sql.DataSource;
 import liquibase.integration.spring.SpringLiquibase;
@@ -119,13 +117,6 @@ public class CaseSvcApplication {
    */
   public static void main(final String[] args) {
     SpringApplication.run(CaseSvcApplication.class, args);
-  }
-
-  @PostConstruct
-  public void initJsonLogging() {
-    if (appConfig.getLogging().isUseJson()) {
-      LoggingConfigs.setCurrent(LoggingConfigs.getCurrent().useJson());
-    }
   }
 
   /**

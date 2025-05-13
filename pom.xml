@@ -178,11 +178,16 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!--Below dependency will cause tests to fail when updated. Need to investigate why-->
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
-            <version>6.6</version>
+            <version>8.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.5.11</version>
         </dependency>
 
         <dependency>
@@ -206,12 +211,6 @@
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-jaxb-annotations</artifactId>
             <version>2.7.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.godaddy</groupId>
-            <artifactId>logging</artifactId>
-            <version>1.2.5</version>
         </dependency>
 
         <dependency>

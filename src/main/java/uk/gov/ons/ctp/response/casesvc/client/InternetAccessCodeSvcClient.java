@@ -2,10 +2,10 @@ package uk.gov.ons.ctp.response.casesvc.client;
 
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
-import com.godaddy.logging.Logger;
-import com.godaddy.logging.LoggerFactory;
 import java.util.Arrays;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
