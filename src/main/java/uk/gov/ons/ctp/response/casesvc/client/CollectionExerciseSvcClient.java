@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.client;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.UUID;
@@ -60,7 +62,7 @@ public class CollectionExerciseSvcClient {
 
     HttpEntity<?> httpEntity = restUtility.createHttpEntity(null);
 
-    log, kv("collection_exercise_id").debug("Retrieving collection exercise");
+    log.debug("Retrieving collection exercise", kv("collection_exercise_id", collectionExerciseId));
     ResponseEntity<CollectionExerciseDTO> responseEntity =
         restTemplate.exchange(
             uriComponents.toUri(), HttpMethod.GET, httpEntity, CollectionExerciseDTO.class);
@@ -101,10 +103,11 @@ public class CollectionExerciseSvcClient {
    */
   public void createCollectionExercise(
       final UUID surveyId, final String exerciseRef, final String userDescription) {
-    log, kv("survey_id", surveyId)
-        , kv("exercise_ref", exerciseRef)
-        , kv("user_description", userDescription)
-        .debug("Creating a collection exercise");
+    log.debug(
+        "Creating a collection exercise",
+        kv("survey_id", surveyId),
+        kv("exercise_ref", exerciseRef),
+        kv("user_description", userDescription));
     CollectionExerciseDTO collex = new CollectionExerciseDTO();
     final UriComponents uriComponents =
         restUtility.createUriComponents(

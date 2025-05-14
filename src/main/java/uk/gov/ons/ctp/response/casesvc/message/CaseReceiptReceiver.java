@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.message;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
 import static uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName.OFFLINE_RESPONSE_PROCESSED;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.QUESTIONNAIRE_RESPONSE;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
@@ -40,15 +41,15 @@ public class CaseReceiptReceiver {
    */
   @Transactional(propagation = Propagation.REQUIRED, value = "transactionManager")
   public void process(CaseReceipt caseReceipt) throws CTPException {
-    log, kv("case_receipt", caseReceipt).info("Processing case receipt");
+    log.info("Processing case receipt", kv("case_receipt", caseReceipt));
     UUID caseId = UUID.fromString(caseReceipt.getCaseId());
     Timestamp responseTimestamp = dateTimeUtil.getNowUTC();
 
     Case existingCase = caseService.findCaseById(caseId);
-    log, kv("existing_case", existingCase).debug("Found existing case");
+    log.debug("Found existing case", kv("existing_case", existingCase));
 
     if (existingCase == null) {
-      log, kv("case_id", caseId).error(EXISTING_CASE_NOT_FOUND);
+      log.error(EXISTING_CASE_NOT_FOUND, kv("case_id", caseId));
     } else {
       CaseEvent caseEvent = new CaseEvent();
       String partyId = caseReceipt.getPartyId();
@@ -59,12 +60,12 @@ public class CaseReceiptReceiver {
       }
       caseEvent.setCaseFK(existingCase.getCasePK());
       caseEvent.setCategory(OFFLINE_RESPONSE_PROCESSED);
-      log, kv("case_event", caseEvent.getCategory()).info("New case event");
+      log.info("New case event", kv("case_event", caseEvent.getCategory()));
       caseEvent.setCreatedBy(SYSTEM);
       caseEvent.setDescription(QUESTIONNAIRE_RESPONSE);
       log.debug("about to invoke the event creation...");
       caseService.createCaseEvent(caseEvent, responseTimestamp);
     }
-    log, kv("case_receipt", caseReceipt).info("Case receipt processing complete");
+    log.info("Case receipt processing complete", kv("case_receipt", caseReceipt));
   }
 }

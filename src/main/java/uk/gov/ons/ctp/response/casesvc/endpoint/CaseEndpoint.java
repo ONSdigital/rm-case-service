@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.ArrayList;
@@ -33,8 +35,6 @@ import uk.gov.ons.ctp.response.lib.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.response.lib.common.error.CTPException;
 import uk.gov.ons.ctp.response.lib.common.error.InvalidRequestException;
 import uk.gov.ons.ctp.response.lib.common.time.DateTimeUtil;
-
-import static net.logstash.logback.argument.StructuredArguments.kv;
 
 /** The REST endpoint controller for CaseSvc Cases */
 @RestController
@@ -80,8 +80,7 @@ public final class CaseEndpoint implements CTPEndpoint {
       @RequestParam(value = "caseevents", required = false) boolean caseevents,
       @RequestParam(value = "iac", required = false) boolean iac)
       throws CTPException {
-    log.debug("Entering findCaseById",
-        kv("case_id", caseId));
+    log.debug("Entering findCaseById", kv("case_id", caseId));
     Case caseObj = caseService.findCaseById(caseId);
     if (caseObj == null) {
       throw new CTPException(
@@ -132,7 +131,8 @@ public final class CaseEndpoint implements CTPEndpoint {
 
     List<Case> casesList;
     if (maxCasesPerSurvey != null) {
-      log.info("Retrieving cases by party",
+      log.info(
+          "Retrieving cases by party",
           kv("party_id", partyId),
           kv("max_cases_per_survey", maxCasesPerSurvey));
       casesList = caseService.findCasesByPartyIdLimitedPerSurvey(partyId, iac, maxCasesPerSurvey);
@@ -317,7 +317,8 @@ public final class CaseEndpoint implements CTPEndpoint {
       @RequestBody @Valid final CaseEventCreationRequestDTO caseEventCreationRequestDTO,
       BindingResult bindingResult)
       throws CTPException, InvalidRequestException {
-    log.debug("Creating case event",
+    log.debug(
+        "Creating case event",
         kv("case_id", caseId),
         kv("category", caseEventCreationRequestDTO.getCategory()));
     if (bindingResult.hasErrors()) {

@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.service.action.letter;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -46,10 +48,11 @@ public class ProcessLetterActionService {
         actionTemplateService.mapEventTagToTemplate(eventTag, false);
     UUID collectionExerciseId = collectionExerciseDTO.getId();
     if (null == actionTemplate) {
-      log, kv("activeEnrolment", true)
-          , kv("event", eventTag)
-          , kv("collectionExerciseId", collectionExerciseId.toString())
-          .info("No Template found, suggests no letters to be processed.");
+      log.info(
+          "No Template found, suggests no letters to be processed.",
+          kv("activeEnrolment", true),
+          kv("event", eventTag),
+          kv("collectionExerciseId", collectionExerciseId.toString()));
       return new AsyncResult<>(true);
     }
 
@@ -58,9 +61,10 @@ public class ProcessLetterActionService {
     List<CaseAction> letterCases =
         caseGroupRepository.findByCollectionExerciseIdAndActiveEnrolment(
             collectionExerciseId, false);
-    log, kv("letter cases", letterCases.size())
-        , kv(collectionExerciseId.toString())
-        .info("Processing letter cases");
+    log.info(
+        "Processing letter cases",
+        kv("letter cases", letterCases.size()),
+        kv("collectionExerciseId", collectionExerciseId.toString()));
 
     SurveyDTO survey = actionService.getSurvey(collectionExerciseDTO.getSurveyId());
 
@@ -71,18 +75,19 @@ public class ProcessLetterActionService {
             .collect(Collectors.toList());
 
     if (actionableLetterCases.size() == 0) {
-      log, kv("no. of cases", letterCases.size())
-          , kv("actionType", actionTemplate.getType())
-          , kv("collection exercise", collectionExerciseDTO.getId())
-          .info(
-              "No actionable cases found against the action type for collection exercise. "
-                  + "Hence nothing to do");
+      log.info(
+          "No actionable cases found against the action type for collection exercise. "
+              + "Hence nothing to do",
+          kv("no. of cases", letterCases.size()),
+          kv("actionType", actionTemplate.getType()),
+          kv("collection exercise", collectionExerciseDTO.getId()));
       return new AsyncResult<>(true);
     }
 
-    log, kv("no. of actionable cases", actionableLetterCases.size())
-        , kv("actionType", actionTemplate.getType())
-        .info("Populating letter data for letter cases.");
+    log.info(
+        "Populating letter data for letter cases.",
+        kv("no. of actionable cases", actionableLetterCases.size()),
+        kv("actionType", actionTemplate.getType()));
 
     List<LetterEntry> letterEntries =
         actionableLetterCases
@@ -91,15 +96,16 @@ public class ProcessLetterActionService {
             .collect(Collectors.toList());
 
     if (actionableLetterCases.size() != letterEntries.size()) {
-      log, kv("actionType", actionTemplate.getType())
-          .info(
-              "Unable to collect all letter entries. Hence aborting the process and will try again");
+      log.info(
+          "Unable to collect all letter entries. Hence aborting the process and will try again",
+          kv("actionType", actionTemplate.getType()));
       return new AsyncResult<>(false);
     }
 
-    log, kv("no. of actionable cases", actionableLetterCases.size())
-        , kv("actionType", actionTemplate.getType())
-        .info("Finished populating letter data for letter cases.");
+    log.info(
+        "Finished populating letter data for letter cases.",
+        kv("no. of actionable cases", actionableLetterCases.size()),
+        kv("actionType", actionTemplate.getType()));
 
     String fileNamePrefix =
         FilenamePrefix.getPrefix(actionTemplate.getPrefix())
@@ -109,17 +115,18 @@ public class ProcessLetterActionService {
             + getExerciseRefWithoutSurveyRef(collectionExerciseDTO.getExerciseRef());
     final String now =
         DateTimeFormatter.ofPattern("ddMMyyyy_HHmm")
-            , kvZone(ZoneId.systemDefault())
+            .withZone(ZoneId.systemDefault())
             .format(instant);
     String filename = String.format("%s_%s.csv", fileNamePrefix, now);
     log.info("filename: " + filename + ", uploading file");
-    log, kv("actionType", actionTemplate.getType()).info("Processing Print File");
+    log.info("Processing Print File", kv("actionType", actionTemplate.getType()));
 
     boolean isSuccess = printFileService.processPrintFile(filename, letterEntries);
 
-    log, kv("file processed?", isSuccess)
-        , kv("actionType", actionTemplate.getType())
-        .info("Recording case action event");
+    log.info(
+        "Recording case action event",
+        kv("file processed?", isSuccess),
+        kv("actionType", actionTemplate.getType()));
     if (isSuccess) {
       letterEntries
           .parallelStream()
@@ -147,9 +154,10 @@ public class ProcessLetterActionService {
    */
   private LetterEntry getPrintFileEntry(
       CaseAction caseAction, CaseActionTemplate caseActionTemplate, SurveyDTO survey) {
-    log, kv("caseId", caseAction.getCaseId())
-        , kv("actionTemplateType", caseActionTemplate.getType())
-        .info("Getting print file entry");
+    log.info(
+        "Getting print file entry",
+        kv("caseId", caseAction.getCaseId()),
+        kv("actionTemplateType", caseActionTemplate.getType()));
     String iac = caseAction.getIac();
     String sampleUnitRef = caseAction.getSampleUnitRef();
     String status = caseAction.getStatus().toString();
@@ -169,9 +177,10 @@ public class ProcessLetterActionService {
         iac = "";
       }
     }
-    log, kv("caseId", caseAction.getCaseId())
-        , kv("actionTemplateType", caseActionTemplate.getType())
-        .info("Finished getting print file entry");
+    log.info(
+        "Finished getting print file entry",
+        kv("caseId", caseAction.getCaseId()),
+        kv("actionTemplateType", caseActionTemplate.getType()));
     return new LetterEntry(
         caseAction.getCaseId(),
         caseActionTemplate.getType(),
