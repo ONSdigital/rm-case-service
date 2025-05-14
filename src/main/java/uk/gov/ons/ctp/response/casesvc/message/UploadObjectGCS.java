@@ -1,16 +1,16 @@
 package uk.gov.ons.ctp.response.casesvc.message;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
 import com.google.cloud.storage.StorageException;
 import java.io.File;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
-
-import static net.logstash.logback.argument.StructuredArguments.kv;
 
 @Component
 public class UploadObjectGCS {
@@ -41,10 +41,11 @@ public class UploadObjectGCS {
       isSuccess = true;
       log.info("file_name: " + bucketFilename + " bucket: " + bucket + ", Upload Successful!");
     } catch (StorageException exception) {
-      log.error("Error uploading the generated file to GCS",
-              kv("exception", exception),
-              kv("bucketFileName", bucketFilename),
-              kv("bucket", bucket));
+      log.error(
+          "Error uploading the generated file to GCS",
+          kv("exception", exception),
+          kv("bucketFileName", bucketFilename),
+          kv("bucket", bucket));
     }
     return isSuccess;
   }

@@ -40,6 +40,8 @@ import uk.gov.ons.ctp.response.lib.common.time.DateTimeUtil;
 import uk.gov.ons.ctp.response.lib.sample.SampleUnitDTO;
 import uk.gov.ons.ctp.response.lib.sample.SampleUnitDTO.SampleUnitType;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 /**
  * A CaseService implementation which encapsulates all business logic operating on the Case entity
  * model.
@@ -107,7 +109,8 @@ public class CaseService {
       String iac = caseIacAuditService.findCaseIacByCasePK(caze.getCasePK());
       caze.setIac(iac);
     } else {
-      log.with("case_id", id.toString()).warn("Could not find case");
+      log.warn("Could not find case",
+          kv("case_id", id.toString()));
     }
 
     return caze;
@@ -270,10 +273,12 @@ public class CaseService {
    */
   public CaseEvent createCaseEvent(final CaseEvent caseEvent, final Timestamp timestamp)
       throws CTPException {
-    log.with("case_event", caseEvent).info("Creating case event");
+    log.info("Creating case event",
+        kv("case_event", caseEvent));
 
     Case targetCase = caseRepo.findById(caseEvent.getCaseFK()).orElse(null);
-    log.with("target_case", targetCase).debug("Found target case");
+    log.debug("Found target case",
+        kv("target_case", targetCase));
     if (targetCase == null) {
       return null;
     }
@@ -297,7 +302,8 @@ public class CaseService {
   public CaseEvent createCaseEvent(
       final CaseEvent caseEvent, final Timestamp timestamp, final Case targetCase)
       throws CTPException {
-    log.with("case_event", caseEvent).debug("Creating case event");
+    log.debug("Creating case event",
+        kv("case_event", caseEvent));
 
     Category category = categoryRepo.findById(caseEvent.getCategory()).orElse(null);
     validateCaseEventRequest(category, targetCase);
@@ -306,7 +312,6 @@ public class CaseService {
     caseEvent.setCreatedDateTime(DateTimeUtil.nowUTC());
     CaseEvent createdCaseEvent = caseEventRepo.save(caseEvent);
     log.debug("createdCaseEvent is {}", createdCaseEvent);
-
     transitionCaseGroupStatus(targetCase, caseEvent);
 
     switch (caseEvent.getCategory()) {
@@ -340,6 +345,8 @@ public class CaseService {
       timeout = TRANSACTION_TIMEOUT)
   private void saveCaseIacAudit(final Case updatedCase) {
     log.with("case_id", updatedCase.getId()).debug("Saving case iac audit");
+    log.debug("Saving case iac audit",
+        kv("case_id", updatedCase.getId()));
     CaseIacAudit caseIacAudit = new CaseIacAudit();
     caseIacAudit.setCaseFK(updatedCase.getCasePK());
     caseIacAudit.setIac(updatedCase.getIac());
