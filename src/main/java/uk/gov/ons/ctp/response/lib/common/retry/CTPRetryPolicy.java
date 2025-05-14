@@ -111,7 +111,7 @@ public class CTPRetryPolicy implements RetryPolicy {
         }
       }
     } catch (ClassNotFoundException e) {
-      log.with("class_names", Joiner.on(",").join(retryableExceptions))
+      log, kv("class_names", Joiner.on(",").join(retryableExceptions))
           .error("Invalid classname", e);
     }
 

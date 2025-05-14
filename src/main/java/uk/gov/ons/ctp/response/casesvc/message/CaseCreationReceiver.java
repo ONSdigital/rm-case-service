@@ -33,39 +33,39 @@ public class CaseCreationReceiver {
       Message message,
       @Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) BasicAcknowledgeablePubsubMessage pubSubMsg) {
     String messageId = pubSubMsg.getPubsubMessage().getMessageId();
-    log.with("messageId", messageId).info("Receiving message ID from PubSub");
+    log, kv("messageId", messageId).info("Receiving message ID from PubSub");
     String payload = new String((byte[]) message.getPayload());
-    log.with("payload", payload).info("New request for case notification");
+    log, kv("payload", payload).info("New request for case notification");
     try {
-      log.with("messageId", messageId).info("Mapping payload to SampleUnitParent object");
+      log, kv("messageId", messageId).info("Mapping payload to SampleUnitParent object");
       SampleUnitParent caseCreation = objectMapper.readValue(payload, SampleUnitParent.class);
-      log.with("messageId", messageId)
-          .with("sampleUnitRef", caseCreation.getSampleUnitRef())
-          .with("collectionExericseId", caseCreation.getCollectionExerciseId())
+      log, kv("messageId", messageId)
+          , kv("sampleUnitRef", caseCreation.getSampleUnitRef())
+          , kv("collectionExericseId", caseCreation.getCollectionExerciseId())
           .info("Mapping successful, case creation process initiated");
       caseService.createInitialCase(caseCreation);
-      log.with("messageId", messageId)
-          .with("sampleUnitRef", caseCreation.getSampleUnitRef())
-          .with("collectionExericseId", caseCreation.getCollectionExerciseId())
+      log, kv("messageId", messageId)
+          , kv("sampleUnitRef", caseCreation.getSampleUnitRef())
+          , kv("collectionExericseId", caseCreation.getCollectionExerciseId())
           .info("Case creation successful. Acking message");
       pubSubMsg.ack();
     } catch (CTPException e) {
       if (e.getFault() == CTPException.Fault.DUPLICATE_RECORD) {
-        log.with("payload", payload).info("Case already exists. Acking message");
+        log, kv("payload", payload).info("Case already exists. Acking message");
         pubSubMsg.ack();
       } else {
         pubSubMsg.nack();
       }
     } catch (final IOException e) {
-      log.with("messageId", messageId)
-          .with(e)
+      log, kv("messageId", messageId)
+          , kv(e)
           .error(
               "Something went wrong while processing message received from PubSub "
                   + "for case creation notification. Nacking message");
       pubSubMsg.nack();
     } catch (Exception e) {
-      log.with("messageId", messageId)
-          .with(e)
+      log, kv("messageId", messageId)
+          , kv(e)
           .error("An unexpected exception occurred during the case creation. Nacking message");
       pubSubMsg.nack();
     }

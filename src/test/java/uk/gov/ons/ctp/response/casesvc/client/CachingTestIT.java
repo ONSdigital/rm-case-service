@@ -93,12 +93,12 @@ public class CachingTestIT {
     return stubFor(
         get(urlPathMatching("/collectionexercises/.*"))
             .willReturn(
-                aResponse()
-                    .withHeader("Content-Type", "application/json")
-                    .withBody(
-                        "{\"id\":\"576357f9-697c-455a-a2c3-1b529752b245\",\"surveyId\":\""
-                            + surveyId
-                            + "\",\"name\":null,\"actualExecutionDateTime\":null,\"scheduledExecutionDateTime\":null,\"scheduledStartDateTime\":null,\"actualPublishDateTime\":null,\"periodStartDateTime\":null,\"periodEndDateTime\":null,\"scheduledReturnDateTime\":null,\"scheduledEndDateTime\":null,\"executedBy\":null,\"state\":\"CREATED\",\"exerciseRef\":\"510085\",\"userDescription\":\"January 2018\",\"created\":\"2019-02-13T10:13:19.530Z\",\"updated\":null,\"deleted\":null,\"validationErrors\":null,\"events\":[]}")
-                    .withTransformers("response-template")));
+                aResponse(),
+                kvHeader("Content-Type", "application/json"),
+                kvBody(
+                    "{\"id\":\"576357f9-697c-455a-a2c3-1b529752b245\",\"surveyId\":\""
+                        + surveyId
+                        + "\",\"name\":null,\"actualExecutionDateTime\":null,\"scheduledExecutionDateTime\":null,\"scheduledStartDateTime\":null,\"actualPublishDateTime\":null,\"periodStartDateTime\":null,\"periodEndDateTime\":null,\"scheduledReturnDateTime\":null,\"scheduledEndDateTime\":null,\"executedBy\":null,\"state\":\"CREATED\",\"exerciseRef\":\"510085\",\"userDescription\":\"January 2018\",\"created\":\"2019-02-13T10:13:19.530Z\",\"updated\":null,\"deleted\":null,\"validationErrors\":null,\"events\":[]}"),
+                kvTransformers("response-template")));
   }
 }

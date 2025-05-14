@@ -58,9 +58,9 @@ public class ProcessEmailActionService {
         actionTemplateService.mapEventTagToTemplate(eventTag, Boolean.TRUE);
     UUID collectionExerciseId = collectionExerciseDTO.getId();
     if (null == actionTemplate) {
-      log.with("activeEnrolment", true)
-          .with("event", eventTag)
-          .with("collectionExerciseId", collectionExerciseId.toString())
+      log, kv("activeEnrolment", true)
+          , kv("event", eventTag)
+          , kv("collectionExerciseId", collectionExerciseId.toString())
           .info("No Email Action Template defined for this event.");
       return new AsyncResult<>(true);
     }
@@ -71,8 +71,8 @@ public class ProcessEmailActionService {
     List<CaseAction> emailCases =
         caseGroupRepository.findByCollectionExerciseIdAndActiveEnrolment(
             collectionExerciseId, true);
-    log.with("email cases", emailCases.size())
-        .with(collectionExerciseId.toString())
+    log, kv("email cases", emailCases.size())
+        , kv(collectionExerciseId.toString())
         .info("Processing email cases");
     SurveyDTO survey = actionService.getSurvey(collectionExerciseDTO.getSurveyId());
     emailCases
@@ -111,16 +111,16 @@ public class ProcessEmailActionService {
     UUID actionCaseId = caseAction.getCaseId();
     String templateType = caseActionTemplate.getType();
     Handler templateHandler = caseActionTemplate.getHandler();
-    log.with("caseId", actionCaseId)
-        .with("actionTemplate", templateType)
-        .with("actionHandler", templateHandler)
+    log, kv("caseId", actionCaseId)
+        , kv("actionTemplate", templateType)
+        , kv("actionHandler", templateHandler)
         .info("Processing Email Event.");
     boolean isSuccess = true;
     try {
-      log.with("caseId", actionCaseId).info("Getting ActionCaseParty");
+      log, kv("caseId", actionCaseId).info("Getting ActionCaseParty");
       CaseActionParty actionCaseParty = actionService.setParties(caseAction, survey);
       if (isBusinessNotification(caseAction)) {
-        log.with("caseId", caseAction).info("Processing Email for isBusinessNotification true");
+        log, kv("caseId", caseAction).info("Processing Email for isBusinessNotification true");
         actionCaseParty
             .getChildParties()
             .parallelStream()
@@ -134,7 +134,7 @@ public class ProcessEmailActionService {
                         caseAction,
                         collectionExercise));
       } else {
-        log.with("caseId", caseAction).info("Processing Email for isBusinessNotification false");
+        log, kv("caseId", caseAction).info("Processing Email for isBusinessNotification false");
         processEmail(
             actionCaseParty.getParentParty(),
             actionCaseParty.getChildParties().get(0),
@@ -144,10 +144,10 @@ public class ProcessEmailActionService {
             collectionExercise);
       }
     } catch (Exception e) {
-      log.with("caseId", actionCaseId)
-          .with("actionTemplate", templateType)
-          .with("actionHandler", templateHandler)
-          .with("exception", e)
+      log, kv("caseId", actionCaseId)
+          , kv("actionTemplate", templateType)
+          , kv("actionHandler", templateHandler)
+          , kv("exception", e)
           .warn("Processing Email Event FAILED.");
       isSuccess = false;
       asyncEmailCallStatus.set(false);
@@ -181,9 +181,9 @@ public class ProcessEmailActionService {
       CaseActionTemplate caseActionTemplate,
       CaseAction caseAction,
       CollectionExerciseDTO collectionExercise) {
-    log.with("template", caseActionTemplate.getType())
-        .with("case", caseAction.getCaseId())
-        .with("handler", caseActionTemplate.getHandler())
+    log, kv("template", caseActionTemplate.getType())
+        , kv("case", caseAction.getCaseId())
+        , kv("handler", caseActionTemplate.getHandler())
         .info("Collecting email data.");
     String sampleUnitRef = caseAction.getSampleUnitRef();
     Classifiers classifiers = getClassifiers(businessParty, survey, caseActionTemplate);
@@ -198,9 +198,9 @@ public class ProcessEmailActionService {
                 .emailAddress(respondentParty.getAttributes().getEmailAddress())
                 .reference(survey.getSurveyRef() + "-" + sampleUnitRef)
                 .build());
-    log.with("template", caseActionTemplate.getType())
-        .with("case", caseAction.getCaseId())
-        .with("handler", caseActionTemplate.getHandler())
+    log, kv("template", caseActionTemplate.getType())
+        , kv("case", caseAction.getCaseId())
+        , kv("handler", caseActionTemplate.getHandler())
         .info("sending email data to pubsub.");
     emailService.processEmail(payload);
   }

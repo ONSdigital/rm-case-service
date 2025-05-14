@@ -32,8 +32,8 @@ public class CaseActionEventEndpoint {
       consumes = "application/json")
   public ResponseEntity processEvents(@RequestBody @Valid CaseActionEvent event)
       throws ExecutionException, InterruptedException, JsonProcessingException {
-    log.with("collectionExercise", event.getCollectionExerciseID())
-        .with("EventTag", event.getTag())
+    log, kv("collectionExercise", event.getCollectionExerciseID())
+        , kv("EventTag", event.getTag())
         .info("Processing Event");
     processEventService.processEvents(event);
     return ResponseEntity.accepted().body(null);

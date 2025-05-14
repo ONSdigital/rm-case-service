@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.service;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import java.sql.Timestamp;
 import java.time.Clock;
 import org.slf4j.Logger;
@@ -96,7 +98,7 @@ public class CaseIACService {
         .forEach(
             caseIacAudit -> {
               if (!iacClient.disableIAC(caseIacAudit.getIac())) {
-                log.with("caseId", caze.getId()).error("Failed to disable an IAC for case");
+                log.error("Failed to disable an IAC for case", kv("caseId", caze.getId()));
               }
             });
   }

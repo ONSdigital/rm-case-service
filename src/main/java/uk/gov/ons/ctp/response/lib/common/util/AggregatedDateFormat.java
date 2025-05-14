@@ -29,7 +29,7 @@ public class AggregatedDateFormat extends DateFormat {
   @Override
   public StringBuffer format(
       final Date date, final StringBuffer toAppendTo, final FieldPosition fieldPosition) {
-    log.with("date", date).trace("Formatting date to string");
+    log, kv("date", date).trace("Formatting date to string");
     return outputFormat.format(date, toAppendTo, fieldPosition);
   }
 
@@ -49,7 +49,7 @@ public class AggregatedDateFormat extends DateFormat {
 
   @Override
   public Date parse(final String source, final ParsePosition pos) {
-    log.with("string", source).trace("Parsing string to date");
+    log, kv("string", source).trace("Parsing string to date");
     return Arrays.stream(inputFormats).map(d -> d.parse(source, pos)).findFirst().orElse(null);
   }
 }

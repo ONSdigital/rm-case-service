@@ -28,11 +28,11 @@ public class ActionTemplateService {
     Handler handler = isActiveEnrolment ? Handler.EMAIL : Handler.LETTER;
     CaseActionTemplate template = actionTemplateRepository.findByTagAndHandler(tag, handler);
     if (template == null) {
-      log.with("tag", tag)
-          .with("activeEnrolment", isActiveEnrolment)
+      log, kv("tag", tag)
+          , kv("activeEnrolment", isActiveEnrolment)
           .warn("No Template registered against the event and active enrolment");
     }
-    log.with("tag", tag).with("activeEnrolment", isActiveEnrolment).debug("Template Found");
+    log, kv("tag", tag), kv("activeEnrolment", isActiveEnrolment).debug("Template Found");
     return template;
   }
 }

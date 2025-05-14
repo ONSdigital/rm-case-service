@@ -62,7 +62,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   @RequestMapping(value = "/{caseGroupId}", method = RequestMethod.GET)
   public CaseGroupDTO findCaseGroupById(@PathVariable("caseGroupId") final UUID caseGroupId)
       throws CTPException {
-    log.with("case_group_id").debug("Entering findCaseGroupById");
+    log, kv("case_group_id").debug("Entering findCaseGroupById");
     CaseGroup caseGroupObj = caseGroupService.findCaseGroupById(caseGroupId);
     if (caseGroupObj == null) {
       throw new CTPException(
@@ -76,7 +76,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   @RequestMapping(value = "/cases/{collectionExerciseId}", method = RequestMethod.GET)
   public ResponseEntity findNumberOfCases(
       @PathVariable("collectionExerciseId") final UUID collectionExerciseId) throws CTPException {
-    log.with("collectionExerciseId", collectionExerciseId)
+    log, kv("collectionExerciseId", collectionExerciseId)
         .debug("Finding number of cases against collectionExercise");
     Long numberOfCases =
         caseGroupService.getNumberOfCasesAgainstCollectionExerciseId(collectionExerciseId);
@@ -89,7 +89,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
     // TODO: This endpoint needs to be combined with findNumberOfCases and given a sensible
     // implementation.
     // This is being added now to fix a production issue quickly.
-    log.with("collectionExerciseId", collectionExerciseId)
+    log, kv("collectionExerciseId", collectionExerciseId)
         .debug("Finding all cases against collectionExercise");
     Long numberOfCases =
         caseGroupService.getAllCasesAgainstCollectionExerciseId(collectionExerciseId);
@@ -105,7 +105,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   @RequestMapping(value = "/partyid/{partyId}", method = RequestMethod.GET)
   public ResponseEntity<List<CaseGroupDTO>> findCaseGroupsByPartyId(
       @PathVariable("partyId") final UUID partyId) {
-    log.with("party_id", partyId).debug("Retrieving case groups by party id");
+    log, kv("party_id", partyId).debug("Retrieving case groups by party id");
 
     List<CaseGroup> caseGroupList = caseGroupService.findCaseGroupByPartyId(partyId);
 
@@ -133,8 +133,8 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
       @PathVariable("collectionExerciseId") final UUID collectionExerciseId,
       @PathVariable("ruRef") final String ruRef)
       throws CTPException {
-    log.with("collection_exercise_id", collectionExerciseId)
-        .with("ru_ref", ruRef)
+    log, kv("collection_exercise_id", collectionExerciseId)
+        , kv("ru_ref", ruRef)
         .debug("Retrieving casegroup transistions");
     CaseGroup caseGroupObj =
         caseGroupService.findCaseGroupByCollectionExerciseIdAndRuRef(collectionExerciseId, ruRef);
@@ -168,11 +168,11 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   public ResponseEntity<DeletedObject> deleteCaseDataByCollectionExercise(
       @PathVariable UUID collectionExerciseId) {
 
-    log.with("collection_exercise_id", collectionExerciseId).info("Deleting cases");
+    log, kv("collection_exercise_id", collectionExerciseId).info("Deleting cases");
 
     int deletedRows = caseGroupService.deleteCaseGroupByCollectionExerciseId(collectionExerciseId);
 
-    log.with("collection_exercise_id", collectionExerciseId)
+    log, kv("collection_exercise_id", collectionExerciseId)
         .info("Deleted {} expected casegroups successfully", deletedRows);
 
     DeletedObject deletedObject = DeletedObject.builder().deleted(deletedRows).build();

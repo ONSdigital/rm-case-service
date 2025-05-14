@@ -39,18 +39,18 @@ public class CaseReceiptPubSubSubscription {
     MessageReceiver receiver = createMessageReceiver();
     Subscriber subscriber = pubSub.getCaseReceiptSubscriber(receiver);
     subscriber.startAsync().awaitRunning();
-    log.with("subscription", subscriptionName.toString())
+    log, kv("subscription", subscriptionName.toString())
         .info("Listening for messages on subscription");
   }
 
   public MessageReceiver createMessageReceiver() {
     return (PubsubMessage message, AckReplyConsumer consumer) -> {
       String payload = message.getData().toStringUtf8();
-      log.with("payload", payload).info("Received a receipt");
+      log, kv("payload", payload).info("Received a receipt");
       try {
         ObjectMapper mapper = new ObjectMapper();
         CaseReceipt receipt = mapper.readValue(payload, CaseReceipt.class);
-        log.with("receipt", receipt).debug("Successfully serialised receipt");
+        log, kv("receipt", receipt).debug("Successfully serialised receipt");
         try {
           caseReceiptReceiver.process(receipt);
         } catch (CTPException e) {

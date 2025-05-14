@@ -40,15 +40,15 @@ public class CaseReceiptReceiver {
    */
   @Transactional(propagation = Propagation.REQUIRED, value = "transactionManager")
   public void process(CaseReceipt caseReceipt) throws CTPException {
-    log.with("case_receipt", caseReceipt).info("Processing case receipt");
+    log, kv("case_receipt", caseReceipt).info("Processing case receipt");
     UUID caseId = UUID.fromString(caseReceipt.getCaseId());
     Timestamp responseTimestamp = dateTimeUtil.getNowUTC();
 
     Case existingCase = caseService.findCaseById(caseId);
-    log.with("existing_case", existingCase).debug("Found existing case");
+    log, kv("existing_case", existingCase).debug("Found existing case");
 
     if (existingCase == null) {
-      log.with("case_id", caseId).error(EXISTING_CASE_NOT_FOUND);
+      log, kv("case_id", caseId).error(EXISTING_CASE_NOT_FOUND);
     } else {
       CaseEvent caseEvent = new CaseEvent();
       String partyId = caseReceipt.getPartyId();
@@ -59,12 +59,12 @@ public class CaseReceiptReceiver {
       }
       caseEvent.setCaseFK(existingCase.getCasePK());
       caseEvent.setCategory(OFFLINE_RESPONSE_PROCESSED);
-      log.with("case_event", caseEvent.getCategory()).info("New case event");
+      log, kv("case_event", caseEvent.getCategory()).info("New case event");
       caseEvent.setCreatedBy(SYSTEM);
       caseEvent.setDescription(QUESTIONNAIRE_RESPONSE);
       log.debug("about to invoke the event creation...");
       caseService.createCaseEvent(caseEvent, responseTimestamp);
     }
-    log.with("case_receipt", caseReceipt).info("Case receipt processing complete");
+    log, kv("case_receipt", caseReceipt).info("Case receipt processing complete");
   }
 }

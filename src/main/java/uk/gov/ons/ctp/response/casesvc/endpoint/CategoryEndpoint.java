@@ -37,7 +37,7 @@ public final class CategoryEndpoint implements CTPEndpoint {
   public ResponseEntity<List<CategoryDTO>> findCategories(
       @RequestParam(value = "role", required = false) final String role,
       @RequestParam(value = "group", required = false) final String group) {
-    log.with("role", role).debug("Entering findCategories");
+    log, kv("role", role).debug("Entering findCategories");
 
     List<Category> categories = categoryService.findCategories(role, group);
     List<CategoryDTO> categoryDTOs = ObjectConverter.categoryDTO(categories);

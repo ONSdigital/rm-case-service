@@ -41,7 +41,7 @@ public class TestHelper {
   public static String createTestDate(String date) {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
     ZonedDateTime zdt = ZonedDateTime.parse(date, formatter);
-    ZonedDateTime compareDate = zdt.withZoneSameInstant(ZoneOffset.systemDefault());
+    ZonedDateTime compareDate = zdt, kvZoneSameInstant(ZoneOffset.systemDefault());
     return formatter.format(compareDate);
   }
 }

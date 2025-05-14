@@ -60,7 +60,7 @@ public class CollectionExerciseSvcClient {
 
     HttpEntity<?> httpEntity = restUtility.createHttpEntity(null);
 
-    log.with("collection_exercise_id").debug("Retrieving collection exercise");
+    log, kv("collection_exercise_id").debug("Retrieving collection exercise");
     ResponseEntity<CollectionExerciseDTO> responseEntity =
         restTemplate.exchange(
             uriComponents.toUri(), HttpMethod.GET, httpEntity, CollectionExerciseDTO.class);
@@ -101,9 +101,9 @@ public class CollectionExerciseSvcClient {
    */
   public void createCollectionExercise(
       final UUID surveyId, final String exerciseRef, final String userDescription) {
-    log.with("survey_id", surveyId)
-        .with("exercise_ref", exerciseRef)
-        .with("user_description", userDescription)
+    log, kv("survey_id", surveyId)
+        , kv("exercise_ref", exerciseRef)
+        , kv("user_description", userDescription)
         .debug("Creating a collection exercise");
     CollectionExerciseDTO collex = new CollectionExerciseDTO();
     final UriComponents uriComponents =

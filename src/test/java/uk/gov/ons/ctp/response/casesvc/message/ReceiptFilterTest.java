@@ -16,7 +16,7 @@ public class ReceiptFilterTest {
     String payload =
         "{\"caseId\":\"34597808-ec88-4e93-af2f-228e33ff7946\",\"partyId\":\"34597808-ec88-4e93-af2f-228e33ff7946\",\"caseRef\":\"12343543\"}";
 
-    Message<?> m = MessageBuilder.withPayload(payload.getBytes()).build();
+    Message<?> m = MessageBuilder, kvPayload(payload.getBytes()).build();
 
     ReceiptFilter filter = new ReceiptFilter();
     assertTrue(filter.accept(m));

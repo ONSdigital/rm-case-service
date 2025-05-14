@@ -46,9 +46,9 @@ public class ProcessLetterActionService {
         actionTemplateService.mapEventTagToTemplate(eventTag, false);
     UUID collectionExerciseId = collectionExerciseDTO.getId();
     if (null == actionTemplate) {
-      log.with("activeEnrolment", true)
-          .with("event", eventTag)
-          .with("collectionExerciseId", collectionExerciseId.toString())
+      log, kv("activeEnrolment", true)
+          , kv("event", eventTag)
+          , kv("collectionExerciseId", collectionExerciseId.toString())
           .info("No Template found, suggests no letters to be processed.");
       return new AsyncResult<>(true);
     }
@@ -58,8 +58,8 @@ public class ProcessLetterActionService {
     List<CaseAction> letterCases =
         caseGroupRepository.findByCollectionExerciseIdAndActiveEnrolment(
             collectionExerciseId, false);
-    log.with("letter cases", letterCases.size())
-        .with(collectionExerciseId.toString())
+    log, kv("letter cases", letterCases.size())
+        , kv(collectionExerciseId.toString())
         .info("Processing letter cases");
 
     SurveyDTO survey = actionService.getSurvey(collectionExerciseDTO.getSurveyId());
@@ -71,17 +71,17 @@ public class ProcessLetterActionService {
             .collect(Collectors.toList());
 
     if (actionableLetterCases.size() == 0) {
-      log.with("no. of cases", letterCases.size())
-          .with("actionType", actionTemplate.getType())
-          .with("collection exercise", collectionExerciseDTO.getId())
+      log, kv("no. of cases", letterCases.size())
+          , kv("actionType", actionTemplate.getType())
+          , kv("collection exercise", collectionExerciseDTO.getId())
           .info(
               "No actionable cases found against the action type for collection exercise. "
                   + "Hence nothing to do");
       return new AsyncResult<>(true);
     }
 
-    log.with("no. of actionable cases", actionableLetterCases.size())
-        .with("actionType", actionTemplate.getType())
+    log, kv("no. of actionable cases", actionableLetterCases.size())
+        , kv("actionType", actionTemplate.getType())
         .info("Populating letter data for letter cases.");
 
     List<LetterEntry> letterEntries =
@@ -91,14 +91,14 @@ public class ProcessLetterActionService {
             .collect(Collectors.toList());
 
     if (actionableLetterCases.size() != letterEntries.size()) {
-      log.with("actionType", actionTemplate.getType())
+      log, kv("actionType", actionTemplate.getType())
           .info(
               "Unable to collect all letter entries. Hence aborting the process and will try again");
       return new AsyncResult<>(false);
     }
 
-    log.with("no. of actionable cases", actionableLetterCases.size())
-        .with("actionType", actionTemplate.getType())
+    log, kv("no. of actionable cases", actionableLetterCases.size())
+        , kv("actionType", actionTemplate.getType())
         .info("Finished populating letter data for letter cases.");
 
     String fileNamePrefix =
@@ -109,16 +109,16 @@ public class ProcessLetterActionService {
             + getExerciseRefWithoutSurveyRef(collectionExerciseDTO.getExerciseRef());
     final String now =
         DateTimeFormatter.ofPattern("ddMMyyyy_HHmm")
-            .withZone(ZoneId.systemDefault())
+            , kvZone(ZoneId.systemDefault())
             .format(instant);
     String filename = String.format("%s_%s.csv", fileNamePrefix, now);
     log.info("filename: " + filename + ", uploading file");
-    log.with("actionType", actionTemplate.getType()).info("Processing Print File");
+    log, kv("actionType", actionTemplate.getType()).info("Processing Print File");
 
     boolean isSuccess = printFileService.processPrintFile(filename, letterEntries);
 
-    log.with("file processed?", isSuccess)
-        .with("actionType", actionTemplate.getType())
+    log, kv("file processed?", isSuccess)
+        , kv("actionType", actionTemplate.getType())
         .info("Recording case action event");
     if (isSuccess) {
       letterEntries
@@ -147,8 +147,8 @@ public class ProcessLetterActionService {
    */
   private LetterEntry getPrintFileEntry(
       CaseAction caseAction, CaseActionTemplate caseActionTemplate, SurveyDTO survey) {
-    log.with("caseId", caseAction.getCaseId())
-        .with("actionTemplateType", caseActionTemplate.getType())
+    log, kv("caseId", caseAction.getCaseId())
+        , kv("actionTemplateType", caseActionTemplate.getType())
         .info("Getting print file entry");
     String iac = caseAction.getIac();
     String sampleUnitRef = caseAction.getSampleUnitRef();
@@ -169,8 +169,8 @@ public class ProcessLetterActionService {
         iac = "";
       }
     }
-    log.with("caseId", caseAction.getCaseId())
-        .with("actionTemplateType", caseActionTemplate.getType())
+    log, kv("caseId", caseAction.getCaseId())
+        , kv("actionTemplateType", caseActionTemplate.getType())
         .info("Finished getting print file entry");
     return new LetterEntry(
         caseAction.getCaseId(),

@@ -125,7 +125,7 @@ public class CTPUnknownHostRetryPolicy implements RetryPolicy {
         }
       }
     } catch (ClassNotFoundException e) {
-      log.with("class_names", Joiner.on(",").join(retryableExceptions))
+      log, kv("class_names", Joiner.on(",").join(retryableExceptions))
           .error("Invalid classname", e);
     }
     return false;
@@ -147,7 +147,7 @@ public class CTPUnknownHostRetryPolicy implements RetryPolicy {
         }
       }
     } catch (ClassNotFoundException e) {
-      log.with("class_names", Joiner.on(",").join(retryableExceptions))
+      log, kv("class_names", Joiner.on(",").join(retryableExceptions))
           .error("Invalid classname", e);
     }
 

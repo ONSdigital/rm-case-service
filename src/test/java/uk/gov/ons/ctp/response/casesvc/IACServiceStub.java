@@ -21,17 +21,16 @@ public class IACServiceStub {
     stubFor(
         post(urlPathEqualTo("/iacs"))
             .willReturn(
-                aResponse()
-                    .withHeader("Content-Type", "application/json")
-                    .withBody("[\"{{randomValue length=12 type='ALPHANUMERIC' lowercase=true}}\"]")
-                    .withTransformers("response-template")));
+                aResponse(),
+                kvHeader("Content-Type", "application/json"),
+                kvBody("[\"{{randomValue length=12 type='ALPHANUMERIC' lowercase=true}}\"]"),
+                kvTransformers("response-template")));
   }
 
   public void disableIACStub() {
     log.info("Stubbing IAC Service PUT /iacs/{iac} endpoint");
     stubFor(
         put(urlPathMatching("/iacs/[a-z0-9]{12}$"))
-            .willReturn(
-                aResponse().withHeader("Content-Type", "application/json").withStatus(200)));
+            .willReturn(aResponse(), kvHeader("Content-Type", "application/json"), kvStatus(200)));
   }
 }

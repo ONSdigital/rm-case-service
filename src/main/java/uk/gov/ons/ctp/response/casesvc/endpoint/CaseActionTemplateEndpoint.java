@@ -33,8 +33,8 @@ public class CaseActionTemplateEndpoint {
   @RequestMapping(method = RequestMethod.POST)
   public ResponseEntity<CaseActionTemplate> createActionTemplate(
       @RequestBody @Valid final CaseActionTemplate requestActionTemplate) {
-    log.with("templateName", requestActionTemplate.getType())
-        .with("description", requestActionTemplate.getDescription())
+    log, kv("templateName", requestActionTemplate.getType())
+        , kv("description", requestActionTemplate.getDescription())
         .debug("Recording a new action template");
     CaseActionTemplate createdTemplate = actionTemplateRepo.save(requestActionTemplate);
     return ResponseEntity.created(

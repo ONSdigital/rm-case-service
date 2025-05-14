@@ -92,10 +92,10 @@ public class PubSubEmulator {
       PubsubMessage pubsubMessage = PubsubMessage.newBuilder().setData(data).build();
       TopicName topicName = TopicName.of(PROJECT_ID, TOPIC_ID);
       Publisher publisher = getEmulatorPublisher(topicName);
-      log.with("publisher", publisher).info("Publishing message to pubsub emulator");
+      log, kv("publisher", publisher).info("Publishing message to pubsub emulator");
       ApiFuture<String> messageIdFuture = publisher.publish(pubsubMessage);
       String messageId = messageIdFuture.get();
-      log.with("messageId", messageId).info("Published message to pubsub emulator");
+      log, kv("messageId", messageId).info("Published message to pubsub emulator");
     } catch (IOException | InterruptedException | ExecutionException e) {
       log.error("Failed to publish message", e);
     }
@@ -107,10 +107,10 @@ public class PubSubEmulator {
       PubsubMessage pubsubMessage = PubsubMessage.newBuilder().setData(data).build();
       TopicName topicName = TopicName.of(PROJECT_ID, CASE_CREATION_TOPIC_ID);
       Publisher publisher = getEmulatorPublisher(topicName);
-      log.with("publisher", publisher).info("Publishing case creation message to pubsub emulator");
+      log, kv("publisher", publisher).info("Publishing case creation message to pubsub emulator");
       ApiFuture<String> messageIdFuture = publisher.publish(pubsubMessage);
       String messageId = messageIdFuture.get();
-      log.with("messageId", messageId).info("Published case creation message to pubsub emulator");
+      log, kv("messageId", messageId).info("Published case creation message to pubsub emulator");
     } catch (IOException | InterruptedException | ExecutionException e) {
       log.error("Failed to publish message", e);
     }
