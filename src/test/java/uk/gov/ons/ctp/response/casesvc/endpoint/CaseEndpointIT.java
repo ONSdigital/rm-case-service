@@ -3,6 +3,7 @@ package uk.gov.ons.ctp.response.casesvc.endpoint;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
@@ -69,6 +70,7 @@ public class CaseEndpointIT {
     caseEventRepository.deleteAll();
     caseRepository.deleteAll();
     caseGroupRepository.deleteAll();
+    WireMock.configureFor(18002);
   }
 
   @After
