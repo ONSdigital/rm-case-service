@@ -32,6 +32,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseState;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.common.FixtureHelper;
+import uk.gov.ons.ctp.response.lib.common.error.CTPException;
 import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManager;
 import uk.gov.ons.ctp.response.lib.sample.SampleUnitDTO;
 
@@ -202,7 +203,7 @@ public class CaseCreationServiceTest {
    * Create a Case and a Casegroup from the message that would be on the Case Delivery Queue. Child
    * party present.
    */
-  @Test
+  @Test(expected = CTPException.class)
   public void testCreateCaseAndCaseGroupDoesNothingIfDuplicate() throws Exception {
 
     SampleUnit sampleUnitChild = new SampleUnit();
@@ -237,6 +238,7 @@ public class CaseCreationServiceTest {
     caseService.createInitialCase(sampleUnitParent);
 
     // then nothing should be saved
+
     verify(caseGroupRepo, times(1)).saveAndFlush(any(CaseGroup.class));
     verify(caseRepo, times(0)).saveAndFlush(any(Case.class));
   }
