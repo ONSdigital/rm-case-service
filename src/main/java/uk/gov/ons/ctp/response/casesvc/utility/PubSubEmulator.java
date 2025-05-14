@@ -1,7 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.utility;
 
-import com.godaddy.logging.Logger;
-import com.godaddy.logging.LoggerFactory;
+// import com.godaddy.logging.Logger;
+// import com.godaddy.logging.LoggerFactory;
 import com.google.api.core.ApiFuture;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
@@ -23,7 +23,7 @@ import java.util.concurrent.ExecutionException;
  * function
  */
 public class PubSubEmulator {
-  private static final Logger log = LoggerFactory.getLogger(PubSubEmulator.class);
+  // private static final Logger log = LoggerFactory.getLogger(PubSubEmulator.class);
   private static final String HOST_PORT = "localhost:18681";
   public static final ManagedChannel CHANNEL =
       ManagedChannelBuilder.forTarget(HOST_PORT).usePlaintext().build();
@@ -92,12 +92,12 @@ public class PubSubEmulator {
       PubsubMessage pubsubMessage = PubsubMessage.newBuilder().setData(data).build();
       TopicName topicName = TopicName.of(PROJECT_ID, TOPIC_ID);
       Publisher publisher = getEmulatorPublisher(topicName);
-      log.with("publisher", publisher).info("Publishing message to pubsub emulator");
+      // log.with("publisher", publisher).info("Publishing message to pubsub emulator");
       ApiFuture<String> messageIdFuture = publisher.publish(pubsubMessage);
       String messageId = messageIdFuture.get();
-      log.with("messageId", messageId).info("Published message to pubsub emulator");
+      // log.with("messageId", messageId).info("Published message to pubsub emulator");
     } catch (IOException | InterruptedException | ExecutionException e) {
-      log.error("Failed to publish message", e);
+      // log.error("Failed to publish message", e);
     }
   }
 
@@ -107,12 +107,14 @@ public class PubSubEmulator {
       PubsubMessage pubsubMessage = PubsubMessage.newBuilder().setData(data).build();
       TopicName topicName = TopicName.of(PROJECT_ID, CASE_CREATION_TOPIC_ID);
       Publisher publisher = getEmulatorPublisher(topicName);
-      log.with("publisher", publisher).info("Publishing case creation message to pubsub emulator");
+      // log.with("publisher", publisher).info("Publishing case creation message to pubsub
+      // emulator");
       ApiFuture<String> messageIdFuture = publisher.publish(pubsubMessage);
       String messageId = messageIdFuture.get();
-      log.with("messageId", messageId).info("Published case creation message to pubsub emulator");
+      // log.with("messageId", messageId).info("Published case creation message to pubsub
+      // emulator");
     } catch (IOException | InterruptedException | ExecutionException e) {
-      log.error("Failed to publish message", e);
+      // log.error("Failed to publish message", e);
     }
   }
 

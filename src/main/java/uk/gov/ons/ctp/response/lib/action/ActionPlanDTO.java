@@ -1,9 +1,9 @@
 package uk.gov.ons.ctp.response.lib.action;
 
+import jakarta.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
-import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;

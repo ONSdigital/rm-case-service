@@ -1,7 +1,13 @@
 package uk.gov.ons.ctp.response.casesvc.service.action.email;
 
-import com.godaddy.logging.Logger;
-import com.godaddy.logging.LoggerFactory;
+// TODO: if we don't include com.github.tomakehurst:wiremock:2.27.2 in the POM
+// (even trying to update to org.wiremock:wiremock-standalone:3.9.1 sees the same error)
+// we see Class versions V1_5 or less must use F_NEW frames
+// when godaddy logging is called
+// we're commenting out the logging calls in this class to prove the error doesn't get thrown when
+// logging isn't called
+// import com.godaddy.logging.Logger;
+// import com.godaddy.logging.LoggerFactory;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -35,7 +41,7 @@ import uk.gov.ons.ctp.response.lib.survey.representation.SurveyDTO;
 
 @Service
 public class ProcessEmailActionService {
-  private static final Logger log = LoggerFactory.getLogger(ProcessEmailActionService.class);
+  // private static final Logger log = LoggerFactory.getLogger(ProcessEmailActionService.class);
   public static final String DATE_FORMAT_IN_REMINDER_EMAIL = "dd/MM/yyyy";
   @Autowired private AppConfig appConfig;
   @Autowired private ActionTemplateService actionTemplateService;
@@ -58,22 +64,22 @@ public class ProcessEmailActionService {
         actionTemplateService.mapEventTagToTemplate(eventTag, Boolean.TRUE);
     UUID collectionExerciseId = collectionExerciseDTO.getId();
     if (null == actionTemplate) {
-      log.with("activeEnrolment", true)
-          .with("event", eventTag)
-          .with("collectionExerciseId", collectionExerciseId.toString())
-          .info("No Email Action Template defined for this event.");
+      //      log.with("activeEnrolment", true)
+      //          .with("event", eventTag)
+      //          .with("collectionExerciseId", collectionExerciseId.toString())
+      //          .info("No Email Action Template defined for this event.");
       return new AsyncResult<>(true);
     }
     // Initial status of this async call will be considered as success unless the subsequent process
     // changes
     AtomicBoolean asyncEmailCallStatus = new AtomicBoolean(true);
-    log.debug("Getting Email cases against collectionExerciseId and event active enrolment");
+    //    log.debug("Getting Email cases against collectionExerciseId and event active enrolment");
     List<CaseAction> emailCases =
         caseGroupRepository.findByCollectionExerciseIdAndActiveEnrolment(
             collectionExerciseId, true);
-    log.with("email cases", emailCases.size())
-        .with(collectionExerciseId.toString())
-        .info("Processing email cases");
+    //    log.with("email cases", emailCases.size())
+    //        .with(collectionExerciseId.toString())
+    //        .info("Processing email cases");
     SurveyDTO survey = actionService.getSurvey(collectionExerciseDTO.getSurveyId());
     emailCases
         .parallelStream()
@@ -111,16 +117,16 @@ public class ProcessEmailActionService {
     UUID actionCaseId = caseAction.getCaseId();
     String templateType = caseActionTemplate.getType();
     Handler templateHandler = caseActionTemplate.getHandler();
-    log.with("caseId", actionCaseId)
-        .with("actionTemplate", templateType)
-        .with("actionHandler", templateHandler)
-        .info("Processing Email Event.");
+    //    log.with("caseId", actionCaseId)
+    //        .with("actionTemplate", templateType)
+    //        .with("actionHandler", templateHandler)
+    //        .info("Processing Email Event.");
     boolean isSuccess = true;
     try {
-      log.with("caseId", actionCaseId).info("Getting ActionCaseParty");
+      // log.with("caseId", actionCaseId).info("Getting ActionCaseParty");
       CaseActionParty actionCaseParty = actionService.setParties(caseAction, survey);
       if (isBusinessNotification(caseAction)) {
-        log.with("caseId", caseAction).info("Processing Email for isBusinessNotification true");
+        //  log.with("caseId", caseAction).info("Processing Email for isBusinessNotification true");
         actionCaseParty
             .getChildParties()
             .parallelStream()
@@ -134,7 +140,8 @@ public class ProcessEmailActionService {
                         caseAction,
                         collectionExercise));
       } else {
-        log.with("caseId", caseAction).info("Processing Email for isBusinessNotification false");
+        //  log.with("caseId", caseAction).info("Processing Email for isBusinessNotification
+        // false");
         processEmail(
             actionCaseParty.getParentParty(),
             actionCaseParty.getChildParties().get(0),
@@ -144,11 +151,11 @@ public class ProcessEmailActionService {
             collectionExercise);
       }
     } catch (Exception e) {
-      log.with("caseId", actionCaseId)
-          .with("actionTemplate", templateType)
-          .with("actionHandler", templateHandler)
-          .with("exception", e)
-          .warn("Processing Email Event FAILED.");
+      //  log.with("caseId", actionCaseId)
+      //          .with("actionTemplate", templateType)
+      //          .with("actionHandler", templateHandler)
+      //          .with("exception", e)
+      //          .warn("Processing Email Event FAILED.");
       isSuccess = false;
       asyncEmailCallStatus.set(false);
     }
@@ -181,10 +188,10 @@ public class ProcessEmailActionService {
       CaseActionTemplate caseActionTemplate,
       CaseAction caseAction,
       CollectionExerciseDTO collectionExercise) {
-    log.with("template", caseActionTemplate.getType())
-        .with("case", caseAction.getCaseId())
-        .with("handler", caseActionTemplate.getHandler())
-        .info("Collecting email data.");
+    //    log.with("template", caseActionTemplate.getType())
+    //        .with("case", caseAction.getCaseId())
+    //        .with("handler", caseActionTemplate.getHandler())
+    //        .info("Collecting email data.");
     String sampleUnitRef = caseAction.getSampleUnitRef();
     Classifiers classifiers = getClassifiers(businessParty, survey, caseActionTemplate);
     Personalisation personalisation =
@@ -198,10 +205,10 @@ public class ProcessEmailActionService {
                 .emailAddress(respondentParty.getAttributes().getEmailAddress())
                 .reference(survey.getSurveyRef() + "-" + sampleUnitRef)
                 .build());
-    log.with("template", caseActionTemplate.getType())
-        .with("case", caseAction.getCaseId())
-        .with("handler", caseActionTemplate.getHandler())
-        .info("sending email data to pubsub.");
+    //    log.with("template", caseActionTemplate.getType())
+    //        .with("case", caseAction.getCaseId())
+    //        .with("handler", caseActionTemplate.getHandler())
+    //        .info("sending email data to pubsub.");
     emailService.processEmail(payload);
   }
 
@@ -221,7 +228,7 @@ public class ProcessEmailActionService {
       SurveyDTO survey,
       String sampleUnitRef,
       CollectionExerciseDTO collectionExercise) {
-    log.info("collecting personalisation for email");
+    //    log.info("collecting personalisation for email");
     DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_IN_REMINDER_EMAIL);
     return Personalisation.builder()
         .firstname(respondentParty.getAttributes().getFirstName())
@@ -246,7 +253,7 @@ public class ProcessEmailActionService {
    */
   private Classifiers getClassifiers(
       PartyDTO businessParty, SurveyDTO survey, CaseActionTemplate caseActionTemplate) {
-    log.info("collecting classifiers for email");
+    // log.info("collecting classifiers for email");
     String formType =
         isMultipleTemplateSurvey(businessParty, survey)
             ? businessParty.getAttributes().getFormType()
@@ -297,7 +304,7 @@ public class ProcessEmailActionService {
   }
 
   private String generateTradingStyle(final Attributes businessUnitAttributes) {
-    log.info("Generate trading style");
+    //  log.info("Generate trading style");
     final List<String> tradeStyles =
         Arrays.asList(
             businessUnitAttributes.getTradstyle1(),

@@ -351,7 +351,15 @@ public final class CaseEndpointUnitTest {
 
     ResultActions actions =
         mockMvc.perform(getJson(String.format("/cases/partyid/%s", EXISTING_PARTY_UUID)));
-
+    // TODO: if we don't include com.github.tomakehurst:wiremock:2.27.2 in the POM
+    // (even trying to update to org.wiremock:wiremock-standalone:3.9.1 sees the same error)
+    // we see this buried exception within the actions object resulting a in <server 500> in the
+    // test
+    // com.fasterxml.jackson.databind.JsonMappingException: Class versions V1_5 or less must use
+    // F_NEW frames.
+    // (through reference chain:
+    // java.util.ArrayList[0]->uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO["createdDateTime"])
+    // this is the same error we see when godadddy logging is invoked when the tests run
     actions.andExpect(status().is2xxSuccessful());
     actions.andExpect(handler().handlerType(CaseEndpoint.class));
     actions.andExpect(handler().methodName("findCasesByPartyId"));
