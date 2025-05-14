@@ -10,6 +10,8 @@ import org.springframework.retry.RetryPolicy;
 import org.springframework.retry.context.RetryContextSupport;
 import org.springframework.util.ClassUtils;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 /**
  * A RetryPolicy that will retry ONLY when the thrown exception's cause belongs to a list of
  * retryableExceptions (see the retryForException implementation).
@@ -111,8 +113,9 @@ public class CTPRetryPolicy implements RetryPolicy {
         }
       }
     } catch (ClassNotFoundException e) {
-      log, kv("class_names", Joiner.on(",").join(retryableExceptions))
-          .error("Invalid classname", e);
+      log.error("Invalid classname",
+          kv("exception", e),
+          kv("class_names", Joiner.on(",").join(retryableExceptions)));
     }
 
     return false;
