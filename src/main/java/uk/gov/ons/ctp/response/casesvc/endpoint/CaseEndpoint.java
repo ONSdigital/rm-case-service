@@ -34,6 +34,8 @@ import uk.gov.ons.ctp.response.lib.common.error.CTPException;
 import uk.gov.ons.ctp.response.lib.common.error.InvalidRequestException;
 import uk.gov.ons.ctp.response.lib.common.time.DateTimeUtil;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 /** The REST endpoint controller for CaseSvc Cases */
 @RestController
 @RequestMapping(value = "/cases", produces = "application/json")
@@ -78,7 +80,8 @@ public final class CaseEndpoint implements CTPEndpoint {
       @RequestParam(value = "caseevents", required = false) boolean caseevents,
       @RequestParam(value = "iac", required = false) boolean iac)
       throws CTPException {
-    log, kv("case_id", caseId).debug("Entering findCaseById");
+    log.debug("Entering findCaseById",
+        kv("case_id", caseId));
     Case caseObj = caseService.findCaseById(caseId);
     if (caseObj == null) {
       throw new CTPException(
@@ -129,9 +132,9 @@ public final class CaseEndpoint implements CTPEndpoint {
 
     List<Case> casesList;
     if (maxCasesPerSurvey != null) {
-      log, kv("party_id", partyId)
-          , kv("max_cases_per_survey", maxCasesPerSurvey)
-          .info("Retrieving cases by party");
+      log.info("Retrieving cases by party",
+          kv("party_id", partyId),
+          kv("max_cases_per_survey", maxCasesPerSurvey));
       casesList = caseService.findCasesByPartyIdLimitedPerSurvey(partyId, iac, maxCasesPerSurvey);
 
     } else {
@@ -158,7 +161,7 @@ public final class CaseEndpoint implements CTPEndpoint {
   @RequestMapping(value = "/surveyid/{surveyId}", method = RequestMethod.GET)
   public ResponseEntity<List<CaseDetailsDTO>> findCasesBySurveyId(
       @PathVariable("surveyId") final UUID surveyId) {
-    log, kv("survey_id", surveyId).debug("Retrieving cases by survey");
+    log.debug("Retrieving cases by survey", kv("survey_id", surveyId));
     List<CaseGroup> caseGroupsList = caseGroupService.findCaseGroupBySurveyId(surveyId);
     List<Case> cases = new ArrayList<>();
 
@@ -238,7 +241,7 @@ public final class CaseEndpoint implements CTPEndpoint {
       @PathVariable("casegroupId") final UUID casegroupId,
       @RequestParam(value = "iac", required = false) final boolean iacFlag)
       throws CTPException {
-    log, kv("case_group_id", casegroupId).debug("Entering findCasesInCaseGroup");
+    log.debug("Entering findCasesInCaseGroup", kv("case_group_id", casegroupId));
 
     CaseGroup caseGroup = caseGroupService.findCaseGroupById(casegroupId);
     if (caseGroup == null) {
@@ -273,7 +276,7 @@ public final class CaseEndpoint implements CTPEndpoint {
       @PathVariable("caseId") final UUID caseId,
       @RequestParam(value = "category", required = false) final List<String> categories)
       throws CTPException {
-    log, kv("case_id", caseId).debug("Entering findCaseEventsByCaseId");
+    log.debug("Entering findCaseEventsByCaseId", kv("case_id", caseId));
     Case caze = caseService.findCaseById(caseId);
     if (caze == null) {
       throw new CTPException(
@@ -314,9 +317,9 @@ public final class CaseEndpoint implements CTPEndpoint {
       @RequestBody @Valid final CaseEventCreationRequestDTO caseEventCreationRequestDTO,
       BindingResult bindingResult)
       throws CTPException, InvalidRequestException {
-    log, kv("case_id", caseId)
-        , kv("category", caseEventCreationRequestDTO.getCategory())
-        .debug("Creating case event");
+    log.debug("Creating case event",
+        kv("case_id", caseId),
+        kv("category", caseEventCreationRequestDTO.getCategory()));
     if (bindingResult.hasErrors()) {
       throw new InvalidRequestException("Binding errors for case event creation: ", bindingResult);
     }
