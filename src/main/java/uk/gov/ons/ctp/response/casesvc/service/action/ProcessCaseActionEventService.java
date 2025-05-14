@@ -23,6 +23,8 @@ import uk.gov.ons.ctp.response.casesvc.service.action.email.ProcessEmailActionSe
 import uk.gov.ons.ctp.response.casesvc.service.action.letter.ProcessLetterActionService;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 @Service
 public class ProcessCaseActionEventService {
   private static final Logger log = LoggerFactory.getLogger(ProcessCaseActionEventService.class);
@@ -51,9 +53,9 @@ public class ProcessCaseActionEventService {
       throws ExecutionException, InterruptedException, JsonProcessingException {
     UUID collectionExerciseId = event.getCollectionExerciseID();
     String eventTag = event.getTag().toString();
-    log, kv("collectionExerciseId", collectionExerciseId)
-        , kv("eventTag", eventTag)
-        .info("Started processing");
+    log.info("Started processing",
+        kv("collectionExerciseId", collectionExerciseId),
+        kv("eventTag", eventTag));
     Instant instant = Instant.now();
     CollectionExerciseDTO collectionExercise = getCollectionExercise(collectionExerciseId);
     // Check if ProcessActionEventRequest table for existing status else add it.
@@ -61,9 +63,10 @@ public class ProcessCaseActionEventService {
         actionEventRequestRepository.findByCollectionExerciseIdAndEventTag(
             collectionExerciseId, eventTag);
     if (!existingRequests.isEmpty()) {
-      log, kv("collectionExerciseId", collectionExerciseId)
-          , kv("eventTag", eventTag)
-          .warn("Aborting processing event as an existing request is in progress.");
+      log.warn("Aborting processing event as an existing request is in progress.",
+          kv("collectionExerciseId", collectionExerciseId),
+          kv("eventTag", eventTag)
+          );
       return;
     }
     CaseActionEventRequest newRequest =
@@ -74,38 +77,38 @@ public class ProcessCaseActionEventService {
             .status(ActionEventRequestStatus.INPROGRESS)
             .build();
     actionEventRequestRepository.save(newRequest);
-    log, kv("collectionExerciseId", collectionExerciseId)
-        , kv("eventTag", eventTag)
-        .info("Requested event is now in progress.");
-    log, kv("collectionExerciseId", collectionExerciseId)
-        , kv("eventTag", eventTag)
-        .debug("Requested event will now trigger email processing asynchronously.");
+    log.info("Requested event is now in progress.",
+        kv("collectionExerciseId", collectionExerciseId),
+        kv("eventTag", eventTag));
+    log.debug("Requested event will now trigger email processing asynchronously.",
+        kv("collectionExerciseId", collectionExerciseId),
+        kv("eventTag", eventTag));
     Future<Boolean> asyncEmailCall =
         processEmailService.processEmailService(collectionExercise, eventTag, instant);
-    log, kv("collectionExerciseId", collectionExerciseId)
-        , kv("eventTag", eventTag)
-        .debug("Requested event will now trigger letter processing asynchronously.");
+    log.debug("Requested event will now trigger letter processing asynchronously.",
+        kv("collectionExerciseId", collectionExerciseId),
+        kv("eventTag", eventTag));
     Future<Boolean> asyncLetterCall =
         processLetterService.processLetterService(collectionExercise, eventTag, instant);
     boolean emailStatus = asyncEmailCall.get();
     boolean letterStatus = asyncLetterCall.get();
     if (emailStatus && letterStatus) {
       newRequest.setStatus(ActionEventRequestStatus.COMPLETED);
-      log, kv("collectionExerciseId", collectionExerciseId)
-          , kv("eventTag", eventTag)
-          .info("Requested event is now successfully completed.");
+      log.info("Requested event is now successfully completed.",
+          kv("collectionExerciseId", collectionExerciseId),
+          kv("eventTag", eventTag));
     } else {
       newRequest.setStatus(ActionEventRequestStatus.RETRY);
-      log, kv("collectionExerciseId", collectionExerciseId)
-          , kv("eventTag", eventTag)
-          , kv("emailAsyncStatus", emailStatus)
-          , kv("letterAsyncStatus", letterStatus)
-          .info("Requested event was not successful, hence a retry will be initiated soon.");
+      log.info("Requested event was not successful, hence a retry will be initiated soon.",
+          kv("collectionExerciseId", collectionExerciseId),
+          kv("eventTag", eventTag),
+          kv("emailAsyncStatus", emailStatus),
+          kv("letterAsyncStatus", letterStatus));
     }
     actionEventRequestRepository.save(newRequest);
-    log, kv("collectionExerciseId", collectionExerciseId)
-        , kv("eventTag", eventTag)
-        .info("Processing finished.");
+    log.info("Processing finished.",
+        kv("collectionExerciseId", collectionExerciseId),
+        kv("eventTag", eventTag));
     updateCollectionExerciseEventStatus(newRequest, event);
   }
 
@@ -128,7 +131,7 @@ public class ProcessCaseActionEventService {
       caseActionEvent.setCollectionExerciseID(request.getCollectionExerciseId());
       caseActionEvent.setTag(CaseActionEvent.EventTag.valueOf(request.getEventTag()));
     }
-    log, kv("event", event).info("updating collection exercise event status");
+    log.info("updating collection exercise event status", kv("event", event));
     collectionExerciseEventStatusUpdate.sendToPubSub(
         objectMapper.writeValueAsString(caseActionEvent));
   }
@@ -148,23 +151,23 @@ public class ProcessCaseActionEventService {
       CollectionExerciseDTO collectionExercise =
           getCollectionExercise(existingRequest.getCollectionExerciseId());
       existingRequest.setStatus(ActionEventRequestStatus.INPROGRESS);
-      log, kv("collectionExerciseId", existingRequest.getCollectionExerciseId())
-          , kv("eventTag", existingRequest.getEventTag())
-          .debug("Retry event is now in progress.");
+      log.debug("Retry event is now in progress.",
+          kv("collectionExerciseId", existingRequest.getCollectionExerciseId()),
+          kv("eventTag", existingRequest.getEventTag()));
       actionEventRequestRepository.save(existingRequest);
       CaseActionEvent actionEvent = new CaseActionEvent();
       actionEvent.setTag(CaseActionEvent.EventTag.valueOf(existingRequest.getEventTag()));
       actionEvent.setCollectionExerciseID(existingRequest.getCollectionExerciseId());
 
-      log, kv("collectionExerciseId", existingRequest.getCollectionExerciseId())
-          , kv("eventTag", existingRequest.getEventTag())
-          .debug("Retry event will now trigger email processing asynchronously.");
+      log.debug("Retry event will now trigger email processing asynchronously.",
+          kv("collectionExerciseId", existingRequest.getCollectionExerciseId()),
+          kv("eventTag", existingRequest.getEventTag()));
       Future<Boolean> asyncEmailCall =
           processEmailService.processEmailService(
               collectionExercise, existingRequest.getEventTag(), instant);
-      log, kv("collectionExerciseId", existingRequest.getCollectionExerciseId())
-          , kv("eventTag", existingRequest.getEventTag())
-          .debug("Retry event will now trigger letter processing asynchronously.");
+      log.debug("Retry event will now trigger letter processing asynchronously.",
+          kv("collectionExerciseId", existingRequest.getCollectionExerciseId()),
+          kv("eventTag", existingRequest.getEventTag()));
       Future<Boolean> asyncLetterCall =
           processLetterService.processLetterService(
               collectionExercise, existingRequest.getEventTag(), instant);
@@ -173,14 +176,14 @@ public class ProcessCaseActionEventService {
       boolean letterStatus = asyncLetterCall.get();
       if (emailStatus && letterStatus) {
         existingRequest.setStatus(ActionEventRequestStatus.COMPLETED);
-        log, kv("collectionExerciseId", existingRequest.getCollectionExerciseId())
-            , kv("eventTag", existingRequest.getEventTag())
-            .debug("Retry event is now successfully completed");
+        log.debug("Retry event is now successfully completed",
+            kv("collectionExerciseId", existingRequest.getCollectionExerciseId()),
+            kv("eventTag", existingRequest.getEventTag()));
       } else {
         existingRequest.setStatus(ActionEventRequestStatus.FAILED);
-        log, kv("collectionExerciseId", existingRequest.getCollectionExerciseId())
-            , kv("eventTag", existingRequest.getEventTag())
-            .debug("Retry event has failed.");
+        log.debug("Retry event has failed.",
+            kv("collectionExerciseId", existingRequest.getCollectionExerciseId()),
+            kv("eventTag", existingRequest.getEventTag()));
       }
       actionEventRequestRepository.save(existingRequest);
       updateCollectionExerciseEventStatus(existingRequest, null);
@@ -195,7 +198,7 @@ public class ProcessCaseActionEventService {
    * @return
    */
   private CollectionExerciseDTO getCollectionExercise(UUID collectionExerciseId) {
-    log, kv("collectionExerciseId", collectionExerciseId).debug("Getting collectionExercise");
+    log.debug("Getting collectionExercise", kv("collectionExerciseId", collectionExerciseId));
     return collectionExerciseSvcClient.getCollectionExercise(collectionExerciseId);
   }
 }
