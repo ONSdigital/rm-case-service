@@ -7,6 +7,8 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionTemplate;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionTemplate.Handler;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseActionTemplateRepository;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 @Service
 public class ActionTemplateService {
   private static final Logger log = LoggerFactory.getLogger(ActionTemplateService.class);
@@ -28,11 +30,11 @@ public class ActionTemplateService {
     Handler handler = isActiveEnrolment ? Handler.EMAIL : Handler.LETTER;
     CaseActionTemplate template = actionTemplateRepository.findByTagAndHandler(tag, handler);
     if (template == null) {
-      log, kv("tag", tag)
-          , kv("activeEnrolment", isActiveEnrolment)
-          .warn("No Template registered against the event and active enrolment");
+      log.warn("No Template registered against the event and active enrolment",
+          kv("tag", tag),
+          kv("activeEnrolment", isActiveEnrolment));
     }
-    log, kv("tag", tag), kv("activeEnrolment", isActiveEnrolment).debug("Template Found");
+    log.debug("Template Found", kv("tag", tag), kv("activeEnrolment", isActiveEnrolment));
     return template;
   }
 }
