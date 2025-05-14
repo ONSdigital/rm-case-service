@@ -330,7 +330,8 @@ public class CaseService {
     }
 
     effectTargetCaseStateTransition(category, targetCase);
-    log.with("case_event", caseEvent).debug("Successfully created case event");
+    log.debug("Successfully created case event",
+        kv("case_event", caseEvent));
     return createdCaseEvent;
   }
 
@@ -343,8 +344,7 @@ public class CaseService {
       propagation = Propagation.REQUIRED,
       readOnly = false,
       timeout = TRANSACTION_TIMEOUT)
-  private void saveCaseIacAudit(final Case updatedCase) {
-    log.with("case_id", updatedCase.getId()).debug("Saving case iac audit");
+  protected void saveCaseIacAudit(final Case updatedCase) {
     log.debug("Saving case iac audit",
         kv("case_id", updatedCase.getId()));
     CaseIacAudit caseIacAudit = new CaseIacAudit();
@@ -363,13 +363,17 @@ public class CaseService {
   private void generateAndStoreNewIAC(final Case targetCase) {
     String iac = targetCase.getIac();
     if (iac == null || !internetAccessCodeSvcClient.isIacActive(iac)) {
-      log.with("case_id", targetCase.getId()).debug("Replacing existing case IAC");
+      log.debug("Replacing existing case IAC",
+            kv("case_id", targetCase.getId()));
+              
       String newIac = internetAccessCodeSvcClient.generateIACs(1).get(0);
       targetCase.setIac(newIac);
       caseRepo.saveAndFlush(targetCase);
       saveCaseIacAudit(targetCase);
     } else {
-      log.with("case_id", targetCase.getId()).debug("Existing IAC is still active");
+      log.debug("Existing IAC is still active",
+              kv("case_id", targetCase.getId()));
+
     }
   }
 
@@ -416,11 +420,10 @@ public class CaseService {
   public void createInitialCase(SampleUnitParent sampleUnitParent) throws CTPException {
     try {
       CaseGroup newCaseGroup = createNewCaseGroup(sampleUnitParent);
-      log.with("caseGroupId", newCaseGroup.getId())
-          .with("collectionExericseId", sampleUnitParent.getCollectionExerciseId())
-          .with("sampleUnitRef", sampleUnitParent.getSampleUnitRef())
-          .debug("Created new casegroup");
-
+      log.debug("Created new casegroup",
+              kv("caseGroupId", newCaseGroup.getId()),
+              kv("collectionExericseId", sampleUnitParent.getCollectionExerciseId()),
+              kv("sampleUnitRef", sampleUnitParent.getSampleUnitRef()));
       Category category = new Category();
       category.setShortDescription("Initial creation of case");
 
@@ -433,37 +436,36 @@ public class CaseService {
           Case childCase = createNewCase(sampleUnitChild, newCaseGroup);
           caseRepo.saveAndFlush(childCase);
           createCaseCreatedEvent(childCase, category);
-          log.with("caseId", childCase.getId().toString())
-              .with("sampleUnitType", childCase.getSampleUnitType().toString())
-              .with("sampleUnitRef", sampleUnitChild.getSampleUnitRef())
-              .with("collectionExericseId", sampleUnitParent.getCollectionExerciseId())
-              .debug("New child case created");
+          log.debug("New child case created",
+              kv("caseId", childCase.getId().toString()),
+              kv("sampleUnitType", childCase.getSampleUnitType().toString()),
+              kv("sampleUnitRef", sampleUnitChild.getSampleUnitRef()),
+              kv("collectionExericseId", sampleUnitParent.getCollectionExerciseId()));
           updateCaseWithIACs(childCase, sampleUnitParent.getSampleUnitRef());
           processCase(childCase);
         }
       }
       caseRepo.saveAndFlush(parentCase);
       createCaseCreatedEvent(parentCase, category);
-      log.with("caseId", parentCase.getId().toString())
-          .with("sampleUnitTupe", parentCase.getSampleUnitType().toString())
-          .with("sampleUnitRef", sampleUnitParent.getSampleUnitRef())
-          .with("collectionExericseId", sampleUnitParent.getCollectionExerciseId())
-          .info("New Case created");
+      log.info("New Case created",
+          kv("caseId", parentCase.getId().toString()),
+          kv("sampleUnitTupe", parentCase.getSampleUnitType().toString()),
+          kv("sampleUnitRef", sampleUnitParent.getSampleUnitRef()),
+          kv("collectionExericseId", sampleUnitParent.getCollectionExerciseId()));
       updateCaseWithIACs(parentCase, sampleUnitParent.getSampleUnitRef());
       processCase(parentCase);
     } catch (DataIntegrityViolationException exception) {
-      log.with("collectionExericseId", sampleUnitParent.getCollectionExerciseId())
-          .with("sampleUnitRef", sampleUnitParent.getSampleUnitRef())
-          .with("error", exception)
-          .warn("Case already exists. Ignoring case creation");
+      log.warn("Case already exists. Ignoring case creation",
+          kv("collectionExericseId", sampleUnitParent.getCollectionExerciseId()),
+          kv("sampleUnitRef", sampleUnitParent.getSampleUnitRef()),
+          kv("error", exception));
       throw new CTPException(CTPException.Fault.DUPLICATE_RECORD, exception.getMessage());
     }
   }
 
   @Async
-  private void processCase(final Case caze) throws CTPException {
-    log.with("case_id", caze.getId()).debug("Processing case");
-
+  protected void processCase(final Case caze) throws CTPException {
+    log.debug("Processing case", kv("case_id", caze.getId()));
     CaseDTO.CaseEvent event = null;
     CaseState initialState = caze.getState();
     switch (caze.getState()) {
@@ -474,7 +476,7 @@ public class CaseService {
         event = CaseDTO.CaseEvent.REPLACED;
         break;
       default:
-        log.with("initial_state", initialState).error("Unexpected state found");
+        log.error("Unexpected state found", kv("initial_state", initialState));
     }
 
     Case updatedCase = transitionCase(caze, event);
@@ -494,29 +496,31 @@ public class CaseService {
    */
   private void updateCaseWithIACs(Case createdCase, String sampleUnitRef) {
     try {
-      log.with("caseId", createdCase.getId().toString())
-          .with("sampleUnitRef", sampleUnitRef)
-          .info("About to call IAC service to generate an IAC code.");
+      log.info("About to call IAC service to generate an IAC code.",
+          kv("caseId", createdCase.getId().toString()),
+          kv("sampleUnitRef", sampleUnitRef));
       updateCaseWithIACs(createdCase);
-      log.with("caseId", createdCase.getId().toString())
-          .with("sampleUnitRef", sampleUnitRef)
-          .info("IAC received and saved");
+      log.info("IAC received and saved",
+          kv("caseId", createdCase.getId().toString()),
+          kv("sampleUnitRef", sampleUnitRef));
     } catch (Exception e) {
-      log.with("caseId", createdCase.getId().toString())
-          .with("sampleUnitRef", sampleUnitRef)
-          .error("Failed to obtain IAC codes", e);
+      log.error("Failed to obtain IAC codes",
+          kv("exception", e),
+          kv("caseId", createdCase.getId().toString()),
+          kv("sampleUnitRef", sampleUnitRef));
     }
   }
 
   public void updateCaseWithIACs(Case createdCase) {
-    log.with("caseId", createdCase.getId().toString())
-        .info("Calling IAC service to generate an IAC code.");
+    log.info("Calling IAC service to generate an IAC code.",
+        kv("caseId", createdCase.getId().toString()));
     String iac = internetAccessCodeSvcClient.generateIACs(1).get(0);
     createdCase.setIac(iac);
     Case updatedCase = caseRepo.saveAndFlush(createdCase);
     updatedCase.setIac(iac);
     saveCaseIacAudit(updatedCase);
-    log.with("caseId", createdCase.getId().toString()).info("Case updated with IAC code.");
+    log.info("Case updated with IAC code.",
+        kv("caseId", createdCase.getId().toString()));
   }
 
   /**
@@ -632,7 +636,8 @@ public class CaseService {
    * @param caseEventCategory the category of the event that led to the creation of the case
    */
   private void createCaseCreatedEvent(Case caze, Category caseEventCategory) {
-    log.with("caseId", caze.getId().toString()).info("Creating case event.");
+    log.info("Creating case event.",
+        kv("caseId", caze.getId().toString()));
     CaseEvent newCaseCaseEvent = new CaseEvent();
     newCaseCaseEvent.setCaseFK(caze.getCasePK());
     newCaseCaseEvent.setCategory(CategoryDTO.CategoryName.CASE_CREATED);
@@ -642,7 +647,8 @@ public class CaseService {
         String.format(CASE_CREATED_EVENT_DESCRIPTION, caseEventCategory.getShortDescription()));
 
     caseEventRepo.saveAndFlush(newCaseCaseEvent);
-    log.with("caseId", caze.getId().toString()).info("Case event saved.");
+    log.info("Case event saved.",
+        kv("caseId", caze.getId().toString()));
   }
 
   /**
@@ -671,7 +677,8 @@ public class CaseService {
     newCaseGroup.setSurveyId(UUID.fromString(collectionExercise.getSurveyId()));
 
     caseGroupRepo.saveAndFlush(newCaseGroup);
-    log.with("case_group_id", newCaseGroup.getId().toString()).debug("New CaseGroup created");
+    log.debug("New CaseGroup created",
+        kv("case_group_id", newCaseGroup.getId().toString()));
     return newCaseGroup;
   }
 
