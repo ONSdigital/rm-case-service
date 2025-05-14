@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.lib.common.retry;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import com.google.common.base.Joiner;
 import java.util.Collections;
 import java.util.List;
@@ -125,8 +127,10 @@ public class CTPUnknownHostRetryPolicy implements RetryPolicy {
         }
       }
     } catch (ClassNotFoundException e) {
-      log, kv("class_names", Joiner.on(",").join(retryableExceptions))
-          .error("Invalid classname", e);
+      log.error(
+          "Invalid classname",
+          kv("exception", e),
+          kv("class_names", Joiner.on(",").join(retryableExceptions)));
     }
     return false;
   }
@@ -147,8 +151,10 @@ public class CTPUnknownHostRetryPolicy implements RetryPolicy {
         }
       }
     } catch (ClassNotFoundException e) {
-      log, kv("class_names", Joiner.on(",").join(retryableExceptions))
-          .error("Invalid classname", e);
+      log.error(
+          "Invalid classname",
+          kv("exception", e),
+          kv("class_names", Joiner.on(",").join(retryableExceptions)));
     }
 
     return false;

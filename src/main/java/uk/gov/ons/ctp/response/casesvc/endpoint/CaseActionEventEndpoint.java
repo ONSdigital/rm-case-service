@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.Valid;
 import java.util.concurrent.ExecutionException;
@@ -32,9 +34,10 @@ public class CaseActionEventEndpoint {
       consumes = "application/json")
   public ResponseEntity processEvents(@RequestBody @Valid CaseActionEvent event)
       throws ExecutionException, InterruptedException, JsonProcessingException {
-    log, kv("collectionExercise", event.getCollectionExerciseID())
-        , kv("EventTag", event.getTag())
-        .info("Processing Event");
+    log.info(
+        "Processing Event",
+        kv("collectionExercise", event.getCollectionExerciseID()),
+        kv("EventTag", event.getTag()));
     processEventService.processEvents(event);
     return ResponseEntity.accepted().body(null);
   }

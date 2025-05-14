@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.utility;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import com.google.api.core.ApiFuture;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
@@ -92,10 +94,10 @@ public class PubSubEmulator {
       PubsubMessage pubsubMessage = PubsubMessage.newBuilder().setData(data).build();
       TopicName topicName = TopicName.of(PROJECT_ID, TOPIC_ID);
       Publisher publisher = getEmulatorPublisher(topicName);
-      log, kv("publisher", publisher).info("Publishing message to pubsub emulator");
+      log.info("Publishing message to pubsub emulator", kv("publisher", publisher));
       ApiFuture<String> messageIdFuture = publisher.publish(pubsubMessage);
       String messageId = messageIdFuture.get();
-      log, kv("messageId", messageId).info("Published message to pubsub emulator");
+      log.info("Published message to pubsub emulator", kv("messageId", messageId));
     } catch (IOException | InterruptedException | ExecutionException e) {
       log.error("Failed to publish message", e);
     }
@@ -107,12 +109,12 @@ public class PubSubEmulator {
       PubsubMessage pubsubMessage = PubsubMessage.newBuilder().setData(data).build();
       TopicName topicName = TopicName.of(PROJECT_ID, CASE_CREATION_TOPIC_ID);
       Publisher publisher = getEmulatorPublisher(topicName);
-      log, kv("publisher", publisher).info("Publishing case creation message to pubsub emulator");
+      log.info("Publishing case creation message to pubsub emulator", kv("publisher", publisher));
       ApiFuture<String> messageIdFuture = publisher.publish(pubsubMessage);
       String messageId = messageIdFuture.get();
-      log, kv("messageId", messageId).info("Published case creation message to pubsub emulator");
+      log.info("Published case creation message to pubsub emulator", kv("messageId", messageId));
     } catch (IOException | InterruptedException | ExecutionException e) {
-      log.error("Failed to publish message", e);
+      log.error("Failed to publish message", kv("exception", e));
     }
   }
 

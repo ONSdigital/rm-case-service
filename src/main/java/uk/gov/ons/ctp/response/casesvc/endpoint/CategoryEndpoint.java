@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +39,7 @@ public final class CategoryEndpoint implements CTPEndpoint {
   public ResponseEntity<List<CategoryDTO>> findCategories(
       @RequestParam(value = "role", required = false) final String role,
       @RequestParam(value = "group", required = false) final String group) {
-    log, kv("role", role).debug("Entering findCategories");
+    log.debug("Entering findCategories", kv("role", role));
 
     List<Category> categories = categoryService.findCategories(role, group);
     List<CategoryDTO> categoryDTOs = ObjectConverter.categoryDTO(categories);

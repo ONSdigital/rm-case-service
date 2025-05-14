@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.message;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.cloud.spring.pubsub.support.BasicAcknowledgeablePubsubMessage;
 import com.google.cloud.spring.pubsub.support.GcpPubSubHeaders;
@@ -33,40 +35,43 @@ public class CaseCreationReceiver {
       Message message,
       @Header(GcpPubSubHeaders.ORIGINAL_MESSAGE) BasicAcknowledgeablePubsubMessage pubSubMsg) {
     String messageId = pubSubMsg.getPubsubMessage().getMessageId();
-    log, kv("messageId", messageId).info("Receiving message ID from PubSub");
+    log.info("Receiving message ID from PubSub", kv("messageId", messageId));
     String payload = new String((byte[]) message.getPayload());
-    log, kv("payload", payload).info("New request for case notification");
+    log.info("New request for case notification", kv("payload", payload));
     try {
-      log, kv("messageId", messageId).info("Mapping payload to SampleUnitParent object");
+      log.info("Mapping payload to SampleUnitParent object", kv("messageId", messageId));
       SampleUnitParent caseCreation = objectMapper.readValue(payload, SampleUnitParent.class);
-      log, kv("messageId", messageId)
-          , kv("sampleUnitRef", caseCreation.getSampleUnitRef())
-          , kv("collectionExericseId", caseCreation.getCollectionExerciseId())
-          .info("Mapping successful, case creation process initiated");
+      log.info(
+          "Mapping successful, case creation process initiated",
+          kv("messageId", messageId),
+          kv("sampleUnitRef", caseCreation.getSampleUnitRef()),
+          kv("collectionExericseId", caseCreation.getCollectionExerciseId()));
       caseService.createInitialCase(caseCreation);
-      log, kv("messageId", messageId)
-          , kv("sampleUnitRef", caseCreation.getSampleUnitRef())
-          , kv("collectionExericseId", caseCreation.getCollectionExerciseId())
-          .info("Case creation successful. Acking message");
+      log.info(
+          "Case creation successful. Acking message",
+          kv("messageId", messageId),
+          kv("sampleUnitRef", caseCreation.getSampleUnitRef()),
+          kv("collectionExericseId", caseCreation.getCollectionExerciseId()));
       pubSubMsg.ack();
     } catch (CTPException e) {
       if (e.getFault() == CTPException.Fault.DUPLICATE_RECORD) {
-        log, kv("payload", payload).info("Case already exists. Acking message");
+        log.info("Case already exists. Acking message", kv("payload", payload));
         pubSubMsg.ack();
       } else {
         pubSubMsg.nack();
       }
     } catch (final IOException e) {
-      log, kv("messageId", messageId)
-          , kv(e)
-          .error(
-              "Something went wrong while processing message received from PubSub "
-                  + "for case creation notification. Nacking message");
+      log.error(
+          "Something went wrong while processing message received from PubSub "
+              + "for case creation notification. Nacking message",
+          kv("messageId", messageId),
+          kv("exception", e));
       pubSubMsg.nack();
     } catch (Exception e) {
-      log, kv("messageId", messageId)
-          , kv(e)
-          .error("An unexpected exception occurred during the case creation. Nacking message");
+      log.error(
+          "An unexpected exception occurred during the case creation. Nacking message",
+          kv("messageId", messageId),
+          kv("exception", e));
       pubSubMsg.nack();
     }
   }

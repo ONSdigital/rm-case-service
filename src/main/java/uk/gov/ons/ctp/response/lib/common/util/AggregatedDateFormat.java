@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.lib.common.util;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import java.text.DateFormat;
 import java.text.FieldPosition;
 import java.text.ParsePosition;
@@ -29,7 +31,7 @@ public class AggregatedDateFormat extends DateFormat {
   @Override
   public StringBuffer format(
       final Date date, final StringBuffer toAppendTo, final FieldPosition fieldPosition) {
-    log, kv("date", date).trace("Formatting date to string");
+    log.trace("Formatting date to string", kv("date", date));
     return outputFormat.format(date, toAppendTo, fieldPosition);
   }
 
@@ -49,7 +51,7 @@ public class AggregatedDateFormat extends DateFormat {
 
   @Override
   public Date parse(final String source, final ParsePosition pos) {
-    log, kv("string", source).trace("Parsing string to date");
+    log.trace("Parsing string to date", kv("string", source));
     return Arrays.stream(inputFormats).map(d -> d.parse(source, pos)).findFirst().orElse(null);
   }
 }

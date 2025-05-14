@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.service;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +25,7 @@ public class CaseGroupAuditService {
     auditEntity.setStatus(caseGroup.getStatus());
     auditEntity.setPartyId(partyId);
     auditEntity.setCreatedDateTime(caseGroup.getStatusChangeTimestamp());
-    log, kv("audit_entity", auditEntity).debug("Updating the caseGroupStatus");
+    log.debug("Updating the caseGroupStatus", kv("audit_entity", auditEntity));
     caseGroupStatusAuditRepository.saveAndFlush(auditEntity);
   }
 }

@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.service;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -46,7 +48,7 @@ public class CaseGroupService {
    * @return CaseGroup entity or null
    */
   public CaseGroup findCaseGroupByCaseGroupPK(final Integer caseGroupPK) {
-    log, kv("case_group_pk", caseGroupPK).debug("Entering findCaseGroupByCaseGroupId");
+    log.debug("Entering findCaseGroupByCaseGroupId", kv("case_group_pk", caseGroupPK));
     return caseGroupRepo.findById(caseGroupPK).orElse(null);
   }
 
@@ -57,7 +59,7 @@ public class CaseGroupService {
    * @return CaseGroup entity or null
    */
   public CaseGroup findCaseGroupById(final UUID id) {
-    log, kv("id", id).debug("Entering findCaseGroupById");
+    log.debug("Entering findCaseGroupById", kv("id", id));
     return caseGroupRepo.findById(id);
   }
 
@@ -68,7 +70,7 @@ public class CaseGroupService {
    * @return CaseGroup entity or null
    */
   public List<CaseGroup> findCaseGroupByPartyId(final UUID id) {
-    log, kv("id", id).debug("Entering findCaseGroupByPartyId");
+    log.debug("Entering findCaseGroupByPartyId", kv("id", id));
     return caseGroupRepo.findByPartyId(id);
   }
 
@@ -79,15 +81,16 @@ public class CaseGroupService {
    * @return CaseGroup entity or null
    */
   public List<CaseGroup> findCaseGroupBySurveyId(final UUID surveyId) {
-    log, kv("survey_id", surveyId).debug("Entering findCaseGroupByPartyId");
+    log.debug("Entering findCaseGroupByPartyId", kv("survey_id", surveyId));
     return caseGroupRepo.findBySurveyId(surveyId);
   }
 
   public CaseGroup findCaseGroupByCollectionExerciseIdAndRuRef(
       final UUID collectionExerciseId, final String ruRef) {
-    log, kv("collection_exercise_id", collectionExerciseId)
-        , kv("ru_ref", ruRef)
-        .debug("Entering findCaseGroupByCollectionExerciseIdAndRuRef");
+    log.debug(
+        "Entering findCaseGroupByCollectionExerciseIdAndRuRef",
+        kv("collection_exercise_id", collectionExerciseId),
+        kv("ru_ref", ruRef));
     return caseGroupRepo.findCaseGroupByCollectionExerciseIdAndSampleUnitRef(
         collectionExerciseId, ruRef);
   }

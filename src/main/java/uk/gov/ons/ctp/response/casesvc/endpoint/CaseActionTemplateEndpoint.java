@@ -1,5 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import jakarta.validation.Valid;
 import java.net.URI;
 import org.slf4j.Logger;
@@ -33,9 +35,10 @@ public class CaseActionTemplateEndpoint {
   @RequestMapping(method = RequestMethod.POST)
   public ResponseEntity<CaseActionTemplate> createActionTemplate(
       @RequestBody @Valid final CaseActionTemplate requestActionTemplate) {
-    log, kv("templateName", requestActionTemplate.getType())
-        , kv("description", requestActionTemplate.getDescription())
-        .debug("Recording a new action template");
+    log.debug(
+        "Recording a new action template",
+        kv("templateName", requestActionTemplate.getType()),
+        kv("description", requestActionTemplate.getDescription()));
     CaseActionTemplate createdTemplate = actionTemplateRepo.save(requestActionTemplate);
     return ResponseEntity.created(
             URI.create(String.format("/template/%s", createdTemplate.getType())))
