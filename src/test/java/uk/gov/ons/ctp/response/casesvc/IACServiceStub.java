@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -18,6 +19,7 @@ public class IACServiceStub {
 
   public void createIACStub() {
     log.info("Stubbing IAC Service POST /iacs endpoint");
+    configureFor("localhost", 18002);
     stubFor(
         post(urlPathEqualTo("/iacs"))
             .willReturn(

@@ -3,7 +3,6 @@ package uk.gov.ons.ctp.response.casesvc.endpoint;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
@@ -70,7 +69,6 @@ public class CaseEndpointIT {
     caseEventRepository.deleteAll();
     caseRepository.deleteAll();
     caseGroupRepository.deleteAll();
-    WireMock.configureFor(18002);
   }
 
   @After
@@ -97,17 +95,6 @@ public class CaseEndpointIT {
   }
 
   @Test
-  public void ensureSampleUnitIdReceived() throws Exception {
-    createCollectionData();
-    UUID sampleUnitId = UUID.randomUUID();
-    caseCreator.postSampleUnit("LMS0001", "H", sampleUnitId, collectionExerciseId);
-    Thread.sleep(2000);
-    HttpResponse<CaseDetailsDTO[]> casesResponse = getCreatedCase(sampleUnitId);
-    assertThat(casesResponse.getBody()[0].getSampleUnitId().toString())
-        .isEqualTo(sampleUnitId.toString());
-  }
-
-  @Test
   public void testCreateSocialCaseEvents() throws Exception {
     createCollectionData();
     UUID sampleUnitId = UUID.randomUUID();
@@ -130,6 +117,17 @@ public class CaseEndpointIT {
 
     // Then
     assertThat(createdCaseResponse.getStatus()).isEqualTo(201);
+  }
+
+  @Test
+  public void ensureSampleUnitIdReceived() throws Exception {
+    createCollectionData();
+    UUID sampleUnitId = UUID.randomUUID();
+    caseCreator.postSampleUnit("LMS0001", "H", sampleUnitId, collectionExerciseId);
+    Thread.sleep(2000);
+    HttpResponse<CaseDetailsDTO[]> casesResponse = getCreatedCase(sampleUnitId);
+    assertThat(casesResponse.getBody()[0].getSampleUnitId().toString())
+        .isEqualTo(sampleUnitId.toString());
   }
 
   /**
