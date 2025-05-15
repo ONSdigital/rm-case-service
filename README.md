@@ -132,5 +132,3 @@ See curlTests.txt under /test/resources
 
 ## Copyright
 Copyright (C) 2017 Crown Copyright (Office for National Statistics)
-
-Force build
