@@ -353,18 +353,6 @@
                     </execution>
 
                     <execution>
-                        <id>pre-test-stop-wiremock</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <workingDirectory>${project.basedir}</workingDirectory>
-                            <executable>wiremock-stop.sh</executable>
-                        </configuration>
-                    </execution>
-
-                    <execution>
                         <id>pre-test-docker-compose-up</id>
                         <phase>pre-integration-test</phase>
                         <goals>
@@ -373,30 +361,6 @@
                         <configuration>
                             <workingDirectory>${project.basedir}</workingDirectory>
                             <executable>docker-compose-up.sh</executable>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>pre-test-start-wiremock</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <workingDirectory>${project.basedir}</workingDirectory>
-                            <executable>wiremock-start.sh</executable>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>post-test-stop-wiremock</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <workingDirectory>${project.basedir}</workingDirectory>
-                            <executable>wiremock-stop.sh</executable>
                         </configuration>
                     </execution>
 
@@ -473,7 +437,7 @@
                         <!-- exclude>**/CaseReceiptReceiverIT.java</exclude -->
                         <!-- exclude>**/CaseActionEventIT.java</exclude -->
                         <!-- exclude>**/CaseEndpointIT.java</exclude -->
-                        <!-- exclude**/CaseIACEndpointIT.java</exclude -->
+                        <!-- exclude>**/CaseIACEndpointIT.java</exclude -->
                         <!-- exclude>**/CachingTestIT.java</exclude -->
                     </excludes>
                 </configuration>
