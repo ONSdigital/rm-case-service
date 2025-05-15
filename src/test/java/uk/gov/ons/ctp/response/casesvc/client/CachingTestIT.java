@@ -37,6 +37,7 @@ public class CachingTestIT {
     String expectedSurveyId = UUID.randomUUID().toString();
 
     StubMapping stubMapping = createCollexStub(expectedSurveyId);
+    configureFor("localhost", 18002);
     CollectionExerciseDTO collex =
         collectionExerciseSvcClient.getCollectionExercise(collectionExerciseId);
     assertEquals(expectedSurveyId, collex.getSurveyId());
@@ -44,6 +45,7 @@ public class CachingTestIT {
     String expectedSecondSurveyId = UUID.randomUUID().toString();
     removeStub(stubMapping);
     stubMapping = createCollexStub(expectedSecondSurveyId);
+    configureFor("localhost", 18002);
     CollectionExerciseDTO collex1 =
         collectionExerciseSvcClient.getCollectionExercise(collectionExerciseId);
     assertEquals(expectedSurveyId, collex1.getSurveyId());
@@ -52,6 +54,7 @@ public class CachingTestIT {
     String expectedThirdSurveyId = UUID.randomUUID().toString();
     removeStub(stubMapping);
     stubMapping = createCollexStub(expectedThirdSurveyId);
+    configureFor("localhost", 18002);
     CollectionExerciseDTO collex2 =
         collectionExerciseSvcClient.getCollectionExercise(collectionExerciseId);
     assertEquals(expectedSurveyId, collex2.getSurveyId());
@@ -65,6 +68,7 @@ public class CachingTestIT {
     String expectedSurveyId = UUID.randomUUID().toString();
 
     StubMapping stubMapping = createCollexStub(expectedSurveyId);
+    configureFor("localhost", 18002);
     CollectionExerciseDTO collex =
         collectionExerciseSvcClient.getCollectionExercise(collectionExerciseId);
     assertEquals(expectedSurveyId, collex.getSurveyId());
@@ -72,6 +76,7 @@ public class CachingTestIT {
     String expectedSecondSurveyId = UUID.randomUUID().toString();
     removeStub(stubMapping);
     stubMapping = createCollexStub(expectedSecondSurveyId);
+    configureFor("localhost", 18002);
     CollectionExerciseDTO collex1 =
         collectionExerciseSvcClient.getCollectionExercise(collectionExerciseId);
     assertEquals(expectedSurveyId, collex1.getSurveyId());
@@ -81,6 +86,7 @@ public class CachingTestIT {
     String expectedThirdSurveyId = UUID.randomUUID().toString();
     removeStub(stubMapping);
     stubMapping = createCollexStub(expectedThirdSurveyId);
+    configureFor("localhost", 18002);
     CollectionExerciseDTO collex2 =
         collectionExerciseSvcClient.getCollectionExercise(collectionExerciseId);
     assertEquals(expectedThirdSurveyId, collex2.getSurveyId());
