@@ -1,15 +1,17 @@
 package uk.gov.ons.ctp.response.casesvc.message;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.godaddy.logging.Logger;
-import com.godaddy.logging.LoggerFactory;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.MessageReceiver;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PubsubMessage;
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -39,30 +41,30 @@ public class CaseReceiptPubSubSubscription {
     MessageReceiver receiver = createMessageReceiver();
     Subscriber subscriber = pubSub.getCaseReceiptSubscriber(receiver);
     subscriber.startAsync().awaitRunning();
-    log.with("subscription", subscriptionName.toString())
-        .info("Listening for messages on subscription");
+    log.info(
+        "Listening for messages on subscription", kv("subscription", subscriptionName.toString()));
   }
 
   public MessageReceiver createMessageReceiver() {
     return (PubsubMessage message, AckReplyConsumer consumer) -> {
       String payload = message.getData().toStringUtf8();
-      log.with("payload", payload).info("Received a receipt");
+      log.info("Received a receipt", kv("payload", payload));
       try {
         ObjectMapper mapper = new ObjectMapper();
         CaseReceipt receipt = mapper.readValue(payload, CaseReceipt.class);
-        log.with("receipt", receipt).debug("Successfully serialised receipt");
+        log.debug("Successfully serialised receipt", kv("receipt", receipt));
         try {
           caseReceiptReceiver.process(receipt);
         } catch (CTPException e) {
-          log.error(e, "Error processing receipt");
+          log.error("Error processing receipt", kv("exception", e));
           consumer.nack();
         } catch (Exception e) {
-          log.error(e, "Unexpected error processing receipt");
+          log.error("Unexpected error processing receipt", kv("exception", e));
           consumer.nack();
         }
         consumer.ack();
       } catch (JsonProcessingException e) {
-        log.error(e, "Error serialising receipt.");
+        log.error("Error serialising receipt.", kv("exception", e));
         consumer.nack();
       }
     };

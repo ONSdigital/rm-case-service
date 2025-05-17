@@ -1,10 +1,12 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.godaddy.logging.Logger;
-import com.godaddy.logging.LoggerFactory;
+import jakarta.validation.Valid;
 import java.util.concurrent.ExecutionException;
-import javax.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,9 +34,10 @@ public class CaseActionEventEndpoint {
       consumes = "application/json")
   public ResponseEntity processEvents(@RequestBody @Valid CaseActionEvent event)
       throws ExecutionException, InterruptedException, JsonProcessingException {
-    log.with("collectionExercise", event.getCollectionExerciseID())
-        .with("EventTag", event.getTag())
-        .info("Processing Event");
+    log.info(
+        "Processing Event",
+        kv("collectionExercise", event.getCollectionExerciseID()),
+        kv("EventTag", event.getTag()));
     processEventService.processEvents(event);
     return ResponseEntity.accepted().body(null);
   }

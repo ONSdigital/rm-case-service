@@ -49,3 +49,13 @@ services:
     - security_user_password=secret
     ports:
     - "38080:8080"
+
+  wiremock:
+      container_name: wiremock-case-it
+      image: wiremock/wiremock:3.13.0
+      ports:
+          - "18002:8080"
+      environment:
+          - WIREMOCK_PORT=8080
+          - WIREMOCK_HOST=wiremock-case-it
+          - WIREMOCK_URL=http://wiremock-case-it:18002/__admin/mappings

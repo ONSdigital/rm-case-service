@@ -1,13 +1,15 @@
 package uk.gov.ons.ctp.response.casesvc.service.action.common;
 
-import com.godaddy.logging.Logger;
-import com.godaddy.logging.LoggerFactory;
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.ons.ctp.response.casesvc.client.PartySvcClientService;
@@ -37,14 +39,15 @@ public class ActionService {
    * @return
    */
   public SurveyDTO getSurvey(String surveyId) {
-    log.with("surveyId", surveyId).debug("Getting survey");
+    log.debug("Getting survey", kv("surveyId", surveyId));
     return surveySvcClientService.requestDetailsForSurvey(surveyId);
   }
 
   public CaseActionParty setParties(CaseAction caseAction, SurveyDTO survey) {
-    log.with("caseId", caseAction.getCaseId())
-        .with("surveyId", survey.getId())
-        .info("Getting Event Party data");
+    log.info(
+        "Getting Event Party data",
+        kv("caseId", caseAction.getCaseId()),
+        kv("surveyId", survey.getId()));
     List<String> desiredEnrolmentStatuses = new ArrayList<>();
     desiredEnrolmentStatuses.add("ENABLED");
     desiredEnrolmentStatuses.add("PENDING");
@@ -57,9 +60,10 @@ public class ActionService {
             desiredEnrolmentStatuses);
     log.info("Getting child party data");
     List<PartyDTO> respondentParties = getRespondentParties(businessParty);
-    log.with("caseId", caseAction.getCaseId())
-        .with("surveyId", survey.getId())
-        .info("Finish getting Event Party data");
+    log.info(
+        "Finish getting Event Party data",
+        kv("caseId", caseAction.getCaseId()),
+        kv("surveyId", survey.getId()));
     return new CaseActionParty(businessParty, respondentParties);
   }
 
@@ -96,11 +100,12 @@ public class ActionService {
             eventTag,
             CaseActionAuditEvent.ActionEventStatus.PROCESSED);
     if (actionEvent != null) {
-      log.with("caseId", caseAction.getCaseId())
-          .with("event", eventTag)
-          .with("type", actionTemplate.getType())
-          .with("handler", actionTemplate.getHandler())
-          .info("Event Already processed.");
+      log.info(
+          "Event Already processed.",
+          kv("caseId", caseAction.getCaseId()),
+          kv("event", eventTag),
+          kv("type", actionTemplate.getType()),
+          kv("handler", actionTemplate.getHandler()));
     }
     return actionEvent == null;
   }
@@ -113,10 +118,11 @@ public class ActionService {
       String surveyId,
       Instant instant,
       String eventTag) {
-    log.with("caseId", actionCaseId)
-        .with("actionTemplateType", templateType)
-        .with("actionTemplateHandler", templateHandler)
-        .info("Creating a new record.");
+    log.info(
+        "Creating a new record.",
+        kv("caseId", actionCaseId),
+        kv("actionTemplateType", templateType),
+        kv("actionTemplateHandler", templateHandler));
     CaseActionAuditEvent actionEventAudit =
         CaseActionAuditEvent.builder()
             .caseId(actionCaseId)

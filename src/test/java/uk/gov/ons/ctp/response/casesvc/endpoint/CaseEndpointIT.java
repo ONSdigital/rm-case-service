@@ -1,24 +1,21 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+import kong.unirest.core.HttpResponse;
+import kong.unirest.core.Unirest;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -42,14 +39,11 @@ import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @TestPropertySource(locations = "classpath:/application-test.yml")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@WireMockTest(httpPort = 18002)
 public class CaseEndpointIT {
   private UUID collectionExerciseId;
   private Map<String, String> metadata;
   private PubSubEmulator pubSubEmulator = new PubSubEmulator();
-
-  @ClassRule
-  public static WireMockRule wireMockRule =
-      new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
 
   @LocalServerPort private int port;
 
@@ -63,13 +57,13 @@ public class CaseEndpointIT {
 
   @BeforeClass
   public static void setUp() throws InterruptedException {
-    ObjectMapper value = new ObjectMapper();
-    UnirestInitialiser.initialise(value);
+    Unirest.config().reset();
+    UnirestInitialiser.initialise();
     Thread.sleep(20000);
   }
 
   @Before
-  public void testSetup() throws InterruptedException {
+  public void testSetup() {
     pubSubEmulator.testInit();
     caseEventRepository.deleteAll();
     caseRepository.deleteAll();
@@ -100,17 +94,6 @@ public class CaseEndpointIT {
   }
 
   @Test
-  public void ensureSampleUnitIdReceived() throws Exception {
-    createCollectionData();
-    UUID sampleUnitId = UUID.randomUUID();
-    caseCreator.postSampleUnit("LMS0001", "H", sampleUnitId, collectionExerciseId);
-    Thread.sleep(2000);
-    HttpResponse<CaseDetailsDTO[]> casesResponse = getCreatedCase(sampleUnitId);
-    assertThat(casesResponse.getBody()[0].getSampleUnitId().toString())
-        .isEqualTo(sampleUnitId.toString());
-  }
-
-  @Test
   public void testCreateSocialCaseEvents() throws Exception {
     createCollectionData();
     UUID sampleUnitId = UUID.randomUUID();
@@ -133,6 +116,17 @@ public class CaseEndpointIT {
 
     // Then
     assertThat(createdCaseResponse.getStatus()).isEqualTo(201);
+  }
+
+  @Test
+  public void ensureSampleUnitIdReceived() throws Exception {
+    createCollectionData();
+    UUID sampleUnitId = UUID.randomUUID();
+    caseCreator.postSampleUnit("LMS0001", "H", sampleUnitId, collectionExerciseId);
+    Thread.sleep(2000);
+    HttpResponse<CaseDetailsDTO[]> casesResponse = getCreatedCase(sampleUnitId);
+    assertThat(casesResponse.getBody()[0].getSampleUnitId().toString())
+        .isEqualTo(sampleUnitId.toString());
   }
 
   /**
@@ -314,7 +308,6 @@ public class CaseEndpointIT {
                     + "RESPONSE_UPLOAD")
             .basicAuth("admin", "secret")
             .asString();
-
     // Then
     assertThat(returnedCaseEventsResponse.getStatus()).isEqualTo(404);
   }
@@ -392,12 +385,10 @@ public class CaseEndpointIT {
   }
 
   private HttpResponse<CaseDetailsDTO[]> getCreatedCase(UUID sampleUnitId) throws Exception {
-    HttpResponse<CaseDetailsDTO[]> casesResponse =
-        Unirest.get(String.format("http://localhost:%d/cases/sampleunitids", port))
-            .basicAuth("admin", "secret")
-            .queryString("sampleUnitId", sampleUnitId)
-            .header("Content-Type", "application/json")
-            .asObject(CaseDetailsDTO[].class);
-    return casesResponse;
+    return Unirest.get(String.format("http://localhost:%d/cases/sampleunitids", port))
+        .basicAuth("admin", "secret")
+        .queryString("sampleUnitId", sampleUnitId)
+        .header("Content-Type", "application/json")
+        .asObject(CaseDetailsDTO[].class);
   }
 }

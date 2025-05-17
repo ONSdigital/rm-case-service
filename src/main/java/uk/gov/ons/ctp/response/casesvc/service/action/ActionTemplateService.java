@@ -1,7 +1,9 @@
 package uk.gov.ons.ctp.response.casesvc.service.action;
 
-import com.godaddy.logging.Logger;
-import com.godaddy.logging.LoggerFactory;
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionTemplate;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseActionTemplate.Handler;
@@ -28,11 +30,12 @@ public class ActionTemplateService {
     Handler handler = isActiveEnrolment ? Handler.EMAIL : Handler.LETTER;
     CaseActionTemplate template = actionTemplateRepository.findByTagAndHandler(tag, handler);
     if (template == null) {
-      log.with("tag", tag)
-          .with("activeEnrolment", isActiveEnrolment)
-          .warn("No Template registered against the event and active enrolment");
+      log.warn(
+          "No Template registered against the event and active enrolment",
+          kv("tag", tag),
+          kv("activeEnrolment", isActiveEnrolment));
     }
-    log.with("tag", tag).with("activeEnrolment", isActiveEnrolment).debug("Template Found");
+    log.debug("Template Found", kv("tag", tag), kv("activeEnrolment", isActiveEnrolment));
     return template;
   }
 }

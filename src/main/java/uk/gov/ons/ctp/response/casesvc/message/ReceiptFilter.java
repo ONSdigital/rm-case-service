@@ -2,9 +2,9 @@ package uk.gov.ons.ctp.response.casesvc.message;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.godaddy.logging.Logger;
-import com.godaddy.logging.LoggerFactory;
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.integration.core.MessageSelector;
 import org.springframework.messaging.Message;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;

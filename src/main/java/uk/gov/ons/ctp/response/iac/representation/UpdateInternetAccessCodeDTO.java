@@ -1,6 +1,6 @@
 package uk.gov.ons.ctp.response.iac.representation;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;

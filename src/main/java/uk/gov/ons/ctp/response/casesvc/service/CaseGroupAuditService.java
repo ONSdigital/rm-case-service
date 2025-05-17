@@ -1,8 +1,10 @@
 package uk.gov.ons.ctp.response.casesvc.service;
 
-import com.godaddy.logging.Logger;
-import com.godaddy.logging.LoggerFactory;
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
@@ -23,7 +25,7 @@ public class CaseGroupAuditService {
     auditEntity.setStatus(caseGroup.getStatus());
     auditEntity.setPartyId(partyId);
     auditEntity.setCreatedDateTime(caseGroup.getStatusChangeTimestamp());
-    log.with("audit_entity", auditEntity).debug("Updating the caseGroupStatus");
+    log.debug("Updating the caseGroupStatus", kv("audit_entity", auditEntity));
     caseGroupStatusAuditRepository.saveAndFlush(auditEntity);
   }
 }

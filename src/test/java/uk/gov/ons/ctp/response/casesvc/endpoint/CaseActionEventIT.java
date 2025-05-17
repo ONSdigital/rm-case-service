@@ -1,17 +1,14 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
+import kong.unirest.core.HttpResponse;
+import kong.unirest.core.Unirest;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -19,7 +16,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -50,6 +47,7 @@ import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
     locations = "classpath:/application-test.yml",
     properties = "action-svc.deprecated=true")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@WireMockTest(httpPort = 18002)
 public class CaseActionEventIT {
   private UUID collectionExerciseId;
   private Map<String, String> metadata;
@@ -57,10 +55,6 @@ public class CaseActionEventIT {
 
   @MockBean private ProcessLetterActionService processLetterActionService;
   @MockBean private ProcessEmailActionService processEmailActionService;
-
-  @ClassRule
-  public static WireMockRule wireMockRule =
-      new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
 
   @LocalServerPort private int port;
 
@@ -75,13 +69,13 @@ public class CaseActionEventIT {
 
   @BeforeClass
   public static void setUp() throws InterruptedException {
-    ObjectMapper value = new ObjectMapper();
-    UnirestInitialiser.initialise(value);
+    Unirest.config().reset();
+    UnirestInitialiser.initialise();
     Thread.sleep(2000);
   }
 
   @Before
-  public void testSetup() throws InterruptedException {
+  public void testSetup() {
     pubSubEmulator.testInit();
     caseEventRepository.deleteAll();
     caseRepository.deleteAll();

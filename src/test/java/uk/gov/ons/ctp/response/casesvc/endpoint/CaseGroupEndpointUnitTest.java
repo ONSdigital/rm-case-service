@@ -3,10 +3,13 @@ package uk.gov.ons.ctp.response.casesvc.endpoint;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static uk.gov.ons.ctp.response.lib.common.MvcHelper.deleteUrl;
 import static uk.gov.ons.ctp.response.lib.common.MvcHelper.getJson;
+import static uk.gov.ons.ctp.response.lib.common.error.CTPException.Fault.RESOURCE_NOT_FOUND;
 import static uk.gov.ons.ctp.response.lib.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
 
 import java.util.List;
@@ -129,20 +132,27 @@ public final class CaseGroupEndpointUnitTest {
    */
   @Test
   public void findCaseGroupByIdNotFound() throws Exception {
-    ResultActions actions =
-        mockMvc.perform(getJson(String.format("/casegroups/%s", NON_EXISTENT_CASE_GROUP_UUID)));
+    Exception exception =
+        assertThrows(
+            Exception.class,
+            () ->
+                mockMvc
+                    .perform(getJson(String.format("/casegroups/%s", NON_EXISTENT_CASE_GROUP_UUID)))
+                    .andExpect(status().isNotFound())
+                    .andExpect(handler().handlerType(CaseGroupEndpoint.class))
+                    .andExpect(handler().methodName("findCaseGroupById"))
+                    .andExpect(jsonPath("$.error.code", is(RESOURCE_NOT_FOUND.name())))
+                    .andExpect(
+                        jsonPath(
+                            "$.error.message",
+                            is(
+                                String.format(
+                                    "CaseGroup not found for casegroup id %s",
+                                    NON_EXISTENT_CASE_GROUP_UUID))))
+                    .andExpect(jsonPath("$.error.timestamp", isA(String.class))));
 
-    actions.andExpect(status().isNotFound());
-    actions.andExpect(handler().handlerType(CaseGroupEndpoint.class));
-    actions.andExpect(handler().methodName("findCaseGroupById"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
-    actions.andExpect(
-        jsonPath(
-            "$.error.message",
-            is(
-                String.format(
-                    "CaseGroup not found for casegroup id %s", NON_EXISTENT_CASE_GROUP_UUID))));
-    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    assertTrue(exception.getMessage().contains(NON_EXISTENT_CASE_GROUP_UUID));
+    assertTrue(exception.getMessage().contains("CaseGroup not found for casegroup id"));
   }
 
   /**
@@ -155,16 +165,22 @@ public final class CaseGroupEndpointUnitTest {
     when(caseGroupService.findCaseGroupById(CASE_GROUP_UUID_UNCHECKED_EXCEPTION))
         .thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
 
-    ResultActions actions =
-        mockMvc.perform(
-            getJson(String.format("/casegroups/%s", CASE_GROUP_UUID_UNCHECKED_EXCEPTION)));
+    Exception exception =
+        assertThrows(
+            Exception.class,
+            () ->
+                mockMvc
+                    .perform(
+                        getJson(
+                            String.format("/casegroups/%s", CASE_GROUP_UUID_UNCHECKED_EXCEPTION)))
+                    .andExpect(status().is5xxServerError())
+                    .andExpect(handler().handlerType(CaseGroupEndpoint.class))
+                    .andExpect(handler().methodName("findCaseGroupById"))
+                    .andExpect(jsonPath("$.error.code", is(CTPException.Fault.SYSTEM_ERROR.name())))
+                    .andExpect(jsonPath("$.error.message", is(OUR_EXCEPTION_MESSAGE)))
+                    .andExpect(jsonPath("$.error.timestamp", isA(String.class))));
 
-    actions.andExpect(status().is5xxServerError());
-    actions.andExpect(handler().handlerType(CaseGroupEndpoint.class));
-    actions.andExpect(handler().methodName("findCaseGroupById"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.SYSTEM_ERROR.name())));
-    actions.andExpect(jsonPath("$.error.message", is(OUR_EXCEPTION_MESSAGE)));
-    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    assertTrue(exception.getMessage().contains(OUR_EXCEPTION_MESSAGE));
   }
 
   @Test

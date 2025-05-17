@@ -1,11 +1,12 @@
 package uk.gov.ons.ctp.response.casesvc.client;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
 import static uk.gov.ons.ctp.response.casesvc.utility.Constants.SYSTEM;
 
-import com.godaddy.logging.Logger;
-import com.godaddy.logging.LoggerFactory;
 import java.util.Arrays;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
@@ -54,7 +55,7 @@ public class InternetAccessCodeSvcClient {
       maxAttemptsExpression = "#{${retries.maxAttempts}}",
       backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
   public List<String> generateIACs(int count) {
-    log.with("count", count).debug("Generating iac codes");
+    log.debug("Generating iac codes", kv("count", count));
     UriComponents uriComponents =
         restUtility.createUriComponents(
             appConfig.getInternetAccessCodeSvc().getIacPostPath(), null);
@@ -65,7 +66,7 @@ public class InternetAccessCodeSvcClient {
 
     ResponseEntity<String[]> responseEntity =
         restTemplate.exchange(uriComponents.toUri(), HttpMethod.POST, httpEntity, String[].class);
-    log.with("count", count).debug("Successfully generated iac codes");
+    log.debug("Successfully generated iac codes", kv("count", count));
     return Arrays.asList(responseEntity.getBody());
   }
 
@@ -91,8 +92,7 @@ public class InternetAccessCodeSvcClient {
             uriComponents.toUri(), HttpMethod.PUT, httpEntity, InternetAccessCodeDTO.class);
 
     if (!responseEntity.getStatusCode().is2xxSuccessful()) {
-      log.with("httpStatusCode", responseEntity.getStatusCodeValue())
-          .error("Failed to disable IAC");
+      log.error("Failed to disable IAC", kv("httpStatusCode", responseEntity.getStatusCodeValue()));
       return false;
     }
     log.debug("Successfully disabled iac code");
