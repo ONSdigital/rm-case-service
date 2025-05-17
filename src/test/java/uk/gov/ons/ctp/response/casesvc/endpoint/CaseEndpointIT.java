@@ -2,15 +2,14 @@ package uk.gov.ons.ctp.response.casesvc.endpoint;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+import kong.unirest.core.HttpResponse;
+import kong.unirest.core.Unirest;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -58,13 +57,13 @@ public class CaseEndpointIT {
 
   @BeforeClass
   public static void setUp() throws InterruptedException {
-    ObjectMapper value = new ObjectMapper();
-    UnirestInitialiser.initialise(value);
+    Unirest.config().reset();
+    UnirestInitialiser.initialise();
     Thread.sleep(20000);
   }
 
   @Before
-  public void testSetup() throws InterruptedException {
+  public void testSetup() {
     pubSubEmulator.testInit();
     caseEventRepository.deleteAll();
     caseRepository.deleteAll();
@@ -100,8 +99,13 @@ public class CaseEndpointIT {
     UUID sampleUnitId = UUID.randomUUID();
     // Given
     caseCreator.postSampleUnit("LMS0002", "H", sampleUnitId, collectionExerciseId);
-    Thread.sleep(2000);
+    Thread.sleep(60000);
     HttpResponse<CaseDetailsDTO[]> casesResponse = getCreatedCase(sampleUnitId);
+    System.out.println(">>>>>>>>>>>>>>>");
+    System.out.println(casesResponse.getBody());
+    System.out.println(casesResponse.getHeaders().toString());
+    System.out.println(casesResponse.getStatus());
+    System.out.println("<<<<<<<<<<<<<<<<");
     String caseID = casesResponse.getBody()[0].getId().toString();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
         new CaseEventCreationRequestDTO(
@@ -309,7 +313,11 @@ public class CaseEndpointIT {
                     + "RESPONSE_UPLOAD")
             .basicAuth("admin", "secret")
             .asString();
-
+    System.out.println(">>>>>>>>>>>>>>>");
+    System.out.println(returnedCaseEventsResponse.getBody());
+    System.out.println(returnedCaseEventsResponse.getHeaders().toString());
+    System.out.println(returnedCaseEventsResponse.getStatus());
+    System.out.println("<<<<<<<<<<<<<<<<");
     // Then
     assertThat(returnedCaseEventsResponse.getStatus()).isEqualTo(404);
   }
@@ -387,12 +395,10 @@ public class CaseEndpointIT {
   }
 
   private HttpResponse<CaseDetailsDTO[]> getCreatedCase(UUID sampleUnitId) throws Exception {
-    HttpResponse<CaseDetailsDTO[]> casesResponse =
-        Unirest.get(String.format("http://localhost:%d/cases/sampleunitids", port))
-            .basicAuth("admin", "secret")
-            .queryString("sampleUnitId", sampleUnitId)
-            .header("Content-Type", "application/json")
-            .asObject(CaseDetailsDTO[].class);
-    return casesResponse;
+    return Unirest.get(String.format("http://localhost:%d/cases/sampleunitids", port))
+        .basicAuth("admin", "secret")
+        .queryString("sampleUnitId", sampleUnitId)
+        .header("Content-Type", "application/json")
+        .asObject(CaseDetailsDTO[].class);
   }
 }

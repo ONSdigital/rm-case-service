@@ -3,13 +3,12 @@ package uk.gov.ons.ctp.response.casesvc.endpoint;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.*;
+import kong.unirest.core.HttpResponse;
+import kong.unirest.core.Unirest;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -70,13 +69,13 @@ public class CaseActionEventIT {
 
   @BeforeClass
   public static void setUp() throws InterruptedException {
-    ObjectMapper value = new ObjectMapper();
-    UnirestInitialiser.initialise(value);
+    Unirest.config().reset();
+    UnirestInitialiser.initialise();
     Thread.sleep(2000);
   }
 
   @Before
-  public void testSetup() throws InterruptedException {
+  public void testSetup() {
     pubSubEmulator.testInit();
     caseEventRepository.deleteAll();
     caseRepository.deleteAll();

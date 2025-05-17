@@ -5,16 +5,15 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+import kong.unirest.core.HttpResponse;
+import kong.unirest.core.Unirest;
+import kong.unirest.core.UnirestException;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -67,8 +66,8 @@ public class CaseIACEndpointIT {
 
   @BeforeClass
   public static void setUp() throws InterruptedException {
-    ObjectMapper value = new ObjectMapper();
-    UnirestInitialiser.initialise(value);
+    Unirest.config().reset();
+    UnirestInitialiser.initialise();
     Thread.sleep(20000);
   }
 
@@ -166,13 +165,11 @@ public class CaseIACEndpointIT {
         .asString();
   }
 
-  private HttpResponse<CaseDetailsDTO[]> getCreatedCase(UUID sampleUnitId) throws Exception {
-    HttpResponse<CaseDetailsDTO[]> casesResponse =
-        Unirest.get(String.format("http://localhost:%d/cases/sampleunitids", port))
-            .basicAuth("admin", "secret")
-            .queryString("sampleUnitId", sampleUnitId)
-            .header("Content-Type", "application/json")
-            .asObject(CaseDetailsDTO[].class);
-    return casesResponse;
+  private HttpResponse<CaseDetailsDTO[]> getCreatedCase(UUID sampleUnitId) {
+    return Unirest.get(String.format("http://localhost:%d/cases/sampleunitids", port))
+        .basicAuth("admin", "secret")
+        .queryString("sampleUnitId", sampleUnitId)
+        .header("Content-Type", "application/json")
+        .asObject(CaseDetailsDTO[].class);
   }
 }
