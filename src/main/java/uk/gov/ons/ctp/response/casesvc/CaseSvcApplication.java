@@ -88,7 +88,6 @@ public class CaseSvcApplication {
     LiquibaseProperties liquibaseProperties = liquibaseProperties();
     SpringLiquibase liquibase = new SpringLiquibase();
     liquibase.setChangeLog(liquibaseProperties.getChangeLog());
-    liquibase.setContexts(liquibaseProperties.getContexts());
     liquibase.setDataSource(getDataSource(liquibaseProperties));
     liquibase.setDefaultSchema(liquibaseProperties.getDefaultSchema());
     liquibase.setDropFirst(liquibaseProperties.isDropFirst());
