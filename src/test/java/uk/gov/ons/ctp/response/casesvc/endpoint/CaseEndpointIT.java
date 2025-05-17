@@ -99,13 +99,8 @@ public class CaseEndpointIT {
     UUID sampleUnitId = UUID.randomUUID();
     // Given
     caseCreator.postSampleUnit("LMS0002", "H", sampleUnitId, collectionExerciseId);
-    Thread.sleep(60000);
+    Thread.sleep(2000);
     HttpResponse<CaseDetailsDTO[]> casesResponse = getCreatedCase(sampleUnitId);
-    System.out.println(">>>>>>>>>>>>>>>");
-    System.out.println(casesResponse.getBody());
-    System.out.println(casesResponse.getHeaders().toString());
-    System.out.println(casesResponse.getStatus());
-    System.out.println("<<<<<<<<<<<<<<<<");
     String caseID = casesResponse.getBody()[0].getId().toString();
     CaseEventCreationRequestDTO caseEventCreationRequestDTO =
         new CaseEventCreationRequestDTO(
@@ -313,11 +308,6 @@ public class CaseEndpointIT {
                     + "RESPONSE_UPLOAD")
             .basicAuth("admin", "secret")
             .asString();
-    System.out.println(">>>>>>>>>>>>>>>");
-    System.out.println(returnedCaseEventsResponse.getBody());
-    System.out.println(returnedCaseEventsResponse.getHeaders().toString());
-    System.out.println(returnedCaseEventsResponse.getStatus());
-    System.out.println("<<<<<<<<<<<<<<<<");
     // Then
     assertThat(returnedCaseEventsResponse.getStatus()).isEqualTo(404);
   }
