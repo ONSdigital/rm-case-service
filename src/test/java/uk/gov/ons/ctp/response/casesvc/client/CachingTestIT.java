@@ -4,7 +4,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import java.util.UUID;
 import org.junit.Test;
@@ -86,7 +85,7 @@ public class CachingTestIT {
   }
 
   private void createCollexStub(String surveyId) {
-    WireMock.removeAllMappings();
+    // WireMock.removeAllMappings();
     configureFor("localhost", 18002);
     stubFor(
         get(urlPathMatching("/collectionexercises/.*"))

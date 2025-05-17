@@ -439,14 +439,14 @@
                 <configuration>
                     <argLine>--add-opens java.base/java.util=ALL-UNNAMED</argLine>
                     <skipITs>${failsafe.skipITs}</skipITs>
-                    <!-- excludes -->
-                        <!-- exclude>**/CaseActionEventIT.java</exclude -->
-                        <!-- exclude>**/CaseReceiptReceiverIT.java</exclude -->
-                        <!-- exclude>**/CaseActionEventIT.java</exclude -->
-                        <!-- exclude>**/CaseEndpointIT.java</exclude -->
-                        <!-- exclude>**/CaseIACEndpointIT.java</exclude -->
-                        <!-- exclude>**/CachingTestIT.java</exclude -->
-                    <!-- /excludes -->
+<!--                    <excludes>-->
+<!--                        <exclude>**/CaseActionEventIT.java</exclude>-->
+<!--                        <exclude>**/CaseReceiptReceiverIT.java</exclude>-->
+<!--                        <exclude>**/CaseActionEventIT.java</exclude>-->
+<!--                        <exclude>**/CaseEndpointIT.java</exclude>-->
+<!--                        <exclude>**/CaseIACEndpointIT.java</exclude>-->
+<!--                        <exclude>**/CachingTestIT.java</exclude>-->
+<!--                    </excludes>-->
                 </configuration>
                 <executions>
                     <execution>
