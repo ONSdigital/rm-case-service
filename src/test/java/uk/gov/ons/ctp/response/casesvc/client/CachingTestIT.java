@@ -85,7 +85,6 @@ public class CachingTestIT {
   }
 
   private void createCollexStub(String surveyId) {
-    // WireMock.removeAllMappings();
     configureFor("localhost", 18002);
     stubFor(
         get(urlPathMatching("/collectionexercises/.*"))
