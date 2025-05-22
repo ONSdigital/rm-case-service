@@ -29,13 +29,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.gov.ons.ctp.response.casesvc.CaseCreator;
+import uk.gov.ons.ctp.response.casesvc.PubSubTestEmulator;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseEventRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseDetailsDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseIACDTO;
-import uk.gov.ons.ctp.response.casesvc.utility.PubSubEmulator;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
 
@@ -52,7 +52,7 @@ public class CaseIACEndpointIT {
   private Map<String, String> metadata;
 
   private static final Logger log = LoggerFactory.getLogger(CaseIACEndpointIT.class);
-  private PubSubEmulator pubSubEmulator = new PubSubEmulator();
+  private PubSubTestEmulator pubSubEmulator = new PubSubTestEmulator();
 
   @LocalServerPort private int port;
 
