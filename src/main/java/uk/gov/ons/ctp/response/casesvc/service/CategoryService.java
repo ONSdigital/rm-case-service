@@ -1,9 +1,11 @@
 package uk.gov.ons.ctp.response.casesvc.service;
 
-import com.godaddy.logging.Logger;
-import com.godaddy.logging.LoggerFactory;
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import java.util.List;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -29,7 +31,7 @@ public class CategoryService {
    * @return the Category or null if not found
    */
   public Category findCategory(CategoryDTO.CategoryName categoryName) {
-    log.with("category_name", categoryName).debug("Entering findCategory");
+    log.debug("Entering findCategory", kv("category_name", categoryName));
     return categoryRepo.findById(categoryName).orElse(null);
   }
 
@@ -41,7 +43,7 @@ public class CategoryService {
    * @return List<Category> List of categories
    */
   public List<Category> findCategories(String role, String group) {
-    log.with("role", role).with("group", group).debug("Entering findCategories");
+    log.debug("Entering findCategories", kv("role", role), kv("group", group));
     List<Category> categories = categoryRepo.findAll();
     return filterCategories(categories, group, role);
   }

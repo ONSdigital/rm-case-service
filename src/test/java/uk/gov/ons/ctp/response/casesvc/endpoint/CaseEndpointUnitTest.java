@@ -7,6 +7,8 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -70,8 +72,6 @@ public final class CaseEndpointUnitTest {
       UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3999");
   private static final UUID EXISTING_PARTY_UUID =
       UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfe111");
-  private static final UUID EXISTING_COLLECTION_EXERCISE_ID =
-      UUID.fromString("f34950d7-ed1e-4c16-941a-a8f793c266a1");
   private static final UUID CASE_ID_UNCHECKED_EXCEPTION_CASE =
       UUID.fromString("7bc5d41b-0549-40b3-ba76-42f6d4cf3999");
   private static final UUID EXISTING_SURVEY_ID =
@@ -301,35 +301,52 @@ public final class CaseEndpointUnitTest {
   }
 
   @Test
-  public void findCaseByCaseIdNotFound() throws Exception {
-    ResultActions actions =
-        mockMvc.perform(getJson(String.format("/cases/%s", NON_EXISTING_CASE_ID)));
+  public void findCaseByCaseIdNotFound() {
+    Exception exception =
+        assertThrows(
+            Exception.class,
+            () ->
+                mockMvc
+                    .perform(getJson(String.format("/cases/%s", NON_EXISTING_CASE_ID)))
+                    .andExpect(status().isNotFound())
+                    .andExpect(handler().handlerType(CaseEndpoint.class))
+                    .andExpect(handler().methodName(FINDCASEBYID))
+                    .andExpect(
+                        jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())))
+                    .andExpect(
+                        jsonPath(
+                            "$.error.message",
+                            is(
+                                String.format(
+                                    "%s case id %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_CASE_ID))))
+                    .andExpect(jsonPath("$.error.timestamp", isA(String.class))));
 
-    actions.andExpect(status().isNotFound());
-    actions.andExpect(handler().handlerType(CaseEndpoint.class));
-    actions.andExpect(handler().methodName(FINDCASEBYID));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
-    actions.andExpect(
-        jsonPath(
-            "$.error.message",
-            is(String.format("%s case id %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_CASE_ID))));
-    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    assertTrue(exception.getMessage().contains(NON_EXISTING_CASE_ID));
+    assertTrue(exception.getMessage().contains(ERRORMSG_CASENOTFOUND));
   }
 
   @Test
-  public void findCaseByCaseIdUnCheckedException() throws Exception {
+  public void findCaseByCaseIdUnCheckedException() {
     when(caseService.findCaseById(CASE_ID_UNCHECKED_EXCEPTION_CASE))
         .thenThrow(new IllegalArgumentException(OUR_EXCEPTION_MESSAGE));
+    Exception exception =
+        assertThrows(
+            Exception.class,
+            () ->
+                mockMvc
+                    .perform(getJson(String.format("/cases/%s", CASE_ID_UNCHECKED_EXCEPTION_CASE)))
+                    .andExpect(status().is5xxServerError())
+                    .andExpect(handler().handlerType(CaseEndpoint.class))
+                    .andExpect(handler().methodName(FINDCASEBYID))
+                    .andExpect(jsonPath("$.error.code", is(CTPException.Fault.SYSTEM_ERROR.name())))
+                    .andExpect(jsonPath("$.error.message", is(OUR_EXCEPTION_MESSAGE)))
+                    .andExpect(jsonPath("$.error.timestamp", isA(String.class))));
 
-    ResultActions actions =
-        mockMvc.perform(getJson(String.format("/cases/%s", CASE_ID_UNCHECKED_EXCEPTION_CASE)));
-
-    actions.andExpect(status().is5xxServerError());
-    actions.andExpect(handler().handlerType(CaseEndpoint.class));
-    actions.andExpect(handler().methodName(FINDCASEBYID));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.SYSTEM_ERROR.name())));
-    actions.andExpect(jsonPath("$.error.message", is(OUR_EXCEPTION_MESSAGE)));
-    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    assertTrue(
+        exception
+            .getMessage()
+            .contains(
+                "Request processing failed: java.lang.IllegalArgumentException: this is what we throw"));
   }
 
   @Test
@@ -497,19 +514,30 @@ public final class CaseEndpointUnitTest {
   }
 
   @Test
-  public void findCaseByIACNotFound() throws Exception {
-    ResultActions actions =
-        mockMvc.perform(getJson(String.format("/cases/iac/%s", NON_EXISTING_IAC)));
+  public void findCaseByIACNotFound() {
+    Exception exception =
+        assertThrows(
+            Exception.class,
+            () ->
+                mockMvc
+                    .perform(getJson(String.format("/cases/iac/%s", NON_EXISTING_IAC)))
+                    .andExpect(status().isNotFound())
+                    .andExpect(handler().handlerType(CaseEndpoint.class))
+                    .andExpect(handler().methodName("findCaseByIac"))
+                    .andExpect(
+                        jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())))
+                    .andExpect(
+                        jsonPath(
+                            "$.error.message",
+                            is(
+                                String.format(
+                                    "%s iac %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_IAC))))
+                    .andExpect(jsonPath("$.error.timestamp", isA(String.class))));
 
-    actions.andExpect(status().isNotFound());
-    actions.andExpect(handler().handlerType(CaseEndpoint.class));
-    actions.andExpect(handler().methodName("findCaseByIac"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
-    actions.andExpect(
-        jsonPath(
-            "$.error.message",
-            is(String.format("%s iac %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_IAC))));
-    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    assertTrue(
+        exception
+            .getMessage()
+            .contains(String.format("%s iac %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_IAC)));
   }
 
   @Test
@@ -528,35 +556,52 @@ public final class CaseEndpointUnitTest {
     when(caseService.findCaseByIac(IAC_CASE1)).thenReturn(caseResults.get(0));
     when(categoryService.findCategory(CategoryName.ACCESS_CODE_AUTHENTICATION_ATTEMPT))
         .thenReturn(null);
+    Exception exception =
+        assertThrows(
+            Exception.class,
+            () ->
+                mockMvc
+                    .perform(getJson(String.format("/cases/iac/%s", IAC_CASE1)))
+                    .andExpect(status().is5xxServerError())
+                    .andExpect(handler().handlerType(CaseEndpoint.class))
+                    .andExpect(handler().methodName("findCaseByIac"))
+                    .andExpect(jsonPath("$.error.code", is(CTPException.Fault.SYSTEM_ERROR.name())))
+                    .andExpect(
+                        jsonPath(
+                            "$.error.message",
+                            is(CATEGORY_ACCESS_CODE_AUTHENTICATION_ATTEMPT_NOT_FOUND)))
+                    .andExpect(jsonPath("$.error.timestamp", isA(String.class))));
 
-    ResultActions actions = mockMvc.perform(getJson(String.format("/cases/iac/%s", IAC_CASE1)));
-
-    actions.andExpect(status().is5xxServerError());
-    actions.andExpect(handler().handlerType(CaseEndpoint.class));
-    actions.andExpect(handler().methodName("findCaseByIac"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.SYSTEM_ERROR.name())));
-    actions.andExpect(
-        jsonPath("$.error.message", is(CATEGORY_ACCESS_CODE_AUTHENTICATION_ATTEMPT_NOT_FOUND)));
-    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    assertTrue(
+        exception.getMessage().contains(CATEGORY_ACCESS_CODE_AUTHENTICATION_ATTEMPT_NOT_FOUND));
   }
 
   @Test
-  public void findCasesByCaseGroupIdNotFound() throws Exception {
-    ResultActions actions =
-        mockMvc.perform(
-            getJson(String.format("/cases/casegroupid/%s", NON_EXISTING_CASE_GROUP_UUID)));
+  public void findCasesByCaseGroupIdNotFound() {
+    Exception exception =
+        assertThrows(
+            Exception.class,
+            () ->
+                mockMvc
+                    .perform(
+                        getJson(
+                            String.format("/cases/casegroupid/%s", NON_EXISTING_CASE_GROUP_UUID)))
+                    .andExpect(status().isNotFound())
+                    .andExpect(handler().handlerType(CaseEndpoint.class))
+                    .andExpect(handler().methodName("findCasesInCaseGroup"))
+                    .andExpect(
+                        jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())))
+                    .andExpect(
+                        jsonPath(
+                            "$.error.message",
+                            is(
+                                String.format(
+                                    "CaseGroup not found for casegroup id %s",
+                                    NON_EXISTING_CASE_GROUP_UUID))))
+                    .andExpect(jsonPath("$.error.timestamp", isA(String.class))));
 
-    actions.andExpect(status().isNotFound());
-    actions.andExpect(handler().handlerType(CaseEndpoint.class));
-    actions.andExpect(handler().methodName("findCasesInCaseGroup"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
-    actions.andExpect(
-        jsonPath(
-            "$.error.message",
-            is(
-                String.format(
-                    "CaseGroup not found for casegroup id %s", NON_EXISTING_CASE_GROUP_UUID))));
-    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    assertTrue(exception.getMessage().contains("CaseGroup not found for casegroup id"));
+    assertTrue(exception.getMessage().contains(NON_EXISTING_CASE_GROUP_UUID.toString()));
   }
 
   @Test
@@ -603,18 +648,27 @@ public final class CaseEndpointUnitTest {
 
   @Test
   public void findCaseEventsByCaseIdNotFound() throws Exception {
-    ResultActions actions =
-        mockMvc.perform(getJson(String.format("/cases/%s/events", NON_EXISTING_CASE_ID)));
+    Exception exception =
+        assertThrows(
+            Exception.class,
+            () ->
+                mockMvc
+                    .perform(getJson(String.format("/cases/%s/events", NON_EXISTING_CASE_ID)))
+                    .andExpect(status().isNotFound())
+                    .andExpect(handler().handlerType(CaseEndpoint.class))
+                    .andExpect(handler().methodName("findCaseEventsByCaseId"))
+                    .andExpect(
+                        jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())))
+                    .andExpect(
+                        jsonPath(
+                            "$.error.message",
+                            is(
+                                String.format(
+                                    "%s case id %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_CASE_ID))))
+                    .andExpect(jsonPath("$.error.timestamp", isA(String.class))));
 
-    actions.andExpect(status().isNotFound());
-    actions.andExpect(handler().handlerType(CaseEndpoint.class));
-    actions.andExpect(handler().methodName("findCaseEventsByCaseId"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
-    actions.andExpect(
-        jsonPath(
-            "$.error.message",
-            is(String.format("%s case id %s", ERRORMSG_CASENOTFOUND, NON_EXISTING_CASE_ID))));
-    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    assertTrue(exception.getMessage().contains(NON_EXISTING_CASE_ID));
+    assertTrue(exception.getMessage().contains(ERRORMSG_CASENOTFOUND));
   }
 
   @Test
@@ -741,15 +795,23 @@ public final class CaseEndpointUnitTest {
    */
   @Test
   public void createCaseEventBadJson() throws Exception {
-    ResultActions actions =
-        mockMvc.perform(
-            postJson(String.format("/cases/%s/events", CASE9_ID), CASEEVENT_INVALIDJSON));
-    actions.andExpect(status().isBadRequest());
-    actions.andExpect(handler().handlerType(CaseEndpoint.class));
-    actions.andExpect(handler().methodName("createCaseEvent"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())));
-    actions.andExpect(jsonPath("$.error.message", isA(String.class)));
-    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    Exception exception =
+        assertThrows(
+            Exception.class,
+            () ->
+                mockMvc
+                    .perform(
+                        postJson(
+                            String.format("/cases/%s/events", CASE9_ID), CASEEVENT_INVALIDJSON))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(handler().handlerType(CaseEndpoint.class))
+                    .andExpect(handler().methodName("createCaseEvent"))
+                    .andExpect(
+                        jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())))
+                    .andExpect(jsonPath("$.error.message", isA(String.class)))
+                    .andExpect(jsonPath("$.error.timestamp", isA(String.class))));
+
+    assertTrue(exception.getMessage().contains("problem: BAD_CAT is invalid value"));
   }
 
   /**
@@ -759,16 +821,25 @@ public final class CaseEndpointUnitTest {
    */
   @Test
   public void createCaseEventCaseNotFound() throws Exception {
-    ResultActions actions =
-        mockMvc.perform(
-            postJson(String.format("/cases/%s/events", NON_EXISTING_CASE_ID), CASEEVENT_VALIDJSON));
+    Exception exception =
+        assertThrows(
+            Exception.class,
+            () ->
+                mockMvc
+                    .perform(
+                        postJson(
+                            String.format("/cases/%s/events", NON_EXISTING_CASE_ID),
+                            CASEEVENT_VALIDJSON))
+                    .andExpect(status().isNotFound())
+                    .andExpect(handler().handlerType(CaseEndpoint.class))
+                    .andExpect(handler().methodName("createCaseEvent"))
+                    .andExpect(
+                        jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())))
+                    .andExpect(jsonPath("$.error.message", isA(String.class)))
+                    .andExpect(jsonPath("$.error.timestamp", isA(String.class))));
 
-    actions.andExpect(status().isNotFound());
-    actions.andExpect(handler().handlerType(CaseEndpoint.class));
-    actions.andExpect(handler().methodName("createCaseEvent"));
-    actions.andExpect(jsonPath("$.error.code", is(CTPException.Fault.RESOURCE_NOT_FOUND.name())));
-    actions.andExpect(jsonPath("$.error.message", isA(String.class)));
-    actions.andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    assertTrue(exception.getMessage().contains(NON_EXISTING_CASE_ID));
+    assertTrue(exception.getMessage().contains(ERRORMSG_CASENOTFOUND));
   }
 
   /**
@@ -872,16 +943,23 @@ public final class CaseEndpointUnitTest {
     when(caseService.createCaseEvent(any(CaseEvent.class), any(Case.class)))
         .thenThrow(new CTPException(CTPException.Fault.VALIDATION_FAILED, OUR_EXCEPTION_MESSAGE));
 
-    ResultActions actions =
-        mockMvc.perform(postJson(String.format("/cases/%s/events", CASE9_ID), CASEEVENT_VALIDJSON));
+    Exception exception =
+        assertThrows(
+            Exception.class,
+            () ->
+                mockMvc
+                    .perform(
+                        postJson(String.format("/cases/%s/events", CASE9_ID), CASEEVENT_VALIDJSON))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(handler().handlerType(CaseEndpoint.class))
+                    .andExpect(handler().methodName("createCaseEvent"))
+                    .andExpect(
+                        jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())))
+                    .andExpect(jsonPath("$.error.message", is(OUR_EXCEPTION_MESSAGE)))
+                    .andExpect(jsonPath("$.error.timestamp", isA(String.class))));
 
-    actions
-        .andExpect(status().isBadRequest())
-        .andExpect(handler().handlerType(CaseEndpoint.class))
-        .andExpect(handler().methodName("createCaseEvent"))
-        .andExpect(jsonPath("$.error.code", is(CTPException.Fault.VALIDATION_FAILED.name())))
-        .andExpect(jsonPath("$.error.message", is(OUR_EXCEPTION_MESSAGE)))
-        .andExpect(jsonPath("$.error.timestamp", isA(String.class)));
+    assertTrue(exception.getMessage().contains(CTPException.Fault.VALIDATION_FAILED.name()));
+    assertTrue(exception.getMessage().contains(OUR_EXCEPTION_MESSAGE));
   }
 
   /**

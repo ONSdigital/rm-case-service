@@ -1,10 +1,12 @@
 package uk.gov.ons.ctp.response.casesvc.service;
 
-import com.godaddy.logging.Logger;
-import com.godaddy.logging.LoggerFactory;
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -46,7 +48,7 @@ public class CaseGroupService {
    * @return CaseGroup entity or null
    */
   public CaseGroup findCaseGroupByCaseGroupPK(final Integer caseGroupPK) {
-    log.with("case_group_pk", caseGroupPK).debug("Entering findCaseGroupByCaseGroupId");
+    log.debug("Entering findCaseGroupByCaseGroupId", kv("case_group_pk", caseGroupPK));
     return caseGroupRepo.findById(caseGroupPK).orElse(null);
   }
 
@@ -57,7 +59,7 @@ public class CaseGroupService {
    * @return CaseGroup entity or null
    */
   public CaseGroup findCaseGroupById(final UUID id) {
-    log.with("id", id).debug("Entering findCaseGroupById");
+    log.debug("Entering findCaseGroupById", kv("id", id));
     return caseGroupRepo.findById(id);
   }
 
@@ -68,7 +70,7 @@ public class CaseGroupService {
    * @return CaseGroup entity or null
    */
   public List<CaseGroup> findCaseGroupByPartyId(final UUID id) {
-    log.with("id", id).debug("Entering findCaseGroupByPartyId");
+    log.debug("Entering findCaseGroupByPartyId", kv("id", id));
     return caseGroupRepo.findByPartyId(id);
   }
 
@@ -79,15 +81,16 @@ public class CaseGroupService {
    * @return CaseGroup entity or null
    */
   public List<CaseGroup> findCaseGroupBySurveyId(final UUID surveyId) {
-    log.with("survey_id", surveyId).debug("Entering findCaseGroupByPartyId");
+    log.debug("Entering findCaseGroupByPartyId", kv("survey_id", surveyId));
     return caseGroupRepo.findBySurveyId(surveyId);
   }
 
   public CaseGroup findCaseGroupByCollectionExerciseIdAndRuRef(
       final UUID collectionExerciseId, final String ruRef) {
-    log.with("collection_exercise_id", collectionExerciseId)
-        .with("ru_ref", ruRef)
-        .debug("Entering findCaseGroupByCollectionExerciseIdAndRuRef");
+    log.debug(
+        "Entering findCaseGroupByCollectionExerciseIdAndRuRef",
+        kv("collection_exercise_id", collectionExerciseId),
+        kv("ru_ref", ruRef));
     return caseGroupRepo.findCaseGroupByCollectionExerciseIdAndSampleUnitRef(
         collectionExerciseId, ruRef);
   }

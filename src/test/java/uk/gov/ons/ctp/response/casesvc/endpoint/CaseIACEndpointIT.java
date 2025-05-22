@@ -1,32 +1,27 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.Matchers.arrayWithSize;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import com.godaddy.logging.Logger;
-import com.godaddy.logging.LoggerFactory;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+import kong.unirest.core.HttpResponse;
+import kong.unirest.core.Unirest;
+import kong.unirest.core.UnirestException;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -51,16 +46,13 @@ import uk.gov.ons.ctp.response.lib.common.UnirestInitialiser;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @TestPropertySource(locations = "classpath:/application-test.yml")
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@WireMockTest(httpPort = 18002)
 public class CaseIACEndpointIT {
   private UUID collectionExerciseId;
   private Map<String, String> metadata;
 
   private static final Logger log = LoggerFactory.getLogger(CaseIACEndpointIT.class);
   private PubSubTestEmulator pubSubEmulator = new PubSubTestEmulator();
-
-  @ClassRule
-  public static WireMockRule wireMockRule =
-      new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
 
   @LocalServerPort private int port;
 
@@ -74,8 +66,8 @@ public class CaseIACEndpointIT {
 
   @BeforeClass
   public static void setUp() throws InterruptedException {
-    ObjectMapper value = new ObjectMapper();
-    UnirestInitialiser.initialise(value);
+    Unirest.config().reset();
+    UnirestInitialiser.initialise();
     Thread.sleep(20000);
   }
 
@@ -173,13 +165,11 @@ public class CaseIACEndpointIT {
         .asString();
   }
 
-  private HttpResponse<CaseDetailsDTO[]> getCreatedCase(UUID sampleUnitId) throws Exception {
-    HttpResponse<CaseDetailsDTO[]> casesResponse =
-        Unirest.get(String.format("http://localhost:%d/cases/sampleunitids", port))
-            .basicAuth("admin", "secret")
-            .queryString("sampleUnitId", sampleUnitId)
-            .header("Content-Type", "application/json")
-            .asObject(CaseDetailsDTO[].class);
-    return casesResponse;
+  private HttpResponse<CaseDetailsDTO[]> getCreatedCase(UUID sampleUnitId) {
+    return Unirest.get(String.format("http://localhost:%d/cases/sampleunitids", port))
+        .basicAuth("admin", "secret")
+        .queryString("sampleUnitId", sampleUnitId)
+        .header("Content-Type", "application/json")
+        .asObject(CaseDetailsDTO[].class);
   }
 }

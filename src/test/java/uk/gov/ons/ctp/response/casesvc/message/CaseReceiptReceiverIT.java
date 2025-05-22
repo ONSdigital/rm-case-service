@@ -1,5 +1,6 @@
 package uk.gov.ons.ctp.response.casesvc.message;
 
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -20,6 +21,7 @@ import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @TestPropertySource(locations = "classpath:/application-test.yml")
+@WireMockTest(httpPort = 18002)
 public class CaseReceiptReceiverIT {
 
   private final PubSubTestEmulator pubSubEmulator = new PubSubTestEmulator();

@@ -1,7 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.service.action.email;
 
-import com.godaddy.logging.Logger;
-import com.godaddy.logging.LoggerFactory;
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -12,6 +12,8 @@ import java.util.UUID;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
@@ -58,10 +60,11 @@ public class ProcessEmailActionService {
         actionTemplateService.mapEventTagToTemplate(eventTag, Boolean.TRUE);
     UUID collectionExerciseId = collectionExerciseDTO.getId();
     if (null == actionTemplate) {
-      log.with("activeEnrolment", true)
-          .with("event", eventTag)
-          .with("collectionExerciseId", collectionExerciseId.toString())
-          .info("No Email Action Template defined for this event.");
+      log.info(
+          "No Email Action Template defined for this event.",
+          kv("activeEnrolment", true),
+          kv("event", eventTag),
+          kv("collectionExerciseId", collectionExerciseId.toString()));
       return new AsyncResult<>(true);
     }
     // Initial status of this async call will be considered as success unless the subsequent process
@@ -71,9 +74,10 @@ public class ProcessEmailActionService {
     List<CaseAction> emailCases =
         caseGroupRepository.findByCollectionExerciseIdAndActiveEnrolment(
             collectionExerciseId, true);
-    log.with("email cases", emailCases.size())
-        .with(collectionExerciseId.toString())
-        .info("Processing email cases");
+    log.info(
+        "Processing email cases",
+        kv("email cases", emailCases.size()),
+        kv("collectionExerciseId", collectionExerciseId.toString()));
     SurveyDTO survey = actionService.getSurvey(collectionExerciseDTO.getSurveyId());
     emailCases
         .parallelStream()
@@ -111,16 +115,17 @@ public class ProcessEmailActionService {
     UUID actionCaseId = caseAction.getCaseId();
     String templateType = caseActionTemplate.getType();
     Handler templateHandler = caseActionTemplate.getHandler();
-    log.with("caseId", actionCaseId)
-        .with("actionTemplate", templateType)
-        .with("actionHandler", templateHandler)
-        .info("Processing Email Event.");
+    log.info(
+        "Processing Email Event.",
+        kv("caseId", actionCaseId),
+        kv("actionTemplate", templateType),
+        kv("actionHandler", templateHandler));
     boolean isSuccess = true;
     try {
-      log.with("caseId", actionCaseId).info("Getting ActionCaseParty");
+      log.info("Getting ActionCaseParty", kv("caseId", actionCaseId));
       CaseActionParty actionCaseParty = actionService.setParties(caseAction, survey);
       if (isBusinessNotification(caseAction)) {
-        log.with("caseId", caseAction).info("Processing Email for isBusinessNotification true");
+        log.info("Processing Email for isBusinessNotification true", kv("caseId", caseAction));
         actionCaseParty
             .getChildParties()
             .parallelStream()
@@ -134,7 +139,7 @@ public class ProcessEmailActionService {
                         caseAction,
                         collectionExercise));
       } else {
-        log.with("caseId", caseAction).info("Processing Email for isBusinessNotification false");
+        log.info("Processing Email for isBusinessNotification false", kv("caseId", caseAction));
         processEmail(
             actionCaseParty.getParentParty(),
             actionCaseParty.getChildParties().get(0),
@@ -144,11 +149,12 @@ public class ProcessEmailActionService {
             collectionExercise);
       }
     } catch (Exception e) {
-      log.with("caseId", actionCaseId)
-          .with("actionTemplate", templateType)
-          .with("actionHandler", templateHandler)
-          .with("exception", e)
-          .warn("Processing Email Event FAILED.");
+      log.warn(
+          "Processing Email Event FAILED.",
+          kv("caseId", actionCaseId),
+          kv("actionTemplate", templateType),
+          kv("actionHandler", templateHandler),
+          kv("exception", e));
       isSuccess = false;
       asyncEmailCallStatus.set(false);
     }
@@ -181,10 +187,11 @@ public class ProcessEmailActionService {
       CaseActionTemplate caseActionTemplate,
       CaseAction caseAction,
       CollectionExerciseDTO collectionExercise) {
-    log.with("template", caseActionTemplate.getType())
-        .with("case", caseAction.getCaseId())
-        .with("handler", caseActionTemplate.getHandler())
-        .info("Collecting email data.");
+    log.info(
+        "Collecting email data.",
+        kv("template", caseActionTemplate.getType()),
+        kv("case", caseAction.getCaseId()),
+        kv("handler", caseActionTemplate.getHandler()));
     String sampleUnitRef = caseAction.getSampleUnitRef();
     Classifiers classifiers = getClassifiers(businessParty, survey, caseActionTemplate);
     Personalisation personalisation =
@@ -198,10 +205,11 @@ public class ProcessEmailActionService {
                 .emailAddress(respondentParty.getAttributes().getEmailAddress())
                 .reference(survey.getSurveyRef() + "-" + sampleUnitRef)
                 .build());
-    log.with("template", caseActionTemplate.getType())
-        .with("case", caseAction.getCaseId())
-        .with("handler", caseActionTemplate.getHandler())
-        .info("sending email data to pubsub.");
+    log.info(
+        "sending email data to pubsub.",
+        kv("template", caseActionTemplate.getType()),
+        kv("case", caseAction.getCaseId()),
+        kv("handler", caseActionTemplate.getHandler()));
     emailService.processEmail(payload);
   }
 

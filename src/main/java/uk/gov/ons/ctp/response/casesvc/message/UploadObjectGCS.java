@@ -1,10 +1,12 @@
 package uk.gov.ons.ctp.response.casesvc.message;
 
-import com.godaddy.logging.Logger;
-import com.godaddy.logging.LoggerFactory;
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import com.google.cloud.NoCredentials;
 import com.google.cloud.storage.*;
 import java.io.File;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.ctp.response.casesvc.config.AppConfig;
 
@@ -49,10 +51,11 @@ public class UploadObjectGCS {
       isSuccess = true;
       log.info("file_name: " + bucketFilename + " bucket: " + bucket + ", Upload Successful!");
     } catch (StorageException exception) {
-      log.with("bucketFileName", bucketFilename)
-          .with("bucket", bucket)
-          .with("exception", exception)
-          .error("Error uploading the generated file to GCS");
+      log.error(
+          "Error uploading the generated file to GCS",
+          kv("exception", exception),
+          kv("bucketFileName", bucketFilename),
+          kv("bucket", bucket));
     }
     return isSuccess;
   }
