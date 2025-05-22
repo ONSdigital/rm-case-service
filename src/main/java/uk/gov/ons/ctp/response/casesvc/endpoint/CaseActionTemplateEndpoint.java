@@ -1,9 +1,11 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
-import com.godaddy.logging.Logger;
-import com.godaddy.logging.LoggerFactory;
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
+import jakarta.validation.Valid;
 import java.net.URI;
-import javax.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,9 +35,10 @@ public class CaseActionTemplateEndpoint {
   @RequestMapping(method = RequestMethod.POST)
   public ResponseEntity<CaseActionTemplate> createActionTemplate(
       @RequestBody @Valid final CaseActionTemplate requestActionTemplate) {
-    log.with("templateName", requestActionTemplate.getType())
-        .with("description", requestActionTemplate.getDescription())
-        .debug("Recording a new action template");
+    log.debug(
+        "Recording a new action template",
+        kv("templateName", requestActionTemplate.getType()),
+        kv("description", requestActionTemplate.getDescription()));
     CaseActionTemplate createdTemplate = actionTemplateRepo.save(requestActionTemplate);
     return ResponseEntity.created(
             URI.create(String.format("/template/%s", createdTemplate.getType())))

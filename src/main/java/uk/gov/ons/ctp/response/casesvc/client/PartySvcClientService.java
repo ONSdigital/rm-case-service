@@ -1,11 +1,13 @@
 package uk.gov.ons.ctp.response.casesvc.client;
 
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.godaddy.logging.Logger;
-import com.godaddy.logging.LoggerFactory;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
@@ -42,7 +44,7 @@ public class PartySvcClientService {
       maxAttemptsExpression = "#{${retries.maxAttempts}}",
       backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
   public PartyDTO getParty(final String sampleUnitType, final UUID partyId) {
-    log.with("sampleUnitType", sampleUnitType).with("partyId", partyId).info("Getting party");
+    log.info("Getting party", kv("sampleUnitType", sampleUnitType), kv("partyId", partyId));
     final UriComponents uriComponents =
         restUtility.createUriComponents(
             appConfig.getPartySvc().getPartyBySampleUnitTypeAndIdPath(),
@@ -67,10 +69,11 @@ public class PartySvcClientService {
       final UUID partyId,
       final String surveyId,
       final List<String> enrolmentStatuses) {
-    log.with("sampleUnitType", sampleUnitType)
-        .with("partyId", partyId.toString())
-        .with("surveyId", surveyId)
-        .info("Retrieving party by survey");
+    log.info(
+        "Retrieving party by survey",
+        kv("sampleUnitType", sampleUnitType),
+        kv("partyId", partyId),
+        kv("surveyId", surveyId));
 
     final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
     queryParams.put("survey_id", Collections.singletonList(surveyId));

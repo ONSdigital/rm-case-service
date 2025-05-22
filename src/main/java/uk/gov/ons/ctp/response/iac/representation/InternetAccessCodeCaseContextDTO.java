@@ -1,8 +1,8 @@
 package uk.gov.ons.ctp.response.iac.representation;
 
+import jakarta.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import java.util.UUID;
-import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;

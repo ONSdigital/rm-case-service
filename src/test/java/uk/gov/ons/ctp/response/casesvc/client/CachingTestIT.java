@@ -1,15 +1,11 @@
 package uk.gov.ons.ctp.response.casesvc.client;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import com.github.tomakehurst.wiremock.stubbing.StubMapping;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import java.util.UUID;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +23,10 @@ import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 @RunWith(SpringJUnit4ClassRunner.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @TestPropertySource(locations = "classpath:/application-test.yml")
+@WireMockTest(httpPort = 18002)
 public class CachingTestIT {
 
   @Autowired private CollectionExerciseSvcClient collectionExerciseSvcClient;
-
-  @ClassRule
-  public static WireMockRule wireMockRule =
-      new WireMockRule(options().extensions(new ResponseTemplateTransformer(false)).port(18002));
 
   private UUID collectionExerciseId = UUID.fromString("cb8accda-6118-4d3b-85a3-149e28960c55");
 
@@ -42,27 +35,24 @@ public class CachingTestIT {
 
     String expectedSurveyId = UUID.randomUUID().toString();
 
-    StubMapping stubMapping = createCollexStub(expectedSurveyId);
+    createCollexStub(expectedSurveyId);
     CollectionExerciseDTO collex =
         collectionExerciseSvcClient.getCollectionExercise(collectionExerciseId);
     assertEquals(expectedSurveyId, collex.getSurveyId());
 
     String expectedSecondSurveyId = UUID.randomUUID().toString();
-    removeStub(stubMapping);
-    stubMapping = createCollexStub(expectedSecondSurveyId);
+    createCollexStub(expectedSecondSurveyId);
     CollectionExerciseDTO collex1 =
         collectionExerciseSvcClient.getCollectionExercise(collectionExerciseId);
     assertEquals(expectedSurveyId, collex1.getSurveyId());
     assertNotEquals(expectedSecondSurveyId, collex1.getSurveyId());
 
     String expectedThirdSurveyId = UUID.randomUUID().toString();
-    removeStub(stubMapping);
-    stubMapping = createCollexStub(expectedThirdSurveyId);
+    createCollexStub(expectedThirdSurveyId);
     CollectionExerciseDTO collex2 =
         collectionExerciseSvcClient.getCollectionExercise(collectionExerciseId);
     assertEquals(expectedSurveyId, collex2.getSurveyId());
     assertNotEquals(expectedThirdSurveyId, collex2.getSurveyId());
-    removeStub(stubMapping);
   }
 
   @Test
@@ -70,14 +60,14 @@ public class CachingTestIT {
 
     String expectedSurveyId = UUID.randomUUID().toString();
 
-    StubMapping stubMapping = createCollexStub(expectedSurveyId);
+    createCollexStub(expectedSurveyId);
     CollectionExerciseDTO collex =
         collectionExerciseSvcClient.getCollectionExercise(collectionExerciseId);
     assertEquals(expectedSurveyId, collex.getSurveyId());
 
     String expectedSecondSurveyId = UUID.randomUUID().toString();
-    removeStub(stubMapping);
-    stubMapping = createCollexStub(expectedSecondSurveyId);
+
+    createCollexStub(expectedSecondSurveyId);
     CollectionExerciseDTO collex1 =
         collectionExerciseSvcClient.getCollectionExercise(collectionExerciseId);
     assertEquals(expectedSurveyId, collex1.getSurveyId());
@@ -85,18 +75,18 @@ public class CachingTestIT {
     Thread.sleep(61000);
 
     String expectedThirdSurveyId = UUID.randomUUID().toString();
-    removeStub(stubMapping);
-    stubMapping = createCollexStub(expectedThirdSurveyId);
+    createCollexStub(expectedThirdSurveyId);
+
     CollectionExerciseDTO collex2 =
         collectionExerciseSvcClient.getCollectionExercise(collectionExerciseId);
     assertEquals(expectedThirdSurveyId, collex2.getSurveyId());
     assertNotEquals(expectedSecondSurveyId, collex2.getSurveyId());
     assertNotEquals(expectedSurveyId, collex2.getSurveyId());
-    removeStub(stubMapping);
   }
 
-  private StubMapping createCollexStub(String surveyId) {
-    return stubFor(
+  private void createCollexStub(String surveyId) {
+    configureFor("localhost", 18002);
+    stubFor(
         get(urlPathMatching("/collectionexercises/.*"))
             .willReturn(
                 aResponse()
