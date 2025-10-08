@@ -133,9 +133,10 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   @RequestMapping(value = "/partyid/{partyId}/surveyid/{surveyId}", method = RequestMethod.GET)
   public ResponseEntity<List<CaseGroupDTO>> findCaseGroupsByPartyAndSurveyId(
       @PathVariable("partyId") final UUID partyId, @PathVariable("surveyId") final UUID surveyId) {
-    log.with("party_id", partyId)
-        .with("surveyId", surveyId)
-        .debug("Retrieving case groups by party and survey id");
+        log.debug(
+        "Retrieving casegroups by party and survey id",
+        kv("party_id", partyId),
+        kv("survey_id", surveyId));
 
     List<CaseGroup> caseGroupList =
         caseGroupService.findCaseGroupByPartyAndSurveyId(partyId, surveyId);
