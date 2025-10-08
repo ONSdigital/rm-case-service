@@ -93,9 +93,10 @@ public class CaseGroupService {
    * @return CaseGroup entity or null
    */
   public List<CaseGroup> findCaseGroupByPartyAndSurveyId(final UUID partyId, final UUID surveyId) {
-    log.with("partyId", partyId)
-        .with("survey_id", surveyId)
-        .debug("Entering findCaseGroupByPartyAndSurveyId");
+    log.debug(
+        "Entering findCaseGroupByPartyAndSurveyId",
+        kv("partyId", partyId),
+        kv("survey_id", surveyId));
     return caseGroupRepo.findByPartyAndSurveyId(partyId, surveyId);
   }
 
