@@ -147,4 +147,15 @@ public interface CaseGroupRepository extends JpaRepository<CaseGroup, Integer> {
   @Query("DELETE FROM CaseGroup cg WHERE cg.collectionExerciseId = :collectionExerciseId")
   int deleteCaseGroupsByCollectionExerciseId(
       @Param("collectionExerciseId") UUID collectionExerciseID);
+
+  /**
+   * To find CaseGroup by party UUID and survey UUID
+   *
+   * @param partyId the UUID of the Party
+   * @param surveyId the UUID of the survey
+   * @return the matching CaseGroups
+   */
+  @Query("SELECT c FROM CaseGroup c WHERE c.partyId = :partyId AND c.surveyId = :surveyId")
+  List<CaseGroup> findByPartyAndSurveyId(
+      @Param("partyId") UUID partyId, @Param("surveyId") UUID surveyId);
 }

@@ -124,6 +124,33 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   }
 
   /**
+   * the GET endpoint to find CaseGroups by partyid UUID and surveyid UUID
+   *
+   * @param partyId to find by
+   * @param surveyId to find by
+   * @return the casegroups found
+   */
+  @RequestMapping(value = "/partyid/{partyId}/surveyid/{surveyId}", method = RequestMethod.GET)
+  public ResponseEntity<List<CaseGroupDTO>> findCaseGroupsByPartyAndSurveyId(
+      @PathVariable("partyId") final UUID partyId, @PathVariable("surveyId") final UUID surveyId) {
+    log.with("party_id", partyId)
+        .with("surveyId", surveyId)
+        .debug("Retrieving case groups by party and survey id");
+
+    List<CaseGroup> caseGroupList =
+        caseGroupService.findCaseGroupByPartyAndSurveyId(partyId, surveyId);
+
+    if (CollectionUtils.isEmpty(caseGroupList)) {
+      return ResponseEntity.noContent().build();
+    }
+
+    List<CaseGroupDTO> resultList =
+        caseGroupList.stream().map(ObjectConverter::caseGroupDTO).collect(Collectors.toList());
+
+    return ResponseEntity.ok(resultList);
+  }
+
+  /**
    * the GET endpoint to find Case Group transitions by collectionExerciseId and ruRef
    *
    * @param collectionExerciseId UUID to find by

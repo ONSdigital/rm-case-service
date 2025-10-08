@@ -85,6 +85,20 @@ public class CaseGroupService {
     return caseGroupRepo.findBySurveyId(surveyId);
   }
 
+  /**
+   * Find CaseGroups by party Id an survey Id.
+   *
+   * @param partyId UUID of party
+   * @param surveyId UUID of survey
+   * @return CaseGroup entity or null
+   */
+  public List<CaseGroup> findCaseGroupByPartyAndSurveyId(final UUID partyId, final UUID surveyId) {
+    log.with("partyId", partyId)
+        .with("survey_id", surveyId)
+        .debug("Entering findCaseGroupByPartyAndSurveyId");
+    return caseGroupRepo.findByPartyAndSurveyId(partyId, surveyId);
+  }
+
   public CaseGroup findCaseGroupByCollectionExerciseIdAndRuRef(
       final UUID collectionExerciseId, final String ruRef) {
     log.debug(
