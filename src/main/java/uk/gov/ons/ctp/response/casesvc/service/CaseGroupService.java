@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.ReportingUnitDTO;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.common.error.CTPException;
 import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManager;
@@ -86,18 +88,21 @@ public class CaseGroupService {
   }
 
   /**
-   * Find CaseGroups by party Id an survey Id.
+   * Get ReportingUnitDTO by party Id an survey Id.
    *
    * @param partyId UUID of party
    * @param surveyId UUID of survey
-   * @return CaseGroup entity or null
+   * @param limit limit of records returned
+   * @return list of ReportingUnitDTO
    */
-  public List<CaseGroup> findCaseGroupByPartyAndSurveyId(final UUID partyId, final UUID surveyId) {
+  public List<ReportingUnitDTO> getReportingUnitsByPartyAndSurveyId(
+      final UUID partyId, final UUID surveyId, int limit) {
     log.debug(
-        "Entering findCaseGroupByPartyAndSurveyId",
+        "Entering findRUDetailsByPartyAndSurveyId",
         kv("partyId", partyId),
         kv("survey_id", surveyId));
-    return caseGroupRepo.findByPartyAndSurveyId(partyId, surveyId);
+    return caseGroupRepo.findReportingUnitsByPartyAndSurveyId(
+        PageRequest.of(0, limit), partyId, surveyId);
   }
 
   public CaseGroup findCaseGroupByCollectionExerciseIdAndRuRef(

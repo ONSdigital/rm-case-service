@@ -12,6 +12,8 @@ import static uk.gov.ons.ctp.response.lib.common.MvcHelper.getJson;
 import static uk.gov.ons.ctp.response.lib.common.error.CTPException.Fault.RESOURCE_NOT_FOUND;
 import static uk.gov.ons.ctp.response.lib.common.utility.MockMvcControllerAdviceHelper.mockAdviceFor;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.junit.Before;
@@ -27,6 +29,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.ReportingUnitDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
@@ -43,6 +46,7 @@ public final class CaseGroupEndpointUnitTest {
   private static final UUID EXISTING_COLLECTION_EXERCISE_ID =
       UUID.fromString("f34950d7-ed1e-4c16-941a-a8f793c266a1");
   private static final UUID CASE_GROUP_UUID = UUID.randomUUID();
+  private static final UUID CASE_UUID = UUID.randomUUID();
   private static final String NON_EXISTENT_CASE_GROUP_UUID = "9a5f2be5-f944-41f9-982c-3517cfcfe666";
   private static final UUID CASE_GROUP_UUID_UNCHECKED_EXCEPTION = UUID.randomUUID();
   private static final UUID CASE_GROUP_CE_ID =
@@ -51,15 +55,22 @@ public final class CaseGroupEndpointUnitTest {
       UUID.fromString("3b136c4b-7a14-4904-9e01-13364dd7b972");
   private static final String CASE_GROUP_SU_REF = "0123456789";
   private static final String CASE_GROUP_SU_TYPE = "B";
+  private static final String IAC = "xyts9jxk2gbl";
   private static final String OUR_EXCEPTION_MESSAGE = "this is what we throw";
   private static final UUID NON_EXISTING_PARTY_UUID =
       UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfe666");
   private static final UUID EXISTING_PARTY_UUID =
       UUID.fromString("3b136c4b-7a14-4904-9e01-13364dd7b972");
+  private static final UUID SURVEY_UUID = UUID.fromString("697e55eb-3a20-4b49-9d51-40bcf0197bd9");
   private static final UUID CASEGROUP1_ID = UUID.fromString("9a5f2be5-f944-41f9-982c-3517cfcfef3c");
   private static final UUID CASEGROUP2_ID = UUID.fromString("2d31f300-246d-11e8-b467-0ed5f89f718b");
   private static final UUID COLLEX1_ID = UUID.fromString("dab9db7f-3aa0-4866-be20-54d72ee185fb");
   private static final UUID COLLEX2_ID = UUID.fromString("24535ac6-246d-11e8-b467-0ed5f89f718b");
+
+  private static final long CURRENT_TIME_IN_MILLISECONDS = 1594646202887L;
+
+  List<ReportingUnitDTO> reportingUnits = new ArrayList<>();
+
   @InjectMocks private CaseGroupEndpoint caseGroupEndpoint;
   @Mock private CaseGroupService caseGroupService;
   @Mock private CaseService caseService;
@@ -246,5 +257,45 @@ public final class CaseGroupEndpointUnitTest {
             deleteUrl("/casegroups/collectionExercise/" + EXISTING_COLLECTION_EXERCISE_ID));
 
     actions.andExpect(status().isNotFound());
+  }
+
+  @Test
+  public void getReportingUnitsByPartyAndSurveyId() throws Exception {
+    ReportingUnitDTO reportingUnit =
+        new ReportingUnitDTO(
+            EXISTING_COLLECTION_EXERCISE_ID,
+            CaseGroupStatus.COMPLETE,
+            CASE_UUID,
+            new Timestamp(System.currentTimeMillis()),
+            IAC);
+    reportingUnits.add(reportingUnit);
+
+    when(caseGroupService.getReportingUnitsByPartyAndSurveyId(EXISTING_PARTY_UUID, SURVEY_UUID, 10))
+        .thenReturn(reportingUnits);
+
+    ResultActions actions =
+        mockMvc.perform(
+            getJson(
+                    String.format(
+                        "/casegroups/partyid/%s/surveyid/%s", EXISTING_PARTY_UUID, SURVEY_UUID))
+                .param("limit", "10"));
+
+    actions.andExpect(
+        jsonPath(
+            "$[*].collectionExerciseId",
+            containsInAnyOrder(EXISTING_COLLECTION_EXERCISE_ID.toString())));
+    actions.andExpect(status().isOk());
+  }
+
+  @Test
+  public void getReportingUnitsByPartyAndSurveyIdNoContent() throws Exception {
+    ResultActions actions =
+        mockMvc.perform(
+            getJson(
+                    String.format(
+                        "/casegroups/partyid/%s/surveyid/%s", EXISTING_PARTY_UUID, SURVEY_UUID))
+                .param("limit", "10"));
+
+    actions.andExpect(status().isNoContent());
   }
 }

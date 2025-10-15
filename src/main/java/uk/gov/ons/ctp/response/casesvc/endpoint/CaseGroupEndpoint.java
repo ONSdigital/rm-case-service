@@ -22,6 +22,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.ObjectConverter;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
+import uk.gov.ons.ctp.response.casesvc.representation.ReportingUnitDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
@@ -131,24 +132,23 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
    * @return the casegroups found
    */
   @RequestMapping(value = "/partyid/{partyId}/surveyid/{surveyId}", method = RequestMethod.GET)
-  public ResponseEntity<List<CaseGroupDTO>> findCaseGroupsByPartyAndSurveyId(
-      @PathVariable("partyId") final UUID partyId, @PathVariable("surveyId") final UUID surveyId) {
+  public ResponseEntity<List<ReportingUnitDTO>> getReportingUnitsByPartyAndSurveyId(
+      @PathVariable("partyId") final UUID partyId,
+      @PathVariable("surveyId") final UUID surveyId,
+      @RequestParam(value = "limit") final Integer limit) {
     log.debug(
-        "Retrieving casegroups by party and survey id",
+        "Retrieving Case Groups RU details by party and survey id",
         kv("party_id", partyId),
         kv("survey_id", surveyId));
 
-    List<CaseGroup> caseGroupList =
-        caseGroupService.findCaseGroupByPartyAndSurveyId(partyId, surveyId);
+    List<ReportingUnitDTO> reportingUnits =
+        caseGroupService.getReportingUnitsByPartyAndSurveyId(partyId, surveyId, limit);
 
-    if (CollectionUtils.isEmpty(caseGroupList)) {
+    if (CollectionUtils.isEmpty(reportingUnits)) {
       return ResponseEntity.noContent().build();
     }
 
-    List<CaseGroupDTO> resultList =
-        caseGroupList.stream().map(ObjectConverter::caseGroupDTO).collect(Collectors.toList());
-
-    return ResponseEntity.ok(resultList);
+    return ResponseEntity.ok(reportingUnits);
   }
 
   /**
