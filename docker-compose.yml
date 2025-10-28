@@ -1,8 +1,8 @@
 services:
   collectionexercise:
     container_name: collex-case-it
-    external_links:
-      - postgres-case-it
+    #external_links:
+    #  - postgres-case-it
     image: europe-west2-docker.pkg.dev/ons-ci-rmrasbs/images/collection-exercise
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-case-it:5432/postgres?sslmode=disable
@@ -22,7 +22,7 @@ services:
 
   postgres-database:
     container_name: postgres-case-it
-    image: eu.gcr.io/ons-rasrmbs-management/postgres
+    image: europe-west2-docker.pkg.dev/ons-ci-rmrasbs/images/postgres:14
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -40,9 +40,9 @@ services:
 
   survey:
     container_name: survey-case-it
-    image: europe-west2-docker.pkg.dev/ons-ci-rmrasbs/images/survey
-    external_links:
-    - postgres-case-it
+    image: europe-west2-docker.pkg.dev/ons-ci-rmrasbs/images/survey:corpmac
+    #external_links:
+    #- postgres-case-it
     environment:
     - DATABASE_URL=postgres://postgres:postgres@postgres-case-it:5432/postgres?sslmode=disable
     - security_user_name=admin
