@@ -137,7 +137,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ReportingUnitDTO'
+                  $ref: '#/components/schemas/ReportingUnitCaseDTO'
         204:
           description: No Content
           content: { }
@@ -887,7 +887,7 @@ components:
           type: string
         surveyId:
           type: string
-    ReportingUnitDTO:
+    ReportingUnitCaseDTO:
       type: object
       properties:
         collectionExerciseId:

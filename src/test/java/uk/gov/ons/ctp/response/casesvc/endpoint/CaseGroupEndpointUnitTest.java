@@ -29,7 +29,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.ReportingUnitDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.ReportingUnitCaseDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
@@ -69,7 +69,7 @@ public final class CaseGroupEndpointUnitTest {
 
   private static final long CURRENT_TIME_IN_MILLISECONDS = 1594646202887L;
 
-  List<ReportingUnitDTO> reportingUnits = new ArrayList<>();
+  List<ReportingUnitCaseDTO> reportingUnits = new ArrayList<>();
 
   @InjectMocks private CaseGroupEndpoint caseGroupEndpoint;
   @Mock private CaseGroupService caseGroupService;
@@ -261,8 +261,8 @@ public final class CaseGroupEndpointUnitTest {
 
   @Test
   public void getReportingUnitsByPartyAndSurveyId() throws Exception {
-    ReportingUnitDTO reportingUnit =
-        new ReportingUnitDTO(
+    ReportingUnitCaseDTO reportingUnit =
+        new ReportingUnitCaseDTO(
             EXISTING_COLLECTION_EXERCISE_ID,
             CaseGroupStatus.COMPLETE,
             CASE_UUID,

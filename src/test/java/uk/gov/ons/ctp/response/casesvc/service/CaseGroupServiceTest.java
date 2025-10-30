@@ -19,7 +19,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.ReportingUnitDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.ReportingUnitCaseDTO;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.common.FixtureHelper;
 import uk.gov.ons.ctp.response.lib.common.error.CTPException;
@@ -194,9 +194,9 @@ public class CaseGroupServiceTest {
 
   @Test
   public void testGetReportingUnitsByPartyAndSurveyId() throws Exception {
-    List<ReportingUnitDTO> reportingUnits = new ArrayList<>();
-    ReportingUnitDTO reportingUnit =
-        new ReportingUnitDTO(
+    List<ReportingUnitCaseDTO> reportingUnits = new ArrayList<>();
+    ReportingUnitCaseDTO reportingUnit =
+        new ReportingUnitCaseDTO(
             COLLECTION_EXERCISE_UUID,
             CaseGroupStatus.COMPLETE,
             CASE_ID,
@@ -209,7 +209,7 @@ public class CaseGroupServiceTest {
                 PageRequest.of(0, 10), PARTY_ID, SURVEY_ID))
         .willReturn(reportingUnits);
 
-    List<ReportingUnitDTO> response =
+    List<ReportingUnitCaseDTO> response =
         caseGroupService.getReportingUnitsByPartyAndSurveyId(PARTY_ID, SURVEY_ID, 10);
 
     assertEquals(response, reportingUnits);
