@@ -125,8 +125,10 @@ paths:
             type: string
         - name: limit
           in: query
+          description: the maximum number of cases to return
+          required: true
           schema:
-            type: string
+            type: integer
       responses:
         200:
           description: OK
