@@ -5,10 +5,10 @@ import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-/** Domain model object to represent reporting Unit DTO */
+/** Domain model object to represent reporting Unit case DTO */
 @AllArgsConstructor
 @Data
-public class ReportingUnitDTO {
+public class ReportingUnitCaseDTO {
 
   private UUID collectionExerciseId;
   private CaseGroupStatus caseGroupStatus;

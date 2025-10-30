@@ -18,7 +18,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
-import uk.gov.ons.ctp.response.casesvc.representation.ReportingUnitDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.ReportingUnitCaseDTO;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.common.error.CTPException;
 import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManager;
@@ -88,14 +88,14 @@ public class CaseGroupService {
   }
 
   /**
-   * Get ReportingUnitDTO by party Id an survey Id.
+   * Get ReportingUnitCaseDTO by party Id an survey Id.
    *
    * @param partyId UUID of party
    * @param surveyId UUID of survey
    * @param limit limit of records returned
-   * @return list of ReportingUnitDTO
+   * @return list of ReportingUnitCaseDTO
    */
-  public List<ReportingUnitDTO> getReportingUnitsByPartyAndSurveyId(
+  public List<ReportingUnitCaseDTO> getReportingUnitsByPartyAndSurveyId(
       final UUID partyId, final UUID surveyId, int limit) {
     log.debug(
         "Entering findRUDetailsByPartyAndSurveyId",

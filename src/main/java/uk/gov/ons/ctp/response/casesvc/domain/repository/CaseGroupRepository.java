@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
-import uk.gov.ons.ctp.response.casesvc.representation.ReportingUnitDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.ReportingUnitCaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.action.CaseAction;
 
 /** JPA Data Repository. */
@@ -155,16 +155,16 @@ public interface CaseGroupRepository extends JpaRepository<CaseGroup, Integer> {
    *
    * @param partyId the UUID of the Party
    * @param surveyId the UUID of the survey
-   * @return list of ReportingUnitDTO
+   * @return list of ReportingUnitCaseDTO
    */
   @Query(
       value =
-          "SELECT new uk.gov.ons.ctp.response.casesvc.representation.ReportingUnitDTO"
+          "SELECT new uk.gov.ons.ctp.response.casesvc.representation.ReportingUnitCaseDTO"
               + "(cg.collectionExerciseId, cg.status, c.id as caseId, c.createdDateTime, iac.iac) "
               + "FROM CaseGroup cg, Case c "
               + "LEFT JOIN CaseIacAudit iac ON iac.caseFK=c.casePK "
               + "WHERE cg.caseGroupPK=c.caseGroupFK AND cg.partyId= :partyId "
               + "AND cg.surveyId IN :surveyId ORDER BY c.createdDateTime")
-  List<ReportingUnitDTO> findReportingUnitsByPartyAndSurveyId(
+  List<ReportingUnitCaseDTO> findReportingUnitsByPartyAndSurveyId(
       Pageable pageable, @Param("partyId") UUID partyId, @Param("surveyId") UUID surveyId);
 }

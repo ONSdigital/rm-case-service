@@ -22,7 +22,7 @@ import uk.gov.ons.ctp.response.casesvc.domain.model.ObjectConverter;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO.CategoryName;
-import uk.gov.ons.ctp.response.casesvc.representation.ReportingUnitDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.ReportingUnitCaseDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
@@ -132,7 +132,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
    * @return the casegroups found
    */
   @RequestMapping(value = "/partyid/{partyId}/surveyid/{surveyId}", method = RequestMethod.GET)
-  public ResponseEntity<List<ReportingUnitDTO>> getReportingUnitsByPartyAndSurveyId(
+  public ResponseEntity<List<ReportingUnitCaseDTO>> getReportingUnitsByPartyAndSurveyId(
       @PathVariable("partyId") final UUID partyId,
       @PathVariable("surveyId") final UUID surveyId,
       @RequestParam(value = "limit") final Integer limit) {
@@ -141,7 +141,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
         kv("party_id", partyId),
         kv("survey_id", surveyId));
 
-    List<ReportingUnitDTO> reportingUnits =
+    List<ReportingUnitCaseDTO> reportingUnits =
         caseGroupService.getReportingUnitsByPartyAndSurveyId(partyId, surveyId, limit);
 
     if (CollectionUtils.isEmpty(reportingUnits)) {
