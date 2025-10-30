@@ -5,18 +5,21 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
+import java.sql.Timestamp;
 import java.util.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.PageRequest;
 import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
+import uk.gov.ons.ctp.response.casesvc.representation.ReportingUnitCaseDTO;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.common.FixtureHelper;
 import uk.gov.ons.ctp.response.lib.common.error.CTPException;
@@ -38,8 +41,12 @@ public class CaseGroupServiceTest {
   @Mock private CaseGroupAuditService caseGroupAuditService;
 
   private static final UUID CASEGROUP_ID = UUID.fromString("3fc633af-d740-4a7b-8756-f747a02da73b");
+  private static final UUID CASE_ID = UUID.fromString("a3a966ab-535f-4572-b4c3-fab2bb1ed5fc");
+  private static final UUID COLLECTION_EXERCISE_UUID =
+      UUID.fromString("a3a966ab-535f-4572-b4c3-fab2bb1ed5fc");
   private static final UUID PARTY_ID = UUID.fromString("b2263303-a6b7-4562-aedf-eb97de4bc563");
   private static final UUID SURVEY_ID = UUID.fromString("cb8accda-6118-4d3b-85a3-149e28960c54");
+  private static final String IAC = "xyts9jxk2gbl";
 
   @Test
   public void testCaseGroupCorrectlyTransitionsToNewStatus() throws Exception {
@@ -183,6 +190,29 @@ public class CaseGroupServiceTest {
     verify(caseGroupRepo)
         .findCaseGroupByCollectionExerciseIdAndSampleUnitRef(
             caseGroup.getCollectionExerciseId(), caseGroup.getSampleUnitRef());
+  }
+
+  @Test
+  public void testGetReportingUnitsByPartyAndSurveyId() throws Exception {
+    List<ReportingUnitCaseDTO> reportingUnits = new ArrayList<>();
+    ReportingUnitCaseDTO reportingUnit =
+        new ReportingUnitCaseDTO(
+            COLLECTION_EXERCISE_UUID,
+            CaseGroupStatus.COMPLETE,
+            CASE_ID,
+            new Timestamp(System.currentTimeMillis()),
+            IAC);
+    reportingUnits.add(reportingUnit);
+
+    given(
+            caseGroupRepo.findReportingUnitsByPartyAndSurveyId(
+                PageRequest.of(0, 10), PARTY_ID, SURVEY_ID))
+        .willReturn(reportingUnits);
+
+    List<ReportingUnitCaseDTO> response =
+        caseGroupService.getReportingUnitsByPartyAndSurveyId(PARTY_ID, SURVEY_ID, 10);
+
+    assertEquals(response, reportingUnits);
   }
 
   @Test

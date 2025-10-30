@@ -103,6 +103,44 @@ paths:
         403:
           description: Forbidden
           content: {}
+  /casegroups/partyid/{party_id}/surveyid/{survey_id}:
+    get:
+      tags:
+        - case-group-endpoint
+      summary: get RU details by party_id and survey_id with query limit
+      operationId: getReportingUnitsByPartyAndSurveyId
+      description: returns a list of ru details based on party_id and survey_id
+      parameters:
+        - name: party_id
+          in: path
+          description: the uuid of the party
+          required: true
+          schema:
+            type: string
+        - name: survey_id
+          in: path
+          description: the uuid of the survey
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: the maximum number of cases to return
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReportingUnitCaseDTO'
+        204:
+          description: No Content
+          content: { }
   /casegroups/transitions/{collectionExerciseId}/{ruRef}:
     get:
       tags:
@@ -848,6 +886,30 @@ components:
         sampleUnitType:
           type: string
         surveyId:
+          type: string
+    ReportingUnitCaseDTO:
+      type: object
+      properties:
+        collectionExerciseId:
+          type: string
+        caseGroupStatus:
+          type: string
+          enum:
+            - NOTSTARTED
+            - INPROGRESS
+            - COMPLETE
+            - COMPLETEDBYPHONE
+            - REOPENED
+            - NOLONGERREQUIRED
+            - REFUSAL
+            - OTHERNONRESPONSE
+            - UNKNOWNELIGIBILITY
+            - NOTELIGIBLE
+        caseId:
+          type: string
+        createdDateTime:
+          type: string
+        iac:
           type: string
     CaseIACDTO:
       type: object
