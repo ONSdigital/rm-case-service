@@ -2,12 +2,14 @@ package uk.gov.ons.ctp.response.casesvc.domain.repository;
 
 import java.util.List;
 import java.util.UUID;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
+import uk.gov.ons.ctp.response.casesvc.representation.ReportingUnitCaseDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.action.CaseAction;
 
 /** JPA Data Repository. */
@@ -147,4 +149,22 @@ public interface CaseGroupRepository extends JpaRepository<CaseGroup, Integer> {
   @Query("DELETE FROM CaseGroup cg WHERE cg.collectionExerciseId = :collectionExerciseId")
   int deleteCaseGroupsByCollectionExerciseId(
       @Param("collectionExerciseId") UUID collectionExerciseID);
+
+  /**
+   * To find Reporting Units by party UUID and survey UUID
+   *
+   * @param partyId the UUID of the Party
+   * @param surveyId the UUID of the survey
+   * @return list of ReportingUnitCaseDTO
+   */
+  @Query(
+      value =
+          "SELECT new uk.gov.ons.ctp.response.casesvc.representation.ReportingUnitCaseDTO"
+              + "(cg.collectionExerciseId, cg.status, c.id as caseId, c.createdDateTime, iac.iac) "
+              + "FROM CaseGroup cg, Case c "
+              + "LEFT JOIN CaseIacAudit iac ON iac.caseFK=c.casePK "
+              + "WHERE cg.caseGroupPK=c.caseGroupFK AND cg.partyId= :partyId "
+              + "AND cg.surveyId IN :surveyId ORDER BY c.createdDateTime")
+  List<ReportingUnitCaseDTO> findReportingUnitsByPartyAndSurveyId(
+      Pageable pageable, @Param("partyId") UUID partyId, @Param("surveyId") UUID surveyId);
 }
