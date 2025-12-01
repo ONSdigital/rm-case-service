@@ -21,7 +21,6 @@ env:
   CHART_DIRECTORY: _infra/helm/case
   SPINNAKER_TOPIC: ${{ secrets.SPINNAKER_TOPIC }}
   ARTIFACT_BUCKET: ${{ secrets.ARTIFACT_BUCKET }}
-  WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -47,13 +46,13 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Authenticate with Google Cloud
-        if: github.actor != 'dependabot[bot]'
+        if: github.actor == 'dependabot[bot]'
         id: auth
         uses: google-github-actions/auth@ba79af03959ebeac9769e648f473a284504d9193 # v2.1.10
         with:
           credentials_json: ${{ secrets.GCR_KEY }}
       - name: Authenticate with Google Cloud for dependabot workflow
-        if: github.actor == 'dependabot[bot]'
+        if: github.actor != 'dependabot[bot]'
         id: dependabot-auth
         uses: google-github-actions/auth@ba79af03959ebeac9769e648f473a284504d9193 # v2.1.10
         with:
