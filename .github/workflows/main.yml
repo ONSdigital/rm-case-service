@@ -220,14 +220,3 @@ jobs:
           gcloud pubsub topics publish $SPINNAKER_TOPIC --project $SPINNAKER_GOOGLE_PROJECT_ID \
           --message "{ \"kind\": \"storage#object\", \"name\": \"$IMAGE/$IMAGE-${{ env.HELM_VERSION }}.tgz\", \"bucket\": \"$ARTIFACT_BUCKET\" }" \
           --attribute cd="actions"
-  oidc_debug_test:
-    permissions:
-      contents: read
-      id-token: write
-    runs-on: ubuntu-latest
-    name: A test of the oidc debugger
-    steps:
-      - name: Debug OIDC Claims
-        uses: steve-todorov/oidc-debugger-action@v1
-        with:
-          audience: '${{ github.server_url }}/${{ github.repository }}'
