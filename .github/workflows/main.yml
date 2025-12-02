@@ -67,7 +67,7 @@ jobs:
           audience: 'https://token.actions.githubusercontent.com'
       - name: test access
         run: |-
-          curl https://secretmanager.googleapis.com/v1/projects/${{ GAR_GOOGLE_PROJECT_ID }}/secrets/test-secret/versions/1:access \
+          curl https://secretmanager.googleapis.com/v1/projects/$GAR_GOOGLE_PROJECT_ID/secrets/test-secret/versions/1:access \
             --header "Authorization: Bearer ${{ steps.dependabot-auth.outputs.access_token }}"
       - name: Setup Google Cloud SDK
         uses: google-github-actions/setup-gcloud@77e7a554d41e2ee56fc945c52dfd3f33d12def9a # v2.1.4
