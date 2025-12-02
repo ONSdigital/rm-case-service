@@ -68,7 +68,7 @@ jobs:
         uses: 'google-github-actions/get-secretmanager-secrets@v3'
         with:
           secrets: |-
-            token:$GAR_GOOGLE_PROJECT_ID/test-secret
+            token:ons-ci-rmrasbs-sandbox/test-secret
       - name: Setup Google Cloud SDK
         uses: google-github-actions/setup-gcloud@77e7a554d41e2ee56fc945c52dfd3f33d12def9a # v2.1.4
       - name: Configure GCR
