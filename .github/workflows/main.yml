@@ -71,6 +71,10 @@ jobs:
           gcloud auth configure-docker
           gcloud auth configure-docker "$REGISTRY_HOSTNAME"
 
+      - name: docker test
+        run: |
+          docker compose up
+
       - name: Run Tests
         run: |
           export LD_LIBRARY_PATH=/usr/local/lib
