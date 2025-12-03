@@ -65,7 +65,7 @@ jobs:
           token_format: access_token
           workload_identity_provider: 'projects/910585508231/locations/global/workloadIdentityPools/gha-pool/providers/gha-provider'
           audience: 'https://token.actions.githubusercontent.com'
-          service_account: 'principalSet://iam.googleapis.com/projects/910585508231/locations/global/workloadIdentityPools/gha-pool/attribute.repository_owner_id/6865137'
+          service_account: 'github-actions-service-account@ons-ci-rmrasbs-sandbox.iam.gserviceaccount.com'
       - name: Setup Google Cloud SDK
         uses: google-github-actions/setup-gcloud@77e7a554d41e2ee56fc945c52dfd3f33d12def9a # v2.1.4
 
