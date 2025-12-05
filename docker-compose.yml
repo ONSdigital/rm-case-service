@@ -22,7 +22,7 @@ services:
 
   postgres-database:
     container_name: postgres-case-it
-    image: europe-west2-docker.pkg.dev/ons-ci-rmrasbs/images/postgres
+    image: europe-west2-docker.pkg.dev/ons-ci-rmrasbs/images/postgres:14
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
