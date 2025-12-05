@@ -64,17 +64,9 @@ jobs:
         with:
           project_id: 'ons-ci-rmrasbs-sandbox'
           workload_identity_provider: 'projects/910585508231/locations/global/workloadIdentityPools/gha-pool/providers/gha-provider'
-          audience: 'https://token.actions.githubusercontent.com'
       - name: Setup Google Cloud SDK
         uses: google-github-actions/setup-gcloud@77e7a554d41e2ee56fc945c52dfd3f33d12def9a # v2.1.4
 
-#      - name: login to GAR test
-#        uses: docker/login-action@v3
-#        with:
-#         registry: $REGISTRY_HOSTNAME
-#         username: oauth2accesstoken
-#         password: ${{ steps.auth.outputs.access_token }}
-#
       - name: Configure GCR
         run: |
           gcloud auth configure-docker
