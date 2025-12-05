@@ -17,7 +17,7 @@ env:
   REGISTRY_HOSTNAME: europe-west2-docker.pkg.dev
   SPINNAKER_GOOGLE_PROJECT_ID: ${{ secrets.SPINNAKER_GOOGLE_PROJECT_ID }}
   GAR_REPOSITORY: images
-  GAR_GOOGLE_PROJECT_ID: ons-ci-rmrasbs-sandbox
+  GAR_GOOGLE_PROJECT_ID: ${{ secrets.GAR_GOOGLE_PROJECT_ID }}
   CHART_DIRECTORY: _infra/helm/case
   SPINNAKER_TOPIC: ${{ secrets.SPINNAKER_TOPIC }}
   ARTIFACT_BUCKET: ${{ secrets.ARTIFACT_BUCKET }}
