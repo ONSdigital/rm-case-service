@@ -68,10 +68,6 @@ jobs:
       - name: Setup Google Cloud SDK
         uses: google-github-actions/setup-gcloud@77e7a554d41e2ee56fc945c52dfd3f33d12def9a # v2.1.4
 
-      - name: List auth
-        run: |
-          gcloud auth list
-
 #      - name: login to GAR test
 #        uses: docker/login-action@v3
 #        with:
@@ -83,10 +79,6 @@ jobs:
         run: |
           gcloud auth configure-docker
           gcloud auth configure-docker "$REGISTRY_HOSTNAME"
-
-      - name: docker test
-        run: |
-          docker compose up
 
       - name: Run Tests
         run: |
