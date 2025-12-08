@@ -22,7 +22,7 @@ services:
 
   postgres-database:
     container_name: postgres-case-it
-    image: eu.gcr.io/ons-rasrmbs-management/postgres
+    image: postgres:14
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
