@@ -99,8 +99,8 @@ spec:
             successThreshold: {{ .Values.livenessProbe.successThreshold }}
             timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
           env:
-           - name: JAVA_OPTS
-             value: {{ .Values.jvm.java_options }}
+          - name: JAVA_OPTS
+            value: {{ .Values.jvm.java_options }}
           - name: DB_HOST
             {{- if .Values.database.managedPostgres }}
             valueFrom:
