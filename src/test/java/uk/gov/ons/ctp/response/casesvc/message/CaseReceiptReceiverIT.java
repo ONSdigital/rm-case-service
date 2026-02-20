@@ -1,23 +1,19 @@
 package uk.gov.ons.ctp.response.casesvc.message;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import org.junit.*;
-import org.junit.contrib.java.lang.system.EnvironmentVariables;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import uk.gov.ons.ctp.response.casesvc.PubSubTestEmulator;
 import uk.gov.ons.ctp.response.casesvc.message.feedback.CaseReceipt;
-import uk.gov.ons.ctp.response.casesvc.utility.PubSubEmulator;
 
 @ContextConfiguration
 @ActiveProfiles("test")
@@ -28,39 +24,35 @@ import uk.gov.ons.ctp.response.casesvc.utility.PubSubEmulator;
 @WireMockTest(httpPort = 18002)
 public class CaseReceiptReceiverIT {
 
-  private static PubSubEmulator PUBSUBEMULATOR;
-
-  private String receiptFile =
-      "src/test/resources/uk/gov/ons/ctp/response/casesvc/message/receiptPubsub.json";
-
-  @ClassRule
-  public static final EnvironmentVariables environmentVariables =
-      new EnvironmentVariables().set("PUBSUB_EMULATOR_HOST", "127.0.0.1:18681");
-
-  @MockBean private CaseReceiptReceiver caseReceiptReceiver;
+  private final PubSubTestEmulator pubSubEmulator = new PubSubTestEmulator();
 
   public CaseReceiptReceiverIT() throws IOException {}
 
-  @BeforeClass
-  public static void testSetup() throws IOException {
-    PUBSUBEMULATOR = new PubSubEmulator();
-    PUBSUBEMULATOR.testInit();
+  @Before
+  public void testSetup() {
+    pubSubEmulator.testInit();
   }
 
-  @AfterClass
-  public static void testTearDown() {
-    PUBSUBEMULATOR.testTeardown();
+  @After
+  public void testTearDown() {
+    pubSubEmulator.testTeardown();
   }
 
   @Test
   public void testCaseNotificationReceiverIsReceivingMessageFromPubSub() throws Exception {
+    // Publish a test receipt
+    String receiptFile =
+        "src/test/resources/uk/gov/ons/ctp/response/casesvc/message/receiptPubsub.json";
     String json = readFileAsString(receiptFile);
-    PUBSUBEMULATOR.publishMessage(json);
-    Thread.sleep(2000);
-    ObjectMapper objectMapper = new ObjectMapper();
-    CaseReceipt caseReceipt = objectMapper.readValue(json, CaseReceipt.class);
+    pubSubEmulator.publishMessage(json);
 
-    Mockito.verify(caseReceiptReceiver, Mockito.times(1)).process(caseReceipt);
+    // Call the receiver to get the receipt message
+    TestPubSubMessage message = new TestPubSubMessage();
+    Thread.sleep(2000);
+    CaseReceipt caseReceipt = message.getCaseReceipt();
+
+    // Test the case ID of the receipt received is the one we published
+    Assert.assertEquals(caseReceipt.getCaseId(), "9b872c6c-3339-4db9-9ef6-ff37a4446321");
   }
 
   private static String readFileAsString(String file) throws Exception {
