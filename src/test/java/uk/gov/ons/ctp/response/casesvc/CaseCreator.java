@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.ctp.response.casesvc.message.sampleunitnotification.SampleUnitParent;
-import uk.gov.ons.ctp.response.casesvc.utility.PubSubEmulator;
 
 @Component
 public class CaseCreator {
@@ -21,7 +20,7 @@ public class CaseCreator {
   public void postSampleUnit(
       String sampleUnitRef, String sampleUnitType, UUID sampleUnitId, UUID collectionExerciseId)
       throws Exception {
-    PubSubEmulator pubSubEmulator = new PubSubEmulator();
+    PubSubTestEmulator pubSubEmulator = new PubSubTestEmulator();
     iacServiceStub.createIACStub();
 
     SampleUnitParent sampleUnit = new SampleUnitParent();

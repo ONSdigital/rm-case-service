@@ -2,10 +2,8 @@ package uk.gov.ons.ctp.response.casesvc.message;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
-import com.google.cloud.storage.BlobId;
-import com.google.cloud.storage.BlobInfo;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageException;
+import com.google.cloud.NoCredentials;
+import com.google.cloud.storage.*;
 import java.io.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +35,18 @@ public class UploadObjectGCS {
     Boolean isSuccess = false;
     log.info("file_name: " + bucketFilename + " bucket: " + bucket + ", Uploading to GCS bucket");
     try {
+      // Override the wired Google Storage object (GCS) to use a local emulator
+      Storage storage =
+          StorageOptions.newBuilder()
+              .setCredentials(NoCredentials.getInstance())
+              .setProjectId("local")
+              .setHost("http://storage-emulator:9023")
+              .build()
+              .getService();
+      System.out.println(
+          "Storage Client initialized with storage-emulator endpoint "
+              + storage.getOptions().getHost());
+
       storage.create(blobInfo, data);
       isSuccess = true;
       log.info("file_name: " + bucketFilename + " bucket: " + bucket + ", Upload Successful!");
