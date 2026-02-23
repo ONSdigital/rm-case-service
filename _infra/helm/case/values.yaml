@@ -36,6 +36,9 @@ resources:
       memory: "64Mi"
       cpu: "100m"
 
+jvm:
+  java_options: "-Xms512m -Xmx512m"
+
 autoscaling: false
 scaleAt:
   # These are expressed as a percentage of resources.requests, not resources.limits
@@ -46,6 +49,15 @@ maxReplicas: 1
 rollingUpdate:
   maxSurge: 1
   maxUnavailable: 1
+
+livenessProbe:
+  httpGet:
+    path: /actuator/info
+  initialDelaySeconds: 300
+  periodSeconds: 20
+  failureThreshold: 5
+  successThreshold: 1
+  timeoutSeconds: 1800
 
 report:
   cron: "0 * * * * *"
