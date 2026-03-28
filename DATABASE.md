@@ -26,7 +26,7 @@ Each case event has a category, these categories are represent the type of event
 respondent enrolled, completed by phone, eq launched.
 
 ### Report
-Populated by the two stored procedures "generate_case_events_report" and "generate_repsonse_chasing_report". 
+Populated by the two stored procedures "generate_case_events_report" and "generate_response_chasing_report". 
 This table stores info about case events and response chasing but doesn't appear to be read from.
 
 ### Report type
