@@ -1,8 +1,6 @@
 services:
   collectionexercise:
     container_name: collex-case-it
-    external_links:
-      - postgres-case-it
     image: europe-west2-docker.pkg.dev/ons-ci-rmrasbs/images/collection-exercise
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-case-it:5432/postgres?sslmode=disable
@@ -16,9 +14,10 @@ services:
       - SURVEY_SVC_CONNECTION_CONFIG_HOST=survey-case-it
       - SURVEY_SVC_CONNECTION_CONFIG_PORT=8080
       - PUBSUB_EMULATOR_HOST=pubsub-emulator-it:8681
-
     ports:
       - "38145:8145"
+    depends_on:
+      - postgres-database
 
   postgres-database:
     container_name: postgres-case-it
@@ -36,19 +35,19 @@ services:
     ports:
     - "18681:8681"
     environment:
-    - PUBSUB_PROJECT1=ras-rm-dev,test_case_creation_topic:test_case_creation_subscription,test_event_status_topic:test_event_status_subscription
+    - PUBSUB_PROJECT1=ras-rm-dev,test_case_creation_topic:test_case_creation_subscription,test_event_status_topic:test_event_status_subscription,supplementary-data-service-topic:supplementary-data-service-subscription,sample-summary-activation-status:sample-summary-activation-status
 
   survey:
     container_name: survey-case-it
-    image: europe-west2-docker.pkg.dev/ons-ci-rmrasbs/images/survey
-    external_links:
-    - postgres-case-it
+    image: europe-west2-docker.pkg.dev/ons-ci-rmrasbs/images/survey:corpmac
     environment:
     - DATABASE_URL=postgres://postgres:postgres@postgres-case-it:5432/postgres?sslmode=disable
     - security_user_name=admin
     - security_user_password=secret
     ports:
     - "38080:8080"
+    depends_on:
+      - postgres-database
 
   wiremock:
       container_name: wiremock-case-it
