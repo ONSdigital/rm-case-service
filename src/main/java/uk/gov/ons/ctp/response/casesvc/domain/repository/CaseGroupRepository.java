@@ -167,4 +167,10 @@ public interface CaseGroupRepository extends JpaRepository<CaseGroup, Integer> {
               + "AND cg.surveyId IN :surveyId ORDER BY c.createdDateTime DESC")
   List<ReportingUnitCaseDTO> findReportingUnitsByPartyAndSurveyId(
       Pageable pageable, @Param("partyId") UUID partyId, @Param("surveyId") UUID surveyId);
+
+  @Query(
+      "SELECT DISTINCT cg.collectionExerciseId "
+          + "FROM CaseGroup cg "
+          + "WHERE cg.partyId = :partyId")
+  List<UUID> findCollectionExerciseIdsByPartyId(@Param("partyId") UUID partyId);
 }

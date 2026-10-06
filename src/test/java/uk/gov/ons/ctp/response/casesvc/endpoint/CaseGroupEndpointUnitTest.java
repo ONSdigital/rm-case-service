@@ -1,6 +1,7 @@
 package uk.gov.ons.ctp.response.casesvc.endpoint;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
 import static org.junit.Assert.assertTrue;
@@ -14,6 +15,8 @@ import static uk.gov.ons.ctp.response.lib.common.utility.MockMvcControllerAdvice
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import org.junit.Before;
@@ -34,6 +37,7 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
 import uk.gov.ons.ctp.response.casesvc.state.CaseSvcStateTransitionManagerFactory;
+import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.common.FixtureHelper;
 import uk.gov.ons.ctp.response.lib.common.error.CTPException;
 import uk.gov.ons.ctp.response.lib.common.error.RestExceptionHandler;
@@ -297,5 +301,39 @@ public final class CaseGroupEndpointUnitTest {
                 .param("limit", "10"));
 
     actions.andExpect(status().isNoContent());
+  }
+
+  @Test
+  public void findLatestCollectionExercisesByPartyId() throws Exception {
+    UUID partyId = UUID.randomUUID();
+
+    CollectionExerciseDTO collectionExercise1 = new CollectionExerciseDTO();
+    CollectionExerciseDTO collectionExercise2 = new CollectionExerciseDTO();
+
+    List<CollectionExerciseDTO> collectionExercises =
+        Arrays.asList(collectionExercise1, collectionExercise2);
+
+    when(caseGroupService.getLatestCollectionExercisesByPartyId(partyId))
+        .thenReturn(collectionExercises);
+
+    ResultActions actions =
+        mockMvc.perform(getJson("/casegroups/party/" + partyId + "/collectionexercises/latest"));
+
+    actions.andExpect(status().isOk());
+    actions.andExpect(jsonPath("$", hasSize(2)));
+  }
+
+  @Test
+  public void findLatestCollectionExercisesByPartyIdReturnsEmptyList() throws Exception {
+    UUID partyId = UUID.randomUUID();
+
+    when(caseGroupService.getLatestCollectionExercisesByPartyId(partyId))
+        .thenReturn(Collections.emptyList());
+
+    ResultActions actions =
+        mockMvc.perform(getJson("/casegroups/party/" + partyId + "/collectionexercises/latest"));
+
+    actions.andExpect(status().isOk());
+    actions.andExpect(jsonPath("$", hasSize(0)));
   }
 }

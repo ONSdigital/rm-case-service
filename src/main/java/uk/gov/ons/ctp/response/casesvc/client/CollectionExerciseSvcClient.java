@@ -119,4 +119,34 @@ public class CollectionExerciseSvcClient {
     restTemplate.exchange(
         uriComponents.toUri(), HttpMethod.POST, httpEntity, CollectionExerciseDTO.class);
   }
+
+  /**
+   * Returns the latest Collection Exercise for each survey from the supplied Collection Exercise
+   * IDs.
+   *
+   * @param collectionExerciseIds the Collection Exercise IDs to search
+   * @return the latest Collection Exercise for each survey
+   */
+  @Retryable(
+      value = {RestClientException.class},
+      maxAttemptsExpression = "#{${retries.maxAttempts}}",
+      backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
+  public List<CollectionExerciseDTO> getLatestCollectionExercises(
+      final List<UUID> collectionExerciseIds) {
+
+    UriComponents uriComponents =
+        restUtility.createUriComponents(
+            appConfig.getCollectionExerciseSvc().getLatestCollectionExercisesPath(), null);
+
+    HttpEntity<?> httpEntity = restUtility.createHttpEntity(collectionExerciseIds);
+
+    ResponseEntity<List<CollectionExerciseDTO>> responseEntity =
+        restTemplate.exchange(
+            uriComponents.toUri(),
+            HttpMethod.POST,
+            httpEntity,
+            new ParameterizedTypeReference<List<CollectionExerciseDTO>>() {});
+
+    return responseEntity.getBody();
+  }
 }

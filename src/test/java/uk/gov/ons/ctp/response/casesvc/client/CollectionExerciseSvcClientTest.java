@@ -178,4 +178,41 @@ public class CollectionExerciseSvcClientTest {
             eq(httpEntity),
             eq(CollectionExerciseDTO.class));
   }
+
+  @Test
+  public void testGetLatestCollectionExercises() {
+    CollectionExerciseSvc collectionExerciseSvcConfig = new CollectionExerciseSvc();
+    collectionExerciseSvcConfig.setLatestCollectionExercisesPath("test:path");
+    when(appConfig.getCollectionExerciseSvc()).thenReturn(collectionExerciseSvcConfig);
+
+    UriComponents uriComponents =
+        UriComponentsBuilder.newInstance()
+            .path(collectionExerciseSvcConfig.getLatestCollectionExercisesPath())
+            .queryParams(null)
+            .build();
+
+    when(restUtility.createUriComponents(
+            collectionExerciseSvcConfig.getLatestCollectionExercisesPath(), null))
+        .thenReturn(uriComponents);
+
+    List<UUID> collectionExerciseIds = List.of(UUID.randomUUID(), UUID.randomUUID());
+
+    HttpEntity httpEntity = new HttpEntity<>(collectionExerciseIds, null);
+    when(restUtility.createHttpEntity(collectionExerciseIds)).thenReturn(httpEntity);
+
+    ResponseEntity<List<CollectionExerciseDTO>> responseEntity =
+        new ResponseEntity<>(collectionExercises, HttpStatus.OK);
+
+    when(restTemplate.exchange(
+            any(URI.class),
+            eq(HttpMethod.POST),
+            eq(httpEntity),
+            eq(new ParameterizedTypeReference<List<CollectionExerciseDTO>>() {})))
+        .thenReturn(responseEntity);
+
+    List<CollectionExerciseDTO> responseCollectionExercises =
+        collectionExerciseSvcClient.getLatestCollectionExercises(collectionExerciseIds);
+
+    assertEquals(collectionExercises, responseCollectionExercises);
+  }
 }

@@ -26,6 +26,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.ReportingUnitCaseDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
+import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.response.lib.common.error.CTPException;
 import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManager;
@@ -216,6 +217,24 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
     return ResponseEntity.ok(deletedObject);
+  }
+
+  /**
+   * Returns the latest Collection Exercise for each survey associated with a party.
+   *
+   * @param partyId UUID of the party
+   * @return latest Collection Exercise for each survey
+   */
+  @RequestMapping(value = "/party/{partyId}/collectionexercises/latest", method = RequestMethod.GET)
+  public ResponseEntity<List<CollectionExerciseDTO>> findLatestCollectionExercisesByPartyId(
+      @PathVariable("partyId") final UUID partyId) throws CTPException {
+
+    log.debug("Entering findLatestCollectionExercisesByPartyId", kv("party_id", partyId));
+
+    List<CollectionExerciseDTO> collectionExercises =
+        caseGroupService.getLatestCollectionExercisesByPartyId(partyId);
+
+    return ResponseEntity.ok(collectionExercises);
   }
 
   @Data

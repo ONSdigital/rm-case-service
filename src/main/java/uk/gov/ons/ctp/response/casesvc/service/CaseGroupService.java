@@ -2,6 +2,7 @@ package uk.gov.ons.ctp.response.casesvc.service;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -217,5 +218,23 @@ public class CaseGroupService {
   @Transactional(propagation = Propagation.REQUIRED)
   public int deleteCaseGroupByCollectionExerciseId(UUID collectionExerciseId) {
     return caseGroupRepo.deleteCaseGroupsByCollectionExerciseId(collectionExerciseId);
+  }
+
+  /**
+   * Returns the latest Collection Exercise for each survey associated with a party.
+   *
+   * @param partyId UUID of the party
+   * @return latest Collection Exercise for each survey
+   */
+  public List<CollectionExerciseDTO> getLatestCollectionExercisesByPartyId(final UUID partyId) {
+
+    List<UUID> collectionExerciseIds = caseGroupRepo.findCollectionExerciseIdsByPartyId(partyId);
+
+    System.out.println("Collection Exercise IDs: " + collectionExerciseIds);
+    if (collectionExerciseIds.isEmpty()) {
+      return Collections.emptyList();
+    }
+
+    return collectionExerciseSvcClient.getLatestCollectionExercises(collectionExerciseIds);
   }
 }
