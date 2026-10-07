@@ -26,7 +26,7 @@ import uk.gov.ons.ctp.response.casesvc.representation.ReportingUnitCaseDTO;
 import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
-import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
+import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseCaseGroupDTO;
 import uk.gov.ons.ctp.response.lib.common.endpoint.CTPEndpoint;
 import uk.gov.ons.ctp.response.lib.common.error.CTPException;
 import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManager;
@@ -220,19 +220,29 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   }
 
   /**
-   * Returns the latest Collection Exercise for each survey associated with a party.
+   * Returns Collection Exercises associated with a party, optionally filtered by survey.
    *
    * @param partyId UUID of the party
-   * @return latest Collection Exercise for each survey
+   * @param surveyId optional UUID of the survey
+   * @param surveyLatest whether to return only the latest started Collection Exercise for each
+   *     survey
+   * @return Collection Exercises and Case Group status associated with the party
    */
-  @RequestMapping(value = "/party/{partyId}/collectionexercises/latest", method = RequestMethod.GET)
-  public ResponseEntity<List<CollectionExerciseDTO>> findLatestCollectionExercisesByPartyId(
-      @PathVariable("partyId") final UUID partyId) throws CTPException {
+  @RequestMapping(value = "/party/{partyId}/collectionexercises", method = RequestMethod.GET)
+  public ResponseEntity<List<CollectionExerciseCaseGroupDTO>> findCollectionExercisesByPartyId(
+      @PathVariable("partyId") final UUID partyId,
+      @RequestParam(value = "survey_id", required = false) final UUID surveyId,
+      @RequestParam(value = "surveyLatest", defaultValue = "false") final boolean surveyLatest)
+      throws CTPException {
 
-    log.debug("Entering findLatestCollectionExercisesByPartyId", kv("party_id", partyId));
+    log.debug(
+        "Entering findCollectionExercisesByPartyId",
+        kv("party_id", partyId),
+        kv("survey_id", surveyId),
+        kv("survey_latest", surveyLatest));
 
-    List<CollectionExerciseDTO> collectionExercises =
-        caseGroupService.getLatestCollectionExercisesByPartyId(partyId);
+    List<CollectionExerciseCaseGroupDTO> collectionExercises =
+        caseGroupService.getCollectionExercisesByPartyId(partyId, surveyId, surveyLatest);
 
     return ResponseEntity.ok(collectionExercises);
   }

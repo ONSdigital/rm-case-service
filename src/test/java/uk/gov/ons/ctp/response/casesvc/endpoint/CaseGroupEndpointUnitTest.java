@@ -7,6 +7,7 @@ import static org.hamcrest.core.Is.isA;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static uk.gov.ons.ctp.response.lib.common.MvcHelper.deleteUrl;
 import static uk.gov.ons.ctp.response.lib.common.MvcHelper.getJson;
@@ -37,6 +38,7 @@ import uk.gov.ons.ctp.response.casesvc.service.CaseGroupService;
 import uk.gov.ons.ctp.response.casesvc.service.CaseService;
 import uk.gov.ons.ctp.response.casesvc.service.CategoryService;
 import uk.gov.ons.ctp.response.casesvc.state.CaseSvcStateTransitionManagerFactory;
+import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseCaseGroupDTO;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.common.FixtureHelper;
 import uk.gov.ons.ctp.response.lib.common.error.CTPException;
@@ -304,36 +306,87 @@ public final class CaseGroupEndpointUnitTest {
   }
 
   @Test
-  public void findLatestCollectionExercisesByPartyId() throws Exception {
+  public void findCollectionExercisesByPartyId() throws Exception {
     UUID partyId = UUID.randomUUID();
 
     CollectionExerciseDTO collectionExercise1 = new CollectionExerciseDTO();
     CollectionExerciseDTO collectionExercise2 = new CollectionExerciseDTO();
 
-    List<CollectionExerciseDTO> collectionExercises =
-        Arrays.asList(collectionExercise1, collectionExercise2);
+    CollectionExerciseCaseGroupDTO result1 =
+        new CollectionExerciseCaseGroupDTO(collectionExercise1, "INPROGRESS");
+    CollectionExerciseCaseGroupDTO result2 =
+        new CollectionExerciseCaseGroupDTO(collectionExercise2, "COMPLETE");
 
-    when(caseGroupService.getLatestCollectionExercisesByPartyId(partyId))
+    List<CollectionExerciseCaseGroupDTO> collectionExercises = Arrays.asList(result1, result2);
+
+    when(caseGroupService.getCollectionExercisesByPartyId(partyId, null, false))
         .thenReturn(collectionExercises);
 
     ResultActions actions =
-        mockMvc.perform(getJson("/casegroups/party/" + partyId + "/collectionexercises/latest"));
+        mockMvc.perform(getJson("/casegroups/party/" + partyId + "/collectionexercises"));
 
     actions.andExpect(status().isOk());
     actions.andExpect(jsonPath("$", hasSize(2)));
+    actions.andExpect(jsonPath("$[0].caseGroupStatus").value("INPROGRESS"));
+    actions.andExpect(jsonPath("$[1].caseGroupStatus").value("COMPLETE"));
   }
 
   @Test
-  public void findLatestCollectionExercisesByPartyIdReturnsEmptyList() throws Exception {
+  public void findCollectionExercisesByPartyIdReturnsEmptyList() throws Exception {
     UUID partyId = UUID.randomUUID();
 
-    when(caseGroupService.getLatestCollectionExercisesByPartyId(partyId))
+    when(caseGroupService.getCollectionExercisesByPartyId(partyId, null, false))
         .thenReturn(Collections.emptyList());
 
     ResultActions actions =
-        mockMvc.perform(getJson("/casegroups/party/" + partyId + "/collectionexercises/latest"));
+        mockMvc.perform(getJson("/casegroups/party/" + partyId + "/collectionexercises"));
 
     actions.andExpect(status().isOk());
     actions.andExpect(jsonPath("$", hasSize(0)));
+  }
+
+  @Test
+  public void findCollectionExercisesByPartyIdWithSurveyId() throws Exception {
+    UUID partyId = UUID.randomUUID();
+    UUID surveyId = UUID.randomUUID();
+
+    CollectionExerciseDTO collectionExercise = new CollectionExerciseDTO();
+
+    CollectionExerciseCaseGroupDTO result =
+        new CollectionExerciseCaseGroupDTO(collectionExercise, "INPROGRESS");
+
+    when(caseGroupService.getCollectionExercisesByPartyId(partyId, surveyId, false))
+        .thenReturn(Collections.singletonList(result));
+
+    ResultActions actions =
+        mockMvc.perform(
+            get("/casegroups/party/" + partyId + "/collectionexercises")
+                .param("survey_id", surveyId.toString()));
+
+    actions.andExpect(status().isOk());
+    actions.andExpect(jsonPath("$", hasSize(1)));
+    actions.andExpect(jsonPath("$[0].caseGroupStatus").value("INPROGRESS"));
+  }
+
+  @Test
+  public void findCollectionExercisesByPartyIdWithSurveyLatest() throws Exception {
+    UUID partyId = UUID.randomUUID();
+
+    CollectionExerciseDTO collectionExercise = new CollectionExerciseDTO();
+
+    CollectionExerciseCaseGroupDTO result =
+        new CollectionExerciseCaseGroupDTO(collectionExercise, "INPROGRESS");
+
+    when(caseGroupService.getCollectionExercisesByPartyId(partyId, null, true))
+        .thenReturn(Collections.singletonList(result));
+
+    ResultActions actions =
+        mockMvc.perform(
+            get("/casegroups/party/" + partyId + "/collectionexercises")
+                .param("surveyLatest", "true"));
+
+    actions.andExpect(status().isOk());
+    actions.andExpect(jsonPath("$", hasSize(1)));
+    actions.andExpect(jsonPath("$[0].caseGroupStatus").value("INPROGRESS"));
   }
 }

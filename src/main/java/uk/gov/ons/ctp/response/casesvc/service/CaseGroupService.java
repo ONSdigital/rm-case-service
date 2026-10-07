@@ -4,6 +4,7 @@ import static net.logstash.logback.argument.StructuredArguments.kv;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -17,9 +18,11 @@ import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CollectionExerciseCaseGroup;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.ReportingUnitCaseDTO;
+import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseCaseGroupDTO;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.common.error.CTPException;
 import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManager;
@@ -221,20 +224,56 @@ public class CaseGroupService {
   }
 
   /**
-   * Returns the latest Collection Exercise for each survey associated with a party.
+   * Returns Collection Exercises associated with a party, optionally filtered by survey.
    *
    * @param partyId UUID of the party
-   * @return latest Collection Exercise for each survey
+   * @param surveyId optional UUID of the survey
+   * @param surveyLatest whether to return only the latest started Collection Exercise for each
+   *     survey
+   * @return Collection Exercises and Case Group statuses associated with the party
    */
-  public List<CollectionExerciseDTO> getLatestCollectionExercisesByPartyId(final UUID partyId) {
+  public List<CollectionExerciseCaseGroupDTO> getCollectionExercisesByPartyId(
+      final UUID partyId, final UUID surveyId, final boolean surveyLatest) {
 
-    List<UUID> collectionExerciseIds = caseGroupRepo.findCollectionExerciseIdsByPartyId(partyId);
+    List<CollectionExerciseCaseGroup> caseGroups =
+        caseGroupRepo.findCollectionExerciseDetailsByPartyId(partyId);
 
-    System.out.println("Collection Exercise IDs: " + collectionExerciseIds);
-    if (collectionExerciseIds.isEmpty()) {
+    if (surveyId != null) {
+      caseGroups =
+          caseGroups
+              .stream()
+              .filter(caseGroup -> surveyId.equals(caseGroup.getSurveyId()))
+              .collect(Collectors.toList());
+    }
+
+    if (caseGroups.isEmpty()) {
       return Collections.emptyList();
     }
 
-    return collectionExerciseSvcClient.getLatestCollectionExercises(collectionExerciseIds);
+    Map<UUID, String> statusByCollectionExerciseId =
+        caseGroups
+            .stream()
+            .collect(
+                Collectors.toMap(
+                    CollectionExerciseCaseGroup::getCollectionExerciseId,
+                    CollectionExerciseCaseGroup::getStatus));
+
+    List<UUID> collectionExerciseIds =
+        caseGroups
+            .stream()
+            .map(CollectionExerciseCaseGroup::getCollectionExerciseId)
+            .collect(Collectors.toList());
+
+    List<CollectionExerciseDTO> collectionExercises =
+        collectionExerciseSvcClient.getCollectionExercises(collectionExerciseIds, surveyLatest);
+
+    return collectionExercises
+        .stream()
+        .map(
+            collectionExercise ->
+                new CollectionExerciseCaseGroupDTO(
+                    collectionExercise,
+                    statusByCollectionExerciseId.get(collectionExercise.getId())))
+        .collect(Collectors.toList());
   }
 }

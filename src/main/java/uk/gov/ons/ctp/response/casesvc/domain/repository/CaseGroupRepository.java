@@ -169,8 +169,11 @@ public interface CaseGroupRepository extends JpaRepository<CaseGroup, Integer> {
       Pageable pageable, @Param("partyId") UUID partyId, @Param("surveyId") UUID surveyId);
 
   @Query(
-      "SELECT DISTINCT cg.collectionExerciseId "
+      "SELECT cg.collectionExerciseId AS collectionExerciseId, "
+          + "cg.surveyId AS surveyId, "
+          + "cg.status AS status "
           + "FROM CaseGroup cg "
           + "WHERE cg.partyId = :partyId")
-  List<UUID> findCollectionExerciseIdsByPartyId(@Param("partyId") UUID partyId);
+  List<CollectionExerciseCaseGroup> findCollectionExerciseDetailsByPartyId(
+      @Param("partyId") UUID partyId);
 }

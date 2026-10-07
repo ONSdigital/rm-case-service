@@ -84,7 +84,7 @@ collection-exercise-svc:
   collection-exercise-path: /collectionexercises/{exerciseId}
   collection-exercise-survey-path: /collectionexercises/survey/{surveyId}
   collection-exercises-path: /collectionexercises
-  latestCollectionExercisesPath: /collectionexercises/latest
+  collectionExercisesByIdsPath: /collectionexercises/ids
   connection-config:
     scheme: http
     host: localhost
