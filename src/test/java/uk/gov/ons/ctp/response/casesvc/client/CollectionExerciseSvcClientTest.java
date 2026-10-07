@@ -19,6 +19,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
@@ -177,5 +178,85 @@ public class CollectionExerciseSvcClientTest {
             eq(HttpMethod.POST),
             eq(httpEntity),
             eq(CollectionExerciseDTO.class));
+  }
+
+  @Test
+  public void testGetCollectionExercisesWithSurveyLatestTrue() {
+    CollectionExerciseSvc collectionExerciseSvcConfig = new CollectionExerciseSvc();
+    collectionExerciseSvcConfig.setCollectionExercisesByIdsPath("test:path");
+    when(appConfig.getCollectionExerciseSvc()).thenReturn(collectionExerciseSvcConfig);
+
+    MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+    queryParams.add("surveyLatest", "true");
+
+    UriComponents uriComponents =
+        UriComponentsBuilder.newInstance()
+            .path(collectionExerciseSvcConfig.getCollectionExercisesByIdsPath())
+            .queryParams(queryParams)
+            .build();
+
+    when(restUtility.createUriComponents(
+            collectionExerciseSvcConfig.getCollectionExercisesByIdsPath(), queryParams))
+        .thenReturn(uriComponents);
+
+    List<UUID> collectionExerciseIds = List.of(UUID.randomUUID(), UUID.randomUUID());
+
+    HttpEntity httpEntity = new HttpEntity<>(collectionExerciseIds, null);
+    when(restUtility.createHttpEntity(collectionExerciseIds)).thenReturn(httpEntity);
+
+    ResponseEntity<List<CollectionExerciseDTO>> responseEntity =
+        new ResponseEntity<>(collectionExercises, HttpStatus.OK);
+
+    when(restTemplate.exchange(
+            any(URI.class),
+            eq(HttpMethod.POST),
+            eq(httpEntity),
+            eq(new ParameterizedTypeReference<List<CollectionExerciseDTO>>() {})))
+        .thenReturn(responseEntity);
+
+    List<CollectionExerciseDTO> responseCollectionExercises =
+        collectionExerciseSvcClient.getCollectionExercises(collectionExerciseIds, true);
+
+    assertEquals(collectionExercises, responseCollectionExercises);
+  }
+
+  @Test
+  public void testGetCollectionExercisesWithSurveyLatestFalse() {
+    CollectionExerciseSvc collectionExerciseSvcConfig = new CollectionExerciseSvc();
+    collectionExerciseSvcConfig.setCollectionExercisesByIdsPath("test:path");
+    when(appConfig.getCollectionExerciseSvc()).thenReturn(collectionExerciseSvcConfig);
+
+    MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+    queryParams.add("surveyLatest", "false");
+
+    UriComponents uriComponents =
+        UriComponentsBuilder.newInstance()
+            .path(collectionExerciseSvcConfig.getCollectionExercisesByIdsPath())
+            .queryParams(queryParams)
+            .build();
+
+    when(restUtility.createUriComponents(
+            collectionExerciseSvcConfig.getCollectionExercisesByIdsPath(), queryParams))
+        .thenReturn(uriComponents);
+
+    List<UUID> collectionExerciseIds = List.of(UUID.randomUUID(), UUID.randomUUID());
+
+    HttpEntity httpEntity = new HttpEntity<>(collectionExerciseIds, null);
+    when(restUtility.createHttpEntity(collectionExerciseIds)).thenReturn(httpEntity);
+
+    ResponseEntity<List<CollectionExerciseDTO>> responseEntity =
+        new ResponseEntity<>(collectionExercises, HttpStatus.OK);
+
+    when(restTemplate.exchange(
+            any(URI.class),
+            eq(HttpMethod.POST),
+            eq(httpEntity),
+            eq(new ParameterizedTypeReference<List<CollectionExerciseDTO>>() {})))
+        .thenReturn(responseEntity);
+
+    List<CollectionExerciseDTO> responseCollectionExercises =
+        collectionExerciseSvcClient.getCollectionExercises(collectionExerciseIds, false);
+
+    assertEquals(collectionExercises, responseCollectionExercises);
   }
 }

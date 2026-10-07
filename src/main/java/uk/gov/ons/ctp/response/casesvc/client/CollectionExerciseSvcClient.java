@@ -17,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
@@ -118,5 +120,39 @@ public class CollectionExerciseSvcClient {
     HttpEntity<?> httpEntity = restUtility.createHttpEntity(collex);
     restTemplate.exchange(
         uriComponents.toUri(), HttpMethod.POST, httpEntity, CollectionExerciseDTO.class);
+  }
+
+  /**
+   * Returns Collection Exercises for the supplied Collection Exercise IDs.
+   *
+   * @param collectionExerciseIds the Collection Exercise IDs to search
+   * @param surveyLatest whether to return only the latest started Collection Exercise for each
+   *     survey
+   * @return Collection Exercises for the supplied IDs
+   */
+  @Retryable(
+      value = {RestClientException.class},
+      maxAttemptsExpression = "#{${retries.maxAttempts}}",
+      backoff = @Backoff(delayExpression = "#{${retries.backoff}}"))
+  public List<CollectionExerciseDTO> getCollectionExercises(
+      final List<UUID> collectionExerciseIds, final boolean surveyLatest) {
+
+    MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+    queryParams.add("surveyLatest", Boolean.toString(surveyLatest));
+
+    UriComponents uriComponents =
+        restUtility.createUriComponents(
+            appConfig.getCollectionExerciseSvc().getCollectionExercisesByIdsPath(), queryParams);
+
+    HttpEntity<?> httpEntity = restUtility.createHttpEntity(collectionExerciseIds);
+
+    ResponseEntity<List<CollectionExerciseDTO>> responseEntity =
+        restTemplate.exchange(
+            uriComponents.toUri(),
+            HttpMethod.POST,
+            httpEntity,
+            new ParameterizedTypeReference<List<CollectionExerciseDTO>>() {});
+
+    return responseEntity.getBody();
   }
 }

@@ -10,4 +10,5 @@ public class CollectionExerciseSvc {
   private String collectionExercisePath;
   private String collectionExerciseSurveyPath;
   private String collectionExercisesPath;
+  private String collectionExercisesByIdsPath;
 }
