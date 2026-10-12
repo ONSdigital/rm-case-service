@@ -224,7 +224,7 @@ public class CaseGroupService {
   }
 
   /**
-   * Returns Collection Exercises associated with a party, optionally filtered by survey.
+   * Finds case groups and their associated collection exercises by party_id
    *
    * @param partyId UUID of the party
    * @param surveyId optional UUID of the survey
@@ -238,6 +238,7 @@ public class CaseGroupService {
     List<CollectionExerciseCaseGroup> caseGroups =
         caseGroupRepo.findCollectionExerciseDetailsByPartyId(partyId);
 
+    // filter by survey if surveyId is supplied
     if (surveyId != null) {
       caseGroups =
           caseGroups
@@ -257,6 +258,9 @@ public class CaseGroupService {
                 Collectors.toMap(
                     CollectionExerciseCaseGroup::getCollectionExerciseId,
                     CollectionExerciseCaseGroup::getStatus));
+
+    // Create a list of CE ids and then fetch their details from the collection exercise service, telling the
+    // service if we only want the latest for each survey
 
     List<UUID> collectionExerciseIds =
         caseGroups
