@@ -187,7 +187,7 @@ public class CollectionExerciseSvcClientTest {
     when(appConfig.getCollectionExerciseSvc()).thenReturn(collectionExerciseSvcConfig);
 
     MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-    queryParams.add("surveyLatest", "true");
+    queryParams.add("survey_latest", "true");
 
     UriComponents uriComponents =
         UriComponentsBuilder.newInstance()
@@ -227,7 +227,7 @@ public class CollectionExerciseSvcClientTest {
     when(appConfig.getCollectionExerciseSvc()).thenReturn(collectionExerciseSvcConfig);
 
     MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-    queryParams.add("surveyLatest", "false");
+    queryParams.add("survey_latest", "false");
 
     UriComponents uriComponents =
         UriComponentsBuilder.newInstance()

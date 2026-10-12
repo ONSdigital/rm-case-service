@@ -383,7 +383,7 @@ public final class CaseGroupEndpointUnitTest {
     ResultActions actions =
         mockMvc.perform(
             get("/casegroups/party/" + partyId + "/collectionexercises")
-                .param("surveyLatest", "true"));
+                .param("survey_latest", "true"));
 
     actions.andExpect(status().isOk());
     actions.andExpect(jsonPath("$", hasSize(1)));
