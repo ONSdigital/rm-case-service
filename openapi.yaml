@@ -299,6 +299,51 @@ paths:
         404:
           description: Not Found
           content: { }
+  /casegroups/party/{partyId}/collectionexercises:
+    get:
+      tags:
+        - case-group-endpoint
+      summary: findCollectionExercisesByPartyId
+      operationId: findCollectionExercisesByPartyIdUsingGET
+      description: returns collection exercises and associated case group statuses for a given party. Can be filtered by survey_id or restricted to the latest collection exercise per survey using survey_latest.
+      parameters:
+        - name: partyId
+          in: path
+          description: the uuid of the party
+          required: true
+          schema:
+            type: string
+        - name: survey_id
+          in: query
+          description: optional survey uuid used to filter results
+          required: false
+          schema:
+            type: string
+        - name: survey_latest
+          in: query
+          description: if true, returns only the latest collection exercise for each survey
+          required: false
+          schema:
+            type: boolean
+            default: false
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CollectionExerciseCaseGroupDTO'
+        401:
+          description: Unauthorized
+          content: { }
+        403:
+          description: Forbidden
+          content: { }
+        404:
+          description: Not Found
+          content: { }
   /cases/casegroupid/{casegroupId}:
     get:
       tags:
@@ -1009,3 +1054,71 @@ components:
           type: string
         subCategory:
           type: string
+    CollectionExerciseCaseGroupDTO:
+      type: object
+      properties:
+        collectionExercise:
+          $ref: '#/components/schemas/CollectionExerciseDTO'
+        status:
+          type: string
+    CollectionExerciseDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        surveyId:
+          type: string
+        name:
+          type: string
+        actualExecutionDateTime:
+          type: string
+          format: date-time
+        scheduledExecutionDateTime:
+          type: string
+          format: date-time
+        scheduledStartDateTime:
+          type: string
+          format: date-time
+        actualPublishDateTime:
+          type: string
+          format: date-time
+        periodStartDateTime:
+          type: string
+          format: date-time
+        periodEndDateTime:
+          type: string
+          format: date-time
+        scheduledReturnDateTime:
+          type: string
+          format: date-time
+        scheduledEndDateTime:
+          type: string
+          format: date-time
+        executedBy:
+          type: string
+        state:
+          type: string
+          enum:
+            - CREATED
+            - SCHEDULED
+            - READY_FOR_REVIEW
+            - READY_FOR_LIVE
+            - EXECUTION_STARTED
+            - EXECUTED
+            - VALIDATED
+            - FAILEDVALIDATION
+            - LIVE
+            - ENDED
+        exerciseRef:
+          type: string
+        userDescription:
+          type: string
+        created:
+          type: string
+          format: date-time
+        updated:
+          type: string
+          format: date-time
+        deleted:
+          type: boolean
