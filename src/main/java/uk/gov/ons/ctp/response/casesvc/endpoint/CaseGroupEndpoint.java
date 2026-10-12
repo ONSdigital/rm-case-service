@@ -232,7 +232,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
   public ResponseEntity<List<CollectionExerciseCaseGroupDTO>> findCollectionExercisesByPartyId(
       @PathVariable("partyId") final UUID partyId,
       @RequestParam(value = "survey_id", required = false) final UUID surveyId,
-      @RequestParam(value = "surveyLatest", defaultValue = "false") final boolean surveyLatest)
+      @RequestParam(value = "survey_latest", defaultValue = "false") final boolean surveyLatest)
       throws CTPException {
 
     log.debug(
