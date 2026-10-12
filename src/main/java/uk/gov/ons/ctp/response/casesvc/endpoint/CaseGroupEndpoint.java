@@ -221,14 +221,14 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
 
   /**
    * Finds case groups and their associated collection exercises by party_id
-
-    Optionally filters
-    survey_id - returns only collection exercises for a given survey_id
-    survey_latest - returns only the last collection exercise for each survey
+   *
+   * <p>Optionally filters survey_id - returns only collection exercises for a given survey_id
+   * survey_latest - returns only the last collection exercise for each survey
    *
    * @param partyId UUID of the party
    * @param surveyId optional UUID of the survey
-   * @param surveyLatest whether to return only the latest started Collection Exercise for each survey
+   * @param surveyLatest whether to return only the latest started Collection Exercise for each
+   *     survey
    * @return Collection Exercises and Case Group status associated with the party
    */
   @RequestMapping(value = "/party/{partyId}/collectionexercises", method = RequestMethod.GET)

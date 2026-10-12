@@ -259,7 +259,8 @@ public class CaseGroupService {
                     CollectionExerciseCaseGroup::getCollectionExerciseId,
                     CollectionExerciseCaseGroup::getStatus));
 
-    // Create a list of CE ids and then fetch their details from the collection exercise service, telling the
+    // Create a list of CE ids and then fetch their details from the collection exercise service,
+    // telling the
     // service if we only want the latest for each survey
 
     List<UUID> collectionExerciseIds =
