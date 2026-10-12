@@ -138,7 +138,7 @@ public class CollectionExerciseSvcClient {
       final List<UUID> collectionExerciseIds, final boolean surveyLatest) {
 
     MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-    queryParams.add("surveyLatest", Boolean.toString(surveyLatest));
+    queryParams.add("survey_latest", Boolean.toString(surveyLatest));
 
     UriComponents uriComponents =
         restUtility.createUriComponents(
