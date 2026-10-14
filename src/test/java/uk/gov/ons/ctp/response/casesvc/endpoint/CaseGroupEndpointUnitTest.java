@@ -323,7 +323,7 @@ public final class CaseGroupEndpointUnitTest {
         .thenReturn(collectionExercises);
 
     ResultActions actions =
-        mockMvc.perform(getJson("/casegroups/party/" + partyId + "/collectionexercises"));
+        mockMvc.perform(getJson("/casegroups/partyid/" + partyId + "/collectionexercises"));
 
     actions.andExpect(status().isOk());
     actions.andExpect(jsonPath("$", hasSize(2)));
@@ -339,7 +339,7 @@ public final class CaseGroupEndpointUnitTest {
         .thenReturn(Collections.emptyList());
 
     ResultActions actions =
-        mockMvc.perform(getJson("/casegroups/party/" + partyId + "/collectionexercises"));
+        mockMvc.perform(getJson("/casegroups/partyid/" + partyId + "/collectionexercises"));
 
     actions.andExpect(status().isOk());
     actions.andExpect(jsonPath("$", hasSize(0)));
@@ -360,7 +360,7 @@ public final class CaseGroupEndpointUnitTest {
 
     ResultActions actions =
         mockMvc.perform(
-            get("/casegroups/party/" + partyId + "/collectionexercises")
+            get("/casegroups/partyid/" + partyId + "/collectionexercises")
                 .param("survey_id", surveyId.toString()));
 
     actions.andExpect(status().isOk());
@@ -382,7 +382,7 @@ public final class CaseGroupEndpointUnitTest {
 
     ResultActions actions =
         mockMvc.perform(
-            get("/casegroups/party/" + partyId + "/collectionexercises")
+            get("/casegroups/partyid/" + partyId + "/collectionexercises")
                 .param("survey_latest", "true"));
 
     actions.andExpect(status().isOk());

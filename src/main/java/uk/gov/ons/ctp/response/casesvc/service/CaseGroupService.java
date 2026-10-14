@@ -244,7 +244,7 @@ public class CaseGroupService {
           caseGroups
               .stream()
               .filter(caseGroup -> surveyId.equals(caseGroup.getSurveyId()))
-              .collect(Collectors.toList());
+              .toList();
     }
 
     if (caseGroups.isEmpty()) {

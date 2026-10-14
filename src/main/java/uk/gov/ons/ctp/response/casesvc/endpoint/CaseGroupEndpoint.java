@@ -231,7 +231,7 @@ public final class CaseGroupEndpoint implements CTPEndpoint {
    *     survey
    * @return Collection Exercises and Case Group status associated with the party
    */
-  @RequestMapping(value = "/party/{partyId}/collectionexercises", method = RequestMethod.GET)
+  @RequestMapping(value = "/partyid/{partyId}/collectionexercises", method = RequestMethod.GET)
   public ResponseEntity<List<CollectionExerciseCaseGroupDTO>> findCollectionExercisesByPartyId(
       @PathVariable("partyId") final UUID partyId,
       @RequestParam(value = "survey_id", required = false) final UUID surveyId,
