@@ -2,7 +2,9 @@ package uk.gov.ons.ctp.response.casesvc.service;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -16,9 +18,11 @@ import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CollectionExerciseCaseGroup;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.ReportingUnitCaseDTO;
+import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseCaseGroupDTO;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.common.error.CTPException;
 import uk.gov.ons.ctp.response.lib.common.state.StateTransitionManager;
@@ -217,5 +221,61 @@ public class CaseGroupService {
   @Transactional(propagation = Propagation.REQUIRED)
   public int deleteCaseGroupByCollectionExerciseId(UUID collectionExerciseId) {
     return caseGroupRepo.deleteCaseGroupsByCollectionExerciseId(collectionExerciseId);
+  }
+
+  /**
+   * Finds case groups and their associated collection exercises by party_id
+   *
+   * @param partyId UUID of the party
+   * @param surveyId optional UUID of the survey
+   * @param surveyLatest whether to return only the latest started Collection Exercise for each
+   *     survey
+   * @return Collection Exercises and Case Group statuses associated with the party
+   */
+  public List<CollectionExerciseCaseGroupDTO> getCollectionExercisesByPartyId(
+      final UUID partyId, final UUID surveyId, final boolean surveyLatest) {
+
+    List<CollectionExerciseCaseGroup> caseGroups =
+        caseGroupRepo.findCollectionExerciseDetailsByPartyId(partyId);
+
+    // filter by survey if surveyId is supplied
+    if (surveyId != null) {
+      caseGroups =
+          caseGroups
+              .stream()
+              .filter(caseGroup -> surveyId.equals(caseGroup.getSurveyId()))
+              .toList();
+    }
+
+    if (caseGroups.isEmpty()) {
+      return Collections.emptyList();
+    }
+
+    Map<UUID, String> statusByCollectionExerciseId =
+        caseGroups
+            .stream()
+            .collect(
+                Collectors.toMap(
+                    CollectionExerciseCaseGroup::getCollectionExerciseId,
+                    CollectionExerciseCaseGroup::getStatus));
+
+    // Create a list of CE ids and then fetch their details from the collection exercise service,
+    // telling the
+    // service if we only want the latest for each survey
+
+    List<UUID> collectionExerciseIds =
+        caseGroups.stream().map(CollectionExerciseCaseGroup::getCollectionExerciseId).toList();
+
+    List<CollectionExerciseDTO> collectionExercises =
+        collectionExerciseSvcClient.getCollectionExercises(collectionExerciseIds, surveyLatest);
+
+    return collectionExercises
+        .stream()
+        .map(
+            collectionExercise ->
+                new CollectionExerciseCaseGroupDTO(
+                    collectionExercise,
+                    statusByCollectionExerciseId.get(collectionExercise.getId())))
+        .toList();
   }
 }

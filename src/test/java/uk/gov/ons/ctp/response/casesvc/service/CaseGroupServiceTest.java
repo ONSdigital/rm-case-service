@@ -2,8 +2,13 @@ package uk.gov.ons.ctp.response.casesvc.service;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -17,9 +22,11 @@ import uk.gov.ons.ctp.response.casesvc.client.CollectionExerciseSvcClient;
 import uk.gov.ons.ctp.response.casesvc.domain.model.Case;
 import uk.gov.ons.ctp.response.casesvc.domain.model.CaseGroup;
 import uk.gov.ons.ctp.response.casesvc.domain.repository.CaseGroupRepository;
+import uk.gov.ons.ctp.response.casesvc.domain.repository.CollectionExerciseCaseGroup;
 import uk.gov.ons.ctp.response.casesvc.representation.CaseGroupStatus;
 import uk.gov.ons.ctp.response.casesvc.representation.CategoryDTO;
 import uk.gov.ons.ctp.response.casesvc.representation.ReportingUnitCaseDTO;
+import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseCaseGroupDTO;
 import uk.gov.ons.ctp.response.lib.collection.exercise.CollectionExerciseDTO;
 import uk.gov.ons.ctp.response.lib.common.FixtureHelper;
 import uk.gov.ons.ctp.response.lib.common.error.CTPException;
@@ -324,5 +331,129 @@ public class CaseGroupServiceTest {
     caseGroupService.findCaseGroupsForExecutedCollectionExercises(null);
 
     // Then throws CTPException
+  }
+
+  @Test
+  public void getCollectionExercisesByPartyId() {
+    UUID partyId = UUID.randomUUID();
+    UUID collectionExerciseId1 = UUID.randomUUID();
+    UUID collectionExerciseId2 = UUID.randomUUID();
+
+    CollectionExerciseCaseGroup caseGroup1 = mock(CollectionExerciseCaseGroup.class);
+    when(caseGroup1.getCollectionExerciseId()).thenReturn(collectionExerciseId1);
+    when(caseGroup1.getStatus()).thenReturn("INPROGRESS");
+
+    CollectionExerciseCaseGroup caseGroup2 = mock(CollectionExerciseCaseGroup.class);
+    when(caseGroup2.getCollectionExerciseId()).thenReturn(collectionExerciseId2);
+    when(caseGroup2.getStatus()).thenReturn("COMPLETE");
+
+    when(caseGroupRepo.findCollectionExerciseDetailsByPartyId(partyId))
+        .thenReturn(Arrays.asList(caseGroup1, caseGroup2));
+
+    CollectionExerciseDTO collectionExercise1 = new CollectionExerciseDTO();
+    collectionExercise1.setId(collectionExerciseId1);
+
+    CollectionExerciseDTO collectionExercise2 = new CollectionExerciseDTO();
+    collectionExercise2.setId(collectionExerciseId2);
+
+    when(collectionExerciseSvcClient.getCollectionExercises(
+            Arrays.asList(collectionExerciseId1, collectionExerciseId2), false))
+        .thenReturn(Arrays.asList(collectionExercise1, collectionExercise2));
+
+    List<CollectionExerciseCaseGroupDTO> result =
+        caseGroupService.getCollectionExercisesByPartyId(partyId, null, false);
+
+    assertEquals(2, result.size());
+
+    assertEquals(collectionExercise1, result.get(0).getCollectionExercise());
+    assertEquals("INPROGRESS", result.get(0).getCaseGroupStatus());
+
+    assertEquals(collectionExercise2, result.get(1).getCollectionExercise());
+    assertEquals("COMPLETE", result.get(1).getCaseGroupStatus());
+
+    verify(collectionExerciseSvcClient)
+        .getCollectionExercises(Arrays.asList(collectionExerciseId1, collectionExerciseId2), false);
+  }
+
+  @Test
+  public void getCollectionExercisesByPartyIdReturnsEmptyList() {
+    UUID partyId = UUID.randomUUID();
+
+    when(caseGroupRepo.findCollectionExerciseDetailsByPartyId(partyId))
+        .thenReturn(Collections.emptyList());
+
+    List<CollectionExerciseCaseGroupDTO> result =
+        caseGroupService.getCollectionExercisesByPartyId(partyId, null, false);
+
+    assertEquals(0, result.size());
+
+    verify(collectionExerciseSvcClient, never()).getCollectionExercises(anyList(), anyBoolean());
+  }
+
+  @Test
+  public void getCollectionExercisesByPartyIdFiltersBySurveyId() {
+    UUID partyId = UUID.randomUUID();
+    UUID surveyId = UUID.randomUUID();
+    UUID otherSurveyId = UUID.randomUUID();
+
+    UUID collectionExerciseId = UUID.randomUUID();
+
+    CollectionExerciseCaseGroup matchingCaseGroup = mock(CollectionExerciseCaseGroup.class);
+    when(matchingCaseGroup.getSurveyId()).thenReturn(surveyId);
+    when(matchingCaseGroup.getCollectionExerciseId()).thenReturn(collectionExerciseId);
+    when(matchingCaseGroup.getStatus()).thenReturn("INPROGRESS");
+
+    CollectionExerciseCaseGroup nonMatchingCaseGroup = mock(CollectionExerciseCaseGroup.class);
+    when(nonMatchingCaseGroup.getSurveyId()).thenReturn(otherSurveyId);
+
+    when(caseGroupRepo.findCollectionExerciseDetailsByPartyId(partyId))
+        .thenReturn(Arrays.asList(matchingCaseGroup, nonMatchingCaseGroup));
+
+    CollectionExerciseDTO collectionExercise = new CollectionExerciseDTO();
+    collectionExercise.setId(collectionExerciseId);
+
+    when(collectionExerciseSvcClient.getCollectionExercises(
+            Collections.singletonList(collectionExerciseId), false))
+        .thenReturn(Collections.singletonList(collectionExercise));
+
+    List<CollectionExerciseCaseGroupDTO> result =
+        caseGroupService.getCollectionExercisesByPartyId(partyId, surveyId, false);
+
+    assertEquals(1, result.size());
+    assertEquals(collectionExercise, result.get(0).getCollectionExercise());
+    assertEquals("INPROGRESS", result.get(0).getCaseGroupStatus());
+
+    verify(collectionExerciseSvcClient)
+        .getCollectionExercises(Collections.singletonList(collectionExerciseId), false);
+  }
+
+  @Test
+  public void getCollectionExercisesByPartyIdPassesSurveyLatest() {
+    UUID partyId = UUID.randomUUID();
+    UUID collectionExerciseId = UUID.randomUUID();
+
+    CollectionExerciseCaseGroup caseGroup = mock(CollectionExerciseCaseGroup.class);
+    when(caseGroup.getCollectionExerciseId()).thenReturn(collectionExerciseId);
+    when(caseGroup.getStatus()).thenReturn("INPROGRESS");
+
+    when(caseGroupRepo.findCollectionExerciseDetailsByPartyId(partyId))
+        .thenReturn(Collections.singletonList(caseGroup));
+
+    CollectionExerciseDTO collectionExercise = new CollectionExerciseDTO();
+    collectionExercise.setId(collectionExerciseId);
+
+    when(collectionExerciseSvcClient.getCollectionExercises(
+            Collections.singletonList(collectionExerciseId), true))
+        .thenReturn(Collections.singletonList(collectionExercise));
+
+    List<CollectionExerciseCaseGroupDTO> result =
+        caseGroupService.getCollectionExercisesByPartyId(partyId, null, true);
+
+    assertEquals(1, result.size());
+    assertEquals(collectionExercise, result.get(0).getCollectionExercise());
+    assertEquals("INPROGRESS", result.get(0).getCaseGroupStatus());
+
+    verify(collectionExerciseSvcClient)
+        .getCollectionExercises(Collections.singletonList(collectionExerciseId), true);
   }
 }
