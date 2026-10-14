@@ -1059,7 +1059,7 @@ components:
       properties:
         collectionExercise:
           $ref: '#/components/schemas/CollectionExerciseDTO'
-        status:
+        caseGroupStatus:
           type: string
     CollectionExerciseDTO:
       type: object
