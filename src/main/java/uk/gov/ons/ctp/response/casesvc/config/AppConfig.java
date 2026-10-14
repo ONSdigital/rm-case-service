@@ -18,5 +18,4 @@ public class AppConfig {
   private GCP gcp;
   private PartySvc partySvc;
   private SurveySvc surveySvc;
-  private String latestCollectionExercisesPath;
 }
