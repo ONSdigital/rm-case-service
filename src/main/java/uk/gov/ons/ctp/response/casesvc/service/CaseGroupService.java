@@ -264,10 +264,7 @@ public class CaseGroupService {
     // service if we only want the latest for each survey
 
     List<UUID> collectionExerciseIds =
-        caseGroups
-            .stream()
-            .map(CollectionExerciseCaseGroup::getCollectionExerciseId)
-            .collect(Collectors.toList());
+        caseGroups.stream().map(CollectionExerciseCaseGroup::getCollectionExerciseId).toList();
 
     List<CollectionExerciseDTO> collectionExercises =
         collectionExerciseSvcClient.getCollectionExercises(collectionExerciseIds, surveyLatest);
@@ -279,6 +276,6 @@ public class CaseGroupService {
                 new CollectionExerciseCaseGroupDTO(
                     collectionExercise,
                     statusByCollectionExerciseId.get(collectionExercise.getId())))
-        .collect(Collectors.toList());
+        .toList();
   }
 }
